@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.qtr01.f47.coverage-constrained-hypothesis-tournament-dev.v1",
+  "status": "FROZEN_BEFORE_F47_CODE_OR_RESULTS",
+  "source_parent": "e3fc033c8b9e3bd06d456cf4584914c9ce0c6dc4",
+  "question": "Can discrete causal-law disagreement scheduling with guaranteed prior minimum exploration improve action-consequence learning efficiency over fully trained uniform, random and strong conventional active/family-aware controls on nine fresh synthetic causal worlds?",
+  "worlds": {
+    "sizes_high_first": [
+      64,
+      32,
+      16
+    ],
+    "seeds": [
+      127,
+      131,
+      137
+    ],
+    "law_by_seed": {
+      "127": "invariant",
+      "131": "context_gated",
+      "137": "context_flip"
+    },
+    "degree_options": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "generation": "F47 SHA256 first8 namespace F47/{degree,edge,sign}/v1 selects unknown directed signed graph with degree from options, no self edges. F47/obs/v1 hash gives public binary observed target vector after action0/1: p=1/4 baseline and 7/8 for preferred action. True graph and law family evaluator-only.",
+    "budgets_mean_repetitions_high_first": [
+      24,
+      12,
+      6
+    ],
+    "budget_formula": "exactly 2*N*b paired actions (two public source interventions per pair) at each checkpoint, high first in reporting. Each intervention sees a full N-target public binary outcome vector; max 48 paired observations in each (source,context) row. No free observations."
+  },
+  "methods": {
+    "native": "Reuse F46 isolated LocalLearner signed int16 local plasticity without model-source changes or tuning; direct signed cutoff 0.45 contrast, restore exact checkpoint.",
+    "tournament": "Before allocation, collect 4 paired action observations on EVERY source/context row, lowest row first. From then on select via deterministic qualitative causal-law disagreement votes: for each target examine context0/1 signed effect classifications at threshold 0.45; derive best fitting among invariant [1,1], gated [0,1], and flipped [1,-1] by minimum squared deviation of observed contrasts (equal to categorical hypothesis tournament, not F46 magnitude-near-threshold score); each target whose sign pattern disagrees with that hypothesis votes for further observations of the discrepant context row, weighted by count 1/(1+row count). Rank rows by sum of votes; ties lowest row. Categorical sign mismatch is the ranking signal, not continuous proximity to 0.45.",
+    "row_caps": "Prefix schedule hard cap per row: 12 paired samples until smallest b=6 budget (12*N total pairs); 24 until b=12 (24*N pairs); 48 until b=24 (48*N pairs). 4-pair mandatory exploration in each 2*N rows occurs before every budget. Never rearrange outcome histories in low-budget reporting.",
+    "uniform": "F46 local learner + round robin paired row selection.",
+    "random": "F46 local learner + separately seeded deterministic random selection among rows under cap.",
+    "conventional_active": "F46 independent Bernoulli MLE uncertainty active row-selection and F46 weighted family-aware least-squares predictions; same interventions budget but selection-dependent outcomes.",
+    "control": "For each history, exact independent fitted MLE parity with local weights. Strongest control = max direct F1 of conventional-active family WLS, uniform family WLS, uniform independent fitted MLE. No hidden true graph or true family supplied to any mechanism.",
+    "score": "Direct signed precision/recall/F1 over all context/source/nonself-target candidates. Two-hop unique signed path F1 with true ambiguous paths excluded, identical scorer for all models.",
+    "negative": "Action0-only abstention, wrong-source permutation lowers development F1, tampered cold checkpoint rejected, bit-exact cold restore, additional real isolated paired action on copy does not change another learned source row.",
+    "cost": "Report action count, outcomes bits, code/learned weights and checkpoint bytes, runtime by policy. Equal action counts are NOT full compute equivalence."
+  },
+  "frozen_go": {
+    "b12_native_tournament_direct_gain_over_uniform_min": 0.02,
+    "b6_native_tournament_direct_gain_over_uniform_min": 0.02,
+    "b12_native_tournament_direct_gain_over_strongest_conventional_min": 0.01,
+    "b12_native_tournament_twohop_F1_min": 0.6,
+    "b6_minimum_repetitions_in_every_row": 4,
+    "b6_max_repetitions_per_row": 12,
+    "b12_max_repetitions_per_row": 24,
+    "b24_max_repetitions_per_row": 48,
+    "require_nine_worlds_three_budgets": true,
+    "require_cold_tamper_and_real_interference": true,
+    "require_exact_actions_equal_across_policies": true
+  },
+  "decision": "DEV_TOURNAMENT_ACTIVE_POLICY_GO only if every frozen gate passes; otherwise DEV_TOURNAMENT_ACTIVE_POLICY_NO_GO. Do not retune policy, outcomes, budgets, thresholds, seeds or scripts after results. Strong conventional may win; report it transparently. SCIENTIFIC_PASS always false: source-free predeclared synthetic DEV, not novel worlds or matched compute.",
+  "fences": {
+    "no_accepted_native_source": true,
+    "no_protected_source_first_use": true,
+    "no_web_or_paid_API": true,
+    "no_new_controller_or_scheduler": true,
+    "no_other_projects": true,
+    "no_main_merge": true,
+    "no_deployment": true,
+    "no_scientific_pass_claim": true
+  }
+}
