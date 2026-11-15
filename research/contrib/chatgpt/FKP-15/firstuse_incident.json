@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.fkp15.first-use-interruption-incident.v1",
+  "experiment": "FKP-15",
+  "date_utc": "2026-11-15",
+  "classification": "ENGINEERING_FIRST_USE_INTERRUPTED_NO_HELD_OUTCOME_SCORE",
+  "engineering": "Final FKP15 public DEV run failed at action-selection inference after both OS pre-DEV mandatory full regression passed",
+  "root_cause": "baselines.batch_data() eagerly read r['returns'] even when called for GRU/MLP inference on a source-public prefix that contains no reward targets; KeyError('returns')",
+  "evidence": {
+    "original_prereg_first_sha": "0f8f70520e79563f9954360b13fe1ba4667d9d0d",
+    "original_source_candidate_before_repair": "f708eab77c96e04f72a83af9aaa13bf7b9cd98d2",
+    "charged_source_accounting_fix_before_job": "1610415e2d2e96e0d7f3ad558d37ce1f3e5d78a4",
+    "run_id": 43748361743,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43748361743",
+    "original_dev_job": 132917236338,
+    "original_job_conclusion": "failure",
+    "original_pre_dev_cross_os": "G29 4/4, FKP15 focused 6/6, inherited full root 54/54 Ubuntu and Windows PASS before original DEV",
+    "failure_function_chain": [
+      "run_dev.run",
+      "run_dev.dev_once",
+      "run_dev.chosen_actions",
+      "baselines.prediction",
+      "baselines.batch_data"
+    ],
+    "exact_exception": "KeyError: 'returns'",
+    "initial_public_development_seed_reset": 975500,
+    "initial_public_development_anchor": 0,
+    "known_public_dev_firstuse_scope": "Only the first public development seed was reset and its public initial observation was read by candidate inference before exception; no future held action results or reward labels were retrieved",
+    "original_fresh_DEV_outcome_scores": "NONE; do not claim FKP15 science pass, no original per-arm return, no confidence interval, no new policy win",
+    "alternate_line": "Distinct source line A research/fkp15-delayed-return-public-learning-20261115 run 43747669908 failed import source.source_custody before TRAIN source collection, no original DEV used",
+    "source_upstream": "MarcoMeter/endless-memory-gym@a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "user_approved_native_accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "repairs": {
+    "pre_existing_counting_only_commit": "1610415e2d2e96e0d7f3ad558d37ce1f3e5d78a4",
+    "reward_blind_inference_api_commit": "f9cb4481ae45fa81f35c539b939a439a6b829952",
+    "no_held_label_fixture_commit": "f79dbcbdf32b2b687e8ad5ddb42a44a7e2f16c8d",
+    "repair_scope": "Infrastructure prediction interface only: no weights, learner learning rule, source simulator, training split, scientific thresholds or protected world modified",
+    "status": "UNQUALIFIED UNTIL new G29 plus both OS full regression on repaired archival head"
+  },
+  "cohorts": {
+    "TRAIN": "975100..975163 source transitions used by aborted original script; reuse only as consumed source for reproductions or prospectively frozen training, never call fresh",
+    "VALIDATION": "975200..975215 source transitions used by aborted original script; reusable only as already-consumed validation source",
+    "original_DEV": "975500..975531 is NOT wholly pristine, because first source reset observation for seed 975500/anchor0 occurred before crash; NO held future action/reward labels consumed",
+    "TRANSFER_RESERVED": "975600..975663 UNOPENED",
+    "owner_protected": "UNOPENED"
+  },
+  "next_safe_step": "Qualify source-safe inference fixture and full Linux/Windows regression WITHOUT rerunning aborted DEV. Independently preregister a distinct, previously unopened DEV cohort before future real learner choice; no post-outcome tuning, no owner protected first use and no native promotion.",
+  "scientific_pass": false,
+  "native_model_modified": false,
+  "accepted_main_modified": false,
+  "new_controller_or_scheduler": false
+}
