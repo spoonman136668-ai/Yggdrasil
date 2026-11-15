@@ -21,6 +21,7 @@ MOTIF_MASKS=tuple(function_mask(m) for m in MOTIFS)
 
 def cohort(context:int)->str:
     if type(context) is not int:raise ValueError("FKP08_CONTEXT_TYPE_INVALID")
+    if 700<=context<=703:return "fixture"
     if context in CONTEXTS:return "development"
     if 1800<=context<=1863:return "primary"
     if 2800<=context<=2815:return "negative"
@@ -43,9 +44,9 @@ class Source:
         self._contexts={}
     def _digest(self,context:int,revision:int,label:str)->bytes:
         kind=cohort(context)
-        if kind!="development" and self._key is None:
+        if kind not in ("development","fixture") and self._key is None:
             raise PermissionError("FKP08_PROTECTED_EVALUATOR_KEY_REQUIRED")
-        key=DEV_KEY if kind=="development" else self._key
+        key=DEV_KEY if kind in ("development","fixture") else self._key
         return hmac.new(key,f"FKP08:{label}:{context}:{revision}".encode(),hashlib.sha256).digest()
     def _base(self,context:int)->int:
         # One unstructured source-private 256-bit rule; no learner oracle.
