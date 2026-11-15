@@ -17,7 +17,8 @@ class FKP02LearnerTests(unittest.TestCase):
     def test_three_input_requires_all_three_causal_parents(self):
         self.assertFalse(learner.truly_three_input(0))
         self.assertFalse(learner.truly_three_input(255))
-        self.assertFalse(learner.truly_three_input(6))
+        # XOR of the lowest two input bits, repeated across input 2.
+        self.assertFalse(learner.truly_three_input(102))
         self.assertTrue(learner.truly_three_input(sum(
             source.evaluate_gate(state, "majority3", (0, 1, 2)) << state
             for state in range(8))))
