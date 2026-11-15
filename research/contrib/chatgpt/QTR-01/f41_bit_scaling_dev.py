@@ -69,6 +69,37 @@ def get_protocol(path=POLICY):
     return p
 
 
+ERRATUM = HERE / "f41_source_inventory_erratum.json"
+ERRATUM_BLOB = "e6ef619f2397382c1e87ef1d947cabadfc0a6fcc"
+
+
+def corrected_inventory(path=ERRATUM):
+    raw = Path(path).read_bytes()
+    if sha1(b"blob " + str(len(raw)).encode() + b"\x00" + raw).hexdigest() != ERRATUM_BLOB:
+        raise NotAdmitted("F41_SOURCE_INVENTORY_ERRATUM_BLOB_MISMATCH")
+    obj = json.loads(raw)
+    actual = obj.get("mechanical_findings", {})
+    if (obj.get("schema") != "yggdrasil.qtr01.f41.source-inventory-mechanical-erratum.v1"
+        or obj.get("status") != "POST_PREQUALIFICATION_DIAGNOSTIC_MATH_CORRECTION_NO_THRESHOLD_OR_CAPACITY_CHANGE"
+        or obj.get("original_prereg_blob") != PREREG_BLOB
+        or obj.get("original_predeclared_capacity_bits") != list(CAPACITIES)
+        or obj.get("original_precision_threshold_min") != 0.95
+        or obj.get("original_false_positive_rate_threshold_max") != 0.01
+        or obj.get("original_payload_less_than_raw_984_bytes_required") is not True
+        or obj.get("original_declared_candidate_vocab_lower_bound_bytes") != 340
+        or actual.get("observed_archived_source_predicate_ids") != [
+            "P17","P19","P31","P69","P106","P279","P361","P463"]
+        or actual.get("distinct_predicates") != 8
+        or actual.get("distinct_entities") != 78
+        or actual.get("corrected_candidate_vocab_lower_bound_bytes") != 344
+        or any(obj.get("fences", {}).get(k) is not True for k in (
+            "no_new_data_source","no_reserved_evaluation_first_use",
+            "no_native_weights","no_threshold_tuning","no_capacity_tuning",
+            "no_promotions","no_main","no_merge","no_paid_api","no_scheduler"))):
+        raise NotAdmitted("F41_SOURCE_INVENTORY_ERRATUM_DRIFT")
+    return obj
+
+
 class ScaledBitAssociations:
     def __init__(self, bits, snapshot=None, digest=None):
         if bits not in CAPACITIES:
@@ -150,15 +181,16 @@ def confusion(predicted, truth, total):
 
 def measure():
     p = get_protocol()
+    erratum = corrected_inventory()
     original, added = frozen_graph()
     graph = original + added
     nodes = tuple(sorted({x for s, _, o in graph for x in (s, o)}))
     predicates = tuple(sorted({pr for _, pr, _ in graph}))
     roots = tuple(qnum(x, "Q") for x in ROOTS)
-    if len(nodes) != 78 or len(predicates) != 7 or len(graph) != 82:
+    if len(nodes) != 78 or len(predicates) != 8 or len(graph) != 82:
         raise NotAdmitted("F41_NODE_OR_PREDICATE_VOCABULARY_DRIFT")
     word_bytes = (len(nodes) + len(predicates)) * 4
-    if word_bytes != p["thresholds"]["minimum_candidate_vocab_charged_bytes"]:
+    if word_bytes != erratum["mechanical_findings"]["corrected_candidate_vocab_lower_bound_bytes"]:
         raise NotAdmitted("F41_VOCABULARY_COST_DRIFT")
     truth, paths = answers(graph, roots, predicates, nodes)
     truth_members = set(graph)
@@ -241,6 +273,8 @@ def measure():
         "exact_symbolic_tp":len(truth), "exact_symbolic_fp":0,
         "exact_symbolic_fn":0, "exact_symbolic_raw_triplet_bytes":exact_control_raw_coordinate_bytes,
         "minimum_candidate_vocabulary_bytes":word_bytes,
+        "original_frozen_vocabulary_lower_bound_erroneous_bytes":p["thresholds"]["minimum_candidate_vocab_charged_bytes"],
+        "mechanical_erratum_blob":ERRATUM_BLOB,
         "shuffled_endpoint_negative_changes_graph":set(shuffled) != truth_members,
         "capacities_tested_in_frozen_order":list(CAPACITIES),
         "capacity_results":result,
