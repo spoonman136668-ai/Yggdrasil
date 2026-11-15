@@ -75,10 +75,10 @@ class StructuralGrowthEngineering(unittest.TestCase):
         bad[20] ^= 1
         with self.assertRaises(ValueError):
             S.NumericGrow.restore(self.graph, bytes(bad))
-        data = json.loads(snap.rpartition(b"\\n")[0])
+        data = json.loads(snap.rpartition(b"\n")[0])
         data["weights"][0] += 1
         content = json.dumps(data, sort_keys=True, separators=(",", ":")).encode()
-        forged = content + b"\\n" + sha256(content).hexdigest().encode()
+        forged = content + b"\n" + sha256(content).hexdigest().encode()
         with self.assertRaises(ValueError):
             S.NumericGrow.restore(self.graph, forged)
 
