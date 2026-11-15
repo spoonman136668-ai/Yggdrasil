@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.nci04.st5.public-diagnostic-native-retention.dev.v1",
+  "status": "FROZEN_BEFORE_ST5_SOURCE_LEARNER_OR_OUTCOME",
+  "source_parent_st4_sha": "166388855ccba8610c2d1638c1f3193bee324867",
+  "source_parent_st4_pr": 1077,
+  "source_parent_st4_protocol_git_blob": "edaea790d3457bd91ea136a6b266c19e6dd61575",
+  "source_parent_st4_world_git_blob": "447b946ee03c725902ce4d96f17bbc22aaeb814d",
+  "source_parent_st4_native_git_blob": "5bc88569b0e4f92cecae8c26f2740a5a7b41a7c1",
+  "hypothesis": "Native tokenless causal memory indexed solely by actually observed public diagnostic interventions can retain a previously learned hidden causal law across eight independently learned interfering laws, without receiving a world/law ID or refitting on the recalled law. ST4 remains unmodified and negative.",
+  "source": {
+    "kind": "IN_HOUSE_DEV_NOT_INDEPENDENT_SCIENTIFIC_FIRST_USE",
+    "rule": "Unchanged ST4 private rotation, action0/action1 immediate masks and delayed action2 mask. ST5 genuinely executes five actions in one causal world: action3 neutral to reveal public rotation; action0 to reveal mask0; action1 to reveal mask1; action2 schedules a one-step delayed causal effect; final action3 probes that effect.",
+    "actor": "Sequence [3,0,1,2,3] identical for every private law/seed/trial, blind to learner forecasts. Initial public x0=SHA256('ST5-state|'+seed+'|'+trial)[0], pending=0. Each model gets ONLY current eight public bits, announced action and genuine afteraction public change bits. Never private law ID, seed/trial, rotation/masks/pending, source API or paired oracle.",
+    "train_laws": [
+      3,
+      5,
+      7,
+      11,
+      13,
+      17,
+      19,
+      23
+    ],
+    "train_seeds": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111
+    ],
+    "trials_per_law_seed": 16,
+    "steps_per_episode": 5,
+    "frozen_train_source_actions": 7680,
+    "interference_laws": [
+      43,
+      47,
+      71,
+      73,
+      79,
+      83,
+      89,
+      97
+    ],
+    "interference_seed": 111,
+    "interference_trials_per_law": 16,
+    "original_recall_law": 3,
+    "original_recall_seed": 100,
+    "original_recall_trials": 16,
+    "held_dev_unfamiliar_laws": [
+      53,
+      59,
+      61,
+      67
+    ],
+    "held_dev_seeds": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208
+    ],
+    "frozen_held_dev_source_actions": 2560,
+    "no_protected_first_use": true
+  },
+  "stage0": {
+    "scope": "Source-only train and interference laws, BEFORE any learner training or held-development exposure. Every true law has one reproducible 3-byte observed diagnostic signature [rotation, mask0, mask1]; all sixteen training plus interference laws must yield distinct signatures, each exactly recovered from genuine public action consequences. All 7680 original training actions and actor events must be accounted. Exact source and signature receipts match Linux and Windows.",
+    "fail": "SOURCE_DIAGNOSTIC_IDENTIFIABILITY_NO_GO. No changes to frozen source/IDs/splits/thresholds after observation."
+  },
+  "model": {
+    "candidate": "Separate new native eight-cell integer profile memory with 16 bounded slots, key derived from three ACTUAL diagnostic public outcomes. Each slot stores 8x2 uint8 learned evidence counts for delayed residual, with deterministic saturation and exact cold snapshot; train only after genuine final source action, forecast before it. No ST4 model modifications.",
+    "capacity": "16 slots, 3-byte public cue per slot, 16*8*2=256 learned uint8 count bytes, other bookkeeping and cold-checkpoint costs separately recorded.",
+    "controls": [
+      "Fully trained 45-weight conventional recurrent with fixed eight-state episodic history, seeing all five public actions per episode",
+      "Same 256-byte 16-bank signature-indexed raw-public-change count comparator",
+      "Same 256-byte signature-indexed rotation-corrected residual-count comparator as strongest algorithmic-equivalence control; matching it does NOT prove unique causal advancement",
+      "No diagnostic-cue/recency-only ablation",
+      "Episode memory-erasure control",
+      "Fixed key-shuffle negative"
+    ],
+    "training": "Exact 8 training laws x 12 seeds x16 trials x5 source actions = 7680; one model checkpoint trained ONCE on Linux, exact original bytes reused on Windows and Linux."
+  },
+  "metrics": {
+    "primary": "Original law3 16-trial delayed probe preaction Brier BEFORE and AFTER eight interfering laws trained, recall with learning completely frozen. Retained chance-corrected improvement >=0.95 and post-interference probe Brier <= pre-interference+0.02. Baseline chance Brier=0.25.",
+    "controls": "Candidate post-interference original law probe Brier improves over no-cue and episodic erasure by >=0.02, and must report its relationship to the equal-byte residual-count equivalence control without falsely calling a tie uniquely native.",
+    "transfer": "Four held-development unknown laws (53/59/61/67), 8 held seeds, 16 trials/law/seed, 2560 genuine source actions. Report unfamiliar law probe scores and unknown-key fallback, no retuning on these.",
+    "performance": "Exact Linux/Windows public source and native integer-state SHA parity, same trained checkpoint, full candidate and controls wall/CPU/peak RSS and checkpoint sizes, whole source+actor+model wall <=1.5x best same-information trained conventional control on both OS. Extra bookkeeping separately disclosed.",
+    "stops": "Any failed stage0, retained-gain, cue-ablation, custody, equality-of-information, negative-control or measured-cost threshold => DEV_NO_GO and preserve. Protected scientific first-use unopened. Full final regression and independent science qualification distinct."
+  },
+  "authority": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/nci04-st5-diagnostic-causal-recall-20261114",
+    "from_closed_st4_only_as_immutable_source": false,
+    "source_parent_st4_unmerged": true,
+    "main_edit": false,
+    "merge": false,
+    "accepted_ref_mutation": false,
+    "controller": false,
+    "new_runner": false,
+    "new_schedule": false,
+    "paid_api": false,
+    "protected_first_use": false,
+    "cross_project": false,
+    "deploy": false
+  },
+  "science_status": "PREREGISTERED_NO_OUTCOMES"
+}
