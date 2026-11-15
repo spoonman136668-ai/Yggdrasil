@@ -40,3 +40,7 @@ Fabricated fixture command:
 First-use-only 1,024-intervention high-budget command (forbidden until complete qualification):
 
     python research/contrib/chatgpt/WSP-114/experiment.py --frozen-1024-first-primary-dev
+
+## Final qualification source-pin trigger
+
+The 64-node/1,024-intervention **fabricated coefficient stress fixtures** passed on Ubuntu and Windows without accessing the original hidden evaluator. This is the frozen candidate-source boundary. The automatic source-pin job may write only the three generated G29 artifacts after fixtures PASS. Full inherited and root regression and independent G29 must pass on the companion source/tree before the one-shot original synthetic high-first comparison runs; no accepted model or schedule is modified.
