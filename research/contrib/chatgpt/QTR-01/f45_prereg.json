@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.qtr01.f45.variable-degree-contextual-intervention-dev.v1",
+  "status": "FROZEN_PRE_CODE_PRE_RESULTS",
+  "source_parent_sha": "a654c7efd30c5ebe32b38f944e819a9c899317a4",
+  "hypothesis": "Can an isolated tokenless local-plasticity associative memory infer sparse and denser unknown-outdegree signed causal relationships that persist or change under context, using only actual intervention/outcome observations, and match or beat fully fitted same-information controls? Preserve null results against the strongest eligible conventional model.",
+  "worlds": {
+    "sizes_high_first": [
+      64,
+      32,
+      16
+    ],
+    "seeds": [
+      59,
+      71,
+      83
+    ],
+    "seed_to_law_mode": {
+      "59": "invariant",
+      "71": "context_gated",
+      "83": "context_flip"
+    },
+    "law_modes": [
+      "invariant",
+      "context_gated",
+      "context_flip"
+    ],
+    "repetitions_high_first": [
+      24,
+      12,
+      6
+    ],
+    "fixed_action_context_order": "for source 0..N-1, context 0..1, replicate 0..R-1, action 0 then 1; per-source two-context paired public observations; R=24 reported first, then R=12/6 diagnostic from same deterministic hash-prefixed world",
+    "graph_generation": "Hidden per-source outdegree = [0,1,2,4,8][SHA256_first8('F45/degree/v1|N|seed|source')%5]. Rank other target IDs by SHA256_first8('F45/edge/v1|N|seed|source|target'), choose first outdegree, assign sign + if SHA256_first8('F45/sign/v1|N|seed|source|target') parity=0 else −; no self edges. No candidate edge/degree disclosed to learners.",
+    "public_outcome": "For every (source, context, action, replicate), expose one entire N-target binary outcome vector after the intervention. Noise is SHA256_first8('F45/obs/v1|N|seed|source|context|action|replicate|target'), success if hash < numerator*(2**64//8). Non-edges numerator=2 (probability 1/4) for both actions/contexts. Signed link acts with probability 7/8 for preferred action, 1/4 for nonpreferred action. Invariant law: preferred action is action1 for + sign or action0 for − sign in both contexts. Context-gated: only context1 reveals link; context0 is no-effect. Context-flip: sign in context1 is inverse of context0.",
+    "world_custody": "All nine synthetic worlds generated after protocol freeze; development-only fixed seeds and public laws, not unseen protected science."
+  },
+  "trainers": {
+    "native_style": "Two context-specific int16 signed contrast weights per (source,target); per balanced public intervention update w[context,source,target]+=(2*action-1)*(2*outcome-1); no gradients or hidden edge source; class signed effect if weight>=2*ceil(0.45*R) or <=negative, otherwise abstain. Requires both actions sampled equally.",
+    "fully_fitted_factorized": "Fully fitted independent per-source/context/target Bernoulli treatment and control maximum-likelihood success frequencies; same public actions and outcomes; signed class using fixed 0.45 fitted difference. This has exactly the same sufficient statistic as native; parity is an honest required control.",
+    "strongest_family_aware": "Constrained least-squares projection fitted per (source,target) over all three declared response-difference patterns [1,1] invariant, [0,1] gated, [1,-1] flip, and both edge polarities. Choose pattern with maximum squared explained signed-effect energy = (dot(d,pattern))**2/sum(pattern**2), deterministic pattern order tie break, let amplitude=dot(d,pattern)/sum(pattern**2). Accept only if abs(amplitude)>=0.45; emit context-specific signed edges accordingly. All 3 patterns are known to every arm before experiment; do NOT feed which world mode or actual outdegree to the conventional control. Report strongest comparator results even if it beats native.",
+    "symbolic_oracle": "Hidden signed graph for exact evaluator only; exclude ambiguous multi-path and diagonal two-hop pairs; no learner access.",
+    "shams": [
+      "Passive context/action 0 observations only -> abstains",
+      "Wrong-source permutation -> lower direct F1 at max budget",
+      "Tampered cold checkpoint rejected",
+      "For source N-1, real held-in-budget intervention must leave previously learned source0 weight rows unchanged"
+    ]
+  },
+  "evaluation": {
+    "direct_truth": "All directed signed causal links by source,target,context; two contexts, unknown outdegree, omit self; no-link pairs are negatives even if another context contains an edge.",
+    "twohop_truth": "Signed product of exactly one directed two-hop path in each fixed context; exclude returns to source and pairs with more than one true two-hop path, whether signs agree or disagree. Apply same exclusion mask to predicted paths for control consistency.",
+    "candidate_domain": "All 2*N*(N-1) direct triples and each context's N*(N-1) two-hop endpoint-pairs, no global-world negative claim.",
+    "metrics": [
+      "TP/FP/FN/TN, precision, recall and F1 per context, regime and world",
+      "two-hop signed unique-path precision/recall/F1",
+      "native vs fully fitted MLE equality",
+      "family-aware structured control F1",
+      "passive, permutation, tamper and genuine-observation interference negatives",
+      "cold restore bit-exact predictions and checksum",
+      "int16 weight bytes and counts, checkpoint size, control parameter bytes",
+      "intervention count, public outcome bits, exploration and evaluation elapsed DEV seconds"
+    ],
+    "thresholds": {
+      "highest_budget_macro_direct_F1_min": 0.85,
+      "highest_budget_macro_twohop_F1_min": 0.72,
+      "highest_budget_worst_world_direct_F1_min": 0.75,
+      "highest_budget_worst_world_twohop_F1_min": 0.5,
+      "all_nine_worlds_required": true,
+      "all_nine_cold_restore": true,
+      "all_nine_real_interference_retention": true,
+      "fully_fitted_MLE_same_statistic_predictions_equal": true,
+      "wrong_permuted_source_f1_strictly_lower": true,
+      "passive_abstains": true
+    },
+    "decision_rule": "DEV_CONTEXTUAL_CAUSAL_INDUCTION_GO iff all frozen high-budget macro/worst-world thresholds and positive controls pass. Otherwise DEV_CONTEXTUAL_CAUSAL_INDUCTION_NO_GO. Report (NOT gate on) stronger family-aware control comparison; any learned gain is not scientific without independent prospective heldout source/seeds, matched compute, whole-process accounting, and independent qualification. Lower budgets cannot rescue high-budget failure.",
+    "limits": "No parameter/seed/law/graph edits after results. Post hoc insights are separate diagnostics and cannot revise these thresholds."
+  },
+  "fences": {
+    "dev_synthetic_only": true,
+    "no_cc0_or_protected_data_first_use": true,
+    "no_accepted_Yggdrasil_native_source_edits": true,
+    "no_other_projects": true,
+    "no_paid_APIs": true,
+    "no_controller_or_scheduler": true,
+    "no_new_runner": true,
+    "no_main_or_merge": true,
+    "no_deployment": true,
+    "scientific_pass_always_false": true
+  }
+}
