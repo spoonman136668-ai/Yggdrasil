@@ -101,8 +101,14 @@ class GrammarLearner:
         seed = world.random_uint("F49/grammar-proposals/v1", self.bank_size, step, i)
         base = _initial_rules(self.bank_size)
         retained = self.rules
-        lhs = (base if (seed & 3) == 0 else retained)[(seed >> 5) % (len(base) if (seed & 3) == 0 else len(retained))]
-        rhs = (base if ((seed >> 3) & 3) == 0 else retained)[(seed >> 13) % (len(base) if ((seed >> 3) & 3) == 0 else len(retained))]
+        # Ablation preserves the full 1024-proposal budget but removes
+        # dependence on outcome-selected candidate rules.
+        if self.random_proposals:
+            lhs = base[(seed >> 5) % len(base)]
+            rhs = base[(seed >> 13) % len(base)]
+        else:
+            lhs = (base if (seed & 3) == 0 else retained)[(seed >> 5) % (len(base) if (seed & 3) == 0 else len(retained))]
+            rhs = (base if ((seed >> 3) & 3) == 0 else retained)[(seed >> 13) % (len(base) if ((seed >> 3) & 3) == 0 else len(retained))]
         op = ("xor", "and", "or", "not")[(seed >> 21) & 3]
         candidate = ("not", lhs) if op == "not" else (op, lhs, rhs)
         if world.ast_depth(candidate) > 4:
