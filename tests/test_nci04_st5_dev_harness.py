@@ -68,6 +68,14 @@ class ST5PreheldEvaluatorFixture(unittest.TestCase):
         for x,action,y,delta in history:
             actual.update(bytes((*x,action,*y,*delta)))
         self.assertEqual(actual.hexdigest(),result["source_sha256"])
+        original_bytes=b"".join(
+            bytes((*x,action,*y,*delta))
+            for x,action,y,delta in history
+        )
+        self.assertEqual(
+            bytes.fromhex(result["original_public_event_bytes_hex"]),
+            original_bytes
+        )
         for name in NAMES:
             self.assertGreater(result["model_cost_ns"][name]["wall_ns"],0)
 
