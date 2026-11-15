@@ -120,10 +120,10 @@ class PublicRelationArm:
         if foundation:
             if self._frozen or self._foundation_rows >= FOUNDATION_EXPECTED:
                 raise ValueError("FKP17_FOUNDATION_MUTATION_OR_OVERBUDGET")
-            self._digest.update(_observed_signature((before, action, after,
-                                                      reward, done, history)))
-            self._foundation_rows += 1
             if self.variant == "MINIMAL":
+                self._digest.update(_observed_signature((before, action, after,
+                                                          reward, done, history)))
+                self._foundation_rows += 1
                 return
             counts, sums, visits = (self._foundation,
                                     self._foundation_rewards,
@@ -133,17 +133,27 @@ class PublicRelationArm:
                 raise ValueError("FKP17_WORLD_BEFORE_FOUNDATION_SEAL")
             if self._world_rows >= 256:
                 raise ValueError("FKP17_WORLD_ACTION_BUDGET")
-            self._world_rows += 1
             if self.variant == "NO_UPDATE":
+                self._world_rows += 1
                 return
             counts, sums, visits = (self._world, self._world_rewards,
                                     self._world_visits)
+        offsets = [_index(action, register,
+                          (after[register] - before[register]) % VALUES)
+                   for register in range(REGISTERS)]
+        # Validate every counter before changing ANY state, including custody
+        # count and public source digest. An overflow cannot partially learn.
+        if any(counts[offset] >= 65535 for offset in offsets):
+            raise OverflowError("FKP17_PUBLIC_COUNT_OVERFLOW")
+        if foundation:
+            self._digest.update(_observed_signature((before, action, after,
+                                                      reward, done, history)))
+            self._foundation_rows += 1
+        else:
+            self._world_rows += 1
         visits[action] += 1
         sums[action] += reward
-        for register in range(REGISTERS):
-            offset = _index(action, register, (after[register] - before[register]) % VALUES)
-            if counts[offset] >= 65535:
-                raise OverflowError("FKP17_PUBLIC_COUNT_OVERFLOW")
+        for offset in offsets:
             counts[offset] += 1
 
     def fit_public_foundation(self, public_rows):
