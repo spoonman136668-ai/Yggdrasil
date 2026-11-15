@@ -297,7 +297,7 @@ def delay_retention_probe():
                 raise ValueError("ST3_RETENTION_REVISIT_LEARNED_FROM_FUTURE")
         return total/STEPS
     before=score_revisit()
-    old_profiles=[canonical(p) if p is not None else None
+    old_profiles=[_canonical(p) if p is not None else None
                   for p in model.profiles]
     unrelated=(5,7,11,13,17,19,23,43)
     for law in unrelated:
