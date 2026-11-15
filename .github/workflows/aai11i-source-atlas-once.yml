@@ -1,0 +1,109 @@
+name: AAI-11I causal outcome-conditioned value-of-information DEV source and G29
+on:
+  push:
+    branches: [research/aai11i-outcome-conditioned-causal-planner-20261114]
+    paths: [.github/workflows/aai11i-source-atlas-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: aai11i-source-one-shot-20261114
+  cancel-in-progress: false
+jobs:
+  dev:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-11I frozen causal feedback planning source DEV one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen prereg-before-model and exact original causal baseline Git blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '8ff2e935145c2a31f8280376ee40f9f338409b00'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai11i-source-atlas-once.yml'
+          test "$(git rev-parse ae88d92fbdd617ae0d280f0657380306305b9f65^)" = '90e04193a50055b2154a1782ed5da21f0132a8ba'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/prereg.json)" = 'c651c54ade09c3209f19cc86e2afc2b1347ea55a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/prereg.json)" = "$(git rev-parse ae88d92fbdd617ae0d280f0657380306305b9f65:research/contrib/chatgpt/AAI-11I/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/policy.py)" = '3377f544a65d7e69b39730ac5c89487ff35e5ce2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/dev.py)" = 'e21fbc01e5a7bc7ebaf656e14df177e1c2654a8f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/test_policy.py)" = '5d3db93145e0e8d3bd731e98bcd98bf5da82f58e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11H/causal.py)" = 'fec1d2bfee4215095128120e450bf41d07aaa1a9'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11G/prereg.json)" = '260c815900cc7f12aeab9a41a2caa6627482b6e9'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11G/admit.py)" = '7fbeaf898d65cded838f74f1963da3b88af9604d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11F/audit.py)" = '299a79cf8101a6a7a8231c693d52b022fab22e07'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11D/calibration.py)" = '49f7de063e3577ef8f0b4e42043a24581e6cd09c'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11D/dev.py)" = 'ce807c4fa3b7742b4299580087dc41b68359533e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/learner.py)" = '331a97b566d41785be06923a7acc63df6105cffd'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11A/fixture.py)" = '191575e68f64858acf036cd1e10c1e266cf16692'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/world.py)" = '88d220e94ccf736e490f20922f1c7f5d3c1d3746'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11P/controls.py)" = 'b554db7d8d25ae9b6a5f8bffb066181a00b35ffc'
+          test -z "$(git status --porcelain)"
+          echo AAI11I_FROZEN_MODEL_PREREG_BEFORE_SOURCE_AND_OLD_QUALIFIED_CONTROLS_PASS
+      - name: Identical posterior, hypothetical vs actual Bayes, no leaks and first use disarmed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-11I -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/AAI-11I/dev.py --primary >/dev/null 2>&1; then
+            echo AAI11I_PRIMARY_SCIENCE_FIRST_USE_DISARM_FAILED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI11I_FOCUSED_SAME_EVIDENCE_AND_BELIEF_FEEDBACK_TESTS_PASS
+      - name: Frozen 288 independent real action outcome development and first no-go gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-11I/dev.py --fixture-admission
+          test -z "$(git status --porcelain)"
+          echo AAI11I_FROZEN_MECHANICAL_DEV_RECORDED_NO_SCIENCE
+  atlas:
+    needs: dev
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exactly three generated source-pinned G29 atlas artifacts
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '8ff2e935145c2a31f8280376ee40f9f338409b00'
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-11I source-pinned generated-only G29 atlas'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/research/aai11i-outcome-conditioned-causal-planner-20261114 | cut -f1)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai11i-outcome-conditioned-causal-planner-20261114
+          echo AAI11I_G29_GENERATED_ONLY_SOURCE_PIN_PASS
