@@ -1,0 +1,77 @@
+{
+  "schema": "yggdrasil.research-provenance.v1",
+  "experiment_id": "SFI-02-LOCAL-MICROFEEDBACK-COMPOSITIONAL-PROGRAM-INDUCTION",
+  "source": "read-only SFI-01 synthetic public source from preregistered parent",
+  "source_ref": "91ea7526ec9a3b966318dfd6976363c3cdbb7b0a",
+  "source_path": "research/contrib/chatgpt/SFI-01/source_audit.py",
+  "source_sha1_gitblob": "643abf8af9047ef888a0d9952f71df2d2b18dcdb",
+  "chronology": {
+    "protocol_first_commit": "b2f07fc0f50965d6ca1008beaa4943e8df400efa",
+    "candidate_implemented_commit": "ff3fcd67a26ad87222738d385ee7ebf51376dd04",
+    "focused_tests_committed": "9511823f0181ebe01ec75e199c8215a1d638090f",
+    "pre_result_complete_harness_commit": "72497782975d4cf651061ad31db7aa8a60b962d2",
+    "post_result_archive_commit": "af1d87c6e6e4527d819820bc20d54e8f58dc0e5e",
+    "method_changed_after_result": false
+  },
+  "files": {
+    "research/contrib/chatgpt/SFI-02/microfeedback.py": {
+      "git_blob": "82367dd5fdcb76361a06caeec7da7c4b4dac86bb",
+      "sha256": "340df992a9707b2f4381676d3c1d9fe5757556c200a5d9c3d00b541b620e3885"
+    },
+    "research/contrib/chatgpt/SFI-02/test_microfeedback.py": {
+      "git_blob": "f0f175ed65a991d5fafdce018cdd43ad4fefe9b1",
+      "sha256": "ac93af467ee4e1776b2d68406de79f8a54d1a70bbe68943105e6ca89e9ae2883"
+    },
+    "research/contrib/chatgpt/SFI-02/run_public_dev.py": {
+      "git_blob": "94695341f05cef4ef0355ac8f035aa262baffd37",
+      "sha256": "7c854e0d2541bc44feacebc337b75e97a59f71782072993577ebb7356654085f"
+    }
+  },
+  "run": {
+    "python": "3.13.5",
+    "os": "Linux x86_64; ephemeral local research work container",
+    "command": [
+      "python -m unittest discover -s . -p test_microfeedback.py -q",
+      "python -m compileall -q microfeedback.py run_public_dev.py test_microfeedback.py",
+      "python run_public_dev.py"
+    ],
+    "focused_tests": "PASS 8/8",
+    "source_pin": "PASS exact 643abf8af9047ef888a0d9952f71df2d2b18dcdb",
+    "original_scored_json_sha256": "6a9ba14e6717f86f99460a70de87ce2fd762298865b380da4b40b0d3a7779b49",
+    "deterministic_replay_json_sha256": "b3ecbd947b6d9af0e71e27d3fede5ef54167a3e82d2fb40fa94e178b60c44055",
+    "timing_fields_variable_between_replays": true,
+    "non_timing_fields_replay_exact": true,
+    "per_world_reward_goal_trace_sha256": "743655be7348bd0d5c008c3c1ec91ca6eb345c1653211b93251fe2c9df30b2ff",
+    "total_actual_source_steps": 7680,
+    "training_foundation": "NONE; 24 common real source actions per world, online learning during 16 actual scored actions",
+    "original_source_public_worlds": [
+      0,
+      31
+    ],
+    "protected_source_accessed": false,
+    "merges_or_deployments": false
+  },
+  "qualification": {
+    "local_focused": "PASS",
+    "full_candidate_final_linux_regression": "UNVERIFIED",
+    "full_candidate_final_windows_regression": "UNVERIFIED",
+    "g29_generated_atlas_exact_candidate": "UNVERIFIED",
+    "push_workflow": "FAILURE_WITH_ZERO_JOBS",
+    "latest_ref_known": "af1d87c6e6e4527d819820bc20d54e8f58dc0e5e",
+    "github_workflow_run_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43776624679",
+    "classification_note": "zero-job workflow is an infrastructure/permission failure; does not indicate experimental model failure"
+  },
+  "science": {
+    "classification": "DEV_NO_GO_FOR_UNIQUE_SUBSTRATE_ADVANTAGE",
+    "new_family_invention": false,
+    "candidate_minus_strong_symbolic_mean": 0,
+    "paired_bootstrap_95": [
+      0,
+      0
+    ],
+    "cold_replay": "same-process refit from public tape only; no durable checkpoint qualification",
+    "source_blindness": "model module has no imports from source generator; harness private oracle is clearly separated",
+    "known_grammar_leak": "The declared generic four-operator grammar CONTAINS all four synthetic source families: no claim of out-of-grammar discovery"
+  },
+  "next_direction": "Design an independently sealed, unfamiliar action-causal source where a model cannot receive the source law grammar; preserve this null result and avoid postscore tuning."
+}
