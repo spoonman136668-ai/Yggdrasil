@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.qtr01.f48.counterfactual-witness-vs-bayesian-active-dev.v1",
+  "status": "FROZEN_PRE_CODE_PRE_WORLD_OUTCOMES",
+  "source_parent": "5d9f930317905e61751ebff62e1b650dcb234011",
+  "hypothesis": "Can a tokenless local hypothesis-mismatch weight programming and 4-hypothesis counterfactual-witness intervention selector achieve meaningfully better action-efficient prediction on unseen interventions than a fully fitted Bayesian information-gain selector using the same candidate causal laws and public observations, while consuming fewer whole-process resources?",
+  "worlds": {
+    "hypothesis_counts_high_first": [
+      256,
+      128,
+      64
+    ],
+    "fixed_development_seeds": [
+      149,
+      151,
+      157
+    ],
+    "action_space_size": 256,
+    "binary_input_bits": 8,
+    "causal_depth": 2,
+    "law_generator": "H candidate two-layer Boolean intervention-consequence mechanisms indexed 0..H-1. For each index, use SHA256('F48/law/v1|index') to assign four input parent slots, four input polarity bits, two hidden gate types (AND/XOR/OR) and final XOR-with-gate/bias output. Each candidate maps every 8-bit do-input intervention to a single downstream outcome bit. Candidate pool, not actual selected law ID, is provided identically to all arms. All candidate functions must be pairwise distinct or reject before first world outcome.",
+    "true_law": "One hidden candidate index per (H,seed) selected by SHA256 first8('F48/true/v1|H|seed')%H, passed to scoring evaluator only, never to selectors. This is in-family development, NOT novel/unfamiliar-world transfer.",
+    "public_observation": "For a selected intervention 8-bit input a and that action's repeat index k, return one public binary outcome y = true_law(a) XOR Bernoulli(0.10) using SHA256 first8('F48/obs/v1|H|seed|a|k') < floor(2**64/10). Each query costs one action and one binary outcome. Repeated actions cost another query, no oracle labels or privileged test labels.",
+    "budgets_high_first": [
+      32,
+      16,
+      8
+    ],
+    "prefix_rule": "All four arms run 32 observations per world, save irreversible cold checkpoints and score at 8,16,32 query prefixes; report 32,16,8 (largest first). No extra samples or post-result budget changes.",
+    "action_scores": "Score MAP hypothesis's predicted outcome on every action never queried by that arm (at least 224 held-out 8-bit interventions per 32-query world); report accuracy, predictive entropy/remaining hypothesis ambiguity and exact-hidden-law identification. Evaluator-only true outcomes do not enter training or action selection."
+  },
+  "arms": {
+    "native_witness": {
+      "memory": "Source-free integer mismatch counter weight for each candidate hypothesis, updated by +1 on each observed incorrect predicted bit; no gradient, transformer, token embeddings or accepted native Yggdrasil weights.",
+      "policy": "At each step choose the four hypotheses with smallest mismatch counts (stable candidate-ID tie break). Choose 8-bit intervention maximizing count of discordant predicted outputs across the 6 candidate pairs; stable lowest action ID tie break. This is an explicit model-vs-model consequential intervention tournament, NOT F46/F47 row-ranking; all predictions come from permitted public candidate pool.",
+      "readout": "MAP hypothesis = minimum mismatch count, stable candidate-ID tie break; use candidate predicted binary consequences on unqueried action set. Integer checkpoint SHA256 protects cold restoration."
+    },
+    "bayes_information_gain": {
+      "memory": "Exact Bayesian posterior for independent 10% binary observation flips and uniform prior over same H candidate laws, using the same mismatch counts per hypothesis.",
+      "policy": "For every 8-bit action, calculate posterior-predictive probability of outcome1 from all H hypotheses. Select the action maximizing binary predictive entropy H_2(p) (equivalently myopic mutual information because conditional noise entropy is constant). Stable lowest action ID tie break. Repeated actions allowed and charged.",
+      "readout": "MAP hypothesis and same unseen-action accuracy. Do NOT weaken this strong fully fitted model-based conventional active control."
+    },
+    "uniform": {
+      "memory": "Identical integer hypothesis mismatch counters and candidate pool.",
+      "policy": "Deterministic counterfactual-independent sequence action_t=(73*t)%256, including repeated actions only if necessary. No hidden true labels.",
+      "readout": "Same MAP unseen-action metric."
+    },
+    "random": {
+      "memory": "Identical integer hypothesis mismatch counters and candidate pool.",
+      "policy": "Independent deterministic random.Random(100003*seed+H) action 0..255 each step. All actions charged.",
+      "readout": "Same MAP unseen-action metric."
+    }
+  },
+  "frozen_metrics": {
+    "positive_criteria": {
+      "nine_worlds_required": true,
+      "cold_restore_identical_all": true,
+      "invalid_query_and_corruption_rejected": true,
+      "real_extra_public_observation_other_hypothesis_weight_isolation": true,
+      "b16_native_unseen_accuracy_gain_vs_bayes_min": 0.03,
+      "b8_native_unseen_accuracy_gain_vs_uniform_min": 0.04,
+      "b16_native_prediction_accesses_fraction_of_bayes_max": 0.5
+    },
+    "performance": "Unseen-action MAP predictive accuracy, heldout action count, hidden law identified, posterior predictive entropy, query count, public outcome bits, candidate law duplication check, complete per-arm full wall time and candidate-action prediction accesses plus memory/checkpoint bytes. Equal actions are necessary but do not establish equal total compute. Native must beat strongest Bayesian IG, not just random or uniform, at b16 to earn DEV_GO.",
+    "negative_controls": "Out-of-domain actions, nonbinary observations and double-booked/out-of-sequence events rejected. Corrupt cold checkpoint rejected. First-use fences verified. A separate cloned model may receive a genuine extra public outcome without mutating the original cold checkpoint; no speculative edits. The hidden candidate chosen only by evaluator.",
+    "frozen_decision": "DEV_COUNTERFACTUAL_WITNESS_GO iff every positive criterion met, otherwise DEV_COUNTERFACTUAL_WITNESS_NO_GO. Original scientific_pass=false regardless of developmental metrics. If no hypothesis prediction uniqueness, fail closed instead of modifying law generator. Do not tune after results."
+  },
+  "safety": {
+    "no_accepted_native_Yggdrasil_model_edits": true,
+    "no_protected_unseen_world_first_use": true,
+    "no_external_data": true,
+    "no_paid_API": true,
+    "no_main_or_merge": true,
+    "no_new_runner_controller_or_scheduler": true,
+    "no_cross_project_integration": true,
+    "no_deployment": true,
+    "scientific_pass_always_false": true
+  }
+}
