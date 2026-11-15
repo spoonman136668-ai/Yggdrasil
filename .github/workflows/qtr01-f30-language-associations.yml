@@ -1,0 +1,113 @@
+name: QTR-01 F30 source-language preserving CC0 association intake
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    name: F30 language-provenance + symbolic controls (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 9
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Stable Windows checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent sealed F30 policy and unchanged F27 source reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a9f77a34f8cef3902ee6cb03fb1ef3fdad1c8ee0 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f30_prereg.json)" = "a4ad126e7f727e96215df4b82af4be225a9b2d67"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+      - name: Complete frozen multilingual source and negative control tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f30_*.py' -v
+      - name: No tracked or source-local mutation
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+
+  source-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F30 one-shot real multilingual association intake'
+    name: F30 first-party multilingual labeled association source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen source pin and empty source-only marker preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f30_prereg.json)" = "a4ad126e7f727e96215df4b82af4be225a9b2d67"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f30_multilingual_associations.py)" = "b8a7d9f47a160d40a97fe6fc0008f591e7fdb025"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f30_multilingual_associations.py)" = "50cefee7b9156c530e1efe9d1e093daa0a4b512d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git log -1 --format=%s)" = "research(qtr): F30 one-shot real multilingual association intake"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+          echo F30_FROZEN_SOURCE_CUSTODY=PASS
+      - name: Focused source-free negative tests before first-party read
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f30_*.py' -v
+      - name: One-shot bounded first-party Wikidata association intake
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/QTR-01/f30_multilingual_associations.py --frozen-source-only --output ../f30-cc0-source-snapshot.json
+          python - <<'PY'
+          import hashlib,json,pathlib
+          raw=pathlib.Path('../f30-cc0-source-snapshot.json').read_bytes()
+          obj=json.loads(raw)
+          audit=obj["numeric_equal_info_control"]
+          assert audit["source_labeled_rows"]>0
+          assert audit["canonical_cold_restore"]
+          assert audit["numeric_vs_equal_info_symbolic_2hop_parity"]
+          assert all(all(row[k] for k in ("s_language","p_language","o_language")) for row in obj["source_rows"])
+          assert obj["scientific_pass"] is False
+          assert obj["accepted_model_weights_modified"] is False
+          assert len(raw)<=393217
+          print("F30_SOURCE_ASSOCIATION_SHA256_ATTESTED="+hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Confirm no repository state changed
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Seal bounded first-party CC0 source receipt in Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f30-multilingual-cc0-source
+          path: ../f30-cc0-source-snapshot.json
+          retention-days: 14
+          if-no-files-found: error
