@@ -1,0 +1,147 @@
+name: NKR01 native deduplicated relation qualification
+on:
+  push:
+    branches: [feature/nkr01-native-deduplicated-relations-20261115]
+permissions:
+  contents: read
+jobs:
+  fixtures:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source, native-only scope and prefrozen criteria
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a0c72c0651b5c281e5b6f167f0b1b63b41ba611c HEAD
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('research/architecture/nkr01-native-relationship-prereg.json').read_text())
+          assert p['frozen_before_implementation'] is True
+          assert p['baseline']['main_sha']=='5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Native relation fabricated public observations only
+        run: python -m unittest discover -s tests -p test_native_relation_memory.py -v
+      - name: Native incumbent regression
+        run: |
+          python -m unittest discover -s tests -p test_native_cells.py -v
+          python -m unittest discover -s tests -p test_native_cells_wilson.py -v
+      - name: Clean checkout
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+
+  source-pin:
+    needs: [fixtures]
+    if: "github.event.head_commit.message == 'ci(nkr01): arm G29 source-pin' && github.run_attempt == 1 && needs.fixtures.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr01-source-pin-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly three G29 source-index artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a0c72c0651b5c281e5b6f167f0b1b63b41ba611c HEAD
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          SOURCE="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.json .ice/code-atlas.ice .ice/code-atlas.html
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr01): pinned G29 source at $SOURCE"
+          C="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$C" | wc -l | tr -d ' ')" = 3
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/feature/nkr01-native-deduplicated-relations-20261115
+          echo "NKR01_PINNED_SOURCE=$SOURCE"
+          echo "NKR01_GENERATED_COMPANION=$C"
+
+  final-regression:
+    needs: [fixtures]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr01): pinned G29 source at ') && github.run_attempt == 1 && needs.fixtures.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full root regression and pinned atlas with no dirt
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [fixtures]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr01): pinned G29 source at ') && github.run_attempt == 1 && needs.fixtures.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent source atlas test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --check-if-present
+          python -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
