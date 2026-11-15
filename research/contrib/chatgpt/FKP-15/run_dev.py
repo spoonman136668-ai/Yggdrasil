@@ -90,6 +90,7 @@ def chosen_actions(public_row,models):
 
 def dev_once(models):
     observations=[]
+    dev_source_rows=[]
     actual_actions=0
     for seed in source.DEV:
         for anchor in source.ANCHORS:
@@ -98,6 +99,7 @@ def dev_once(models):
             if not ref["valid"]:
                 observations.append({"seed":seed,"anchor":anchor,"valid":False,
                                      "actual_source_actions":ref["source_steps"]})
+                dev_source_rows.append({"seed":seed,"anchor":anchor,"valid":False})
                 continue
             original_env=ref.pop("env")
             original_env.close()
@@ -108,6 +110,7 @@ def dev_once(models):
             real=source.collect_one(seed,anchor,allow_dev=True)
             if not real["valid"] or real["prefix_sha256"]!=ref["prefix_sha256"] or not np.array_equal(real["sequence"],ref["sequence"]):
                 raise AssertionError("FKP15_BLINDED_CHOICES_PREFIX_DIFFERENT")
+            dev_source_rows.append(real)
             actual_actions+=real["physical_steps"]
             ret=real["returns"]
             reward={name:float(ret[index]) for name,index in selected.items()}
@@ -127,7 +130,7 @@ def dev_once(models):
                 "actual_source_actions":ref["source_steps"]+real["physical_steps"],
                 "branch_evaluator_public_receipts":real["branches_sha256"],
             })
-    return observations,actual_actions
+    return observations,actual_actions,source.cohort_digest(dev_source_rows)
 
 
 def paired_bootstrap(rows):
@@ -180,7 +183,7 @@ def run(upstream:Path):
     except ValueError:tamper_rejected=True
     else:raise AssertionError("FKP15_UNSAFE_COLD_TAMPER")
     # No DEV original source env.reset occurred above.
-    held,charged=dev_once(models)
+    held,charged,held_source_sha=dev_once(models)
     strongest,returns,ci,worlds=paired_bootstrap(held)
     valid=[r for r in held if r["valid"]]
     posrate={m:sum(r["positive_return"][m] for r in valid)/len(valid) for m in METHODS}
@@ -213,6 +216,7 @@ def run(upstream:Path):
        "receipts":{"train_source":source.cohort_digest(train),
                    "validation_source":source.cohort_digest(val),
                    "held_public":hashlib.sha256(json.dumps(held,sort_keys=True).encode()).hexdigest(),
+                   "development_source_replay":held_source_sha,
                    "pre_dev_learned_models":seal,
                    "direct_cold_bytes":hashlib.sha256(cold).hexdigest()},
        "candidate_direct_raw_weight_bytes":models["DIRECT"].count.nbytes+models["DIRECT"].sum_milli.nbytes,
@@ -240,12 +244,37 @@ def run(upstream:Path):
     return report
 
 
+def replay_consumed_public_only(upstream:Path):
+    """No model choices or extra learning; source mechanical replay only."""
+    source_custody=source.admit.source_custody(upstream)
+    sys.path.insert(0,str(upstream))
+    training=source.collect(source.TRAIN)
+    validation=source.collect(source.VAL)
+    development=source.collect(source.DEV,allow_dev=True)
+    init_memory=DirectValues().fit(training)
+    return {
+      "schema":"fkp15.consumed-source-replay-only.v1",
+      "classification":"CONSUMED_PUBLIC_DEV_MECHANICAL_REPLAY_NOT_NEW_SCIENCE",
+      "upstream":source_custody,
+      "train_source_sha256":source.cohort_digest(training),
+      "validation_source_sha256":source.cohort_digest(validation),
+      "dev_source_sha256":source.cohort_digest(development),
+      "initial_direct_snapshot_sha256":hashlib.sha256(init_memory.snapshot()).hexdigest(),
+      "source_actions_train":sum(r.get("physical_steps",r["source_steps"]) for r in training),
+      "source_actions_validation":sum(r.get("physical_steps",r["source_steps"]) for r in validation),
+      "source_actions_dev_without_blind_selection":sum(r.get("physical_steps",r["source_steps"]) for r in development),
+      "protected_first_use":False,"transfer_opened":False,"scientific_pass":False
+    }
+
+
 if __name__=="__main__":
     p=argparse.ArgumentParser()
     p.add_argument("--public-dev",action="store_true")
+    p.add_argument("--replay-consumed",action="store_true")
     p.add_argument("--upstream-root",type=Path)
     p.add_argument("--protected",action="store_true")
     args=p.parse_args()
-    if args.protected or not args.public_dev or not args.upstream_root:
-        p.error("FKP15_ONLY_FROZEN_PUBLIC_DEVELOPMENT; OWNER_PRIMARY_DISARMED")
-    print(json.dumps(run(args.upstream_root.resolve()),sort_keys=True))
+    if args.protected or not args.upstream_root or args.public_dev==args.replay_consumed:
+        p.error("FKP15_ONLY_FROZEN_PUBLIC_DEV_OR_CONSUMED_REPLAY; PRIMARY_DISARMED")
+    result=(run if args.public_dev else replay_consumed_public_only)(args.upstream_root.resolve())
+    print(json.dumps(result,sort_keys=True))
