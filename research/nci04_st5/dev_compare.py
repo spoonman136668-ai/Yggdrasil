@@ -39,11 +39,11 @@ RESULT_SCHEMA="yggdrasil.nci04.st5.cold-retention-unfamiliar-dev.v1"
 NAMES=("candidate","recurrent45","raw_count","residual_count",
        "no_cue","erase","sham_key")
 SOURCE_FILE="research/nci04_st5/diagnostic_world.py"
-SOURCE_SHA="TO_BE_PINNED_SOURCE_GIT_BLOB"
+SOURCE_SHA="052072234fedf4c2ef7fe42fe138e7a10837d3c4"
 MODEL_SOURCE="research/nci04_st5/native_memory.py"
-MODEL_SHA="TO_BE_PINNED_MODEL_GIT_BLOB"
+MODEL_SHA="90195b8e45e67d8ad9235dde7a520a0ad7eda220"
 CONTROLS_SOURCE="research/nci04_st5/matched_controls.py"
-CONTROLS_SHA="TO_BE_PINNED_CONTROLS_GIT_BLOB"
+CONTROLS_SHA="28b0d61b14f2d2305db74e8b34376b2fb5a53952"
 MAX_TRAIN_BLOB=2000000
 PROCESS=psutil.Process()
 
