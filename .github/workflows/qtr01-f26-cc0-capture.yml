@@ -1,0 +1,76 @@
+name: QTR-01 F26 one-shot Wikidata CC0 structured source custody
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  f26-bounded-cc0-source:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F26 one-shot CC0 source custody'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Exact read-only QTR source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze source-scope ancestry and validated code bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor d730681989445adf90ff1fb9c22f6e8085f94bd2 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f26_prereg.json)" = "19a2258e12e183bb0c044d45c28f90d9ae7e6885"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f26_semantic_association.py)" = "3eaffc0e99a50c78ba72df682a980f1512919019"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f26_semantic_association.py)" = "fb4a190e6bcf529023e550aa9a66fd7b9fc0d27e"
+          test "$(git log -1 --format=%s)" = "research(qtr): F26 one-shot CC0 source custody"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+          echo QTR_F26_SOURCE_CUSTODY_PREFLIGHT_PASS
+      - name: Exact-source semantic IR negative tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f26_*.py' -v
+      - name: Capture independently licensed CC0 factual associations only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/QTR-01/f26_semantic_association.py --source-custody-only --output ../f26-source-snapshot.json
+          test -s ../f26-source-snapshot.json
+          python - <<'PY'
+          import hashlib, json, pathlib
+          raw=pathlib.Path('../f26-source-snapshot.json').read_bytes()
+          obj=json.loads(raw)
+          assert obj['scientific_pass'] is False
+          assert obj['model_weights_modified'] is False
+          assert obj['classification']=='DEV_CC0_SEMANTIC_SOURCE_CUSTODY_ONLY'
+          assert obj['summary']['equal_info_symbolic_control_parity']
+          assert obj['summary']['cold_restore_exact']
+          assert obj['summary']['admitted_semantic_edges']>0
+          assert len(raw)<=524289
+          print('F26_READ_ONLY_CAPTURE_ATTESTATION_PASS')
+          print('F26_CAPTURE_ARTIFACT_SHA256='+hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Ensure repository source and tracked state unchanged
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Save bounded source custody inside Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f26-cc0-structured-source-bounded
+          path: ../f26-source-snapshot.json
+          retention-days: 14
+          if-no-files-found: error
