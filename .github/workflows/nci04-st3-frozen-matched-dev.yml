@@ -5,6 +5,7 @@ on:
       - research/nci04-st3-intervention-causal-law-20261114
 permissions:
   contents: read
+  actions: read
 jobs:
   train_once:
     if: "github.event.head_commit.message == 'science(st3): run frozen matched DEV comparison'"
@@ -134,13 +135,16 @@ jobs:
           path: ${{ runner.temp }}/st3-held-dev.json
           if-no-files-found: error
           retention-days: 14
-  parity:
+parity:
     if: "github.event.head_commit.message == 'science(st3): run frozen matched DEV comparison'"
     needs: held_development
-    name: ST3 exact integer memory & source parity, frozen NO-GO classification
+    name: ST3 original-source and cost-aware scientific parity
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: st3-frozen-matched-inhouse-ubuntu-latest
@@ -149,64 +153,73 @@ jobs:
         with:
           name: st3-frozen-matched-inhouse-windows-2022
           path: windows
-      - name: Require identical source/actions and check integer cold-state separately from predictive scores
+      - name: Evaluate exact source and immutable cost divergence separately
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B -m research.nci04_st3.receipts_parity --linux linux/st3-held-dev.json --windows windows/st3-held-dev.json --output ../st3-parity-final.json
+          test -s ../st3-parity-final.json
+  readonly_parity:
+    if: "github.event.head_commit.message == 'verify(st3): existing inhouse receipts only'"
+    name: ST3 read-only parity using PREVIOUS run 43662290316 artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Exact source checkout without credentials or model execution
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify frozen protocol and original research parent unchanged
         shell: bash
         run: |
-          python - <<'PY'
-          import json, math
+          git merge-base --is-ancestor 63133626dbd914c2d525dbd7358c87fdcfcabdc7 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st3/frozen_protocol.json)" = ce51862f6b5af6a130b6ad93c30f019131bfeb16
+      - name: Download existing Linux developmental evidence without rerunning source
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-frozen-matched-inhouse-ubuntu-latest
+          path: linux
+          run-id: 43662290316
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+      - name: Download existing Windows developmental evidence
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-frozen-matched-inhouse-windows-2022
+          path: windows
+          run-id: 43662290316
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+      - name: Run source-free negative parity fixtures then verify BOTH existing receipts
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st3_receipts_parity.py' -v
+          python -B - <<'PY'
+          import os
           from pathlib import Path
-          a=json.loads(Path('linux/st3-held-dev.json').read_text('utf-8'))
-          b=json.loads(Path('windows/st3-held-dev.json').read_text('utf-8'))
-          for k in ('schema','original_source_kind','frozen_protocol_blob',
-                    'training_checkpoint_sha256','training_source_trace_sha256',
-                    'source_stage0','held_development_opened',
-                    'protected_scientific_first_use','scientific_pass',
-                    'original_frozen_hypothesis_changed_after_observation'):
-              if a[k]!=b[k]:
-                  raise SystemExit('ST3_SOURCE_OR_TRAIN_CUSTODY_PARITY_FAIL_'+k)
-          if len(a['held_source_receipts'])!=32 or len(b['held_source_receipts'])!=32:
-              raise SystemExit('ST3_HELD_COVERAGE_UNQUALIFIED')
-          source_equal=True
-          state_equal=True
-          score_equal=True
-          for x,y in zip(a['held_source_receipts'],b['held_source_receipts']):
-              for key in ('law_id_evaluator_only','seed_evaluator_only',
-                          'actual_source_steps','source_action_outcome_sha256',
-                          'delayed_action2_followed_by_action3_steps',
-                          'cold_model_restarts','learner_received_private_law_or_mask'):
-                  if x[key]!=y[key]:
-                      source_equal=False
-              if x['candidate_per_action_state_sha_chain']!=y['candidate_per_action_state_sha_chain']:
-                  state_equal=False
-              for name in x['preaction_brier']:
-                  if not math.isclose(x['preaction_brier'][name],
-                                      y['preaction_brier'][name],
-                                      rel_tol=0,abs_tol=1e-12):
-                      score_equal=False
-          if not source_equal:
-              raise SystemExit('ST3_ORIGINAL_CAUSAL_SOURCE_ACTION_DRIFT')
-          for key in ('pooled_brier','held_law_brier',
-                      'delayed_after_action2_to_action3_brier'):
-              def walk(v,w):
-                  if isinstance(v,dict):
-                      if set(v)!=set(w):return False
-                      return all(walk(v[k],w[k]) for k in v)
-                  return math.isclose(v,w,rel_tol=0,abs_tol=1e-12)
-              if not walk(a['metrics'][key],b['metrics'][key]):
-                  score_equal=False
-          same_checks=a['metrics']['checks']==b['metrics']['checks']
-          if not same_checks:
-              raise SystemExit('ST3_FROZEN_SCIENCE_CLASSIFIER_DIVERGED')
-          print('ST3_ORIGINAL_SOURCE_CROSS_OS=PASS')
-          print('ST3_COMMON_TRAIN_CHECKPOINT_SHA256='+a['training_checkpoint_sha256'])
-          print('ST3_INTEGER_NATIVE_STATES_CROSS_OS='+('PASS' if state_equal else 'FAIL_NONPORTABLE'))
-          print('ST3_HELD_PREDICTION_PARITY='+('PASS' if score_equal else 'FAIL'))
-          print('ST3_FROZEN_DEV_DISPOSITION='+(
-              'DEV_NO_GO' if not (state_equal and score_equal and
-                                  all(a['metrics']['checks'].values()))
-              else 'DEV_SIGNAL_NOT_SCIENTIFIC_PASS'))
-          print('ST3_PROTECTED_SOURCE_FIRST_USE=NOT_RUN')
-          print('ST3_INDEPENDENT_GENERALIZATION=UNVERIFIED')
+          from research.nci04_st3.receipts_parity import main
+          doc=main(
+              Path('linux/st3-held-dev.json'),
+              Path('windows/st3-held-dev.json'),
+              Path(os.environ['RUNNER_TEMP'])/'st3-final-parity.json'
+          )
+          assert doc['original_event_and_single_training_blob_exact']
+          assert doc['external_protected_science_first_use'] is False
+          print('ST3_PREVIOUS_FROZEN_RESULT_CLASSIFIED=PASS')
           PY
-# One-shot submitted for frozen IN-HOUSE DEV; no protected scientific first-use or future scheduling.
-# One deterministic in-house DEV replay for serializer-corrected harness; frozen source/model/threshold unchanged.
+      - name: Preserve all code and source untouched
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Archive new comparison metadata only, never regenerate source/models
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st3-readonly-parity-of-run-43662290316
+          path: ${{ runner.temp }}/st3-final-parity.json
+          if-no-files-found: error
+          retention-days: 14
