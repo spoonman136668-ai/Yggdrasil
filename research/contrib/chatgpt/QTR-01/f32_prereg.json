@@ -1,0 +1,45 @@
+{
+  "schema": "yggdrasil.qtr01.f32.source-snapshot-archive-receipt.v1",
+  "status": "FROZEN_BEFORE_ARCHIVAL_ACTION",
+  "parent_sha": "4912447bd493eb4003d45b84db53cbab2e464dbc",
+  "historical_F31_success_source_sha256": "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb",
+  "historical_F31_original_run": 43663891432,
+  "historical_F31_source_job_id": 132658927428,
+  "historical_F31_result": {
+    "source_admitted_triples": 13,
+    "raw_source_bytes": 3302476,
+    "twohop_queries": 0,
+    "numeric_carrier_bytes": 156,
+    "source_language_counts": {
+      "ar": 7,
+      "en": 32
+    }
+  },
+  "historical_F31_job_conclusion": "FAILED_ARTIFACT_PATH_ONLY",
+  "cause": "GitHub actions/upload-artifact does not accept ../ parent traversal in path; original verified JSON was produced in runner but failed the archival-only step.",
+  "objective": "Preserve a separately versioned source snapshot using unchanged F31 source code and source rules with a valid absolute GitHub runner.temp path, no model training, no science data and no duplicate test execution. Treat a changed source digest as a new snapshot, not as identity with F31.",
+  "unchanged_source_blobs": {
+    "f31": "6746518963f07f8355fc4bd66716d86547183005",
+    "f31_test": "1ced11c7544add3f3a5653d3393ce837a09c00d1",
+    "f30": "b8a7d9f47a160d40a97fe6fc0008f591e7fdb025",
+    "f27": "db561564c949ffe1a15c99dc460d18d0143588d1",
+    "f31_prereg": "7017afb712f087e818942841cffbca4ae296c629"
+  },
+  "archival_output": "$RUNNER_TEMP/qtr01-f32-first-party-cc0-snapshot.json",
+  "archive_upload_path": "${{ runner.temp }}/qtr01-f32-first-party-cc0-snapshot.json",
+  "source_read_policy": "One independent bounded read of the same 2 seeds, 8 predicates and at most 24 endpoint IDs, exact seed revision pins and first-party identity/label/statement SHA256; no extra requests or retries, 16MiB cap.",
+  "scientific_goal": "none; source evidence custody engineering only",
+  "frozen_attestation": "Require positive admitted witnessed statements, source language tags, byte-identical cold restoration and same-evidence symbolic parity; report exact snapshot digest, compare with F31 historical digest in logs without asserting identity on mismatch.",
+  "retention": "GitHub Actions artifact 14 days, repository-only evidence pointer; never post user-chat/library attachments",
+  "stop": "If source read unavailable, entity revision drifts during pin, size exceeds cap, or upload fails again, record FAIL and do not continue retrying this live source in F32.",
+  "fences": {
+    "no_model_weight_edits": true,
+    "no_accepted_repo_edits": true,
+    "no_merge": true,
+    "no_scheduled_checks": true,
+    "no_parallel_research_runner": true,
+    "no_live_trading": true,
+    "no_paid_api": true,
+    "no_science_first_use": true
+  }
+}
