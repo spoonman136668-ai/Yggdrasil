@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.qtr01.f41.archived-82-relations-bitweight-scaling-dev.v1",
+  "status": "FROZEN_BEFORE_F41_EXECUTABLE_OR_RESULT",
+  "source_parent_sha": "5a6420f8af8c2cca33d1a443c3317bfe3e963303",
+  "classification": "KNOWN_SOURCE_DEVELOPMENT_ONLY_NOT_NEW_SCIENCE",
+  "inputs": [
+    {
+      "path": "research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json",
+      "sha256": "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb",
+      "blob": "453dad0363689cff785c26db5441555c6841f95d",
+      "rows": 13,
+      "key": "typed_source_rows"
+    },
+    {
+      "path": "research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json",
+      "sha256": "cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954",
+      "blob": "3fc50ddf7453958c458db697eacf2e27d3d52f57",
+      "rows": 20,
+      "key": "added_witnessed_source_rows"
+    },
+    {
+      "path": "research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json",
+      "sha256": "7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044",
+      "blob": "f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108",
+      "rows": 49,
+      "key": "witnessed_rows"
+    }
+  ],
+  "source_frozen_component_baseline": {
+    "triples": 82,
+    "q_entities": 78,
+    "subject_entities": 26,
+    "undirected_components": 7,
+    "prior_entity_overlap_with_fit": 4,
+    "prior_source_complete": false
+  },
+  "existing_native_bit_algorithm": {
+    "path": "research/contrib/chatgpt/QTR-01/f34_direct_bitweights.py",
+    "blob": "2df50bedccc2fc674231f440891107ea5b96f6d9",
+    "k_hashes": 3,
+    "digest": "blake2b",
+    "digest_size": 16,
+    "digest_personalization": "QTRF34",
+    "packed_triplet": "little-endian uint32*3",
+    "slot_layout": "unsigned little-endian uint32 digest 4-byte windows modulo m, 3 slots"
+  },
+  "hypothesis": "A fixed three-hash bit-level association memory can hold and compose all already-observed 82 source triples with zero false negatives, but false-positive composition may make some payload capacities unsuitable. Identify the smallest predeclared capacity meeting precision and FPR thresholds, counting its vocabulary and all provenance separately.",
+  "capacities_bits_high_to_low": [
+    8192,
+    4096,
+    2048,
+    1024,
+    512
+  ],
+  "identifiability": "Development-only once over immutable, already observed F32/F35/F39 rows. All arms encode identical facts in identical order and share the exact candidate vocabulary and two-hop root queries; no unknown-source or held-out-transfer claim.",
+  "root_query_ids": [
+    "Q2",
+    "Q5",
+    "Q17",
+    "Q30",
+    "Q42",
+    "Q64",
+    "Q76",
+    "Q80",
+    "Q90",
+    "Q95"
+  ],
+  "exact_candidate_domain": "Every original QID subject or object, every observed PID, all root x first predicate x second predicate x terminal QID; all membership QID x PID x QID, with exact bounded graph evidence as truth (absence is not universal falsehood).",
+  "incremental_protocol": "Program first 33 historical triples and cold-restore; then append all 49 FIT triples without resetting the bits. Preserve all 33 source memberships and recognize all new 49. Cold-restore final bitmap; require exact query parity with warm bitmap.",
+  "strong_controls": [
+    "Same-82-fact exact symbolic adjacency and exact triple membership, including memory and candidate index costs",
+    "F34 frozen 512-bit bitmap must reproduce the parameterized implementation at 512 bits",
+    "Zero-fact bitmap negative must return no associations",
+    "Deterministic wrong-endpoint or hash tamper must change queried result / be rejected"
+  ],
+  "thresholds": {
+    "full_positive_recall_min": 1,
+    "twohop_precision_min": 0.95,
+    "twohop_false_positive_rate_max": 0.01,
+    "cold_exact_parity": true,
+    "lower_payload_than_exact_numeric_triples": true,
+    "minimum_candidate_vocab_charged_bytes": 340
+  },
+  "winner_selection": "Among predeclared capacities only, choose the LOWEST bit capacity that passes all of recall, twohop precision, FPR, cold-restored parity and payload bytes < 82*12=984; if none, DEV_NO_GO. No post-result retuning/extra capacities.",
+  "required_metrics": [
+    "exact positive membership, total candidate membership domain and false positives/negatives",
+    "witnessed graph two-hop path count and unique query count",
+    "full two-hop TP/FP/FN/TN, precision, recall, FPR",
+    "exact symbolic control precision and recall",
+    "cold rehydrated parity across queries",
+    "original 33 facts retained after later FIT 49",
+    "bit payload bytes per candidate; compare 82*12=984 raw coordinate bytes",
+    "candidate vocabulary lower bound 4*(78+observed_predicates) bytes; excludes source label/provenance receipts",
+    "per-arm source-free wall-time optionally, not used for scientific threshold"
+  ],
+  "source_fences": {
+    "no_network_or_unseen_source_read": true,
+    "no_reserved_qid_first_use": true,
+    "no_native_recipient_weight_edit": true,
+    "no_donor_llm_or_qwen_calls": true,
+    "no_protected_scientific_first_use": true,
+    "no_new_scheduled_tasks_or_controllers": true,
+    "no_paid_api": true,
+    "no_main_or_accepted_ref": true,
+    "no_merge_or_deployment": true,
+    "no_claim_of_native_training_or_generalization": true
+  },
+  "science_status": "NOT_SCIENCE_SOURCE_ONLY_DEV; exact symbolic correctness ceiling; no causal action/consequence, learned transfer, native recipient or fully-trained conventional baseline",
+  "research_stop": "If frozen fixed bit family is inferior to exact control under source-growth or no candidate meets thresholds, preserve negative and pivot architecture, do not tune same test."
+}
