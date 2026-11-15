@@ -1,0 +1,111 @@
+name: QTR-01 F27 versioned CC0 knowledge associations DEV
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f27-versioned-knowledge.yml
+      - research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py
+      - research/contrib/chatgpt/QTR-01/test_f27_versioned_entitydata.py
+
+permissions:
+  contents: read
+
+jobs:
+  f27-focused:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    name: F27 source-free versioned CC0 knowledge tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Configure stable Windows native line endings
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen prereg precedes implementation, no native model files changed
+        shell: bash
+        run: |
+          git merge-base --is-ancestor a808c2784f44c73d026abce2600a6a472530d47f HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_prereg.json)" = "7417f63cd1f75b7ca856b1ceae45fea82ab401e2"
+      - name: Source-free exact revision, source rights and knowledge negatives
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f27_*.py' -v
+      - name: Clean source
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+
+  f27-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F27 one-shot revisioned source custody'
+    name: F27 one-shot revisioned first-party entity source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Require exactly frozen code and original source policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_prereg.json)" = "7417f63cd1f75b7ca856b1ceae45fea82ab401e2"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f27_versioned_entitydata.py)" = "4525ec736411932441e7c56178c5956be811bf0e"
+          test "$(git log -1 --format=%s)" = "research(qtr): F27 one-shot revisioned source custody"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+      - name: Revalidate source-free negative controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f27_*.py' -v
+      - name: Bounded first-party revision-hash source capture once, fail closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py --frozen-source-read-only --output ../f27-cc0-revisioned-source.json
+          python - <<'PY'
+          import hashlib,json,pathlib
+          raw=pathlib.Path('../f27-cc0-revisioned-source.json').read_bytes()
+          x=json.loads(raw)
+          assert x["source_read_receipts"] and x["association_carrier"]["admitted_semantic_edges"]>0
+          assert x["association_carrier"]["cold_restore_exact"]
+          assert x["association_carrier"]["equal_info_symbolic_control_parity"]
+          assert x["scientific_pass"] is False
+          assert x["actual_recipient_weights_edited"] is False
+          assert len(raw) <= 786433
+          print("F27_SEMANTIC_CUSTODY_RECEIPT_VERIFIED="+hashlib.sha256(raw).hexdigest())
+          PY
+      - name: No tracked mutation
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Retain bounded data in GitHub Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f27-revisioned-cc0-source
+          path: ../f27-cc0-revisioned-source.json
+          retention-days: 14
+          if-no-files-found: error
