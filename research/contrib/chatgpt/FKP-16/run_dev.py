@@ -67,7 +67,15 @@ def prior_seal(train,val,models):
         for name,tensor in sorted(models[k].state_dict().items()):
             h.update(name.encode("ascii"))
             h.update(tensor.detach().cpu().contiguous().numpy().tobytes())
-    h.update(json.dumps(models["fit_info"],sort_keys=True).encode("utf-8"))
+    # Seal *learned state*, not nondeterministic training duration or observed
+    # validation MSE. Those metrics remain separately in the result report.
+    selected={kind:{field:info[field] for field in
+                    ("best_seed","best_epoch","parameters",
+                     "epochs_per_seed","seeds_trained")}
+              for kind,info in models["fit_info"].items()}
+    selected["RIDGE_ALPHA"]=models["RIDGE"].alpha
+    selected["KNN_K"]=models["KNN"].k
+    h.update(json.dumps(selected,sort_keys=True,separators=(",",":")).encode("utf-8"))
     return h.hexdigest()
 
 
