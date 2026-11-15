@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 from hashlib import sha256
 import json
+import os
 import math
 from pathlib import Path
 import random
@@ -182,6 +183,10 @@ def evaluate_known_train_matrix(checkpoint):
     if not path.is_file() or sha256(path.read_bytes()).hexdigest() != (
             lock["checkpoint_file_sha256"]):
         raise ValueError("FKP17_MATRIX_CHECKPOINT_SHA_MISMATCH")
+    source_sha = os.environ.get("FKP17_SOURCE_SHA")
+    if (type(source_sha) is not str or len(source_sha) != 40 or
+            any(char not in "0123456789abcdef" for char in source_sha)):
+        raise ValueError("FKP17_MATRIX_MISSING_PINNED_SOURCE_SHA")
     started = time.perf_counter()
     facts = tuple(row for _, _, row in fixture.foundation_facts())
     if len(facts) != 32768:
@@ -257,7 +262,7 @@ def evaluate_known_train_matrix(checkpoint):
     return {
         "schema": "fkp17.known-train-64-world-diagnostic.v1",
         "classification": "KNOWN_TRAIN_ONLY_NOT_UNFAMILIAR_LAW_SCIENCE",
-        "source_commit_original": None,  # workflow binds actual git SHA
+        "source_commit_original": source_sha,  # pinned GitHub checkout and custody
         "checkpoint_sha256": lock["checkpoint_file_sha256"],
         "source_public_sha256": common,
         "seed_start": TRIALS[0],
