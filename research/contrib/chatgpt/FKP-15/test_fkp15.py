@@ -122,6 +122,13 @@ class TestFKP15(unittest.TestCase):
             self.assertTrue(np.isfinite(prediction).all())
         self.assertEqual(models["KNN_receipt"]["hyperparameter"] in (1,5,15),True)
         self.assertEqual(models["RIDGE_receipt"]["hyperparameter"] in (.01,1.,100.),True)
+        # A real held-world prefix has NO unchosen action rewards.
+        blind=[{k:v for k,v in r.items() if k not in
+                ("returns","goal_by_action","branches_sha256")} for r in val]
+        for kind in ("GRU","MLP"):
+            scores=baselines.prediction(models[kind],kind,blind,models["torch"])
+            self.assertEqual(scores.shape,(len(val),9))
+            self.assertTrue(np.isfinite(scores).all())
         sealed=run_dev.prior_seal(train,val,models)
         self.assertEqual(len(sealed),64)
         self.assertEqual(sealed,run_dev.prior_seal(train,val,models))
@@ -138,6 +145,8 @@ class TestFKP15(unittest.TestCase):
         def mocked_prefix(seed,anchor,allow_dev=False):
             self.assertTrue(allow_dev)
             row=public_fixture(seed,anchor)
+            for forbidden in ("returns","goal_by_action","branches_sha256"):
+                row.pop(forbidden,None)
             row["source_steps"]=anchor
             row["env"]=FakeEnv()
             return row
