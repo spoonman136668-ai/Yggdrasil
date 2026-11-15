@@ -1,0 +1,143 @@
+{
+  "schema": "yggdrasil.contrib.aai11g.oracle-relative-benchmark.v1",
+  "id": "AAI-11G",
+  "status": "BENCHMARK_PROTOCOL_DESIGN_SOURCE_ONLY_NO_NEW_LEARNER",
+  "lineage": {
+    "parent_pr": 1068,
+    "parent_sha": "36cc12381a4153048e5971899fa388a0aafd7480",
+    "parent_branch": "research/aai11f-oracle-goal-ceiling-audit-20261114",
+    "original_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "original_AAI11P_world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "original_AAI11P_admission_blob": "0f921dfeebda9ad3a0e217747e4b0365ba9c655e",
+    "original_AAI11P_controls_blob": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc",
+    "original_AAI11A_learner_blob": "331a97b566d41785be06923a7acc63df6105cffd",
+    "original_AAI11A_fixture_blob": "191575e68f64858acf036cd1e10c1e266cf16692",
+    "original_AAI11D_posterior_blob": "49f7de063e3577ef8f0b4e42043a24581e6cd09c",
+    "original_AAI11D_dev_blob": "ce807c4fa3b7742b4299580087dc41b68359533e",
+    "original_AAI11F_ceiling_audit_blob": "299a79cf8101a6a7a8231c693d52b022fab22e07",
+    "latest_original_AAI11F_final_run": 43656594810,
+    "first_protocol_error": "60% exact three-bit goal success impossible: oracle maximum 144/288=50% on original frozen three fixtures"
+  },
+  "method": "Prospective acceptance metric specification and conventional benchmark requalification, informed by previous exploratory mechanical scores; NOT blind prospective confirmation or new model science.",
+  "task": {
+    "world": "Unmodified AAI-11P six-bit causal world, 3 observed mediators and 3-bit goal, original 12 do-actions with <=2 steps and cost .05/action.",
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "familiar": [
+      "A",
+      "B"
+    ],
+    "unfamiliar": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "challenge_trials": [
+      2,
+      4
+    ],
+    "contexts_per_law_budget": 12,
+    "unique_transfer_contexts": 144,
+    "transfer_episodes": 288,
+    "known_oracle_reachable_transfer_episodes": 144,
+    "known_unreachable_transfer_episodes": 144,
+    "original_oracle_reward": 2.448263889,
+    "source_only_no_science_seeds": true
+  },
+  "matched_methods": {
+    "eligible": "ALL 11 previously qualified AAI-11A conventional controls: 8 original tabular/knn/symbolic/ID3/logistic methods and 3 identical-grammar graph_all/recent8/recent16; every source unchanged; evaluate all with their own actual independent 0-2 interventions.",
+    "posterior_diagnostic_only": "Unmodified AAI-11D posterior_planner (risk-free posterior only) to demonstrate diagnostic discrimination, NOT an eligible conventionally selected baseline exemption, NOT a candidate.",
+    "selection": "By highest actual mean reward among all 11 fully trained matched controls, ties deterministic original learner.MATCHED order. For conditional-goal comparison select the *maximum independently* attained conditional exact-goal fraction across ALL 11 controls; a future candidate must beat both floors.",
+    "oracle": "Perfect hidden-law 0/1/2 do-action oracle for scoring only. Its labels and future/unselected consequences are never passed to a learner.",
+    "equal_budget": "64 identical public A/B training observations per model; 2 or 4 common actual do-action challenge trials; 12 original x/goal contexts for each law, each learner separately cold restored; own <=2 real do actions with public feedback only.",
+    "familiar_retention": "Same source A/B test laws/challenge budgets/contexts, 12 per law/fixture/budget; no extra fit seeds, compare terminal familiar reward."
+  },
+  "metrics": {
+    "primary": "Mean actual terminal reward on all 288 unfamiliar episodes, not goal recovery alone.",
+    "conditional_goal_recovery": "Among only the 144 oracle-ATTAINABLE unfamiliar episodes, count the model's exact three-goal terminal hits /144; an unreachable goal is never counted as a learner miss for this metric, but its achieved terminal reward is still scored in primary and separate unreachable regret.",
+    "all_goal_fraction": "Raw goals hit /288 retained ONLY as descriptive backward-comparison metric. NEVER require unattainable >=.60 absolute again.",
+    "unreachable_regret": "Mean [privileged 0/1/2-step best achievable reward - learner achieved actual terminal reward] among the 144 oracle-UNATTAINABLE episodes; diagnostic evaluator alone knows oracle.",
+    "reachable_regret": "Same oracle-minus-actual reward on 144 oracle-ATTAINABLE episodes.",
+    "matched_best_action_fairness": "Report actual actions, familiar A/B reward and source cold state; compare exactly same public episodes, not hidden counterfactual labels.",
+    "per_law_balance": "Report each of four causal-law reachability denominator, conditional recovery and mean regrets, including impossible cases.",
+    "time": "Compare full training+checkpoint+challenging+each episode restore+own 0-2 actions+public updates against fastest actually measured full fitted conventional under same OS/harness, no cross-OS elapsed-time ratios; for prospective model first-use stage."
+  },
+  "future_candidate_dev_gates_frozen_now": {
+    "reward_margin_over_strongest_conventional": 0.08,
+    "normalized_reachable_goal_recovery_margin_over_best_of_all_11_controls": 0.05,
+    "unreachable_oracle_regret_noninferiority_max_excess_vs_strongest_reward_control": 0.03,
+    "familiar_AB_reward_noninferiority_max_drop": 0.03,
+    "whole_process_cost_ratio_to_fastest_matched_conventional_max": 2,
+    "oracle_reward_headroom_over_best_conventional_min": 0.25,
+    "oracle_reachable_goal_recovery_headroom_over_best_conventional_min": 0.1,
+    "real_action_limit": 2,
+    "all_criteria_required": true,
+    "no_fixed_absolute_raw_goal_success_minimum": true,
+    "first_screen_before_full_11_control_rerun": "New learner may early-stop on frozen source synthetic dev fixtures with historical best, but complete matched eleven-control and new conditional recovery gates must be qualified before any science first-use.",
+    "anti_p_hack": "Never use this gate to retroactively qualify AAI-11A/B/D, or tune their observed results. These thresholds were selected with historical fixture scores available; subsequent mechanical fixture checks are feasibility only, not independent science validation."
+  },
+  "future_scientific_acceptance_contract": {
+    "require_separate_new_first_use_authorization": true,
+    "freeze_before_first_use": [
+      "candidate exact source/weights/tree",
+      "hypothesis",
+      "controls incl fully fit same-grammar posterior",
+      "64 genuinely independent transfer world clusters / seeds",
+      "16 DEV and 32 negative clusters",
+      "matched actions, observations and compute",
+      "paired bootstrap effect and CI lower >0",
+      "cross-world cold A/B retention and interference",
+      "privacy oracle separation",
+      "reproducible multi-seed qualification"
+    ],
+    "statistical_primary": "Pre-frozen transfer mean reward improvement at least +0.08 over strongest actual reward control, 95% paired bootstrap CI lower strictly >0, plus conditional exact-goal advantage at least 0.05 over best control and other frozen safety/cost gates; results on source mechanical fixtures not scientific gain.",
+    "reserved": {
+      "DEV": [
+        994000,
+        994015
+      ],
+      "TRANSFER": [
+        995000,
+        995063
+      ],
+      "NEGATIVE": [
+        996000,
+        996031
+      ]
+    },
+    "consumed": 0
+  },
+  "pre_source_qualification": {
+    "recompute_on_frozen_three_mechanical_fixtures_only": true,
+    "expected_unchanged_best_reward_method": "graph_recent8",
+    "expected_unchanged_best_reward": 2.134027778,
+    "expected_post_only_reward": 2.189756944,
+    "expected_post_only_goal_fraction": 0.40625,
+    "expected_oracle_reachability": [
+      144,
+      288
+    ],
+    "expected_oracle_mean_reward": 2.448263889,
+    "expected_original_policy_deterministic_trace_verify": true,
+    "admission": "Only call BENCHMARK_QUALIFIED_FOR_PROSPECTIVE_SOURCE_DEV if independently rerun eligible controls, old exact known score and oracle ceiling match, strongest reward control oracle margin >=0.25, best eligible goal recovery oracle headroom >=0.10, A/B trained best reward >=1.7, first-use disarm, both OS deterministic and final exact-head native regression. Otherwise classify BENCHMARK_NO_GO and do not adjust criteria.",
+    "source_truth": "Hidden structural equations used only by evaluator to compute attainable subpopulation and oracle regret; never used as training data or given to a control."
+  },
+  "authority": {
+    "development_source_branch": true,
+    "draft_PR": true,
+    "github_one_shot_source_only": true,
+    "original_models_immutable": true,
+    "no_native_Yggdrasil_change": true,
+    "no_merge_or_main_edit": true,
+    "no_science_first_use": true,
+    "no_controller_scheduler_runner_queue": true,
+    "no_F0RGE_Wingless_Hybrid": true,
+    "no_paid_API": true,
+    "no_user_Library_files": true
+  },
+  "no_post_result_tuning": true
+}
