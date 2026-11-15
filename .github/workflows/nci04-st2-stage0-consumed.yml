@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   source_headroom:
-    if: github.event.head_commit.message == 'science(st2): run frozen consumed stage0 only'
+    if: "github.event.head_commit.message == 'science(st2): run frozen consumed stage0 only'"
     name: ST2 consumed-only stage0 (${{ matrix.os }})
     strategy:
       fail-fast: false
@@ -87,7 +87,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   source_parity:
-    if: github.event.head_commit.message == 'science(st2): run frozen consumed stage0 only'
+    if: "github.event.head_commit.message == 'science(st2): run frozen consumed stage0 only'"
     name: ST2 stage0 source/correspondence cross-OS parity
     needs: source_headroom
     runs-on: ubuntu-latest
