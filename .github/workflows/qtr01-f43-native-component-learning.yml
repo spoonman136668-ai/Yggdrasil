@@ -1,0 +1,245 @@
+name: QTR-01 F43 source-known native action consequence learning DEV
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F43 focused known-graph native consequence DEV'
+    name: F43 native source-known public actions (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Normalize Windows source bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen prereg and exact source, no recipient code changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 73fac0ff4aa8ce4fb5ed65ad067e5dc035c7cd92 HEAD
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F43 focused known-graph native consequence DEV'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f43_prereg.json)" = 'f05f65d461d1c8981cc7b40b0c3ae3d9716794e0'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f43_native_component_learning_dev.py)" = '4b1b7523c2f1e3819d889c1c29cd859c2facb71c'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f43_native_component_learning_dev.py)" = 'b3e4d4d1b64f6e2c462a83ef1f19e7bdf1b26f49'
+          test "$(git rev-parse HEAD:yggdrasil/public_causal_cells.py)" = '5c9a9904e31688bebc2e53723569e1fb988a981f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = '997d2d13c4725d5b33d993d252aac7108304b529'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_component_isolation_audit.py)" = 'ae6ab67997d230de58e22645a61e976b4b4a21b5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          echo F43_FROZEN_F42_NATIVE_MODEL_SOURCE_PIN=PASS
+      - name: Twelve source-free dev native/public action tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f43_*.py' -v
+      - name: Real model action-consequence readout and invariant provenance record
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/QTR-01/f43_native_component_learning_dev.py | tee "$RUNNER_TEMP/f43-native.log"
+          F43_FILE="$RUNNER_TEMP/f43-native.log" F43_OUT="$RUNNER_TEMP/f43-canonical.json" python - <<'PY'
+          import json,os,pathlib
+          lines=pathlib.Path(os.environ["F43_FILE"]).read_text(encoding="utf-8").splitlines()
+          values=[v.split("=",1)[1] for v in lines
+                  if v.startswith("F43_SOURCE_KNOWN_NATIVE_ACTION_CONSEQUENCE_DEV_RESULT=")]
+          assert len(values)==1
+          d=json.loads(values[0])
+          assert d["classification"]=="DEV_NATIVE_ROUTING_PARITY_ONLY"
+          assert d["public_train_events"]==56 and d["retained_interference_events"]==72
+          assert d["query_graph_entities_heldout_from_actions"]==71
+          assert d["native_learned_bytes"]==d["conventional_learned_bytes"]==128
+          assert d["graph_serialized_bytes"]==630
+          assert d["native_and_exact_graph_snapshot_bytes"]==794
+          for key in ("native_warm_known_component_entity_queries",
+              "native_cold_known_component_entity_queries",
+              "native_after_retained_interference",
+              "equal_information_trained_conventional"):
+              assert d[key]["correct"]==71 and d[key]["covered"]==71
+          assert d["identity_only_source_heldout_coverage"]==0
+          assert d["wrong_component_mapping_negative"]["correct"]<71
+          assert d["scientific_pass"] is False and d["transfer_to_new_source_graph"] is False
+          assert d["protected_scientific_first_use_consumed"] is False
+          assert d["native_accepted_source_modified"] is False
+          stable={k:v for k,v in d.items()
+                  if k not in ("evaluation_wall_seconds_dev_only",)}
+          pathlib.Path(os.environ["F43_OUT"]).write_text(
+              json.dumps(stable,sort_keys=True,separators=(",",":"))+"\n",encoding="utf-8")
+          print("F43_NATIVE_COLD_CHECKPOINT_SHA256="+d["native_checkpoint_sha256"])
+          print("F43_NO_SCIENTIFIC_OR_FIRST_USE_PROMOTION=PASS")
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f43-native-dev-${{ matrix.os }}
+          path: ${{ runner.temp }}/f43-canonical.json
+          retention-days: 3
+          if-no-files-found: error
+      - name: Zero dirty source, new source, scheduler or accepted state
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F43_SOURCE_ONLY_NO_NEW_SOURCE_FIRST_USE=PASS
+
+  compare:
+    needs: focused
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F43 focused known-graph native consequence DEV'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      actions: read
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: qtr01-f43-native-dev-*
+          path: ${{ runner.temp }}/f43-compare
+          merge-multiple: false
+      - name: Require exact cross OS native checkpoint, model and source parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          A="$RUNNER_TEMP/f43-compare/qtr01-f43-native-dev-ubuntu-24.04/f43-canonical.json"
+          B="$RUNNER_TEMP/f43-compare/qtr01-f43-native-dev-windows-2022/f43-canonical.json"
+          test -s "$A" && test -s "$B"
+          cmp "$A" "$B"
+          cat "$A"
+          echo F43_LINUX_WINDOWS_NATIVE_STATE_METRICS_IDENTICAL=PASS
+
+  atlas-once:
+    needs: compare
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F43 focused known-graph native consequence DEV'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source and code before graph ICE update
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F43 focused known-graph native consequence DEV'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f43_prereg.json)" = 'f05f65d461d1c8981cc7b40b0c3ae3d9716794e0'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f43_native_component_learning_dev.py)" = '4b1b7523c2f1e3819d889c1c29cd859c2facb71c'
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = 'cef1378fd3c47ebc74675bd9dde19a183775ceeb'
+          test -z "$(git status --porcelain)"
+          echo F43_SOURCE_EXACT_ATLAS_FENCE=PASS
+      - name: Regenerate exactly 3 ICE code atlas companion files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          EXPECTED="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          ACTUAL="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$ACTUAL" = "$EXPECTED"
+          git diff --cached --quiet && exit 1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'ci(qtr): derive F43 source-exact ICE code atlas'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo "F43_ICE_SOURCE_COMPANION_SHA=$(git rev-parse HEAD)"
+          echo F43_ICE_SOURCE_EXACT=PASS
+
+  full-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F43 final full source-exact regression'
+    name: F43 full final regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - name: Normalize Windows source bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin scientific fences and unchanged native and CC0 snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 73fac0ff4aa8ce4fb5ed65ad067e5dc035c7cd92 HEAD
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F43 final full source-exact regression'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f43_prereg.json)" = 'f05f65d461d1c8981cc7b40b0c3ae3d9716794e0'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f43_native_component_learning_dev.py)" = '4b1b7523c2f1e3819d889c1c29cd859c2facb71c'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f43_native_component_learning_dev.py)" = 'b3e4d4d1b64f6e2c462a83ef1f19e7bdf1b26f49'
+          test "$(git rev-parse HEAD:yggdrasil/public_causal_cells.py)" = '5c9a9904e31688bebc2e53723569e1fb988a981f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = '997d2d13c4725d5b33d993d252aac7108304b529'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          echo F43_FINAL_SOURCE_NATIVE_ICE_FENCES=PASS
+      - name: Install pinned existing full regression dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+      - name: Entire original repository regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Entire QTR contributor regression
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+      - name: Clean checkout no scientific first use
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F43_FULL_FINAL_EXACT_SOURCE_PASS
