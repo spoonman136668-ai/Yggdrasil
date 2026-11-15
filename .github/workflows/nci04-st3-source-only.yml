@@ -61,10 +61,19 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
           PYTHONHASHSEED: '0'
         run: |
-          python -B -m research.nci04_st3.source_audit --output ../st3-source-audit.json | tee ../st3-stage0.log
-          grep -Eq '^ST3_STAGE0_DISPOSITION=(SOURCE_TASK_IDENTIFIABLE_DEV_ONLY|SOURCE_TASK_INVALID_NO_GO)$' ../st3-stage0.log
-          grep -q '^ST3_NO_PROTECTED_FIRST_USE=PASS$' ../st3-stage0.log
-          test -s ../st3-source-audit.json
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st3.source_audit import main
+          output=Path(os.environ['RUNNER_TEMP'])/'st3-source-audit.json'
+          doc=main(output)
+          assert doc['headroom']['disposition'] in (
+              'SOURCE_TASK_IDENTIFIABLE_DEV_ONLY','SOURCE_TASK_INVALID_NO_GO')
+          assert doc['protected_scientific_first_use'] is False
+          assert doc['candidate_or_control_trained'] is False
+          assert output.stat().st_size > 0
+          print('ST3_SOURCE_RECEIPT_COMPLETE=PASS')
+          PY
       - name: No generated or mutated repository source
         shell: bash
         run: |
@@ -74,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: st3-source-only-${{ matrix.os }}
-          path: ../st3-source-audit.json
+          path: ${{ runner.temp }}/st3-source-audit.json
           if-no-files-found: error
           retention-days: 7
   parity:
