@@ -19,3 +19,7 @@ First commit `2aedc2a5ab0da62563fca1c8dbd079a18a634f6d` froze this comparison **
 **Frozen source-pinned CI**: fabricated prereg fixture Linux/Windows, G29 three generated-only .ice companions pinned to exact source, mandatory full root regression and independent G29 both OS on exact candidate, then one independent original public DEV comparison job; no new controller/scheduler or merge.
 
 **Decision:** In-family success and out-of-family negative closes **MIXED / NO PROMOTION**. Even synthetic two-family success would be DEV only, not automatic production model data ingestion. Native NKR-01 code and Yggdrasil main remain unchanged pending truly independent qualified source and acceptance authority.
+
+## Pre-first-use fixture gate
+
+Prereg/source/independent exact GF2 and actual 2,000-step Adam-gradient fit fixtures **PASS** Ubuntu and Windows at candidate `6c2c1c649e25cc6fede4dd7d4c11373a450b43e9`, [run #43713441022](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43713441022). The public independent comparative science scorer has not executed on the frozen complete source. Generated G29 source companion, full final native regression, independently qualified original synthetic DEV comparison remain gated; no accepted model modification.
