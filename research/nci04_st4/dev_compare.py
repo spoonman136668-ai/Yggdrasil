@@ -162,19 +162,27 @@ def run_law_seed(evaluator_law,evaluator_seed,models,phase,train,
                     if returned!=preds[n]:
                         raise ValueError("ST4_PREACTION_OUTCOME_LEAK_"+n)
                 if state_sha and "candidate" in models:
+                    # Debug/determinism custody has real compute cost and
+                    # must not be excluded from candidate cost comparisons.
+                    ts=time.perf_counter_ns();cpu=time.process_time_ns()
                     candidate_sha.update(sha256(
                         models["candidate"].snapshot().encode("utf-8")
                     ).digest())
+                    times["candidate"]["wall_ns"]+=time.perf_counter_ns()-ts
+                    times["candidate"]["cpu_ns"]+=time.process_time_ns()-cpu
                 # Same bounded cold check each law/seed, for ALL models,
                 # only after original first source consequence was observed.
                 if t==0 and trial==0:
                     for n,model in tuple(models.items()):
+                        ts=time.perf_counter_ns();cpu=time.process_time_ns()
                         payload=model.snapshot()
                         restored=restore_model(n,payload)
                         if restored.snapshot()!=payload:
                             raise ValueError("ST4_COLD_MODEL_DRIFT_"+n)
                         models[n]=restored
                         cold+=1
+                        times[n]["wall_ns"]+=time.perf_counter_ns()-ts
+                        times[n]["cpu_ns"]+=time.process_time_ns()-cpu
                 total_actions+=1
                 process_rss=max(process_rss,PROCESS.memory_info().rss)
         if set(arm_probe)!={"treatment","control"}:
