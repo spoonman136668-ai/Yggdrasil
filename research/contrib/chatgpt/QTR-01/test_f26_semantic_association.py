@@ -123,7 +123,7 @@ class F26(unittest.TestCase):
 
     def test_shuffled_relation_negative_breaks_composition(self):
         x = PackedAssociationWeights.from_rows(sample_rows())
-        different = PackedAssociationWeights([(5, 279, 42), (42, 31, 5)])
+        different = PackedAssociationWeights([(5, 31, 2), (42, 279, 5)])
         self.assertEqual(x.twohop(42, 31, 279), {2})
         self.assertEqual(different.twohop(42, 31, 279), set())
         self.assertNotEqual(x.blob, different.blob)
