@@ -115,7 +115,9 @@ class FKP12Fixtures(unittest.TestCase):
 
     def test_no_held_or_private_sources_in_models(self):
         text=(HERE/"source.py").read_text()
-        self.assertNotIn("env.unwrapped",text)
+        import ast
+        self.assertFalse(any(isinstance(n,ast.Attribute) and n.attr=="unwrapped"
+                             for n in ast.walk(ast.parse(text))))
         self.assertNotIn("debug_rgb_array",text)
         self.assertNotIn("env.render(",text)
         self.assertIn("env.step(",text)
@@ -128,7 +130,7 @@ class FKP12Fixtures(unittest.TestCase):
             model.indices(np.zeros((2,195),dtype=np.float32))
         with self.assertRaises(ValueError):
             source.input_feature(np.zeros((16,16,3),dtype=np.uint8),(1,1),5)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             source.collect(tuple(source.RESERVED_TRANSFER))
         with self.assertRaises(PermissionError):
             source.collect(tuple(source.DEV))
