@@ -1,0 +1,76 @@
+{
+  "schema": "wsp110.million-sparse-weight-operator-induction-two-pass.v1",
+  "kind": "frozen synthetic DEV prereg before any WSP110 world, learner, test, or benchmark code",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1069,
+    "sha": "6f0da4d874a46044f119a052c9457ac81a56fece",
+    "tree": "a9936adbc9368e2f3db0af547a2bc2e10562c98b",
+    "status": "draft unmerged; WSP109 direct weights underperformed depth3 Bayesian; nonvirgin replay not scientific pass"
+  },
+  "north_star": "Test whether one million programmatically written sparse native relational parameters plus directly programmed compositional operators can discover useful novel relations in two consecutive rounds, with identical observations to independent symbolic and fully optimized conventional controls.",
+  "hypothesis": "A compact pair of compositional relation operators programmed from feedback can produce many new heldout associations while preserving original million native facts; any efficiency or generalization advantage must be demonstrated against strongest equal-information symbolic and conventional controls, not assumed.",
+  "generator": {
+    "source": "100% synthetic deterministic reproducible generated data; no external knowledge, historical Wikidata, protected WSP101 first-use, private runs, real Yggdrasil weights",
+    "version": "WSP110|GEN|v1; SHA256 deterministic group and exception templates, no Python hash randomization",
+    "raw_fact_count": 1000000,
+    "independent_chains": 25000,
+    "train_groups": "0..2999 inclusive; 3,000 groups, 9,000 witnessed raw edges, labeled relation consequences only here",
+    "test_groups": "3000..24999 inclusive; 22,000 new disjoint entity chains, labels never used for programming or model selection",
+    "chain_edges": "For group g, s=4g,m=4g+1,n=4g+2,t=4g+3; raw facts (s,relA 0..3,m), (m,relB 4..7,n), (n,relC 10..13,t), each rel type independently from SHA256(g,position) mod4",
+    "distractors": "Exactly 925000 other raw directed facts of relation IDs 16..31, each on its own isolated pair of opaque entity IDs 100000+3j,100001+3j. No distractor shares an entity with any train/test chain; all 1m facts program into model.",
+    "stage1": "An initially unknown Boolean relation-8 (X) from composition relA ∘ relB with hidden active pair types selected as 6 of 16 by ascending SHA256('WSP110|LAW1|v1|kind'); exception: flip X law for groups where SHA256('WSP110|EX1|v1|g') interpreted as unsigned and mod32 ==0. No input edge encodes X label.",
+    "stage2": "Unknown relation-9 (Y) discovered from X ∘ relC; hidden active relC types selected as 2 of 4 by SHA256('WSP110|LAW2|v1|kind'); Y label = true X(g) and (activeC XOR [SHA256('WSP110|EX2|v1|g') mod32==0]). No original input edge encodes Y label.",
+    "metadata": "No extra oracle-derived features, hidden rule bits, or heldout answer witness in learners; all code/query groups know relation types 8 and 9 as target predicates but not the active source patterns.",
+    "grounded_identity": "Entity IDs and group IDs contain no hidden rule outcome signal; all signal in observed relation types and support-label feedback.",
+    "novelty": "22k test entity groups are disjoint from 3k training entities; mechanism family/primitive relation vocabulary remains shared, so this does NOT test discovery of genuinely unseen relation semantics."
+  },
+  "memory": {
+    "representation": "Directly program one million input factual presence weights as sorted uint64 sparse relation-source-target keys with 1.0 float32 parameter values, then directly program 16 float32 stage1 and 4 float32 stage2 composition-operator weights from observed outcome counts; no backpropagation. The keys are a sparse parameterized associative memory, not a dense neural weight tensor.",
+    "stage1": "For all 25k groups, retrieve original factual links from native sparse weights (not oracle/graph) and infer relation-8 candidate association by learned pair-operator presence.",
+    "stage2": "For all 25k groups, use stage1 newly inferred relation-8 facts plus original relC facts to infer relation-9; X must be inferred, not read as an oracle label.",
+    "retention": "Byte/sha256 snapshot of the original million native facts before and after stages, plus tamper-rejecting persisted operator state; cold restore and exact heldout prediction parity after both rounds.",
+    "iterations": 2
+  },
+  "support_feedback": {
+    "budget": "All models receive the identical 3,000 stage1 and identical 3,000 stage2 labeled examples only from train group 0..2999, and the same 1m observed original raw facts; stage2 labels may contain X=false examples but only positive-X observations identify stage2 rule.",
+    "numeric_direct": "From support alone, program one 16-element float32 Beta(1,1) posterior-mean stage1 operator vector and one 4-element float32 Beta(1,1) posterior-mean stage2 operator vector conditioned on observed X=true; threshold strictly >0.5 (ties false). Maintain explicit observed counts and feedback receipt hashes, no SGD.",
+    "independent_symbolic": "Independent Python dict/set frequency of positive/negative observed consequences by relation pair, and by last relation conditioned on observed X=true. Separate original fact dictionary for 1m source associations. Use same >0.5 posterior mean and same two-stage compositional rule inference; expected exact parity.",
+    "conventional": "Fit two regularized Bernoulli logistic heads with L2=0.01 using exact one-hot 16 and4 stage predictors (plus intercept), Newton convex optimum max100 steps residual <=1e-8. Stage2 fit uses only support examples where true observed X; inference gates Y on PREDICTED X. Same labeled data and raw input, no tuning on test, full convergence essential; optimizer failure FAIL, no rate or threshold retuning.",
+    "controls": "No-operator memory only (predict both false); wrong binding (cyclically rotate stage1 learned operator weights 1 position and stage2 operator weights 1 position); privileged oracle template without stochastic exceptions reported ONLY as irreducible-error diagnostic upper bound not a fair learner."
+  },
+  "evaluation": {
+    "primary": [
+      "heldout 22000 groups stage1 novel X association accuracy, precision, recall/F1 and confusion",
+      "heldout 22000 groups stage2 cascaded Y association accuracy, precision, recall/F1 and confusion",
+      "new correct inferred X/Y facts, false accepted facts, exact cold replay and source memory retention",
+      "direct vs independent symbolic parity, direct vs converged conventional stage-by-stage"
+    ],
+    "negative": [
+      "broken relation bindings must underperform correct mapping",
+      "no-operator baseline cannot show positive novelty",
+      "tampered operator snapshot rejected",
+      "original facts never changed by operator learning"
+    ],
+    "cost": [
+      "CPU and wall including one-million-fact generation, native programming, symbolic baseline build, operator acquisition, 2 rounds, test and cold",
+      "direct storage bytes vs symbolic storage estimated, model parameter counts, no unsupported speedup",
+      "distinct group/label leakage and complete epoch/seeds provenance"
+    ],
+    "sealing": "After support training, seal all three models' stage1 and stage2 heldout predictions and learned operator/state hashes SHA256 BEFORE querying withheld X or Y truth, then evaluate oracle only in scoring function; no tuning/replay after results.",
+    "exit": "Engineering PASS requires exactly 1m programmed facts, heldout source identity disjoint, 2 rounds of truly derived association predictions, full source cold/custody, objective-converged conventional, negative controls, dual OS focused/full regression and independent G29 acceptance. Scientific result remains DEV; any equality vs strong control is NULL for superiority.",
+    "limits": "Rule patterns and relational vocabulary are fixed/known candidate family; the model is a sparse associative weight store, not a densely trained neural substrate or open-ended AGI. Output relations X and Y are supplied as task targets; their active source patterns are discovered from labeled support, not autonomous unknown-relation discovery. Code execution cannot be represented as native Yggdrasil substrate integration."
+  },
+  "safety": {
+    "read_only_existing_models": true,
+    "write_isolated_new_branch_only": true,
+    "pr_draft_unmerged": true,
+    "first_use_protected": false,
+    "main_ref_update": false,
+    "no_paid_api": true,
+    "no_controller_or_scheduler": true,
+    "no_private_runner": true,
+    "no_live_deployment": true,
+    "no_merging": true
+  }
+}
