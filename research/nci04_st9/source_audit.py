@@ -61,6 +61,11 @@ def verify_freeze():
 
 
 def insert(rows,feat,value,n):
+    if (type(n) is not int or n not in (4,8) or
+        type(rows) is not list or len(rows)!=n or
+        type(feat) is not int or not 0<=feat<(1<<n) or
+        type(value) is not int or value not in range(256)):
+        raise ValueError("ST9_SOURCE_INVALID_GF2_EVIDENCE")
     mask=(1<<n)-1
     row=feat|(value<<n)
     while row&mask:
