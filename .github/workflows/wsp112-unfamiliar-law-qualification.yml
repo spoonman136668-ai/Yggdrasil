@@ -1,0 +1,154 @@
+name: WSP112 unfamiliar causal-law qualification (fixtures and regression only)
+on:
+  push:
+    branches: [research/wsp112-unfamiliar-causal-laws-20261114]
+permissions:
+  contents: read
+jobs:
+  fixture:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install pinned CPU-only numerical dependency
+        run: |
+          python -m pip install --disable-pip-version-check --no-input numpy==2.2.6
+          python -c "import numpy as np; assert np.__version__=='2.2.6'"
+      - name: Verify isolated protocol and unchanged WSP111 parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 36e4f1141aaf0fe0b2841a6ffb081301a05393aa HEAD
+          git diff --exit-code dc1b7f72de4b359aac21d4fcc3be2c06bc3f196e HEAD -- research/contrib/chatgpt/WSP-111 research/contrib/chatgpt/WSP-110 research/contrib/chatgpt/WSP-109
+          test ! -f research/contrib/chatgpt/WSP-112/SCIENTIFIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-112/PROTECTED_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: Fabricated-effect fixtures ONLY (no first-use or hidden oracle)
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-112 -p 'test_*.py' -v
+      - name: Check clean tree after fixtures
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+
+  source-pin:
+    needs: [fixture]
+    if: "github.event.head_commit.message == 'ci(wsp112): arm source-pin G29 atlas' && github.run_attempt == 1 && needs.fixture.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp112-source-pin-G29-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only three atlas companions pinned to exact unchanged source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 36e4f1141aaf0fe0b2841a6ffb081301a05393aa HEAD
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          S="$GITHUB_SHA"
+          python scripts/build_code_atlas.py --write --source-commit "$S"
+          git add -- .ice/code-atlas.json .ice/code-atlas.ice .ice/code-atlas.html
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp112): pinned G29 source at $S"
+          B="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$B" | wc -l | tr -d ' ')" = 3
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp112-unfamiliar-causal-laws-20261114
+          echo "WSP112_SOURCE_SHA=$S"
+          echo "WSP112_ATLAS_COMPANION_SHA=$B"
+
+  mandatory-final-regression:
+    needs: [fixture]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp112): pinned G29 source at ') && github.run_attempt == 1 && needs.fixture.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 95
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install pinned CPU-only numerical dependency
+        run: |
+          python -m pip install --disable-pip-version-check --no-input numpy==2.2.6
+          python -c "import numpy as np; assert np.__version__=='2.2.6'"
+      - name: Exact-source G29 and public first-use admission fence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 36e4f1141aaf0fe0b2841a6ffb081301a05393aa HEAD
+          git diff --exit-code dc1b7f72de4b359aac21d4fcc3be2c06bc3f196e HEAD -- research/contrib/chatgpt/WSP-110 research/contrib/chatgpt/WSP-111
+          python research/contrib/chatgpt/WSP-98/admission.py --public-pass
+          python scripts/build_code_atlas.py --check-if-present
+          test ! -f research/contrib/chatgpt/WSP-112/SCIENTIFIC_PASS.json
+          test ! -f research/contrib/chatgpt/WSP-112/PROTECTED_FIRST_USE.json
+          test -z "$(git status --porcelain)"
+      - name: WSP112 fixture-only regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-112 -p 'test_*.py' -v
+      - name: Complete inherited WSP102–WSP111 and WSP98 tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 111 110 109 108 107 106 105 104 103 102 98; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Complete WSP80–WSP97 original regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97; do
+            python -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory root regression and pristine source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
