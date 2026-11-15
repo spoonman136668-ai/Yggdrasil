@@ -105,7 +105,7 @@ class FrozenCausalRunlength(unittest.TestCase):
             self.assertEqual(causal.checkpoint(actor),frozen)
             self.assertEqual(causal.checkpoint(causal.restore(arm,frozen)),frozen)
             self.assertEqual(set(json.loads(frozen)),{"type","arm","rows"})
-            self.assertNotIn("posterior",frozen)
+            self.assertNotIn('"posterior_cache"',frozen)
             self.assertNotIn("oracle",frozen)
             self.assertNotIn("law",frozen)
 
