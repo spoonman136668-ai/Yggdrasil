@@ -18,9 +18,9 @@ EXT = ROOT / "evidence/f35_source_depth2_snapshot.json"
 OLD_SHA = "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb"
 EXT_SHA = "cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954"
 SCHEMA = "yggdrasil.qtr01.f39.dev-claims-source-candidate.v1"
-ITEM = re.compile(r"Q[1-9][0-9]*\\Z")
-PROP = re.compile(r"P[1-9][0-9]*\\Z")
-SAFE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,79}\\Z")
+ITEM = re.compile(r"Q[1-9][0-9]*")
+PROP = re.compile(r"P[1-9][0-9]*")
+SAFE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,79}")
 MINIMA = dict(verified_claims=1024, independent_root_groups=64,
               semantic_domains=4, distinct_predicate_ids=16,
               distinct_predicate_chains=8, witnessed_positive_queries=128)
