@@ -1,0 +1,261 @@
+name: NCI04 ST8 frozen actual structural growth DEV
+on:
+  push:
+    branches:
+      - research/nci04-st8-contradiction-driven-growth-20261115
+permissions:
+  contents: read
+jobs:
+  train_once:
+    if: "github.event.head_commit.message == 'science(st8): run frozen structural growth DEV comparison'"
+    name: ST8 one actual original action trained source / 7 variants
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned process accounting
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Verify exact original PR ancestor and ALL frozen source/candidate/baseline/evaluator blobs BEFORE held first use
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a8ec2023c9e9b49380d21e7d8e3ec20e18b4345f HEAD
+          git merge-base --is-ancestor 2e9cdb5a84306f54f670fd17d9f063809604d236 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st8/frozen_protocol.json)" = 1bf9f460c8a38d271ed1299c8d86cb777b0b0a0e
+          test "$(git rev-parse HEAD:research/nci04_st8/private_world.py)" = 39502f081e85ff0d3f7a5c22101a7bf3c1f3629a
+          test "$(git rev-parse HEAD:research/nci04_st8/source_audit.py)" = b8bdfd1ca0106605485cb345ab0d96de10c19027
+          test "$(git rev-parse HEAD:research/nci04_st8/native_growth.py)" = 1ce8095fdb4e50f2685d51b507da99786ede580c
+          test "$(git rev-parse HEAD:research/nci04_st8/matched_controls.py)" = d335b57f8da18052019dbc63dc6ef0385aa6650a
+          test "$(git rev-parse HEAD:research/nci04_st8/dev_compare.py)" = 4b68cdffb7da394239b867821b6ff3e52d905eca
+          python -B - <<'PY'
+          from research.nci04_st8.dev_compare import guard
+          p=guard()
+          assert p['authority']['merge'] is False
+          assert p['authority']['protected_scientific_first_use'] is False
+          print('ST8_PREHELD_EXACT_FROZEN_PROTOCOL_SOURCE_MODEL_CONTROLS_EVALUATOR=PASS')
+          PY
+      - name: Qualified training-only source and strict frozen negative fixtures
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st8_dev_harness.py' -v
+      - name: Train SEVEN models once on 7680 real public action consequences, held unopened
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          MKL_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st8.dev_compare import train_once,load_training
+          path=Path(os.environ['RUNNER_TEMP'])/'st8-trained.json'
+          source=train_once(path)
+          final,sha=load_training(path)
+          assert source==final
+          assert final['held_development_unopened'] is True
+          assert final['alternate_rule_negative_unopened'] is True
+          assert final['protected_first_use'] is False
+          print('ST8_SINGLE_TRAIN_CHECKPOINT_SHA256='+sha)
+          print('ST8_ORIGINAL_PUBLIC_TRAINING_CUSTODY=PASS')
+          PY
+      - name: No mutation to actual source or tracked artifacts
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st8-one-genuine-source-preheld-training
+          path: ${{ runner.temp }}/st8-trained.json
+          if-no-files-found: error
+          retention-days: 14
+  held:
+    if: "github.event.head_commit.message == 'science(st8): run frozen structural growth DEV comparison'"
+    needs: train_once
+    name: ST8 frozen unseen cubic worlds, new rules and original cold retention (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Windows exact Git source bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Same pinned process accounting
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st8-one-genuine-source-preheld-training
+          path: ${{ runner.temp }}
+      - name: Same canonical trained bytes verified before unfamiliar source
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st8.dev_compare import guard,load_training
+          guard()
+          d,sha=load_training(Path(os.environ['RUNNER_TEMP'])/'st8-trained.json')
+          assert d['held_development_unopened'] is True
+          assert d['protected_first_use'] is False
+          print('ST8_EXACT_IDENTICAL_PREHELD_TRAIN_SHA256='+sha)
+          PY
+      - name: Consume frozen new worlds, different-rule negative, interference/retention exactly once
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          MKL_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st8.dev_compare import compare
+          root=Path(os.environ['RUNNER_TEMP'])
+          d=compare(root/'st8-trained.json',root/'st8-held.json')
+          assert d['held']['actual_original_source_actions']==2560
+          assert d['different_rule']['actual_original_source_actions']==160
+          assert d['cold_retention']['real_interference_actions']==640
+          assert d['held_laws_opened_once']==[29,31,37,41]
+          assert d['different_rule_laws_opened_once']==[43,47]
+          assert d['no_model_fitted_on_held_or_negative'] is True
+          assert d['scientific_first_use_protected'] is False
+          assert d['independent_scientific_pass'] is False
+          print('ST8_REAL_FROZEN_HYPOTHESIS_OUTCOMES_RECORDED=PASS')
+          PY
+      - name: Unmodified checkout and no accepted main mutation
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st8-real-frozen-held-${{ matrix.os }}
+          path: ${{ runner.temp }}/st8-held.json
+          if-no-files-found: error
+          retention-days: 14
+  parity:
+    if: "github.event.head_commit.message == 'science(st8): run frozen structural growth DEV comparison'"
+    needs: held
+    name: ST8 genuine source/learned state/probabilities exact cross-OS
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st8-real-frozen-held-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st8-real-frozen-held-windows-2022
+          path: windows
+      - name: Compare original action histories, trained custody, native integer cold hashes and preaction scores
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,math
+          a=json.loads(Path('linux/st8-held.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st8-held.json').read_text('utf-8'))
+          frozen=(
+              'schema','class','frozen_protocol_blob','private_source_blob',
+              'native_model_blob','conventional_controls_blob',
+              'shared_training_artifact_sha256','held_laws_opened_once',
+              'held_seeds_opened_once','different_rule_laws_opened_once',
+              'no_model_fitted_on_held_or_negative',
+              'private_rule_or_law_id_seen_by_models',
+              'scientific_first_use_protected','independent_scientific_pass',
+              'source_and_candidate_unmodified_after_held'
+          )
+          for k in frozen:
+              if a[k]!=b[k]:
+                  raise SystemExit('ST8_FROZEN_EXACT_SHARED_TRAIN_MISMATCH_'+k)
+          source=True;states=True;scores=True
+          for scope in ('held','different_rule'):
+              if len(a[scope]['receipts'])!=len(b[scope]['receipts']):
+                  raise SystemExit('ST8_ORIGINAL_SCOPE_COUNT_MISMATCH')
+              for x,y in zip(a[scope]['receipts'],b[scope]['receipts']):
+                  for key in (
+                      'law_evaluator_only','seed_evaluator_only',
+                      'original_source_actions','original_public_action_sha256',
+                      'all_model_cold_restores','private_fields_seen_by_model'
+                  ):
+                      if x[key]!=y[key]:source=False
+                  if x['native_cold_integer_state_sha256']!=y['native_cold_integer_state_sha256']:
+                      states=False
+                  for name in x['preaction_probe_Brier']:
+                      if not math.isclose(
+                          x['preaction_probe_Brier'][name],
+                          y['preaction_probe_Brier'][name],
+                          abs_tol=1e-12,rel_tol=0
+                      ):scores=False
+          x=a['cold_retention'];y=b['cold_retention']
+          if x['eight_interference_law_original_receipts']!=y['eight_interference_law_original_receipts']:
+              source=False
+          for phase in ('before','after'):
+              if x[phase]['original_source_sha256']!=y[phase]['original_source_sha256']:
+                  source=False
+              if x[phase]['native_integer_trace_sha256']!=y[phase]['native_integer_trace_sha256']:
+                  states=False
+              for n in x[phase]['preaction_probe_Brier']:
+                  if not math.isclose(
+                      x[phase]['preaction_probe_Brier'][n],
+                      y[phase]['preaction_probe_Brier'][n],abs_tol=1e-12,rel_tol=0
+                  ):scores=False
+          if not source:
+              raise SystemExit('ST8_REAL_PUBLIC_SOURCE_ACTION_CROSS_OS_FAIL')
+          cost='measured_total_original_process_ratio_le_1_5'
+          ca=a['metrics']['frozen_checks'];cb=b['metrics']['frozen_checks']
+          if set(ca)!=set(cb):
+              raise SystemExit('ST8_FROZEN_GATE_SET_DRIFT')
+          if any(ca[k]!=cb[k] for k in ca if k!=cost):
+              raise SystemExit('ST8_FROZEN_NONCOST_HYPOTHESIS_DRIFT')
+          cost_equal=ca[cost]==cb[cost]
+          final=(states and scores and cost_equal and all(ca.values())
+                 and all(cb.values()))
+          print('ST8_TRUE_ORIGINAL_SOURCE_ACTION_PARITY=PASS')
+          print('ST8_SHARED_TRAIN_CUSTODY='+a['shared_training_artifact_sha256'])
+          print('ST8_NATIVE_INTEGER_COLD_STATE_PARITY='+('PASS' if states else 'FAIL'))
+          print('ST8_PREACTION_HELD_BRIER_PARITY='+('PASS' if scores else 'FAIL'))
+          print('ST8_LINUX_WHOLE_COST_RATIO='+str(a['metrics']['source_actor_training_eval_wall_ratio']))
+          print('ST8_WINDOWS_WHOLE_COST_RATIO='+str(b['metrics']['source_actor_training_eval_wall_ratio']))
+          print('ST8_COST_GATE_CROSS_OS_AGREEMENT='+str(cost_equal))
+          print('ST8_DEV_DISPOSITION='+(
+              'STRUCTURAL_GROWTH_DEV_SIGNAL_NOT_SCIENTIFIC_PASS'
+              if final else 'DEV_NO_GO'
+          ))
+          print('ST8_PROTECTED_FIRST_USE=NOT_RUN')
+          PY
+# One original bounded synthetic DEV comparison; no protected first-use, postresult retuning, or schedule.\n

@@ -1,0 +1,251 @@
+name: NCI04 ST5 frozen genuine public-cue memory retention DEV
+on:
+  push:
+    branches:
+      - research/nci04-st5-diagnostic-causal-recall-20261114
+permissions:
+  contents: read
+jobs:
+  train_once:
+    if: "github.event.head_commit.message == 'science(st5): run frozen public diagnostic cold retention DEV'"
+    name: ST5 once-trained public-only native and conventional controls (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned source process-cost dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Verify prereg, exact original world and ALL source/model/control/evaluator blobs before fitting
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 2e22be59f6058b464f777a48bbd46d7edbc4db54 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st5/frozen_protocol.json)" = 1f5622f183fe83ece77a85ab8cee8ec1bb6da6b8
+          test "$(git rev-parse HEAD:research/nci04_st4/paired_world.py)" = 447b946ee03c725902ce4d96f17bbc22aaeb814d
+          test "$(git rev-parse HEAD:research/nci04_st5/diagnostic_world.py)" = 052072234fedf4c2ef7fe42fe138e7a10837d3c4
+          test "$(git rev-parse HEAD:research/nci04_st5/native_memory.py)" = 90195b8e45e67d8ad9235dde7a520a0ad7eda220
+          test "$(git rev-parse HEAD:research/nci04_st5/matched_controls.py)" = 28b0d61b14f2d2305db74e8b34376b2fb5a53952
+          test "$(git rev-parse HEAD:research/nci04_st5/dev_compare.py)" = f88920d1badf56afd428c27137accd6c50aec9b2
+          python -B - <<'PY'
+          from research.nci04_st5.dev_compare import guard_provenance
+          p=guard_provenance()
+          assert p['authority']['protected_first_use'] is False
+          assert p['authority']['merge'] is False
+          print('ST5_PREHELD_PROTOCOL_SOURCE_MODEL_CONTROLS_AND_EVALUATOR_FROZEN=PASS')
+          PY
+      - name: Train every variant ONCE on 7680 genuine original public-action steps, no held
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st5.dev_compare import train_once,load_checkpoint
+          output=Path(os.environ['RUNNER_TEMP'])/'st5-trained.json'
+          d=train_once(output)
+          reread,sha=load_checkpoint(output)
+          assert d==reread
+          assert reread['original_source_episodes']==1536
+          assert reread['original_source_action_steps']==7680
+          assert reread['held_development_unopened'] is True
+          assert reread['protected_first_use'] is False
+          print('ST5_COMMON_TRAINED_PUBLIC_MODEL_SHA256='+sha)
+          print('ST5_TRAIN_EXACT_SOURCE_AND_CHECKPOINT=PASS')
+          PY
+      - name: Exact clean repository after training
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st5-single-frozen-preheld-public-training
+          path: ${{ runner.temp }}/st5-trained.json
+          if-no-files-found: error
+          retention-days: 14
+  eval:
+    if: "github.event.head_commit.message == 'science(st5): run frozen public diagnostic cold retention DEV'"
+    needs: train_once
+    name: ST5 8-law interference and unfamiliar held DEV (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Windows exact source byte configuration
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned process accounting
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Download same once-trained public-evidence models, no retraining
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st5-single-frozen-preheld-public-training
+          path: ${{ runner.temp }}
+      - name: Verify exact frozen preheld checkpoint before ANY unfamiliar law
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st5.dev_compare import guard_provenance,load_checkpoint
+          guard_provenance()
+          c,sha=load_checkpoint(Path(os.environ['RUNNER_TEMP'])/'st5-trained.json')
+          assert c['held_development_unopened'] is True
+          assert c['protected_first_use'] is False
+          print('ST5_IDENTICAL_ONCE_TRAINED_ARTIFACT_SHA256='+sha)
+          PY
+      - name: Original law cold recall BEFORE and AFTER exactly eight other laws; then zero-shot unfamiliar DEV
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st5.dev_compare import compare
+          temp=Path(os.environ['RUNNER_TEMP'])
+          doc=compare(temp/'st5-trained.json',temp/'st5-held.json')
+          assert doc['held_dev_laws_opened_once']==[53,59,61,67]
+          assert doc['protected_first_use'] is False
+          assert doc['independent_science'] is False
+          assert doc['scientific_pass'] is False
+          assert len(doc['unfamiliar_zero_shot']['held_development_source_receipts'])==32
+          print('ST5_NATIVE_COLD_RECALL_AND_UNFAMILIAR_DEV_RECORDED=PASS')
+          PY
+      - name: Preserve exact pristine source and accepted refs
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st5-cold-retention-original-${{ matrix.os }}
+          path: ${{ runner.temp }}/st5-held.json
+          if-no-files-found: error
+          retention-days: 14
+  parity:
+    if: "github.event.head_commit.message == 'science(st5): run frozen public diagnostic cold retention DEV'"
+    needs: eval
+    name: ST5 original public law recall + native integer state dual-OS parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st5-cold-retention-original-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st5-cold-retention-original-windows-2022
+          path: windows
+      - name: Check every original source and checkpoint hash; classify independent OS costs separately
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,math
+          a=json.loads(Path('linux/st5-held.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st5-held.json').read_text('utf-8'))
+          fixed=(
+              'schema','origin','frozen_protocol_git_blob','source_git_blob',
+              'candidate_git_blob','controls_git_blob','common_training_sha256',
+              'train_laws_used','held_dev_laws_opened_once','held_dev_seeds_opened_once',
+              'model_passed_private_world_identity','protected_first_use',
+              'independent_science','scientific_pass',
+              'frozen_mechanism_changed_after_outcome'
+          )
+          for k in fixed:
+              if a[k]!=b[k]:
+                  raise SystemExit('ST5_SHARED_TRAIN_OR_SOURCE_CUSTODY_DRIFT_'+k)
+          score_equal=True
+          integer_equal=True
+          source_equal=True
+          for p in ('original_before','original_after'):
+              x=a['original_retention'][p]
+              y=b['original_retention'][p]
+              for key in ('genuine_original_source_sha256',
+                          'actual_original_source_actions','learned_bank_write_during_recall',
+                          'cold_model_restarts'):
+                  if x[key]!=y[key]:
+                      source_equal=False
+              if x['native_integer_cold_state_sha256']!=y['native_integer_cold_state_sha256']:
+                  integer_equal=False
+              for n in x['preaction_delayed_probe_brier']:
+                  if not math.isclose(
+                      x['preaction_delayed_probe_brier'][n],
+                      y['preaction_delayed_probe_brier'][n],
+                      rel_tol=0,abs_tol=1e-12
+                  ):score_equal=False
+          if a['original_retention']['interfering_law_receipts']!=b['original_retention']['interfering_law_receipts']:
+              source_equal=False
+          if len(a['unfamiliar_zero_shot']['held_development_source_receipts'])!=32 or len(b['unfamiliar_zero_shot']['held_development_source_receipts'])!=32:
+              raise SystemExit('ST5_EXACT_HELD_COVERAGE_INVALID')
+          for x,y in zip(a['unfamiliar_zero_shot']['held_development_source_receipts'],
+                         b['unfamiliar_zero_shot']['held_development_source_receipts']):
+              for key in ('law_evaluator_only','seed_evaluator_only','actual_source_steps',
+                          'actual_source_sha256','all_models_cold_restarts',
+                          'protected_scientific_first_use'):
+                  if x[key]!=y[key]:
+                      source_equal=False
+              if x['native_integer_cold_state_sha256']!=y['native_integer_cold_state_sha256']:
+                  integer_equal=False
+              for n in x['probe_brier']:
+                  if not math.isclose(x['probe_brier'][n],y['probe_brier'][n],rel_tol=0,abs_tol=1e-12):
+                      score_equal=False
+          if not source_equal:
+              raise SystemExit('ST5_ORIGINAL_ACTION_CONSEQUENCE_HISTORY_CROSS_OS_DRIFT')
+          cost='whole_source_actor_model_wall_ratio_le_1_5'
+          if any(a['science_metrics']['frozen_checks'][k]!=b['science_metrics']['frozen_checks'][k]
+                 for k in a['science_metrics']['frozen_checks'] if k!=cost):
+              raise SystemExit('ST5_FROZEN_NONCOST_SCIENCE_DIVERGENCE')
+          cost_agrees=a['science_metrics']['frozen_checks'][cost]==b['science_metrics']['frozen_checks'][cost]
+          qualifies=(integer_equal and score_equal and cost_agrees and
+                    all(a['science_metrics']['frozen_checks'].values()) and
+                    all(b['science_metrics']['frozen_checks'].values()))
+          print('ST5_ACTUAL_SOURCE_HISTORY_AND_SHARED_TRAINING_CROSS_OS=PASS')
+          print('ST5_COMMON_TRAINED_CHECKPOINT_SHA256='+a['common_training_sha256'])
+          print('ST5_NATIVE_INTEGER_COLD_RECALL_PARITY='+('PASS' if integer_equal else 'FAIL_NONPORTABLE'))
+          print('ST5_PREACTION_BRIER_PARITY='+('PASS' if score_equal else 'FAIL'))
+          print('ST5_LINUX_WHOLE_COST_RATIO='+str(a['science_metrics']['whole_source_actor_model_wall_ratio']))
+          print('ST5_WINDOWS_WHOLE_COST_RATIO='+str(b['science_metrics']['whole_source_actor_model_wall_ratio']))
+          print('ST5_COST_THRESHOLD_CROSS_OS_AGREES='+str(cost_agrees))
+          print('ST5_DEVELOPMENT_DISPOSITION='+(
+              'MEMORY_DEV_SIGNAL_NOT_SCIENTIFIC_PASS' if qualifies else 'DEV_NO_GO'
+          ))
+          print('ST5_PROTECTED_SCIENCE_FIRST_USE=NOT_RUN')
+          PY
+# One-shot bounded original in-house DEV; no protected scientific first-use, no model/source or threshold retuning.

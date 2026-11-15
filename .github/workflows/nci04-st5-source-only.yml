@@ -1,0 +1,130 @@
+name: NCI04 ST5 frozen public diagnostic causal source
+on:
+  push:
+    branches:
+      - research/nci04-st5-diagnostic-causal-recall-20261114
+permissions:
+  contents: read
+jobs:
+  original_source_only:
+    name: ST5 original source only (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Byte-preserving Windows checkout configuration
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned resource and process accounting for frozen evaluator fixtures
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Validate frozen PRE-SOURCE protocol and untouched ST4 parent
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          git merge-base --is-ancestor 2e22be59f6058b464f777a48bbd46d7edbc4db54 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st5/frozen_protocol.json)" = 1f5622f183fe83ece77a85ab8cee8ec1bb6da6b8
+          test "$(git rev-parse HEAD:research/nci04_st4/paired_world.py)" = 447b946ee03c725902ce4d96f17bbc22aaeb814d
+          python -B - <<'PY'
+          from research.nci04_st5.source_audit import verify_freeze
+          p=verify_freeze()
+          assert p['science_status']=='PREREGISTERED_NO_OUTCOMES'
+          assert p['authority']['merge'] is False
+          assert p['authority']['protected_first_use'] is False
+          print('ST5_PRE_SOURCE_FREEZE_AND_IMPORT_CHECK=PASS')
+          PY
+      - name: Exact native/source tests and unchanged historical parent fixtures
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st5_source.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st5_native_memory.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st5_dev_harness.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st4_source.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04d2_task.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo ST5_SOURCE_AND_INHERITED_NEGATIVE_TESTS=PASS
+      - name: Audit original training and interference laws ONLY
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st5.source_audit import audit
+          out=Path(os.environ['RUNNER_TEMP'])/'st5-original-source.json'
+          result=audit(out)
+          assert result['held_development_unopened'] is True
+          assert result['protected_first_use_unopened'] is True
+          assert result['no_candidate_control_training'] is True
+          print('ST5_ORIGINAL_PUBLIC_CUE_SOURCE_RECORD=PASS')
+          PY
+      - name: Require source tree and inherited ST4 source untouched
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st5-original-source-${{ matrix.os }}
+          path: ${{ runner.temp }}/st5-original-source.json
+          if-no-files-found: error
+          retention-days: 14
+  exact_parity:
+    name: ST5 source signature and original action parity
+    needs: original_source_only
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st5-original-source-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st5-original-source-windows-2022
+          path: windows
+      - name: Source-only exact identity, no model first-use
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('linux/st5-original-source.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st5-original-source.json').read_text('utf-8'))
+          keys=(
+              'schema','pre_source_freeze_git_commit','pre_source_freeze_git_blob',
+              'source_parent_st4_world_blob','training_source_law_records',
+              'interference_source_law_records','distinct_public_signature_count',
+              'training_original_source_steps','interference_original_source_steps',
+              'source_rotation_ambiguity_count','source_cue_private_disagreement_count',
+              'source_disposition','no_candidate_control_training',
+              'held_development_unopened','protected_first_use_unopened',
+              'science_pass'
+          )
+          for k in keys:
+              if a[k]!=b[k]:
+                  raise SystemExit('ST5_SOURCE_CROSS_OS_FAILURE_'+k)
+          print('ST5_SOURCE_ACTUAL_ACTION_CROSS_OS=PASS')
+          print('ST5_CAUSAL_DIAGNOSTIC_SIGNATURE_CROSS_OS=PASS')
+          print('ST5_SOURCE_DISPOSITION='+a['source_disposition']['disposition'])
+          print('ST5_NO_MODEL_OR_HELD_DEV_OR_PROTECTED_FIRST_USE=PASS')
+          PY

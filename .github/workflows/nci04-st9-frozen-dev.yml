@@ -1,0 +1,245 @@
+name: NCI04 ST9 frozen eight-intervention memory-repair DEV
+on:
+  push:
+    branches: [research/nci04-st9-budgeted-active-causal-repair-20261115]
+permissions:
+  contents: read
+jobs:
+  train:
+    if: "github.event.head_commit.message == 'science(st9): run frozen eight-intervention DEV comparison'"
+    name: ST9 one trained public eight-intervention checkpoint (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned CPU RSS resource dependency
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Original lineage, prereg, world, source, native and controls Git-blob SHA custody
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 7184ad02c6236300a5847e5e620b6eb18cde0b56 HEAD
+          git merge-base --is-ancestor 5159a65cd403bc3cbd507ab713742ebae330e28a HEAD
+          test "$(git rev-parse HEAD:research/nci04_st9/frozen_protocol.json)" = 9ad8bc15e8dd8b0757c8db13772de23c57d2f3cf
+          test "$(git rev-parse HEAD:research/nci04_st9/private_world.py)" = d1bdf67503bd797d79386406820679b70403e8bb
+          test "$(git rev-parse HEAD:research/nci04_st9/source_audit.py)" = bdf86bafbd166861ec7cd3264de6c87b04f25cfc
+          test "$(git rev-parse HEAD:research/nci04_st9/native_repair.py)" = 8409f7e3352aabb6a5937a6a7443f2dc4a82f07a
+          test "$(git rev-parse HEAD:research/nci04_st9/matched_controls.py)" = ff554c1e6cc533ebd0b09d7148baa0abcad4d195
+          test "$(git rev-parse HEAD:research/nci04_st9/dev_compare.py)" = 11beea32480f769ff8034040a2ee4565a6a39e34
+          python -B - <<'PY'
+          from research.nci04_st9.dev_compare import guard
+          p=guard()
+          assert p['authority']['merge'] is False
+          assert p['authority']['protected_first_use'] is False
+          print('ST9_PREHELD_FROZEN_SOURCE_MODEL_CONTROLS_EVALUATOR_GIT_CUSTODY=PASS')
+          PY
+      - name: Full strict train-only harness / falsifying classifier negative controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st9_dev_harness.py' -v
+      - name: One original eight-intervention source training per arm, held unopened
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st9.dev_compare import train_once,load_training,NAMES
+          p=Path(os.environ['RUNNER_TEMP'])/'st9-eight-probes-trained.json'
+          data=train_once(p)
+          loaded,sha=load_training(p)
+          assert data==loaded
+          assert loaded['original_train_source_actions_per_arm']=={n:16 for n in NAMES}
+          assert loaded['held_worlds_not_opened'] is True
+          assert loaded['alternative_rule_not_opened'] is True
+          assert loaded['protected_scientific_first_use'] is False
+          print('ST9_PREHELD_ONE_TRAINED_ARTIFACT_SHA256='+sha)
+          print('ST9_REAL_SOURCE_EIGHT_INTERVENTION_CUSTODY=PASS')
+          PY
+      - name: No tracked or untracked original source mutations
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st9-one-frozen-eight-action-trained-cohort
+          path: ${{ runner.temp }}/st9-eight-probes-trained.json
+          if-no-files-found: error
+          retention-days: 14
+  evaluate:
+    if: "github.event.head_commit.message == 'science(st9): run frozen eight-intervention DEV comparison'"
+    needs: train
+    name: ST9 unseen worlds, unknown rule, real cold memory (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Preserve original source bytes on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Same pinned per-process resource metrics
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st9-one-frozen-eight-action-trained-cohort
+          path: ${{ runner.temp }}
+      - name: Verify original preheld frozen model bytes on both OS BEFORE new worlds
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st9.dev_compare import guard,load_training
+          guard()
+          data,sha=load_training(Path(os.environ['RUNNER_TEMP'])/'st9-eight-probes-trained.json')
+          assert data['held_worlds_not_opened'] is True
+          assert data['alternative_rule_not_opened'] is True
+          print('ST9_COMMON_TRAINED_EXACT_SHA256='+sha)
+          PY
+      - name: Execute ONLY prerecorded unfamiliar true-action, alternate rule and retention DEV
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          import os
+          from research.nci04_st9.dev_compare import compare
+          root=Path(os.environ['RUNNER_TEMP'])
+          data=compare(root/'st9-eight-probes-trained.json',root/'st9-held-dev.json')
+          assert data['held_laws_opened_once']==[29,31,37,41]
+          assert data['negative_laws_opened_once']==[43,47]
+          assert data['held']['actual_original_source_actions']==512
+          assert data['different_rule']['actual_original_source_actions']==64
+          assert data['cold_retention']['real_interference_source_actions']==16
+          assert data['no_held_or_negative_model_fitting'] is True
+          assert data['private_source_oracle_to_model'] is False
+          assert data['protected_scientific_first_use'] is False
+          assert data['independent_scientific_pass'] is False
+          print('ST9_FROZEN_ORIGINAL_ACTION_DEV_RESULT_RECORDED=PASS')
+          PY
+      - name: No original source or model mutation after held
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st9-frozen-eight-action-held-${{ matrix.os }}
+          path: ${{ runner.temp }}/st9-held-dev.json
+          if-no-files-found: error
+          retention-days: 14
+  parity:
+    if: "github.event.head_commit.message == 'science(st9): run frozen eight-intervention DEV comparison'"
+    needs: evaluate
+    name: ST9 original source, cold integer state and score parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st9-frozen-eight-action-held-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st9-frozen-eight-action-held-windows-2022
+          path: windows
+      - name: Original real actions + same checkpoint + native integer state + preaction Brier
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path('linux/st9-held-dev.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st9-held-dev.json').read_text('utf-8'))
+          custody=('schema','evidence_class','frozen_protocol_git_blob',
+                   'original_source_git_blob','native_model_git_blob',
+                   'conventional_controls_git_blob',
+                   'one_trained_checkpoint_sha256','held_laws_opened_once',
+                   'negative_laws_opened_once','no_held_or_negative_model_fitting',
+                   'private_source_oracle_to_model','protected_scientific_first_use',
+                   'independent_scientific_pass',
+                   'protocol_source_model_untuned_after_first_held')
+          for key in custody:
+              if a[key]!=b[key]:
+                  raise SystemExit('ST9_SHARED_TRAIN_CUSTODY_DIFF_'+key)
+          for scope in ('held','different_rule'):
+              xs=a[scope]['records'];ys=b[scope]['records']
+              if len(xs)!=len(ys):
+                  raise SystemExit('ST9_ORIGINAL_SOURCE_RECORD_COUNT_DRIFT_'+scope)
+              for x,y in zip(xs,ys):
+                  for field in ('law_evaluator_only','seed_evaluator_only',
+                                'real_source_steps','real_source_action_sha256',
+                                'all_model_cold_restores','model_saw_private_law_coefficients',
+                                'native_integer_cold_state_chain'):
+                      if x[field]!=y[field]:
+                          raise SystemExit('ST9_EXACT_SOURCE_OR_INTEGER_CUSTODY_'+field)
+                  for n in x['probe_brier']:
+                      if not math.isclose(x['probe_brier'][n],y['probe_brier'][n],
+                                          rel_tol=0,abs_tol=1e-12):
+                          raise SystemExit('ST9_MODEL_SCORE_NOT_CROSS_OS_IDENTICAL_'+n)
+          x=a['cold_retention'];y=b['cold_retention']
+          if x['eight_same_rule_interference_receipts']!=y['eight_same_rule_interference_receipts']:
+              raise SystemExit('ST9_INTERFERENCE_TRUE_ACTION_SHA_DRIFT')
+          for phase in ('before','after'):
+              for key in ('original_source_sha256','native_integer_state_sha256'):
+                  if x[phase][key]!=y[phase][key]:
+                      raise SystemExit('ST9_COLD_RECALL_INTEGER_OR_SOURCE_SHA_'+key)
+              for n,v in x[phase]['pooled_brier'].items():
+                  if not math.isclose(v,y[phase]['pooled_brier'][n],
+                                      rel_tol=0,abs_tol=1e-12):
+                      raise SystemExit('ST9_COLD_RECALL_BRIER_DIFF_'+n)
+          k='end_to_end_source_actor_training_evaluation_ratio_le_1_5'
+          ca=a['metrics']['checks'];cb=b['metrics']['checks']
+          if set(ca)!=set(cb) or any(ca[name]!=cb[name] for name in ca if name!=k):
+              raise SystemExit('ST9_FROZEN_NONCOST_DEVELOPMENT_PREDICATE_DRIFT')
+          valid=all(ca.values()) and all(cb.values())
+          print('ST9_ORIGINAL_SOURCE_TRUE_ACTIONS_CROSS_OS=PASS')
+          print('ST9_IDENTICAL_TRAINED_CHECKPOINT_SHA256='+a['one_trained_checkpoint_sha256'])
+          print('ST9_COLD_NATIVE_INTEGER_STATE_CROSS_OS=PASS')
+          print('ST9_GENUINE_PREACTION_BRIER_CROSS_OS=PASS')
+          print('ST9_LINUX_TOTAL_COST_RATIO='+str(a['metrics']['charged_source_actor_train_eval_wall_ratio']))
+          print('ST9_WINDOWS_TOTAL_COST_RATIO='+str(b['metrics']['charged_source_actor_train_eval_wall_ratio']))
+          print('ST9_COST_CRITERION_LINUX='+str(ca[k]))
+          print('ST9_COST_CRITERION_WINDOWS='+str(cb[k]))
+          print('ST9_FROZEN_DEV_DISPOSITION='+(
+              'BUDGETED_MEMORY_REPAIR_DEV_SIGNAL_NOT_SCIENTIFIC_PASS'
+              if valid else 'DEV_NO_GO'
+          ))
+          print('ST9_INDEPENDENT_SCIENTIFIC_FIRST_USE=NOT_RUN')
+          PY
+# ST9 one bounded original in-house DEV comparison, no protected first-use or retuning.\n
