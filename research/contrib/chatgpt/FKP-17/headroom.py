@@ -291,6 +291,7 @@ def study(upstream:Path)->dict:
         "no_conventional_model_training":True,
         "protected_owner_private_source_unopened":True,
         "runtime_seconds":round(time.perf_counter()-began,5),
+        "original_public_source_per_plan_ledger":{"fit":fit,"audit":audit},
         **outcome
     }
 
