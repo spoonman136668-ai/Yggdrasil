@@ -1,0 +1,153 @@
+name: FKP07 frozen knowledge-transfer original DEV and exact-source cross-OS
+on:
+  push:
+    branches: [ci/fkp07-g29-one-shot-20261115]
+    paths: [.github/workflows/fkp07-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: fkp07-qualify-once-20261115
+  cancel-in-progress: false
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-07): one-shot frozen DEV and full qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      exact_head: ${{ steps.seal.outputs.exact_head }}
+    env:
+      SOURCE: 2b27a6d7b745bc0d21204c9a446412c89df58b8e
+      SOURCE_TREE: d2166f8724a9d520d0d04e7e3e7a2890667ac336
+      TARGET: research/fkp07-earned-relationship-prior-20261115
+    steps:
+      - name: Byte-stable git checkout setup
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 2b27a6d7b745bc0d21204c9a446412c89df58b8e
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Require full custody, original source blobs, no ref drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 2631cfba1ea61a94b1888df6987d8f63f5846214 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-07/prereg.json)" = d18d3dd3b3a718772ee511c3cb11606c70024df2
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-07/source.py)" = 25bfbde42eb6d29c2ef7044aaf08e5e5ab6c3800
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-07/model.py)" = c2b56024bed25dfcf5a822a071b07a85886e2d6a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-07/run_dev.py)" = d9dc95398848d8dd5c87be016e0939a2fc86c625
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-07/test_fkp07.py)" = 3d80d2b3cd43ff1143f3e512bb0dd4be850afbe8
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-06/fkp06.py)" = 1ba1084b092e2aa2ff430739a883f546c25eccdb
+          echo "FKP07_FROZEN_SOURCE_CUSTODY=PASS"
+      - name: Regenerate ONLY G29 generated atlas
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Seal generated-only research branch candidate
+        id: seal
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-07): regenerate source atlas for frozen candidate"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_head=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP07_INDEXED_RESEARCH_HEAD=$NEW"
+  full-dev-engineering:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Byte-stable source, prevent Windows CRLF
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: G29 regenerated-only source atlas and focused tests
+        shell: bash
+        run: |
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: FKP07 focused boundary tests
+        shell: bash
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-07 -p test_fkp07.py -v
+      - name: Frozen FKP07 original public DEV, not scientific first-use
+        shell: bash
+        run: |
+          python -B research/contrib/chatgpt/FKP-07/run_dev.py > "$RUNNER_TEMP/fkp07-dev.json"
+          python - "$RUNNER_TEMP/fkp07-dev.json" <<'PY'
+          import hashlib,json,sys
+          raw=open(sys.argv[1], 'rb').read()
+          x=json.loads(raw)
+          assert x['schema']=='fkp07.dev-results.v1'
+          assert not x['scientific_pass'] and not x['native_model_changed'] and not x['protected_sources_opened']
+          assert x['foundation_worlds']==512 and x['original_historical_observations']==32768
+          assert x['novel_worlds']==24 and x['held_per_world']==256 and x['paid_actions_per_arm']==12
+          assert x['strong_equal_information_bayesian_tie'] is True
+          assert x['original_contexts']==x['old_version_contexts_retained']==24
+          assert x['revision_worlds']==8 and x['cold_restore_exact'] is True
+          assert x['outside_family_worlds']==8
+          assert all(len(v['query_indices']['learned_active'])==12 for v in x['dev_rows'])
+          print('FKP07_DEV_FROZEN_RESULT=' + json.dumps({
+             'decision':x['result'],'dev_gate':x['dev_mechanism_gate'],
+             'mean_accuracy':x['exact_accuracy'],'gain_flat':x['gain_vs_flat'],
+             'gain_random':x['gain_vs_random'],'CI_flat':x['ci95_vs_flat'],
+             'CI_random':x['ci95_vs_random'],
+             'negative_false_confident':x['outside_family_false_confident_fraction'],
+             'checkpoint_sha256':x['checkpoint_sha256'],
+             'whole_dev_wall_seconds':x['whole_dev_wall_seconds']},sort_keys=True))
+          print('FKP07_LOG_JSON_SHA256='+hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Mandatory inherited exact-SHA full repository regression
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP07_FULL_CROSS_OS_REGRESSION=PASS"
