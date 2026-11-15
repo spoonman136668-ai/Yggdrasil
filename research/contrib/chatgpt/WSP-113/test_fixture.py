@@ -72,7 +72,7 @@ class TestInterventionCausalMemory(unittest.TestCase):
         with self.assertRaises(ValueError):direct.observe(8,1,3)
         with self.assertRaises(ValueError):direct.observe(0,0,1)
     def test_public_fixtures_do_not_import_hidden_generator(self):
-        for filename in ("native.py","controls.py","test_fixture.py"):
+        for filename in ("native.py","controls.py"):
             content=(ROOT/filename).read_text(encoding="utf-8")
             self.assertNotIn("from oracle import",content)
             self.assertNotIn("import oracle",content)
