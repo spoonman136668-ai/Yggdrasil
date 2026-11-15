@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import random
 import struct
+import sys
 import subprocess
 
 # Mandatory before importing Pygame / memory_gym; no interactive display or audio.
@@ -120,6 +121,8 @@ def episode(task: str, seed: int) -> dict:
 
 def admission(root: Path) -> dict:
     custody = source_custody(root)
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(root))
     rows = [episode(task,seed) for task in TASKS for seed in SEEDS]
     if len(rows)!=8 or any(not MIN_STEPS <= r["actual_source_steps"]<=MAX_STEPS for r in rows):
         classification="SOURCE_NO_GO_EPISODE_TOO_SHORT"
