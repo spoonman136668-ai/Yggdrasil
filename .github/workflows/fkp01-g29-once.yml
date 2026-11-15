@@ -23,8 +23,8 @@ jobs:
     outputs:
       atlas_sha: ${{ steps.commit.outputs.atlas_sha }}
     env:
-      SOURCE_SHA: e9c5a3ca9824f2b9e365ec5491bb399c4c70ba02
-      SOURCE_TREE: 5c645307ce570891c51f45a5a5d998ab7d34d56b
+      SOURCE_SHA: 6c73cef0ef40741074f6a5775279105ac4790db6
+      SOURCE_TREE: 0835d89a56562adb45fa86e59c665e306daca1d5
       TARGET: research/fkp02-unseen-operator-headroom-20261115
     steps:
       - name: Set byte-stable checkout
@@ -33,7 +33,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: e9c5a3ca9824f2b9e365ec5491bb399c4c70ba02
+          ref: 6c73cef0ef40741074f6a5775279105ac4790db6
           persist-credentials: true
           fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -51,8 +51,10 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/source.py)" = b1ece8f6e2b628483dadfda092359b1443058b53
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/test_source.py)" = cbe84213c115b8af78057106944fb090ee8937a5
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/prereg.json)" = 8a651392a18d5485eb2aa08355f840f712db8cef
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/README.md)" = beefafb3a49a8795a42e562a1dd677ba7e31f763
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/README.md)" = acbf469593d7146a289c2929e26c641c8ef0106c
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/audit_headroom.py)" = 858803ffb0b95bb86875236ba11617b071808363
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/foundation.py)" = 8ea312309231d1e21484d6ad09eb2d64bc7295a7
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/test_foundation.py)" = e102d7a776c0c0666d5aaf54b90479fd831c2bed
           echo "FKP02_G29_FROZEN_SOURCE=PASS"
       - name: Run existing G29 builder (generated artifacts ONLY)
         shell: bash
@@ -123,13 +125,24 @@ jobs:
         run: |
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-02 -p test_source.py -v
           python -B research/contrib/chatgpt/FKP-02/source.py
-          python -B research/contrib/chatgpt/FKP-02/audit_headroom.py > "$RUNNER_TEMP/fkp02-dev-headroom.json"
-          python - "$RUNNER_TEMP/fkp02-dev-headroom.json" <<'PY'
+          # Same pinned source and audit blobs as first completed dual-OS run
+          # 43708154068; reuse its dev headroom results rather than retest.
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-02 -p test_foundation.py -v
+          python -B research/contrib/chatgpt/FKP-02/foundation.py > "$RUNNER_TEMP/fkp02-foundation.json"
+          python - "$RUNNER_TEMP/fkp02-foundation.json" <<'PY'
           import json,sys
-          a=json.load(open(sys.argv[1],encoding='utf-8'))
-          assert a['schema']=='fkp02.source-dev-identifiability.v1'
-          assert a['protected_primary_opened'] is False
-          print('FKP02_DEV_HEADROOM_SUMMARY='+json.dumps({k:a[k] for k in ('strong_reference_16_vector_accuracy','strong_reference_64_vector_accuracy','accuracy_headroom_gap','worlds_with_ambiguous_16_action_laws','stage0_dev_headroom_pass')},sort_keys=True))
+          x=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert x['schema']=='fkp02.foundation-mechanism-dev.v1'
+          assert x['protected_worlds_opened'] is False
+          print('FKP02_FOUNDATION_DEV_SUMMARY='+json.dumps({
+            'worlds': x['foundation']['foundation_worlds'],
+            'actions': x['foundation']['source_actions_observed'],
+            'unique_effects': x['foundation']['unique_effects'],
+            'ambiguous_effects': x['foundation']['ambiguous_effects'],
+            'tables': x['foundation']['learned_table_counts'],
+            'function_counts': x['learned_generic_function_count_by_depth'],
+            'new_operator_construction': x['novel_operator_representations']
+          },sort_keys=True))
           PY
       - name: Complete inherited Yggdrasil regression
         shell: bash
