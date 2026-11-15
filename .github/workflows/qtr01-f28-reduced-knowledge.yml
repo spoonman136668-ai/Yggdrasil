@@ -1,0 +1,111 @@
+name: QTR-01 F28 reduced first-party factual associations
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  f28-source-free:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message != 'research(qtr): F28 one-shot reduced source custody'
+    name: F28 source-free semantic negatives (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Stable Windows source checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen independent QTR source policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8754fba54b077885d2d7132c26789ba5a60fa18f HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f28_prereg.json)" = "ed7fcc941a66b0223363b82adb328224ad092770"
+      - name: Source-free real-shaped association controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f28_*.py' -v
+      - name: Clean original checkout
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+
+  f28-one-shot:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F28 one-shot reduced source custody'
+    name: F28 real CC0 fact & 2hop source custody
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Enforce prereg, exact source and unchanged marker tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f28_prereg.json)" = "ed7fcc941a66b0223363b82adb328224ad092770"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f28_narrow_source.py)" = "4c0e96f46cb420c2d62a622c5f8df08e50f898a9"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f28_narrow_source.py)" = "12243e1b41bbcb0fe921c8b5669a4b9c5a0bc844"
+          test "$(git log -1 --format=%s)" = "research(qtr): F28 one-shot reduced source custody"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+      - name: Source-free negative controls on exact code
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f28_*.py' -v
+      - name: Bounded versioned source read; block rather than invent
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/QTR-01/f28_narrow_source.py --source-custody-only --output ../f28-cc0-source.json
+          python - <<'PY'
+          import hashlib,json,pathlib
+          data=pathlib.Path('../f28-cc0-source.json').read_bytes()
+          x=json.loads(data)
+          assert x["carrier_summary"]["admitted_semantic_edges"]>=2
+          assert x["carrier_summary"]["twohop_compositions_checked"]>0
+          assert x["carrier_summary"]["equal_info_symbolic_control_parity"]
+          assert x["carrier_summary"]["cold_restore_exact"]
+          assert x["scientific_pass"] is False
+          assert x["native_model_weights_edited"] is False
+          assert len(data) <= 393217
+          print("F28_FIRST_PARTY_SOURCE_HASH_ATTESTED="+hashlib.sha256(data).hexdigest())
+          PY
+      - name: No repository mutation
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Save limited source receipt in Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f28-revisioned-cc0-associations
+          path: ../f28-cc0-source.json
+          retention-days: 14
+          if-no-files-found: error
