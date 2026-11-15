@@ -92,7 +92,7 @@ class ExactIndex:
         self._edges = set()
 
     def _ordinals(self, triple):
-        if type(triple) is not tuple or len(triple) != 3 or any(type(x) is not int for x in triple):
+        if type(triple) is not tuple or len(triple) != 3 or any(type(x) is not int or not 0 < x < 2**32 for x in triple):
             raise NotAdmitted("F42_INVALID_NUMERIC_TRIPLE")
         s, p, o = triple
         if s not in self.qindex or o not in self.qindex or p not in self.pindex:
@@ -199,7 +199,6 @@ def measure():
         raise NotAdmitted("F42_INCREMENTAL_COLD_RESTORE_DRIFT")
 
     roots = tuple(qnum(x,"Q") for x in ROOTS)
-    pred = set(graph)
     actual_members = set(cold.decoded_triples())
     truth_members = set(graph)
     member_total = len(qids)*len(pids)*len(qids)
