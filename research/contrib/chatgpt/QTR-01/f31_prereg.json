@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.qtr01.f31.first-party-all-language-fact-custody.v1",
+  "state": "PREREGISTERED_BEFORE_NEW_EXECUTABLE_AND_SOURCE",
+  "parent_sha": "5e97fe9098542db7d9522cbadb12e03c7bc190b7",
+  "question": "Can native source-language Q-P-Q associations be qualified without selecting a locale based on observed source contents, by using any valid exact first-party language tag as a deterministic, unaltered text witness?",
+  "prior_failures": [
+    "F26 wbgetentities maxlag",
+    "F27 14-seed endpoint budget exceeded",
+    "F28 Q42 en absent",
+    "F29 Q42 75 locale keys but none of F29 logged their names",
+    "F30 8-locale fallback still no usable source seed label"
+  ],
+  "first_party_wikidata_source": "https://www.wikidata.org/wiki/Special:EntityData/{id}.json",
+  "license": "Wikidata original structured item/property data, CC0. No Wikipedia article text.",
+  "seed_qids": [
+    "Q42",
+    "Q5"
+  ],
+  "allowed_predicates": [
+    "P31",
+    "P279",
+    "P106",
+    "P19",
+    "P69",
+    "P27",
+    "P50",
+    "P463"
+  ],
+  "label_selection": "First exact valid source labels.en if safe; otherwise lexicographically smallest valid BCP-47-like lowercase language tag with a first-party label whose language field exactly equals the key and whose string passes safe_label. Preserve original label and exact source language. Never synthesize or translate.",
+  "language_tag_regex": "^[a-z]{2,8}(?:-[a-z0-9]{2,8})*$",
+  "endpoint_selection": "F30 source-only deterministic Q42 P31 Q5 then Q5 P279 candidate objects, then all other observed allowed QID targets in increasing numeric QID; 24 maximum.",
+  "statements_max": 160,
+  "endpoints_max": 24,
+  "per_http_max_bytes": 4194304,
+  "total_http_max_bytes": 16777216,
+  "output_receipt_max_bytes": 393216,
+  "read_timeout_seconds": 15,
+  "network_retries": 0,
+  "revision_custody": "Original two seed entities have exact revision-addressed second read and identical source entity SHA256; object and property labels have one first-party read and raw-response SHA256, entity ID and revision receipt.",
+  "eligibility": "At least one unqualified nondeprecated first-party witnessed item Q-P-Q triple with safe first-party labels and exact language tags. Full source snapshot separately sealed in GitHub Actions artifact; no user-library output.",
+  "metric": "Count independent admitted typed relations and real composable 2-hop queries; source-free canonical numeric 12-byte/triple store equal to exact same-information symbolic set and stable cold restore, not proof of neural learning.",
+  "negatives": "Wrong subject statement, qualifiers, deprecated rank, missing language, mismatched language key, source revision change, tampered source ID and malformed numeric snapshot must be excluded or fail closed.",
+  "stop": "One bounded original-source attempt only. If blocked or zero admitted associations, retain FAIL/BLOCKED without changing this cohort or limits; abandon live Wikidata source for a separate verified immutable CC0 archive route.",
+  "scientific_claim": "Not SCIENTIFIC_PASS, AGI, causal learning, unfamiliar transfer, trained native weight improvement or donor activation semantics.",
+  "scope_fences": {
+    "no_paid_api": true,
+    "no_trained_model_output": true,
+    "no_hidden_qwen_activation_training": true,
+    "no_native_recipient_model_weights": true,
+    "no_protected_first_use": true,
+    "no_owner_acceptance": true,
+    "no_merge": true,
+    "no_autonomous_research_controller": true,
+    "no_scheduled_task": true
+  }
+}
