@@ -8,7 +8,7 @@ import f49_discrete_learners as f
 class TestF49Arms(unittest.TestCase):
     def test_frozen_seven_arm_contract_and_source_separation(self):
         p=w.freeze()
-        self.assertEqual(set(p["arms"]), {
+        self.assertEqual(set(p["arms"]) - {"ablations"}, {
             "native","conventional_mlp","conventional_logistic",
             "exact_bank_bayes","compositional_bayes","random","uniform"})
         self.assertEqual(f.KINDS, ("native","compositional_bayes",

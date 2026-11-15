@@ -226,7 +226,8 @@ class PublicArm:
 
     def __init__(self, kind, bank_size, dev_seed):
         world.freeze()
-        if kind not in KINDS or type(dev_seed) is not int or dev_seed not in world.SEEDS:
+        if (kind not in KINDS or type(dev_seed) is not int or dev_seed not in world.SEEDS
+            or type(bank_size) is not int or bank_size not in world.BANK_SIZES):
             raise ControlRejected("F49_UNREGISTERED_ARM_OR_SEED")
         self.kind = kind
         self.bank_size, self.seed = bank_size, dev_seed
