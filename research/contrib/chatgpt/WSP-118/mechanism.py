@@ -96,9 +96,11 @@ def new_public_world(seed: int) -> World:
 def visible_walk(graph,source:int,law:tuple[int,...]):
     if type(source) is not int or not 0 <= source < ENTITIES:
         raise ValueError("WSP118_INVALID_PUBLIC_SUBJECT")
+    if type(law) is not tuple or not law or any(
+        type(rel) is not int or not 0<=rel<PREDICATES for rel in law
+    ):
+        raise ValueError("WSP118_INVALID_PUBLIC_OPERATOR")
     for rel in law:
-        if type(rel) is not int or not 0<=rel<PREDICATES:
-            raise ValueError("WSP118_INVALID_PUBLIC_OPERATOR")
         if source not in graph[rel]:
             return None
         source=graph[rel][source]
