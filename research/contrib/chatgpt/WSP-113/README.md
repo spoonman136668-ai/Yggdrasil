@@ -40,3 +40,7 @@ The branch-scoped GitHub CI source-pin job is armed only by this exact commit me
 ## Original DEV first-use fence
 
 After the one-shot generated G29 commit, CI must pass the **entire** inherited and root regression on Linux and Windows and a separate two-platform independent G29 atlas job at the exact candidate HEAD. Only then, and only on the original non-rerun attempt, does the single new original synthetic 128-world transfer evaluation run. The original WSP112 heldout cohort is never accessed. This experiment never merges, deploys or declares SCIENTIFIC_PASS on its own.
+
+## Final pre-first-use qualification source
+
+The original G29 acceptance job itself passed all code-atlas tests but its strict clean-source guard failed on generated test bytecode. The repaired isolated G29 job disables Python bytecode generation while preserving all source and science constraints; the frozen scoring now reports per-node precision/recall and graph-edge precision/recall before original first-use. The stale prior candidate and its incomplete qualification are not eligible for original transfer. This new source pin must be accompanied by full exact-tree Linux and Windows regression and independent atlas acceptance.
