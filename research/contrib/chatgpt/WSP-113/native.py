@@ -122,7 +122,8 @@ class DirectCausalWriter:
             for j in range(1,4):
                 if j==a//2:continue
                 row=sum(((nxt>>i)&1)<<i for i in range(j))
-                _,new_rank=_solve(self.equations[j]+[(row,0)],j)
+                rhs=((nxt>>j)&1)^((s>>j)&1)
+                _,new_rank=_solve(self.equations[j]+[(row,rhs)],j)
                 if new_rank>self.ranks[j]:score+=new_rank-self.ranks[j]
             return score
         # Deterministic tie break chooses smallest state/action.
