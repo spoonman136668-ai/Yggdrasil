@@ -10,7 +10,6 @@ Source-safe smoke mode is explicitly nonqualifying and never scientific proof.
 from __future__ import annotations
 
 from hashlib import sha256
-import copy
 import json
 import math
 import struct
@@ -265,9 +264,27 @@ class FullyTrainedRecurrent:
 
 
 def source_safe_dev_smoke(public_examples, validation_examples):
-    """2-pass/1-seed engineering smoke; explicitly cannot satisfy prereg."""
+    """One-epoch, one-seed engineering smoke; explicitly cannot satisfy prereg."""
     examples, digest = _public_training(public_examples)
     val, _ = _public_training(validation_examples)
     return FullyTrainedRecurrent()._fit(examples, val, digest,
                                         seeds=(1515,), epochs=1,
                                         scientific_qualification_candidate=False)
+
+def assert_science_ready(control, expected_public_sha256):
+    """Refuse scoring or admission if a truncated smoke masquerades as training."""
+    if type(control) is not FullyTrainedRecurrent:
+        raise ValueError("FKP17_RECURRENT_INVALID_ARM")
+    receipt = control.training_receipt
+    if not isinstance(receipt, dict) or receipt.get("status") != "FULL_TRAINED":
+        raise ValueError("FKP17_RECURRENT_NOT_FULLY_TRAINED")
+    done = receipt.get("seeds_trained")
+    if not isinstance(done, list) or [(x["seed"], x["complete_epochs"]) for x in done] != [
+            (1515, 24), (2626, 24)]:
+        raise ValueError("FKP17_RECURRENT_SEED_EPOCH_CUSTODY")
+    if receipt["foundation_public_rows"] != FOUNDATION_RECORDS or (
+            receipt["source_public_sha256"] != expected_public_sha256):
+        raise ValueError("FKP17_RECURRENT_SOURCE_CUSTODY")
+    if receipt["parameters"] <= 0 or receipt["learned_bytes"] > MAX_MEMORY:
+        raise ValueError("FKP17_RECURRENT_CAPACITY_CUSTODY")
+    return True
