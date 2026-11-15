@@ -1,0 +1,44 @@
+{
+  "schema": "yggdrasil.fkp15.invalid-firstuse-harness.v1",
+  "experiment_id": "FKP-15-B",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prereg_first_sha": "0f8f70520e79563f9954360b13fe1ba4667d9d0d",
+  "qualified_original_source_child_sha": "f708eab77c96e04f72a83af9aaa13bf7b9cd98d2",
+  "frozen_source_upstream_git": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+  "original_workflow_run": 43748361743,
+  "run_conclusion": "failure",
+  "engineering_before_original": {
+    "ubuntu": "G29+6 focused+full inherited regression PASS",
+    "windows": "G29+6 focused+full inherited regression PASS"
+  },
+  "original_interaction_custody": {
+    "train_seed_range": "975100..975163 original TRAIN previously opened by failed run 43747700975 and re-read",
+    "validation_seed_range": "975200..975215 original VAL previously opened by failed run 43747700975 and re-read",
+    "dev_seed_range": "975500..975531 FKP15-B declared original public development cohort; NOT fully opened",
+    "observed_partial_dev": "Only seed975500 anchor0 public env.reset and initial observation before chosen_actions(); no branch env.step, held return labels or nine-action outcome evaluator opened",
+    "full_dev_claim_allowed": false,
+    "protected_source_opened": false,
+    "transfer_source_opened": false,
+    "other_track_collision": "FKP15-A independent draft from alternate branch overlapping TRAIN975100..147,VAL975200..215,DEV975500..523; its last run failed before source collection; never combine independent-first-use status"
+  },
+  "failure": {
+    "stage": "run_dev.dev_once()->chosen_actions()->baselines.prediction()->batch_data",
+    "exception": "KeyError: 'returns'",
+    "cause": "The fully trained GRU inference helper erroneously required a 9-future-return target even when predicting from an unlabeled public DEV prefix. Source-safe mocks had inadvertently supplied the future-return key.",
+    "source_data_or_learning_result": "NO HELD RESULT GENERATED",
+    "classification": "INVALID_PRIMARY_HARNESS_NO_SCIENTIFIC_RESULT",
+    "replay_same_dev_as_virgin_prohibited": true
+  },
+  "frozen_scientific_result": {
+    "strong_control_comparison": "NOT RUN",
+    "direct_gain": "UNVERIFIED",
+    "scientific_pass": false,
+    "native_integration": false
+  },
+  "next": "Use a distinct FKP16 prereg with completely fresh 976500..976531 DEV worlds, reuse old 975100..163 TRAIN and 975200..215 VAL ONLY as explicitly already-consumed training material. Correct inference to accept only public features, test fully mocked end-to-end run through all postprocessing, dual OS exact-SHA root regression, then new original first-use only. No post-result tuning of FKP15 DEV.",
+  "authority": {
+    "research_only": true,
+    "no_accepted_ref_change": true,
+    "no_scheduler_runner_controller_change": true
+  }
+}
