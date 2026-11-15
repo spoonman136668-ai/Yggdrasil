@@ -9,6 +9,7 @@ import hashlib
 import itertools
 import json
 import math
+from functools import lru_cache
 
 INPUTS=tuple(itertools.product((0,1),repeat=8))
 GOALS=tuple(itertools.product((0,1),repeat=4))
@@ -55,6 +56,7 @@ def _number(law,field,span):
     return int.from_bytes(digest[:8],"big")%span
 
 
+@lru_cache(maxsize=16)
 def parameters(law):
     """PRIVILEGED deterministic causal law signature; never given to a learner."""
     law_name(law)
