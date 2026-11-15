@@ -192,6 +192,26 @@ class NativeInterventionCredit8:
                            self.variant, self.clock)
         self.preamble = []
 
+    def _retrieve_without_learning(self):
+        """Select an old hypothesis from public consequences; never fit it."""
+        if len(self.preamble) < WARMUP:
+            return
+        choices = []
+        for index, profile in enumerate(self.profiles):
+            if profile is None or profile["observations"] < 16:
+                continue
+            choices.append((match_cost(profile, self.preamble, self.variant),
+                            index))
+        best = min(choices) if choices else None
+        if best is not None and best[0] < WARMUP * CELLS * 64:
+            self.active = best[1]
+            self.retrievals += 1
+            self.preamble = []
+        else:
+            # A sliding observation-only inference window; no new profile,
+            # count, learned coefficient or source-private identity is written.
+            self.preamble = self.preamble[1:]
+
     def predict(self, public_bits, action):
         check_bits(public_bits)
         check_action(action)
@@ -245,6 +265,11 @@ class NativeInterventionCredit8:
                         self.variant,self.clock
                     )
             self.updates += 1
+        elif self.active is None:
+            self.preamble.append((
+                list(public_bits), action, self.prior_action, list(targets)
+            ))
+            self._retrieve_without_learning()
         self.prior_action = action
         self.episode_steps += 1
         return pred
