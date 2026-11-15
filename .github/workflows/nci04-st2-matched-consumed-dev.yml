@@ -1,0 +1,219 @@
+name: NCI04 ST2 frozen original consumed matched development
+on:
+  push:
+    branches:
+      - research/nci04-st2-event-grounded-entities-20261114
+permissions:
+  contents: read
+jobs:
+  train_once:
+    if: "github.event.head_commit.message == 'science(st2): run frozen matched consumed DEV comparison'"
+    name: ST2 Linux one-time original S1/conventional training
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Source-pinned code checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independent original Farama MiniGrid
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pinned original-source CPU dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1
+      - name: Verify independently authored source, Git hashes and license discrepancy
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Train once using only original previously consumed training development seeds
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_matched_controls.py' -v
+          python -B -m research.nci04_st2.consumed_matched_comparison train ../external/minigrid --output ../st2-training-checkpoint.json
+          test -s ../st2-training-checkpoint.json
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          from research.nci04_st2.consumed_matched_comparison import read_training_checkpoint
+          chk,sha=read_training_checkpoint(Path('../st2-training-checkpoint.json'))
+          assert len(chk['source_episode_receipts'])==16
+          print('ST2_SINGLE_TRAINED_BLOB_SHA256='+sha)
+          print('ST2_SINGLE_TRAINED_BLOB_VERIFIED=PASS')
+          PY
+      - name: No mutated repo or original upstream
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+      - name: Persist single unchanged training blob for both operating systems
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st2-single-original-consumed-training
+          path: st2-training-checkpoint.json
+          if-no-files-found: error
+          retention-days: 7
+  compare:
+    if: "github.event.head_commit.message == 'science(st2): run frozen matched consumed DEV comparison'"
+    name: ST2 original matched consumed DEV (${{ matrix.os }})
+    needs: train_once
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 55
+    steps:
+      - name: Byte-stable Git checkout on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pinned original-source CPU dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1
+      - name: Retrieve SAME source-trained artifact, never retrain on Windows
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st2-single-original-consumed-training
+          path: trained
+      - name: Authentic original source and code boundaries
+        shell: bash
+        run: |
+          python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+          git -C yggdrasil merge-base --is-ancestor 8ce9e435dd2e4e67a8a32b44b6124d2d0abf3e51 HEAD
+          test "$(git -C yggdrasil rev-parse HEAD:research/nci04_st2/frozen_protocol.json)" = e7417272ddb9ffb6af183b23ddd78512cde93399
+      - name: Exact frozen stage0 and matched consumed-only source development
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          set -euo pipefail
+          cd yggdrasil
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_stage0.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_event_memory.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_matched_controls.py' -v
+          python -B -m research.nci04_st2.consumed_matched_comparison compare ../external/minigrid --checkpoint ../trained/st2-training-checkpoint.json --output ../st2-matched-dev.json | tee ../st2-matched-dev.log
+          grep -Eq '^ST2_MATCHED_DEV_DISPOSITION=(NO_GO|DEV_SIGNAL_NOT_SCIENCE_NEEDS_CROSS_OS|SOURCE_ENTITY_IDENTIFIABILITY_NO_GO)$' ../st2-matched-dev.log
+          test -s ../st2-matched-dev.json
+      - name: Clean original source and code
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st2-authentic-matched-consumed-${{ matrix.os }}
+          path: st2-matched-dev.json
+          if-no-files-found: error
+          retention-days: 7
+  parity:
+    if: "github.event.head_commit.message == 'science(st2): run frozen matched consumed DEV comparison'"
+    name: ST2 frozen source/cold checkpoint parity and DEV disposition
+    needs: compare
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st2-authentic-matched-consumed-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st2-authentic-matched-consumed-windows-2022
+          path: windows
+      - name: Require identical original action-outcome source before evaluating scientific candidate parity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path('linux/st2-matched-dev.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st2-matched-dev.json').read_text('utf-8'))
+          for field in ('schema','frozen_protocol_git_blob',
+                        'original_source_sha','single_linux_training_checkpoint_sha256',
+                        'training_source_receipts','stage0',
+                        'protected_scientific_first_use'):
+              if a[field]!=b[field]:
+                  raise SystemExit('ST2_MATCHED_ORIGINAL_SOURCE_OR_CHECKPOINT_DRIFT_'+field)
+          if a['stage0']['eligible'] is not True:
+              print('ST2_MATCHED_DEV_DISPOSITION=SOURCE_ENTITY_IDENTIFIABILITY_NO_GO')
+              raise SystemExit(0)
+          states_equal=True
+          loss_equal=True
+          for family in a['families']:
+              left=a['families'][family]; right=b['families'][family]
+              for x,y in zip(left['original_source_receipts'],right['original_source_receipts']):
+                  for key in ('family','seed','phase','original_steps','source_trace_sha256',
+                              'cold_restore_checks','candidate_count_update_actions'):
+                      if x[key]!=y[key]:
+                          raise SystemExit('ST2_AUTHENTIC_SOURCE_OR_COUNTER_DRIFT_'+key)
+                  if x['candidate_state_sha_chain']!=y['candidate_state_sha_chain']:
+                      states_equal=False
+                  if x['preaction_brier'] is not None:
+                      for key in x['preaction_brier']:
+                          if not math.isclose(x['preaction_brier'][key],
+                              y['preaction_brier'][key],rel_tol=0,abs_tol=1e-12):
+                              loss_equal=False
+              for key in left['held_preaction_brier_lower_better']:
+                  if not math.isclose(left['held_preaction_brier_lower_better'][key],
+                       right['held_preaction_brier_lower_better'][key],rel_tol=0,abs_tol=1e-12):
+                      loss_equal=False
+          if a['within_os_frozen_criteria_pass']!=b['within_os_frozen_criteria_pass']:
+              raise SystemExit('ST2_MISMATCHED_FROZEN_RESULT_LOGIC')
+          print('ST2_ORIGINAL_SOURCE_AND_SINGLE_TRAIN_BLOB_PARITY=PASS')
+          print('ST2_NATIVE_COLD_CHECKPOINT_EXACT_CROSS_OS='+
+                ('PASS' if states_equal else 'FAIL_NONPORTABLE'))
+          print('ST2_BRIER_CROSS_OS_TOLERANCE='+
+                ('PASS' if loss_equal else 'FAIL'))
+          ok=states_equal and loss_equal and a['within_os_frozen_criteria_pass']
+          print('ST2_MATCHED_DEV_DISPOSITION='+
+                ('DEV_SIGNAL_NOT_SCIENCE' if ok else 'NO_GO'))
+          print('ST2_RESERVED_SCIENCE_FIRST_USE=NOT_RUN')
+          print('ST2_G29_FULL_FINAL=UNVERIFIED')
+          PY
