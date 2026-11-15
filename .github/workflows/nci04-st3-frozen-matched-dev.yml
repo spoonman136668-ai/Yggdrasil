@@ -1,0 +1,210 @@
+name: NCI04 ST3 frozen matched in-house causal development
+on:
+  push:
+    branches:
+      - research/nci04-st3-intervention-causal-law-20261114
+permissions:
+  contents: read
+jobs:
+  train_once:
+    if: "github.event.head_commit.message == 'science(st3): run frozen matched DEV comparison'"
+    name: ST3 exact one-time in-house training on Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Exact isolated source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned process-accounting package
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Verify preregistration, no protected first-use and already-qualified source-only headroom
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 63133626dbd914c2d525dbd7358c87fdcfcabdc7 HEAD
+          git merge-base --is-ancestor def4e3a9d803c80631c00b7e138a5c54cda349e9 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st3/frozen_protocol.json)" = ce51862f6b5af6a130b6ad93c30f019131bfeb16
+          python -B - <<'PY'
+          from research.nci04_st3.source_audit import verify_prereg
+          p=verify_prereg()
+          assert p['bounds']['scientific_first_use'] is False
+          print('ST3_TRAIN_FROZEN_PROTOCOL=PASS')
+          PY
+      - name: Train all six models only on original predeclared training-law source
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st3.dev_compare import (
+              build_train_once, load_checkpoint
+          )
+          out=Path(os.environ['RUNNER_TEMP'])/'st3-trained.json'
+          receipt=build_train_once(out)
+          confirmed,sha=load_checkpoint(out)
+          assert confirmed==receipt
+          print('ST3_TRAIN_SINGLE_BLOB_SHA256='+sha)
+          print('ST3_TRAIN_SOURCE_CUSTODY=PASS')
+          PY
+      - name: Preserve clean repo and single common checkpoint
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Upload exact source-trained checkpoint for BOTH operating systems
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st3-single-preheld-training-checkpoint
+          path: ${{ runner.temp }}/st3-trained.json
+          if-no-files-found: error
+          retention-days: 7
+  held_development:
+    if: "github.event.head_commit.message == 'science(st3): run frozen matched DEV comparison'"
+    needs: train_once
+    name: ST3 matched preaction development only (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Byte stable Windows checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned process accounting
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Download SAME exact once-trained model, no independent retraining
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-single-preheld-training-checkpoint
+          path: ${{ runner.temp }}
+      - name: Source-only gate then frozen real held-development preaction outcomes
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st3.dev_compare import compare,load_checkpoint
+          temp=Path(os.environ['RUNNER_TEMP'])
+          c,sha=load_checkpoint(temp/'st3-trained.json')
+          print('ST3_EXACT_SHARED_TRAIN_BLOB='+sha)
+          doc=compare(temp/'st3-trained.json',temp/'st3-held-dev.json')
+          assert doc['protected_scientific_first_use'] is False
+          assert doc['scientific_pass'] is False
+          assert doc['metrics']['preaction_eval_source_steps']==2048
+          print('ST3_HELD_DEV_RECORDED=PASS')
+          PY
+      - name: Read-only clean source / no owner or main edits
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Preserve frozen authentic in-house held-development result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st3-frozen-matched-inhouse-${{ matrix.os }}
+          path: ${{ runner.temp }}/st3-held-dev.json
+          if-no-files-found: error
+          retention-days: 14
+  parity:
+    if: "github.event.head_commit.message == 'science(st3): run frozen matched DEV comparison'"
+    needs: held_development
+    name: ST3 exact integer memory & source parity, frozen NO-GO classification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-frozen-matched-inhouse-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-frozen-matched-inhouse-windows-2022
+          path: windows
+      - name: Require identical source/actions and check integer cold-state separately from predictive scores
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          a=json.loads(Path('linux/st3-held-dev.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st3-held-dev.json').read_text('utf-8'))
+          for k in ('schema','original_source_kind','frozen_protocol_blob',
+                    'training_checkpoint_sha256','training_source_trace_sha256',
+                    'source_stage0','held_development_opened',
+                    'protected_scientific_first_use','scientific_pass',
+                    'original_frozen_hypothesis_changed_after_observation'):
+              if a[k]!=b[k]:
+                  raise SystemExit('ST3_SOURCE_OR_TRAIN_CUSTODY_PARITY_FAIL_'+k)
+          if len(a['held_source_receipts'])!=32 or len(b['held_source_receipts'])!=32:
+              raise SystemExit('ST3_HELD_COVERAGE_UNQUALIFIED')
+          source_equal=True
+          state_equal=True
+          score_equal=True
+          for x,y in zip(a['held_source_receipts'],b['held_source_receipts']):
+              for key in ('law_id_evaluator_only','seed_evaluator_only',
+                          'actual_source_steps','source_action_outcome_sha256',
+                          'delayed_action2_followed_by_action3_steps',
+                          'cold_model_restarts','learner_received_private_law_or_mask'):
+                  if x[key]!=y[key]:
+                      source_equal=False
+              if x['candidate_per_action_state_sha_chain']!=y['candidate_per_action_state_sha_chain']:
+                  state_equal=False
+              for name in x['preaction_brier']:
+                  if not math.isclose(x['preaction_brier'][name],
+                                      y['preaction_brier'][name],
+                                      rel_tol=0,abs_tol=1e-12):
+                      score_equal=False
+          if not source_equal:
+              raise SystemExit('ST3_ORIGINAL_CAUSAL_SOURCE_ACTION_DRIFT')
+          for key in ('pooled_brier','held_law_brier',
+                      'delayed_after_action2_to_action3_brier'):
+              def walk(v,w):
+                  if isinstance(v,dict):
+                      if set(v)!=set(w):return False
+                      return all(walk(v[k],w[k]) for k in v)
+                  return math.isclose(v,w,rel_tol=0,abs_tol=1e-12)
+              if not walk(a['metrics'][key],b['metrics'][key]):
+                  score_equal=False
+          same_checks=a['metrics']['checks']==b['metrics']['checks']
+          if not same_checks:
+              raise SystemExit('ST3_FROZEN_SCIENCE_CLASSIFIER_DIVERGED')
+          print('ST3_ORIGINAL_SOURCE_CROSS_OS=PASS')
+          print('ST3_COMMON_TRAIN_CHECKPOINT_SHA256='+a['training_checkpoint_sha256'])
+          print('ST3_INTEGER_NATIVE_STATES_CROSS_OS='+('PASS' if state_equal else 'FAIL_NONPORTABLE'))
+          print('ST3_HELD_PREDICTION_PARITY='+('PASS' if score_equal else 'FAIL'))
+          print('ST3_FROZEN_DEV_DISPOSITION='+(
+              'DEV_NO_GO' if not (state_equal and score_equal and
+                                  all(a['metrics']['checks'].values()))
+              else 'DEV_SIGNAL_NOT_SCIENTIFIC_PASS'))
+          print('ST3_PROTECTED_SOURCE_FIRST_USE=NOT_RUN')
+          print('ST3_INDEPENDENT_GENERALIZATION=UNVERIFIED')
+          PY
