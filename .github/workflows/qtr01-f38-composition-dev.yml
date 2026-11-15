@@ -1,0 +1,57 @@
+name: QTR-01 F38 fixed direct-bitweight sourced two-hop composition DEV
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  f38-focused:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    name: F38 exact source composition and negative controls (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Stabilize Windows source tree
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source SHA and immutable frozen prereg identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 5a41908fdb5f00eaae4b5e192def521958f67dcc HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f38_prereg.json)" = "bb86d3d7f8b8d9052eb7522f7ed7b616c3b0d66c"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = "453dad0363689cff785c26db5441555c6841f95d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = "3fc50ddf7453958c458db697eacf2e27d3d52f57"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f34_direct_bitweights.py)" = "2df50bedccc2fc674231f440891107ea5b96f6d9"
+          echo F38_EXACT_SOURCE_AND_FROZEN_MECHANISM=PASS
+      - name: Verify F38 source-free negative tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f38_*.py' -v
+      - name: Execute one exhaustive source-only association comparison
+        run: python -B research/contrib/chatgpt/QTR-01/f38_composition_dev.py
+      - name: Unchanged clean checkout
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F38_SOURCE_FREE_NO_RECIPIENT_EDIT=PASS
