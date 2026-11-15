@@ -37,11 +37,25 @@ def sigmoid(z):
     return 1.0/(1.0+math.exp(-z))
 
 
+BINS = 6  # Six PUBLIC context views; exact counter bytes match ST3.
+
 def new_bank():
     return {
-        "counts": [[[0,0] for _ in range(4)] for _ in range(8)],
+        "counts": [
+            [[[0,0] for _ in range(4)] for _ in range(8)]
+            for _ in range(BINS)
+        ],
         "observations":0,"last_used":0
     }
+
+
+def public_context(raw, prior_action):
+    check_bits(raw)
+    if prior_action is not None:
+        check_action(prior_action)
+    # Deterministic public-bit / public-prior-action context partition.
+    # The control has no rotation, delayed-credit, or hidden-law decoder.
+    return (raw[0]+2*raw[3]+4*int(prior_action==2))%BINS
 
 
 class ConventionalRecurrent45:
@@ -159,11 +173,12 @@ class ConventionalRecurrent45:
 
 
 class ActionCount8:
-    """Same source actions and outcomes, no learned intervention-time model.
+    """Nine bounded banks x six public contexts x eight cells x four actions.
 
-    Nine public-only learned-context slots are provided to avoid losing the
-    same storage *opportunity*. Its predictive content (8x4x2 count table)
-    is smaller than causal hypothesis cells; effective capacity is not equal.
+    EXACT candidate binary-counter byte budget (9*6*8*4*2 == 3456).
+    All bins are actual learned count memory, not inert capacity padding.
+    Additional observed current bits and prior announced action are shared.
+    A simple tabular contextual count lacks native causal intervention credit.
     """
     def __init__(self):
         self.banks=[None]*SLOTS
@@ -172,27 +187,33 @@ class ActionCount8:
         self.clock=0
         self.episode_steps=0
         self.updates=0
+        self.prior_action=None
 
     def reset_episode(self):
         self.active=None
         self.preamble=[]
         self.episode_steps=0
+        self.prior_action=None
 
-    def _predict_bank(self,bank,action):
+    def _predict_bank(self,bank,raw,action,prior):
+        context=public_context(raw,prior)
         return [
-            (1+bank["counts"][i][action][0])/
-            (2+sum(bank["counts"][i][action])) for i in range(8)
+            (1+bank["counts"][context][i][action][0])/
+            (2+sum(bank["counts"][context][i][action])) for i in range(8)
         ]
 
     def predict(self,raw,action):
         check_bits(raw);check_action(action)
         if self.active is None:
             return [0.5]*8
-        return self._predict_bank(self.banks[self.active],action)
+        return self._predict_bank(
+            self.banks[self.active],raw,action,self.prior_action
+        )
 
-    def _update_bank(self,bank,action,targets):
+    def _update_bank(self,bank,raw,action,prior,targets):
+        ctx=public_context(raw,prior)
         for i,y in enumerate(targets):
-            row=bank["counts"][i][action]
+            row=bank["counts"][ctx][i][action]
             if MAX_COUNT in row:
                 row[0]//=2;row[1]//=2
             row[0 if y else 1]+=1
@@ -207,8 +228,8 @@ class ActionCount8:
             if bank is None or bank["observations"]<16:
                 continue
             loss=0
-            for action,target in self.preamble:
-                p=self._predict_bank(bank,action)
+            for raw,action,prior,target in self.preamble:
+                p=self._predict_bank(bank,raw,action,prior)
                 loss+=sum(int(256*(p[j]-target[j])**2)
                           for j in range(8))
             candidates.append((loss,i))
@@ -225,8 +246,8 @@ class ActionCount8:
             self.banks[i]=new_bank()
         self.active=i
         bank=self.banks[i]
-        for action,target in self.preamble:
-            self._update_bank(bank,action,target)
+        for raw,action,prior,target in self.preamble:
+            self._update_bank(bank,raw,action,prior,target)
         self.preamble=[]
 
     def observe(self,raw,action,targets,nxt,*,learn=True):
@@ -237,11 +258,15 @@ class ActionCount8:
         if learn:
             self.clock+=1
             if self.active is None:
-                self.preamble.append((action,list(targets)))
+                self.preamble.append((
+                    list(raw),action,self.prior_action,list(targets)
+                ))
                 self._assign()
             else:
-                self._update_bank(self.banks[self.active],action,targets)
+                self._update_bank(self.banks[self.active],raw,action,
+                                  self.prior_action,targets)
             self.updates+=1
+        self.prior_action=action
         self.episode_steps+=1
         return pred
 
@@ -249,18 +274,19 @@ class ActionCount8:
         return canonical({
             "schema":SCHEMA_CNT,"banks":self.banks,"active":self.active,
             "preamble":self.preamble,"clock":self.clock,
-            "episode_steps":self.episode_steps,"updates":self.updates
+            "episode_steps":self.episode_steps,"updates":self.updates,
+            "prior_action":self.prior_action
         })
 
     @classmethod
     def restore(cls,blob):
-        if type(blob) is not str or len(blob)>150000:
+        if type(blob) is not str or len(blob)>250000:
             raise ValueError("ST3_COUNT_CHECKPOINT_SIZE")
         try:
             d=json.loads(blob)
             if (type(d) is not dict or
                 set(d)!={"schema","banks","active","preamble","clock",
-                          "episode_steps","updates"} or
+                          "episode_steps","updates","prior_action"} or
                 d["schema"]!=SCHEMA_CNT or
                 type(d["banks"]) is not list or len(d["banks"])!=SLOTS or
                 (d["active"] is not None and (
@@ -268,6 +294,9 @@ class ActionCount8:
                     d["active"] not in range(SLOTS))) or
                 type(d["preamble"]) is not list or
                 len(d["preamble"])>=WARMUP or
+                (d["prior_action"] is not None and (
+                    type(d["prior_action"]) is not int or
+                    d["prior_action"] not in range(4))) or
                 any(type(d[k]) is not int or d[k]<0 or d[k]>MAX_CLOCK
                     for k in ("clock","updates","episode_steps")) or
                 d["episode_steps"]>64):
@@ -278,12 +307,15 @@ class ActionCount8:
                 if (type(bank) is not dict or set(bank)!={
                     "counts","observations","last_used"
                 } or type(bank["counts"]) is not list or
-                    len(bank["counts"])!=8 or
-                    any(type(r) is not list or len(r)!=4 for r in bank["counts"]) or
+                    len(bank["counts"])!=BINS or
+                    any(type(mode) is not list or len(mode)!=8
+                        for mode in bank["counts"]) or
+                    any(type(r) is not list or len(r)!=4
+                        for mode in bank["counts"] for r in mode) or
                     any(type(p) is not list or len(p)!=2 or
                         any(type(v) is not int or
                             v not in range(MAX_COUNT+1) for v in p)
-                        for r in bank["counts"] for p in r) or
+                        for mode in bank["counts"] for r in mode for p in r) or
                     any(type(bank[k]) is not int or
                         not 0<=bank[k]<=d["clock"]
                         for k in ("observations","last_used"))):
@@ -291,11 +323,16 @@ class ActionCount8:
             if d["active"] is not None and d["banks"][d["active"]] is None:
                 raise ValueError("ST3_COUNT_MISSING_ACTIVE")
             for row in d["preamble"]:
-                if type(row) is not list or len(row)!=2:
+                if type(row) is not list or len(row)!=4:
                     raise ValueError("ST3_COUNT_BAD_PREAMBLE")
-                check_action(row[0]);check_bits(row[1])
+                check_bits(row[0]);check_action(row[1]);check_bits(row[3])
+                if row[2] is not None:
+                    check_action(row[2])
+            if d["active"] is not None and d["preamble"]:
+                raise ValueError("ST3_COUNT_ACTIVE_PREAMBLE_COLLISION")
             obj=cls()
-            for k in ("banks","active","preamble","clock","episode_steps","updates"):
+            for k in ("banks","active","preamble","clock","episode_steps",
+                      "updates","prior_action"):
                 setattr(obj,k,d[k])
             if obj.snapshot()!=blob:
                 raise ValueError("ST3_COUNT_NONCANONICAL_CHECKPOINT")
@@ -304,9 +341,12 @@ class ActionCount8:
             raise ValueError("ST3_COUNT_INVALID_CHECKPOINT") from e
 
     def accounting(self):
+        total=SLOTS*BINS*8*4*2
         return {
-            "nine_profile_uint8_evidence_bytes":SLOTS*8*4*2,
+            "nine_profile_uint8_evidence_bytes":total,
             "native_candidate_counter_bytes":SLOTS*3*8*8*2,
-            "allocated_information_capacity_equal":False,
+            "allocated_information_capacity_equal":
+                total==SLOTS*3*8*8*2,
+            "public_only_context_buckets":BINS,
             "checkpoint_json_bytes":len(self.snapshot().encode("utf-8")),
         }
