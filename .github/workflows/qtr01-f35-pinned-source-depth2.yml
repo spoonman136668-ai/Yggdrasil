@@ -1,0 +1,119 @@
+name: QTR-01 F35 pinned source witnessed depth-two association screening
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    name: F35 pinned source and independent composition controls (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Native Windows stable checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen F35 source and original CC0 custody before code
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e89403f04c6780ae716dd167f9ea83049fc969a2 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f35_prereg.json)" = "bd2c14eba2f0bb82ca0455ce11884c94797908d4"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = "453dad0363689cff785c26db5441555c6841f95d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          echo F35_FROZEN_SOURCE_PRE_REREAD=PASS
+      - name: Negative source and two-hop tests; no live reads
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f35_*.py' -v
+      - name: No tracked modification
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+
+  original-source:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F35 one-shot pinned originals depth2 source'
+    name: F35 pinned revision original source depth2 eligibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact original snapshot, source executable and empty one-shot
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f35_prereg.json)" = "bd2c14eba2f0bb82ca0455ce11884c94797908d4"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f35_pinned_depth2.py)" = "17228051b740f774080d0d2d11bf8fa88b00adb0"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f35_pinned_depth2.py)" = "d0aad40a8f3bb576e6892f79775a0c87930fad7f"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = "453dad0363689cff785c26db5441555c6841f95d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git log -1 --format=%s)" = "research(qtr): F35 one-shot pinned originals depth2 source"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+          echo F35_EXACT_SOURCE_CUSTODY=PASS
+      - name: Source-free negative qualification before first-party read
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f35_*.py' -v
+      - name: Exactly five original-revision first-party source reads and bounded endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="$RUNNER_TEMP/qtr01-f35-original-depth2-source.json"
+          test ! -e "$TARGET"
+          python -B research/contrib/chatgpt/QTR-01/f35_pinned_depth2.py --frozen-pinned-source-only --output "$TARGET"
+          TARGET="$TARGET" python - <<'PY'
+          import hashlib,json,os,pathlib
+          raw=pathlib.Path(os.environ["TARGET"]).read_bytes()
+          d=json.loads(raw)
+          proof=d["composition"]
+          assert d["source_subjects_fully_pinned"]
+          assert proof["new_witnessed_triples"]>=1
+          assert proof["real_twohop_queries"]>=1
+          assert proof["matched_exact_source_symbolic_parity"]
+          assert proof["canonical_numeric_cold_restore"]
+          assert d["scientific_pass"] is False
+          assert d["no_native_model_edits"] is True
+          assert len(raw)<=393217
+          print("F35_FROZEN_CC0_SOURCE_RECEIPT_VERIFIED="+hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Verify checkout stayed unchanged
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Retain exact bounded first-party evidence in Actions only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f35-original-revision-depth2-source
+          path: ${{ runner.temp }}/qtr01-f35-original-depth2-source.json
+          retention-days: 14
+          if-no-files-found: error
