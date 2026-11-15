@@ -11,15 +11,15 @@ concurrency:
 jobs:
   atlas-only:
     if: >-
-      github.event.head_commit.message == 'ci(FKP-12): one-shot source-locked native causal learning qualification' &&
+      github.event.head_commit.message == 'ci(FKP-12): exact fixture correction and source-locked training qualification' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     outputs:
       candidate: ${{ steps.seal.outputs.candidate }}
     env:
-      SOURCE: 675c4b02288a9f91e8438ff2b8a00eb3f25e1f8d
-      SOURCE_TREE: e40202244336e2a185c4e4138594de00b4d4f58b
+      SOURCE: 9273ece0571d8a6e91837ee77504c46f6534f1ae
+      SOURCE_TREE: ede78608d21ff60a70cf9200c849ddc7963be400
       TARGET: research/fkp12-mysterypath-direct-causal-memory-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 675c4b02288a9f91e8438ff2b8a00eb3f25e1f8d
+          ref: 9273ece0571d8a6e91837ee77504c46f6534f1ae
           persist-credentials: true
           fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -52,7 +52,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/model.py)" = b8b99ac62a6c938f8b796a000b987c16b5b50ec5
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/baselines.py)" = 584becf44a1f18fc19c4cf122afb647c39d25e0f
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/run_dev.py)" = f08ca09c91e3082ea4b0a49db56114bb05a8d43f
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/test_fkp12.py)" = 27914295f26fa6b3c35d2e15b828d1c01eb603a9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/test_fkp12.py)" = bb25c1641df69c26ec2eb3cb2b55845b5b5808fa
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/README.md)" = 282f248667a67a3dec2ce0885c80b899026e335c
           echo FKP12_PREREG_AND_CODE_CUSTODY=PASS
       - name: Generate only G29 source-atlas files
