@@ -107,6 +107,7 @@ def real_prefix(seed:int,anchor:int):
             history.append(public_feature(obs,action,outcome_sign(r)))
             steps+=1
             if done or trunc:
+                env.close()
                 return {"valid":False,"seed":seed,"anchor":anchor,"source_steps":steps,
                         "prefix_sha256":digest.hexdigest(),"reason":"PUBLIC_PREFIX_TERMINATED"}
         sequence=np.stack(history).astype(np.float32)
