@@ -1,0 +1,120 @@
+name: QTR-01 F39 independent source-root breadth FIT-only
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+permissions:
+  contents: read
+jobs:
+  focused:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    name: F39 source-free frozen FIT negatives (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 9
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Stabilize Windows source Git bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source custody and preregistration before code
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8498a05b24157e322502ac43527738688756cebd HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f39_prereg.json)" = "2f103d7c596d710c6060450ccbcf9a955f4bd7bd"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_all_language_associations.py)" = "6746518963f07f8355fc4bd66716d86547183005"
+          echo F39_FROZEN_SOURCE_POLICY_VERIFIED=PASS
+      - name: Nine source-free synthetic negative/control tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f39_*.py' -v
+      - name: Clean source tree
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F39_NO_NEW_ORIGINAL_SOURCE_IN_FOCUSED_TESTS=PASS
+
+  source-once:
+    needs: focused
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F39 one-shot fit-only original CC0 source breadth'
+    name: F39 exact frozen first-party FIT-only source (reserved evaluation untouched)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 19
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source and one-shot empty commit authorization fence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git log -1 --format=%s)" = 'research(qtr): F39 one-shot fit-only original CC0 source breadth'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          git merge-base --is-ancestor 8498a05b24157e322502ac43527738688756cebd HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f39_prereg.json)" = "2f103d7c596d710c6060450ccbcf9a955f4bd7bd"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f39_source_breadth.py)" = "b73948067603fffe671b206e2241b894aac5f224"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f39_source_breadth.py)" = "5d47f1f27d263f1c5574c12fb8ab07da95f70461"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_all_language_associations.py)" = "6746518963f07f8355fc4bd66716d86547183005"
+          test -z "$(git status --porcelain)"
+          echo F39_FIRST_PARTY_FIT_SOURCE_ONESHOT_FENCE=PASS
+      - name: Source-free negative controls before real source acquisition
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f39_*.py' -v
+      - name: One bounded first-party CC0 FIT root and depth-two source read
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEST="$RUNNER_TEMP/qtr01-f39-fit-original-source.json"
+          test ! -e "$DEST"
+          python -B research/contrib/chatgpt/QTR-01/f39_source_breadth.py --frozen-fit-source-once --output "$DEST"
+          F39_FILE="$DEST" python - <<'PY'
+          import hashlib,json,os,pathlib
+          raw=pathlib.Path(os.environ['F39_FILE']).read_bytes()
+          d=json.loads(raw)
+          assert d['schema']=='yggdrasil.qtr01.f39.prospective-breadth-source-fit-only.v1'
+          assert d['source_http_get_count']<=100 and d['source_http_bytes']<=25165824
+          assert len(raw)<=786433
+          assert d['reserved_unseen_read_count']==0
+          assert d['fit_roots']==['Q2','Q17','Q30','Q64','Q76','Q80','Q90','Q95']
+          assert d['reserved_unseen_roots_NOT_READ']==['Q142','Q183','Q312','Q1490']
+          assert all(row['s'] not in d['reserved_unseen_roots_NOT_READ'] and
+                     row['o'] not in d['reserved_unseen_roots_NOT_READ']
+                     for row in d['witnessed_rows'])
+          assert d['scientific_pass'] is False
+          assert d['native_model_weights_edited'] is False
+          assert d['protected_scientific_first_use_consumed'] is False
+          print('F39_ORIGINAL_CC0_SOURCE_RECEIPT_VERIFIED='+hashlib.sha256(raw).hexdigest())
+          print('F39_SOURCE_ONLY_STUDY_HEADROOM='+d['headroom_status'])
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve original source receipt in existing repository CI artifact only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f39-fit-breadth-original-cc0-source
+          path: ${{ runner.temp }}/qtr01-f39-fit-original-source.json
+          retention-days: 14
+          if-no-files-found: error
