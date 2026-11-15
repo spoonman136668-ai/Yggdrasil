@@ -7,6 +7,7 @@ A genuinely independent symbolic enumerator provides matching/strong controls.
 from __future__ import annotations
 
 from functools import lru_cache
+from decimal import Decimal, localcontext
 from hashlib import sha256
 import json
 import math
@@ -218,6 +219,31 @@ class ConventionalLogistic:
         return float(np.logaddexp(0, z).mean() - (y @ z)/len(y)
                      + L2/2 * float(theta@theta))
 
+    @staticmethod
+    def _precise_objective(theta, X, y):
+        """Same preregistered logistic objective, evaluated beyond binary64 roundoff.
+
+        The strongly convex model, L2, stopping threshold and Newton updates
+        are UNCHANGED. This is used only to distinguish a real negative
+        Armijo improvement from a rounded identical binary64 objective.
+        """
+        with localcontext() as ctx:
+            ctx.prec = 70
+            t = [Decimal.from_float(float(value)) for value in theta]
+            logits = [
+                sum((Decimal.from_float(float(a)) * weight
+                     for a, weight in zip(row, t)), Decimal(0))
+                for row in X
+            ]
+            outcomes = [Decimal.from_float(float(value)) for value in y]
+            value = (
+                sum(((Decimal(1) + z.exp()).ln() for z in logits), Decimal(0))
+                - sum((observed * z for observed, z in zip(outcomes, logits)),
+                      Decimal(0))
+            ) / Decimal(len(y))
+            return value + Decimal.from_float(L2) / Decimal(2) * sum(
+                (weight * weight for weight in t), Decimal(0))
+
     def fit(self, context, observed):
         if len(observed) != ACTION_BUDGET or len(set(kind for kind,_ in observed)) != ACTION_BUDGET:
             raise ValueError("conventional control receives exactly 3 unique consequences")
@@ -244,7 +270,23 @@ class ConventionalLogistic:
             step_size = 1.
             for _ in range(42):
                 proposal = theta-step_size*direction
-                if self._objective(proposal,X,y) <= old-0.0001*step_size*slope:
+                candidate_loss = self._objective(proposal,X,y)
+                # Never accept a rounded no-op Armijo step. With very small
+                # true decreases, binary64 can report *equal or even
+                # slightly increased* objective. Recheck the identical
+                # mathematical objective at 70-digit precision rather
+                # than weakening the frozen gradient tolerance or L2.
+                accepted = (
+                    candidate_loss < old and
+                    candidate_loss <= old-0.0001*step_size*slope)
+                if not accepted and abs(candidate_loss-old) <= 1e-14:
+                    accepted = (
+                        self._precise_objective(proposal,X,y) <=
+                        self._precise_objective(theta,X,y)
+                        - Decimal.from_float(0.0001)
+                        * Decimal.from_float(step_size)
+                        * Decimal.from_float(slope))
+                if accepted:
                     theta = proposal
                     break
                 step_size *= .5
