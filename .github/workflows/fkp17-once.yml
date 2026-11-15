@@ -1,0 +1,288 @@
+name: FKP17 frozen high-first real Memory Gym H128 source sufficiency once
+on:
+  push:
+    branches: [ci/fkp17-high128-source-once-20261115]
+    paths: [.github/workflows/fkp17-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: fkp17-original-trainval-128step-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  source-atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-17): one-shot original 128-step TRAINVAL source audit' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      SOURCE: 3e776e8bc32a3b6bf6d63442fe5ffdcca0826e2f
+      TREE: e2512afd7d77f465ebb6c8752ac3b5d92d924690
+      TARGET: research/fkp17-128step-temporal-plan-headroom-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      exact_child: ${{ steps.seal.outputs.exact_child }}
+    steps:
+      - name: Preserve canonical source Git bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 3e776e8bc32a3b6bf6d63442fe5ffdcca0826e2f
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prereg-first and exact-source + test + FKP16 parent Git blob custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 11133597b3e0e59dcb27e0c563e30d6b150287e1 "$SOURCE"
+          git merge-base --is-ancestor 2de698ceedb28572ebb535a956c7b7e66e2cedad "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/prereg.json)" = 1d3eadeac9b6ca7179c6f99ef14d0c58f30fe51f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/headroom.py)" = b60be958dd2c4d4d9867d574fcf0f0e9f2e9d61d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_fkp17.py)" = 381236ecad49ae6c1b4306f7a941d21dfc8da163
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/README.md)" = 0cabf212974744587ba08ccf8b5e03d61ec90449
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/source.py)" = bf620c3521c42c3915e6dc54a755dcb42b1675bb
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_PREREG_FIRST_IMMUTABLE_SOURCE_AND_PARENT=PASS
+      - name: Update ONLY three generated G29 source-index artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Seal generated-only G29 child without source learner alterations
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-17): regenerate exact-source G29 atlas only"
+          CHILD="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_child=$CHILD" >> "$GITHUB_OUTPUT"
+          echo "FKP17_PINNED_G29_CHILD=$CHILD"
+
+  qualify-both-os-before-h128-first-use:
+    needs: source-atlas-only
+    if: needs.source-atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Stable unmodified source
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-atlas-only.outputs.exact_child }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install exact public numerical fixture dependency
+        shell: bash
+        run: python -m pip install "numpy==1.26.4"
+      - name: G29, focused FKP17 source FENCES and MANDATORY full inherited regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p test_fkp17.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test "$(git rev-parse HEAD^)" = "3e776e8bc32a3b6bf6d63442fe5ffdcca0826e2f"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_DUAL_OS_PRE_FIRSTUSE_G29_FOCUSED_AND_FULL_REGRESSION=PASS
+
+  one-real-h128-public-consumed-trainval-study:
+    needs: [source-atlas-only, qualify-both-os-before-h128-first-use]
+    if: needs.qualify-both-os-before-h128-first-use.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+    outputs:
+      fit_digest: ${{ steps.studied.outputs.fit_digest }}
+      audit_digest: ${{ steps.studied.outputs.audit_digest }}
+      selected_plan: ${{ steps.studied.outputs.selected_plan }}
+      classification: ${{ steps.studied.outputs.classification }}
+      actions: ${{ steps.studied.outputs.actions }}
+    steps:
+      - name: Preserve canonical source Git
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-atlas-only.outputs.exact_child }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install free original environment and exact pinned upstream SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp17-upstream"
+          git -C "$RUNNER_TEMP/fkp17-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp17-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+          test -z "$(git -C "$RUNNER_TEMP/fkp17-upstream" status --porcelain --untracked-files=all)"
+      - name: Open exactly once real 128-step public TRAINVAL consequences, no DEV/protected
+        id: studied
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-17/headroom.py --public-consumed-trainval-source --upstream-root "$RUNNER_TEMP/fkp17-upstream" > "$RUNNER_TEMP/fkp17-original-h128.json"
+          python - "$RUNNER_TEMP/fkp17-original-h128.json" "$GITHUB_OUTPUT" <<'PY'
+          import json,sys
+          p=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert p["schema"]=="fkp17.high-first-native-128step-source-headroom.v1"
+          assert p["source_action_budget"]["total"]<=315000
+          assert p["source_rollouts"]=={"fit":768,"audit":768}
+          assert not p["scientific_pass"] and not p["protected_first_use"]
+          assert not p["FKP16_fresh_dev_reused"]
+          assert p["source_original_git_sha"]=="a94f2b60d1769ea44df3226561488768e1dff9f4"
+          assert set(p["horizons"])=={"16","32","64","128"}
+          assert len(p["original_public_source_per_plan_ledger"]["fit"])==768
+          assert len(p["original_public_source_per_plan_ledger"]["audit"])==768
+          print("FKP17_ORIGINAL_REAL_SOURCE_RESULT="+json.dumps({
+            "classification":p["classification"],"source_information_signal":p["source_information_signal"],
+            "source_action_budget":p["source_action_budget"],
+            "fit_only_best_fixed_plan":p["fit_only_best_fixed_plan_name"],
+            "fit_selection_custody_sha256":p["fit_selection_custody_sha256"],
+            "horizons":p["horizons"],
+            "fit_sha256":p["physical_fit_source_trace_sha256"],
+            "audit_sha256":p["physical_audit_source_trace_sha256"]
+          },sort_keys=True))
+          with open(sys.argv[2],"a",encoding="utf-8") as f:
+            for key,val in {
+              "fit_digest":p["physical_fit_source_trace_sha256"],
+              "audit_digest":p["physical_audit_source_trace_sha256"],
+              "selected_plan":p["fit_only_best_fixed_plan"],
+              "classification":p["classification"],
+              "actions":p["source_action_budget"]["total"]
+            }.items():f.write(f"{key}={val}\n")
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp17-upstream" status --porcelain --untracked-files=all)"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_ORIGINAL_PUBLIC_CONSUMED_TRAINVAL_SOURCE_EXAMINED_ONCE
+      - name: Preserve full original native source outcome/trace ledger
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fkp17-source-actual-128step-plan-ledger
+          path: ${{ runner.temp }}/fkp17-original-h128.json
+          retention-days: 30
+      - name: Mandatory full final regression on frozen original source candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p test_fkp17.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_LINUX_POST_H128_FULL_REGRESSION=PASS
+
+  windows-reproducible-consumed-source-replay:
+    needs: [source-atlas-only, one-real-h128-public-consumed-trainval-study]
+    if: needs.one-real-h128-public-consumed-trainval-study.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      EXPECTED_FIT: ${{ needs.one-real-h128-public-consumed-trainval-study.outputs.fit_digest }}
+      EXPECTED_AUDIT: ${{ needs.one-real-h128-public-consumed-trainval-study.outputs.audit_digest }}
+      EXPECTED_PLAN: ${{ needs.one-real-h128-public-consumed-trainval-study.outputs.selected_plan }}
+      EXPECTED_CLASS: ${{ needs.one-real-h128-public-consumed-trainval-study.outputs.classification }}
+      EXPECTED_ACTIONS: ${{ needs.one-real-h128-public-consumed-trainval-study.outputs.actions }}
+    steps:
+      - name: Canonical bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-atlas-only.outputs.exact_child }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact public original source and pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp17-upstream"
+          git -C "$RUNNER_TEMP/fkp17-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp17-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+      - name: Reproduce SAME already-consumed public TRAINVAL outcomes, NEVER independent DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-17/headroom.py --public-consumed-trainval-source --upstream-root "$RUNNER_TEMP/fkp17-upstream" > "$RUNNER_TEMP/fkp17-windows-source-replay.json"
+          python - "$RUNNER_TEMP/fkp17-windows-source-replay.json" <<'PY'
+          import json,os,sys
+          p=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert p["physical_fit_source_trace_sha256"]==os.environ["EXPECTED_FIT"]
+          assert p["physical_audit_source_trace_sha256"]==os.environ["EXPECTED_AUDIT"]
+          assert str(p["fit_only_best_fixed_plan"])==os.environ["EXPECTED_PLAN"]
+          assert p["classification"]==os.environ["EXPECTED_CLASS"]
+          assert str(p["source_action_budget"]["total"])==os.environ["EXPECTED_ACTIONS"]
+          assert not p["scientific_pass"] and not p["protected_first_use"]
+          print("FKP17_WINDOWS_SOURCE_TRACE_EXACT=PASS "+json.dumps({
+              "classification":p["classification"],
+              "total_real_actions":p["source_action_budget"]["total"],
+              "fit_sha256":p["physical_fit_source_trace_sha256"],
+              "audit_sha256":p["physical_audit_source_trace_sha256"]
+          },sort_keys=True))
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp17-upstream" status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p test_fkp17.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_WINDOWS_CONSUMED_SOURCE_REPLAY_FINAL_ROOT_REGRESSION=PASS
