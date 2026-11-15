@@ -23,3 +23,8 @@ First commit `2aedc2a5ab0da62563fca1c8dbd079a18a634f6d` froze this comparison **
 ## Pre-first-use fixture gate
 
 Prereg/source/independent exact GF2 and actual 2,000-step Adam-gradient fit fixtures **PASS** Ubuntu and Windows at candidate `6c2c1c649e25cc6fede4dd7d4c11373a450b43e9`, [run #43713441022](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43713441022). The public independent comparative science scorer has not executed on the frozen complete source. Generated G29 source companion, full final native regression, independently qualified original synthetic DEV comparison remain gated; no accepted model modification.
+
+## Exact-source first evaluator launch: import-only harness failure
+
+[Run #43713611113](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43713611113) passed both Linux/Windows full root regression and independent G29, but the standalone original public evaluator failed at the **first Python import**, `ModuleNotFoundError: No module named 'yggdrasil'`, before public scenario instantiation or any fitted model/heldout scoring. The script was invoked as a nested path without the checkout root on `PYTHONPATH`. No first-use source state or results were consumed: this is **mechanical harness error, NOT scientific failure**. Workflow-only source fix `32443612fe932a6a4858c512799e635c4347716f` exports `PYTHONPATH=.`; all original NKR-02 source, frozen law, prereg, scores and controls unchanged. Re-run only after exact new source-pin G29 and full cross-OS requalification. This is a public DEV benchmark, not a protected first-use cohort.
+
