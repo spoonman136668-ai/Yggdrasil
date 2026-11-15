@@ -113,9 +113,12 @@ class NativeCausal8:
         self.prior=None
         self.previous_change=[0]*N
         self.step=0
-        self.bad_streak=0
+        # Contradiction repair must persist across bounded two-action arms.
+        # Erasing it here made a 3-consecutive-probe repair impossible.
+        if self.variant=="erase":
+            self.bad_streak=0
 
-    def _select(self,rot):
+    def _select(self,rot,force_new=False):
         # Shift is inferred from the ACTUAL first source action outcome, not
         # hidden task law/rotation. Rotation-less ambiguities are retained.
         available=[
@@ -125,7 +128,7 @@ class NativeCausal8:
                 for modes in actions)
                 for actions in b["counts"][rot-1])>0
         ]
-        if available:
+        if available and not force_new:
             if self.active is not None and self.banks[self.active] is not None:
                 return
             self.active=min(available,key=lambda t:(
@@ -181,8 +184,12 @@ class NativeCausal8:
                 )
                 self.bad_streak=self.bad_streak+1 if fail>=4 else 0
                 if self.bad_streak>=3:
+                    # Preserve the old bank for cold recall; allocate a
+                    # new bounded hypothesis only on repeated REAL public
+                    # contradictory consequences, never on source law ID.
                     self.active=None
-                    self._select(self.rotation)
+                    self._select(self.rotation,force_new=True)
+                    bank=self.banks[self.active]
                     self.bad_streak=0
                 for i,y in enumerate(target):
                     v=residual(public,target,i,self.rotation)
