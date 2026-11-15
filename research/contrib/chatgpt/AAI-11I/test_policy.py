@@ -13,9 +13,13 @@ for name in ("AAI-11P","AAI-11A","AAI-11D"):
 sys.path.insert(0,str(HERE))
 import world,controls
 import calibration,learner
-# Original calibration adjusts sys.path: make current evaluator unambiguous.
-sys.path.insert(0,str(HERE))
-import policy,dev
+# Policy and calibration prepend frozen predecessor locations to sys.path.
+# Load THIS new evaluator by exact file path under a unique module name.
+import policy
+import importlib.util
+_spec=importlib.util.spec_from_file_location("_aai11i_source_evaluator",HERE/"dev.py")
+dev=importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(dev)
 
 
 class OriginalCausalFeedbackGate(unittest.TestCase):
