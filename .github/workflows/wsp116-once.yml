@@ -1,0 +1,221 @@
+name: WSP116 21M original historical TRAIN only, nested real-foundation dose
+on:
+  push:
+    branches: [ci/wsp116-tiered-realgraph-once-20261115]
+    paths: [.github/workflows/wsp116-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: wsp116-consumed-realgraph-once-20261115
+  cancel-in-progress: false
+jobs:
+  exact-source-g29:
+    if: >-
+      github.event.head_commit.message == 'ci(WSP-116): prereg source-locked tiered real-graph diagnostic once' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    outputs:
+      qualified_sha: ${{ steps.publish.outputs.qualified_sha }}
+    env:
+      SOURCE: 5f32adc9cef3444a9103bc9a1d8662fcd9166427
+      TREE: c2beb56158c96b3ab684f9951c0e8c9830ffc233
+      TARGET: research/wsp116-realgraph-foundation-density-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Require source-exact Git byte stability
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5f32adc9cef3444a9103bc9a1d8662fcd9166427
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Frozen prereg-FIRST, parent source and exact four code blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor ef975c65e87af6393beaa4ae9cae12947d6b171b "$SOURCE"
+          git merge-base --is-ancestor c4f2021d0b1c3a774ec1486ab7ae16eca9f10b94 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/prereg.json)" = 09893da4d6e6a9b20c57275406b837024e85f58e
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/tiered.py)" = 234b80a8d58a449c10f73ef1d4501a5791b8627a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/test_wsp116.py)" = 84a58667c8a55b31353dae89a71b0d9436e77993
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/README.md)" = ddcb2a21ddc1006dd010ee24089ef6fadcfaade3
+          python - <<'PY'
+          import ast,json,pathlib
+          root=pathlib.Path("research/contrib/chatgpt/WSP-116")
+          ast.parse((root/"tiered.py").read_text(encoding="utf-8"))
+          ast.parse((root/"test_wsp116.py").read_text(encoding="utf-8"))
+          p=json.loads((root/"prereg.json").read_text(encoding="utf-8"))
+          assert p["experiment_id"]=="WSP-116"
+          assert [tier["bucket_lt"] for tier in p["tiers"]]==[16,64,256]
+          assert p["source"]["train_rows"]==21343681
+          print("WSP116_PREREG_FIRST_SOURCE_LOCK=PASS")
+          PY
+      - name: Generate ONLY three derived G29 source atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/changed"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/changed"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+      - name: Preserve source with generated-only G29 research child
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(WSP-116): generated G29 source atlas only"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "qualified_sha=$NEW" >> "$GITHUB_OUTPUT"
+          echo "WSP116_G29_QUALIFIED_SOURCE_SHA=$NEW"
+
+  cross-platform-source-safe-preflight:
+    needs: exact-source-g29
+    if: needs.exact-source-g29.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: No CRLF rewrites
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.exact-source-g29.outputs.qualified_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Only pinned numeric fixture dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "numpy==1.26.4"
+          python - <<'PY'
+          import numpy
+          assert numpy.__version__=="1.26.4"
+          PY
+      - name: WSP116 source-safe fixture plus inherited WSP102-WSP105 source controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-116 -p test_wsp116.py -v
+          for part in WSP-102 WSP-103 WSP-104 WSP-105; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$part" -p 'test_*.py' -v
+          done
+          echo WSP116_ALL_SOURCE_SAFE_FOCUSED=PASS
+      - name: Mandatory complete inherited root regression BOTH platforms BEFORE historical diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP116_FULL_BEFORE_SOURCE_DIAGNOSTIC=PASS
+
+  historical-train-only-one-shot:
+    needs: [exact-source-g29,cross-platform-source-safe-preflight]
+    if: needs.cross-platform-source-safe-preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve full Git ancestry for G29 after source-only scan
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.exact-source-g29.outputs.qualified_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact Python numeric source and source-only G29 preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "numpy==1.26.4"
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-116 -p test_wsp116.py -v
+          echo WSP116_PRIOR_REAL_TRAIN_SOURCE_ONLY=PASS
+      - name: ONE historical TRAIN-only real graph dose-response, no fresh science or official labels
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/WSP-116/tiered.py --consumed-historical-train-diagnostic > "$RUNNER_TEMP/wsp116-consumed-train.json"
+          python - "$RUNNER_TEMP/wsp116-consumed-train.json" <<'PY'
+          import json,sys
+          raw=open(sys.argv[1],encoding="utf-8").read()
+          marker="WSP116_CONSUMED_TRAIN_DIAGNOSTIC="
+          assert raw.count(marker)==1
+          x=json.loads(raw.split(marker,1)[1])
+          assert x["schema"]=="wsp116.consumed-historical-realgraph-tiered-source.v1"
+          assert x["source_rows"]==21343681
+          assert x["source_predicate_count"]==828
+          assert x["source_train_sha256"]=="2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a"
+          assert len(x["tiers"])==3 and [a["source_fraction_num"] for a in x["tiers"]]==[16,64,256]
+          assert x["tiers"][-1]["retained_source_facts"]==20677636
+          assert x["tiers"][-1]["metrics"]["path_first"]["hits1"]==1190
+          assert x["tiers"][-1]["metrics"]["path_first"]["hits10"]==2038
+          assert all(a["numeric_symbolic_rank_parity_queries"]==4096 for a in x["tiers"])
+          assert not x["official_validation_test_opened"] and not x["development_first_use"]
+          assert not x["protected_first_use"] and not x["scientific_pass"]
+          print("WSP116_HISTORICAL_TRAIN_RESULT="+json.dumps({
+              "classification":x["classification"],
+              "source_rows":x["source_rows"],
+              "masked_query_groups":x["masked_query_groups"],
+              "tier_facts":[t["retained_source_facts"] for t in x["tiers"]],
+              "numerical_cold_sha256":[t["programmed_numeric_cold_sha256"] for t in x["tiers"]],
+              "tier_metrics":[{"tier":t["tier"],"metrics":t["metrics"],
+                   "path_joins":t["path_join_updates"]} for t in x["tiers"]],
+              "full_minus_quarter_hits1":x["full_minus_quarter_path_first_hits1_count"],
+              "full_minus_quarter_ci95":x["full_minus_quarter_bootstrap_world_ci95"],
+              "full_known_source_score_receipt":x["tiers"][-1]["frequency_score_receipt_sha256"],
+              "wall_seconds":x["whole_process_wall_seconds"]},sort_keys=True))
+          PY
+      - name: After read-only consumed historical diagnosis, mandatory root regression and clean state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-116 -p test_wsp116.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP116_COMPLETE_ORIGINAL_CONSUMED_SOURCE_AND_FINAL_FULL_REGRESSION=PASS
