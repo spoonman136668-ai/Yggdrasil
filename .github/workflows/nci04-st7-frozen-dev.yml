@@ -1,0 +1,263 @@
+name: NCI04 ST7 frozen unknown quadratic rule DEV
+on:
+  push:
+    branches:
+      - research/nci04-st7-unknown-boolean-causal-rule-20261115
+permissions:
+  contents: read
+jobs:
+  train:
+    if: "github.event.head_commit.message == 'science(st7): run frozen unknown-rule DEV comparison'"
+    name: ST7 one authentic 7680-action public-only training checkpoint (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin process CPU wall and RSS
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Exact original ST6 source, ST7 prereg, original private world, full learner and comparator before ANY held
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor fa0799ffd9967025b98f99e2242330307fcf9b5a HEAD
+          git merge-base --is-ancestor b03c8a7978359077ab62d746bb8142c42925bdf1 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st7/frozen_protocol.json)" = 75366ef5b1acf5668433fb3a363a610ff7104111
+          test "$(git rev-parse HEAD:research/nci04_st7/private_world.py)" = ac39c7a5a7a0c3119e5d91872017deee84ecfef4
+          test "$(git rev-parse HEAD:research/nci04_st7/source_audit.py)" = cf75f25b1640edbf4574940b0a04ab3a2676ecc5
+          test "$(git rev-parse HEAD:research/nci04_st7/native_induction.py)" = 14fa768b9db80da3d65ab86337b623efa78e994d
+          test "$(git rev-parse HEAD:research/nci04_st7/matched_controls.py)" = 38b70fe2ccfd53800889b0263e9962a748f5b945
+          test "$(git rev-parse HEAD:research/nci04_st7/dev_compare.py)" = 9c8cc25df985643dd66da70e48e02a5f545954b5
+          python -B - <<'PY'
+          from research.nci04_st7.dev_compare import exact_guard
+          p=exact_guard()
+          assert p['authority']['merge'] is False
+          assert p['authority']['protected_scientific_first_use'] is False
+          print('ST7_FROZEN_PROTOCOL_SOURCE_NATIVE_STRONG_CONTROLS_AND_EVALUATOR_PREHELD=PASS')
+          PY
+      - name: Preheld actual original source and negative classifier tests
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st7_dev_harness.py' -v
+      - name: Train seven models ONE TIME on 1536 real training episodes, held unopened
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st7.dev_compare import train_once,load_checkpoint
+          out=Path(os.environ['RUNNER_TEMP'])/'st7-one-trained.json'
+          doc=train_once(out)
+          reread,sha=load_checkpoint(out)
+          assert doc==reread
+          assert reread['original_training_actions']==7680
+          assert reread['held_new_rules_unopened'] is True
+          assert reread['negative_new_mechanism_unopened'] is True
+          assert reread['protected_scientific_first_use'] is False
+          print('ST7_ORIGINAL_PREHELD_TRAIN_SHA256='+sha)
+          print('ST7_FROZEN_SINGLE_TRAINING_CHECKPOINT=PASS')
+          PY
+      - name: Unmodified original checkout after source+training
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st7-exact-single-public-trained-cohort
+          path: ${{ runner.temp }}/st7-one-trained.json
+          if-no-files-found: error
+          retention-days: 14
+  evaluate:
+    if: "github.event.head_commit.message == 'science(st7): run frozen unknown-rule DEV comparison'"
+    needs: train
+    name: ST7 genuine new worlds, new rule negatives, cold retention (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Byte preserving Windows Git checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned CPU resource accounting
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st7-exact-single-public-trained-cohort
+          path: ${{ runner.temp }}
+      - name: Verify SAME trained public evidence bytes BEFORE unseen worlds
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st7.dev_compare import exact_guard,load_checkpoint
+          exact_guard()
+          c,sha=load_checkpoint(Path(os.environ['RUNNER_TEMP'])/'st7-one-trained.json')
+          assert c['held_new_rules_unopened'] is True
+          assert c['negative_new_mechanism_unopened'] is True
+          assert c['protected_scientific_first_use'] is False
+          print('ST7_IDENTICAL_PUBLIC_LEARNED_ARTIFACT_SHA256='+sha)
+          PY
+      - name: Preaction real 36-feature unknown rule transfer, untouched new mechanism and original law recall
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st7.dev_compare import compare
+          folder=Path(os.environ['RUNNER_TEMP'])
+          doc=compare(folder/'st7-one-trained.json',folder/'st7-held.json')
+          assert doc['held_new_world_laws_opened_once']==[29,31,37,41]
+          assert doc['negative_new_rule_laws_opened_once']==[43,47]
+          assert doc['held']['actual_original_source_actions']==2560
+          assert doc['different_new_rule']['actual_original_source_actions']==160
+          assert doc['cold_retention']['interference_original_source_actions']==640
+          assert doc['no_fitting_on_unfamiliar_laws'] is True
+          assert doc['model_saw_private_source_law_coefficients_or_labels'] is False
+          assert doc['protected_scientific_first_use'] is False
+          assert doc['independent_scientific_pass'] is False
+          print('ST7_COMPLETE_FROZEN_INHOUSE_DEV_EVIDENCE=RECORDED')
+          PY
+      - name: Clean tracked/untracked checkout and no promotion
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st7-genuine-frozen-held-${{ matrix.os }}
+          path: ${{ runner.temp }}/st7-held.json
+          if-no-files-found: error
+          retention-days: 14
+  parity:
+    if: "github.event.head_commit.message == 'science(st7): run frozen unknown-rule DEV comparison'"
+    needs: evaluate
+    name: ST7 original sources, native integer-state, trained-sha parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st7-genuine-frozen-held-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st7-genuine-frozen-held-windows-2022
+          path: windows
+      - name: Verify public original action SHA, canonical model states and held preaction Brier
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          a=json.loads(Path('linux/st7-held.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st7-held.json').read_text('utf-8'))
+          frozen=(
+              'schema','evidence_class','frozen_protocol_git_blob',
+              'private_world_git_blob','native_model_git_blob',
+              'strong_control_git_blob','one_original_training_checkpoint_sha256',
+              'held_new_world_laws_opened_once','held_seeds_opened_once',
+              'negative_new_rule_laws_opened_once',
+              'no_fitting_on_unfamiliar_laws',
+              'model_saw_private_source_law_coefficients_or_labels',
+              'protected_scientific_first_use','independent_scientific_pass'
+          )
+          for k in frozen:
+              if a[k]!=b[k]:raise SystemExit('ST7_COMMON_TRAIN_OR_CUSTODY_DIFF_'+k)
+          source_ok=True;native_ok=True;scores_ok=True
+          for p in ('held','different_new_rule'):
+              rows=a[p]['source_receipts']
+              comparison=b[p]['source_receipts']
+              if len(rows)!=len(comparison):
+                  raise SystemExit('ST7_SOURCE_RECORD_COUNT_MISMATCH_'+p)
+              for x,y in zip(rows,comparison):
+                  for key in ('law_evaluator_only','seed_evaluator_only',
+                              'original_source_actions','original_action_history_sha256',
+                              'all_model_cold_restarts','private_source_fields_given_to_model'):
+                      if x[key]!=y[key]:source_ok=False
+                  if x['native_integer_state_trace_sha256']!=y['native_integer_state_trace_sha256']:
+                      native_ok=False
+                  for n in x['probe_brier']:
+                      if not math.isclose(
+                          x['probe_brier'][n],y['probe_brier'][n],
+                          abs_tol=1e-12,rel_tol=0
+                      ):scores_ok=False
+          x=a['cold_retention'];y=b['cold_retention']
+          if x['eight_distinct_same_rule_interference_receipts']!=y['eight_distinct_same_rule_interference_receipts']:
+              source_ok=False
+          for phase in ('original_before','original_after'):
+              if x[phase]['source_sha256']!=y[phase]['source_sha256']:
+                  source_ok=False
+              if x[phase]['native_cold_state_trace_sha256']!=y[phase]['native_cold_state_trace_sha256']:
+                  native_ok=False
+              for n in x[phase]['probe_brier']:
+                  if not math.isclose(
+                      x[phase]['probe_brier'][n],y[phase]['probe_brier'][n],
+                      abs_tol=1e-12,rel_tol=0
+                  ):scores_ok=False
+          if not source_ok:
+              raise SystemExit('ST7_ORIGINAL_SOURCE_ACTIONS_NOT_CROSS_OS_IDENTICAL')
+          threshold='charged_whole_process_wall_ratio_le_1_5'
+          checks=a['metrics']['frozen_checks']
+          other=b['metrics']['frozen_checks']
+          if set(checks)!=set(other):
+              raise SystemExit('ST7_CHECK_SET_DRIFT')
+          if any(checks[k]!=other[k] for k in checks if k!=threshold):
+              raise SystemExit('ST7_NONCOST_FROZEN_SCIENCE_DIVERGENCE')
+          cost_equal=checks[threshold]==other[threshold]
+          qualified=(native_ok and scores_ok and cost_equal
+                     and all(checks.values()) and all(other.values()))
+          print('ST7_ORIGINAL_SAME_SOURCE_CROSS_OS=PASS')
+          print('ST7_ONCE_TRAINED_COMMON_SHA256='+a['one_original_training_checkpoint_sha256'])
+          print('ST7_NATIVE_INTEGER_STATE_PARITY='+('PASS' if native_ok else 'FAIL'))
+          print('ST7_PREACTION_BRIER_PARITY='+('PASS' if scores_ok else 'FAIL'))
+          print('ST7_LINUX_TOTAL_WALL_RATIO='+str(a['metrics']['charged_whole_source_actor_training_eval_wall_ratio']))
+          print('ST7_WINDOWS_TOTAL_WALL_RATIO='+str(b['metrics']['charged_whole_source_actor_training_eval_wall_ratio']))
+          print('ST7_WHOLE_COST_THRESHOLD_BOTH_OS_AGREE='+str(cost_equal))
+          print('ST7_FINAL_DEV_DISPOSITION='+(
+              'QUADRATIC_RULE_DISCOVERY_DEV_SIGNAL_NOT_SCIENTIFIC_PASS'
+              if qualified else 'DEV_NO_GO'
+          ))
+          print('ST7_PROTECTED_FIRST_USE_NOT_CONSUMED=PASS')
+          PY
+# Single locked in-house DEV comparison; no protected scientific first-use or postresult model retuning.\n
