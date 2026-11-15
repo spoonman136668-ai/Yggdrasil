@@ -4,6 +4,7 @@ No access to source owner internals; all learning uses public action/consequence
 """
 from __future__ import annotations
 from itertools import combinations
+from functools import lru_cache
 from hashlib import sha256
 from pathlib import Path
 import importlib.util
@@ -96,6 +97,8 @@ def learn_world(observe, public, public_masks, held_masks, hot_mask, policy, see
     for step in range(12):
         if policy == "random":
             idx = random_order[step]
+        elif policy == "active" and alive == 0:
+            idx = next(j for j in range(len(public)) if j not in selected)
         elif policy == "active":
             total = mass(alive, hot_mask)
             best, idx = -1, -1
@@ -114,13 +117,37 @@ def learn_world(observe, public, public_masks, held_masks, hot_mask, policy, see
         y = observe(public[idx])
         transcript.append((public[idx], y))
         alive &= (public_masks[idx] if y else ~public_masks[idx])
-        if not alive:
-            # Explicit mismatch; never pretend a zero-hypothesis result is a learned law.
-            break
+        # Continue the exact paid budget even if an out-of-family negative
+        # eliminates every known hypothesis. Zero posterior means abstention.
     pred,conf = predicted(alive, hot_mask, held_masks)
     return {"alive":alive, "prediction":pred, "confidence":conf,
             "actions":tuple(selected), "transcript":tuple(transcript),
             "remaining":alive.bit_count()}
+
+
+@lru_cache(maxsize=1)
+def independent_reference_fit(histories):
+    """Separate conventional source learner: independently reconstruct pair counts."""
+    if len(histories) != 512:
+        raise ValueError("REFERENCE_HISTORIES_REQUIRED")
+    scores = [0.] * len(PAIRS)
+    for _, rows in histories:
+        possibilities = []
+        for i, (left, right) in enumerate(PAIRS):
+            errors = 0
+            for x, y in rows:
+                outcome = ((x >> left) & 1) * ((x >> right) & 1)
+                if outcome != y:
+                    errors += 1
+                    break
+            if errors == 0:
+                possibilities.append(i)
+        if not possibilities:
+            raise ValueError("REFERENCE_FOUNDATION_INCONSISTENT")
+        for i in possibilities:
+            scores[i] += 1 / len(possibilities)
+    return tuple(sorted(sorted(range(len(PAIRS)),
+                               key=lambda i:(-scores[i], i))[:4]))
 
 
 def independent_bayes_reference(histories, transcript, held, hypotheses):
@@ -128,7 +155,7 @@ def independent_bayes_reference(histories, transcript, held, hypotheses):
 
     This matches the information and has no access to source hidden parameters.
     """
-    _, learned, _ = build_historical_prior(histories)
+    learned = independent_reference_fit(histories)
     selected = frozenset(PAIRS[i] for i in learned)
     survivors = []
     for law in hypotheses:
