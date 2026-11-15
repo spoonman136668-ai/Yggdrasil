@@ -63,7 +63,9 @@ class Source:
         for r in range(1,revision+1):result^=self._delta(context,r)
         return result
     def view(self,context:int,revision:int)->PublicView:
-        cohort(context)
+        kind=cohort(context)
+        if kind not in ("development","fixture") and self._key is None:
+            raise PermissionError("FKP08_PROTECTED_EVALUATOR_KEY_REQUIRED")
         if type(revision) is not int or not 0<=revision<=3:raise ValueError("FKP08_BAD_REVISION")
         if revision==0:return PublicView(context,revision,tuple(range(STATES)),())
         # Deterministic public pool split: 128 paid choices and 128 held, no overlap.
