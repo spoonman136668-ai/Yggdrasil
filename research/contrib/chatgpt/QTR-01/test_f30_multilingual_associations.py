@@ -112,7 +112,7 @@ class F30(unittest.TestCase):
         self.assertTrue(result["numeric_equal_info_control"]["numeric_vs_equal_info_symbolic_2hop_parity"])
         self.assertTrue(result["numeric_equal_info_control"]["canonical_cold_restore"])
         self.assertEqual(result["inventory"]["seed_source_label_languages"], {"Q42": "fr", "Q5": "en"})
-        self.assertEqual(result["source_rows"][0]["s_language"], "fr")
+        self.assertEqual(next(row["s_language"] for row in result["source_rows"] if row["s"] == "Q42"), "fr")
         self.assertEqual({row["o_language"] for row in result["source_rows"]}, {"en", "es"})
         self.assertEqual(len(result["raw_first_party_source_receipts"]), 2 + 2 + 1 + 8)
         self.assertFalse(result["scientific_pass"])
