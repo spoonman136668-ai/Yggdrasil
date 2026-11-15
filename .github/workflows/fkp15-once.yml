@@ -11,15 +11,15 @@ concurrency:
 jobs:
   source-atlas-only:
     if: >-
-      github.event.head_commit.message == 'ci(FKP-15): pre-firstuse source-safe fixture correction, same frozen learner' &&
+      github.event.head_commit.message == 'ci(FKP-15): one corrected public DEV after source accounting repair' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
       candidate: ${{ steps.seal.outputs.candidate }}
     env:
-      SOURCE: 05bd6f00137fc94ecd4142b5d8af0963e72b2780
-      TREE: 29625ae411d863f2af388673214ee78b4b5630da
+      SOURCE: 1610415e2d2e96e0d7f3ad558d37ce1f3e5d78a4
+      TREE: fdc5ba1130efa8ef569e8c02aaa506fbceefbecb
       TARGET: research/fkp15-observation-to-16step-action-value-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 05bd6f00137fc94ecd4142b5d8af0963e72b2780
+          ref: 1610415e2d2e96e0d7f3ad558d37ce1f3e5d78a4
           persist-credentials: true
           fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -50,7 +50,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/source.py)" = 3341d36270ef36d7f2e1ac8b7ae9aa1b81bf2212
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/learners.py)" = 29ed00e5db7d79c9889e87cbaf0240dca4f14443
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/baselines.py)" = c08c03d9159ac6a791f9c2fce8f7cd7d859287b4
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/run_dev.py)" = 5b76cedd8fb44a922f0befe033dfb0497d600b1e
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/run_dev.py)" = 037679da0f6fb8d39c6feb0e4767a2e80c0ac8af
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/test_fkp15.py)" = c8f9566434d6ad64580dc2998829979d4813be55
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/README.md)" = b95e5ca14c5962d34425c8e16b4ea77410ea9cc9
           python - <<'PY'
