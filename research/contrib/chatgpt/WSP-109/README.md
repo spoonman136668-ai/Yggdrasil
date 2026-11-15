@@ -1,0 +1,49 @@
+# WSP-109 — bounded causal intervention selection with irreducible uncertainty (DEV)
+
+**Research-only WSP109** is stacked on [WSP108 draft PR #1065](https://github.com/spoonman136668-ai/Yggdrasil/pull/1065), previously qualified exact SHA `1d1dd926b2914732d95c17cd979534a4b6799ec1`, tree `6842137d789e500b129a38facdebfa8e17054d57`. **Do not merge, promote model weights, modify controller/scheduler, use protected datasets, deploy, or label this AGI/scientific pass.**
+
+## Frozen prospective hypothesis and necessary scientific distinctions
+
+**First commit** `research/contrib/chatgpt/WSP-109/prereg.json` at `1d7c53d7b1b196896e32a60add4b27a86f82f62c` predates any WSP109 world, learner or evaluator implementation, as well as original first use of FIT/TRANSFER labels. Later narrow module-import repairs are permitted only *before* first evaluation and cannot alter the preregistered causal law, candidate family, intervention budget, seed cohorts, scoring or model hyperparameters after observing any real DEV result.
+
+WSP108 had **100% result parity across direct numerical programming, exact symbolic inference and a strong conventional learned maxpool** in its synthetic three-relation/two-hop task because each model received all nine singleton rule labels. WSP109 **does not** use WSP108's protected test results as new labels, and this experiment intentionally removes full identifiability.
+
+- **World class:** the `C(9,4)=126` possible exactly-four-positive nine-rule masks, ordered by an immutable SHA256 priority with first **36 hypotheses** disclosed as the candidate family to every Bayesian learning arm. Every hidden world belongs to the known family, so **this is not unknown-hypothesis-space discovery or novel primitive language/relations**.
+- **FIT:** 12 worlds `31001–31012`. **TRANSFER:** 12 worlds `41001–41012`. Each transfer law is different from every FIT law, and all query entity identities are distinct; nonetheless the 36 hypothesis classes are **available a priori**. **Fixtures:** `51001`, `51002` only, never used as FIT/TRANSFER scientific data.
+- **Intervention budget:** exactly **3** of the 9 identifiable singleton edge-creation action choices per world, adaptively chosen where the policy permits, with observed Boolean action consequence. This is below the nine-rule complete diagnostic budget. Because **36 hypotheses cannot be distinguished using at most 2³=8 feedback response signatures**, posterior uncertainty is inherent. Query predictions score unseen before/after action consequences in 64 novel, multi-path, two-hop add/remove scenes per world.
+- **Outcome custody:** only the queried intervention feedback may inform the learner. SHA256 seal *every arm's query predictions and observed intervention trace for FIT and TRANSFER* before consulting the private oracle on any unseen query outcomes. Fully frozen threshold: posterior probability **>= 0.5** predicts a positive outcome; ties count positive. No after-result reward, source, threshold, seed, action-budget or model tuning.
+
+## Comparisons with equal or explicitly distinguished information
+
+**Direct programmed numerical posterior weights** start as 36 float32 ones, corresponding to candidate causal mechanisms. Observed feedback directly zeros inconsistent weights (no optimizer). An *adaptive greedy Shannon-information* policy chooses the next untested causal intervention from the remaining nine. After three actions, the model infers query outcomes by posterior mass over hypotheses, not a disclosed hidden law.
+
+An **independent symbolic Python-set Bayesian posterior** sees precisely the same three action kinds and feedback as the direct programmer; it must produce *identical* outcomes. This is the fair predictor parity control.
+
+A stronger **exact depth-three lookahead Bayesian intervention planner** independently chooses its three actions to minimize the expected remaining Shannon entropy. A **uniform-hash random** three-choice policy and a **fixed 0/1/2-choice** policy separately observe their chosen consequences under the **same three-action budget**; these are policy controls, so they do *not* see identical individual feedback, only identical available observations and action resources. Report that distinction; never misinterpret separate policies as an identical-data comparison.
+
+A **conventional trained L2 logistic** model receives the *same three chosen actions and consequences as the direct programmer*, with fully converged deterministic Newton regression (`L2=0.03`, stationary `||grad||∞ <=1e-9`). An all-false **no-feedback negative** has **zero observed intervention consequences**; its action-change metric may look deceptively strong when changes are rare, so report the actual changed subset separately.
+
+## Measurements and stop rules
+
+- FIT/TRANSFER accuracy on unseen before and after outcomes, exact action-change accuracy, and actual-change/actual-unchanged conditional accuracy, with all denominators.
+- Exact action choices, feedback and SHA256-sealed prediction receipts, posterior hypothesis counts and entropy after only 3 actions, diversity of causal laws and novel entities.
+- Independent symbolic/numeric parity on the *same feedback* must pass; the direct numeric learner may or may not improve on random/fixed selection. **No positive performance outcome required for a DEV engineering PASS.**
+- Exact long-lived **within-process** contextual memory custody across 24 different world updates, tamper-rejecting checksum snapshot and cold identical prediction replay. Not long-term cognitive retention in a deployed agent.
+- CPU/wall and parameter accounting, conventional solver stationary gradient, negative-control failure when appropriate. Do not infer matched inference-speed superiority unless independently measured.
+- **No post-result patch/replay of the frozen mechanisms, parameters, transfer seeds or source** even if negative. Preserve failures and nulls with exact SHA/run receipts.
+- No WSP101 protected original, historical Wikidata5M source/validation/test or actual Yggdrasil accepted model contacted, no live actions, paid API or private runner.
+
+## Engineering and execution
+
+Focused tests use fixture-only seeds and negative controls on both Ubuntu and Windows with pinned Python 3.12/NumPy 2.2.6. The one-shot ephemeral GitHub Actions DEV evaluation is gated behind the full inherited **WSP80–109 + Yggdrasil root regression** on both platforms and source-pinned **independent G29** acceptance on both; source tree must remain clean.
+
+The comparison is a test of **small synthetic, known-class active hypothesis discrimination**, not a demonstration that weight programming can construct general causal intelligence. The expected strongest Bayesian/symbolic control is allowed to match or outperform direct programming; that is an informative result, not a blocker. Preserve two independent research north stars and never promote a symbolic/transformer baseline into Yggdrasil by implication.
+
+## Numerical first-use negative, precision-only technical replay boundary
+
+- Original exact-source candidate `37e811f99fa348c762abafbdfa7f42de052e82f3` / tree `2a11202ccb8ac175d285ca4098f6e87bb02f6790`: full Linux/Windows inherited regression and independent G29 **PASS**, but WSP109 original first DEV FIT/TRANSFER one-shot job `132639008222` in [run 43656811333](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43656811333) **FAILED** before any withheld query predictions, due `FloatingPointError: conventional control gradient not stationary`. Some first-world action feedback may have been consumed. Original first-use is **lost**; all subsequent runs are explicitly **nonvirgin DEV technical replays**.
+- Diagnosis independent of FIT/TRANSFER observed labels: sweep **all eight** arbitrary binary 3-intervention consequence combinations at fabricated singleton path positions (two distinct positions). Under unchanged convex regularized objective, `float64` may miss a *real* descent of `2.815e-17` because its objective rounds to a slightly larger number, and erroneously accept a near-zero/no-op line search step. The original Newton code can terminate 100 steps at gradient infinity norm `2.3098e-9`, above frozen `1e-9`.
+- **Engineering-only numerical repair:** where the exact same binary64 objective is within `1e-14` of the prior value, re-evaluate **the identical mathematical L2-regularized logistic objective and Armijo descent condition** at 70-digit precision using Python's built-in `decimal`, retaining strictly decreasing true objective and retaining `L2=.03`, Newton gradient/Hessian, tolerance `1e-9`, max 100 iterations, zero initialization, full source candidate family, 3-intervention budget, tie-breakers, FIT/TRANSFER seeds, query truth and score thresholds. The patch is **not** a new learning rule, parameter sweep or outcome-driven tuning.
+- Exhaustive pre-replay synthetic `test_precision_repair.py` must PASS all 8 arbitrary feedback patterns with no real DEV truth consumed, and full exact-tree dual-platform root/inherited regression plus independent G29 must PASS again before any rerun. No reconfiguration or repeat based on measured transfer scores allowed. Scientific status stays **UNVERIFIED**, regardless of precision replay result, and the original run must remain linked/preserved.
+
+- **CI metadata-only negative:** `67115f88c66e9095ea06b724080006750b599323` introduced an unquoted YAML colon in a job step name, preventing normal WSP109 workflow triggering. Independent G29 checks on unpinned intermediate commits therefore failed as expected. This was repaired with **no science/code change** at `b16733b351a202cac2c2eea8f6fd79a697561289` before source pin. Full exact-source regression and independent G29 MUST rerun on the corrected candidate, not counted from historical predecessor receipts.

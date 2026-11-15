@@ -1,0 +1,99 @@
+{
+  "schema": "wsp109.budgeted-active-causal-discrimination-prereg.v1",
+  "status": "FROZEN BEFORE WORLD/LEARNER/EVALUATOR CODE AND ORIGINAL DEV WORLD FIRST USE. SYNTHETIC DEV ONLY, NOT SCIENTIFIC_PASS",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1065,
+    "head": "1d1dd926b2914732d95c17cd979534a4b6799ec1",
+    "tree": "6842137d789e500b129a38facdebfa8e17054d57",
+    "WSP108": "Synthetic 24-world exact-law revelation saturated 100% for direct numeric, independent symbolic and optimized conventional maxpool; no superiority."
+  },
+  "hypothesis": "With only 3 of 9 allowed causal interventions, a direct-programmed posterior-weight memory can select actions and predict novel multi-path counterfactuals from partial information, while matched independent Bayesian and conventional learners offer falsifiable controls. It is NOT expected to beat the exact Bayesian hypothesis method.",
+  "worlds": {
+    "candidate_hypotheses": "All C(9,4)=126 9-bit masks with exactly four causal pairs, ranked ascending by SHA256(b'WSP109-HYPOTHESIS-v1\\0'+little-endian uint16 mask), tie ascending mask, select FIRST 36. Disclose full candidate family to every Bayesian arm; no hidden post-result tuning.",
+    "hidden_laws": "FIT seeds 31001..31012 map to candidate indices 0..11; TRANSFER seeds 41001..41012 map to candidate indices 18..29. Each of 24 hidden masks unique; all TRANSFER laws absent from FIT but within known 36-pattern family. Learners only receive anonymous world context (not seed-to-mask mapping) and observed action/feedback.",
+    "query_scenes": "Exactly 64 before/action/after scenes per world from UNMODIFIED WSP108 query_scene(seed,index) and path_features (2..5 typed two-hop paths, one add/remove per scene). Query source/midpoint/target entity IDs are disjoint across worlds and scenes.",
+    "intervention": "Budget exactly 3 unique singleton path-creation interventions per world from 9 available ordered relation-pair kinds. Each trial gives observed boolean action outcome = active hidden mask bit for the selected kind, with no measurement noise. 3 < 9 and 36 > 2^3, so evidence is irreducibly incomplete; no model sees other 6 response labels.",
+    "labels": "Only feedback for actually selected interventions is revealed before testing. Entire action plan and all before/after query predictions SHA256-sealed BEFORE evaluation loads original query oracle labels.",
+    "dev_fit_seeds": [
+      31001,
+      31002,
+      31003,
+      31004,
+      31005,
+      31006,
+      31007,
+      31008,
+      31009,
+      31010,
+      31011,
+      31012
+    ],
+    "dev_transfer_seeds": [
+      41001,
+      41002,
+      41003,
+      41004,
+      41005,
+      41006,
+      41007,
+      41008,
+      41009,
+      41010,
+      41011,
+      41012
+    ],
+    "fixture_only_seeds": [
+      51001,
+      51002
+    ],
+    "query_count_per_world": 64
+  },
+  "arms": {
+    "direct_greedy": "Store a float32 vector of 36 known hypothesis weights, initialized all 1; directly program every observed feedback by zeroing inconsistent hypothesis weights (no SGD). At each step select the untested intervention with maximum expected entropy reduction of uniform surviving hypotheses, tie ascending kind index. Predict true if posterior mass among hypothesis masks with ANY observed path feature active is >=0.5; tie means True. Predict before, after and change. After each world, persist checksum-sealed cold restorable context; retain 24 worlds without overwriting.",
+    "independent_symbolic_same_feedback": "Completely independently implemented set of 36 hypothesis masks filtered by the exact same GREEDY arm's chosen three action/feedback pairs. Independently compute posterior-mean causal query truth, threshold >=0.5. Must match direct programmer exactly; if not fail qualification.",
+    "exact_bayes_depth3": "Independent symbolic exact exhaustive three-step lookahead policy minimizing expected final posterior Shannon entropy under uniform 36 hypotheses, selecting distinct intervention kinds; early ties smaller kind index. Observes its own three consequences from same oracle at equal action budget. Predictions use the same independently implemented symbolic posterior evaluator. This is entropy-optimal within the frozen candidate/hypothesis family, but NOT a fully general causal planner.",
+    "random_policy": "Select 3 unique intervention kinds via independent per-seed SHA256('WSP109-RANDOM-v1\\0'+little-endian seed + step plus kind) minimum priority, ignoring outcomes. Independently filter same hypothesis family and use posterior predictions; equal action budget.",
+    "fixed_policy": "Always query intervention kinds 0,1,2 in order; independent Bayes posterior predictions after three observations. Equal action budget.",
+    "conventional_logistic": "Train independent L2=0.03 convex binary logistic regression on same THREE (one-hot kind, observed feedback) pairs chosen by direct greedy. Deterministic zero init, Newton updates max 100, final gradient inf norm <=1e-9. No hidden truth, tune-free. Predict after/before via fixed additive logit threshold 0 and change by difference. This control is weaker than exact Bayes; never use it as sole conventional comparator.",
+    "no_feedback": "Predict false before and after regardless of features; 0 intervention feedback. Label as negative/no-feedback and note unequal information by design."
+  },
+  "metrics": {
+    "primary": [
+      "TRANSFER after-outcome accuracy (12 worlds x64)",
+      "TRANSFER action-change accuracy (actual changed and unchanged separately)",
+      "information advantage of direct greedy vs random/fixed at equal 3 actions",
+      "parity direct numeric vs symbolic same-feedback",
+      "direct greedy vs exact depth3 Bayes entropy-optimal planner and same-quality posterior"
+    ],
+    "secondary": [
+      "FIT identical metrics",
+      "posterior support count and bits residual Shannon entropy after 3 interventions",
+      "action traces and feedback receipt",
+      "all predictions SHA256 sealed before query truth, per arm, per cohort",
+      "conventional logistic train gradient residual, train accuracy",
+      "cold snapshot retention across 24 worlds, tamper negative",
+      "exact law novelty + entity separation",
+      "combined CPU/wall, parameter counts and hypothesis counts"
+    ],
+    "exit": "A qualification PASS requires direct/symbolic parity on identical feedback, 3 unique interventions used, no candidate posterior empty, full fit and transfer truth-change and no-change strata, residual ambiguity, deterministic cold replay and source/test boundaries. No accuracy or greedy-over-random success requirement; record a null as null. No SCIENTIFIC_PASS or direct-weight superiority unless strongest exact Bayesian and independent control beaten under predeclared proper scientific protocol (not available here)."
+  },
+  "constraints": {
+    "numpy": "2.2.6",
+    "python": "3.12",
+    "cpu_threads": 1,
+    "ceiling_seconds": 120,
+    "hosted_public_linux_and_windows_regression": true,
+    "independent_G29_both_os": true,
+    "protected_original_WSP101_no": true,
+    "historical_wikidata_no": true,
+    "accepted_model_weights_no": true,
+    "model_promotion_no": true,
+    "merge_no": true,
+    "controller_and_scheduler_no": true,
+    "private_runner_no": true,
+    "paid_apis_no": true,
+    "artifact_upload_no": true
+  },
+  "scientific_caveat": "The full 36 candidate hypothesis family and action semantics are programmed into all Bayesian arms. Success demonstrates bounded synthetic inference from a known hypothesis class, not discovery of alien primitives, language knowledge, real-world action learning or AGI. A novel direct weight substrate has NOT been qualified as superior."
+}
