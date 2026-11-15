@@ -162,6 +162,8 @@ def run():
         density=Counter()
         edge_correct=0
         edge_total=0
+        edge_confusion=Counter()
+        node_confusion=[Counter() for _ in range(4)]
         per_world=[]
         for row in records:
             w=row["world"]
@@ -176,16 +178,27 @@ def run():
             else:
                 bundle=row[category]
                 guessed=None
-            one_correct=sum(int(y==transfer_effect(w,s,a,PRIMARY_SEED))
-                            for s,a,y in bundle["heldout"])
+            one_correct=0
+            for s,a,y in bundle["heldout"]:
+                answer=transfer_effect(w,s,a,PRIMARY_SEED)
+                one_correct+=int(y==answer)
+                for bit in range(4):
+                    truth=(answer>>bit)&1
+                    predicted=(y>>bit)&1
+                    key="tp" if truth and predicted else ("fp" if predicted else ("fn" if truth else "tn"))
+                    node_confusion[bit][key]+=1
             correct+=one_correct
             total+=len(bundle["heldout"])
             density[ecount]=(density.get(ecount,(0,0))[0]+one_correct,
                              density.get(ecount,(0,0))[1]+len(bundle["heldout"]))
             per_world.append(one_correct/len(bundle["heldout"]))
             if guessed is not None:
-                edge_correct+=sum(int((guessed>>i&1)==(actual_mask>>i&1))
-                                  for i in range(6))
+                for i in range(6):
+                    truth=(actual_mask>>i)&1
+                    predicted=(guessed>>i)&1
+                    edge_correct+=int(predicted==truth)
+                    key="tp" if truth and predicted else ("fp" if predicted else ("fn" if truth else "tn"))
+                    edge_confusion[key]+=1
                 edge_total+=6
             for start,actions,guess_sequence in bundle["trajectory"]:
                 state=start
@@ -202,6 +215,12 @@ def run():
           "trajectory_accuracy":trajectories_correct/(WORLDS*8),
           "step_accuracy":steps_correct/steps_total,
           "graph_bit_accuracy":edge_correct/edge_total if edge_total else None,
+          "graph_edge_precision":edge_confusion["tp"]/max(1,edge_confusion["tp"]+edge_confusion["fp"]) if edge_total else None,
+          "graph_edge_recall":edge_confusion["tp"]/max(1,edge_confusion["tp"]+edge_confusion["fn"]) if edge_total else None,
+          "per_node_bit":{str(i):{"tp":n["tp"],"fp":n["fp"],"fn":n["fn"],"tn":n["tn"],
+            "precision":n["tp"]/max(1,n["tp"]+n["fp"]),
+            "recall":n["tp"]/max(1,n["tp"]+n["fn"])}
+            for i,n in enumerate(node_confusion)},
           "per_density":{str(k):{"correct":v[0],"total":v[1],
                                  "accuracy":v[0]/v[1]} for k,v in sorted(density.items())},
           "_world_accuracy":per_world
