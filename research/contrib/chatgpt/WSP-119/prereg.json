@@ -33,7 +33,7 @@
       12
     ],
     "cap": 12,
-    "source_budget_max": "24 worlds*4 laws*4 tiers*4 arms*12 feedback queries=4608 source responses, with no secret/real data. Four arms: direct-active, direct-passive, direct-no-update, exact-symbolic-active."
+    "source_budget_max": "24 worlds*4 laws*4 tiers*4 arms*12 feedback queries = 18,432 total source responses, of which 4,608 per arm (no reserved/protected source)."
   },
   "arms": {
     "direct_active": "One 216x2 signed-int32 local support/contradiction matrix, no gradients. At each step before feedback, choose a previously unqueried source among 40 allowed that maximizes disagreement among still-viable law hypotheses' predicted visible destinations, with unknown-path outcomes treated as their own bucket. Maximize Gini partition entropy, deterministic low-ID tie break. After actual source result arrives, update positive/contradiction counts only for fully visible candidate paths; missing paths do not generate synthetic negative observations. Count real contradiction microfeedback and entropy change. Every new source query has exactly one verified fact, never a self-generated unverified label.",
@@ -54,5 +54,6 @@
     "scheduler_or_queue_authority": false,
     "source_safe_only": true
   },
-  "limitations": "Toy three-hop class supplied in advance, no independent family or fully trained GRU/MLP. FKP-only public fixture cannot prove normal AI emergence or self-generating new relationship types; tests only whether an internal prediction-error/curiosity microfeedback loop increases efficient acquisition under frozen information controls."
+  "limitations": "Toy three-hop class supplied in advance, no independent family or fully trained GRU/MLP. FKP-only public fixture cannot prove normal AI emergence or self-generating new relationship types; tests only whether an internal prediction-error/curiosity microfeedback loop increases efficient acquisition under frozen information controls.",
+  "amendment_before_implementation": "Arithmetic-only correction: earlier 4,608 figure counted one of four arms, not all four. This prereg amendment precedes source/learner implementation and any data observations; all other frozen seeds/budgets/thresholds unchanged."
 }
