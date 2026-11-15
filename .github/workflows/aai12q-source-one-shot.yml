@@ -1,0 +1,103 @@
+name: AAI-12Q first frozen causal invariant development and G29 atlas
+on:
+  push:
+    branches: [research/aai12q-contrastive-intervention-invariants-20261114]
+    paths: [.github/workflows/aai12q-source-one-shot.yml]
+permissions:
+  contents: write
+concurrency:
+  group: aai12q-frozen-first-dev-once-20261114
+  cancel-in-progress: false
+jobs:
+  source-dev:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-12Q frozen intervention-effect invariant first DEV one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Immutable parent, prereg BEFORE mechanism and unmodified strongest controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '94817f9d3f24d973bf1d6e85505a4711d8e08cbd'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai12q-source-one-shot.yml'
+          test "$(git rev-parse 8fd3fab547db14b997345f4d6dbc0aaaaf831e1a^)" = 'abd374e7dc433981df991e103d8ebdff0b5eb093'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12Q/prereg.json)" = '9ded7ffd9829008639ff6239968859179de2c92a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12Q/prereg.json)" = "$(git rev-parse 8fd3fab547db14b997345f4d6dbc0aaaaf831e1a:research/contrib/chatgpt/AAI-12Q/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12Q/invariants.py)" = 'c7e329302f8b4faecc3a22394d1daba1c2851229'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12Q/dev.py)" = '94d69d0d0af1b78ae5a34b86504fe968c39cd058'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12Q/test_invariants.py)" = '0d3d469e584c31cc2e303812319d5a151a382332'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/prereg.json)" = '74f57c2175e7ae87926e4f7fd985d741f719c0a9'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/world.py)" = '488c54aee283434599f106b22b6008cd596bac37'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/controls.py)" = '042b36f66fa14e0c7c7f39fe709ed58df9776eed'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/admit.py)" = '1aedb903e6c359c962b3d36009d78ce2d2f235b2'
+          test -z "$(git status --porcelain)"
+          echo AAI12Q_SOURCE_PREREG_FIRST_AND_ORIGINAL_CONTROL_BLOBS_PASS
+      - name: Mechanism source tests, public transition invariants, negative first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-12Q -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/AAI-12Q/dev.py --primary >/dev/null 2>&1; then
+            echo AAI12Q_UNAUTHORIZED_SCIENCE_FIRST_USE >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI12Q_FOCUSED_CAUSAL_INVARIANT_TESTS_PASS
+      - name: Exactly one preregistered development gate on unchanged source mechanical worlds
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-12Q/dev.py --source-dev
+          test -z "$(git status --porcelain)"
+          echo AAI12Q_FROZEN_MECHANICAL_DEV_RECORDED_NO_SCIENCE
+  atlas:
+    needs: source-dev
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-pinned original 3 G29 generated files only
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '94817f9d3f24d973bf1d6e85505a4711d8e08cbd'
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-12Q original source-pinned generated-only G29 atlas'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/research/aai12q-contrastive-intervention-invariants-20261114 | cut -f1)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai12q-contrastive-intervention-invariants-20261114
+          echo AAI12Q_EXACT_G29_SOURCE_ATLAS_THREE_FILES_ONLY_PASS
