@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.sourceblind-development-prereg.v1",
+  "experiment_id": "SFI-02-LOCAL-MICROFEEDBACK-COMPOSITIONAL-PROGRAM-INDUCTION",
+  "project": "Yggdrasil",
+  "status": "FROZEN_BEFORE_CANDIDATE_IMPLEMENTATION_AND_SCORE",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_commit": "91ea7526ec9a3b966318dfd6976363c3cdbb7b0a",
+  "source_path": "research/contrib/chatgpt/SFI-01/source_audit.py",
+  "source_blob": "643abf8af9047ef888a0d9952f71df2d2b18dcdb",
+  "scope": "Source-blind engineering/dev diagnostic on 32 ALREADY-EXPOSED PUBLIC SFI-01 worlds 0..31, not virgin scientific held data; no original FKP17 978500..978531 /978600..978663; no first-use of any private source",
+  "hypothesis": "Directly written local counterexample microfeedback can identify compositional delayed laws from observed public action outcomes and choose actions that achieve real goals, but should be compared against exact conventional symbolic program search with the identical generic grammar/information/actions.",
+  "public_observation": "After the action, sanitized six-field public transition: 8 uint4 before, 8 uint4 after, action in [0,7], earned reward (-0.25,0,0.25,1), done, up to 16 sanitized prior transitions; no generator law label/shift or alternate actions",
+  "learned_delay": "source reward at t is outcome of action t-2; input for credited action includes its publicly visible before-context bit, its predecessor action t-3, predecessor-2 action t-4 (0 when unavailable) and its own action",
+  "family_ignorance": "No model may import source_audit or enumerate SFI-01's named law-family functions. An openly declared GENERIC compositional program grammar with 4 primitive bit/modular operations, two temporal parent terminals, a zero terminal, an 8-valued literal and linear context gain is allowed; this contains the source families, which prohibits any claim of new operator invention.",
+  "fixed_program_grammar": {
+    "outer_source": "previous_action OR action_two_before",
+    "inner_source": "action_two_before OR constant_zero",
+    "primitive_ops": [
+      "add_mod8",
+      "subtract_mod8",
+      "reverse_subtract_mod8",
+      "xor"
+    ],
+    "literal": "0..7",
+    "context_gain": "0..7",
+    "output": "(outer_op(outer_source,inner_op(inner_source,literal)) + context_gain * public_context_bit) mod 8",
+    "programs": 4096
+  },
+  "arms": [
+    "MICROFEEDBACK_DIRECT_COUNT: 4096-bit source-blind consistent-rule presence mask; update only on delayed earned evidence, predict by equal eligible-rule vote",
+    "EXACT_SYMBOLIC_GENERIC: separate conventional exact consistent-program reference using same public grammar and observations; maximum posterior votes, deterministic tie",
+    "CONTEXT_EXACT_TABLE: non-parametric (previous,previous2,context,action) public positive/negative lookup; abstain on unseen with fixed default",
+    "WRONG_CREDIT: public reward incorrectly attributed to immediately executed action",
+    "PUBLIC_RANDOM: deterministic source-blind action-random reference",
+    "ORACLE_UPPER: evaluator-only source private hidden law for headroom, never passed to learner"
+  ],
+  "budgets": {
+    "worlds": 32,
+    "shared_exploration_actions_per_world": 24,
+    "real_onpolicy_scored_actions_per_arm_world": 16,
+    "additional_learner_world_actions": 0,
+    "max_parameter_bytes": 1048576,
+    "random_seed_for_bootstrap": 20261115,
+    "bootstrap_draws": 1000,
+    "all_candidate_choices_before_own_action_outcome": true,
+    "cold_deterministic_inprocess_replay": true,
+    "no_trained_neural_benefit_claim": true
+  },
+  "frozen_metrics": {
+    "primary": "mean 16-step ACTUALLY EARNED on-policy reward across 32 worlds, candidate vs strongest exact generic symbolic",
+    "secondary": "goal-termination worlds, candidate vs exact table, wrong-credit and random; operator-hypothesis count after 24 public exploration; raw learned bytes, wall and action cost",
+    "paired_world_delta_required": 0.1,
+    "paired_world_bootstrap_95_lower_required_gt": 0.02,
+    "candidate_goal_worlds_required_min": 8,
+    "candidate_earned_mean_required_min": 0,
+    "candidate_vs_tabular_mean_required_min": 1,
+    "negative_family_limit": "if generic DSL includes source four families, this cannot be used to claim unfamiliar out-of-grammar discovery even on a PASS",
+    "scientific_pass_rule": "FALSE on public nonblind cohort; candidate vs strongest symbolic tie or defeat => DEV_NO_GO_UNIQUE_SUBSTRATE, not native acceptance",
+    "stop_rule": "Freeze the first full outcomes and no post-result tuning of candidate, grammar, controls, constants or thresholds; preserve null/negative"
+  },
+  "qualification": "Focused tests and Git SHA/type/negative controls first. Full final root regression both OS and G29 before any integration. Research only and no automatic promotion.",
+  "authority": {
+    "no_native_main_write": true,
+    "no_pr_merge": true,
+    "no_new_scheduler_runner_controller": true,
+    "no_paid_apis": true,
+    "no_protected_first_use": true,
+    "no_sibling_model_change": true,
+    "no_native_model_acceptance": true
+  }
+}
