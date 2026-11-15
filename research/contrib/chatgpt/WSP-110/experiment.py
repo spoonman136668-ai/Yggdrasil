@@ -31,7 +31,7 @@ from controls import SymbolicAssociationControl,ConventionalOperatorControl,L2,T
 
 
 def _metrics(predicted,truth):
-    a=np.asarray(predicted,dtype=np.bool_)
+    a=np.asarray(list(predicted),dtype=np.bool_)
     y=np.asarray(truth,dtype=np.bool_)
     if a.shape!=y.shape or a.ndim!=1:
         raise ValueError("heldout prediction source/answer mismatch")
