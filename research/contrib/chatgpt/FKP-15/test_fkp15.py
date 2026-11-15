@@ -162,7 +162,7 @@ class TestFKP15(unittest.TestCase):
         import ast
         s=(HERE/"source.py").read_text(encoding="utf-8")
         t=(HERE/"run_dev.py").read_text(encoding="utf-8")
-        nodes=ast.walk(ast.parse(s+"\n"+t))
+        nodes=(n for program in (s,t) for n in ast.walk(ast.parse(program)))
         self.assertFalse(any(isinstance(node,ast.Attribute) and node.attr in
                              ("unwrapped","_env","path","position")
                              for node in nodes))
