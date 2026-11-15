@@ -23,3 +23,7 @@ python scripts/build_code_atlas.py --check-if-present
 **Merge decision:** even if this opt-in mechanism passes exact-source dual-OS regression, no real learned Yggdrasil knowledge has been promoted. To activate it as a model capability, separately accept a trusted environment evidence-ingestion producer, compare cold-retention/cost on independently held-out native tasks against strongest matched controls, verify no duplication and no degradation of incumbent model decisions, and separately authorize accepted-state promotion. Never copy WSP114/115 world-specific experimental weights into different-semantic YPC1 counts. FKP-01's separate 128-concept priming research is not a substitute and is not edited by this PR.
 
 **No scope expansion:** Yggdrasil only. No Wingless/Hybrid/FORGE, CKB controller, scheduling, native runner, private source, original WSP115 first-use, paid API, model acceptance or deployment changes.
+
+## Fabricated-source fixture verification
+
+Both GitHub-hosted Windows 2022 and Ubuntu focused NKR-01 tests, incumbent causal-cells/Wilson tests, and exact preregistration were **SUCCESS** at `4dee776c2b5e8b05dc98a61e89320865330ee12c`, [run #43711589118](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43711589118). This is pre-acceptance DEV evidence only. Final exact-source qualification and independent G29 both operating systems remain mandatory.
