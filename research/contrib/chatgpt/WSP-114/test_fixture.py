@@ -67,6 +67,37 @@ class TestNativeLargeNonlinearCausalProgramming(unittest.TestCase):
             self.assertEqual(native.predict(s,a),y)
             self.assertEqual(symbolic.predict(s,a),y)
 
+    def test_fabricated_full_64_node_1024_intervention_stress(self):
+        nodes=64
+        coeff=fake_coefficients(nodes)
+        native=NativeWriter(nodes,"fabricated-full-capacity")
+        symbolic=IndependentSymbolic(nodes)
+        for step in range(1024):
+            s,a=native.choose("fabricated-max-capacity")
+            y=synthetic_effect(nodes,coeff,s,a)
+            native.observe(s,a,y)
+            symbolic.observe(s,a,y)
+            self.assertEqual(native.predict(s,a),y)
+        self.assertEqual(len(native.observations),1024)
+        with self.assertRaises(ValueError):
+            native.choose("fabricated-max-capacity")
+        symbolic.fit()
+        self.assertEqual(native.ranks,symbolic.ranks)
+        self.assertEqual(native.active_weights,symbolic.coefficients)
+        restored=NativeWriter.restore(native.checkpoint())
+        self.assertEqual(restored.active_weights,native.active_weights)
+        sample=128
+        direct_correct=0
+        symbolic_correct=0
+        for step in range(sample):
+            s,a=NativeWriter.candidate("fabricated-unknown",step,0,nodes,
+                                       namespace="WSP114|FIXTURE|HELDOUT")
+            answer=synthetic_effect(nodes,coeff,s,a)
+            direct_correct+=int(native.predict(s,a)==answer)
+            symbolic_correct+=int(symbolic.predict(s,a)==answer)
+        self.assertGreaterEqual(direct_correct/sample,0.95)
+        self.assertEqual(direct_correct,symbolic_correct)
+
     def test_checkpoint_cold_and_tamper_negatives(self):
         m=NativeWriter(16,"fabricated")
         coeff=fake_coefficients(16)
