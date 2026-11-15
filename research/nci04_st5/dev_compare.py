@@ -121,6 +121,7 @@ def actual_episode(law,seed,trial,models,phase,train=True,
     for model in models.values():
         model.reset_episode()
     source_sha=sha256()
+    source_events=bytearray()
     scores={n:None for n in models}
     costs={n:{"wall_ns":0,"cpu_ns":0} for n in models}
     source_wall=0;source_cpu=0;actor_wall=0
@@ -140,7 +141,9 @@ def actual_episode(law,seed,trial,models,phase,train=True,
         source_cpu+=time.process_time_ns()-cpu
         if tuple(a^b for a,b in zip(before,after))!=target:
             raise ValueError("ST5_ACTUAL_SOURCE_CONSEQUENCE_MISMATCH")
-        source_sha.update(bytes((*before,action,*after,*target)))
+        event=bytes((*before,action,*after,*target))
+        source_events.extend(event)
+        source_sha.update(event)
         if step==len(ACTIONS)-1 and phase in ("recall","unfamiliar"):
             for name in models:
                 scores[name]=brier(predictions[name],target)
@@ -165,6 +168,7 @@ def actual_episode(law,seed,trial,models,phase,train=True,
         max_rss=max(max_rss,PROCESS.memory_info().rss)
     return {
         "source_sha256":source_sha.hexdigest(),
+        "original_public_event_bytes_hex":source_events.hex(),
         "genuine_original_source_steps":len(ACTIONS),
         "preaction_delayed_probe_brier":scores if phase in
             ("recall","unfamiliar") else None,
@@ -202,7 +206,9 @@ def train_once(output):
                 )
                 original_episodes+=1
                 actual_count+=outcome["genuine_original_source_steps"]
-                law_sha.update(bytes.fromhex(outcome["source_sha256"]))
+                law_sha.update(bytes.fromhex(
+                    outcome["original_public_event_bytes_hex"]
+                ))
                 for n in NAMES:
                     for part in ("cpu_ns","wall_ns"):
                         training_cost[n][part]+=outcome["model_cost_ns"][n][part]
