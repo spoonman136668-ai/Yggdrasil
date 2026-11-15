@@ -1,0 +1,103 @@
+{
+  "schema": "wsp115.high-first-independent-world-sharded-rescue.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_ORIGINAL_WORLD_SOURCE",
+  "lineage": {
+    "parent_repo": "spoonman136668-ai/Yggdrasil",
+    "parent_pr": 1085,
+    "parent_sha": "5ad70cf8dd2fb32d47afc5df53a8776b53763950",
+    "parent_tree": "864bcded0c1f68592a5485f6cd143463bbdc0d7e",
+    "previous_one_shot_run": 43699116882,
+    "previous_job": 132768156237,
+    "previous_exit": "CANCELLED after full 75-minute per-job timeout; no WSP114_HIGH_FIRST_DEV result emitted; consumed/censored original WSP114 v1, no rerun"
+  },
+  "research_question": "Does the native numerical causal weight writer learn unfamiliar 64-variable nonlinear intervention consequences under 1024 observations per world, and at what earlier observation prefix does it meet >=95% exact heldout full-state accuracy without underperforming an exact symbolic control? High-first capacity is maintained, while 16 worlds are safely distributed across eight separately qualified read-only parallel shards to eliminate wall-time censoring.",
+  "hypothesis": "A new isolated 64-node cohort can be evaluated without modifying the native learning mechanism or lowering the test difficulty, if we shard whole worlds and preseal each world's all-arm actions and predictions before reading its heldout labels. Empirical superiority remains null unless it actually beats the exact symbolic controls.",
+  "primary": {
+    "nodes": 64,
+    "world_count": 16,
+    "world_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "shard_count": 8,
+    "shard_worlds": [
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        14,
+        15
+      ]
+    ],
+    "max_real_intervention_consequences_per_world": 1024,
+    "total_intervention_consequences_per_arm": 16384,
+    "heldout_queries_per_world": 512,
+    "total_full_64bit_heldout_predictions_per_arm_per_prefix": 8192,
+    "budget_ladder_descending": [
+      1024,
+      512,
+      256,
+      128,
+      64,
+      32,
+      16,
+      8
+    ],
+    "domain_separator": "New hidden generator and heldout namespace WSP115|*|v2 (not WSP114|*|v1); all 16 worlds new; old WSP114 v1 first use remains consumed and may not be rerun, inspected or score-tuned.",
+    "same_science": "Use exact same native.py and controls.py as WSP114 at pinned SHA. Preserve 64-node causal XOR+quadratic 12-parent window and generic GF2 solver, 5 arms/direct/symbolic/ridge/random/passive + direct-action matched symbolic, zero memory and pair ablation. No reduction of observations, world count, heldout size or control strength.",
+    "parallelization": "Exactly eight matrix jobs each handles two worlds. Each shard must be immutable-source read-only, separately emit a SHA256 seal over all 2-world, all-arm, all-prefix transcripts and predictions before opening any heldout labels for its own two worlds. No model or configuration updates across shards, no result-dependent adaptive reconfiguration, and no shared learner state. All eight world cohorts independent under new SHA256 namespace.",
+    "train": "32 synthetic public fully observed linear-only worlds x256 state/action observations each; common source all arms; original quadratic transfer novel within same feature grammar",
+    "scoring": "Each shard outputs a complete, self-contained JSON receipt including world IDs, all 8 exact prefix accuracy counts for each control and direct, per-world accuracy, cold restoration and tamper, source pin, train evidence SHA and wall/CPU diagnostics. Cross-shard aggregate uses exactly weighted counts, not averages over rounded percentages. If any shard times out, fails or has mismatched immutable SHA, mark the full scientific outcome incomplete; no cherry-picked aggregate.",
+    "conditional_backoff": "Start 64 and 1024 only. At aggregate >=95% exact heldout, report smallest qualified prefix 1024→8 with <=1pp accuracy deficit vs strongest independent exact symbolic. If 64 primary misses >=95% then a new separately preregistered capacity backoff may use independent new 48-node then 32-node worlds; no 48/32 test runs before 64 primary result. No unqualified adaptive cohort."
+  },
+  "metrics": {
+    "primary": "16-world/8192-query exact 64bit whole-state heldout accuracy at 1024 interventions with independent exact GF2 symbolic as strongest control, also same-action symbolic, prereg 95% absolute accuracy gate, exact 2pp superiority gate",
+    "secondary": "The original every-prefix 1024,512,256,128,64,32,16,8 full-state exact and per-bit accuracy, rank distributions, direct synapse cold replay, invalid checkpoint tamper rejection, zero-memory/pair-ablation and passive/random negatives. Record per-world and per-shard, not just global.",
+    "limitations": "Prerecorded WSP114 evaluation does NOT compute full preregistered graph coefficient recall, chained rollout, calibrated per-arm process peak memory or independently replicated 2x runtime; WSP115 preserves the explicitly implemented narrower DEV metrics. NEVER relabel these missing science metrics complete. Resource measures will not qualify 2x superiority until new matched end-to-end independent qualifier.",
+    "scientific_pass": false,
+    "stop": "Any one missing shard, failure, timeout, inconsistent receipts or source drift -> INCOMPLETE; never fill a missing shard with rerun against the same partially consumed original cohort. Repair only under new preregistered independent seeds/qualified follow-up. Do not infer learning FAIL from infrastructure cancellation."
+  },
+  "authority": {
+    "changes": "Isolated new stacked research-only draft branch and prereg; no WSP114 original edits/replay, no Yggdrasil main accepted model, Wingless/Hybrid/FORGE, no new controllers/schedules/self-hosted runners/paid APIs, no merge/promotion/deployment",
+    "qualified_path": "New fake oracle fixture (not new v2 hidden oracle) Linux+Windows then complete WSP80–115 + Yggdrasil root regression, pinned G29 source atlas and independent G29 both OS, then one-shot original v2 8x2-world source-identical shards, exact SHA/tree; no first-use until all prerequisites pass"
+  }
+}
