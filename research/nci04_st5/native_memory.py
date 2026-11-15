@@ -154,7 +154,7 @@ class NativeCausalRecall8:
 
     def predict(self,public,action):
         validate_bits(public);validate_action(action)
-        if action!=ACTOR[self.step] or self.step>=len(ACTOR):
+        if self.step>=len(ACTOR) or action!=ACTOR[self.step]:
             raise ValueError("ST5_NATIVE_ACTOR_STEP_DRIFT")
         if self.step!=4:
             return [.5]*N
