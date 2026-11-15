@@ -1,6 +1,14 @@
 name: QTR-01 F39 source-only preflight and full regression
 
 on:
+  pull_request:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f39-source-preflight.yml
+      - research/contrib/chatgpt/QTR-01/f39_*.py
+      - research/contrib/chatgpt/QTR-01/test_f39_*.py
+      - research/contrib/chatgpt/QTR-01/f39_source_disjoint_protocol_candidate.json
   push:
     branches:
       - research/qtr01-f39-source-disjoint-preflight-20261115
