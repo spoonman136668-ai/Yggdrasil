@@ -22,14 +22,14 @@ def run_episode(models,law=3,seed=100,trial=0,train=True):
     world=OriginalWorld(law,seed,trial)
     for m in models.values():m.reset_episode()
     last={}
-    for action in ACTIONS:
+    for step,action in enumerate(ACTIONS):
         public=world.public()
         predictions={n:m.predict(public,action) for n,m in models.items()}
         after,target=world.step(action)
         for n,m in models.items():
             response=m.observe(public,action,target,after,train=train)
             assert response==predictions[n]
-        if action==3 and len(last)==0 and any(m.step==5 for m in models.values()):
+        if step==4:
             last={n:brier(predictions[n],target) for n in models}
     return last
 
