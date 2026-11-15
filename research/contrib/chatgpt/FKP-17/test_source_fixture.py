@@ -112,9 +112,10 @@ class PublicFixtureTests(unittest.TestCase):
 
     def test_no_nonfixture_module_imports_private_evaluator(self):
         root = Path(__file__).parent
-        allowed = {"source_fixture.py", "test_source_fixture.py"}
         for path in root.glob("*.py"):
-            if path.name in allowed:
+            # Fixtures may import their source; production learner modules
+            # must never import a simulator or its private law state.
+            if path.name == "source_fixture.py" or path.name.startswith("test_"):
                 continue
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
