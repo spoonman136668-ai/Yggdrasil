@@ -1,0 +1,100 @@
+name: FKP17 public TRAIN/VAL causal identifiability audit (no held)
+on:
+  push:
+    branches: [ci/fkp17-structured-source-qualification-once-20261115]
+    paths: [.github/workflows/fkp17-public-identifiability-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: fkp17-public-known-source-identifiability-once-20261115
+  cancel-in-progress: false
+jobs:
+  public-only-audit:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-17): once-only public training identifiability audit' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Stable source checkout and read-only token
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: b460d1401be351fc2577c635f5f9d0c718a655d6
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Public-only 24 action history identifiability vs one-transition symbolic control
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "b460d1401be351fc2577c635f5f9d0c718a655d6"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/prereg.json)" = 17d676c9374060515c7ebee2e2fdc262a884343c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/source_fixture.py)" = c715da5200e64f4a6708bb8d68841b173fad7a62
+          python -B - <<'PY'
+          import collections,hashlib,json,sys
+          sys.path.insert(0,"research/contrib/chatgpt/FKP-17")
+          import source_fixture as s
+          # Use only published learner-facing public transitions. Never access
+          # _TrainingWorld, latent laws, withheld seeds or future alternatives.
+          cohorts=[("TRAIN",s.TRAIN),("VALIDATION",s.VALIDATION)]
+          report={}
+          for name,seeds in cohorts:
+              n_world=0; n_steps=0; exact=0; first_symbolic_correct=0
+              no_done=0; observed_distinct=[]; pos=neg=0; public=hashlib.sha256()
+              for seed in seeds:
+                  actions=s.public_actions(seed,24)
+                  rows=s.collect_public(seed,actions)
+                  assert len(rows)==24 and rows[0].history==()
+                  n_world+=1
+                  observed_distinct.append(len(set(actions)))
+                  shifts=[]
+                  for r in rows:
+                      touched=[i for i,(x,y) in enumerate(zip(r.before,r.after)) if x!=y]
+                      assert len(touched)==2 and r.action in touched, "STRUCTURAL_SOURCE_DIFF_DRIFT"
+                      child=next(i for i in touched if i!=r.action)
+                      shift=(child-r.action)%8
+                      shifts.append(shift)
+                      assert shift in range(1,8)
+                      n_steps+=1
+                      no_done+=not r.done
+                      pos+=int(r.reward>0)
+                      neg+=int(r.reward<0)
+                      public.update(json.dumps(r,separators=(",",":")).encode())
+                  # One observed PUBLIC action already identifies the graph
+                  # shift, enabling an independent symbolic hypothesis to
+                  # predict the changed child for EVERY future action.
+                  inferred=shifts[0]
+                  matches=sum(shift==inferred for shift in shifts)
+                  exact+=matches
+                  if matches==len(shifts):first_symbolic_correct+=1
+              report[name]={
+                  "public_worlds":n_world,"public_action_consequences":n_steps,
+                  "one_public_transition_recovers_child_relation_worlds":first_symbolic_correct,
+                  "one_transition_symbolic_edge_predictions_correct":exact,
+                  "terminal_done_count":n_steps-no_done,
+                  "distinct_actions_per_world_min":min(observed_distinct),
+                  "distinct_actions_per_world_mean":sum(observed_distinct)/len(observed_distinct),
+                  "positive_public_reward_events":pos,
+                  "negative_public_reward_events":neg,
+                  "public_receipt_sha256":public.hexdigest()
+              }
+              assert first_symbolic_correct==n_world and exact==n_steps
+              assert n_steps==24*n_world and no_done==n_steps
+          assert len(s.FOUNDATION)==128 and s.FOUNDATION_RECORDS==32768
+          for held in [978500,978531,978600,978663,976500]:
+              try:s.cohort(held)
+              except PermissionError:pass
+              else:raise AssertionError("HELD_SOURCE_OPENED")
+          print("FKP17_SOURCE_IDENTIFIABILITY_PUBLIC_DIAGNOSTIC="+json.dumps(report,sort_keys=True))
+          print("FKP17_PUBLIC_ONLY_NO_HELD_ACTION_SOURCE=PASS")
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
