@@ -25,13 +25,10 @@ class F44BlindInterventionDEV(unittest.TestCase):
         p=json.loads(original)
         p["frozen_evaluation"]["thresholds"]["at_max_replicates_direct_recall_min"]=0.0
         with tempfile.TemporaryDirectory() as td:
-            before=PREREG.read_bytes()
-            try:
-                PREREG.write_text(json.dumps(p),encoding="utf-8")
-                with self.assertRaisesRegex(InvalidF44,"PREREG_BLOB_CHANGED"):
-                    freeze()
-            finally:
-                PREREG.write_bytes(before)
+            modified=Path(td)/"frozen_tampered.json"
+            modified.write_text(json.dumps(p),encoding="utf-8")
+            with self.assertRaisesRegex(InvalidF44,"PREREG_BLOB_CHANGED"):
+                freeze(modified)
         self.assertEqual(PREREG.read_bytes(),original)
 
     def test_deterministic_hidden_signed_graph_generation(self):
