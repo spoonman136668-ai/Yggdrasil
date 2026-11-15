@@ -1,0 +1,286 @@
+name: FKP12 frozen genuine Mystery Path causal learning and strong controls
+on:
+  push:
+    branches: [ci/fkp12-learning-one-shot-20261115]
+    paths: [.github/workflows/fkp12-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: fkp12-original-public-learning-20261115
+  cancel-in-progress: false
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-12): one-shot source-locked native causal learning qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    env:
+      SOURCE: 675c4b02288a9f91e8438ff2b8a00eb3f25e1f8d
+      SOURCE_TREE: e40202244336e2a185c4e4138594de00b4d4f58b
+      TARGET: research/fkp12-mysterypath-direct-causal-memory-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: No Git CRLF conversion
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 675c4b02288a9f91e8438ff2b8a00eb3f25e1f8d
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prereg FIRST, immutable exact source tree and seven FKP12 blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor eb2ab3758c090f653c0245f6d546c842fc670669 "$SOURCE"
+          git merge-base --is-ancestor 0db838594729832286592a8ae065c243f8d48f04 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/prereg.json)" = fca546f8b7a98f676f529df46563cb02dd4a8f53
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/source.py)" = d6b7d526d2562379b1a5f2d59928df9743387596
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/model.py)" = b8b99ac62a6c938f8b796a000b987c16b5b50ec5
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/baselines.py)" = 584becf44a1f18fc19c4cf122afb647c39d25e0f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/run_dev.py)" = f08ca09c91e3082ea4b0a49db56114bb05a8d43f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/test_fkp12.py)" = 27914295f26fa6b3c35d2e15b828d1c01eb603a9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-12/README.md)" = 282f248667a67a3dec2ce0885c80b899026e335c
+          echo FKP12_PREREG_AND_CODE_CUSTODY=PASS
+      - name: Generate only G29 source-atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+      - name: Source-preserving generated-only child commit on isolated research branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-12): refresh source-locked G29 atlas"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "candidate=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP12_QUALIFIED_SOURCE_SHA=$NEW"
+
+  fixture-and-final-regression:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 55
+    permissions:
+      contents: read
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Exact byte source config
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.candidate }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact native dependencies and fully trained PyTorch control requirement
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+          python - <<'PY'
+          import torch,numpy,gymnasium,pygame
+          assert torch.__version__=="2.5.1+cpu", torch.__version__
+          assert numpy.__version__=="1.26.4"
+          assert gymnasium.__version__=="0.29.0"
+          assert pygame.version.ver=="2.4.0"
+          print("FKP12_STRONG_CONVENTIONAL_RUNTIME=PASS")
+          PY
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp12-upstream"
+          git -C "$RUNNER_TEMP/fkp12-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp12-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+          test -z "$(git -C "$RUNNER_TEMP/fkp12-upstream" status --porcelain --untracked-files=all)"
+      - name: Original upstream/source custody plus model/GRU/MLP fixture tests WITHOUT original DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-12 -p test_fkp12.py -v
+          python - "$RUNNER_TEMP/fkp12-upstream" <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"research/contrib/chatgpt/FKP-12")
+          import source
+          assert source.source_custody(Path(sys.argv[1]))["source_sha"]==source.SOURCE_SHA
+          assert set(source.TRAIN).isdisjoint(source.DEV)
+          assert set(source.VALIDATION).isdisjoint(source.DEV)
+          print("FKP12_NEVER_OPENED_DEV_AND_PRIVATE_FIXTURE_PASS")
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp12-upstream" status --porcelain --untracked-files=all)"
+      - name: Mandatory complete inherited repo regression BEFORE original DEV first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP12_ALL_PLATFORMS_PRE_DEV_FULL_REGRESSION=PASS
+
+  original-public-dev:
+    needs: [atlas-only,fixture-and-final-regression]
+    if: needs.fixture-and-final-regression.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    permissions:
+      contents: read
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      train_receipt: ${{ steps.eval.outputs.train_receipt }}
+      validation_receipt: ${{ steps.eval.outputs.validation_receipt }}
+      dev_receipt: ${{ steps.eval.outputs.dev_receipt }}
+      direct_memory: ${{ steps.eval.outputs.direct_memory }}
+      classification: ${{ steps.eval.outputs.classification }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.candidate }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pinned upstream and fixed CPU-only strong conventional runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp12-upstream"
+          git -C "$RUNNER_TEMP/fkp12-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+      - name: Train ALL controls on TRAIN and VALIDATION before one public DEV; preserve negatives
+        id: eval
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-12/run_dev.py --public-dev --upstream-root "$RUNNER_TEMP/fkp12-upstream" > "$RUNNER_TEMP/fkp12-original.json"
+          python - "$RUNNER_TEMP/fkp12-original.json" "$GITHUB_OUTPUT" <<'PY'
+          import json,sys
+          r=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert r["schema"]=="fkp12.public-dev-direct-reward-learning.v1"
+          assert r["original_public_dev_consumed"] and r["learner_trained"]
+          assert not r["protected_first_use"] and not r["transfer_first_use"]
+          assert not r["scientific_pass"] and not r["native_yggdrasil_modified"]
+          assert r["raw_direct_weights_bytes"]==49152
+          assert r["direct_cold_prediction_bit_exact"] and r["direct_cold_tamper_rejected"]
+          assert set(r["conventional_training"])=={"GRU","MLP","LOGISTIC"}
+          assert all(r["conventional_training"][m]["full_epochs_per_seed"]==24 for m in ("GRU","MLP","LOGISTIC"))
+          assert r["source_cohorts"]["development"]["episodes"]==16
+          with open(sys.argv[2],"a",encoding="utf-8") as out:
+              for split,key in (("train","train_receipt"),("validation","validation_receipt"),("development","dev_receipt")):
+                  out.write(key+"="+r["source_receipts"][split]+"\n")
+              out.write("direct_memory="+r["direct_cold_snapshot_sha256"]+"\n")
+              out.write("classification="+r["classification"]+"\n")
+          print("FKP12_ORIGINAL_DEV="+json.dumps({k:r[k] for k in (
+              "classification","source_cohorts","best_full_conventional",
+              "paired_dev_gain_over_strongest_brier","paired_dev_gain_bootstrap_ci95",
+              "preregistered_dev_signal","per_policy_nonregression",
+              "scores","conventional_training","total_wall_seconds","total_cpu_seconds"
+          )},sort_keys=True))
+          PY
+      - name: Final mandatory full regression at source-locked candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/fkp12-upstream" status --porcelain --untracked-files=all)"
+          echo FKP12_LINUX_POST_TRAIN_DEV_FULL_REGRESSION=PASS
+
+  windows-source-replay:
+    needs: [atlas-only,original-public-dev]
+    if: needs.original-public-dev.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+      EXPECTED_TRAIN: ${{ needs.original-public-dev.outputs.train_receipt }}
+      EXPECTED_VALIDATION: ${{ needs.original-public-dev.outputs.validation_receipt }}
+      EXPECTED_DEV: ${{ needs.original-public-dev.outputs.dev_receipt }}
+      EXPECTED_DIRECT: ${{ needs.original-public-dev.outputs.direct_memory }}
+    steps:
+      - name: Prevent CRLF rewriting
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.candidate }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact public original environment for deterministic replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp12-upstream"
+          git -C "$RUNNER_TEMP/fkp12-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+      - name: Reproduce already-consumed source and programmed weights, NOT virgin DEV or new science
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-12/run_dev.py --replay-consumed-public-source --upstream-root "$RUNNER_TEMP/fkp12-upstream" > "$RUNNER_TEMP/fkp12-replay.json"
+          python - "$RUNNER_TEMP/fkp12-replay.json" <<'PY'
+          import json,os,sys
+          d=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert d["schema"]=="fkp12.public-source-replay.v1"
+          assert d["split_receipts"]["train"]==os.environ["EXPECTED_TRAIN"]
+          assert d["split_receipts"]["validation"]==os.environ["EXPECTED_VALIDATION"]
+          assert d["split_receipts"]["development"]==os.environ["EXPECTED_DEV"]
+          assert d["direct_programmed_snapshot_sha256"]==os.environ["EXPECTED_DIRECT"]
+          assert not d["protected_first_use"] and not d["transfer_first_use"] and not d["scientific_pass"]
+          print("FKP12_WINDOWS_EXACT_SOURCE_AND_DIRECT_WEIGHT_REPLAY=PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/fkp12-upstream" status --porcelain --untracked-files=all)"
+          echo FKP12_WINDOWS_FINAL_FULL_REGRESSION=PASS
