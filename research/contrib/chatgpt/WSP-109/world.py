@@ -10,12 +10,20 @@ from __future__ import annotations
 from hashlib import sha256
 from itertools import combinations
 from pathlib import Path
+import importlib.util
 import struct
 import sys
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / "WSP-108"))
-from world import query_scene, path_features
+_parent_world_path = HERE.parent / "WSP-108" / "world.py"
+_spec = importlib.util.spec_from_file_location("wsp108_causal_world", _parent_world_path)
+if _spec is None or _spec.loader is None:
+    raise ImportError("frozen WSP108 parent query generator unavailable")
+_parent_world = importlib.util.module_from_spec(_spec)
+sys.modules[_spec.name] = _parent_world
+_spec.loader.exec_module(_parent_world)
+query_scene = _parent_world.query_scene
+path_features = _parent_world.path_features
 
 FIT_SEEDS = tuple(range(31001, 31013))
 TRANSFER_SEEDS = tuple(range(41001, 41013))
