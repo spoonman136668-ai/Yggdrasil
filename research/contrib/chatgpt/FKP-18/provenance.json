@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.external-research-provenance.v1",
+  "experiment_id": "FKP-18-PUBLIC-DELAYED-COMPOSITIONAL-CREDIT",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/fkp18-delayed-compositional-credit-20261115",
+  "parent_research_commit": "95a20ce68a5d70f591f74865086b3b887d6ecc32",
+  "immutable_prereg_first_commit": "eda3eb3d6ba33a99980e8d0d54ac05bd748306f2",
+  "method_test_commit": "2fa725e9d1b52108151b48de4c6910880551a024",
+  "result_commit": "8a49b10d1905f1513f4ff007c18a0c3fb257eb61",
+  "paths": {
+    "research/contrib/chatgpt/FKP-18/public_delayed_study.py": {
+      "github_blob_sha": "a0f9731857e8a329df6ab508006b4be861e3a785",
+      "local_git_hash_object_sha": "a0f9731857e8a329df6ab508006b4be861e3a785",
+      "sha256": "5151c2d7d37451f5b90de09071255c8bdce77fce1cf451e3f5cce7b182fe21f1"
+    },
+    "research/contrib/chatgpt/FKP-18/test_public_delayed_study.py": {
+      "github_blob_sha": "c4d55cde27303033ccc85032abc62d2298a01caf",
+      "local_git_hash_object_sha": "c4d55cde27303033ccc85032abc62d2298a01caf",
+      "sha256": "9711464d8b7c68cd8c375b5f3d96514ebbb803fef6573e752e3e6cf3be680ba5"
+    },
+    "research/contrib/chatgpt/FKP-18/prereg.json": {
+      "github_blob_sha": "8af445f20e49b950fc5d6ed908ebd6929c454b2f"
+    }
+  },
+  "environment": {
+    "os": "Linux 6.18.57 x86_64 glibc2.41",
+    "python": "3.13.5",
+    "cpu_count": 5,
+    "local_runtime": "unprivileged model work container"
+  },
+  "command": "python -m unittest discover -s . -p 'test_*.py' -v && python -m compileall -q . && python public_delayed_study.py",
+  "result_replay": {
+    "per_world_scores_sha256": "02ec3dae3755f0586391753dd567f47ab5381b9ae5d769dc6efea96ae9b26c7b",
+    "per_world_scores_canonical_json_bytes": 2841,
+    "worlds": 32,
+    "actual_simulated_steps": 7680,
+    "unique_native_minus_symbolic": [
+      0
+    ]
+  },
+  "hosted_ci": {
+    "run_id": 43771189014,
+    "zero_jobs": true,
+    "conclusion": "failure",
+    "classification": "infrastructure_not_science"
+  },
+  "scope_fence": "only research branch; no original FKP-17 DEV/TRANSFER, native main, control-plane, external runner, paid API, or deployment"
+}
