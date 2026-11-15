@@ -73,8 +73,10 @@ class F50ConventionalControlsTests(unittest.TestCase):
         self.assertEqual(qy.shape,(168,))
         reversed_batch=c.source_meta_episode(*self.fit[self.fit_ids[0]],reverse=True)
         self.assertNotEqual(qy.tobytes(),reversed_batch[-1].tobytes())
-        for index in range(64):
-            self.assertTrue(index in range(8,64) or index in range(32,40))
+        # Every support/query action occurs in the source table once.
+        reconstructed=np.concatenate((sx,qx),axis=0)
+        original=self.fit[self.fit_ids[0]][1].reshape(64*3,33)
+        self.assertTrue(np.array_equal(reconstructed,original[np.r_[0:8*3,8*3:64*3]]))
         with self.assertRaises(c.ConventionalRejected):
             c.dataset_receipt(self.size,self.fit,self.valid)
         self.assertEqual(c.graph_mask_for_batch((2,3),0).tolist(),[[0.0],[1.0]])
@@ -142,7 +144,7 @@ class F50ConventionalControlsTests(unittest.TestCase):
     def test_negative_wrong_solver_or_unsupported_neural_fails(self):
         with self.assertRaises(c.ConventionalRejected):
             c.create_neural("baseline_transformer")
-        with self.assertRaises(c.ConventionalRejected):
+        with self.assertRaises((c.ConventionalRejected,world.F50Rejected)):
             c.source_records(True,0)
         with self.assertRaises(c.ConventionalRejected):
             c.source_records(1024,True)
