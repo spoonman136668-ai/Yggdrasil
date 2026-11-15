@@ -24,7 +24,7 @@ class FKP08Tests(unittest.TestCase):
             source.view(1800,1)
         with self.assertRaises(PermissionError):
             source.held_dev(1800,1,())
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             source.held_dev(700,1,x.held)
 
     def test_source_public_base_from_real_256_observations_fixture(self):
