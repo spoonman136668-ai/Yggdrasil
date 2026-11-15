@@ -20,7 +20,13 @@ import world,controls,admission
 import learner as graph
 import fixture as original_fixture
 import calibration as old_posterior
-import dev as old_dev
+# The old and current evaluators are both named dev.py. Import the
+# frozen predecessor under its *path*, never through ambiguous sys.path.
+import importlib.util
+_old_spec=importlib.util.spec_from_file_location(
+    "_aai11d_frozen_source_dev",HERE.parent/"AAI-11D"/"dev.py")
+old_dev=importlib.util.module_from_spec(_old_spec)
+_old_spec.loader.exec_module(old_dev)
 import audit
 import admit as g_benchmark
 import policy
