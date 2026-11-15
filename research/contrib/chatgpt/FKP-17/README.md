@@ -27,6 +27,13 @@ Source-safe contract tests, once checked out, use:
 python -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
 ```
 
+## Reuse and nonduplication audit (read-only, 2026-11-15)
+
+- **NKR-03** [draft #1096](https://github.com/spoonman136668-ai/Yggdrasil/pull/1096) already has bounded verified-source exception intake, evidence deduplication, conservative abstention, and cold checkpointing in the **existing 16-slot native relationship memory**. Treat this as a prior baseline/interface candidate, not a license to copy it into a parallel native component. Its quadratic/cubic DEV tied exact evidence lookup and was beaten by stronger symbolic/recurrent controls on some cases; no SCIENTIFIC_PASS or accepted-native integration.
+- **FKP-01** [draft #1089](https://github.com/spoonman136668-ai/Yggdrasil/pull/1089) already preregistered a different protected primitive-composition source with 65,536 public edges. Its protected evaluator identity/worlds are **not** FKP-17 input and must remain untouched.
+- **WSP-111** [draft #1078](https://github.com/spoonman136668-ai/Yggdrasil/pull/1078) already implements a million direct-programmed numerical facts and two rounds of inferred categories; symbolic/conventional controls tied its original synthetic task. Reuse only compatible publicly verified representations and cost/accounting patterns, never imply its source families are novel independent FKP-17 laws.
+- **Implementation decision:** before adding any new memory engine, compare native NKR-03's evidence semantics with FKP-17's 8-register, 8-action, delayed-observation public interface and document exact incompatibilities. Prefer a minimal adapter or independent **research-only comparator**, not a rival accepted model, controller or scheduler.
+
 ## Qualification before a first-use decision
 
 The next engineering work is to independently author the source-private causal-world generator, learner and equally informed baselines; freeze their blobs and source provenance, implement public-only, leak-negative and contradiction/cold tests, and run mandatory exact-source full regression across Ubuntu and Windows. Any original DEV or TRANSFER run additionally needs **independently verified scientific-owner exclusive first-use approval**. Never use held outcomes to repair a pre-result harness defect; quarantine consumed worlds if that happens.
