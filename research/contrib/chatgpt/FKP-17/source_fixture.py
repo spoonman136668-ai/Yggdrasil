@@ -162,3 +162,51 @@ def public_digest(records) -> str:
         hash_state.update(len(raw).to_bytes(4, "big"))
         hash_state.update(raw.encode("ascii"))
     return hash_state.hexdigest()
+
+
+# Source-safe observed action stream; original DEV/TRANSFER evaluator absent.
+PUBLIC_EXPLORATION = 24
+PUBLIC_SCORED = 16
+
+
+class PublicSession:
+    """Fresh TRAIN/VAL episode that reveals only public chosen consequences.
+
+    Python-private __world is a convenience, NOT a security boundary. A real
+    held evaluator must live in separately controlled code or process.
+    The caller may read current_public and apply_public only. No alt-action,
+    oracle, future-reward, law identity or source-private labels are returned.
+    """
+
+    __slots__ = ("__world", "__history", "__steps", "__done")
+
+    def __init__(self, seed: int):
+        partition = cohort(seed)  # protected and unknown seeds fail CLOSED
+        if partition not in ("TRAIN", "VALIDATION"):
+            raise PermissionError("FKP17_SESSION_TRAIN_VAL_ONLY")
+        self.__world = _TrainingWorld(seed, partition)
+        self.__history = []
+        self.__steps = 0
+        self.__done = False
+
+    @property
+    def current_public(self) -> tuple[int, ...]:
+        return tuple(self.__world.state)
+
+    @property
+    def observed_steps(self) -> int:
+        return self.__steps
+
+    def apply_public(self, action: int) -> PublicStep:
+        if type(action) is not int or not 0 <= action < ACTIONS:
+            raise ValueError("FKP17_SESSION_INVALID_ACTION")
+        if self.__done or self.__steps >= PUBLIC_EXPLORATION + PUBLIC_SCORED:
+            raise ValueError("FKP17_SESSION_BUDGET_OR_TERMINATION")
+        before = self.current_public
+        after, reward, done = self.__world.step(action)
+        row = PublicStep(before, action, after, reward, done,
+                         tuple(self.__history[-HISTORY:]))
+        self.__history.append(PublicTransition(before, action, reward, after, done))
+        self.__steps += 1
+        self.__done = done
+        return row
