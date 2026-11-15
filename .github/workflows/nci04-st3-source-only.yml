@@ -1,0 +1,114 @@
+name: NCI04 ST3 frozen developmental causal source identifiability
+on:
+  push:
+    branches:
+      - research/nci04-st3-intervention-causal-law-20261114
+  pull_request:
+    branches:
+      - research/nci04-s2-learned-topology-necessity-20261021
+permissions:
+  contents: read
+jobs:
+  source_only:
+    name: ST3 source-only developmental mechanics (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Ensure Windows source bytes preserved
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact source checkout without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify preregistration predates source, original baseline unchanged
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 63133626dbd914c2d525dbd7358c87fdcfcabdc7 HEAD
+          git merge-base --is-ancestor def4e3a9d803c80631c00b7e138a5c54cda349e9 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st3/frozen_protocol.json)" = ce51862f6b5af6a130b6ad93c30f019131bfeb16
+          python - <<'PY'
+          from research.nci04_st3.source_audit import verify_prereg
+          p=verify_prereg()
+          assert p['source']['no_protected_first_use'] is True
+          print('ST3_FROZEN_SOURCE_PROTOCOL=PASS')
+          PY
+      - name: Freeze source mechanics, negative controls, original native regression
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st3_source.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04d2_task.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo ST3_SOURCE_MECHANICAL_TESTS=PASS
+      - name: Frozen training-law SOURCE-ONLY identifiability audit
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m research.nci04_st3.source_audit --output ../st3-source-audit.json | tee ../st3-stage0.log
+          grep -Eq '^ST3_STAGE0_DISPOSITION=(SOURCE_TASK_IDENTIFIABLE_DEV_ONLY|SOURCE_TASK_INVALID_NO_GO)$' ../st3-stage0.log
+          grep -q '^ST3_NO_PROTECTED_FIRST_USE=PASS$' ../st3-stage0.log
+          test -s ../st3-source-audit.json
+      - name: No generated or mutated repository source
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Preserve original source-only DEV receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st3-source-only-${{ matrix.os }}
+          path: ../st3-source-audit.json
+          if-no-files-found: error
+          retention-days: 7
+  parity:
+    name: ST3 exact source/action alias cross-OS parity
+    needs: source_only
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-source-only-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st3-source-only-windows-2022
+          path: windows
+      - name: Verify frozen input histories and all source-only metrics
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('linux/st3-source-audit.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st3-source-audit.json').read_text('utf-8'))
+          keys=('schema','source_type','frozen_protocol_git_blob','prereg_commit',
+                'source_evidence','source_only_delayed_counterfactual_laws',
+                'headroom','candidate_or_control_trained','held_development_laws_opened',
+                'protected_scientific_first_use','scientific_pass')
+          for key in keys:
+              if a[key]!=b[key]:
+                  raise SystemExit('ST3_SOURCE_CROSS_OS_MISMATCH_'+key)
+          print('ST3_SOURCE_CROSS_OS_EXACT=PASS')
+          print('ST3_SOURCE_ALIAS_KEYS='+str(a['source_evidence']['unique_same_public_and_action_different_hidden_law_outcome_keys']))
+          print('ST3_SOURCE_DELAYED_LAWS='+str(len(a['source_only_delayed_counterfactual_laws'])))
+          print('ST3_SOURCE_DISPOSITION='+a['headroom']['disposition'])
+          print('ST3_NO_SCIENTIFIC_FIRST_USE=PASS')
+          PY
