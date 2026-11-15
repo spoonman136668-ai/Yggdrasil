@@ -144,11 +144,14 @@ class ExactIndex:
         offset += 4*(nq+np)
         payload = raw[offset:-DIGEST_LEN]
         ordered = tuple(tuple(payload[i:i+3]) for i in range(0, len(payload), 3))
-        if len(set(ordered)) != count or list(ordered) != sorted(ordered):
-            raise NotAdmitted("F42_DUPLICATE_OR_NONCANONICAL_TRIPLET_ORDER")
+        # Diagnose illegal ordinals before rejecting noncanonical ordering.
+        # Both are fail-closed; this does not alter valid data or encoding.
         for a, p, b in ordered:
             if a >= nq or b >= nq or p >= np:
                 raise NotAdmitted("F42_OUT_OF_RANGE_INDEX")
+        if len(set(ordered)) != count or list(ordered) != sorted(ordered):
+            raise NotAdmitted("F42_DUPLICATE_OR_NONCANONICAL_TRIPLET_ORDER")
+        for a, p, b in ordered:
             index.insert((qids[a], predicates[p], qids[b]))
         if index.snapshot() != raw:
             raise NotAdmitted("F42_NONCANONICAL_COLD_REHYDRATION")
