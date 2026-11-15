@@ -40,9 +40,25 @@ The separate `source_fixture.py` is a deterministic **synthetic** environment fo
 
 Its two known families are simple directed affine-mod16 and bounded pairwise monotone-mixing dynamics. This **does not implement the new held law families**, prove identifiability, or make synthetic reward comparable to a real external benchmark. Every original FKP17 DEV seed `978500..978531`, TRANSFER seed `978600..978663`, and all unknown or predecessor seeds raise `PermissionError` through the only public source-acquisition APIs. There is no `allow_dev` switch, no protected key or evaluator in this research branch.
 
-`test_source_fixture.py` adds tests for denied held cohorts and invalid caller inputs, public-only fields, no future history, repeatability/digest changes, action consequences, complete 32,768 foundation record enumeration and a source-import boundary. **The tests are authored, not executed**; they are not evidence of simulator qualification. The published training fixture code is inspectable and does not create cryptographic isolation. A truly private, independently sourced DEV/TRANSFER evaluator remains a separate owner-controlled requirement. Candidate models must only see a sanitized public transition stream and may not import this evaluator module.
+`test_source_fixture.py` adds tests for denied held cohorts and invalid caller inputs, public-only fields, no future history, repeatability/digest changes, action consequences, complete 32,768 foundation record enumeration and a source-import boundary. **The first 16 source-fixture tests passed on both operating systems in run #43766088562**; this does not qualify later learner-source edits or the original scientific evaluator. The published training fixture code is inspectable and does not create cryptographic isolation. A truly private, independently sourced DEV/TRANSFER evaluator remains a separate owner-controlled requirement. Candidate models must only see a sanitized public transition stream and may not import this evaluator module.
 
 This source-only gate changes **no** Yggdrasil native implementation, accepted memory, scored FKP-16 world, first-use or external runner.
+
+## Public relationship-memory and ablation implementation
+
+`public_policies.py` adds a **research-only, source-independent**, bounded 8-action×8-register×16-change count memory. It receives source-public `before/action/after/reward/done/history` records only and never imports the simulator. Models choose a single action from current public registers; the model does not receive any future earned reward during choice.
+
+- **STRUCTURED:** direct-written directional action→register public transition-change distributions; public local interventions get stronger weight than cross-world foundation evidence, with fixed raw memory ceiling.
+- **FLAT:** the **same 32,768 facts**, reduced to per-action empirical reward means without relationship connectivity.
+- **SHUFFLED:** identical learned public transition counts, but a fixed register-endpoint permutation at readout, preserving state size and count topology.
+- **MINIMAL:** receives and hashes the same facts for custody, but does not write a rich prior; isolates effects from foundation knowledge quantity.
+- **NO_UPDATE:** accepts the same actual public observations but intentionally freezes learned relation changes after the foundation; isolates active adaptation.
+
+Each parameter bank uses **8,384 raw learned bytes**, well below the frozen 1 MiB cap, and a deterministic public-fact SHA-256. The source stream, fact count and bound are checked identically across these five arms. Public observation updates have an overflow preflight so rejected events **cannot partially mutate learned counters, receipts or custody counts**. No duplicate native memory path has been added.
+
+`test_public_policies.py` adds 10 tests checking complete fact/digest parity, capacity, source-only inputs, absence of source imports, pre-outcome choice, flat/shuffled/minimal/no-update semantics, cold deterministic parameter identity, overbudget refusal, and atomic overflow rejection. **These new tests and mandatory full candidate regression have not yet been qualified on the current changed source SHA.** The earlier **source-fixture-only** exact candidate `b460d1401be351fc2577c635f5f9d0c718a655d6` *was* fully qualified: [run #43766088562](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43766088562) PASS 3/3 jobs, 16/16 focused tests + G29 + 54/54 inherited full regression on both Ubuntu and Windows. That success must not be projected onto newer model code.
+
+**Critical missing comparators:** The independent Bayesian/symbolic model, qualified fully trained recurrent network, count/retrieval reference, action-sealed evaluation harness and independently owned withheld-law evaluator are **not implemented/qualified** in this checkpoint. Therefore this research does **NOT** yet have the preregistered eight strongest scientific arms, cannot run its original DEV, and cannot claim learning advantages or native integration.
 
 ## Qualification before a first-use decision
 
