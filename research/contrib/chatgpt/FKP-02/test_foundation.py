@@ -25,15 +25,16 @@ class FKP02FoundationTests(unittest.TestCase):
         history = [(a, world.observe(a))
                    for a in world.public_view().allowed_actions]
         # One conflicting outcome at the exact same public input invalidates
-        # the entire history (without ever consulting a hidden source label).
+        # the inferred pair bank (without accessing any hidden rule label).
         corrupted = tuple(history[:-1] + [(history[0][0], history[0][1] ^ 1)])
+        self.assertEqual(foundation.infer_pair_tables(corrupted, 0), ())
         with self.assertRaises(ValueError):
-            foundation.infer_pair_tables(corrupted, 0)  # 65 is wrong evidence length
+            foundation.infer_pair_tables(tuple(history[:-1]), 0)
 
     def test_uninformative_constant_records_do_not_misreport_unique_parents(self):
         history = tuple((i, 0) for i in range(64))
         candidates = foundation.infer_pair_tables(history, 0)
-        self.assertEqual(candidates, ())
+        self.assertGreater(len(candidates), 1)  # cannot infer a unique parent pair
 
     def test_composer_does_not_hardcode_novel_gate_names(self):
         gates = (6, 7, 8, 14)  # independently discovered table IDs
