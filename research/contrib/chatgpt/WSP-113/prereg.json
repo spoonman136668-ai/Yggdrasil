@@ -1,0 +1,43 @@
+{
+  "schema": "wsp113.online-intervention-causal-graph-programming.v1",
+  "status": "PREIMPLEMENTATION_FROZEN_DEV_NOT_RUN",
+  "lineage": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "stacked_on_pr": 1079,
+    "exact_parent_sha": "e2b715b94ece9d42d228586a66117bbdaa18c4b9",
+    "exact_parent_tree": "c18bda074f41278c65982dd198a1903d12831d09",
+    "reason": "WSP112's direct writer and exact Bayesian control use equivalent full Boolean hypothesis sets, so original WSP112 primary remains sealed and unsuitable for a claim of accuracy superiority."
+  },
+  "hypothesis": "Can an intervention-conditioned, incrementally written numerical causal adjacency representation discover previously untrained dense causal interaction graphs and maintain multi-step counterfactual competence with eight observations? Does it offer reproducible whole-process resource advantage over independent exact graph Bayesian or symbolic controls without sacrificing accuracy?",
+  "environment": {
+    "state": "4 binary state variables (bits 0..3), every intervention actively forces one target node j in 0..3 to value 0 or 1 (8 possible actions) before a simultaneous causal sweep of other nodes in supplied ascending topological order 0,1,2,3.",
+    "law": "Unknown 6 directed edges i->j for 0<=i<j<4; next[j]=forced value when targeted, otherwise initial_state[j] XOR over (edge[i,j] AND next[i]) for parents i<j. Actions have real propagated downstream consequences. No coefficients or graph masks revealed to learners.",
+    "public_context": "The family syntax (four nodes, ascending order, XOR propagation, one forced intervention) is disclosed to all arms. Exact graph edge configuration, density and identity withheld. This is structural edge discovery, not discovery of new causal primitives or general AGI.",
+    "source": "New SHA256('WSP113|GRAPH|v1|split|world|edge_i|edge_j') deterministic private generator; training worlds 128 total, accept only 0-2-edge graphs; transfer 128 disjoint worlds, accept only 3-6-edge graphs. Do not import any WSP112 withheld generator/labels. Generate with hash-ranked 6 edges and count=hash('WSP113|COUNT|v1|split|world')[0] mod3 for train; count=3+hash(...)[0] mod4 for transfer.",
+    "train": "128 fully observed 4-bit states x 8 actions each = 128 interventions per world (16,384 observable training transitions), same full observations to every control; training worlds identities disjoint from transfer.",
+    "transfer": "128 novel dense graph worlds, unseen in train. Eight adaptive observations selected only from initial states 0..7 x eight do actions, no repeat. Holdout is all initial states 8..15 x all eight actions (64 per world = 8192 exact 4-bit outcomes per arm). No transfer hidden graph mask or holdout effect visible preseal.",
+    "multistep": "For each transfer world evaluate 8 fixed 3-step intervention sequences beginning in state 8..15, chosen by SHA256 of split, world, trajectory index; no test action effects shown until all predictions and state snapshots are sealed.",
+    "seeds": "Primary original world cohort v1 only; additional disjoint validation cohorts v2,v3,v4,v5 only after original qualification and if a primary positive meets criteria. Fixture tests use independent hand-authored graph masks and observations, never import the hidden generator."
+  },
+  "arms": {
+    "native": "Direct program exactly six float32 causal adjacency weights after each observed transition, using 6-bit integer/GF(2) causal equations from measured downstream effects; no enumeration of candidate graph masks. Unknown edge weights initialized to zero with a separate observation-rank/identifiability ledger. Action selection maximizes newly constrained edge rank using model-predicted postintervention states, breaks ties by lowest state/action; when underdetermined use zero-free-variable deterministic solution. Persistent cold-restorable native synapses and evidence ledger, tamper rejection.",
+    "independent_symbolic": "Independent Python GF(2) edge-constraint solver with own integer row basis and rank-directed intervention selection; no reuse of native state or solver implementation. Same 8 observations.",
+    "exact_bayesian": "Independent explicit enumeration of all 64 possible directed adjacency masks; uniform graph prior despite sparse train because novel dense mechanisms are possible, exact likelihood filtering on each intervention consequence, entropy-maximizing active intervention selection over allowed support. No hidden masks accessed.",
+    "conventional": "Fully fitted nonparametric ridge-kernel regression of observed initial state and action to 4 output bits, with identical common training/source access and eight transfer observations, frozen regularization and numerical convergence controls; evaluate against exact Bayes and symbolic as stronger mechanism controls.",
+    "negatives": "No-observation/native-zero, random unique interventions, passive fixed 8 interventions, deliberately rotated edge constraints, removed native adjacency, cold memory corruption, shuffled effects, and oracle identity leakage scan.",
+    "comparison": "Primary comparison to strongest exact Bayesian, independent symbolic and fitted conventional. A direct-vs-control difference due to different selected interventions is not proof of an algorithmic advantage; secondary same-action controls rerun all three baselines on direct's eight exact observations."
+  },
+  "protocol": {
+    "primary": "Among each arm's 8,192 heldout one-step state transitions, exact 4-bit next-state accuracy; per-node bit precision/recall, graph-edge precision/recall, uncertainty/abstention counts; 1,024 three-step sequences (8 per world) scored full state trajectory exact.",
+    "memory": "Count six native synapse float32s, serialized evidence and total bytes, graph Bayesian 64 hypothesis weights, symbolic constraints, and conventional fitted state. Verify 128 cold snapshots predict exactly the same heldout and 3-step results and reject tampering.",
+    "cost": "Run each arm separately through exactly the same 128-world task protocol with independent timers, record whole-process CPU/wall/memory including full observed training preparation, all per-world intervention costs, fitting, predictions and cold restore. No comparing only substeps or claiming training speed from raw wall time.",
+    "scoring": "Scientific gain requires direct >=2 percentage points accuracy above the strongest independent control, paired 95% world-bootstrap lower CI strictly positive, no dense-graph subclass regression, plus 3-step nonregression; or at accuracy parity (within 0.2pp, paired CI containing zero) >=2x replicated lower full-process CPU AND >=2x lower peak memory versus strongest optimized exact control without per-arm environmental work omitted. Four disjoint replication cohorts needed to claim SCIENTIFIC_PASS. Parity or worse otherwise is scientific null, even with functional synaptic updates.",
+    "bounds": "No more than eight distinct transfer action effects per arm/world. Every model gets same 128 public fully observed training worlds. Distinguish adaptive information and matched-feedback subtest. Freeze seeds, thresholds and comparators before one original first-use. No after-result tuning or reuse of first-use as independent validation."
+  },
+  "qualification": {
+    "fixture_only_first": "Implement isolated fabricated-graph fixtures and static no-leakage tests with zero hidden-law imports.",
+    "exact_tree": "Mandatory full inherited WSP80..WSP113 and root Yggdrasil regression Linux+Windows plus independent exact-source G29 acceptance both OS before any transfer original labels are queried.",
+    "first_use": "Original heldout transfer generator/oracle not run until candidate qualifies and source, split, models, comparator outputs, memory snapshots and scripts are frozen. Seal predictions/transcripts prior to calling heldout answers. Do not run WSP112 protected cohort.",
+    "isolation": "Research contribution draft only. No main/accepted Yggdrasil edit, autonomous Forge loop/controller/scheduler, Wingless/Hybrid edits, private runners, paid APIs, protected WSP101, deployment or PR merge."
+  }
+}
