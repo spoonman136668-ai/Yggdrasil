@@ -1,0 +1,228 @@
+name: FKP09 frozen in-place causal repair preflight and DEV-only research
+
+on:
+  push:
+    branches: [ci/fkp09-g29-one-shot-20261115]
+    paths: [.github/workflows/fkp09-once.yml]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fkp09-original-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-09): one-shot fixture qualification and public DEV' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    outputs:
+      exact_head: ${{ steps.seal.outputs.exact_head }}
+    env:
+      SOURCE: 9e23ce8aa66fa15a324bd1965b983a22a60a5b0f
+      SOURCE_TREE: 037c3b92623d855a6273268e70160e2e42e8ca40
+      TARGET: research/fkp09-inplace-shared-64bit-causal-repair-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Disable implicit CRLF rewrite
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 9e23ce8aa66fa15a324bd1965b983a22a60a5b0f
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable prereg, source and exact immutable tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 45fafacecad65bf5c23f8cfa660b8db9672e69df "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/prereg.json)" = 42bc6b836d8cf13e79cbb53909f501bfaa91b036
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/source.py)" = 23de1cc181e32b6b65f62808c644dd21c4ebb0f6
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/model.py)" = bf52f8edfb11c436ecf8045ecf8b56a1bfaa5f05
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/test_fkp09.py)" = 13508bd599577a50d16a4bfcbfbc5a7d76e79412
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/run_dev.py)" = 02261f2f1d4f5fb2295bfa44d0bb45acd6f16081
+          echo FKP09_ORIGINAL_SOURCE_AND_PREREG_PIN=PASS
+      - name: Source-safe fixture-only implementation and original DEV AST preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-09 -p test_fkp09.py -v
+          python -B -c "import ast,pathlib; ast.parse(pathlib.Path('research/contrib/chatgpt/FKP-09/run_dev.py').read_text(encoding='utf-8'))"
+          echo FKP09_NO_ORIGINAL_DEV_PREFLIGHT=PASS
+      - name: Regenerate ONLY source-bound G29 atlas artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Commit generated atlas on existing isolated research branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-09): refresh generated G29 source atlas"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_head=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP09_GENERATED_ONLY_NEW_HEAD=$NEW"
+
+  cross-platform-preflight:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Byte-stable git config
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify G29 atlas and all source-safe FKP09 tests without DEV
+        shell: bash
+        run: |
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-09 -p test_fkp09.py -v
+      - name: Mandatory entire repository regression BEFORE original DEV first use
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP09_FULL_BEFORE_PRIMARY_CROSS_OS=PASS
+
+  original-dev:
+    needs: [atlas-only,cross-platform-preflight]
+    if: needs.cross-platform-preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      prediction_sha: ${{ steps.result.outputs.prediction_sha }}
+      evidence_sha: ${{ steps.result.outputs.evidence_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Consume public original DEV ONCE and preserve negative outcomes
+        id: result
+        shell: bash
+        run: |
+          python -B research/contrib/chatgpt/FKP-09/run_dev.py > "$RUNNER_TEMP/fkp09-original.json"
+          python - "$RUNNER_TEMP/fkp09-original.json" "$GITHUB_OUTPUT" <<'PY'
+          import hashlib,json,sys
+          x=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert x["schema"]=="fkp09.public-dev-inplace-shared-weight.v1"
+          assert x["worlds"]==40 and x["paid_actions"]==5120
+          assert x["raw_learned_weight_bytes"]==422
+          assert not x["protected_first_use"] and not x["scientific_pass"]
+          digest=hashlib.sha256(json.dumps(x["paid_evidence_sha256_by_world"],sort_keys=True).encode()).hexdigest()
+          with open(sys.argv[2],"a",encoding="utf-8") as out:
+              out.write("prediction_sha="+x["prediction_sealed_sha256"]+"\\n")
+              out.write("evidence_sha="+digest+"\\n")
+          print("FKP09_DEV_ORIGINAL="+json.dumps({k:x[k] for k in (
+              "classification","mechanism_gate_dev","worlds","paid_actions",
+              "accuracy_128_known_family","repaired_current_slots",
+              "no_collateral_forgetting","negative_out_of_family_abstained",
+              "shared_replay_exact","raw_learned_weight_bytes",
+              "science_unique_gain_dev","scientific_pass","wall_seconds"
+          )},sort_keys=True))
+          PY
+      - name: Final inherited regression at exact unchanged candidate SHA
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP09_LINUX_POST_DEV_REGRESSION=PASS
+
+  windows-reproduction:
+    needs: [atlas-only,original-dev]
+    if: needs.original-dev.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Prevent source CRLF drift
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Reproduce ALREADY CONSUMED original public DEV, not fresh science
+        shell: bash
+        env:
+          EXPECTED_PREDICTION_SHA: ${{ needs.original-dev.outputs.prediction_sha }}
+          EXPECTED_EVIDENCE_SHA: ${{ needs.original-dev.outputs.evidence_sha }}
+        run: |
+          python -B research/contrib/chatgpt/FKP-09/run_dev.py > "$RUNNER_TEMP/fkp09-replay.json"
+          python - "$RUNNER_TEMP/fkp09-replay.json" <<'PY'
+          import hashlib,json,os,sys
+          x=json.load(open(sys.argv[1],encoding="utf-8"))
+          observed=hashlib.sha256(json.dumps(x["paid_evidence_sha256_by_world"],sort_keys=True).encode()).hexdigest()
+          assert x["prediction_sealed_sha256"]==os.environ["EXPECTED_PREDICTION_SHA"]
+          assert observed==os.environ["EXPECTED_EVIDENCE_SHA"]
+          assert x["worlds"]==40 and x["paid_actions"]==5120
+          assert not x["protected_first_use"] and not x["scientific_pass"]
+          print("FKP09_WINDOWS_DETERMINISTIC_REPLAY=PASS")
+          print("FKP09_WINDOWS_CLASSIFICATION="+x["classification"])
+          PY
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP09_WINDOWS_FINAL_REGRESSION=PASS
