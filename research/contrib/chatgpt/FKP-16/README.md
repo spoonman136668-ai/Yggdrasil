@@ -17,3 +17,28 @@ The original preset FKP-15 primary threshold is unchanged: candidate chosen-acti
 **Critical pre-first-use qualification**: Exactly pin parent commit, FKP16 prereg/source/test SHA; run six original FKP15 source-safe tests modified to supply *unlabeled* DEV prefixes, then a **seventh fully mocked entire `run()` test** using real GRU/MLP source-safe fixtures but no actual new environments, including valid and early-terminal source-step counting, held choice ordering, full score/receipt serialization, and physical first-use denial. G29 exact source index + mandatory full inherited root regression must PASS on both Ubuntu24.04 and Windows2022 before fresh DEV 976500 is ever reset. Then one Linux original fresh DEV and Windows **consumed** replay only. Raw original JSON archived as private GitHub artifact plus durable repo outcome, no user chat uploads.
 
 **Outcome gate:** even a DEV signal is `DEV_ACTION_VALUE_SIGNAL_ONLY`, **never** independent `SCIENTIFIC_PASS`, native Yggdrasil accepted-model change, unfamiliar causal-family transfer or compute-matched scientific advantage. FKP15 invalid harness stays archived as a distinct negative engineering lesson. This research cannot modify Yggdrasil accepted `main=5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`, owner controller, runner, scheduler, sibling projects or protected first-use.
+
+
+## Frozen original public development result — 2026-11-15
+
+**ENGINEERING PASS; ORIGINAL DEV NO-GO; NATIVE ADMISSION NONE.** Original first-use [GitHub Actions #43760428106](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43760428106) completed SUCCESS, **one attempt**, with source/atlas and mandatory full regression passing on Ubuntu 24.04 and Windows 2022 **before** the original world labels were opened. Source-only original public DEV then ran **ONCE** on Ubuntu; post-DEV root regression 54/54 PASS; Windows source-mechanical replay + root regression 54/54 PASS. Windows did **not** independently run all learned on-policy DEV arms. Complete first-use source/model/metric receipts were written to the private `fkp16-original-public-dev-exact-source` workflow artifact (ID 14180126752, expires 2026-12-15); the durable succinct evidence is preserved in `result.json`.
+
+The unchanged implementation/source for original run is `ccd8c72964c3bf7430243f33fd0cda8f07179f25`, qualified generated-only G29 child `b268c7eff94d31eb9b09af315bc3494ee88a3ab7`, tree `0e20526e1395d52b6d07d5b04ef34fcf40a45448`. The later archive and README update change **no source/learner/test/prereg/evaluation logic**. No original public DEV re-evaluation is permitted as new science.
+
+**Observed exactly 193,525 genuine original external source actions**, 108,536 TRAIN, 27,135 VALIDATION and **57,854 DEV** under source budget 358,400. Original public DEV included 32 unseen worlds (976500..976531) and 128/128 valid public-history action anchors. Publicly configured reward `reward_fall_off=-0.05` is not the official default benchmark return.
+
+| Original learner/strong control | Mean physical 16-step source return | Fraction of chosen actions with positive return |
+|---|---:|---:|
+| **DIRECT numerical fixed-size learning, 294,912 bytes** | **0.000000** | **0** |
+| Conventional COUNTS | **0.000000** | **0** |
+| PRIOR (unadapted) | **0.000000** | **0** |
+| SHUFFLED control | **0.000000** | **0** |
+| Fully trained MLP | -0.02578125 | 0.1796875 |
+| Fully trained GRU | -0.026171875 | 0.1796875 |
+| KNN | -0.032421875 | 0.15625 |
+| Ridge | -0.057421875 | 0.15625 |
+| Random | -0.094921875 | 0.0625 |
+
+**DIRECT vs strongest control COUNTS is exactly zero** observed mean advantage (paired 32-world clustered 10,000-bootstrap 95% CI **[-0.019140625, 0]**), failing the precommitted +0.05 gain and positive CI lower bound. All NINE source-blind arms yielded **zero terminal goal events**. The privileged source counterfactual best-of-nine hindsight oracle had mean +0.15625; oracle-minus-random +0.251171875, proving physical action headroom but **not** the learner's ability to discover, plan or solve goals. The learned GRU used 52,425 parameters and 24 epochs ×2 seeds, MLP 17,865 and 24 epochs ×2 seeds; ridge and KNN hyperparameters were validation-selected before DEV. DIRECT cold bit-exact restoration and mutation tamper rejection PASS. Full-process comparative cost advantage UNVERIFIED.
+
+**Classification:** `DEV_MIXED_BEATS_WEAK_NOT_STRONG`, **`frozen_dev_signal=false`**, **`scientific_pass=false`**. This is a genuine preserved negative: matching conventional count memory at zero reward is not novel learning superiority, and the source was *not* reward-insufficient in principle (the unavailable oracle found positive outcomes). Do not tune after consuming DEV `976500..976531`, promote to native main or merge the research draft merely for engineering success. Independent unfamiliar-law transfer, long-horizon autonomous goal success, cold interference qualification and whole-process strong-control efficiency remain unverified. Protected and reserved-transfer worlds remain unopened.
