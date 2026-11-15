@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.nkr02.native-relationship-independent-comparison.prereg.v1",
+  "status": "FROZEN_BEFORE_SOURCE_AND_EVALUATOR",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "head_sha": "dcbc41ca50d9913e682a24833ba0190c66be5ae0",
+    "head_tree": "d278762d20636b13343fa2b3bc63b9b4c309233d",
+    "parent_pr": 1092,
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Does the NKR01 actual Yggdrasil opt-in native relationship decision path improve new contextual causal outcomes with identical public observations over current incumbent and strong fully fitted conventional/symbolic controls, while retaining and deduplicating knowledge; and what is its limit for novel out-of-family relationships?",
+  "hypothesis": "It should improve context-blind native decisions for different task-specific affine cause/action laws with no gradients, but cannot infer unseen higher-order pair effects from singleton-only interventions and must not be promoted as general knowledge transfer when it fails out-of-family controls.",
+  "arms": [
+    "nkr01 native decision: PublicCausalCells.choose_contextual with NativeRelationMemory from actual Yggdrasil source",
+    "incumbent: same PublicCausalCells.choose from identical public actual action/outcome examples",
+    "independent exact GF(2) symbolic, independently implemented from each action's five public observations, same information/actions",
+    "conventional fully optimized CPU gradient MLP tanh 32 hidden units, 2000 Adam gradient steps, deterministic seed per slot, same public observations/actions, no test data",
+    "conservative evidence-only incumbent fallback when novel composed context was never directly observed"
+  ],
+  "identities": {
+    "data_namespace": "NKR02|public|fresh-disjoint-context|20261115",
+    "law_cohort_in": "independent SHA256 NKR02|affine-v2|slot seed; 16 native slot laws with individually hash-selected 4-bit context feature masks and parity intercepts, forced action inversion 1, 10 observed examples per native slot",
+    "law_cohort_ood": "independent NKR02|quadratic-v2|slot SHA256 seed with extra (context.bit0 AND context.bit1) flipping previously unobserved composite context law. 10 same-kind public singleton training observations, 11 disjoint composite/heldout contexts per slot",
+    "allowed_observation_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "test_contexts": [
+      3,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "actions_per_training_context": 2,
+    "worlds_per_cohort": 16,
+    "native_slots": 16,
+    "total_public_interventions_per_cohort": 160,
+    "heldout_actions_per_cohort": 176,
+    "valid_public_data_only": true,
+    "training_observations_are_identical_across_arms": true,
+    "source_identity": "public deterministic fixture generator, NOT a protected first-use or production-world result"
+  },
+  "frozen_controls": {
+    "source_immutability": "first prereg commit precedes any evaluator/source/test work; do not edit after reading results",
+    "duplicate": "Repeated identical (slot,context,action) consequence even with different source label changes no state/bytes; conflicting consequence rejected atomically.",
+    "retention": "Cold restore exact policy on all 176 queries; append previously new evidence to one retained slot without altering trained active/other retained slot outcomes; original YPC1 164-byte checkpoint remains exactly unchanged.",
+    "native_scoring": "Count success as source outcome at chosen action; also count both-action precision/recall and truly identifiable vs confidently wrong predictions; score no fallback as failure unless a safe incumbent decision exists",
+    "resource": "wall/cpu peak via tracemalloc as diagnostics; report checkpoint bytes and unique stored profiles; no performance superiority claims with tracemalloc enabled"
+  },
+  "precommitted_decision": {
+    "in_family": "Target native >=95% action-success over 176 unseen contexts AND improvement >=20 percentage points vs incumbent AND no worse than independent exact symbolic control by >1pp; no duplicate changes, cold restore, incumbent unchanged",
+    "out_of_family": "Safety acceptance requires >=95% success under the novel quadratic effect AND no degradation versus the same incumbent. Missing either means SCIENTIFIC NO-GO for open-context integration, even if the familiar family passes.",
+    "superiority": "No advantage claim if exact symbolic solves at same budget and accuracy. Conventional gradient comparator separately fitted and reported, not presumed weaker.",
+    "termination": "Any positive in-family and negative OOD is MIXED/NO PROMOTION. No changing thresholds, adding OOD pair features, rerunning exposed same cohort as original fresh, or merging based solely on synthetic source.",
+    "science_vs_engineering": "A code/CI PASS does not prove real-world knowledge integration; source is fabricated and transfer family narrow. No automatic main merge even if all synthetic checks pass; independent real native source needed."
+  },
+  "authority": {
+    "research_only": true,
+    "no_accepted_ref_mutation": true,
+    "no_merge": true,
+    "no_runtime_controller_scheduler_change": true,
+    "no_WSP114_WSP115_replay": true,
+    "no_private_data": true,
+    "no_paid_API": true
+  }
+}
