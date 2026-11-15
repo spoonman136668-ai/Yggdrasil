@@ -55,7 +55,10 @@ class World:
         # Deterministic source-only pair selection; PUBLIC pair chosen so
         # both candidate causal orders remain distinguishable in action pool.
         for trial in range(300):
-            a,b=rr.sample(range(N_MECH),2)
+            if kind=='negative':
+                a,b=256,rr.randrange(N_MECH)
+            else:
+                a,b=rr.sample(range(N_MECH),2)
             different=sum(self._compose(a,b,x,0)!=self._compose(a,b,x,1) for x in pool)
             if 2<=different<=32:
                 break
