@@ -273,10 +273,15 @@ def delay_retention_probe():
     """
     model=NativeInterventionCredit8()
     for seed in TRAIN_SEEDS[:4]:
-        run_episode(3,seed,{"candidate":model,
-                           **{k: fresh_models()[k] for k in NAMES
-                              if k!="candidate"}},
-                    "train",train=True,per_step_hash=False)
+        # A physical cold restore at t=31 returns the NEW model object
+        # through the episode's model map. Carry that exact restored state
+        # forward; silently retaining the stale pre-cold object would erase
+        # half the legitimate prior-law training.
+        suite=fresh_models()
+        suite["candidate"]=model
+        run_episode(3,seed,suite,"train",train=True,
+                    per_step_hash=False)
+        model=suite["candidate"]
     def score_revisit():
         env=HiddenLawSwitchboard(3,100)
         model.reset_episode()
