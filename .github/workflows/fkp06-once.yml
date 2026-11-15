@@ -1,0 +1,143 @@
+name: FKP06 pinned one-shot atlas and cross-platform source audit
+on:
+  push:
+    branches: [ci/fkp06-g29-one-shot-20261115]
+    paths: [.github/workflows/fkp06-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: fkp06-qualify-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-06): one-shot exact-source public DEV qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      exact_head: ${{ steps.seal.outputs.exact_head }}
+    env:
+      SOURCE: 37e97223862f62bc657bedb1f4dc5dffd8457853
+      SOURCE_TREE: 7167869bafe2641d41bb2f058bda7d918670c196
+      TARGET: research/fkp06-four-parent-intervention-headroom-20261115
+    steps:
+      - name: Byte-stable git setup
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 37e97223862f62bc657bedb1f4dc5dffd8457853
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify pinned baseline and source blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor ebb929c9f6d04cb06f603d8cb66b2750525511b1 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-06/fkp06.py)" = 1ba1084b092e2aa2ff430739a883f546c25eccdb
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-06/test_fkp06.py)" = b0838a5a5c7450a0721651b4930c433a83f46159
+          echo "FKP06_EXACT_SOURCE_CUSTODY=PASS"
+      - name: Rebuild generated-only G29 snapshot
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Seal generated-only source atlas on research branch
+        id: seal
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-06): refresh generated G29 source atlas"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_head=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP06_GENERATED_ONLY_HEAD=$NEW"
+
+  full-dev-engineering:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Prevent CRLF file mutation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check original G29 and source atlas tests
+        shell: bash
+        run: |
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: Original focused tests
+        shell: bash
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-06 -p test_fkp06.py -v
+      - name: Replay used public DEV worlds without reopening any protected source
+        shell: bash
+        run: |
+          python -B research/contrib/chatgpt/FKP-06/fkp06.py > "$RUNNER_TEMP/fkp06-dev.json"
+          python - "$RUNNER_TEMP/fkp06-dev.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert x['schema']=='fkp06.public-source-audit.v1'
+          assert x['result']=='SOURCE_HEADROOM_PASS'
+          assert x['scientific_pass'] is False and x['native_model_updated'] is False
+          assert x['protected_source_used'] is False and x['source_worlds']==24
+          assert x['hypotheses']==107880 and x['public_actions']==128 and x['held_actions']==256
+          assert x['mean_held_accuracy']['active12']==0.65869140625
+          assert x['mean_held_accuracy']['random12']==0.6492513020833334
+          assert x['mean_held_accuracy']['active64']==1.0
+          assert x['ceiling_minus_12']==0.34130859375 and x['worlds_with_singleton_64']==24
+          assert len(x['per_world'])==24 and all(row['remaining']['active64']==1 for row in x['per_world'])
+          print('FKP06_PUBLIC_DEV_REPLAY=PASS SOURCE_HEADROOM_PASS SCIENTIFIC_PASS=FALSE')
+          PY
+      - name: Mandatory inherited full final regression on pinned generated-only candidate
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP06_FULL_CROSS_OS_REGRESSION=PASS"
