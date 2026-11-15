@@ -127,6 +127,26 @@ class TestFKP16(unittest.TestCase):
         sealed=run_dev.prior_seal(train,val,models)
         self.assertEqual(len(sealed),64)
         self.assertEqual(sealed,run_dev.prior_seal(train,val,models))
+        # Elapsed timing and validation score are not part of learned state:
+        # their variation across platforms must not change the model receipt.
+        before=models["fit_info"]["GRU"]["train_wall_seconds"]
+        before_mse=models["fit_info"]["MLP"]["best_val_mse"]
+        try:
+            models["fit_info"]["GRU"]["train_wall_seconds"]=before+9999.0
+            models["fit_info"]["MLP"]["best_val_mse"]=before_mse+0.0001
+            self.assertEqual(sealed,run_dev.prior_seal(train,val,models))
+        finally:
+            models["fit_info"]["GRU"]["train_wall_seconds"]=before
+            models["fit_info"]["MLP"]["best_val_mse"]=before_mse
+        # Retrieval's selected k changes the function despite identical
+        # fitted example arrays: the selected hyperparameter must be sealed.
+        k=models["KNN"].k
+        try:
+            models["KNN"].k=1 if k!=1 else 5
+            self.assertNotEqual(sealed,run_dev.prior_seal(train,val,models))
+        finally:
+            models["KNN"].k=k
+        self.assertEqual(sealed,run_dev.prior_seal(train,val,models))
 
     def test_mocked_development_branch_selection_is_blind(self):
         train=[public_fixture(source.TRAIN[i],a) for i in range(3)
