@@ -15,8 +15,8 @@ The protocol in `prereg.json` fixes splits, controls, information budgets, 32-wo
 ## Current disposition
 
 - **PREREG-FIRST:** `fe5e259d24100c03b5de8184090e3d6f56fcb7e3` (this branch's initial protocol commit).
-- **SOURCE:** Not implemented, source-private family/digest not independently qualified.
-- **ENGINEERING:** Static protocol checking only. Full inherited regression, G29, build and dual-OS source qualification are **not run** for this new branch.
+- **SOURCE:** Research-only foundation/TRAIN/VALIDATION public synthetic fixture committed in `source_fixture.py`; evaluator-owned DEV/TRANSFER law source is **NOT implemented** and first-use remains blocked.
+- **ENGINEERING:** Protocol static checks plus committed source-safe fixture and eight negative/public-history tests. These new Python tests, inherited full regression, G29, build and dual-OS source qualification are **NOT RUN/NOT VERIFIED** on the exact current branch SHA.
 - **SCIENCE:** **NOT RUN**. No FKP-17 training, validation, development, transfer, or protected first-use performed.
 - **AUTHORITY:** No dispatch or first-use grant inferred from a GitHub PR, a passing contract check, or the operator's conditional integration objective.
 - **ACCEPTANCE:** Remains at Yggdrasil `main=5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`. Do not merge or promote this research draft.
@@ -33,6 +33,16 @@ python -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
 - **FKP-01** [draft #1089](https://github.com/spoonman136668-ai/Yggdrasil/pull/1089) already preregistered a different protected primitive-composition source with 65,536 public edges. Its protected evaluator identity/worlds are **not** FKP-17 input and must remain untouched.
 - **WSP-111** [draft #1078](https://github.com/spoonman136668-ai/Yggdrasil/pull/1078) already implements a million direct-programmed numerical facts and two rounds of inferred categories; symbolic/conventional controls tied its original synthetic task. Reuse only compatible publicly verified representations and cost/accounting patterns, never imply its source families are novel independent FKP-17 laws.
 - **Implementation decision:** before adding any new memory engine, compare native NKR-03's evidence semantics with FKP-17's 8-register, 8-action, delayed-observation public interface and document exact incompatibilities. Prefer a minimal adapter or independent **research-only comparator**, not a rival accepted model, controller or scheduler.
+
+## Source-safe implementation checkpoint (fixture only)
+
+The separate `source_fixture.py` is a deterministic **synthetic** environment for 128 foundation worlds, 64 TRAIN worlds and 16 VAL worlds. `foundation_facts()` emits **128 × 256 = 32,768** source-observed public records. Each record exposes only 8 four-bit public registers before/after one action, the earned reward, the done flag and up to 16 already-observed public transitions; no law coefficients, alternate action returns or future observation leaks into a returned record. `public_actions(seed,count)` creates an independent seeded common-action tape for control parity. Public digest receipts can identify source facts separately from learned representations.
+
+Its two known families are simple directed affine-mod16 and bounded pairwise monotone-mixing dynamics. This **does not implement the new held law families**, prove identifiability, or make synthetic reward comparable to a real external benchmark. Every original FKP17 DEV seed `978500..978531`, TRANSFER seed `978600..978663`, and all unknown or predecessor seeds raise `PermissionError` through the only public source-acquisition APIs. There is no `allow_dev` switch, no protected key or evaluator in this research branch.
+
+`test_source_fixture.py` adds tests for denied held cohorts and invalid caller inputs, public-only fields, no future history, repeatability/digest changes, action consequences, complete 32,768 foundation record enumeration and a source-import boundary. **The tests are authored, not executed**; they are not evidence of simulator qualification. The published training fixture code is inspectable and does not create cryptographic isolation. A truly private, independently sourced DEV/TRANSFER evaluator remains a separate owner-controlled requirement. Candidate models must only see a sanitized public transition stream and may not import this evaluator module.
+
+This source-only gate changes **no** Yggdrasil native implementation, accepted memory, scored FKP-16 world, first-use or external runner.
 
 ## Qualification before a first-use decision
 
