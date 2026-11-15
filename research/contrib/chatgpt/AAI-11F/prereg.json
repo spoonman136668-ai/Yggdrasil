@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.contrib.aai11f.oracle-achievable-goal-gate-audit.v1",
+  "id": "AAI-11F",
+  "stage": "INDEPENDENT_PRE_SCIENCE_BENCHMARK_AUDIT",
+  "type": "BENCHMARK_FEASIBILITY_NOT_NEW_LEARNER",
+  "lineage": {
+    "parent_pr": 1066,
+    "parent_sha": "f9429b90e35c6b98b85a328e8b5c6186519ea27d",
+    "parent_branch": "research/aai11e-risk-suppression-diagnostic-20261114",
+    "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "frozen_world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "frozen_contexts_blob": "0f921dfeebda9ad3a0e217747e4b0365ba9c655e",
+    "frozen_controls_blob": "b554db7d8d25ae9b6a5f8bffb066181a00b35ffc",
+    "previous_posterior_pr": 1064,
+    "previous_dev_comparison_run": 43654814640,
+    "previous_final_full_run": 43654985848
+  },
+  "question": "Is the fixed >=0.60 EXACT three-goal bit-match admission requirement mathematically attainable on the AAI-11P frozen three mechanical fixture evaluation, given its actual 6-bit causal laws, 8 goals, no more than two sequential actual do(x_i=0|1) interventions and fixed contexts?",
+  "exploratory_note": "Independent pre-registration source review and a standalone, not-repo, deterministic enumeration before this audit already indicated only 144/288 two-action-reachable exact goals (50%). This audit is a confirmatory engineering reproduction on original immutable source, not a blinded discovery or new hypothesis and not new scientific data.",
+  "frozen_scope": {
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "transfer_laws": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "challenge_budgets": [
+      2,
+      4
+    ],
+    "admitted_contexts_per_law": 12,
+    "episodes_total": 288,
+    "unique_contexts": 144,
+    "actions": "Exactly original 12 possible setbit(6-bit x, index in 0..5, value 0|1), up to two sequential actions including stop; nonchanging interventions allowed but cannot increase attainability.",
+    "goal": "Exact equality of all 3 mediator bits to selected goal at terminal state; not mean reward, not number of correct bits. Privileged law oracle is diagnostic-only and never a learner.",
+    "objective": "For each original context, enumerate 0-, 1- and 2-action reachable mediator vectors; binary success if any reachable vector equals goal. Repeat each context for N=2 and N=4 as original evaluation does. Independently compute success from exact reward oracle argmax, which prioritizes full three-bit matches if reachable.",
+    "crosscheck": "Use two structurally independent methods: explicit Cartesian action-sequence exhaustive enumeration and bounded forward set closure over reachable x states. Check per-context exact reachability agreement, match original world.exact_oracle max reward to unmodified source, and no private equation or oracle in learner calls.",
+    "other_measures": "Print per-law and per-fixture reachable exact goal counts, full 64x8 context grid reachability for C/D/E/F, and original full 288-episode oracle reward. Record infeasibility margin in integer successes and original development goal fractions, never retune prior fixed gates.",
+    "frozen_precondition": "All original source blobs unchanged; original benchmark exact oracle reward is 2.448263889 and its selected original 12 contexts use hashlib.sha256 source."
+  },
+  "prespecified_gate": {
+    "original_threshold": 0.6,
+    "expected_positive_unique": 72,
+    "expected_total_unique": 144,
+    "expected_positive_episodes": 144,
+    "expected_total_episodes": 288,
+    "expected_oracle_mean_reward": 2.448263889,
+    "verify_tolerance": 0.000001,
+    "pass_if": "Two independent exact-source reachability methods agree for all original contexts; source oracle maximizing reward has identical exact-goal attainability; original scope, SHA and first-use disarm checked. Audit PASS can classify ORIGINAL_60_PERCENT_GATE_INFEASIBLE if oracle exact-goal rate below .60.",
+    "failure_classification": "If original 60% threshold exceeds exhaustive oracle upper bound, mark BENCHMARK_GOAL_GATE_IMPOSSIBLE, not candidate scientific failure. If any method disagrees or source drift, ENGINEERING_INVALID and fail closed.",
+    "interpretation": "Never retroactively change original AAI-11A/B/D NO-GO; separately frozen reward headroom/strong-control advantage still failed. Audit is proof that one particular gate is infeasible only for these mechanical fixtures. No new threshold selected, no scientific first-use.",
+    "future_protocol": "New benchmark/design or scientifically meaningful candidate acceptance must freeze a feasible ceiling-normalized endpoint and thresholds before development; do not retroactively tune earlier results."
+  },
+  "tests": {
+    "focused": "Fresh source-only unit tests for exact action cardinality, same context identities, oracle reward and exact-goal optimal, all law counts, no hidden learner data, no reserved science IDs, first-use disarm",
+    "mandatory_full": "Full exact-final original native suite and all inherited AAI-11P/11A/11B/11C/11D/11E plus audit tests on both Ubuntu24.04/Windows2022; G29 source-pinned atlas and frozen original main."
+  },
+  "science": {
+    "reserved_DEV": [
+      994000,
+      994015
+    ],
+    "reserved_TRANSFER": [
+      995000,
+      995063
+    ],
+    "reserved_NEGATIVE": [
+      996000,
+      996031
+    ],
+    "used": 0,
+    "first_use_authorized": false,
+    "scientific_claim": false
+  },
+  "authority": {
+    "source_only": true,
+    "one_shot_GitHub_existing_runner": true,
+    "draft_PR": true,
+    "merge": false,
+    "main_edit": false,
+    "model_changes": false,
+    "threshold_changes": false,
+    "owner_controller_queue_scheduler_runner": false,
+    "FORGE_Wingless_Hybrid": false,
+    "paid_API": false,
+    "Library_files": false
+  },
+  "no_post_result_tuning": true
+}
