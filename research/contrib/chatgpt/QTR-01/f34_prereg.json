@@ -1,0 +1,33 @@
+{
+  "schema": "yggdrasil.qtr01.f34.direct-binary-association-weight-dev.v1",
+  "status": "FROZEN_BEFORE_BITWEIGHT_CODE_AND_RESULTS",
+  "parent_sha": "566fae8f6dd968b5878ea7bcd1f36f300224059f",
+  "source": "research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json",
+  "source_git_blob": "453dad0363689cff785c26db5441555c6841f95d",
+  "source_sha256": "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb",
+  "source_rows": 13,
+  "source_integer_triplet_bytes": 156,
+  "source_observed_twohop_queries": 0,
+  "hypothesis": "A directly programmed fixed 512-bit/3-hash binary association weight array can recognize all 13 witnessed source Q-P-Q memberships with 0 false negatives, <=1% false-positive membership on the fully enumerated finite source-ID/source-PID candidate universe, and byte-exact cold restore at 64 programmed bytes. It does not learn from gradients and cannot enumerate objects, delete facts or infer unobserved causal laws.",
+  "representation": "512-bit weight array; each allowed Q/P/Q numeric ID triple uint32 packed little endian; deterministic BLAKE2b-128 person='QTRF34' yields first three 32-bit little-endian slots mod 512; set membership bits for each of 13 source triples. No tokenization.",
+  "controls": {
+    "exact_sparse": "13 sorted 3xuint32 triplets at 156 bytes, no false positives, can enumerate results; strongest exact-membership control.",
+    "shuffled": "Deterministic source-object permutation with actual object IDs, to show same identity-weight program cannot be credited for a different association assignment.",
+    "unseen": "Finite cartesian product of all source observed QIDs for subjects+objects and all source observed PIDs, excluding the 13 admitted source triples. This is 'unknown to frozen source' only, not globally false real-world facts.",
+    "cold": "Canonical 64-byte weight snapshot restored in new object exactly reproduces query results.",
+    "additive_interference": "Add 3 deterministic in-universe non-source triples, verify zero old-positive loss and report new false-positive count; these are synthetic controls only and never admitted source facts."
+  },
+  "frozen_go": {
+    "no_old_false_negatives": true,
+    "observed_source_membership_count": 13,
+    "false_positive_rate_max": 0.01,
+    "cold_snapshot_exact": true,
+    "weight_bytes": 64,
+    "baseline_sparse_triple_bytes": 156,
+    "source_labels_not_automatically_encoded": true
+  },
+  "cost_scope": "Reports standalone bit-array payload only; hash CPU/time, source labels, source receipts, inability to enumerate, deletions and global quality are separate costs/limitations. No claim of better end-to-end performance.",
+  "science_fence": "DEV direct bit-weight coding feasibility, NOT SCIENTIFIC_PASS or recipient-native weight integration or learned reasoning/transfer. No protected original-source first-use.",
+  "authority": "Contributor QTR source-only new file, first-party source already persisted; no extra API calls, no user Library attachments, no model or controller changes, no merge or deployment.",
+  "stop": "If FPR >1%, old-positive fails, cold loss, cross-platform source digest differs or negative control accidentally duplicates source positives: preserve NO_GO without retuning bit count/hash functions after observation."
+}
