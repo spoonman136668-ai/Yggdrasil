@@ -1,0 +1,139 @@
+name: WSP119 frozen microfeedback result source-atlas and final dual-OS qualification
+on:
+  push:
+    branches: [ci/wsp119-frozen-feedback-result-archive-20261115]
+    paths: [.github/workflows/wsp119-final-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: wsp119-source-safe-negative-evidence-final-20261115
+  cancel-in-progress: false
+jobs:
+  seal-derived-atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(WSP-119): archive frozen microfeedback partial gain without source replay' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      qualified: ${{ steps.seal.outputs.qualified }}
+    env:
+      SOURCE: 7a4029d4aebbd010eed555208287c9a6f1fd58fb
+      TREE: cc7ecc66f7b43f7d176ae4cd12a7326aab3234c8
+      TARGET: research/wsp119-evidence-vs-foundation-training-onset-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: No CRLF source drift
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 7a4029d4aebbd010eed555208287c9a6f1fd58fb
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Source/experiment unchanged after one synthetic observation; preserve null gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 2a58072c03a2a9300fc2df52ffce8fe648ee2442 "$SOURCE"
+          git merge-base --is-ancestor 1f481d4e5ead6af611a8c46c6d9e57f657a216fa "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/prereg.json)" = 5d56f3a08348a0dd990a1ea481193faa9601d7e7
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/microfeedback.py)" = 78a259ccc6f462ab612815148daa5e9ce7cfc461
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/analyze.py)" = dd5d7533067094b4c774896e67c3695da059222f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/test_wsp119.py)" = dade2af8f25b6815b5ad46b799eeaac5de6998b1
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/README.md)" = 6c8a717364a1eeb0271a0ae9ca2a1bcf64dcea7f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/result.json)" = 78aa21c09c635d3079c7dcd76804a460fdd67a27
+          python - <<'PY'
+          import json
+          a=json.load(open("research/contrib/chatgpt/WSP-119/result.json"))
+          assert a["frozen_decision"]["preset_met"] == False
+          assert a["frozen_decision"]["scientific_pass"] == False
+          assert a["outcome"]["coverage_75pct_8_queries"]["DIRECT_ACTIVE"]["held_correct"]==974
+          assert a["outcome"]["coverage_100pct_8_queries"]["DIRECT_PASSIVE"]["held_correct"]==2304
+          assert a["outcome"]["numeric_symbolic_active_disagreements"]==0
+          assert a["first_use"]["public_source_action_answers"]==18432
+          assert not a["first_use"]["protected_first_use"]
+          print("WSP119_ARCHIVE_FROZEN_NO_SCIENTIFIC_GAIN=PASS")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Rebuild ONLY three G29 source-index files to index negative result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/changed"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/changed"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+      - name: Push derived-only research child; never accepted main
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(WSP-119): source-index frozen microfeedback result"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "qualified=$NEW" >> "$GITHUB_OUTPUT"
+          echo "WSP119_FINAL_FROZEN_SOURCE_ARCHIVE_HEAD=$NEW"
+
+  exact-source-final-root-regression:
+    needs: seal-derived-atlas-only
+    if: needs.seal-derived-atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact source byte tree
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal-derived-atlas-only.outputs.qualified }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Full original root regression and new feedback fixture ONLY — no science replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-119 -p test_wsp119.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python - <<'PY'
+          import json
+          r=json.load(open("research/contrib/chatgpt/WSP-119/result.json"))
+          assert r["frozen_decision"]["preset_met"] is False
+          assert r["outcome"]["coverage_100pct_8_queries"]["direct_gain_over_passive"]==0
+          assert r["outcome"]["coverage_75pct_8_queries"]["direct_gain_over_passive"]>0.08
+          assert r["outcome"]["numeric_symbolic_active_disagreements"]==0
+          print("WSP119_FROZEN_PARTIAL_FEEDBACK_GAIN_WITH_NO_SCIENCE=PASS")
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP119_FINAL_RESEARCH_EXACT_SOURCE_BOTH_OS_FULL_REGRESSION=PASS
