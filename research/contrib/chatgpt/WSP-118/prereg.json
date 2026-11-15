@@ -1,0 +1,77 @@
+{
+  "schema": "wsp118.foundation-density-new-length-three.prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-118",
+  "contribution_class": "research-only synthetic information-sufficiency calibration",
+  "parent": {
+    "sha": "b8925636978ae0b9b32eca8278ccc3e45d5d3f57",
+    "pr": 1110,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "As the connected factual foundation grows, where do previously unnamed three-hop relational laws first become inferable for new subject/entity pairs, versus exact symbolic and restricted two-hop controls?",
+  "prior": "WSP116 20.68M retained historical facts: full vs quarter +209 Hits@1 on 4096 consumed masked TRAIN questions; numerical tied symbolic. WSP117 two-hop relation learning and ambiguous abstention qualified Linux/Windows; exact symbolic tie and no novel-structure science.",
+  "fixture": {
+    "mode": "PUBLIC SYNTHETIC ONLY",
+    "seeds": "118000..118023 inclusive 24 worlds",
+    "reserved": "118800..118863 never generate/open",
+    "entities": 64,
+    "primitives": 6,
+    "operator_length": 3,
+    "generator": "For each seed Python random.Random(seed) generates six independent random permutations of 64 node IDs. Draw four distinct three-hop target law tuples (r0,r1,r2) via seed-only RNG; reject any law if equivalent on all 64 nodes to any one- or two-hop operator. Source graph and target laws are frozen across coverage tiers.",
+    "demonstrations": "One seed-only random permutation of 64 subject IDs independent of graph and label. First 12 (source,true target) demonstrations, next 24 distinct subjects held out, final 28 unused. No test labels reach any learner.",
+    "tiers": [
+      {
+        "label": "0%",
+        "byte_threshold": 0
+      },
+      {
+        "label": "6.25%",
+        "byte_threshold": 16
+      },
+      {
+        "label": "25%",
+        "byte_threshold": 64
+      },
+      {
+        "label": "50%",
+        "byte_threshold": 128
+      },
+      {
+        "label": "75%",
+        "byte_threshold": 192
+      },
+      {
+        "label": "87.5%",
+        "byte_threshold": 224
+      },
+      {
+        "label": "100%",
+        "byte_threshold": 256
+      }
+    ],
+    "edge_mask": "Only visible source edges with sha256(b'WSP118-DENSITY-v1\\x00'+struct.pack('<III',seed,rel,subject))[0] < byte_threshold. Nested masks; all tiers have identical full ground truth and demonstrations. Unavailable graph paths must return UNKNOWN, never fabricated.",
+    "budget": "24 worlds x4 laws x7 tiers x12 training examples x24 held entity queries; 672 task-tier cells; 216 possible ordered three-hop relation instances; 1728 raw bytes candidate int32 memory per task; 0 real historical source, 0 protected source"
+  },
+  "learner": {
+    "candidate": "Directly programmed 216x2 int32 [support,contradiction] counters from visible three-hop paths on only public demonstrations. Accept unique candidate with >=3 complete matching examples and zero contradictions; a missing source edge provides no positive/negative evidence. Predict held subject only if candidate uniquely identified and all three required public edges visible, else abstain. Cold exact SHA256 and tamper rejection.",
+    "strong_exact": "Independent symbolic enumeration of 216 three-hop path programs on same public facts/examples, identical eligibility/uniqueness/abstention logic. Any tie is NO unique scientific advantage.",
+    "controls": [
+      "WSP117 restricted one/two-hop grammar on exactly the same visible data with same min3/uniqueness logic",
+      "Deterministic per-task shuffled destination examples, same source graph, no true held labels",
+      "Exact demonstration memorization (held entity subjects disjoint)",
+      "0% source graph always abstains"
+    ]
+  },
+  "metrics": "Per tier: exact-law identification, correct held top-1 with abstentions counted wrong, issued prediction coverage and precision, wrong predictions, incorrect law claims, accuracy of restricted 2-hop and shuffled controls, exact numeric-symbolic per-query parity. 10000 bootstrap world-cluster paired 100%-minus25% held top1, seed1180. Report source facts per tier, cold storage bytes and wall/CPU.",
+  "frozen_threshold": "SOURCE_SAFE_DENSITY_SIGNAL if full-tier numeric correct held >=0.80; full-minus25% >=0.20; world-cluster CI lower >0; zero numeric/symbolic discrepancies; zero private source or test-label leakage and cold/tamper PASS. All synthetic results ENGINEERING / public fixture diagnostic only, not SCIENTIFIC_PASS. Symbolic tie => scientific unique gain NO.",
+  "negative": "If exact symbolic equals direct, record NO_UNIQUE_GAIN. If graph lack explains density, attribute performance to information sufficiency rather than an abrupt neural learning transition. No post-run tuning.",
+  "limitations": "This tests an extended but still SUPPLIED 3-hop grammar, not free invention of causal law types; no fully trained neural conventional control or independent source family yet. Cannot infer typical LLM training threshold.",
+  "engineering": "Preregister FIRST; isolated research files, G29 derived-only child, mandatory full final Ubuntu+Windows regression. No original 21M Wikidata rescan, protected first-use, paid API or native model change.",
+  "authority": {
+    "research_only": true,
+    "scientific_first_use": false,
+    "promotion": false,
+    "accepted_ref_mutation": false,
+    "scheduler_or_queue_authority": false
+  }
+}
