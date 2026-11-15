@@ -12,7 +12,7 @@ jobs:
   arm-source-pinned-atlas-once:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): arm corrected G29 atlas'
+      github.event.head_commit.message == 'ci(qtr): arm final portable F17 G29 atlas'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -32,12 +32,14 @@ jobs:
         run: |
           set -euo pipefail
           A="$GITHUB_SHA"
-          BASE="1c74ef565090d667df978856e4ba023da913b0b1"
+          BASE="1fae8e0549579c6edb1265ff17735a89b161b626"
           test "$(git rev-parse HEAD)" = "$A"
           test -z "$(git status --porcelain)"
           test "$(git rev-list --count "$BASE..$A")" = "2"
           test -z "$(git diff --name-only HEAD^ HEAD)"
-          test "$(git diff --name-only "$BASE" "$A")" = ".github/workflows/qtr01-f24-qualification.yml"
+          EXPECTED="$(printf '%s\\n' .github/workflows/qtr01-f24-qualification.yml research/contrib/chatgpt/QTR-01/f17_isolation_smoke.py research/contrib/chatgpt/QTR-01/test_f17_isolation_smoke.py | LC_ALL=C sort)"
+          FOUND="$(git diff --name-only "$BASE" "$A" | LC_ALL=C sort)"
+          test "$FOUND" = "$EXPECTED"
           test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
           git merge-base --is-ancestor "$BASE" "$A"
           echo QTR_F24_ARM_SOURCE_IDENTITY_PASS

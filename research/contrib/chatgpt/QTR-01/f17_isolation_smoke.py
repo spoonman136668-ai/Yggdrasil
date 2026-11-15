@@ -11,7 +11,11 @@ import errno
 import json
 import os
 import platform
-import resource
+try:
+    import resource
+except ImportError:
+    # Module import is portable; the actual kernel isolation remains Linux-only.
+    resource = None
 import select
 import subprocess
 import sys

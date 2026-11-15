@@ -35,6 +35,11 @@ class F17(unittest.TestCase):
             with self.assertRaises(OSError):
                 f.install_landlock(object(), "/usr")
 
+    def test_nonlinux_execution_fails_closed(self):
+        with patch.object(f.sys, "platform", "win32"):
+            with self.assertRaisesRegex(RuntimeError, "F17_WRONG_PLATFORM"):
+                f.restrict_child("/usr")
+
     def test_pinned_source_identity_and_non_claim(self):
         self.assertEqual(len(f.UPSTREAM_SHA), 40)
         self.assertEqual(len(f.UPSTREAM_TREE), 40)
