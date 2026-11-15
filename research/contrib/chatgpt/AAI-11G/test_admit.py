@@ -42,7 +42,7 @@ class OracleRelativeProtocol(unittest.TestCase):
         self.assertEqual(g["unreachable_oracle_regret_noninferiority_max_excess_vs_strongest_reward_control"],.03)
         self.assertEqual(g["familiar_AB_reward_noninferiority_max_drop"],.03)
         self.assertEqual(g["whole_process_cost_ratio_to_fastest_matched_conventional_max"],2.)
-        self.assertFalse(g["no_fixed_absolute_raw_goal_success_minimum"])
+        self.assertTrue(g["no_fixed_absolute_raw_goal_success_minimum"])
         self.assertTrue(g["all_criteria_required"])
 
     def test_all_eleven_strong_conventional_controls_preserved(self):
