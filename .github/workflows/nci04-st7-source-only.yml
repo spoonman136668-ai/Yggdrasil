@@ -1,0 +1,118 @@
+name: NCI04 ST7 frozen unknown quadratic original source
+on:
+  push:
+    branches:
+      - research/nci04-st7-unknown-boolean-causal-rule-20261115
+permissions:
+  contents: read
+jobs:
+  source_only:
+    name: ST7 real unknown-rule training source (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Preserve LF source bytes on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact ST6 parent, ST7 frozen prereg, original source and stage0 SHA
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor fa0799ffd9967025b98f99e2242330307fcf9b5a HEAD
+          git merge-base --is-ancestor b03c8a7978359077ab62d746bb8142c42925bdf1 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st7/frozen_protocol.json)" = 75366ef5b1acf5668433fb3a363a610ff7104111
+          test "$(git rev-parse HEAD:research/nci04_st7/private_world.py)" = ac39c7a5a7a0c3119e5d91872017deee84ecfef4
+          test "$(git rev-parse HEAD:research/nci04_st7/source_audit.py)" = cf75f25b1640edbf4574940b0a04ab3a2676ecc5
+          python -B - <<'PY'
+          from research.nci04_st7.source_audit import verify_prereg
+          p=verify_prereg()
+          assert p['authority']['merge'] is False
+          assert p['authority']['protected_scientific_first_use'] is False
+          print('ST7_FROZEN_PRE_SOURCE_GIT_BLOBS=PASS')
+          PY
+      - name: Original private source and preheld fixed negative controls
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st7_source.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st6_source.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04d2_task.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo ST7_ORIGINAL_SOURCE_FOCUSED_NEGATIVES=PASS
+      - name: Execute ONLY frozen source training laws to check GF2 rank
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st7.source_audit import audit
+          data=audit(Path(os.environ['RUNNER_TEMP'])/'st7-stage0.json')
+          assert data['held_new_combinations_unopened'] is True
+          assert data['negative_new_rule_unopened'] is True
+          assert data['interference_laws_unopened'] is True
+          assert data['protected_first_use_unopened'] is True
+          assert data['models_not_trained'] is True
+          print('ST7_SOURCE_ONLY_ACTUAL_TRAINING_TRACE_RECORDED=PASS')
+          PY
+      - name: No protected checkout changes
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st7-unknown-rule-original-source-${{ matrix.os }}
+          path: ${{ runner.temp }}/st7-stage0.json
+          if-no-files-found: error
+          retention-days: 14
+  exact_source_parity:
+    needs: source_only
+    name: ST7 original unknown-rule source cross-OS action parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st7-unknown-rule-original-source-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st7-unknown-rule-original-source-windows-2022
+          path: windows
+      - name: Exact original action and rank receipts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          x=json.loads(Path('linux/st7-stage0.json').read_text('utf-8'))
+          y=json.loads(Path('windows/st7-stage0.json').read_text('utf-8'))
+          for key in x:
+              if x[key]!=y[key]:
+                  raise SystemExit('ST7_ORIGINAL_SOURCE_PARITY_DRIFT_'+key)
+          print('ST7_SOURCE_CROSS_OS_EXACT=PASS')
+          print('ST7_ORIGINAL_GF2_RANK='+str(x['public_feature_GF2_rank']))
+          print('ST7_SOURCE_DISPOSITION='+x['source_gate']['decision'])
+          print('ST7_NO_HELD_OR_FIRST_USE=PASS')
+          PY
