@@ -139,9 +139,16 @@ def run_law_seed(evaluator_law,evaluator_seed,models,phase,train,
                 source_cpu+=time.process_time_ns()-cpu
                 if tuple(a^b for a,b in zip(public,after))!=target:
                     raise ValueError("ST4_ORIGINAL_INHOUSE_ACTION_DRIFT")
-                pair_sha.update(bytes((
-                    *public,action,*after,*target
-                )))
+                if t==0:
+                    first_step=(public,action,after,target)
+                else:
+                    # Mirror the ORIGINAL source_paired_trial digest exactly:
+                    # its second action does not repeat the pre-probe public
+                    # frame already recorded as the first step's successor.
+                    a0,chosen,x1,y1=first_step
+                    pair_sha.update(bytes((
+                        *a0,chosen,*x1,*y1,action,*after,*target
+                    )))
                 if t==1:
                     arm_probe[arm]={"preds":preds,"target":target,
                                     "public":public,"action":action}
