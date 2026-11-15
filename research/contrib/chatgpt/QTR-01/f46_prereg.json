@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.qtr01.f46.adaptive-causal-intervention-dev.v1",
+  "status": "FROZEN_BEFORE_ANY_F46_CODE_OR_OUTCOME",
+  "parent_exact_f45_sha": "7223f0cb2f3862261906b5640f53751c1a1e3689",
+  "hypothesis": "Selective tokenless local-weight uncertainty sampling can discover context-dependent signed causal relations with fewer paired public interventions than a uniform causal learner and a fully fitted conventional structured active policy when all have equal action budgets, environment access and published model-family information. Preserve NO_GO and avoid claiming science when strong conventional controls match or win.",
+  "new_worlds": {
+    "sizes_high_first": [
+      64,
+      32,
+      16
+    ],
+    "fresh_development_seeds": [
+      107,
+      109,
+      113
+    ],
+    "seed_to_law": {
+      "107": "invariant",
+      "109": "context_gated",
+      "113": "context_flip"
+    },
+    "source": "Independent synthetic F46 SHA256 hashes for each hidden graph edge, degree, sign and public intervention outcome; none of F44/F45 benchmark worlds or hidden edge labels reused, no real/protected scientific first-use.",
+    "degree_options": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "degree_rule": "SHA256 first8('F46/degree/v1|N|seed|source') % 5 selects degree; choose degree distinct nonself targets by ascending SHA256 first8('F46/edge/v1|N|seed|source|target'); edge sign + iff SHA256 first8('F46/sign/v1|N|seed|source|target') even; this graph is evaluator only.",
+    "context_laws": "Seed 107 invariant: edges have same sign for both contexts. Seed 109 gated: only context1 has a signed effect, context0 is unrelated. Seed 113 flip: context1 sign is negative of context0 sign. No true world mode or edges supplied to learner or active policy.",
+    "observations": "For an action 0/1 intervention on a source in context0/1, return a public N-target binary outcome vector. For each target, Bernoulli p=1/4 absent/no-effect and for non-preferred action; p=7/8 under preferred action. SHA256 first8('F46/obs/v1|N|seed|source|context|action|replicate|target') below numerator * 2**61 determines outcome.",
+    "sampling_unit": "One paired intervention comprises do(action0) then do(action1) on exactly one (source,context) row, both public outcome vectors. Each row's replicate counter starts at zero; at most 48 pairs per row. No graph first-use or free queries. Every policy accesses the same deterministic world oracle with identical budgets and can choose a different path.",
+    "pair_budgets_per_row_mean_high_first": [
+      24,
+      12,
+      6
+    ],
+    "actual_pairs_at_budget": "For each N and average b, exactly 2*N*b paired interventions (4*N*b individual actions). Train each policy once to largest b=24 and evaluate checkpoints at b=6,12,24 using the prefix of its own action history; report results highest budget first. No new outcomes or threshold tuning at lower budgets.",
+    "row_exploration": "All adaptive policies first acquire one paired observation in every (source,context) row, then allocate by a deterministic priority, tie-breaking lowest row index. Neither learner gets degree labels.",
+    "dev_only": "F46 benchmark worlds, seeds and policies are predeclared and generated as development data; no protected prospective science claimed."
+  },
+  "arms": {
+    "native_active": {
+      "update": "Existing F45 LocalContextWeights tokenless int16 update on paired public outcomes; no gradients; per-row scores use signed difference and frozen threshold 0.45 to predict signed direct edges, then compose unique two-hop paths.",
+      "policy": "For each row (source,context) with 1<=count<48, calculate abs local signed contrast/(2*count) for each nonself target, compute top eight scores 1/(0.15+abs(abs(contrast)-0.45)); priority is sum(top8)/(sqrt(count+1)), select highest, stable tie break lowest row. New rows have infinite initial priority and are sampled before repeats. This is a fixed heuristic, not tuned on outcomes."
+    },
+    "uniform": {
+      "model": "Same F45 LocalContextWeights; strict round-robin row schedule over 2*N rows: pair index % (2*N). This is the exact equal-budget passive allocation comparator; outcomes from real chosen interventions."
+    },
+    "random": {
+      "model": "Same F45 LocalContextWeights; deterministic random row among remaining cap<48 using independent seeded Python random.Random(1000003*seed+N). Policy sees no hidden graph. This is a selection negative."
+    },
+    "conventional_active": {
+      "model": "Fully fitted independent context/source/target two-arm Bernoulli maximum likelihood and family-aware constrained least-squares projection over public candidate shapes [1,1],[0,1],[1,-1]; all 3 shapes publicly known but the actual world's mode/degree are not supplied.",
+      "policy": "For each already-sampled row, infer each target's 0/1 action success difference using its public sufficient-statistic counts. Assign per-target uncertainty score 1/(0.15+abs(abs(delta)-0.45)), sum highest eight / sqrt(count+1). For each context/source row the statistics use exact MLE difference, not learned native weights. All rows get one pair first; the family-aware fitted control is used to score predictions at each budget. Same public source/context/action vector interface, max 48 per row, deterministic ties.",
+      "other_controls": [
+        "For all policies, also compute fully fitted Bernoulli MLE and known-family structured least-squares from exactly that policy's own observations; the same-statistic MLE is expected identical to local contrast signs on the same history.",
+        "Exact hidden-world graph gives a scoring ceiling only; no active policy/learner may read it.",
+        "Action-0-only policy must abstain on signed causal effects.",
+        "Wrong-source permutation must reduce native direct F1 in a focused negative, not serve as a weaker benchmark."
+      ],
+      "strongest_control_definition": "At each budget, strongest conventional = maximum macro direct F1 of structured MLE on conventional-active sampling, structured MLE on uniform sampling, and unstructured fitted MLE on uniform sampling. Also display random and native-active information streams; controls are compared at identical action counts, not identical choice-dependent observations."
+    }
+  },
+  "frozen_metrics": {
+    "direct": "For each context, classify candidate directed (source,target) as +,-,no-link; macro signed precision/recall/F1 across both contexts, all N*(N-1)*2 candidate nonself edges; wrong signs count as FP and FN.",
+    "twohop": "Product of exactly one signed 2-hop path per context; omit true-world multi-path and diagonal endpoints from every scorer. Report signed F1 for native and all controls.",
+    "accounting": "For each world and budget: actual paired query count, individual action count, public observed outcome bits; no free probes in scored arm. Native cold-restored signed checkpoint equality and unrelated row retention from one additional *separately accounted* real public observation on an isolated clone. Count codebooks, weight payload, count arrays, checkpoint bytes and conventional counters separately. Fit and selection/evaluation times DEV only.",
+    "frozen_go": {
+      "min_worlds_at_each_budget": 9,
+      "all_policies_same_query_budget": true,
+      "native_cold_exact_all_worlds": true,
+      "true_intervention_isolation_all_worlds": true,
+      "at_b12_native_active_macro_direct_F1_gain_over_uniform_min": 0.02,
+      "at_b12_native_active_macro_direct_F1_gain_over_strongest_conventional_min": 0.01,
+      "at_b6_native_active_macro_direct_F1_gain_over_uniform_min": 0.01,
+      "at_b12_native_active_macro_twohop_F1_min": 0.6,
+      "exact_context_law_comparison_all_three_families": true
+    },
+    "decision": "DEV_ACTIVE_INTERVENTION_POLICY_GO only if all mandatory frozen active-policy gains, evidence/retention gates and nine-world coverage pass at the stated budgets; otherwise DEV_ACTIVE_INTERVENTION_POLICY_NO_GO. A scientifically null or negative result cannot be rescued by post-result policy/threshold/budget changes.",
+    "science": "SCIENTIFIC_PASS always false: public synthetic generator, seeds, policies and model families are fixed DEV, not independent unseen-world qualification; equal action count is not a proven matched full compute budget."
+  },
+  "fences": {
+    "no_protected_source_first_use": true,
+    "no_web_or_paid_API": true,
+    "no_accepted_native_model_weights": true,
+    "no_original_F45_change": true,
+    "no_main_merge_or_deployment": true,
+    "no_other_projects": true,
+    "no_scheduled_tasks_or_controllers": true,
+    "no_new_runner": true,
+    "no_scientific_pass_claim": true
+  }
+}
