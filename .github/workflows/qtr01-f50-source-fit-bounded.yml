@@ -1,4 +1,4 @@
-name: QTR-01 F50 high-first bounded source-only training
+name: QTR-01 F50 corrected unknown-target graph and bounded source training
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ jobs:
   atlas-once:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source-fit derive G29'
+      github.event.head_commit.message == 'ci(qtr): F50 target-unknown parity derive G29'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -26,11 +26,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '1d837d163631c844acd4a34e9d31a0ac934ac93f'
+          test "$(git rev-parse HEAD^)" = '8a23b7e5ff1401af36a7c6070dbf41685ff9c402'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f50-source-fit-bounded.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_fit.py)" = 'cb4fbf8ebf26cb2feded2bc0c9ee2ae6b9de877c'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '37d6b5d81eb061bd6629eb328f3949599a254446'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '01c3b1d0540af5911518850cf30b5b7522425a98'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_public_controls.py)" = '05f54f3b7f517d0eb23ccdb133b3a81988ec29f7'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_conventional_controls.py)" = '3c04fa3bc68293897f6158cded97728fd9b3786e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_target_public_controls.py)" = '8862b6784ab96a75a143791efc9fdaaaa0a35ae1'
           test -z "$(git status --porcelain)"
           echo F50_HIGH_FIRST_SOURCE_FIT_FROZEN=PASS
       - name: Derive exact G29 source atlas only
@@ -45,7 +48,7 @@ jobs:
           git diff --cached --quiet && exit 1
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'ci(qtr): derive F50 high-first FIT source atlas'
+          git commit -m 'ci(qtr): derive F50 target-unknown G29 atlas'
           python scripts/build_code_atlas.py --check
           test -z "$(git status --porcelain)"
           git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
@@ -53,7 +56,7 @@ jobs:
   qualify:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 high-first budgeted source training'
+      github.event.head_commit.message == 'ci(qtr): F50 target-unknown parity and source fit exact'
     name: F50 source-fit exact-SHA regression (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 65
@@ -88,12 +91,15 @@ jobs:
         run: |
           set -euo pipefail
           test -z "$(git diff --name-only HEAD^ HEAD)"
-          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 high-first budgeted source training'
-          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): derive F50 high-first FIT source atlas'
-          git merge-base --is-ancestor 1d837d163631c844acd4a34e9d31a0ac934ac93f HEAD
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 target-unknown parity and source fit exact'
+          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): derive F50 target-unknown G29 atlas'
+          git merge-base --is-ancestor 8a23b7e5ff1401af36a7c6070dbf41685ff9c402 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_fit.py)" = 'cb4fbf8ebf26cb2feded2bc0c9ee2ae6b9de877c'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '37d6b5d81eb061bd6629eb328f3949599a254446'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '01c3b1d0540af5911518850cf30b5b7522425a98'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_public_controls.py)" = '05f54f3b7f517d0eb23ccdb133b3a81988ec29f7'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_conventional_controls.py)" = '3c04fa3bc68293897f6158cded97728fd9b3786e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_target_public_controls.py)" = '8862b6784ab96a75a143791efc9fdaaaa0a35ae1'
           python scripts/build_code_atlas.py --check
           echo F50_HIGH_FIRST_SOURCE_EXACT_SHA=PASS
       - name: Install pinned CPU tools
@@ -119,7 +125,7 @@ jobs:
     needs: qualify
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 high-first budgeted source training'
+      github.event.head_commit.message == 'ci(qtr): F50 target-unknown parity and source fit exact'
     name: F50 4096-source-law bounded first-fit (no target)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -162,7 +168,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: f50-4096-source-only-first-fit-receipts
+          name: f50-4096-source-only-target-unknown-parity-v2
           path: ${{ runner.temp }}/f50-source-fit/
           retention-days: 30
           if-no-files-found: warn
