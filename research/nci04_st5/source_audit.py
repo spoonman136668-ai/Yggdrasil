@@ -142,8 +142,12 @@ def audit(out):
             "source_law_private_truth_used_by_learner":False,
         }
         (training if law in TRAIN_LAWS else interference).append(entry)
-    result=source_disposition(signatures,7680,len(TRAIN_LAWS)*12*TRIALS,
-                              len(INTERFERENCE_LAWS)*TRIALS,
+    counted_training=sum(x["complete_real_five_step_episodes"]
+                         for x in training)
+    counted_interference=sum(x["complete_real_five_step_episodes"]
+                             for x in interference)
+    result=source_disposition(signatures,counted_training*len(ACTIONS),
+                              counted_training,counted_interference,
                               unexpected,rotation_fail)
     doc={
         "schema":SCHEMA,
