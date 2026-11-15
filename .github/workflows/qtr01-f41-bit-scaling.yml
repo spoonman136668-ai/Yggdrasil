@@ -1,0 +1,173 @@
+name: QTR-01 F41 frozen archived association bit scaling and full regression
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+permissions:
+  contents: read
+jobs:
+  focused:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): qualify F41 source-only scale'
+    name: F41 source-exact DEV focused (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Stable Windows Git bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm F41 protocol committed separately before source-free implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '42143907622ecc6e34f00e570f4a9ead344aa83e'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): qualify F41 source-only scale'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f41-bit-scaling.yml'
+          git merge-base --is-ancestor 328114c5d246ba63f1c7fc2589669b28089c3c63 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_prereg.json)" = 'bec761a5189142056afb63336de0374077e3a4e4'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = 'a37b9a3559eca0bb472942c9759eec0557bba7bf'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = 'a215c80bb8b34abfd893b6b50970615c908d00b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f34_direct_bitweights.py)" = '2df50bedccc2fc674231f440891107ea5b96f6d9'
+          echo F41_FROZEN_SOURCE_EXACT=PASS
+      - name: F41 frozen focused tests, including actual offline capacity comparison
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f41_*.py' -v
+      - name: Print full fixed-order source-free capacity result
+        run: python -B research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py
+      - name: No changed checkout or first-use artifacts
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F41_NO_NEW_SOURCE_OR_NATIVE_FIRST_USE=PASS
+
+  atlas-once:
+    needs: focused
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): qualify F41 source-only scale'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact frozen source & first-use fence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git log -1 --format=%s)" = 'ci(qtr): qualify F41 source-only scale'
+          test "$(git rev-parse HEAD^)" = '42143907622ecc6e34f00e570f4a9ead344aa83e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_prereg.json)" = 'bec761a5189142056afb63336de0374077e3a4e4'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = 'a37b9a3559eca0bb472942c9759eec0557bba7bf'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = 'a215c80bb8b34abfd893b6b50970615c908d00b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          test -z "$(git status --porcelain)"
+          echo F41_ATLAS_SOURCE_PIN=PASS
+      - name: Generate exactly three derived ICE atlas companion files, then pin final full regression marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          EXPECTED="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          ACTUAL="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$EXPECTED" = "$ACTUAL"
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m 'ci(qtr): derive F41 source-exact ICE code atlas'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git commit --allow-empty -m 'ci(qtr): F41 final full exact-source qualification'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo F41_ICE_ATLAS_AND_FULL_FINAL_DISPATCH=PASS
+
+  full-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F41 final full exact-source qualification'
+    name: F41 full final regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - name: Stable Windows checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify F41 exact source SHA and G29 derived atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F41 final full exact-source qualification'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          git merge-base --is-ancestor 328114c5d246ba63f1c7fc2589669b28089c3c63 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_prereg.json)" = 'bec761a5189142056afb63336de0374077e3a4e4'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = 'a37b9a3559eca0bb472942c9759eec0557bba7bf'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = 'a215c80bb8b34abfd893b6b50970615c908d00b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          echo F41_FINAL_SOURCE_AND_ATLAS=PASS
+      - name: Install inherited full-regression dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+      - name: Full original root regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Entire contributor regression with frozen F41 negative controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+      - name: Ensure final exact-source clean checkout
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F41_FULL_FINAL_SOURCE_EXACT_PASS
