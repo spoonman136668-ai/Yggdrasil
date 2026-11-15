@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.qtr01.f42.lossless-indexed-knowledge-dev.v1",
+  "status": "FROZEN_BEFORE_F42_EXECUTABLE_OR_FIRST_RESULT",
+  "parent_source_commit": "24dc2248bb3e2cc8bc2a42e2e3170eddbe0a35cd",
+  "source_scope": "Exact 82 existing first-party CC0 claim-backed Q-P-Q facts from F32/F35/F39 archive; no external or protected source; no novel-world evaluation",
+  "archive_custody": [
+    {
+      "file": "f32_source_snapshot.json",
+      "sha256": "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb",
+      "blob": "453dad0363689cff785c26db5441555c6841f95d",
+      "rows": 13
+    },
+    {
+      "file": "f35_source_depth2_snapshot.json",
+      "sha256": "cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954",
+      "blob": "3fc50ddf7453958c458db697eacf2e27d3d52f57",
+      "rows": 20
+    },
+    {
+      "file": "f39_fit_breadth_source_snapshot.json",
+      "sha256": "7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044",
+      "blob": "f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108",
+      "rows": 49
+    }
+  ],
+  "expected": {
+    "qids": 78,
+    "predicates": 8,
+    "triples": 82,
+    "old_triples": 33,
+    "new_triples": 49,
+    "undirected_components": 7,
+    "observed_twohop_queries": 46,
+    "root_count": 10
+  },
+  "question": "Can a reversible, exactly indexed native-independent Q-P-Q coordinate substrate outperform the F41 bit-filter in both precision and encoded coordinate bytes on identical known facts, with deterministic cold restore, incrementality and deletion?",
+  "hypothesis": "The archived 82 Q-P-Q edges can be encoded losslessly with byte-local indices and complete dictionary accounting in fewer than 984 raw-coordinate bytes, with zero false-positive membership/composition queries and exact reproducibility on Linux and Windows.",
+  "control_groups": [
+    "Raw exact triple tuples serialized as uint32 little-endian subject,predicate,object at 82*12=984 bytes (source labels/receipts excluded in both)",
+    "Exact source graph adjacency with same known edges and bounded candidate domains; zero false positives is the hard correctness ceiling",
+    "F41 source-exact 3-hash Bloom family remains frozen negative; do not rerun or retune its mechanism",
+    "Empty snapshot and deterministic tampered-checksum, malformed header, duplicate row, out-of-range ordinal, noncanonical reordering negative controls"
+  ],
+  "encoding_contract": {
+    "magic_ascii_with_version": "F42\\u0001 (four bytes 46 34 32 01 hex)",
+    "header": "magic 4 bytes, q_count uint8, p_count uint8, triple_count uint16 little endian = 8 total header bytes",
+    "vocabulary": "Sorted positive numeric QIDs and PIDs, each uint32 little-endian, 78 Q plus 8 P = 344 bytes; included in payload",
+    "triples": "Sorted unique numeric (subject,predicate,object); one uint8 index per field = 3 bytes per triple = 246 bytes",
+    "digest": "SHA256 trailer of entire header/vocabulary/triples = 32 bytes; reject a mismatch",
+    "full_payload_bytes": 630,
+    "baseline_triple_coordinate_bytes": 984,
+    "minimum_declared_saving_bytes": 354,
+    "count_source_receipts": "Compare separately and identically to raw control; neither numeric representation includes labels, provenance, graph construction or acquisition in its 630/984 coordinate format"
+  },
+  "evaluation": {
+    "roots": [
+      "Q2",
+      "Q5",
+      "Q17",
+      "Q30",
+      "Q42",
+      "Q64",
+      "Q76",
+      "Q80",
+      "Q90",
+      "Q95"
+    ],
+    "domain": "All 78 observed QIDs, all 8 observed PID values, all 10 root × first PID × second PID × terminal QID two-hop candidates (49,920 total); and 78×8×78 direct membership candidates (48,672 total)",
+    "old_then_new": "Freeze shared Q/P vocabulary from already-known 82 source archive, encode/cold restore old 33 before append 49, then encode/cold restore all 82, check original edges retained, no duplicates or surprises",
+    "deletion": "Choose lexicographically smallest numeric source triple after all updates, delete once, snapshot/restore, verify one missing triple and all 81 others identical, then re-add and restore; this is development mechanics, not source truth revision",
+    "metrics": [
+      "Payload bytes incl complete coordinate dictionary/checksum",
+      "Raw coordinate bytes for exact typed uint32 triplets, same source scope",
+      "Membership confusion TP FP FN TN over fixed bounded archive domain",
+      "Twohop confusion TP FP FN TN over 49,920 bounded archive queries",
+      "Incremental original/new retention, exact canonical cold reencode and parity",
+      "Explicit shared source-archive provenance bytes for honest inclusive footprint; use source archive lengths as identical shared external costs",
+      "Wall time only exploratory, never a performance qualification"
+    ],
+    "frozen_go": {
+      "source_positive_recall": 1,
+      "membership_false_positives": 0,
+      "composition_false_positives": 0,
+      "composition_false_negatives": 0,
+      "serialized_payload_bytes_max": 630,
+      "raw_coordinate_bytes": 984,
+      "cold_bit_exact": true,
+      "delete_one_readd_exact": true,
+      "cross_platform_byte_digest_equal": true
+    }
+  },
+  "limitations": "This is a lossless numeric graph index, not a neural recipient, learned association mechanism, semantic labels, causal reasoning, novel world generalization, full provenance-bearing model, or even guaranteed meaningful whole-process savings. Exact graph symbolic control remains equally accurate.",
+  "fences": {
+    "no_new_source_http": true,
+    "no_reserved_qid_first_use": true,
+    "no_native_recipient_weights": true,
+    "no_scientific_first_use": true,
+    "no_other_model_changes": true,
+    "no_merge": true,
+    "no_main_or_accepted_ref": true,
+    "no_controller_or_scheduler": true,
+    "no_paid_api": true,
+    "no_touch_original_f41": true,
+    "no_unapproved_deployment": true
+  },
+  "classification": "DEV_EXACT_INDEX_ENCODE_ONLY; SCIENTIFIC_PASS=false until independently authorized and frozen native recipient/strong fully trained control tests"
+}
