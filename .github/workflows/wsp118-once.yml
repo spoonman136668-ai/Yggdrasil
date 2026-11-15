@@ -1,0 +1,239 @@
+name: WSP118 frozen knowledge-foundation density and three-hop source-safe qualification
+on:
+  push:
+    branches: [ci/wsp118-foundation-density-once-20261115]
+    paths: [.github/workflows/wsp118-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: wsp118-source-safe-original-public-fixture-20261115
+  cancel-in-progress: false
+
+jobs:
+  frozen-atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(WSP-118): one-shot source-safe density curve dual-OS exact-SHA qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    env:
+      SOURCE: 5f6be283281e6892cc0c630fc6f81e43c94ab908
+      SOURCE_TREE: 4bfbcf5149a7fd4c8bf77f69a011ecb421bd3d3d
+      TARGET: research/wsp118-foundation-density-threehop-emergence-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Exact LF source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5f6be283281e6892cc0c630fc6f81e43c94ab908
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Immutable prereg FIRST and exact source/test/checkpoint SHA pins
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor dee825bd0f664dfc9dd5b5a1fd1945a9a9f44bc1 "$SOURCE"
+          git merge-base --is-ancestor b8925636978ae0b9b32eca8278ccc3e45d5d3f57 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-118/prereg.json)" = 59b96fcc77ffa0c143bd462e149e6111c7e7b2c8
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-118/mechanism.py)" = 7ee6a66e9aeb6c10dd762ec2b1f979bab8a191cf
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-118/analyze.py)" = c38c5ed6503c039cb71b0e0df0d43c1316eba236
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-118/test_wsp118.py)" = 9b5fa8548d52d97709feb7140c9d55bcdf012109
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-118/README.md)" = df63d0058ac0931a53fe11ed6404b5dcc28ed34f
+          python - <<'PY'
+          import ast,json,pathlib
+          p=pathlib.Path("research/contrib/chatgpt/WSP-118")
+          spec=json.loads((p/"prereg.json").read_text(encoding="utf-8"))
+          assert spec["experiment_id"]=="WSP-118"
+          assert not spec["authority"]["scientific_first_use"]
+          assert spec["fixture"]["reserved"]=="118800..118863 never generate/open"
+          for f in p.glob("*.py"):ast.parse(f.read_text(encoding="utf-8"))
+          print("WSP118_FIRST_PREREG_AND_SOURCE_AST=PASS")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Build only G29 generated source atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+      - name: Publish source-locked derived-only archive child to same research branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(WSP-118): generate exact-source G29 atlas only"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "candidate=$NEW" >> "$GITHUB_OUTPUT"
+          echo "WSP118_QUALIFIED_ATLAS_SOURCE_SHA=$NEW"
+
+  source-safe-ubuntu:
+    needs: frozen-atlas-only
+    if: needs.frozen-atlas-only.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    permissions:
+      contents: read
+    outputs:
+      cases_digest: ${{ steps.diagnostic.outputs.cases_digest }}
+      graph_digest: ${{ steps.diagnostic.outputs.graph_digest }}
+      classification: ${{ steps.diagnostic.outputs.classification }}
+      full_correct: ${{ steps.diagnostic.outputs.full_correct }}
+      first_half: ${{ steps.diagnostic.outputs.first_half }}
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.frozen-atlas-only.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original source safe fixture and mandatory inherited regression BEFORE diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-118 -p test_wsp118.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP118_UBUNTU_FULL_PRE_FIXTURE_DIAGNOSTIC_PASS
+      - name: Frozen 24-world seven-tier PUBLIC fixture once, no protected source
+        id: diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/WSP-118/analyze.py > "$RUNNER_TEMP/wsp118.jsonl"
+          python - "$RUNNER_TEMP/wsp118.jsonl" "$GITHUB_OUTPUT" <<'PY'
+          import json,sys
+          text=open(sys.argv[1],encoding="utf-8").read()
+          start=text.index("WSP118_PUBLIC_FIXTURE_RESULT=")
+          data=json.loads(text[start+len("WSP118_PUBLIC_FIXTURE_RESULT="):].strip())
+          assert data["schema"]=="wsp118.public-synthetic-foundation-density.v1"
+          assert data["source_worlds"]==24 and data["relation_laws_per_world"]==4
+          assert data["foundation_levels"]==7
+          assert data["direct_learned_int32_bytes"]==1728
+          assert data["symbolic_disagreements"]==0 and data["cold_restore_errors"]==0
+          assert not data["scientific_pass"] and not data["protected_first_use"]
+          assert not data["real_wikidata_source_rescanned"] and not data["native_model_modified"]
+          assert data["tier_results"]["0"]["numeric_issued"]==0
+          for row in data["tier_results"].values():
+              assert row["task_law_cases"]==96 and row["total_held_queries"]==2304
+          with open(sys.argv[2],"a",encoding="utf-8") as out:
+              for key,field in (("cases_digest","all_case_metrics_sha256"),
+                                ("graph_digest","source_public_graph_sha256"),
+                                ("classification","classification")):
+                  out.write(key+"="+str(data[field])+"\n")
+              out.write("full_correct="+str(data["tier_results"]["256"]["numeric_top1_correct"])+"\n")
+              out.write("first_half="+str(data["first_density_with_at_least_50pct_law_identification"])+"\n")
+          print("WSP118_FIXTURE_DOSE_RESPONSE="+json.dumps({
+              "classification":data["classification"],
+              "first_half":data["first_density_with_at_least_50pct_law_identification"],
+              "paired_world_full_vs_quarter":data["paired_world_full_vs_quarter"],
+              "tiers":data["tier_results"],
+              "sha256_cases":data["all_case_metrics_sha256"],
+              "sha256_graph":data["source_public_graph_sha256"],
+              "elapsed_seconds":data["elapsed_seconds"]
+          },sort_keys=True))
+          PY
+      - name: MANDATORY full Ubuntu regression AFTER fixture at unchanged source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP118_UBUNTU_POST_FIXTURE_FINAL_REGRESSION=PASS
+
+  source-safe-windows-replay:
+    needs: [frozen-atlas-only,source-safe-ubuntu]
+    if: needs.source-safe-ubuntu.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      EXPECTED_CASES: ${{ needs.source-safe-ubuntu.outputs.cases_digest }}
+      EXPECTED_GRAPH: ${{ needs.source-safe-ubuntu.outputs.graph_digest }}
+      EXPECTED_CLASSIFICATION: ${{ needs.source-safe-ubuntu.outputs.classification }}
+      EXPECTED_FULL: ${{ needs.source-safe-ubuntu.outputs.full_correct }}
+      EXPECTED_FIRST_HALF: ${{ needs.source-safe-ubuntu.outputs.first_half }}
+    steps:
+      - name: Ensure CRLF source safe
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.frozen-atlas-only.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Validate source-safe fixture, exact G29, mandatory inherited full regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-118 -p test_wsp118.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Verify full public fixture deterministic numeric and symbolic result matches Ubuntu bit-exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/WSP-118/analyze.py > "$RUNNER_TEMP/wsp118-win.jsonl"
+          python - "$RUNNER_TEMP/wsp118-win.jsonl" <<'PY'
+          import json,os,sys
+          text=open(sys.argv[1],encoding="utf-8").read()
+          d=json.loads(text.split("WSP118_PUBLIC_FIXTURE_RESULT=",1)[1].strip())
+          assert d["all_case_metrics_sha256"]==os.environ["EXPECTED_CASES"]
+          assert d["source_public_graph_sha256"]==os.environ["EXPECTED_GRAPH"]
+          assert d["classification"]==os.environ["EXPECTED_CLASSIFICATION"]
+          assert str(d["tier_results"]["256"]["numeric_top1_correct"])==os.environ["EXPECTED_FULL"]
+          assert str(d["first_density_with_at_least_50pct_law_identification"])==os.environ["EXPECTED_FIRST_HALF"]
+          assert d["symbolic_disagreements"]==0 and d["cold_restore_errors"]==0
+          assert not d["scientific_pass"] and not d["protected_first_use"]
+          print("WSP118_WINDOWS_UBUNTU_DETERMINISTIC_WORLD_AND_MODEL_PARITY=PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP118_WINDOWS_FINAL_SOURCE_SAFE_REGRESSION=PASS
