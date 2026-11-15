@@ -98,6 +98,21 @@ class FKP12Fixtures(unittest.TestCase):
         self.assertGreaterEqual(model.brier(p,train[0]["y"]),0)
         self.assertGreaterEqual(model.logloss(p,train[0]["y"]),0)
 
+    def test_fully_trained_conventional_models_on_source_safe_fixtures(self):
+        import torch
+        fixtures=[self.fabricated_episode(10,k) for k in (0,2,4,6)]
+        runtime,models,details=baselines.train_all(fixtures[:2],fixtures[2:])
+        for name in ("GRU","MLP","LOGISTIC"):
+            self.assertIn(name,models)
+            self.assertEqual(details[name]["full_epochs_per_seed"],24)
+            self.assertEqual(details[name]["seeds_trained"],[1212,3434])
+            self.assertGreater(details[name]["parameters"],0)
+            estimate=baselines.predict(models[name],name,fixtures[2:],runtime)
+            self.assertEqual(len(estimate),2)
+            self.assertTrue(all(x.shape==(10,3) and np.isfinite(x).all()
+                                for x in estimate))
+            self.assertTrue(np.isfinite(details[name]["val_brier"]))
+
     def test_no_held_or_private_sources_in_models(self):
         text=(HERE/"source.py").read_text()
         self.assertNotIn("env.unwrapped",text)
