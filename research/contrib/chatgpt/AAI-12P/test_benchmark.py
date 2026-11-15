@@ -36,7 +36,7 @@ class HeterogeneousCausalWorldQualification(unittest.TestCase):
         signatures=set()
         for law in world.TRANSFER:
             self.assertEqual(world.parameters(law),world.parameters(law))
-            samples=tuple(world.intermediates(law,x) for x in world.INPUTS[::4])
+            samples=tuple(world.intermediates(law,x) for x in world.PROBE_INPUTS)
             signatures.add(samples)
             self.assertEqual(len(samples),64)
         self.assertEqual(len(signatures),12)
