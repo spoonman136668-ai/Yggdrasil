@@ -1,0 +1,235 @@
+name: WSP119 source-safe internal microfeedback active/passive equal-budget comparison
+on:
+  push:
+    branches: [ci/wsp119-microfeedback-public-once-20261115]
+    paths: [.github/workflows/wsp119-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: wsp119-microfeedback-public-original-once-20261115
+  cancel-in-progress: false
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(WSP-119): one-shot internally grounded microfeedback fixture exact-OS qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    outputs:
+      frozen: ${{ steps.seal.outputs.frozen }}
+    env:
+      SOURCE: 1f481d4e5ead6af611a8c46c6d9e57f657a216fa
+      TREE: 77519d24c398cc136b1ddccd174e3b051888fe5f
+      TARGET: research/wsp119-evidence-vs-foundation-training-onset-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Configure exact source LF bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 1f481d4e5ead6af611a8c46c6d9e57f657a216fa
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify prereg first then budget correction before source/implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 2a58072c03a2a9300fc2df52ffce8fe648ee2442 "$SOURCE"
+          git merge-base --is-ancestor 0d0a97e52c43e5272023466901348942bc43b331 "$SOURCE"
+          git merge-base --is-ancestor b615fa48654cad08af766f47c48bdc0318304f1c "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/prereg.json)" = 5d56f3a08348a0dd990a1ea481193faa9601d7e7
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/microfeedback.py)" = 78a259ccc6f462ab612815148daa5e9ce7cfc461
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/analyze.py)" = dd5d7533067094b4c774896e67c3695da059222f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/test_wsp119.py)" = dade2af8f25b6815b5ad46b799eeaac5de6998b1
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-119/README.md)" = 6c8a717364a1eeb0271a0ae9ca2a1bcf64dcea7f
+          python - <<'PY'
+          import pathlib,ast,json
+          root=pathlib.Path("research/contrib/chatgpt/WSP-119")
+          for f in root.glob("*.py"):ast.parse(f.read_text(encoding="utf-8"))
+          s=json.loads((root/"prereg.json").read_text(encoding="utf-8"))
+          assert s["experiment_id"]=="WSP-119"
+          assert s["authority"]["scientific_first_use"] is False
+          assert "18,432" in s["fresh_source"]["source_budget_max"]
+          assert s["fresh_source"]["reserved"]=="119800..119863 never opened"
+          print("WSP119_PREREG_FIRST_AND_MATCHED_FOUR_ARM_BUDGET=PASS")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Regenerate only exact-source G29 atlas derived files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/changed"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/changed"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+      - name: Seal G29 derived-only source child on original research branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(WSP-119): index preregistered microfeedback source"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "frozen=$NEW" >> "$GITHUB_OUTPUT"
+          echo "WSP119_ATLAS_LOCKED_RESEARCH_SHA=$NEW"
+  ubuntu-original-public-fixture:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    permissions:
+      contents: read
+    outputs:
+      case_sha: ${{ steps.analyze.outputs.case_sha }}
+      source_sha: ${{ steps.analyze.outputs.source_sha }}
+      result_class: ${{ steps.analyze.outputs.result_class }}
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Prevent source byte mutation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.frozen }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: All source safe tests plus MANDATORY complete inherited regression BEFORE public fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-119 -p test_wsp119.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP119_UBUNTU_PRE_FIXTURE_FULL_SOURCE_SAFE_REGRESSION=PASS
+      - name: One frozen public synthetic microfeedback differential, nulls preserved
+        id: analyze
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/WSP-119/analyze.py > "$RUNNER_TEMP/wsp119-public.jsonl"
+          python - "$RUNNER_TEMP/wsp119-public.jsonl" "$GITHUB_OUTPUT" <<'PY'
+          import json,sys
+          line=open(sys.argv[1],encoding="utf-8").read()
+          x=json.loads(line.split("WSP119_PUBLIC_MICROFEEDBACK=",1)[1].strip())
+          assert x["schema"]=="wsp119.public-synthetic-internal-microfeedback.v1"
+          assert x["world_tasks"]==24*4*4
+          assert set(x["source_queries"])=={"DIRECT_ACTIVE","DIRECT_PASSIVE","DIRECT_NO_UPDATE","SYMBOLIC_ACTIVE"}
+          assert all(n==4608 for n in x["source_queries"].values())
+          assert x["exact_symbolic_active_mismatches"]==0
+          assert x["cold_numeric_checkpoint_checks"]==24*4*4*8*3
+          assert x["scientific_pass"]==False
+          assert x["real_source_opened"]==False and x["reserved_science_opened"]==False
+          assert x["native_model_modified"]==False
+          assert len(x["coverage_exposure_aggregate"])==4
+          with open(sys.argv[2],"a",encoding="utf-8") as dest:
+              dest.write("case_sha="+x["case_receipt_sha256"]+"\n")
+              dest.write("source_sha="+x["source_action_response_receipt_sha256"]+"\n")
+              dest.write("result_class="+x["classification"]+"\n")
+          print("WSP119_MICROFEEDBACK_EVIDENCE="+json.dumps({
+              "classification":x["classification"],
+              "signal":x["preregistered_dev_signal"],
+              "queries":x["source_queries"],
+              "cold":x["cold_numeric_checkpoint_checks"],
+              "mismatches":x["exact_symbolic_active_mismatches"],
+              "different_inquiries":x["active_differed_from_passive_tasks"],
+              "at_8_evidence_75pct":x["coverage_exposure_aggregate"]["192"]["8"],
+              "at_8_evidence_100pct":x["coverage_exposure_aggregate"]["256"]["8"],
+              "paired_75pct":x["paired_world_active_minus_passive"]["192:8"],
+              "paired_100pct":x["paired_world_active_minus_passive"]["256:8"],
+              "receipt":x["case_receipt_sha256"],
+              "source_sha":x["source_action_response_receipt_sha256"],
+              "duration_seconds":x["elapsed_seconds"]
+          },sort_keys=True))
+          PY
+      - name: Mandatory full final inherited Ubuntu root regression and no dirty source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP119_UBUNTU_FINAL_FULL_REGRESSION=PASS
+  windows-public-deterministic-replay:
+    needs: [atlas-only,ubuntu-original-public-fixture]
+    if: needs.ubuntu-original-public-fixture.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 75
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      EXPECT_CASE: ${{ needs.ubuntu-original-public-fixture.outputs.case_sha }}
+      EXPECT_SOURCE: ${{ needs.ubuntu-original-public-fixture.outputs.source_sha }}
+      EXPECT_CLASS: ${{ needs.ubuntu-original-public-fixture.outputs.result_class }}
+    steps:
+      - name: Byte-for-byte native Windows checkout source safe
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.frozen }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact Windows native test, G29 and mandatory entire inherited source regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-119 -p test_wsp119.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Reproduce public-only feedback choices and outcomes bit exact, no new protected science
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/WSP-119/analyze.py > "$RUNNER_TEMP/wsp119-win.jsonl"
+          python - "$RUNNER_TEMP/wsp119-win.jsonl" <<'PY'
+          import json,os,sys
+          s=open(sys.argv[1],encoding="utf-8").read()
+          x=json.loads(s.split("WSP119_PUBLIC_MICROFEEDBACK=",1)[1].strip())
+          assert x["case_receipt_sha256"]==os.environ["EXPECT_CASE"]
+          assert x["source_action_response_receipt_sha256"]==os.environ["EXPECT_SOURCE"]
+          assert x["classification"]==os.environ["EXPECT_CLASS"]
+          assert all(n==4608 for n in x["source_queries"].values())
+          assert x["exact_symbolic_active_mismatches"]==0
+          assert not x["scientific_pass"] and not x["real_source_opened"] and not x["reserved_science_opened"]
+          print("WSP119_WIN_LINUX_FEEDBACK_SOURCE_AND_OUTCOMES_BIT_EXACT=PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP119_WINDOWS_FINAL_FULL_SOURCE_SAFE_REGRESSION=PASS
