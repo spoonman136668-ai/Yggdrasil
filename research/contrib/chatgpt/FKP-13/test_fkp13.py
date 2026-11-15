@@ -15,7 +15,11 @@ import cohorts
 import controller
 from model import DirectMemory,brier
 from baselines import train_all
-import run_dev
+# Parent FKP12 also has run_dev.py; load THIS test target by exact filename.
+import importlib.util
+_spec=importlib.util.spec_from_file_location("fkp13_run_dev",HERE/"run_dev.py")
+run_dev=importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(run_dev)
 
 
 def fake_episode(offset=0,n=10):
