@@ -12,6 +12,9 @@ import math
 from functools import lru_cache
 
 INPUTS=tuple(itertools.product((0,1),repeat=8))
+# Balanced deterministic fixed 64-state probe: odd modular stride samples
+# both context switches x6 and x7, unlike contiguous or every-4 subgrids.
+PROBE_INPUTS=tuple(INPUTS[(i*73)%256] for i in range(64))
 GOALS=tuple(itertools.product((0,1),repeat=4))
 ACTIONS=tuple((i,v) for i in range(8) for v in (0,1))
 COST=.08
@@ -218,7 +221,7 @@ def mechanical_probe():
     identity=[]
     changed=[]
     consequential=[]
-    xgrid=INPUTS[::4]  # fixed 64 public starts, no seed selection
+    xgrid=PROBE_INPUTS  # balanced fixed 64 public starts, no seed selection
     for law in TRANSFER:
         truth=[intermediates(law,x) for x in INPUTS]
         signatures[law]=hashlib.sha256(json.dumps(truth).encode()).hexdigest()
