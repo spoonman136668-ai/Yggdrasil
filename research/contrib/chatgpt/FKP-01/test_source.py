@@ -66,6 +66,19 @@ class FKP01SourceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             source.PublicCausalWorld(99)
 
+    def test_protected_worlds_require_private_owner_key(self):
+        # All these fail BEFORE sampling source-private law or consequences.
+        for seed in (1000, 1063, 2000, 2015, 3000, 3015):
+            with self.subTest(seed=seed):
+                with self.assertRaises(PermissionError):
+                    source.PublicCausalWorld(seed)
+                with self.assertRaises(PermissionError):
+                    source.PublicCausalWorld(seed, protected_key=b"short")
+
+    def test_development_world_rejects_owner_key(self):
+        with self.assertRaises(ValueError):
+            source.PublicCausalWorld(200, protected_key=b"0" * 32)
+
     def test_invalid_action_rejected(self):
         w = source.PublicCausalWorld(200)
         for bad in (-1, 128, 1.2, True):
