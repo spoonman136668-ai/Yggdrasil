@@ -34,7 +34,7 @@ jobs:
           set -euo pipefail
           git merge-base --is-ancestor d730681989445adf90ff1fb9c22f6e8085f94bd2 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f26_prereg.json)" = "19a2258e12e183bb0c044d45c28f90d9ae7e6885"
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f26_semantic_association.py)" = "3eaffc0e99a50c78ba72df682a980f1512919019"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f26_semantic_association.py)" = "f322d4ede93ec8c5d554ecb7f01388797d58d02a"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f26_semantic_association.py)" = "fb4a190e6bcf529023e550aa9a66fd7b9fc0d27e"
           test "$(git log -1 --format=%s)" = "research(qtr): F26 one-shot CC0 source custody"
           test -z "$(git diff --name-only HEAD^ HEAD)"

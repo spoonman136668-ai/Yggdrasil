@@ -89,8 +89,13 @@ def label_from_entity(entity):
 
 def parse_entity_batch(blob, requested_ids):
     obj = json.loads(blob.decode("utf-8"))
-    if not isinstance(obj, dict) or "error" in obj or type(obj.get("entities")) is not dict:
-        raise NotAdmitted("SOURCE_API_ERROR_OR_BAD_ENTITIES")
+    if isinstance(obj, dict) and "error" in obj:
+        error = obj.get("error")
+        code = error.get("code") if type(error) is dict else "UNKNOWN"
+        safe_code = re.sub(r"[^A-Za-z0-9_.-]", "", str(code))[:72]
+        raise NotAdmitted("SOURCE_API_ERROR_CODE_" + safe_code)
+    if not isinstance(obj, dict) or type(obj.get("entities")) is not dict:
+        raise NotAdmitted("SOURCE_API_BAD_ENTITIES")
     found = obj["entities"]
     if set(found) != set(requested_ids):
         raise NotAdmitted("SOURCE_ENTITY_REPLY_MISMATCH")
