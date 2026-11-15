@@ -1,0 +1,167 @@
+{
+  "schema": "fkp16.original-public-dev-evidence.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-16-FRESH-BLIND-MACRO-RETURN",
+  "classification": "DEV_MIXED_BEATS_WEAK_NOT_STRONG",
+  "engineering_status": "PASS_G29_FOCUSED_FULL_REGRESSION_BOTH_OS_PRE_FIRST_USE_AND_POST_DEV",
+  "scientific_pass": false,
+  "native_model_promoted": false,
+  "owner_protected_first_use": false,
+  "reserved_transfer_opened": false,
+  "source_protocol": {
+    "independent_dev_world_seeds": "976500..976531",
+    "train_world_seeds": "975100..975163 (consumed earlier; replay only)",
+    "validation_world_seeds": "975200..975215 (consumed earlier; replay only)",
+    "owner_reserved_transfer": "976600..976663 UNOPENED",
+    "reward_mode": "public reward_fall_off=-0.05, max_steps=512; not official default benchmark",
+    "benchmark_upstream": "MarcoMeter/endless-memory-gym",
+    "upstream_source_sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "primary_metric": "actual 16-step return of only one preselected macro per world/anchor",
+    "precommitted_bootstrap": "10000 world-cluster bootstrap seed1515, reselect strongest control each replicate",
+    "frozen_gain_threshold": 0.05,
+    "frozen_bootstrap_lower_required": ">0",
+    "no_postscore_tuning": true
+  },
+  "provenance": {
+    "prereg_first_commit": "051209736a7786698205d86c94cd997e24cdac82",
+    "original_source_and_method_commit": "ccd8c72964c3bf7430243f33fd0cda8f07179f25",
+    "qualified_generated_only_candidate": "b268c7eff94d31eb9b09af315bc3494ee88a3ab7",
+    "qualified_generated_only_tree": "0e20526e1395d52b6d07d5b04ef34fcf40a45448",
+    "one_shot_workflow_commit": "3a5fdee1621262fc3884d21130d58c0855243690",
+    "original_one_shot_run_id": 43760428106,
+    "original_one_shot_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43760428106",
+    "completed_status": "success",
+    "original_run_attempt": 1,
+    "linux_pre_dev_job_id": 132953828047,
+    "windows_pre_dev_job_id": 132953828090,
+    "original_linux_dev_job_id": 132954490440,
+    "windows_source_only_replay_job_id": 132955276315,
+    "original_dev_full_private_artifact_id": 14180126752,
+    "original_dev_full_private_artifact_name": "fkp16-original-public-dev-exact-source",
+    "original_dev_full_private_artifact_expires_at": "2026-12-15T20:57:04Z",
+    "artifact_not_a_permanent_science_record": true,
+    "supported_by_original_workflow_logs": true
+  },
+  "source_actions": {
+    "train": 108536,
+    "validation": 27135,
+    "development": 57854,
+    "total": 193525,
+    "precommitted_limit": 358400
+  },
+  "original_dev_worlds": 32,
+  "original_dev_anchors": 128,
+  "original_dev_valid_anchors": 128,
+  "earned_mean_real_return": {
+    "DIRECT": 0,
+    "COUNTS": 0,
+    "PRIOR": 0,
+    "SHUFFLED": 0,
+    "MLP": -0.02578125,
+    "GRU": -0.026171875,
+    "KNN": -0.032421875,
+    "RIDGE": -0.057421875,
+    "RANDOM": -0.094921875
+  },
+  "strongest_matched_return_control": "COUNTS",
+  "candidate_direct_minus_strongest": 0,
+  "paired_world_bootstrap_ci95": [
+    -0.019140625,
+    0
+  ],
+  "prereg_dev_signal": false,
+  "positive_return_action_choice_rate": {
+    "DIRECT": 0,
+    "COUNTS": 0,
+    "PRIOR": 0,
+    "SHUFFLED": 0,
+    "MLP": 0.1796875,
+    "GRU": 0.1796875,
+    "KNN": 0.15625,
+    "RIDGE": 0.15625,
+    "RANDOM": 0.0625
+  },
+  "true_terminal_goals_by_method": {
+    "DIRECT": 0,
+    "COUNTS": 0,
+    "GRU": 0,
+    "KNN": 0,
+    "MLP": 0,
+    "PRIOR": 0,
+    "RANDOM": 0,
+    "RIDGE": 0,
+    "SHUFFLED": 0
+  },
+  "privileged_oracle_best_of_nine_mean": 0.15625,
+  "privileged_oracle_minus_random_headroom": 0.251171875,
+  "privileged_oracle_not_allowed_to_choose_dev_action": true,
+  "tested_conventional_controls": {
+    "GRU": {
+      "seeds_trained": [
+        1515,
+        2626
+      ],
+      "epochs_per_seed": 24,
+      "selected_epoch": 8,
+      "selected_seed": 1515,
+      "validation_mse": 0.016033863998505524,
+      "parameters": 52425,
+      "fit_wall_seconds": 9.040716
+    },
+    "MLP": {
+      "seeds_trained": [
+        1515,
+        2626
+      ],
+      "epochs_per_seed": 24,
+      "selected_epoch": 7,
+      "selected_seed": 1515,
+      "validation_mse": 0.015636639933739007,
+      "parameters": 17865,
+      "fit_wall_seconds": 0.442628
+    },
+    "KNN": {
+      "selected_k": 15,
+      "validation_mse": 0.016183738425925926
+    },
+    "RIDGE": {
+      "selected_regularization": 100,
+      "validation_mse": 0.016769481857399623
+    }
+  },
+  "candidate_numeric_weight_bytes": 294912,
+  "cold_restore_bit_exact": true,
+  "checkpoint_tamper_rejected": true,
+  "cost": {
+    "full_trial_wall_seconds": 134.96224752,
+    "full_trial_cpu_seconds": 136.476500655,
+    "control_fit_wall_seconds": 11.147144263000001,
+    "strict_whole_process_matched_efficiency_gain": "UNVERIFIED"
+  },
+  "receipts": {
+    "source_train_sha256": "4f724ee03c4ad0353e962dc27015a48739c816839de0d916938e58410a40c74b",
+    "source_validation_sha256": "c632f7cd9dbffa56f40dc15f7db4ff4d3a0646c9982438072bfaddbb38fd2c67",
+    "source_development_mechanical_replay_sha256": "a31b794e73dd28975ee0e1e646b8282e5d1966fcf35e42e0e159d79bd4e9b590",
+    "held_public_sha256": "5339a2427e7983ff849ace9a6751ca1fc68c478006719f29cb26ca6d6d60fa32",
+    "pre_dev_models_sha256": "b7466561ce334ebea9593bab424e37db3f8ebd46ba7a982cf719d99b9c9a7550",
+    "direct_cold_sha256": "04ff274235dd196612bbc359c86495c0fdfd21a563929da18529f6459d960149"
+  },
+  "qualified_tests": {
+    "pre_dev_linux": {
+      "G29": "4/4 PASS",
+      "FKP16": "7/7 PASS",
+      "root": "54/54 PASS"
+    },
+    "pre_dev_windows": {
+      "G29": "4/4 PASS",
+      "FKP16": "7/7 PASS",
+      "root": "54/54 PASS"
+    },
+    "post_dev_linux_root": "54/54 PASS",
+    "consumed_source_windows_replay_root": "54/54 PASS",
+    "windows_source_receipt_matches_linux": true,
+    "full_independent_on_policy_science_windows": false
+  },
+  "interpretation": "The candidate DIRECT memory returns zero and ties counts, prior and shuffled controls on independently frozen 16-step real macro return. Stronger neural controls choose actions with 15.6%-17.97% positive-return selection rate but incur negative mean return. All controllers have zero terminal goal events. Privileged best-of-nine counterfactual source oracle shows a nonzero action headroom, but is not a learned policy. No positive source-trained decision advantage, no goal-learning proof, no matched whole-process efficiency proof, no out-of-distribution scientific acceptance.",
+  "disposition": "KEEP_FROZEN_NEGATIVE_DRAFT_UNMERGED; no source/method/seed/threshold retuning on original DEV 976500..976531; do not promote to native Yggdrasil; transfer and owner-protected untouched."
+}
