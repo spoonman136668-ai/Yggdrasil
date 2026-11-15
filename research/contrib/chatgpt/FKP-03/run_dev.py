@@ -71,11 +71,12 @@ def run():
         held=CausalWorld(seed).development_only_labels(view.held_inputs)
         scores={arm:sum(u==v for u,v in zip(pred[arm],held))/N_HELD
                 for arm in ARMS}
-        family=( "mux3" if seed % 2==0 else "majority3" )
-        # Family is not supplied to any arm and cannot be treated as an
-        # explanation of per-world source law; record only cohort strata.
+        # Owner-only DEV evaluator reveals family AFTER all predictions and
+        # held scoring. Never pass this source-private label into a policy.
+        family=CausalWorld(seed)._rule[0].lower()
+        assert family in ("mux3","maj3")
         world_rows.append({
-            "dev_world_seed":seed,"dev_descriptive_stratum":family,
+            "dev_world_seed":seed,"source_owner_dev_family":family,
             "scores":scores,
             "paid_actions":{k:len(v["queries"]) for k,v in arm_results.items()},
             "foundational_active_action_overlap_with_random":len(set(a["queries"])&
@@ -92,17 +93,20 @@ def run():
                                       ("B_minus_preloaded","foundation_active","preloaded_active"),
                                       ("B_minus_known_family_active","foundation_active","known_family_active"))
                  for delta,lower,upper in (paired_ci(world_rows,lhs,rhs),)}
-    bmx={arm:statistics.mean(r["scores"][arm] for r in world_rows
-                              if r["dev_world_seed"]%2==0) for arm in ARMS}
-    bma={arm:statistics.mean(r["scores"][arm] for r in world_rows
-                              if r["dev_world_seed"]%2==1) for arm in ARMS}
+    grouped={name:[row for row in world_rows if row["source_owner_dev_family"]==name]
+             for name in ("mux3","maj3")}
+    if any(not g for g in grouped.values()):
+        raise AssertionError("FKP03_MISSING_OPERATOR_FAMILY")
+    family_scores={family:{arm:statistics.mean(row["scores"][arm] for row in rows)
+                           for arm in ARMS} for family,rows in grouped.items()}
     # Primary DEV policy-signal criterion is deliberately strict; no count of
     # released world results as an unconsumed independent science cohort.
     ci1=differences["B_minus_random"]
     ci2=differences["B_minus_coverage"]
     qualifies=(ci1["delta_accuracy"]>=0.05 and ci1["ci95"][0]>0
                and ci2["delta_accuracy"]>=0.05 and ci2["ci95"][0]>0
-               and all(bmx["foundation_active"]>=bmx[a] and bma["foundation_active"]>=bma[a]
+               and all(family_scores[family]["foundation_active"]>=family_scores[family][a]
+                       for family in family_scores
                        for a in ("foundation_random","foundation_coverage")))
     result={
         "schema":"fkp03.public-dev-active-learning.v1",
@@ -113,7 +117,7 @@ def run():
         "distinct_dev_worlds":len(world_rows),"held_per_world":N_HELD,
         "action_budget_per_world_per_policy":N_PAID,
         "mean_accuracy":means,"paired_bootstrap":differences,
-        "descriptive_even_seed_stratum":bmx,"descriptive_odd_seed_stratum":bma,
+        "actual_source_owner_dev_family_accuracy":family_scores,
         "predictions_sha256":all_pred.hexdigest(),
         "dev_policy_threshold_met":qualifies,
         "learned_foundation_vs_preloaded_equal_by_construction":True,
