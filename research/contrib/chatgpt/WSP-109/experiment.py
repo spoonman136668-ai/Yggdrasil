@@ -303,7 +303,10 @@ def run_development(*, cohorts=None, require_full=True):
         raise AssertionError("frozen prior test has insufficient residual ambiguity")
     return {
         "schema":"wsp109.budget-three-causal-active-learning-transfer-dev.v1",
-        "classification":"DEV_PARTIALLY_IDENTIFIABLE_ACTIVE_CAUSAL_INFERENCE_NOT_SCIENTIFIC_PASS",
+        "classification":"DEV_NONVIRGIN_TECHNICAL_REPLAY_PARTIALLY_IDENTIFIABLE_CAUSAL_INFERENCE_NOT_SCIENTIFIC_PASS",
+        "original_first_use_aborted_job_id":132639008222,
+        "dev_cohort_original_first_use":False,
+        "precision_only_binary64_objective_repair":True,
         "scientific_pass":False,
         "novel_direct_weights_superior_to_bayes":False,
         "original_protected_first_use":False,
