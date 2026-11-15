@@ -1,0 +1,63 @@
+name: QTR-01 F34 direct bit-weight association source study
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+    paths:
+      - .github/workflows/qtr01-f34-weight-memory.yml
+      - research/contrib/chatgpt/QTR-01/f34_direct_bitweights.py
+      - research/contrib/chatgpt/QTR-01/test_f34_direct_bitweights.py
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    if: github.repository == 'spoonman136668-ai/Yggdrasil'
+    name: F34 source-pinned direct bitweights (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Stable native Windows source checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source and preregistration custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 4267cb0accbb14f99f5f110e24d463bececcaeb5 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f34_prereg.json)" = "2dcc2959f7f508211fde2b796b34c378331b7047"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = "453dad0363689cff785c26db5441555c6841f95d"
+          python - <<'PY'
+          import hashlib,pathlib
+          p=pathlib.Path('research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb'
+          print('F34_FROZEN_FIRST_PARTY_CUSTODY_PASS')
+          PY
+      - name: Source-free programmatic direct-weight negatives and exact-control tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f34_*.py' -v
+      - name: Actual source-programmed bitweight comparison receipt
+        run: python -B research/contrib/chatgpt/QTR-01/f34_direct_bitweights.py
+      - name: Clean read-only source checkout
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
