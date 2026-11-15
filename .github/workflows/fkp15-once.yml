@@ -18,8 +18,8 @@ jobs:
     permissions:
       contents: write
     env:
-      SOURCE: 2645ee662306b4db51f84a7875df93f59d609272
-      TREE: b1062e23cc85fc3449366c138cc9e2c959bb8b12
+      SOURCE: 71417ada82c4a0dd0d478512de4e45b6b883c9a9
+      TREE: 9759087eeffdb881c9d9a575113dd2069eede28c
       TARGET: research/fkp15-delayed-return-public-learning-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     outputs:
@@ -32,7 +32,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 2645ee662306b4db51f84a7875df93f59d609272
+          ref: 71417ada82c4a0dd0d478512de4e45b6b883c9a9
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -50,7 +50,7 @@ jobs:
           git merge-base --is-ancestor bdcdf66396af41604fb9d27b8f3366887e10fea4 "$SOURCE"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/prereg.json)" = 9117532538b7746228c9776743229bf58d1ca33d
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/source.py)" = ab36149dd4bc9defcc2c8b958a918921afa0f85a
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/models.py)" = a057a94af602af9112ebf914d0f298616a75407d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/models.py)" = 93787df935ac31a3de37adf0cc3afddd11277fd4
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/run_dev.py)" = c4a54ca85e197c7ade109390249ac84fd24501cc
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/test_fkp15.py)" = da4410f26603445ac1ca7b0a3c6e0d133ed2d743
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/README.md)" = 0aeb30da2c624428ef84ab303cc768c38c0f7540
