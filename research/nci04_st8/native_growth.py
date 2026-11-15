@@ -76,6 +76,8 @@ class NativeGrow8:
             self.basis=[0]*36
             self.rank=0
             self.public_buffer=[]
+            self.growths=0
+            self.first_growth_on_update=None
         self.rotation=None
         self.A=None
         self.B=None
