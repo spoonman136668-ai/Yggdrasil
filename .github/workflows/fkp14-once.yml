@@ -1,0 +1,271 @@
+name: FKP14 pinned real-action branch consequences (one-shot)
+on:
+  push:
+    branches: [ci/fkp14-real-branch-source-once-20261115]
+    paths: [.github/workflows/fkp14-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: fkp14-original-public-dev-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-14): one-shot true source branchability and cross-OS qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      candidate_sha: ${{ steps.seal.outputs.candidate_sha }}
+    env:
+      SOURCE: 1a0de58d9586b7ae7b26d69932fa9b30db2e7cb3
+      SOURCE_TREE: 550778ca2a786da20445fbf0340647b7c8932e24
+      TARGET: research/fkp14-real-branch-action-identifiability-20261115
+    steps:
+      - name: Prevent CRLF and source checkout drift
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 1a0de58d9586b7ae7b26d69932fa9b30db2e7cb3
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pinned Git source, frozen original prereg, parent and blob checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 104d3543ddf88403242782114ac0e16b8e95ccd8 "$SOURCE"
+          git merge-base --is-ancestor 942181ce7bda76386226d203db62d9f46c9dd406 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-14/prereg.json)" = 2bae7e958ace0c412dcb0c7ea84af6b72688c2d3
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-14/evaluate.py)" = a12da444edfed850e1fb12fba21061c3313e4339
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-14/test_fkp14.py)" = 6fcb6d3298054220179468599bf339e70872d967
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-10/admit.py)" = f580ff3c91da2a139c70a8e45962a36bc4ef9245
+          echo "FKP14_FROZEN_SOURCE_AND_PREREG_CUSTODY=PASS"
+      - name: G29 source atlas must change only three generated files
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Seal generated-only original science candidate to isolated research branch
+        id: seal
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-14): regenerate only original-source G29 atlas"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "candidate_sha=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP14_ORIGINAL_CANDIDATE_SHA=$NEW"
+
+  full-pre-dev-engineering:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+    steps:
+      - name: Stable Git byte identity
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.candidate_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install only pinned original public runtime deps
+        shell: bash
+        run: |
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+      - name: Original source atlas and fixture-only source-contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-14 -p test_fkp14.py -v
+      - name: Mandatory inherited full root regression before any new source DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP14_FULL_BEFORE_DEV_PLATFORM_PASS"
+
+  original-dev-once:
+    needs: [atlas-only,full-pre-dev-engineering]
+    if: needs.full-pre-dev-engineering.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    outputs:
+      receipt: ${{ steps.dev.outputs.receipt }}
+      source_actions: ${{ steps.dev.outputs.source_actions }}
+      classification: ${{ steps.dev.outputs.classification }}
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Byte-stable exact pin
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.candidate_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install pinned original upstream source without modifying any original tracked bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp14-source"
+          git -C "$RUNNER_TEMP/fkp14-source" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test -z "$(git -C "$RUNNER_TEMP/fkp14-source" status --porcelain --untracked-files=all)"
+      - name: ONE original 32-world physical reset-replay counterfactual source study
+        id: dev
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-14/evaluate.py --public-dev --upstream-root "$RUNNER_TEMP/fkp14-source" > "$RUNNER_TEMP/fkp14-first-public-dev.json"
+          python - "$RUNNER_TEMP/fkp14-first-public-dev.json" "$GITHUB_OUTPUT" <<'PY'
+          import hashlib,json,sys
+          data=open(sys.argv[1],"rb").read()
+          x=json.loads(data)
+          assert x["schema"]=="yggdrasil.fkp14.actual-intervention-identifiability.v1"
+          assert not x["scientific_pass"] and not x["native_model_modified"]
+          assert x["new_public_dev_cohort_consumed"] and not x["protected_firstuse"] and not x["model_trained"]
+          assert x["registered_worlds"]==32 and x["reference_anchors"]==128
+          assert x["macro_horizons"]==[8,16] and x["macro_choices_per_anchor"]==9
+          assert x["valid_anchors"]+len(x["skipped_anchors"])==128
+          assert len(x["per_anchor"])==2*x["valid_anchors"]
+          assert x["actual_env_step_actions"]<=190000
+          assert len(x["source_receipt_sha256"])==64
+          assert x["upstream"]["upstream_clean"] and x["upstream"]["pinned_blobs"]==5
+          assert all(r["source_replay_same_prefix"] and r["distinct_branches"]==9 for r in x["per_anchor"])
+          assert x["status"] in ("SOURCE_ACTION_LOCAL_HEADROOM_PASS","SOURCE_ACTION_HEADROOM_NO_GO")
+          with open(sys.argv[2],"a",encoding="utf-8") as out:
+              out.write("receipt="+x["source_receipt_sha256"]+"\n")
+              out.write("source_actions="+str(x["actual_env_step_actions"])+"\n")
+              out.write("classification="+x["status"]+"\n")
+          print("FKP14_ORIGINAL_PUBLIC_DEV="+json.dumps({k:x[k] for k in (
+            "status","registered_worlds","valid_anchors","actual_env_step_actions",
+            "physical_env_resets","horizon8_contrast_fraction",
+            "horizon16_contrast_fraction","horizon16_positive_return_fraction",
+            "horizon16_oracle_minus_random_mean",
+            "horizon16_any_terminal_goal_anchors","prespecified_requirements",
+            "source_receipt_sha256","whole_process_wall_seconds","whole_process_cpu_seconds"
+            )},sort_keys=True))
+          print("FKP14_ORIGINAL_JSON_SHA256="+hashlib.sha256(data).hexdigest())
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp14-source" status --porcelain --untracked-files=all)"
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: fkp14-original-public-source-branching-result
+          path: ${{ runner.temp }}/fkp14-first-public-dev.json
+          retention-days: 14
+
+  windows-consumed-source-replay:
+    needs: [atlas-only,original-dev-once]
+    if: needs.original-dev-once.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+      FKP14_EXPECTED_RECEIPT: ${{ needs.original-dev-once.outputs.receipt }}
+      FKP14_EXPECTED_ACTIONS: ${{ needs.original-dev-once.outputs.source_actions }}
+      FKP14_EXPECTED_CLASSIFICATION: ${{ needs.original-dev-once.outputs.classification }}
+    steps:
+      - name: Preserve frozen Git object bytes on Windows
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.candidate_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Restore exact upstream public source into isolated temporary checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp14-source"
+          git -C "$RUNNER_TEMP/fkp14-source" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+      - name: Reproduce consumed DEVELOPMENT source actions, NOT a virgin science cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-14/evaluate.py --public-dev --upstream-root "$RUNNER_TEMP/fkp14-source" > "$RUNNER_TEMP/fkp14-replay.json"
+          python - "$RUNNER_TEMP/fkp14-replay.json" <<'PY'
+          import json,os,sys
+          x=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert x["source_receipt_sha256"]==os.environ["FKP14_EXPECTED_RECEIPT"]
+          assert str(x["actual_env_step_actions"])==os.environ["FKP14_EXPECTED_ACTIONS"]
+          assert x["status"]==os.environ["FKP14_EXPECTED_CLASSIFICATION"]
+          assert not x["scientific_pass"] and not x["protected_firstuse"]
+          print("FKP14_WINDOWS_CONSUMED_SOURCE_REPLAY=PASS "+x["source_receipt_sha256"])
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-14 -p test_fkp14.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git -C "$RUNNER_TEMP/fkp14-source" status --porcelain --untracked-files=all)"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP14_WINDOWS_POST_DEV_FULL_ROOT_REGRESSION=PASS"
