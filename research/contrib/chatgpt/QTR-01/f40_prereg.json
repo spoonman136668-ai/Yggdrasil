@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.qtr01.f40.archived-component-isolation-dev-audit.v1",
+  "status": "PREDECLARED_SOURCE_FREE_AUDIT_OF_ALREADY_OBSERVED_F32_F35_F39",
+  "audit_parent_sha": "b3fc3c9c9f5ec396e8df5923b7fd0b9de745cff6",
+  "audit_classification": "POST_HOC_KNOWN_ARCHIVE_AUDIT_NOT_INDEPENDENT_PROSPECTIVE_SCIENCE",
+  "source_archives": [
+    {
+      "path": "research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json",
+      "git_blob": "453dad0363689cff785c26db5441555c6841f95d",
+      "sha256": "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb",
+      "expected_rows": 13,
+      "rows_key": "typed_source_rows"
+    },
+    {
+      "path": "research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json",
+      "git_blob": "3fc50ddf7453958c458db697eacf2e27d3d52f57",
+      "sha256": "cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954",
+      "expected_rows": 20,
+      "rows_key": "added_witnessed_source_rows"
+    },
+    {
+      "path": "research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json",
+      "git_blob": "f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108",
+      "sha256": "7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044",
+      "expected_rows": 49,
+      "rows_key": "witnessed_rows"
+    }
+  ],
+  "f39_prereg_blob": "2f103d7c596d710c6060450ccbcf9a955f4bd7bd",
+  "fit_roots": [
+    "Q2",
+    "Q17",
+    "Q30",
+    "Q64",
+    "Q76",
+    "Q80",
+    "Q90",
+    "Q95"
+  ],
+  "reserved_evaluation_root_ids": [
+    "Q142",
+    "Q183",
+    "Q312",
+    "Q1490"
+  ],
+  "observed_before_algorithm_code": {
+    "distinct_witnessed_triples": 82,
+    "distinct_entities": 78,
+    "distinct_subject_entities": 26,
+    "undirected_connected_components": 7,
+    "independent_fit_root_components": 7,
+    "shared_fit_root_component": [
+      "Q30",
+      "Q95"
+    ],
+    "f39_prior_exact_triple_overlap": 0,
+    "f39_prior_entity_id_overlap_count": 4,
+    "reserved_entities_in_archived_rows": 0,
+    "reserved_source_receipts_in_three_archives": 0
+  },
+  "isolation_checks": [
+    "Reject changed byte-exact source SHA256, source count, source schema, row metadata or duplicate triples",
+    "Reject any reserved ID used as subject/object of any archived first-party claim, or mentioned as any source request receipt entity",
+    "Calculate undirected entity-connected components across all 82 source triples; no root may appear in two components",
+    "Assert Q30 and Q95 share a component, so treating all eight FIT roots as independent folds is invalid",
+    "Generate seven component-held-out SHADOW DEV splits deterministically sorted by minimum numeric QID; assert zero entity overlap between a fold and remaining components, but do not consume the four reserved subjects",
+    "Reject duplicate/invalid claim IDs or missing original provenance labels, revision and language",
+    "Classify as local archive only, not complete historical consumed-source coverage or scientifically qualified first use"
+  ],
+  "known_historical_boundary": {
+    "source": "spoonman136668-ai/ckb-plane@1e47400837f4eac0b580b1d90628bdcc1ebf93b3:proposals/research-r182/prospective-epoch.json",
+    "git_blob": "094bd9b016eee7b4d8fb077966efeca555a9865b",
+    "epoch_id": "R182-WINGLESS-YGGDRASIL-PROVENANCE-RESET-20261008",
+    "legacy_consumed_source_ledger_complete": false,
+    "source_witness_generation_state": "NOT_YET_ISSUED_AT_R182",
+    "historical_first_use_status": "UNVERIFIED_IN_THIS_AUDIT_NOT_A_GLOBAL_ADMISSION"
+  },
+  "future_experiment_boundary": "No protected source heldout inspection, no familiar-source component fold used as true unseen science, and no native recipient/control experiment before separate owner-specific first-use and frozen science controls.",
+  "fences": {
+    "no_external_data_requests": true,
+    "no_heldout_source_first_use": true,
+    "no_training_or_model_weight_edits": true,
+    "no_native_recipient_execution": true,
+    "no_donor_model_calls": true,
+    "no_source_recapture": true,
+    "no_main_or_accepted_ref_changes": true,
+    "no_merges": true,
+    "no_new_scheduled_tasks_or_controller_actions": true,
+    "no_paid_apis": true,
+    "no_user_files": true
+  }
+}
