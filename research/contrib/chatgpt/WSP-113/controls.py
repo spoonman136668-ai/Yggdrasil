@@ -195,7 +195,7 @@ class FittedKernelGraph:
         seen={(s,a) for s,a,_ in self.obs}
         def variance(q):
             p=self.prior[q]
-            return sum(v*(1-v) for v in p)+min(self._kernel(q,z) for z in seen) if seen else sum(v*(1-v) for v in p)
+            return sum(v*(1-v) for v in p)+(1.0-max(self._kernel(q,z) for z in seen) if seen else 1.0)
         return max((q for q in SUPPORT if q not in seen),
                    key=lambda q:(variance(q),-q[0],-q[1]))
     def triple(self,state,actions):
