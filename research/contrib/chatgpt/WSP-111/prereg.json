@@ -1,0 +1,49 @@
+{
+  "schema": "wsp111.unlabeled-observed-effect-induced-relation-types.v1",
+  "status": "PREIMPLEMENTATION_FROZEN_DEV",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1075,
+    "sha": "56dba1d4fa6a205788bde635238594935e7ea5de",
+    "tree": "0104fc5d61cd76027da1a265f71d3e2b72c19062",
+    "scientific_status": "WSP110 one million sparse facts, two fixed pre-supplied output relation types, exact direct-symbolic-conventional parity, not SCIENTIFIC_PASS"
+  },
+  "hypothesis": "Given one million written input factual weights but no names/number of new relation classes, the model can invent reusable causal-effect relation classes from intervention responses, persist invented fact categories, combine them with known third relations to infer additional un-named types, and retain them. Compare against independent symbolic and fully trained conventional controls.",
+  "data": {
+    "raw": "Reuse ONLY WSP110 original_facts: 25000 disjoint length-3 chains (75000 raw facts) +925000 isolated distractors, total 1000000. The WSP110 X/Y labels or learned operators are never used.",
+    "cohorts": "3000 training support group IDs 0..2999, 22000 completely disjoint heldout query entities groups 3000..24999. WSP111 fixture tests use fabricated feedback and no original hidden labels.",
+    "first_law": "16 (left 0..3,middle 4..7) motifs assigned to four latent equivalence classes by SHA256('WSP111|CLASS|v1|kind') sorted ascending, rank mod4. Hidden class maps to distinct 3-bit effect signatures [1,2,4,7] ordered by SHA256('WSP111|SIGNATURE|v1|code'). Neither 4 nor these signatures disclosed to learner.",
+    "second_law": "For hidden first-class effect signature and known third-relation index 0..3, unknown 2-bit effect signature SHA256('WSP111|SECOND|v1|signature|cindex') first byte mod4. Learners observe sensor-channel labels ONLY for 3000 training cases, not known relation ID targets.",
+    "noise": "Independent deterministic per-group per-sensor bit flip on each of 3 first and 2 second effect bits if int.from_bytes(SHA256('WSP111|NOISE1|v1|g|bit') or 'WSP111|NOISE2|v1|g|bit','big') mod64==0. Withheld 22000 new group effects read only after sealed predictions.",
+    "identifiability": "16 first input motifs and discovered output signatures are represented in 3000 support cases; 22000 heldout entities are unfamiliar but underlying raw predicate vocab and mechanism families recur. This is not genuinely unseen new primitive semantics or fully autonomous real-world science."
+  },
+  "direct": {
+    "initial": "Write 1000000 observed input triples as sorted uint64 sparse parameter keys (22-bit nodes,6-bit relation,SHIFT28) and float32=1 presence weights, 12MB.",
+    "round1": "Direct-write 16x3 float32 Beta(1,1) posterior effect weights per observed pair motif from 3000 three-bit intervention feedback observations; signature bit threshold >0.5. Invent relation IDs 32+rank(sorted unique inferred signatures), dynamic discovered count; program 25000 newly derived first-class relation keys (source, invented ID, source+2). No pre-supplied output relation class list.",
+    "round2": "Condition a new Kx4x2 Beta(1,1) effect operator on the learner's FIRST-GENERATION INVENTED RELATION class and observed third relation, using ONLY the same 3000 second-intervention observed 2-bit effects. Predict 2-bit signatures from dynamically stored inferred first relations, invent relation IDs 40+rank(sorted observed second signatures), persist 25000 derived second-relation keys (source,invented ID,source+3). No oracle first-class at inference.",
+    "snapshot": "SHA256 custody of original million weights, learned operator float32 vectors, class ID maps and both new relation key arrays; cold-restored heldout predictions and deliberate tamper rejection."
+  },
+  "controls": {
+    "symbolic": "Independent Python set with all million observed raw facts, independent counting and majority with same Beta prior and identical 3000 feedback sensory bits, dynamic effect-signature class invention and two-stage composition; exact prediction and relation grouping parity with numeric required.",
+    "conventional": "3 independently Newton-optimized L2=.01 logistic classifiers on 16 motif one-hot plus intercept for 3 first effect bits, and 2 L2=.01 classifiers on dynamically learned first-class x4 third-relation one-hot plus intercept for 2 second bits, from EXACT same 3000 observed sensor effects. Tolerance max gradient inf<=1e-8, Newton iterations<=100; use own inferred first classes for stage2.",
+    "negative": "All-zero effect predictions, rotated first pair assignment and second third-relation binding; report effect exact-match and per-bit F1 so majority class imbalance cannot masquerade as learning.",
+    "upper_bound": "Noise-free oracle mechanism may be computed only for diagnosis AFTER sealing, not a matched learner."
+  },
+  "evaluation": {
+    "primary": "22k heldout three-bit first-effect exact-match and 22k two-bit second-effect exact-match, bit accuracy, precision, recall and F1, heldout first-invented-class permutation-invariant adjusted Rand index (ARI); direct-symbolic full parity; comparison with fully converged logistic.",
+    "support": "Count discovered first and second category IDs, 25000 new first-generation and 25000 second-generation typed weight entries (or justified reductions), false associations, 1m preserved source facts, full cold and tamper negative, explicit source & prediction preoracle SHA256 receipts.",
+    "cost": "Whole process wall and CPU incl generator, both 1m memory builds, all arm fitting, two rounds, scoring and cold verification, no unsupported measured speed advantage.",
+    "stop": "No post heldout tuning, no replay of original exposed cohort described as independent first-use, scientific_pass=false without real independent qualification. Engineering requires focused + complete inherited WSP80-111 and Yggdrasil root regression Linux/Windows, independent G29 source atlas acceptance."
+  },
+  "restrictions": {
+    "no_protected_original_first_use": true,
+    "no_historical_wikidata": true,
+    "no_accepted_model_edit": true,
+    "no_merge": true,
+    "no_deployment": true,
+    "no_controller_or_scheduler": true,
+    "no_private_runner": true,
+    "no_paid_apis": true,
+    "draft_only": true
+  }
+}
