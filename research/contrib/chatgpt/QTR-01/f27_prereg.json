@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.qtr01.f27.fixed-revision-entitydata-semantic-source.v1",
+  "experiment": "QTR-01-F27",
+  "status": "FROZEN_BEFORE_CAPTURE_AND_CODE",
+  "parent_sha": "f1e9f46e3f05d3b9d941999f1f6dd102ba281b39",
+  "motivation": "Use Wikidata's documented stable Special:EntityData first-party JSON with content SHA256 and returned revision id, rather than replaying the overloaded wbgetentities API's maxlag failure. Independent CC0 fact/association source, not Qwen activation coordinate mapping.",
+  "rights": "Only first-party Wikidata structured QID/PID labels and unqualified statement triples; Wikidata structured data CC0; do not include Wikipedia text or contributor-only other data.",
+  "authority": "QTR source-only isolated draft development and one-shot public Actions; no accepted model or source changes elsewhere.",
+  "reference_sources": [
+    "https://www.wikidata.org/wiki/Wikidata:Data_access",
+    "https://www.wikidata.org/wiki/Wikidata:Licensing"
+  ],
+  "source_host": "www.wikidata.org",
+  "entity_route": "/wiki/Special:EntityData/{Q_or_P_id}.json",
+  "fixed_revision_route": "/wiki/Special:EntityData/{Q_or_P_id}.json?revision={lastrevid}",
+  "selection": {
+    "seed_items": [
+      "Q2",
+      "Q5",
+      "Q17",
+      "Q30",
+      "Q42",
+      "Q64",
+      "Q76",
+      "Q80",
+      "Q90",
+      "Q95",
+      "Q142",
+      "Q183",
+      "Q312",
+      "Q1490"
+    ],
+    "properties": [
+      "P17",
+      "P19",
+      "P27",
+      "P31",
+      "P36",
+      "P47",
+      "P50",
+      "P69",
+      "P106",
+      "P131",
+      "P159",
+      "P279",
+      "P361",
+      "P463",
+      "P527"
+    ],
+    "endpoint_order": "ascending numeric QID from source seed unqualified nondeprecated allowed-property QID claims, not using source labels or heldout outcomes",
+    "endpoint_max": 48,
+    "admitted_unique_triples_max": 1600,
+    "scan_labeled_sources_only": true,
+    "source_bytes_per_entity_max": 4194304,
+    "total_source_bytes_max": 16777216
+  },
+  "custody_requirements": [
+    "Wikidata first-party HTTPS, strict host/path, redirect only to whitelisted same host",
+    "One bounded source fetch per ID, SHA256 exact raw JSON and record lastrevid; no retry, no change to frozen source items and predicates",
+    "Verify returned JSON `entities` has exactly the requested entity ID, no missing/redirect/cross-ID; positive integer lastrevid, and meaningful English label",
+    "For each seed ID, also verify revision-addressed JSON ?revision=<returned lastrevid> has same entity ID/revision and equivalent canonical entity JSON SHA256; any mismatch blocks admission",
+    "Read only eligible and witnessed source Q-P-Q edges; exclude qualified, deprecated, missing labels and non-first-party IDs, never invent semantics from indices",
+    "Source snapshot canonical UTF-8 JSON with Q/P semantic labels, claim witnesses and seed/endpoint/property raw SHA256 and revisions and full archive SHA256; retain in run-specific GitHub Actions artifact only",
+    "Independent numeric uint32 triple carrier canonical restored byte-exact, source-informed symbolic retrieval/two-hop exact parity",
+    "No assertion that symbolic graph is learned general knowledge, causal reasoning, or more efficient than conventional controls"
+  ],
+  "roles": {
+    "source_seed": "unqualified first-party statements and subject labels",
+    "property": "English predicate labels",
+    "endpoint": "independent English object labels only, not training outcome",
+    "control": "same-triple symbolic set exact answer and two-hop",
+    "negative": "shuffled edge, malformed first-party witness, missing label, cross-ID/revision drift and altered numeric snapshot fail closed"
+  },
+  "limits": {
+    "single_live_source_fetch_each": true,
+    "no_network_retries": true,
+    "all_endpoints_max": 48,
+    "request_timeout_seconds": 15,
+    "workflow_timeout_minutes": 15,
+    "max_bytes_total": 16777216,
+    "max_bytes_per_response": 4194304,
+    "max_triples": 1600,
+    "output_receipt_max_bytes": 786432
+  },
+  "admission": "One or more semantically labeled, first-party witnessed Q-P-Q triples with exact raw-source receipts and seed revision canonical reread equality; no science pass.",
+  "stop": "If source unavailable, challenge, rate-limited, revision mismatched, redirect off-host, response too large or zero admissible triples, record SOURCE_BLOCKED without alternate source or altered budgets. Do not treat source-free unit success as successful source capture.",
+  "scope_fences": {
+    "no_paid_api": true,
+    "no_model_generated_training_outputs": true,
+    "no_qwen_weight_inference": true,
+    "no_native_weights_or_owner_branch_edits": true,
+    "no_first_use": true,
+    "no_external_science_labels": true,
+    "no_new_controller_or_scheduler": true,
+    "no_merge_or_deployment": true
+  }
+}
