@@ -441,7 +441,7 @@ def classify(episodes,retention,capacity):
         "candidate_and_lag_count_counter_byte_budget_equal":
             equal_bytes,
         "every_original_source_episode_cold_restores_all_models":
-            all(r["cold_restarts"]==len(MODELS) for r in episodes),
+            all(r["cold_restarts"]==2*len(MODELS) for r in episodes),
         "authentic_online_model_updates_nonzero":
             all(r["source_real_actions"]==64 for r in episodes),
         "whole_source_actor_model_wall_ratio_under_1_5":
