@@ -63,6 +63,25 @@ class PublicCausalCells:
             return None
         return 0 if lhs > rhs else 1
 
+    def choose_contextual(self, address: int, context: int, relations, *,
+                          retained: bool = False) -> int | None:
+        """Opt-in contextual inference from genuinely observed native relations.
+
+        Only an evidence-identifiable *difference* between both interventions
+        may override the native counter-only action. Missing evidence, a tie,
+        or an absent contextual advantage preserves the existing choose() path.
+        Legacy YPC1 state, interfaces and checkpoint bytes are never modified.
+        """
+        from yggdrasil.native_relation_memory import NativeRelationMemory
+
+        if not isinstance(relations, NativeRelationMemory):
+            raise ValueError("PUBLIC_CAUSAL_RELATIONS_INVALID")
+        left = relations.predict(address, context, 0, retained=retained)
+        right = relations.predict(address, context, 1, retained=retained)
+        if left is not None and right is not None and left != right:
+            return 0 if left > right else 1
+        return self.choose(address, retained=retained)
+
     def observed_action_contrast(self, address: int, *,
                                  retained: bool = False) -> tuple[int, int] | None:
         """Exact public-outcome rate contrast (action 1 minus action 0).
