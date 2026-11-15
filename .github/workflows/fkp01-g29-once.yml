@@ -1,0 +1,131 @@
+name: FKP01 exact-source G29 one-shot repair and full qualification
+on:
+  push:
+    branches:
+      - ci/fkp01-g29-one-shot-20261115
+    paths:
+      - .github/workflows/fkp01-g29-once.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fkp01-g29-one-shot-20261115
+  cancel-in-progress: false
+
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-01): one-shot atlas-only repair on isolated branch' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      atlas_sha: ${{ steps.commit.outputs.atlas_sha }}
+    env:
+      SOURCE_SHA: 317693820624a476b3d76616886710bf2b25de09
+      SOURCE_TREE: 46005f27c549188bdac4ed5446dbbe5b662ba3b6
+      TARGET: research/fkp01-foundation-causal-priming-20261115
+    steps:
+      - name: Set byte-stable checkout
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 317693820624a476b3d76616886710bf2b25de09
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Fail closed on source, branch and blob drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-01/source.py)" = aa0defa52d5cfe3c6a3b491e818c0b6b994499fb
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-01/test_source.py)" = ca82d54c09db938d57adc443aa024b904b248aec
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-01/prereg.json)" = 2faca36b596a1f3c5997abf21ec2a2faa180d78b
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-01/README.md)" = c9a988e48d8f27ffbd41928e147db6084c241693
+          echo "FKP01_G29_FROZEN_SOURCE=PASS"
+      - name: Run existing G29 builder (generated artifacts ONLY)
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE_SHA" --write
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+          echo "FKP01_G29_GENERATED_THREE_FILES=PASS"
+      - name: Commit generated-only to existing research draft
+        id: commit
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-01): refresh exact-source G29 generated atlas"
+          ATLAS_SHA="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "atlas_sha=$ATLAS_SHA" >> "$GITHUB_OUTPUT"
+          echo "FKP01_G29_ATLAS_ONLY_COMMIT=$ATLAS_SHA"
+          echo "FKP01_G29_ATLAS_ONLY_PUSH=PASS"
+
+  full-qualification:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Set byte-stable checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.atlas_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact source-indexed G29 and full code atlas tests
+        shell: bash
+        run: |
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: FKP-01 source-only public DEV fixtures and protection tests
+        shell: bash
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-01 -p test_source.py -v
+          python -B research/contrib/chatgpt/FKP-01/source.py
+      - name: Complete inherited Yggdrasil regression
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP01_FULL_EXACT_SHA_REGRESSION=PASS"
