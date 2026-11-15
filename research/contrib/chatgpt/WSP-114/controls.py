@@ -5,23 +5,31 @@ enumeration, Boolean elimination and effect propagation are separately authored.
 """
 from __future__ import annotations
 from hashlib import sha256
+from functools import lru_cache
 import numpy as np
 
 NMAX=64
 LIMIT=1024
 
+@lru_cache(maxsize=64)
 def local_grammar(node):
     low=max(0,node-12)
     idx=tuple(range(low,node))
     return tuple((i,) for i in idx)+tuple((i,j)
                for i in idx for j in idx if i<j)
 
-def feature_word(node,after):
+@lru_cache(maxsize=32768)
+def _local_word(width,bits):
     result=0
-    for k,term in enumerate(local_grammar(node)):
-        if all(after&(1<<v) for v in term):
-            result|=1<<k
+    terms=tuple((i,) for i in range(width))+tuple((i,j)
+          for i in range(width) for j in range(i+1,width))
+    for k,term in enumerate(terms):
+        if all(bits&(1<<v) for v in term):result|=1<<k
     return result
+
+def feature_word(node,after):
+    width=min(node,12)
+    return _local_word(width,(after>>(node-width))&((1<<width)-1))
 
 def independent_predict(before,action,weights,nodes):
     if type(before)!=int or not 0<=before<1<<nodes or type(action)!=int or not 0<=action<2*nodes:
@@ -62,6 +70,7 @@ class IndependentSymbolic:
         self.log=[]
         self.coefficients=[0]*nodes
         self.ranks=[0]*nodes
+        self.rows=[[] for _ in range(nodes)]
         self._fitted_at=0
 
     def observe(self,state,action,outcome):
@@ -74,18 +83,16 @@ class IndependentSymbolic:
         if len(self.log)>=LIMIT or any(s==state and a==action for s,a,_ in self.log):
             raise ValueError("symbolic duplicate or budget")
         self.log.append((state,action,outcome))
+        for j in range(self.nodes):
+            if j==action//2:continue
+            self.rows[j].append((feature_word(j,outcome),
+                ((state>>j)&1)^((outcome>>j)&1)))
 
     def fit(self):
         if self._fitted_at==len(self.log):return
-        rows=[[] for _ in range(self.nodes)]
-        for state,action,next_state in self.log:
-            for node in range(self.nodes):
-                if node==action//2:continue
-                rhs=((state>>node)&1)^((next_state>>node)&1)
-                rows[node].append((feature_word(node,next_state),rhs))
         for node in range(self.nodes):
             self.coefficients[node],self.ranks[node]=independent_solve(
-                rows[node],len(local_grammar(node)))
+                self.rows[node],len(local_grammar(node)))
         self._fitted_at=len(self.log)
 
     def choose(self,world):
@@ -123,6 +130,7 @@ class ConvergedRidge:
                       for j in range(nodes)]
         self._fitted_at=-1
         self.residuals=[]
+        self.rows=[[] for _ in range(nodes)]
 
     def observe(self,state,action,effect):
         if len(self.log)>=LIMIT or (state,action) in {(s,a) for s,a,_ in self.log}:
@@ -130,6 +138,10 @@ class ConvergedRidge:
         if type(effect)!=int or ((effect>>(action//2))&1)!=(action&1):
             raise ValueError("ridge invalid observation")
         self.log.append((state,action,effect))
+        for j in range(self.nodes):
+            if j==action//2:continue
+            self.rows[j].append((feature_word(j,effect),
+                ((state>>j)&1)^((effect>>j)&1)))
 
     def fit(self):
         if self._fitted_at==len(self.log):return
@@ -140,13 +152,9 @@ class ConvergedRidge:
                 self.weights[node]=np.zeros(0,dtype=np.float64)
                 self.residuals.append(0.0)
                 continue
-            xs=[]
-            ys=[]
-            for s,a,y in self.log:
-                if a//2==node:continue
-                mask=feature_word(node,y)
-                xs.append([(mask>>k)&1 for k in range(p)])
-                ys.append(((s>>node)&1)^((y>>node)&1))
+            xs=[[int(mask>>k&1) for k in range(p)]
+                for mask,_ in self.rows[node]]
+            ys=[rhs for _,rhs in self.rows[node]]
             if not xs:
                 self.weights[node]=np.zeros(p,dtype=np.float64)
                 self.residuals.append(0.0)
