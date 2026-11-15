@@ -9,7 +9,7 @@ import unittest
 
 from research.nci04_st4.dev_compare import (
     MODELS, create_models, run_law_seed, classify,restore_models,
-    guard_source
+    guard_source, cold_retention
 )
 from research.nci04_st4.native_credit import NativeCausal8
 
@@ -122,6 +122,20 @@ class ST4FrozenDevelopmentHarnessTest(unittest.TestCase):
         self.assertFalse(result["frozen_checks"][
             "whole_source_actor_model_wall_ratio_under_1_5"
         ])
+
+    def test_interference_probe_executes_only_predeclared_training_laws(self):
+        # Runs on SOURCE training + a declared negative control, not held
+        # development, not protected scientific first-use. DO NOT demand
+        # positive retention here: that would tune the experiment.
+        r=cold_retention()
+        self.assertEqual(r["original_law_evaluator_only"],3)
+        self.assertEqual(len(r["unrelated_interfering_training_laws"]),8)
+        self.assertFalse(r["cold_recall_fitted_original_law"])
+        self.assertFalse(r["protected_scientific_first_use"])
+        self.assertEqual(r["frozen_minimum_retained_ratio"],.95)
+        self.assertTrue(
+            0<=r["chance_corrected_gain_retained_ratio"]<=1
+        )
 
     def test_capacity_missing_or_nonmatching_counter_budget_fails(self):
         fake=fabricated_source_results()
