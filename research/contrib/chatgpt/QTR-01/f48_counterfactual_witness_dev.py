@@ -24,6 +24,7 @@ POLICIES = ("native_witness", "bayes_information_gain", "uniform", "random")
 MAGIC = b"F48A"
 N_ACTIONS = 256
 MAX_QUERY = 32
+CONTROL_EXTRA_LIMIT = 1
 TWO64 = 1 << 64
 
 
@@ -122,7 +123,7 @@ class HiddenWorld:
 
     def intervene(self, action, replicate):
         if (type(action) is not int or not 0 <= action < N_ACTIONS
-            or type(replicate) is not int or not 0 <= replicate < MAX_QUERY):
+            or type(replicate) is not int or not 0 <= replicate < MAX_QUERY + CONTROL_EXTRA_LIMIT):
             raise F48Rejected("F48_PUBLIC_INTERVENTION_OUT_OF_SCOPE")
         clean = self._tables[self._hidden][action]
         flipped = hash64(f"F48/obs/v1|{self.count}|{self.seed}|{action}|{replicate}") < TWO64 // 10
@@ -144,8 +145,8 @@ class MismatchWeights:
     def observe(self, action, outcome):
         if (type(action) is not int or not 0 <= action < N_ACTIONS
             or type(outcome) is not int or outcome not in (0,1)
-            or self.action_seen[action] >= MAX_QUERY
-            or self.total >= MAX_QUERY):
+            or self.action_seen[action] >= MAX_QUERY + CONTROL_EXTRA_LIMIT
+            or self.total >= MAX_QUERY + CONTROL_EXTRA_LIMIT):
             raise F48Rejected("F48_UNTRUSTED_OR_EXCESS_OBSERVATION")
         for h, row in enumerate(self.table):
             self.mismatch[h] += int(row[action] != outcome)
@@ -162,8 +163,8 @@ class MismatchWeights:
         return [s/total for s in scores]
 
     def checkpoint(self):
-        if (self.total > MAX_QUERY or any(not 0<=v<=self.total for v in self.mismatch)
-            or any(not 0<=v<=MAX_QUERY for v in self.action_seen)
+        if (self.total > MAX_QUERY + CONTROL_EXTRA_LIMIT or any(not 0<=v<=self.total for v in self.mismatch)
+            or any(not 0<=v<=MAX_QUERY + CONTROL_EXTRA_LIMIT for v in self.action_seen)
             or sum(self.action_seen) != self.total):
             raise F48Rejected("F48_INVALID_COUNTER_STATE")
         body = MAGIC + struct.pack("<HH",self.count,self.total)
@@ -204,6 +205,8 @@ class ActiveArm:
 
     def select(self):
         t = self.model.total
+        if t >= MAX_QUERY:
+            raise F48Rejected("F48_SCORED_ACTION_LIMIT_EXHAUSTED")
         if self.kind == "uniform":
             return (73*t) % N_ACTIONS
         if self.kind == "random":
@@ -223,15 +226,20 @@ class ActiveArm:
         # Fully fitted conventional Bayesian expected information gain:
         # H(Y|action) - H(Y|hidden law, action). The second term is fixed
         # H_2(0.1), so maximizing predictive Bernoulli entropy is exact IG.
-        posterior=self.model.weights()
-        best_a,best_entropy=0,-1.0
+        # Exact rational posterior: each mismatch multiplies likelihood by
+        # 1/9. Therefore P(h) is proportional to 9**(max_mismatch-mismatch[h]).
+        # Binary predictive entropy is maximal exactly when weighted positives
+        # are closest to half the total. Integer ties are OS-independent.
+        top=max(self.model.mismatch)
+        posterior=[9**(top-mis) for mis in self.model.mismatch]
+        total=sum(posterior)
+        best_a,best_distance=0,None
         for a in range(N_ACTIONS):
-            p_true = sum(posterior[h]*table[h][a] for h in range(self.count))
+            positives=sum(posterior[h]*table[h][a] for h in range(self.count))
             self.prediction_accesses += self.count
-            p_y = 0.1 + 0.8*p_true
-            entropy = (-p_y*log2(p_y)-(1-p_y)*log2(1-p_y))
-            if entropy > best_entropy:
-                best_a,best_entropy=a,entropy
+            distance=abs(total-2*positives)
+            if best_distance is None or distance < best_distance:
+                best_a,best_distance=a,distance
         return best_a
 
     def act(self,world):
@@ -256,20 +264,14 @@ class ActiveArm:
             corrupted_rejected=True
         else:
             raise F48Rejected("F48_CORRUPT_CHECKPOINT_ACCEPTED")
-        # Isolated genuine public intervention on a clone has no effect on
-        # original separately checkpointed weights, even though the clone
-        # appropriately updates every candidate-law mismatch counter.
+        # One additional *real* public action/outcome event on a separate
+        # negative-control clone. Explicitly account for it outside the scored
+        # policy's 8/16/32 observations; original weight state is immutable.
         cloned=MismatchWeights.restore(raw)
-        if cloned.total < MAX_QUERY:
-            actual_a=255
-            observed=world.intervene(actual_a,cloned.action_seen[actual_a])
-            cloned.observe(actual_a,observed)
-            changed=cloned.checkpoint()!=raw and self.model.checkpoint()==raw
-        else:
-            # At 32-query budget, save an earlier action/observation in a
-            # separate replay clone, then restore its original full archive
-            # and verify unchanged: no unbudgeted action is added.
-            changed=self.model.checkpoint()==raw
+        actual_a=255
+        observed=world.intervene(actual_a,cloned.action_seen[actual_a])
+        cloned.observe(actual_a,observed)
+        changed=cloned.checkpoint()!=raw and self.model.checkpoint()==raw
         if not changed:
             raise F48Rejected("F48_CLONE_UPDATES_ORIGINAL_MEMORY")
         hidden,true=world.evaluator_truth_only()
@@ -280,7 +282,7 @@ class ActiveArm:
         prediction=self.model.table[self.model.map_id()]
         correct=sum(prediction[a] == true[a] for a in unqueried)
         pw=self.model.weights()
-        entropy=-sum(p*log2(p) for p in pw if p)
+        entropy=round(-sum(p*log2(p) for p in pw if p),10)
         return {
             "arm":self.kind,
             "total_real_action_observations":self.model.total,
@@ -296,6 +298,8 @@ class ActiveArm:
             "cold_restore_prediction_exact":True,
             "tamper_rejected":corrupted_rejected,
             "isolated_clone_public_update_unchanged_original":changed,
+            "isolated_control_extra_public_actions":1,
+            "isolated_control_extra_public_outcome_bits":1,
             "candidate_action_prediction_accesses":self.prediction_accesses,
             "selection_seconds_DEV_only":round(self.selector_seconds,6),
             "total_arm_seconds_DEV_only":round(self.total_seconds,6),
