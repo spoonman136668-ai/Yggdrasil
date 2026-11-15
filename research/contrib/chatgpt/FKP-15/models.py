@@ -212,4 +212,4 @@ def predict_control(torch,model,x):
         return np.concatenate((x.astype(np.float64),np.ones((len(x),1))),axis=1)@model
     model.eval()
     with torch.no_grad():
-        return model(torch.from_numpy(x)).cpu().numpy().astype(np.float64)
+        return model(torch.from_numpy(x)).cpu().numpy().astype(np.float64).reshape(-1)
