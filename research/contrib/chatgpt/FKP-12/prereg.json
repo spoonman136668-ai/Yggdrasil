@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-12",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can directly programmed tokenless action-consequence associative weights learn to predict real source-observed Mystery Path rewards on disjoint worlds, retain learned knowledge cold, and outperform fully trained recurrent and conventional controls under equal source/action information?",
+  "hypothesis": "A bounded two-key public-observation/action/reward association bank updated without gradient descent may learn from sparse positive and negative genuine consequences quickly. Fully trained recurrent GRU, MLP and conventional smoothed-count controls can match or outperform; no native superiority without predeclared strong-control gain.",
+  "exact_parent_sha": "0db838594729832286592a8ae065c243f8d48f04",
+  "predecessor_evidence": [
+    "FKP10 draft PR #1100 source pinned MIT Memory Gym exact upstream a94f2b60d1769ea44df3226561488768e1dff9f4.",
+    "FKP11 draft PR #1102 qualified original source run #43730855450: 32 source episodes 5026 actions, MysteryPath 24 original positive and 194 configured negative events, Mortar insufficient, 16/16 paired dynamics and Linux Windows exact transcript receipts.",
+    "FKP09 draft PR #1101 changed shared weights while retaining 16/16 contexts, strong Bayes and conventional delta tie; no unique science.",
+    "Accepted main 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 remains unchanged."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/FKP-12/**",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "FKP12 frozen task/feature/model/cohort specification",
+      "sha256": "f767c2640534daaae873a1a7999c44c3edbb2fdbd40abf554d788f2e9771c41a",
+      "source": "SHA256 of UTF8 FKP12-SRC-V1|upstream=a94f2b60d1769ea44df3226561488768e1dff9f4|task=MysteryPath-v0|observed-image-only=8x8RGB-mean|source-public-reward-fall-off=-0.05|train-seeds=971300..971315|val=971400..971403|dev=971500..971507|transfer-reserve=971600..971607|two-policies=uniform,macro8|256-actions-max|three-class-reward=neg,zero,pos|direct-two-hash-programmed-counter-4096x3-int32|GRU2-seed24epoch-best-validation|MLP2-seed24epoch|logistic24epoch|Dirichlet-shared-hash|ablation-action-shuffle|no-protected-firstuse"
+    }
+  ],
+  "frozen_design": {
+    "upstream": "Original publicly pinned upstream Memory Gym MysteryPath-v0 MIT SHA a94f2b60d1769ea44df3226561488768e1dff9f4 with only public reward_fall_off=-0.05 reset option. Do not conflate with original default reward benchmark. Python3.11 numpy==1.26.4 gymnasium==0.29.0 pygame==2.4.0 PyTorch CPU==2.5.1.",
+    "seeds": {
+      "TRAIN": "971300..971315 16 disjoint procedural worlds",
+      "VALIDATE": "971400..971403 four disjoint model-selection worlds",
+      "DEV": "971500..971507 eight NEW original public DEV procedural worlds",
+      "TRANSFER": "971600..971607 reserved, never open in this source-development experiment",
+      "PROTECTED": "owner-private scientific source never instantiate"
+    },
+    "policy": "For each world run two source-blind policies with up to 256 real native env.step actions: independent random.Random(seed XOR 0xF11A1) two-symbol uniform, and fixed eight-step macro action with random.Random(seed XOR 0xF11B2). No perception/hidden state affects action selection; both evaluated methods receive identical real observed steps from recorded episodes. No extra source actions for models.",
+    "splits": "16 training worlds ×2 policies (≤8192 actual steps); 4 validation worlds ×2 (≤2048); 8 DEV worlds ×2 (≤4096). Freeze all model/normalization knobs and fit/select only on TRAIN+VALIDATE BEFORE scoring DEV. DEV episodes are held until cross-platform final regression, source, implementation and controls pinned exact Git SHA. Retain full per-step sequences per world for GRU temporal state; do not merge label information across splits.",
+    "raw_input": "Only source-visible RGB observation from env.reset and env.step, two-symbol PUBLIC action and previous source-issued signed reward. Convert current visible uint8 image to fixed 8×8×3 block RGB mean, scale /255, concatenate 9 joint-action one-hots and previous outcome (-/0/+ three one-hots), so all methods see the same 204-float vector at each step. Target is CURRENT source-issued reward sign for the chosen action (-/0/+). Never touch env.unwrapped, info, private path/coordinates, hidden labels or source full state. Predict before current reward is disclosed.",
+    "candidate": "Fixed int32 4096×3 learned class weights (49,152 raw bytes) from two seeded source-independent hashed public image/action/previous-feedback projection keys. At each TRAIN step directly increment class weight for observed three-class consequence, with no gradient. Frozen additive Dirichlet-class-smoothed mixture across two keys plus learned global class base. Only real observed consequences are used. Cold exact restore and capacity saturation fail closed. No more than 8192 TRAIN samples. Evaluation weights frozen during DEV; previous reward enters context as public observed temporal state.",
+    "controls": [
+      "Independent conventional 4096×3 one-key Dirichlet event-count estimator with identical input projection and source training episodes; fixed source-blind pseudocount alpha=1.",
+      "Strong fully trained PyTorch GRU hidden64/one layer, linear 3-class outcome head on same 204 public features and sequences, two frozen initializations seeds 1212 and 3434. Train at most 24 full epochs using Adam lr=0.001 cross entropy, Adam weight_decay=0.0001; select best checkpoint by validation Brier ONLY (min val across seeds/epochs). No test-set tuning.",
+      "Strong fully trained 2-layer 64-unit MLP on identical 204 features, seeds 1212 and 3434, 24 Adam epochs / best validation Brier, predicts each action.",
+      "Multinomial linear softmax conventional logistic on identical features, seeds 1212 and 3434, 24 Adam epochs, same validation-only selection.",
+      "Training episode reward/action shuffled negative: same direct architecture, same buffer/budget/hashes, but permute 3-class outcomes across training timestamps by fixed seed 1212, report ablation not as strongest control.",
+      "Global true train class-prior source baseline, always-no-feedback constant baseline, 8x8 RGB-only no-action candidate ablation, measured but not a strong fully trained comparator."
+    ],
+    "data_budget": "Maximum 14,336 real environment actions across 56 source episodes (TRAIN 32, VALIDATION 8, DEV 16), with 8x8 public obs features; no repeated DEV source as pristine. Primary DEV evaluation contains 8 original worlds ×2 source-blind policies; no environment feedback/held label read by algorithm before prediction.",
+    "compute_budget": "No paid service/GPU. Fixed 24 epochs ×2 initializations for each GRU/MLP/logistic, CPU-only torch 2.5.1, batches 16 episode sequences for GRU and 512 samples for MLP/logistic; report actual CPU/wall and parameter counts separately with full source acquisition, feature processing and training and evaluation. Candidate direct memory performs exactly one bounded update/source TRAIN observation; conventional controls allowed full training. No post-result re-tune.",
+    "evaluator": "Predict 3-class signed actual next reward from pre-reward public observation/action/previous reward. Score three-class Brier (sum over 3 outcomes), log loss, per-class precision/recall, class support, balanced event F1, episode-cluster paired differences and 10,000-resample bootstrap CI seeded 1212. All methods must use same actual source observations and actions. Score independent DEV only after model selection sealed on train/val, preserve per-source evidence receipts and objective hashes. Cold exact candidate restore after interference fixture and compare all predictions bit-identical. Original default reward performance untested; policy return unchanged because source-blind actions.",
+    "success_rules": "Development signal only if candidate Brier <= strongest trained conventional Brier−0.02 (absolute Brier improvement), context/episode-cluster bootstrap 95% lower bound on (strongest-control Brier minus candidate Brier) strictly positive, and at least one held positive and negative event, plus no >0.01 Brier regression to strongest count/MLP/GRU across either policy. Even then SCIENTIFIC_PASS false until untouched independent family/owner eval and native-owner authorization. No signal on unknown episodes => stop.",
+    "deterministic_expected": true
+  },
+  "classification_rules": {
+    "supported": "ENGINEERING_DEV_SIGNAL only with exact source sealed, full two-OS regression, strong baselines genuinely trained, frozen DEV only, candidate meets numeric superiority + uncertainty + cold restore + negatives + all cost reports. Never native acceptance from public DEV.",
+    "mixed": "DEV_MIXED if direct memory detects events or beats some weak controls but ties or loses to strongest GRU/MLP/count or full process cost is not advantageous; negative is preserved.",
+    "negative": "DEV_NO_GO if learned candidate fails to outperform strongest fully trained and equal-information conventional reference, negative control performs equivalently, no positive/negative DEV events, or major source-policy leak identified.",
+    "invalid": "Missing GRU training or validation, mismatched public action histories, DEV used in model-selection/normalization, source hidden/private info read, prereg after first-use, changed cohort/source/threshold after evaluation, source or exact-SHA regression failure."
+  },
+  "prohibited_after_primary_run": [
+    "Do not retune models, features, action policy, epochs or thresholds on consumed original DEV",
+    "Do not call FKP10/FKP11 consumed sources new first-use",
+    "Do not open transfer/protected sources in this DEV",
+    "No native main/owner/controller/runner/scheduler writes or paid API"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This is direct weight programming against genuine observed environmental action consequences, not an accepted native or autonomous model. Commit this protocol before implementation and outcome."
+}

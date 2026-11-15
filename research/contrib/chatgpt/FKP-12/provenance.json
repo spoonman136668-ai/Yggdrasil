@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.external-research-provenance.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-12",
+  "accepted_native_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "exact_frozen_prereg_commit": "eb2ab3758c090f653c0245f6d546c842fc670669",
+  "experiment_implementation_before_original": "9273ece0571d8a6e91837ee77504c46f6534f1ae",
+  "atlas_only_qualified_head": "7e29d740515d914cc41bea0d7b7ca7976a22d0f5",
+  "upstream_source": {
+    "repo": "MarcoMeter/endless-memory-gym",
+    "git_sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "license": "MIT",
+    "source_custody": "FKP10 original 5 pinned upstream git blobs",
+    "source_changed": false
+  },
+  "runtime": {
+    "os_original": "ubuntu-24.04",
+    "python": "3.11",
+    "numpy": "1.26.4",
+    "gymnasium": "0.29.0",
+    "pygame": "2.4.0",
+    "torch_cpu": "2.5.1+cpu",
+    "no_paid_apis": true
+  },
+  "original_run": {
+    "run_id": 43734788827,
+    "job_id": 132875580972,
+    "run_status": "completed",
+    "run_conclusion": "failure",
+    "algorithm_dev_step": "success",
+    "failure_step": "Mandatory full post-DEV inherited root regression",
+    "failure_cause": "G29 source atlas code invoked git cat-file -t 9273ece0571d8a6e91837ee77504c46f6534f1ae; original-dev checkout defaulted to fetch-depth=1 and lacked that commit in local Git object database",
+    "qualifications_before_dev": {
+      "ubuntu": {
+        "focused": 6,
+        "atlas": 4,
+        "full_regression": 54,
+        "status": "PASS"
+      },
+      "windows": {
+        "focused": 6,
+        "atlas": 4,
+        "full_regression": 54,
+        "status": "PASS"
+      }
+    },
+    "original_dev_output_sha256": "UNAVAILABLE_NOT_ARCHIVED",
+    "original_result_transcript": "FKP12_ORIGINAL_DEV GitHub Actions job log at https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43734788827"
+  },
+  "original_source_consumed": true,
+  "transfer_first_use": false,
+  "protected_first_use": false,
+  "evidence_boundaries": {
+    "source_episodes_recorded": "TRAIN32/VALIDATION8/DEV16 => 14336 source actions",
+    "models_train_completely": "GRU/MLP/LOGISTIC 24 epochs per seed 1212 and 3434, validation best only",
+    "model_state_sealed_before_dev": "CODE_GENERATED_BUT_ORIGINAL_SHA_UNAVAILABLE_IN_LOG",
+    "posthoc_source_replay_status": "NOT_YET_RUN_AT_PROVENANCE_COMMIT",
+    "posthoc_regression_status": "NOT_YET_RUN_AT_PROVENANCE_COMMIT",
+    "differential_science": "DEV_NO_GO_STRONG_CONVENTIONAL_NOT_BEATEN",
+    "native_promotion": "NO"
+  },
+  "commit_source_status": "Research branch only, no native Yggdrasil source change; result/provenance additions after original evaluation preserve negative outcome; G29 metadata requires regeneration and post-result qualification."
+}

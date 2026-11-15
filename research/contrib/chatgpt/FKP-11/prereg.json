@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-11-MEMORYGYM-FEEDBACK-HEADROOM",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can unchanged-physics public reward configuration and longer real interactions yield sufficient action-consequence feedback on an independently admitted POMDP source?",
+  "hypothesis": "256 genuine source actions and publicly available failure-reward feedback should reveal more real feedback than FKP10's 32-step random probes, without altering observed transitions. This may still fail to show enough useful positive learning signal.",
+  "exact_parent_sha": "942181ce7bda76386226d203db62d9f46c9dd406",
+  "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessors": [
+    "FKP10 PR #1100 source qualification run #43725716616, original 970100..970103 consumed, 256 total env.step and only two nonzero rewards",
+    "FKP09 PR #1101 genuine shared-core engineering PASS but prediction exactly tied Bayesian and sparse conventional; SCIENCE NO_GO"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/FKP-11/**",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "Canonical FKP11 source design",
+      "sha256": "58edab17b4eaa37dd723bd89ea95d63357203f0366d7b8022b990a174bfa6af4",
+      "source": "FKP11-SRC-V1|upstream=a94f2b60d1769ea44df3226561488768e1dff9f4|tasks=MortarMayhem-v0,MysteryPath-v0|new-public-dev-seeds=971100..971103|policies=random,macro8|reward-settings=original,public_failure_feedback|failure_feedback=-0.05|256-actions-max|4seeds-per-task|full-public-observation-steps-and-true-reward-only|matched-reset/action-public-source-trace|protected-never|original-one-shot|same-seed-paired-context"
+    }
+  ],
+  "frozen_design": {
+    "upstream": "MarcoMeter/endless-memory-gym MIT original source git a94f2b60d1769ea44df3226561488768e1dff9f4 and FKP10 five pinned blobs. Python3.11 gymnasium==0.29.0 pygame==2.4.0 numpy==1.26.4; source untouched.",
+    "seeds": {
+      "dev": "971100..971103 new public DEV, disjoint from consumed FKP10 970100..970103",
+      "protected": "no protected first use",
+      "fixture": "fake public observations, no original episode"
+    },
+    "tasks": [
+      "MortarMayhem-v0",
+      "MysteryPath-v0"
+    ],
+    "action_policy": {
+      "random": "rng random.Random(seed XOR 0xF11A1) each of two symbols 0..2 each step",
+      "macro8": "rng random.Random(seed XOR 0xF11B2) two symbols drawn once every 8 steps, repeated during block"
+    },
+    "reset_conditions": {
+      "original": "Original unchanged task defaults",
+      "public_failure_feedback": "reward_command_failure=-0.05 for MortarMayhem; reward_fall_off=-0.05 for MysteryPath. Both native source reset options change reward only, must verify same paired public action/observation and termination. Not official task score."
+    },
+    "ordering": "Commit prereg first; source/learner frozen and G29 full Linux+Windows root and fixture tests PASS before original public DEV. On Linux one original public DEV; Windows is replay of consumed DEV, not new scientific source. Always same public actions per task/seed/policy between reward modes. Never use env.unwrapped or info fields or hidden labels.",
+    "data_budget": "2 tasks x4 seeds x2 source-blind policies x2 rewards =32 original upstream episodes, maximum 256 genuine env.step each, <=8192 actual steps; same-action paired observations.",
+    "evaluator": "Seal action/observation/termination trace per paired condition. Compare equality 16/16 pairs, actual public rewards, positive/negative/nonzero events, length, 32-vs-256 feedback, distinct observation SHA. No hidden task state access.",
+    "compute_budget": "Python3.11, pinned original standard public deps, G29 + root regression on two OS; only existing GitHub hosted test route, no paid API; wall/cpu recorded.",
+    "headroom_thresholds": "Source HEADROOM PASS (feasibility only): 16/16 pair transition equality; >=16 additional public nonzero feedback events PER TASK over matched original reward config; >=4 of 8 policy-seed episodes per task get >=2 nonzero public feedback events; at least 2 distinct observation frames/task. Positive rewards reported separately and absence fails positive-learning-readiness but not source mechanics.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Unmodified default reward with identical seeds/actions",
+    "Original upstream reward-only public configured failure feedback",
+    "Fixed per-step random and 8-step macro source-blind action policies",
+    "Historical FKP10 32-step receipt for comparison only, never re-consume"
+  ],
+  "metrics": [
+    "32 actual source episodes ≤256 steps, positive/negative/nonzero feedback by task/policy/config and reward sums",
+    "16 paired public action/observation/termination SHA-256 exact matches",
+    "Source-only feasibility, not model improvement or generalization; cross-OS deterministic reproduction",
+    "Whole-process wall/CPU and actual action cost, no hidden simulator state",
+    "Future learning science requires fully trained equal-information recurrent GRU and native candidate, untouched original benchmark task, matched actions/compute, cold retention/interference/transfer, owner first-use"
+  ],
+  "classification_rules": {
+    "supported": "SOURCE_HEADROOM_PASS source feasibility only if prespecified counts + paired dynamics + Linux Windows exact replay",
+    "mixed": "SOURCE_MIXED partial signal/positive reward still sparse; do not assert learner ready",
+    "negative": "SOURCE_NO_GO if not enough events or transition differences; do not retune",
+    "invalid": "Unfrozen labels/seed/budget, private hidden info, repeat consumed as virgin, missing exact qualification"
+  },
+  "prohibited_after_primary_run": [
+    "No post-result threshold, policy, reward or seed changes",
+    "No protected sources",
+    "No native main, controller, scheduler or runner changes",
+    "No claim of trained intelligence or strong-control superiority"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "promotion_authority": false,
+    "accepted_ref_mutation": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "No first-use outside public DEV. Freeze entire source and code before source exposure."
+}

@@ -1,0 +1,154 @@
+{
+  "schema": "fkp12.external-research-original-public-dev-result.v1",
+  "experiment_id": "FKP-12",
+  "project": "Yggdrasil",
+  "original_dev_execution": {
+    "source_sha": "7e29d740515d914cc41bea0d7b7ca7976a22d0f5",
+    "source_implementation": "9273ece0571d8a6e91837ee77504c46f6534f1ae",
+    "prereg_first": "eb2ab3758c090f653c0245f6d546c842fc670669",
+    "workflow_run": 43734788827,
+    "job_id": 132875580972,
+    "original_step": "SUCCESS",
+    "post_run_full_regression": "FAIL_G29_SHALLOW_GIT_HISTORY_MISSING_COMMIT",
+    "classification": "DEV_NO_GO_STRONG_CONVENTIONAL_NOT_BEATEN",
+    "run_conclusion": "failure",
+    "original_dev_consumed": true,
+    "preregistered_dev_signal": false,
+    "scientific_pass": false
+  },
+  "source_evidence": {
+    "upstream_git": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "task": "MysteryPath-v0",
+    "public_reward_override": "reward_fall_off=-0.05",
+    "original_official_reward_performance_measured": false,
+    "worlds": {
+      "train": 16,
+      "validation": 4,
+      "development": 8
+    },
+    "policies_per_world": 2,
+    "source_steps": {
+      "train": 8192,
+      "validation": 2048,
+      "development": 4096,
+      "total": 14336
+    },
+    "reward_classes": {
+      "train": {
+        "negative": 726,
+        "zero": 7385,
+        "positive": 81
+      },
+      "validation": {
+        "negative": 162,
+        "zero": 1866,
+        "positive": 20
+      },
+      "development": {
+        "negative": 361,
+        "zero": 3697,
+        "positive": 38
+      }
+    },
+    "transfer_first_use": false,
+    "protected_first_use": false
+  },
+  "direct_model": {
+    "non_gradient": true,
+    "weights": "4096x3 int32",
+    "raw_learned_bytes": 49152,
+    "top_class_accuracy": 0.902587890625,
+    "brier": 0.17168812357491411,
+    "log_loss": 0.32843496065262934,
+    "by_policy_brier": {
+      "macro8": 0.21417966452384757,
+      "uniform": 0.12919658262598066
+    }
+  },
+  "controls": {
+    "COUNTS": {
+      "brier": 0.1777850667021018,
+      "log_loss": 0.34714863115860034,
+      "accuracy": 0.902587890625
+    },
+    "GRU": {
+      "brier": 0.1799559069132422,
+      "log_loss": 0.3559684671921472,
+      "accuracy": 0.902587890625,
+      "parameters": 52035,
+      "trained_epochs_each_seed": 24,
+      "seeds": [
+        1212,
+        3434
+      ],
+      "best_validation_epoch": 22,
+      "best_seed": 3434,
+      "train_wall_seconds": 6.417266425999998
+    },
+    "MLP": {
+      "brier": 0.1781961955849663,
+      "log_loss": 0.3522297856799995,
+      "accuracy": 0.902587890625,
+      "parameters": 17475,
+      "trained_epochs_each_seed": 24,
+      "seeds": [
+        1212,
+        3434
+      ],
+      "best_validation_epoch": 6,
+      "best_seed": 3434,
+      "train_wall_seconds": 1.127694715000004
+    },
+    "LOGISTIC": {
+      "brier": 0.20618917014253807,
+      "log_loss": 0.43078627827975646,
+      "accuracy": 0.902587890625,
+      "parameters": 615,
+      "trained_epochs_each_seed": 24,
+      "seeds": [
+        1212,
+        3434
+      ],
+      "best_validation_epoch": 24,
+      "best_seed": 1212,
+      "train_wall_seconds": 0.5194522809999995
+    },
+    "NO_ACTION": {
+      "brier": 0.17585867115555587
+    },
+    "PRIOR": {
+      "brier": 0.17748386595255414
+    },
+    "SHUFFLED": {
+      "brier": 0.17932171870864974
+    }
+  },
+  "comparison": {
+    "strongest_fitted_control": "COUNTS",
+    "direct_minus_strongest_brier": -0.006096943127187698,
+    "improvement_over_strongest_brier": 0.006096943127187698,
+    "paired_world_bootstrap_95ci": [
+      0.0022169682274463818,
+      0.009579600847818013
+    ],
+    "frozen_minimum_improvement": 0.02,
+    "passes_threshold": false,
+    "per_policy_nonregression": true,
+    "original_dev_classification": "DEV_NO_GO_STRONG_CONVENTIONAL_NOT_BEATEN"
+  },
+  "cost": {
+    "total_wall_seconds": 24.50133093800001,
+    "total_cpu_seconds": 31.756452823,
+    "fully_matched_training_compute": false,
+    "source_data_equal": true
+  },
+  "limitations": [
+    "All algorithms were passive reward-event forecasters: no agent action-value/policy optimization or general intelligence test.",
+    "Only one source family and modified publicly configured reward; no independent owner scientific first-use.",
+    "Original scoring step succeeded and reported all metrics; mandatory post-run full regression failed because a shallow workflow checkout omitted the pre-atlas source ancestor Git object. This is engineering infrastructure, NOT an unexplained learning failure.",
+    "The pre-DEV learner state SHA-256 was computed by the code but the original raw JSON was local to the runner and not uploaded. Do not invent the original seal.",
+    "Only fixture and two-OS pre-DEV full repo tests were PASS at original output; post-result exact-source and consumed source replay require separate qualification."
+  ],
+  "native_main_changed": false,
+  "promotion_authorized": false
+}
