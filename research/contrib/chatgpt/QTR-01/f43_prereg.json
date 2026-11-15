@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.qtr01.f43.known-graph-native-public-consequence-routing-dev.v1",
+  "status": "FROZEN_BEFORE_F43_IMPLEMENTATION_OR_MEASUREMENTS",
+  "source_exact_parent": "9ee47d2fa569e0f1cec772fce50ef75fb44cee2e",
+  "scope": "Known-source graph-assisted public-action consequence learning DEV by existing PublicCausalCells only; no native full Yggdrasil integration or prospectively unseen sources.",
+  "source_pins": {
+    "f42_prereg_blob": "b9350c4278404a6f7f6a203d861a7132791313c5",
+    "f42_exact_index_blob": "997d2d13c4725d5b33d993d252aac7108304b529",
+    "f40_archived_component_audit_blob": "ae6ab67997d230de58e22645a61e976b4b4a21b5",
+    "public_causal_cells_blob": "5c9a9904e31688bebc2e53723569e1fb988a981f",
+    "f42_snapshot_sha256": "81882893e2760070bd2fd04fea3644d3e501e7f6b04598d122877e873f03fc53",
+    "f32_source_sha256": "e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb",
+    "f35_source_sha256": "cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954",
+    "f39_source_sha256": "7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044"
+  },
+  "hypothesis": "Mapping already known F42 graph components to the existing 7 active native causal-cell slots can share empirical public action/outcome evidence from one training QID with 71 other known-component QIDs; a same-information fully trained empirical component control should match native, and an identity-only memorizer should abstain. This is routing-enabled reuse, not learned graph structure or unfamiliar-world transfer.",
+  "input_graph": {
+    "frozen_triples": 82,
+    "entities": 78,
+    "predicates": 8,
+    "connected_components": 7,
+    "component_training_nodes": [
+      "Q2",
+      "Q5",
+      "Q17",
+      "Q42",
+      "Q64",
+      "Q76",
+      "Q90"
+    ],
+    "train_nodes_per_component": 1,
+    "known_graph_entity_holdouts": 71,
+    "all_known_graph_edges_read_before_training": true,
+    "no_new_or_hidden_source": true
+  },
+  "native": {
+    "module": "yggdrasil.public_causal_cells.PublicCausalCells",
+    "active_slots": 7,
+    "retained_slots": 9,
+    "learned_counter_bytes": 128,
+    "sha256_checkpoint_bytes": 164,
+    "training_public_outcome_law_by_component_slot": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "training_events": "For each of 7 components, present only its lowest numeric QID, 4 observed public experiences per action 0 and 1, 56 actual calls to native.observe, reveal outcomes only after action; no hidden QID evaluations during training.",
+    "post_train_interference": "For each of 9 retained slots (retained=True), present 4 public observations per action with preferred action=(retained_slot_index+1)%2, 72 additional calls. Never overwrite active slots.",
+    "evaluation": "Before and after interference, query all 71 other known-source graph entities without observing their public outcomes; route each to the same graph component learned during initial F42 source inspection; evaluate choosing action equal to component's frozen public-response law. Confirm exact checkpoint cold-restore predictions.",
+    "negative_controls": "Wrong-component permutation slot+1 mod7 should not match all 71 evaluation labels; isolate 7 active and 9 retained addresses; single-arm-only/public outcomes unavailable abstains; corrupted checkpoint and F42 snapshot fail closed; neither unknown QID nor reserved QID admitted.",
+    "strong_controls": "Fully trained conventional empirical 16-cell two-arm outcome-count table with exactly the same 128 public experiences, same 128 uint16 learned bytes and same F42 graph component routing must match native predictions; equal-info exact symbolic observed-action table must match. Raw-ID no-graph 7-node factual baseline, equally exposed to training QIDs/experiences, abstains on 71 different QIDs (not an equal-capacity native control).",
+    "budget": "128 total public observe calls (56 active, 72 retained), 71 heldout graph-node queries twice before/after interference, 7 active and 9 retained contextual states, no external requests, no training data or model calls."
+  },
+  "frozen_metrics": {
+    "source_graph_components": 7,
+    "source_graph_known_identity_holdouts": 71,
+    "public_training_active_events": 56,
+    "public_interference_retained_events": 72,
+    "native_known_graph_heldout_coverage_min": 71,
+    "native_known_graph_heldout_accuracy_min": 71,
+    "matched_conventional_heldout_coverage_min": 71,
+    "matched_conventional_heldout_accuracy_min": 71,
+    "native_advantage_over_equal_information_conventional_min": 1,
+    "strict_scientific_gain_expected": false,
+    "cold_native_checkpoint_parity": true,
+    "retained_interference_no_active_change": true,
+    "mismapped_control_all_heldout_correct": false,
+    "no_unknown_source_or_reserved_qid_first_use": true
+  },
+  "classify": "If native fails same-graph 71/71 accuracy, cold parity, retention or source scope: DEV_NATIVE_ROUTING_NO_GO. If native passes and equals strongest conventional, DEV_NATIVE_ROUTING_PARITY_ONLY. Native superior to conventional must be independently replicated; this test cannot yield SCIENTIFIC_PASS because world law and all QIDs/graph are already known and prospective source custody incomplete.",
+  "limitations": "The seven component slots and all 82 graph edges are externally supplied: no learned relation discovery, source-first-use, identity generalization to unknown graph/components, causal-law discovery beyond observed reward counts, novel tokenless language representation, full Yggdrasil substrate or AGI. Engineering acceptance not science acceptance.",
+  "fences": {
+    "no_new_external_data_or_paid_apis": true,
+    "no_heldout_source_admission_or_first_use": true,
+    "no_model_weights_or_accepted_native_source_edits": true,
+    "no_DGM_or_FORGE_controller_scheduler": true,
+    "no_main_merge_or_deployment": true,
+    "no_donor_model_calls": true,
+    "no_user_files_or_download_artifacts": true,
+    "no_scientific_pass_claim": true
+  }
+}
