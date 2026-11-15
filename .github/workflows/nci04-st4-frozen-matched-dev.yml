@@ -32,6 +32,10 @@ jobs:
           test "$(git rev-parse HEAD:research/nci04_st4/frozen_protocol.json)" = edaea790d3457bd91ea136a6b266c19e6dd61575
           test "$(git rev-parse HEAD:research/nci04_st4/paired_world.py)" = 447b946ee03c725902ce4d96f17bbc22aaeb814d
           test "$(git rev-parse HEAD:research/nci04_st4/source_audit.py)" = ce3677964459efab1b783387d43bb2e4d63a8054
+          test "$(git rev-parse HEAD:research/nci04_st4/native_credit.py)" = 5bc88569b0e4f92cecae8c26f2740a5a7b41a7c1
+          test "$(git rev-parse HEAD:research/nci04_st4/matched_controls.py)" = e405f3e34354826460e4dfbe19e657a26b20ed52
+          test "$(git rev-parse HEAD:research/nci04_st4/dev_compare.py)" = 138aceab744e50cacb3e4362406816dab66f2309
+          echo ST4_MODEL_AND_CONTROLS_FROZEN_PRE_HELD=PASS
           python -B -m unittest discover -s tests -p 'test_nci04_st4_dev_harness.py' -v
       - name: Train ONCE on 96 source-law/seed development episodes, held unopened
         shell: bash
@@ -237,3 +241,4 @@ jobs:
           ))
           print('ST4_PROTECTED_FIRST_USE_NOT_RUN=PASS')
           PY
+# Frozen original in-house DEV one-shot; model/control/source blobs pinned; NO protected first-use.\n
