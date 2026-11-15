@@ -151,9 +151,9 @@ def run_law_seed(evaluator_law,evaluator_seed,models,phase,train,
                         sums[n]["all"]+=val
                         if t==1:
                             sums[n]["probe"]+=val
-                            sums[n][arm+"_probe"]+=val if (
-                                arm in ("treatment","control")
-                            ) else 0
+                            key=("treat_probe" if arm=="treatment"
+                                 else "control_probe")
+                            sums[n][key]+=val
                 for n,model in tuple(models.items()):
                     ts=time.perf_counter_ns();cpu=time.process_time_ns()
                     returned=observe(n,model,public,action,target,after,train)
@@ -324,10 +324,11 @@ def cold_retention():
     for seed in TRAIN_SEEDS[:3]:
         run_law_seed(3,seed,suite,"interference",True)
     def recall():
-        trained_counts=canonical(model.banks)
-        prior_updates=model.updates
+        trained_counts=canonical(suite["candidate"].banks)
+        prior_updates=suite["candidate"].updates
         rec=run_law_seed(3,TRAIN_SEEDS[0],suite,"cold",False)
-        if model.updates!=prior_updates or canonical(model.banks)!=trained_counts:
+        if (suite["candidate"].updates!=prior_updates or
+            canonical(suite["candidate"].banks)!=trained_counts):
             raise ValueError("ST4_COLD_RECALL_TRAINING_LEAK")
         return rec["preaction_brier"]["candidate"]["probe"]
     before=recall()
