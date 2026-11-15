@@ -204,8 +204,10 @@ class NativeCausalSourceFree(unittest.TestCase):
         restored=ActionCount8.restore(m.snapshot())
         self.assertEqual(restored.snapshot(),m.snapshot())
         self.assertEqual(restored.accounting()["nine_profile_uint8_evidence_bytes"],
-                         9*8*4*2)
-        self.assertFalse(restored.accounting()["allocated_information_capacity_equal"])
+                         9*6*8*4*2)
+        self.assertTrue(restored.accounting()["allocated_information_capacity_equal"])
+        self.assertEqual(restored.accounting()["native_candidate_counter_bytes"],
+                         9*3*8*8*2)
 
     def test_preaction_brier_and_invalid_forecast_negative(self):
         self.assertAlmostEqual(brier([.5]*8,public(255)),.25)
