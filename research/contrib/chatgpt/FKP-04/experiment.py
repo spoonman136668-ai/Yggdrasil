@@ -27,7 +27,7 @@ class NumericMemory:
         return self.step(b,self.step(a,s)) if order==0 else self.step(a,self.step(b,s))
     def cold(self):
         serialized=self.weights.tobytes()
-        restored=NumericMemory(array('H')) if False else NumericMemory(array('H',self.weights))
+        restored=NumericMemory(array('H',self.weights))
         assert restored.weights.tobytes()==serialized
         return restored,hashlib.sha256(serialized).hexdigest(),len(serialized)
 
