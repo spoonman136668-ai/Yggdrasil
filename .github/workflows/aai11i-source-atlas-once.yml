@@ -13,7 +13,7 @@ jobs:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
-      github.event.head_commit.message == 'AAI-11I frozen causal feedback planning source DEV one-shot' &&
+      github.event.head_commit.message == 'AAI-11I exact evaluator import repair and frozen first DEV scoring one-shot' &&
       github.run_attempt == 1
     strategy:
       fail-fast: false
@@ -36,14 +36,14 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '8ff2e935145c2a31f8280376ee40f9f338409b00'
+          test "$(git rev-parse HEAD^)" = 'e33dcdf4028937a0410c0a14160b48f49d8ec3d9'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai11i-source-atlas-once.yml'
           test "$(git rev-parse ae88d92fbdd617ae0d280f0657380306305b9f65^)" = '90e04193a50055b2154a1782ed5da21f0132a8ba'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/prereg.json)" = 'c651c54ade09c3209f19cc86e2afc2b1347ea55a'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/prereg.json)" = "$(git rev-parse ae88d92fbdd617ae0d280f0657380306305b9f65:research/contrib/chatgpt/AAI-11I/prereg.json)"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/policy.py)" = '3377f544a65d7e69b39730ac5c89487ff35e5ce2'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/dev.py)" = 'e21fbc01e5a7bc7ebaf656e14df177e1c2654a8f'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/test_policy.py)" = '5d3db93145e0e8d3bd731e98bcd98bf5da82f58e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/dev.py)" = 'c7e371a87121dda5a27cd922ba96d9c4077b5567'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11I/test_policy.py)" = '7d3a56ef6228cde5941c75609b6412e7cb8d027f'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11H/causal.py)" = 'fec1d2bfee4215095128120e450bf41d07aaa1a9'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11G/prereg.json)" = '260c815900cc7f12aeab9a41a2caa6627482b6e9'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-11G/admit.py)" = '7fbeaf898d65cded838f74f1963da3b88af9604d'
@@ -93,7 +93,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = '8ff2e935145c2a31f8280376ee40f9f338409b00'
+          test "$(git rev-parse HEAD^)" = 'e33dcdf4028937a0410c0a14160b48f49d8ec3d9'
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
