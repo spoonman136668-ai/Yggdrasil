@@ -23,8 +23,8 @@ jobs:
     outputs:
       atlas_sha: ${{ steps.commit.outputs.atlas_sha }}
     env:
-      SOURCE_SHA: 1351e1187bfb7a85044d1706fe02aa414867d20b
-      SOURCE_TREE: d798451f8daec3f25e0ea9fafdd8ebcf6f836459
+      SOURCE_SHA: 9b7205e6b2643227d02f680a0827fba68811e7c2
+      SOURCE_TREE: 3fd08baa7bbc04d88fc0088cfaf112d1a566f710
       TARGET: research/fkp02-unseen-operator-headroom-20261115
     steps:
       - name: Set byte-stable checkout
@@ -33,7 +33,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 1351e1187bfb7a85044d1706fe02aa414867d20b
+          ref: 9b7205e6b2643227d02f680a0827fba68811e7c2
           persist-credentials: true
           fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -57,7 +57,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/test_foundation.py)" = e102d7a776c0c0666d5aaf54b90479fd831c2bed
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/learner.py)" = 92825bc4dc01be0bce104be9fd8766fd383e5d1d
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/run_dev.py)" = 0bfdc65dc7ab898172fa9fcd5494bbaab9cbf61a
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/test_learner.py)" = a07d13089fc2a33674a463b253244e788cac3a08
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-02/test_learner.py)" = 574dd25bc4d76a34d5a63f3f5be74f110a4f10b1
           echo "FKP02_G29_FROZEN_SOURCE=PASS"
       - name: Run existing G29 builder (generated artifacts ONLY)
         shell: bash
