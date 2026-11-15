@@ -56,7 +56,7 @@ def fit_order(mem:NumericMemory,a:int,b:int,observations:tuple[tuple[int,int],..
 def paired_ci(differences):
     rnd=random.Random(9090);n=len(differences)
     samples=sorted(sum(differences[rnd.randrange(n)] for _ in range(n))/n for _ in range(10000))
-    return [samples[249],samples[9749]
+    return [samples[249],samples[9749]]
 
 def run():
     started=time.perf_counter()
