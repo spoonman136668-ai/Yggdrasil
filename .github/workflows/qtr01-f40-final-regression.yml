@@ -1,0 +1,122 @@
+name: QTR-01 F40 source-isolation ICE atlas and final regression
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  atlas-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): arm F40 archived-source ICE atlas and full regression'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact source-only candidate and workflow marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = '83aa0ef7d8f58b833f74227b8c071cc5638eb094'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): arm F40 archived-source ICE atlas and full regression'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f40-final-regression.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_prereg.json)" = '04d405a7b5697ce0ca7c573303bd366cb586dca5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_component_isolation_audit.py)" = 'ae6ab67997d230de58e22645a61e976b4b4a21b5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f40_component_isolation_audit.py)" = 'a7e6c289fa996da21945b02427a03a7c9cbe9522'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = 'cef1378fd3c47ebc74675bd9dde19a183775ceeb'
+          test -z "$(git status --porcelain)"
+          echo F40_ATLAS_EXACT_SOURCE_FENCE=PASS
+      - name: Derive exact three ICE code-atlas companions, no scientific data
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          EXPECTED="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          ACTUAL="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$ACTUAL" = "$EXPECTED"
+          git diff --cached --quiet && exit 1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'ci(qtr): derive F40 source-exact ICE code atlas'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = '3'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo "F40_ICE_COMPANION_SHA=$(git rev-parse HEAD)"
+          echo F40_ICE_SOURCE_EXACT=PASS
+
+  full-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F40 final full exact-source qualification'
+    name: F40 full original and contributor regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - name: Stable Windows source checkout bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Qualify exact unchanged F40 source and derived ICE
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor '83aa0ef7d8f58b833f74227b8c071cc5638eb094' HEAD
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F40 final full exact-source qualification'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_prereg.json)" = '04d405a7b5697ce0ca7c573303bd366cb586dca5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_component_isolation_audit.py)" = 'ae6ab67997d230de58e22645a61e976b4b4a21b5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f40_component_isolation_audit.py)" = 'a7e6c289fa996da21945b02427a03a7c9cbe9522'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          python scripts/build_code_atlas.py --check-if-present
+          python scripts/build_code_atlas.py --check
+          echo F40_FINAL_SOURCE_CUSTODY_AND_ICE_ATLAS=PASS
+      - name: Install unchanged inherited full regression dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+      - name: Full original repository regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Complete QTR contributor regression on exact source
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+      - name: Confirm no source edits, model first-use or dirty artifacts
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F40_FULL_FINAL_SOURCE_EXACT_PASS
