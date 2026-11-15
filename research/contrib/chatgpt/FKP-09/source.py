@@ -84,7 +84,7 @@ class Source:
         return hmac.new(key,label.encode(),hashlib.sha256).digest()
 
     def _original_core(self)->int:
-        raw=b"".join(self._digest(f"ORIGINAL-CORE:{n}") for n in range(4))
+        raw=self._digest("ORIGINAL-CORE")[:16]
         return int.from_bytes(raw,"big")
 
     def _stage_flip(self,stage:int)->int:
