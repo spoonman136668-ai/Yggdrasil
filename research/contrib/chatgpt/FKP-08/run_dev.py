@@ -81,6 +81,9 @@ def run()->dict:
                 "paid_actions":len(paid),
                 "fit_mismatches":fit["best_mismatches"],
                 "compatible_patches":fit["consistent_hypotheses"]})
+            # Seal each version at the time it is first fitted, before
+            # any subsequent contradictory revision arrives.
+            before[(context,version)]=(view.held,direct)
             for old_v in range(version):
                 old_key=(context,old_v)
                 if old_key not in before:
