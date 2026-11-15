@@ -62,7 +62,7 @@ def seal_pre_dev(direct,counts,shuffled,trained,training,validation,selected):
 
 def play(seed,controller,upstream):
     if seed not in cohorts.DEV:raise PermissionError("FKP13_ORIGINAL_DEV_SOURCE_FENCE")
-    import memory_gym  # noqa; public source registration
+    # Environment registry is handled by cohorts.new_env; fixture can mock it.
     rng=(cohorts.policy_rng(seed,"uniform") if controller.name=="RANDOM"
          else cohorts.policy_rng(seed,"macro8") if controller.name=="MACRO8"
          else arm_rng(seed,controller.name))
