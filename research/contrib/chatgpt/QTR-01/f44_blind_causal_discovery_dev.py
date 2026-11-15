@@ -30,8 +30,8 @@ class InvalidF44(ValueError):
     pass
 
 
-def freeze():
-    raw = PREREG.read_bytes()
+def freeze(path=PREREG):
+    raw = Path(path).read_bytes()
     blob = sha1(b"blob " + str(len(raw)).encode() + b"\x00" + raw).hexdigest()
     if blob != FROZEN_BLOB:
         raise InvalidF44("F44_FROZEN_PREREG_BLOB_CHANGED")
