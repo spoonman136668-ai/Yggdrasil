@@ -5,19 +5,12 @@ import unittest
 from yggdrasil.native_relation_memory import NativeRelationMemory
 from yggdrasil.public_causal_cells import PublicCausalCells
 
-TRAIN=(0,1,2,4,8)
-AUDIT=(3,5,6,9,10,12)
-UNAUDITED=(7,11,13,14,15)
-PAIR_TERMS=((0,1),(0,2),(0,3),(1,2),(1,3),(2,3))
-TRIPLE_TERMS=((0,1,2),(0,1,3),(0,2,3),(1,2,3))
+from pathlib import Path
+import sys
 
-
-def law(slot,context,action,family):
-    h=hashlib.sha256(f"NKR03|fresh|20261115|{family}|{slot}".encode()).digest()
-    base=((context&(h[0]&15)).bit_count()&1) ^ (h[1]&1) ^ action
-    terms=PAIR_TERMS if family=="quadratic" else TRIPLE_TERMS
-    term=terms[h[2]%len(terms)]
-    return int(base ^ int(all((context>>bit)&1 for bit in term)))
+SOURCE_DIR = Path(__file__).resolve().parent.parent / "research/contrib/chatgpt/NKR-03"
+sys.path.insert(0, str(SOURCE_DIR))
+from source import TRAIN, AUDIT, UNAUDITED, PAIR_TERMS, TRIPLE_TERMS, law
 
 
 def fitted(slot,family):
