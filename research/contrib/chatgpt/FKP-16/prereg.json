@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-16-FRESH-BLIND-MACRO-RETURN",
+  "contributor": "chatgpt",
+  "question": "On 32 wholly fresh, independent Mystery Path worlds, can a non-gradient fixed numeric memory trained on real source-observed 16-step action consequences select a *single* beneficial 16-step macro from public RGB histories better than fully trained GRU/MLP, ridge, kNN, conventional count and random controls?",
+  "rationale": "FKP14 source branchability HEADROOM PASS; FKP13 immediate online memory failed strong controls; FKP15-B original development INVALID_PRIMARY_HARNESS due reading nonexistent future label at FIRST held seed975500 anchor0 public reset, before any future branch or return score. FKP15-A separately preregistered overlapping cohorts and failed before collecting any source, therefore FKP16 uses wholly disjoint prospective held development worlds, no reused first-use claim.",
+  "exact_parent_sha": "480b452cf0b6d698b86b8004d7416beab290b471",
+  "accepted_native_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "upstream": "Unmodified original MIT MarcoMeter/endless-memory-gym@a94f2b60d1769ea44df3226561488768e1dff9f4 task MysteryPath-v0, only public reward_fall_off=-0.05,max_steps=512; not official benchmark default, no hidden state/info/debug/oracle read.",
+  "source_custody": {
+    "TRAIN": "975100..975163, 64 public TRAIN worlds already consumed for source training by FKP15-B; deterministic source data may be replayed for training, NOT new first-use.",
+    "VALIDATION": "975200..975215, 16 public VAL worlds already consumed for selection by FKP15-B; use only as validation, NOT new first-use.",
+    "FRESH_DEV": "976500..976531, 32 wholly fresh independent public development worlds disjoint from FKP10-15 A/B DEV and train and all reserved transfer.",
+    "TRANSFER_RESERVED": "976600..976663 UNOPENED, no owner scientific first use",
+    "PROTECTED": "all owner-protected first-use UNOPENED",
+    "FKP15_B_PARTIAL": "975500 anchor0 public reset/observation already opened, entire FKP15-B original DEV set quarantined and may not be called virgin",
+    "FKP15_A_OTHER": "Original DEV 975500..975523 overlaps FKP15-B, no successful source DEV; no launch with overlap permitted as independent."
+  },
+  "frozen_source_method": "One deterministic PUBLIC 8-step macro source-blind prefix Random(seed XOR 0xF15A0) at anchors (0,16,32,64); exact original source.reset/step and public RGB/action/reward/done prefix identity across 9 3×3 native macro actions each physically repeated up to16 steps. Real source future_return is signed sum; positive rewards and goal events recorded separately; 16-step return evaluator best-of-nine is retrospective privileged-only, never a learned model baseline.",
+  "frozen_features": "Exactly original FKP15-B 204 float public per-frame pooled RGB 8×8×3 (192) plus last actually executed public action one-hot9 plus last truly observed reward sign one-hot3, full prefix sequence to GRU, mean of most recent up to8 frames to static models. At DEV only unlabeled public feature sequence+summary passed to each predictor; NO future return target or unchosen alternative branch labels permitted until ALL chosen actions are sealed.",
+  "candidate": "Unmodified FKP15-B two-view 4096×9 int32 direct summed 1000×real TRAIN 16-step return and int32 visit count memory, 294,912 raw bytes, non-gradient numeric writes, smoothing to TRAIN per-action means. Frozen on new DEV, bit-exact restored and tamper test.",
+  "strong_controls": "Unmodified FKP15-B one-hash 4096×9 count/return memory, GRU hidden64 full public prefix sequence and MLP 64×64 summary, each fully train 24 complete Adam epochs EACH of fixed seeds 1515 & 2626 (VAL-only lowest nine-return MSE checkpoint). Also regularized TRAIN ridge alpha(0.01,1,100), kNN (k1,5,15), selected on VAL nine-return MSE; TRAIN prior, deterministic world-anchor RANDOM and TRAIN-label-shuffled direct negative. Identical TRAIN source action/target opportunities. GRU gets longer temporal observation representation; whole-process FLOP equality unverified.",
+  "experiment_budget": {
+    "train_worlds": 64,
+    "validation_worlds": 16,
+    "dev_worlds": 32,
+    "anchors": [
+      0,
+      16,
+      32,
+      64
+    ],
+    "horizon": 16,
+    "real_alternatives_each": 9,
+    "max_real_source_actions": 358400,
+    "training_neural_epochs_per_seed": 24,
+    "training_initialization_seeds": [
+      1515,
+      2626
+    ],
+    "whole_process_time_and_cpu": true
+  },
+  "frozen_metric": "Source-native actual real 16-step return of each model's SINGLE chosen macro per valid DEV anchor, paired by 32 independent DEV world clusters (four anchors/world); compare candidate against strongest conventional/fitted/negative, reselect strongest per each of 10,000 world-bootstrap samples seed1515. Also per-action positive rate, terminal goals, source costs/resets, oracle regret as unattainable ceiling, cold snapshot and model-selection SHA.",
+  "frozen_success": "Only DEV_ACTION_VALUE_SIGNAL if candidate average earned return is at least +0.05 above best strong control, with 95% paired-world-bootstrap lower bound strictly>0, improvement in privilege-oracle regret of >=0.10 vs strongest, no positive-return action rate regression, >=24 valid independent DEV worlds, >0.05 genuine source hindsight-oracle vs deterministic random headroom, exact cold bit restore and corruption negative. These are preset; zero goals reported but not threshold due FKP14 rarity.",
+  "science_boundary": "Even positive public DEV is not SCIENTIFIC_PASS or native acceptance; untouched independent source family, real adaptive multi-step interventions, unfamiliar-law transfer, cold interference, strong compute-matched conventional controls and independent owner-protected first-use separately required. No tuning, duplicate PR, paid APIs, accepted main/controller/runner/scheduler changes.",
+  "qualification": "Before new source DEV: implement a first-use-safe unlabeled GRU+MLP prediction path; tests MUST pass a mocked end-to-end run() that withholds *all* 'returns' keys from prefix predictions, validates both valid and early-terminal source action counting, fits all conventional models, runs full result serializer and receipt steps. Freeze code/SHA/prereg and G29 source-atlas; qualify focused, G29 and mandatory inherited full regression on Ubuntu24.04 and Windows2022 BEFORE original fresh DEV. Reuse old TRAIN/VAL only as already-consumed training data; no FKP15 old DEV rerun. One fresh Linux source DEV then Windows only consumed source replay and exact final whole-regression; raw original archive and negative outcomes preserved.",
+  "classification_rules": {
+    "supported": "PUBLIC_DEV_ACTION_VALUE_SIGNAL_ONLY all criteria + valid original source and dual-OS engineering; SCIENTIFIC_PASS false",
+    "mixed": "DEV_MIXED or DEV_NO_GO if candidate ties/loses strong controls or metric thresholds; preserve null results",
+    "negative": "DEV_NO_GO if no actually identifiable action-value transfer or source insufficiency; no postresult tuning",
+    "invalid": "Any held future 'returns' accessed before chosen action sealed, original FKP15 DEV reused, missing strong trained baseline/entire regression, source/seed drift, changed frozen hypothesis/threshold after original DEV"
+  },
+  "authority": {
+    "research_only": true,
+    "no_native_promotion": true,
+    "no_protected_first_use": true,
+    "no_controller_scheduler_runner_changes": true,
+    "no_accepted_ref_mutation": true
+  }
+}
