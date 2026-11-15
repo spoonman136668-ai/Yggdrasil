@@ -135,7 +135,7 @@ class MicrofeedbackFixture(unittest.TestCase):
         self.assertEqual(spec["experiment_id"],"WSP-119")
         self.assertFalse(spec["authority"]["scientific_first_use"])
         self.assertEqual(spec["frozen_axes"]["exposures"] if "frozen_axes" in spec else
-                         spec["fresh_source"]["exposures"],F.EXPOSURES)
+                         tuple(spec["fresh_source"]["exposures"]),F.EXPOSURES)
         self.assertEqual(F.MAX_SOURCE_CALLS,12)
         self.assertEqual(len(F.ARM_NAMES),4)
         import ast
