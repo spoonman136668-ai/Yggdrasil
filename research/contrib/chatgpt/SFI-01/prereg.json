@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.source-feasibility-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "SFI-01-DELAYED-CONTEXT-SWITCHED-GOAL-SOURCE",
+  "purpose": "Check whether a genuinely action-consequential delayed, context-dependent synthetic public source is both information-identifiable and genuinely goal-achievable before any native learner or held original FKP-17 first use.",
+  "phase": "PROTOCOL_ONLY_BEFORE_GENERATOR_AND_NEW_PUBLIC_OUTCOMES",
+  "parent_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": {
+    "FKP17": "research-only eight-arm fully qualified baseline and strong conventional controls, original private held unopened",
+    "FKP18": "public delayed-credit compositional candidate tied strong symbolic control exactly, no scientific advantage",
+    "FKP07": "known composition earned historical relation transfer but tied Bayes and active probing did not beat random"
+  },
+  "scope": {
+    "source": "new openly auditable synthetic PUBLIC source, not independent protected first-use evaluator",
+    "worlds": "32 fixed diagnostic worlds, indices 0..31, exactly 4 causal operator families times 8 shift values; no post-result selecting worlds",
+    "randomization": "SHA-256 domain-separated deterministic per-world context and public exploration tape; all hypotheses replay same seed/tape",
+    "initial_information": "8 public uint4 state registers before and after each action, 8 public actions, bounded 16 prior PUBLIC transitions, earned reward and done",
+    "hidden_to_learner": "law operator-family identity, shift parameter and alternative action outcomes; never provided to candidate/predictor",
+    "families": {
+      "additive": "(previous_action + shift + current_context_bit) modulo 8",
+      "xor_shifted": "((previous_action XOR shift) + 2 * current_context_bit) modulo 8",
+      "reversed_inhibitory": "(shift - previous_action + 4 * current_context_bit) modulo 8",
+      "three_action": "(previous_action + (action_two_steps_before XOR shift) + 3 * current_context_bit) modulo 8"
+    },
+    "temporal": "feedback at step t is consequence of source action at t-2, conditioned on predecessor action(s) and publicly observed context when t-2 occurred; first 3 transitions after each terminal reset have no scored delayed feedback",
+    "goal": "three consecutive positive delayed consequences in one episode gives public earned reward +1.0 and done=true; positive nonterminal +0.25, incorrect -0.25, warmup 0; source continues with a newly reset episode on next action",
+    "action_budget": "24 common public exploration steps then 16 individually on-policy scored action opportunities; actual positive and negative rewards counted, not hindsight oracle labels",
+    "protected_exclusions": "never instantiate FKP-17 DEV 978500..978531, TRANSFER 978600..978663, FKP-16 consumed source or any owner private evaluator"
+  },
+  "frozen_checks": {
+    "uniqueness_after_24": "at least 24 of 32 worlds have exactly one compatible full (family,shift) hypothesis under the same 24 public actions, using only observable before/after/reward/done",
+    "ambiguity_after_8": "at least 16 of 32 worlds retain two or more compatible source hypotheses after 8 public interventions, ruling out a trivially solved fixture",
+    "oracle_goal_worlds": "oracle receives private law for source-headroom upper reference and must achieve >=24/32 scored worlds with >=1 actual public done event",
+    "random_goal_worlds": "source-blind random actions achieve goals in <=4/32 scored worlds",
+    "reward_headroom": "mean actual earned 16-step reward oracle minus random >=2.0",
+    "feedback": "public train tape includes both positive and negative earned action consequences",
+    "no_leakage": "source hidden parameters, candidate counterfactuals and future rewards never occur in public transition fields, observation order and continuity preserved",
+    "finish": "classify SOURCE_FEASIBLE only if all predeclared checks pass, otherwise SOURCE_UNFIT/INVALID. Preserve negatives; do not tune after observing outcomes."
+  },
+  "policy": {
+    "source_feasibility_only": true,
+    "no_native_yggdrasil_change": true,
+    "no_merge_promotion": true,
+    "no_workflow_dispatch_or_scheduler": true,
+    "no_first_use": true,
+    "no_paid_model_or_gpu": true,
+    "no_claim_of_novel_causal_learning": true,
+    "owner_sealed_laws_still_required_for_FKP17": true,
+    "future": "For a true unfamiliar-law native improvement, use a separate owner-controlled disjoint law source and match to competent exact symbolic, recurrent, and pretraining baselines with reproducible source/action/compute receipts."
+  }
+}
