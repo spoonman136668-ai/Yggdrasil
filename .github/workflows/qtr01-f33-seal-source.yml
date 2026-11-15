@@ -1,0 +1,87 @@
+name: QTR-01 F33 seal existing verified CC0 relations to draft branch
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  f33-archive-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F33 seal preexisting CC0 snapshot without new source calls'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GITHUB_REPOSITORY: spoonman136668-ai/Yggdrasil
+    steps:
+      - name: Checkout exact QTR source with no model edits
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Verify original F32 archive identity, prereg and one-shot marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f33_prereg.json)" = "7ff421eef0102cb59aff2c153e8e60c8c94b80fe"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_all_language_associations.py)" = "6746518963f07f8355fc4bd66716d86547183005"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_prereg.json)" = "7017afb712f087e818942841cffbca4ae296c629"
+          git merge-base --is-ancestor b65ea3af1857a7c79810fa5ef5abbf0b11450738 HEAD
+          test "$(git log -1 --format=%s)" = "ci(qtr): F33 seal preexisting CC0 snapshot without new source calls"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+          test ! -f research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json
+          echo F33_CUSTODY_PREFLIGHT=PASS
+      - name: Download existing verified F32 archive only; no Wikidata network calls
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f33-existing-source"
+          gh run download 43664156289 --repo spoonman136668-ai/Yggdrasil --name qtr01-f32-source-receipt-cc0 --dir "$RUNNER_TEMP/f33-existing-source"
+          test -s "$RUNNER_TEMP/f33-existing-source/qtr01-f32-first-party-cc0-snapshot.json"
+          printf '%s  %s\n' e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb "$RUNNER_TEMP/f33-existing-source/qtr01-f32-first-party-cc0-snapshot.json" | sha256sum --check
+          F33_SOURCE="$RUNNER_TEMP/f33-existing-source/qtr01-f32-first-party-cc0-snapshot.json" python - <<'PY'
+          import hashlib,json,os,pathlib
+          p=pathlib.Path(os.environ['F33_SOURCE'])
+          raw=p.read_bytes(); d=json.loads(raw)
+          assert len(raw)==13250
+          assert d['schema']=='yggdrasil.qtr01.f31.first-party-all-language-fact-custody.v1'
+          assert len(d['typed_source_rows'])==13
+          assert d['matched_symbolic_numeric_control']['source_labeled_rows']==13
+          assert d['matched_symbolic_numeric_control']['actual_observed_twohop_queries']==0
+          assert d['matched_symbolic_numeric_control']['canonical_cold_restore']
+          assert d['matched_symbolic_numeric_control']['numeric_vs_equal_info_symbolic_2hop_parity']
+          assert len(d['source_request_receipts'])==25
+          assert d['scientific_pass'] is False and d['native_recipient_model_weights_edited'] is False
+          assert hashlib.sha256(raw).hexdigest()=='e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb'
+          print('F33_EXACT_PREEXISTING_SOURCE_ROWS=13')
+          print('F33_NO_NEW_SOURCE_CALLS=PASS')
+          PY
+      - name: Commit only exact CC0 source JSON into isolated draft; no model modifications
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$RUNNER_TEMP/f33-existing-source/qtr01-f32-first-party-cc0-snapshot.json"
+          DEST=research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json
+          mkdir -p research/contrib/chatgpt/QTR-01/evidence
+          cp "$SOURCE" "$DEST"
+          printf '%s  %s\n' e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb "$DEST" | sha256sum --check
+          git add -- "$DEST"
+          test "$(git diff --cached --name-only)" = "$DEST"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(qtr): preserve exact F32 first-party CC0 association source"
+          FINAL="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$FINAL")" = "$DEST"
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo "F33_VERIFIED_SOURCE_COMMIT=$FINAL"
+          echo F33_EXACT_SOURCE_DRAFT_PERSISTENCE=PASS
