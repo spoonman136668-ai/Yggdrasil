@@ -167,7 +167,9 @@ def run(size,output_dir,source_sha,*,budget_seconds=3600):
     save_receipt()
     for kind in KINDS:
         elapsed=process_time()-start
-        remaining=budget_seconds-elapsed
+        # Frozen per-model ceiling: 60 minutes per 4096-law control,
+        # regardless of the aggregate source-training budget.
+        remaining=min(3600,budget_seconds-elapsed)
         if remaining<=0:
             report["status"]="RESOURCE_STOP"
             report["stopped_at"]=kind
