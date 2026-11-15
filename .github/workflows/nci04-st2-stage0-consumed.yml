@@ -1,0 +1,135 @@
+name: NCI04 ST2 frozen consumed-source stage0
+on:
+  push:
+    branches:
+      - research/nci04-st2-event-grounded-entities-20261114
+permissions:
+  contents: read
+jobs:
+  source_headroom:
+    if: github.event.head_commit.message == 'science(st2): run frozen consumed stage0 only'
+    name: ST2 consumed-only stage0 (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Byte-stable original source checkout on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact ST2 isolated code checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: yggdrasil
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Independently authored exact original source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Farama-Foundation/Minigrid
+          ref: 7f5853792ea7f04f75614661006d87fcf949f26d
+          path: external/minigrid
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original source pinned runtime dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1
+      - name: Independently authored source Git/blob/license preflight
+        shell: bash
+        run: python -B yggdrasil/research/mr14/verify_farama_native.py --manifest yggdrasil/research/mr14/farama_source_manifest.json --upstream external/minigrid
+      - name: Frozen stage0 count and future-frame leakage negatives
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          cd yggdrasil
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_stage0.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_event_memory.py' -v
+      - name: Authentic original source preaction headroom ONLY
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          set -o pipefail
+          cd yggdrasil
+          python -B -m research.nci04_st2.stage0_consumed_headroom ../external/minigrid --output ../st2-stage0-result.json | tee ../st2-stage0-receipt.log
+          grep -Eq '^ST2_STAGE0_DISPOSITION=(SOURCE_ENTITY_IDENTIFIABILITY_NO_GO|STAGE0_IDENTIFIABLE_DEV_ONLY_NOT_SCIENCE)$' ../st2-stage0-receipt.log
+          grep -q '^ST2_STAGE0_NO_FIRST_USE=PASS$' ../st2-stage0-receipt.log
+          test -s ../st2-stage0-result.json
+      - name: Verify both checkout source trees unchanged
+        shell: bash
+        run: |
+          git -C yggdrasil diff --exit-code
+          git -C external/minigrid diff --exit-code
+          test -z "$(git -C yggdrasil status --porcelain)"
+          test -z "$(git -C external/minigrid status --porcelain)"
+      - name: Store bounded original consumed-development receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st2-stage0-original-consumed-${{ matrix.os }}
+          path: st2-stage0-result.json
+          if-no-files-found: error
+          retention-days: 7
+  source_parity:
+    if: github.event.head_commit.message == 'science(st2): run frozen consumed stage0 only'
+    name: ST2 stage0 source/correspondence cross-OS parity
+    needs: source_headroom
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st2-stage0-original-consumed-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st2-stage0-original-consumed-windows-2022
+          path: windows
+      - name: Compare exact public original-world source receipts and frozen headroom
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('linux/st2-stage0-result.json').read_text('utf-8'))
+          b=json.loads(Path('windows/st2-stage0-result.json').read_text('utf-8'))
+          for key in ('schema','frozen_protocol_blob','prereg_commit',
+                      'original_source_sha','source_actor_blob','source_adapter_blob',
+                      'families','seed_group','headroom',
+                      'no_protected_first_use','candidate_inference_or_training',
+                      'science_admission','held_evaluation_authorized_by_this_script'):
+              if a[key]!=b[key]:
+                  raise SystemExit('ST2_STAGE0_CROSS_OS_MISMATCH_'+key)
+          for left,right in zip(a['source_receipts'],b['source_receipts']):
+              for key in ('family','seed','source_steps',
+                          'unambiguous_cross_position_preaction_matches',
+                          'unambiguous_same_position_matches',
+                          'frames_without_public_correspondence',
+                          'original_action_outcome_sha256',
+                          'future_public_frame_used_for_preaction_correspondence'):
+                  if left[key]!=right[key]:
+                      raise SystemExit('ST2_STAGE0_ORIGINAL_SOURCE_DRIFT_'+key)
+          if len(a['source_receipts'])!=6 or a['candidate_inference_or_training']:
+              raise SystemExit('ST2_STAGE0_NOT_SOURCE_ONLY')
+          print('ST2_STAGE0_ORIGINAL_SOURCE_AND_MATCH_PARITY=PASS')
+          print('ST2_STAGE0_ELIGIBLE=' + str(a['headroom']['eligible']))
+          print('ST2_STAGE0_CROSS_POSITION_TOTAL=' + str(a['headroom']['cross_position_total']))
+          print('ST2_STAGE0_DISPOSITION=' + a['headroom']['disposition'])
+          print('ST2_STAGE0_SCIENCE_NOT_RUN=PASS')
+          PY
