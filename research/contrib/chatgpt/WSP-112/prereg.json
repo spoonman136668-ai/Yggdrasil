@@ -1,0 +1,41 @@
+{
+  "schema": "wsp112.active-unfamiliar-causal-law-transfer.v1",
+  "status": "PREIMPLEMENTATION_FROZEN_DEV_NOT_RUN",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1078,
+    "commit": "dc1b7f72de4b359aac21d4fcc3be2c06bc3f196e",
+    "tree": "09a1acc9506f134f5349115acb6cccd3d18799a3",
+    "scientific_result": "WSP111 parity with symbolic and fully optimized conventional arms; SCIENTIFIC_PASS=false"
+  },
+  "question": "Can directly written native numerical operator/memory weights choose informative interventions and infer unseen causal law families from action consequences, retaining laws after cold restoration, and outperform strong information-matched adaptive controls?",
+  "experimental_units": {
+    "observable": "Each world is a resettable finite-state environment with a 2-bit current state and a 2-bit intervention/action. Each single intervention returns a 2-bit resulting state. The action changes the environment's state, and resetting to any state is a counted experimental preparation available equally to every arm.",
+    "true_law": "Each of the two next-state output bits equals XOR over selected square-free monomial masks of the four input bits (two state bits, two action bits); include constant through quartic masks, evaluated in GF(2). Hidden coefficients and which degree family applies are NEVER exposed to learners.",
+    "exact_generation": "For each world, output bit and monomial mask, SHA256('WSP112|LAW|v1|split|world|outputbit|mask') first byte odd indicates a present coefficient, with highest-degree term forced present on at least one output bit by deterministic smallest mask if absent. World IDs start at 0 within each split; monomials ordered by (popcount(mask),mask). Labels returned only to learner-requested interventions; the evaluator holds unqueried effects until prediction sealing.",
+    "train": "512 independent worlds: world 0..255 degree<=1 and world 256..511 degree<=2, all 16 state-action effects for each available identically to all arms for any common pretraining; training worlds never occur at transfer.",
+    "transfer": "256 distinct never-trained mechanism worlds: IDs 0..127 degree<=3 with at least one cubic term; 128..255 degree<=4 with at least one quartic term. No heldout coefficients, family identifiers, unqueried effects, or evaluation labels exposed to learner. No reused WSP111 hidden oracle.",
+    "interventions": "Exactly 8 unique state/action queries per transfer world, with live choice of the next query based only on previous observations. A world may be reset for each query at no extra hidden label access. Every arm has equal 8-query information budget, 4-bit input and 2-bit observable response.",
+    "evaluation": "Predict 2-bit next-state on 8 unqueried state/action pairs per world (2048 two-bit exact outcomes); report per-family results separately, plus per-bit Brier/accuracy, two-bit exact-match, action-by-action learning curves, and zero-intervention prior.",
+    "seeds": "One preregistered primary cohort WSP112|LAW|v1 and four independent validation cohorts WSP112|LAW|v2, v3, v4, v5, if and only if independent qualification permits. Never tune against primary exposed results."
+  },
+  "methods": {
+    "direct": "Use direct-write numerical synaptic/parameter arrays for effect memory and a universal GF(2) monomial feature dictionary, with selected actions driven by a frozen information-gain/rank policy; solve using observed outcomes only, write induced coefficients into fixed parameter slots, and make predictions by a generic numerical evaluation kernel. Do not import hidden generator or source law-family labels.",
+    "symbolic": "Independent symbolic Boolean hypothesis learner with rank/information-gain active queries and identical public train-world data; do not reuse direct prediction code or parameters.",
+    "bayesian": "Explicit Bayesian active-learning competitor over a shared generic Boolean monomial feature hypothesis family using identical training-world observations and 8 intervention budget; apply a bounded exact/approximate posterior specified before primary original heldout run; no oracle degree labels.",
+    "conventional": "Fully trained conventional nonlinear predictor with independent per-world adaptation on its own eight interventions, same pretraining and observation budget; record convergence and all hyperparameters before original first-use.",
+    "negatives": "Fixed-seed random-intervention direct writer, passive lexicographic queries, no-feedback/no-written-memory, permuted state-action binding, erased intervention consequences, and cold-replay/tamper controls.",
+    "strict_counterfactual": "Evaluate all controls additionally on exactly the direct arm's observed intervention sequence as a secondary equal-data ablation; adaptive-policy comparisons keep identical budgets but are not identical information."
+  },
+  "measured": {
+    "science_primary": "Native two-bit exact accuracy on 2048 unqueried primary transfer transitions must exceed the best of independent symbolic, active Bayesian and fully trained conventional by >=0.02 absolute with paired world-level 95% bootstrap lower confidence bound >0, and must exceed random/passive/no-feedback by >=0.05. Replicate positive gain on all four frozen independent validation cohorts without a negative family.",
+    "secondary": "Cold replay must be bit-identical for full transfer predictions and reject one-byte corrupted weights; original WSP111 branch and 1m-fact source remain untouched. Report unfamiliar cubic and quartic families individually, 8-step intervention-value curves, extrapolation failure distribution, intervention effects, cumulative retained worlds, memory size, all-arm end-to-end CPU+wall+workload, and matched compute not only solver time.",
+    "interpretation": "Matched parity or worse is a scientifically negative superiority result, even if the direct writer successfully infers new laws. A task-specific native numerical Boolean algebra solver is not a general-intelligence proof."
+  },
+  "custody": {
+    "order": "Freeze this prereg in the FIRST new commit before generator/oracle/learner/tests/fixtures. Implement fabricated-label-only fixtures; perform mandatory full final inherited WSP80..WSP112 and Yggdrasil root regression on Linux+Windows and independent G29 atlas acceptance on exact candidate tree BEFORE original 256-world transfer first-use. Seal predictions, intervention transcripts, parameter snapshots and train sources before evaluator opens any unqueried labels. Preserve first-use status as consumed after a run even on negative results.",
+    "stop": "No after-outcome tuning, no duplicate first-use, do not promote or merge based only on engineering PASS, do not change hidden laws or cohorts after qualification. Reject accidental fixture oracle imports, overlap, unbounded interventions or unequal per-arm information budgets.",
+    "isolation": "Isolated stacked draft only. No changes to main, accepted model, production state, external owners, Forge loop, Wingless or TTT-Hybrid. No scheduled task, private runner, paid API, protected Wikidata/WSP101 source, controller execution, or deployment.",
+    "prerequisite": "All development here permitted only under project-research authority. Scientific first-use remains separately gated by exact-source/qualification custody; prereg creation is not permission to consume transfer effects."
+  }
+}
