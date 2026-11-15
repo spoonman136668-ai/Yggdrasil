@@ -53,6 +53,7 @@ class TestFKP15(unittest.TestCase):
             with self.assertRaises((PermissionError,ValueError)):
                 source.gate(seed)
         with self.assertRaises(PermissionError):source.gate(source.DEV[0])
+        with self.assertRaises(PermissionError):source.real_prefix(source.DEV[0],0)
         self.assertEqual(source.gate(source.DEV[0],allow_dev=True),"DEVELOPMENT")
         with self.assertRaises(PermissionError):
             source.collect(source.DEV)
@@ -134,7 +135,8 @@ class TestFKP15(unittest.TestCase):
         class FakeEnv:
             def close(self):pass
         calls=[]
-        def mocked_prefix(seed,anchor):
+        def mocked_prefix(seed,anchor,allow_dev=False):
+            self.assertTrue(allow_dev)
             row=public_fixture(seed,anchor)
             row["source_steps"]=anchor
             row["env"]=FakeEnv()
