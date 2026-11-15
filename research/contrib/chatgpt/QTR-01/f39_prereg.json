@@ -1,0 +1,119 @@
+{
+  "schema": "yggdrasil.qtr01.f39.prospective-breadth-source-fit-only.v1",
+  "status": "FROZEN_BEFORE_F39_SOURCE_CODE_OR_NEW_SOURCE_READ",
+  "parent": "8849236b7f682c8e1eea9808b308b3cab264425f",
+  "motivation": "F37 showed 2 roots / 4 query signatures, insufficient independent headroom. F38 fixed 64-byte bitweight has 7 two-hop false positives on only 15 source-positive answers. Broaden independent source FIT only; preserve separate unseen source root identities.",
+  "source": "First-party Wikidata CC0 Special:EntityData JSON using unchanged F27 same-host revision-addressed read-only source code",
+  "rights": "CC0 structured claims and source-language labels only; exclude Wikipedia prose, model/donor/ChatGPT-generated knowledge",
+  "source_reader_blob": "db561564c949ffe1a15c99dc460d18d0143588d1",
+  "source_label_blob": "6746518963f07f8355fc4bd66716d86547183005",
+  "fit_roots": [
+    {
+      "id": "Q2",
+      "group": "planetary"
+    },
+    {
+      "id": "Q17",
+      "group": "country"
+    },
+    {
+      "id": "Q30",
+      "group": "country"
+    },
+    {
+      "id": "Q64",
+      "group": "city"
+    },
+    {
+      "id": "Q76",
+      "group": "person"
+    },
+    {
+      "id": "Q80",
+      "group": "person"
+    },
+    {
+      "id": "Q90",
+      "group": "city"
+    },
+    {
+      "id": "Q95",
+      "group": "organization"
+    }
+  ],
+  "reserved_unseen_roots": [
+    {
+      "id": "Q142",
+      "group": "country"
+    },
+    {
+      "id": "Q183",
+      "group": "country"
+    },
+    {
+      "id": "Q312",
+      "group": "organization"
+    },
+    {
+      "id": "Q1490",
+      "group": "city"
+    }
+  ],
+  "reserve_policy": "Never fetch, inspect labels, or admit ANY edges or intermediary IDs involving reserved root Q142 Q183 Q312 Q1490 in F39. These are future eligibility candidates only; merely reserving them does not establish scientific source/component disjointness.",
+  "root_selection_rationale": "Original unconsumed F26 immutable seed-item roster, excluding original F32 roots Q5 and Q42, with representation across planetary/country/city/person/organization families; freeze now independent of new source responses.",
+  "claim_predicates": [
+    "P17",
+    "P19",
+    "P27",
+    "P31",
+    "P36",
+    "P50",
+    "P69",
+    "P106",
+    "P131",
+    "P159",
+    "P279",
+    "P361"
+  ],
+  "primary_selection": "Read 8 FIT root items current once, immediately repeat each at pinned same revision and exact canonical digest. Extract only normal/preferred unqualified item-valued Q-P-Q statements with matching source-claim prefix, sort numeric subject/property/object then claim ID. Keep first 4 per root, no response-driven seed replacement; roots without labels/claims fail closed.",
+  "secondary_selection": "Take up to first 2 objects per FIT root from selected primary claims after globally excluding all reserved unseen IDs. Deduplicate in first occurrence order. Read each distinct expansion subject current once plus exact pinned revision reread, with SHA256 equality, then select first 3 normal/preferred unqualified item-Q claims per expansion subject by numeric property/object + claim ID. No tertiary subject reads.",
+  "endpoint_selection": "From first and secondary statements choose at most first 32 distinct objects without already-fetched source labels, numeric QID order, excluding all reserved unseen identities; fetch each label once. Fetch 12 predicate labels once. Exclude unlabelled statements without replacing candidates. Discard reserved-identity endpoints unconditionally.",
+  "caps": {
+    "max_fit_roots": 8,
+    "max_expansion_subjects": 16,
+    "max_selected_primary_per_root": 4,
+    "max_selected_secondary_per_subject": 3,
+    "max_additional_endpoints": 32,
+    "max_predicate_labels": 12,
+    "max_total_gets": 100,
+    "max_each_http_bytes": 4194304,
+    "max_total_http_bytes": 25165824,
+    "max_receipt_bytes": 786432,
+    "per_http_timeout_sec": 15,
+    "retries": 0
+  },
+  "witness": "Source claim IDs, positive source entity revision, exact first party claim, source-origin language for subject/predicate/object, individual request canonical hashes, mixed-revision caveat; zero accepted facts without all witnesses.",
+  "controls": "Same-information exact symbolic source graph and typed integer adjacency; source-free planted provenance tamper/revision drift/qualifiers/unlabeled/reserved-ID negatives; all derived 2-hop paths are graph joins not inferred universally true direct relations.",
+  "headroom": {
+    "min_distinct_fit_roots_with_composable_paths": 5,
+    "min_distinct_first_second_predicate_pairs": 4,
+    "min_distinct_source_query_signatures": 12,
+    "min_distinct_fit_groups_with_paths": 3
+  },
+  "stop": "Record SOURCE_BLOCKED on pin/digest/network/limit issues; record INSUFFICIENT_HEADROOM if any frozen headroom threshold fails. Never resample seeds or tune caps after observation. Preserve all source-only negative evidence and no scientific first-use claim.",
+  "followup": "On headroom, separately preregister genuinely source-disjoint native/fully trained conventional/strong symbolic controls and heldout evaluation with matched information, compute, cold retention and interference; no source generalization or learning claimed in F39.",
+  "fences": {
+    "no_read_reserved_root_or_related_id": true,
+    "no_model_weights": true,
+    "no_native_recipient_inference_or_training": true,
+    "no_new_scientific_first_use": true,
+    "no_protected_original_science": true,
+    "no_donor_or_llm_training_data": true,
+    "no_main_or_acceptance_ref_edits": true,
+    "no_merge": true,
+    "no_production_or_scheduled_tasks": true,
+    "no_paid_api": true,
+    "no_user_library_files": true,
+    "no_source_retry": true
+  }
+}
