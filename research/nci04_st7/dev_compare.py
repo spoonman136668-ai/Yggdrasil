@@ -30,8 +30,8 @@ from research.nci04_st7.matched_controls import (
 
 WORLD_BLOB="ac39c7a5a7a0c3119e5d91872017deee84ecfef4"
 AUDIT_BLOB="cf75f25b1640edbf4574940b0a04ab3a2676ecc5"
-MODEL_BLOB="TO_PIN_ST7_NATIVE"
-CONTROLS_BLOB="TO_PIN_ST7_CONTROLS"
+MODEL_BLOB="14fa768b9db80da3d65ab86337b623efa78e994d"
+CONTROLS_BLOB="38b70fe2ccfd53800889b0263e9962a748f5b945"
 TRAIN_SCHEMA="yggdrasil.nci04.st7.once-trained-original-source.v1"
 RESULT_SCHEMA="yggdrasil.nci04.st7.unknown-quadratic-original-dev.v1"
 MODEL_NAMES=tuple(models())
