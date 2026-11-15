@@ -135,7 +135,7 @@ jobs:
           path: ${{ runner.temp }}/st3-held-dev.json
           if-no-files-found: error
           retention-days: 14
-parity:
+  parity:
     if: "github.event.head_commit.message == 'science(st3): run frozen matched DEV comparison'"
     needs: held_development
     name: ST3 original-source and cost-aware scientific parity
