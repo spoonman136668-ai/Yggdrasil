@@ -89,8 +89,8 @@ jobs:
           assert d["native_accepted_source_modified"] is False
           stable={k:v for k,v in d.items()
                   if k not in ("evaluation_wall_seconds_dev_only",)}
-          pathlib.Path(os.environ["F43_OUT"]).write_text(
-              json.dumps(stable,sort_keys=True,separators=(",",":"))+"\n",encoding="utf-8")
+          pathlib.Path(os.environ["F43_OUT"]).write_bytes(
+              (json.dumps(stable,sort_keys=True,separators=(",",":"))+"\n").encode("utf-8"))
           print("F43_NATIVE_COLD_CHECKPOINT_SHA256="+d["native_checkpoint_sha256"])
           print("F43_NO_SCIENTIFIC_OR_FIRST_USE_PROMOTION=PASS")
           PY
