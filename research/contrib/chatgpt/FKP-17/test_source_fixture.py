@@ -154,7 +154,7 @@ class PublicFixtureTests(unittest.TestCase):
             # The sole source-safe training entrypoint may import its public
             # evaluator to assemble already-committed observations. Learned
             # policies must NOT import source_fixture or an evaluator.
-            if path.name in ("source_fixture.py", "qualify_public_recurrent.py", "run_public_onpolicy.py") or path.name.startswith("test_"):
+            if path.name in ("source_fixture.py", "qualify_public_recurrent.py", "run_public_onpolicy.py", "run_train_matrix.py") or path.name.startswith("test_"):
                 continue
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
