@@ -1,0 +1,234 @@
+name: FKP11 pinned Memory Gym public action-feedback original DEV
+
+on:
+  push:
+    branches: [ci/fkp11-source-information-once-20261115]
+    paths: [.github/workflows/fkp11-once.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fkp11-public-original-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-11): original public source information one-shot' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      SOURCE: 824c78cdff6cffb9d0d8b933d355a458cc73b41f
+      TREE: e314802fd9fb7f1a3a8d0988168ae8232d2f480b
+      TARGET: research/fkp11-memorygym-public-feedback-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      exact_head: ${{ steps.seal.outputs.exact_head }}
+    steps:
+      - name: Byte-stable Git checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 824c78cdff6cffb9d0d8b933d355a458cc73b41f
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prereg-first and source-file exact Git blob custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor a84eda5246b9eedb3515ef0e6c7c1bda36fbdc08 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-11/prereg.json)" = cf5a4960227c33b0069e9b0b9f7c9aea8e2b1163
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-11/study.py)" = 3cff72697e35bf3edb8087ea41c908cb621c4548
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-11/test_fkp11.py)" = 6b74009e11bf597f2966c37043f67a8981bfb7b3
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-11/README.md)" = ee76bdd5e8b555761b9de547736611ca82b87617
+          echo "FKP11_FROZEN_SOURCE_CUSTODY=PASS"
+      - name: Generate source-index artifacts, exactly 3 files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Commit generated-only source atlas child, unchanged original method
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-11): regenerate original source atlas"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_head=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP11_INDEXED_CHILD=$NEW"
+
+  qualify-before-original:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: No CRLF mutation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install only original pinned public numeric fixture dependency
+        shell: bash
+        run: python -m pip install "numpy==1.26.4"
+      - name: G29, FKP11 fixture-only and mandatory full Yggdrasil regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-11 -p test_fkp11.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP11_SOURCE_AND_FULL_PRE_FIRST_USE_REGRESSION=PASS"
+
+  original-public-dev:
+    needs: [atlas-only, qualify-before-original]
+    if: needs.qualify-before-original.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Source-exact checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original public MIT benchmark pinned exact upstream and deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp11-upstream"
+          git -C "$RUNNER_TEMP/fkp11-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp11-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+          test -z "$(git -C "$RUNNER_TEMP/fkp11-upstream" status --porcelain --untracked-files=all)"
+      - name: ONE original DEV evaluation, publicly observed action feedback only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-11/study.py --public-dev --upstream-root "$RUNNER_TEMP/fkp11-upstream" > "$RUNNER_TEMP/fkp11-original.json"
+          python - "$RUNNER_TEMP/fkp11-original.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert x['schema']=='fkp11.memorygym-public-action-feedback-dev.v1'
+          assert x['protected_first_use'] is False and not x['independent_scientific_pass']
+          assert x['source_episode_count']==48 and 0<x['source_steps']<=3072
+          assert x['source']['exact_git_sha']=='a94f2b60d1769ea44df3226561488768e1dff9f4'
+          assert x['source']['verified_original_blobs']==5
+          assert all(0<r['true_env_steps']<=64 for r in x['rows'])
+          print('FKP11_ORIGINAL_PUBLIC_DEV='+json.dumps({
+            'classification':x['classification'],'original_public_trace_sha256':x['original_public_trace_sha256'],
+            'source_steps':x['source_steps'],'reward_events':x['true_public_reward_events'],
+            'by_task':x['by_task'],
+            'per_episode':[(r['task'],r['seed'],r['arm'],r['true_env_steps'],
+                r['whole_public_trace_sha256']) for r in x['rows']]},sort_keys=True))
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp11-upstream" status --porcelain --untracked-files=all)"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP11_ORIGINAL_DEV_CONSUMED"
+
+  windows-determinism-replay:
+    needs: [atlas-only, original-public-dev]
+    if: needs.original-public-dev.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 40
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Source-exact checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pinned external source and original deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp11-upstream"
+          git -C "$RUNNER_TEMP/fkp11-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp11-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+      - name: Reproduce original consumed public DEV without calling it independent science
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-11/study.py --public-dev --upstream-root "$RUNNER_TEMP/fkp11-upstream" > "$RUNNER_TEMP/fkp11-replay.json"
+          python - "$RUNNER_TEMP/fkp11-replay.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert x['source_episode_count']==48 and not x['protected_first_use']
+          print('FKP11_WINDOWS_REPLAY='+json.dumps({
+            'classification':x['classification'],'original_public_trace_sha256':x['original_public_trace_sha256'],
+            'source_steps':x['source_steps'],'reward_events':x['true_public_reward_events'],
+            'by_task':x['by_task'],
+            'per_episode':[(r['task'],r['seed'],r['arm'],r['true_env_steps'],
+               r['whole_public_trace_sha256']) for r in x['rows']]},sort_keys=True))
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp11-upstream" status --porcelain --untracked-files=all)"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP11_WINDOWS_DETERMINISM_REPLAY_COMPLETE"
