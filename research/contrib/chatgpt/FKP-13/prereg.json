@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-13",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can fixed-size tokenless directly programmed causal-memory weights choose genuinely useful interventions, learn cumulatively across new Mystery Path worlds and retain knowledge better than strong fully trained recurrent and count-based online controllers?",
+  "hypothesis": "Direct visual/action numerical memory may improve real return when updated from own consequences, but immediate reward prediction may not produce action value, and fully trained GRU or online counts may match or win.",
+  "exact_parent_sha": "25c80e1f7f5a74a972038ffcd619064d206d5aee",
+  "parent_evidence": "FKP12 PR1103 original DEV 14,336 steps, direct Brier .171688 vs strongest count .177785, measured +.006097 below prespecified +.020; Linux+Windows full regression and consumed source replay pass #43735449098. No native scientific acceptance.",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "changed_paths": [
+    "research/contrib/chatgpt/FKP-13/**",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "source": "Pinned unchanged MIT MarcoMeter/endless-memory-gym Git a94f2b60d1769ea44df3226561488768e1dff9f4. MysteryPath-v0 source-native reset options reward_fall_off=-0.05, max_steps=512. These are NOT official benchmark rewards. Only visible RGB, own 3x3 legal public actions, source emitted rewards and done/truncation, never env.info, unwrapped, hidden path, debug render.",
+  "seeds": {
+    "train": "973100..973147",
+    "validation": "973200..973215",
+    "original_dev": "973500..973523",
+    "reserved_transfer": "973600..973631 UNOPENED",
+    "protected": "UNOPENED",
+    "prior_consumed": "FKP10 970100..970103; FKP11 971100..971103; FKP12 971300..971607 DISJOINT"
+  },
+  "source_collection": "TRAIN 48 and VAL 16 worlds x two source-blind action policies: uniform 3x3 seeded world XOR0xF11A1; macro8 8-step repeated 3x3 action seeded world XOR0xF11B2. Native max 512 actions/episode. No model-guided actions for collection. TRAIN maximum49152, VALIDATION maximum16384.",
+  "shared_features": "Reuse parent FKP12 exact tokenless 204-float visible RGB 8x8x3 mean pool + 9 native-action onehot + 3 prior *observed* signed-reward onehot; target actual current signed reward, never revealed before choice.",
+  "candidate": "Reuse parent DirectMemory two-hash 4096x3 int32 fixed 49152-byte numeric weights. Fit from all actual TRAIN only, then DIRECT_ONLINE increments two selected class counts after each true OWN source step and persists across all 24 original DEV worlds. No gradients, no capacity growth, fail closed on overflow, tamper and cold restore each world.",
+  "trained_controls": "Reuse FKP12 64-hidden GRU, 64x64 MLP fully fit 24 Adam epochs EACH of seeds1212 and3434 on FKP13 TRAIN; select best only on disjoint FKP13 VALIDATION Brier. COUNT_ONLINE uses equal-data conventional one-hash 4096x3 online counts. GRU_ONLINE starts from same best fully fit GRU; every 16 own public steps takes 1 Adam lr.001 weight_decay.0001 update from up to last64 own actual (obs,action,reward) transitions; hidden reset only after update or new world, weights persist. All online arms see own outcomes; no matching same DEV actions claim. Report extra GRU compute.",
+  "arms": [
+    "DIRECT_ONLINE",
+    "COUNT_ONLINE",
+    "GRU_ONLINE",
+    "DIRECT_FROZEN",
+    "GRU_FROZEN",
+    "MLP_FROZEN",
+    "RANDOM",
+    "MACRO8",
+    "SHUFFLED_FROZEN"
+  ],
+  "action_rule": "For every learned arm score all nine legal actions by 0.1*P(current positive reward)-0.05*P(current negative reward), argmax with uniform deterministic tie break; epsilon0.2 legal uniform exploratory action per step, fixed RNG per (arm,world). GRU maintains selected action recurrent hidden; never use hidden source truth. RANDOM and MACRO8 are source-blind. SHUFFLED_FROZEN same numeric candidate pretrain with TRAIN rewards shuffled by seed1212, frozen.",
+  "evaluation": "Freeze prereg first, source/controller/tests and G29 atlas exact-SHA; full inherited regression and focused tests Linux+Windows PASS before original DEV. Fit all controls on TRAIN/VAL and seal model state and selected checkpoint BEFORE DEV reset. In fixed seed order 24 worlds x nine arms, reset each arm independently with same initial world seed and max512, collect actual on-policy actions/rewards (different arm histories allowed), report real return, positive path progress, negative falloffs, public reward>=1 goal, episode length, source receipt, whole-process wall/CPU. No owner private/transfer source. Windows consumed source replay only, not independent first-use.",
+  "retention": "DIRECT_ONLINE/COUNT_ONLINE/GRU_ONLINE carry learned weights across worlds, fixed capacity. At each world, verify direct cold restore exact, tamper fail closed, and FKP13 previously observed VALIDATION probe Brier not worsened by >0.01 relative to frozen pre-DEV. No changes after original DEV outcomes.",
+  "budget": {
+    "train_actions_max": 49152,
+    "validation_actions_max": 16384,
+    "dev_actions_max": 110592,
+    "total_real_actions_max": 176128,
+    "dev_worlds": 24,
+    "arms": 9,
+    "per_episode_max": 512
+  },
+  "success": "DEV_ACTION_SIGNAL only if DIRECT_ONLINE mean source-native episode return ≥ strongest conventional/online/frozen/random comparator +0.10 per world, 10k bootstrap world-paired 95% lower CI >0, >=1 real goal reward event, no >1 goal deficit vs strongest control, >=1.25x strongest positive-progress events, bit-exact cold, validation Brier retention within .01, full cross-platform source qualification. Public DEV != independent SCIENTIFIC_PASS; owner-protected and unfamiliar-family transfer, matched compute/science authority remain separate.",
+  "classification_rules": {
+    "supported": "DEV_ACTION_SIGNAL_ONLY with all criteria; no SCIENTIFIC_PASS",
+    "mixed": "DEV_MIXED if direct helps relative to weak control but misses strongest, goal or retention criterion",
+    "negative": "DEV_NO_GO if strong controls tie/win, signal absent or forgetting",
+    "invalid": "no two-OS preflight, source hidden info, incomplete trained GRU, altered source or prereg, DEV used for tuning, protected/transfer opened"
+  },
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "protected_firstuse": false,
+    "scheduler_or_queue_authority": false,
+    "promotion_authority": false
+  }
+}

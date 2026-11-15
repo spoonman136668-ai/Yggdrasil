@@ -1,0 +1,127 @@
+{
+  "schema": "yggdrasil.fkp13.frozen-real-closed-loop-public-dev-outcome.v1",
+  "experiment_id": "FKP-13",
+  "project": "Yggdrasil",
+  "evaluated_utc_date": "2026-11-15",
+  "evidence": {
+    "workflow_run_id": 43740969167,
+    "workflow_run_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43740969167",
+    "run_attempt": 1,
+    "run_conclusion": "success",
+    "original_dev_job": 132894448125,
+    "windows_consumed_replay_job": 132895438748,
+    "prereg_first_sha": "48b977cd3263f749bebdcc109d629d97e571a272",
+    "frozen_implementation_sha": "9ccd18883eb956de4dd0e1ded8b3b116cd349183",
+    "qualified_generated_atlas_child_sha": "b99aab33d54c719c2ab07169ed9fa2b2b1f9ebb8",
+    "accepted_native_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "source_upstream_git": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "source_public_reward_configuration": "reward_fall_off=-0.05, max_steps=512; NOT original benchmark default",
+    "original_full_json_file": "not uploaded by original runner; summary output and receipts retained verbatim in job logs"
+  },
+  "first_use": {
+    "train_worlds": 48,
+    "validation_worlds": 16,
+    "original_dev_worlds": 24,
+    "arm_count": 9,
+    "source_actions": {
+      "train": 48808,
+      "validation": 16184,
+      "development": 110310,
+      "total": 175302
+    },
+    "max_source_budget": 176128,
+    "original_public_dev_consumed": true,
+    "protected_science_opened": false,
+    "reserved_transfer_opened": false,
+    "source_receipts_sha256": {
+      "train": "1906f3f02e5c37614871e168ca277a48b7dae2a2904f3d2d1aab98406625fb89",
+      "validation": "fe749679f2961abf1cb0bd9d1542c1d03b14078c4c325b2361235f0c087e06ba",
+      "all_arms_dev": "de5544a1891a5595f47ef2accdd7a86f0b5d9422e3eb6d2ce12631247cab2328",
+      "source_blind_dev": "a95d9351a96b15f9587be34162edac7314ccc2d0aafd2854fa1c8582bd819d0d"
+    }
+  },
+  "model": {
+    "direct_weight_matrix": "4096x3 int32, 49152 raw learned bytes; persistent across development worlds",
+    "pre_dev_full_fit_and_model_selection_sha256": "d252fc767c955a61be611471788b5710e426bb7ac9a94e39b18d0a0090d7d883",
+    "direct_cold_final_snapshot_sha256": "6c4ecf24680526a28911d0f34fb2ab6db4e522da1a78c144b04d0c1d4a06ef30",
+    "consumed_source_replay_direct_initial_snapshot_sha256": "d560212f71562103e88d0c882172435674cbd04de8667580de1a61bf465cf84a",
+    "retention_gate_pass": true,
+    "gru_online_updates": 768,
+    "fully_trained_conventional": "Parent FKP12 64-hidden GRU and 64x64 MLP, 24 epochs EACH of 2 fixed initializations 1212,3434; validation-only model selection. Separate GRU_ONLINE actual source updates.",
+    "mean_episode_return_per_arm": {
+      "SHUFFLED_FROZEN": -0.15416666666666667,
+      "DIRECT_ONLINE": -0.15625000000000003,
+      "GRU_FROZEN": -0.1625,
+      "MLP_FROZEN": -0.16874999999999998,
+      "DIRECT_FROZEN": -0.19166666666666665,
+      "COUNT_ONLINE": -0.20833333333333334,
+      "GRU_ONLINE": -0.23541666666666664,
+      "RANDOM": -1.40625,
+      "MACRO8": -2.841666666666667
+    },
+    "positive_progress_events_per_arm": {
+      "COUNT_ONLINE": 36,
+      "DIRECT_FROZEN": 36,
+      "DIRECT_ONLINE": 41,
+      "GRU_FROZEN": 36,
+      "GRU_ONLINE": 45,
+      "MACRO8": 81,
+      "MLP_FROZEN": 40,
+      "RANDOM": 50,
+      "SHUFFLED_FROZEN": 44
+    },
+    "goal_events_per_arm": {
+      "COUNT_ONLINE": 0,
+      "DIRECT_FROZEN": 0,
+      "DIRECT_ONLINE": 0,
+      "GRU_FROZEN": 0,
+      "GRU_ONLINE": 0,
+      "MACRO8": 1,
+      "MLP_FROZEN": 0,
+      "RANDOM": 0,
+      "SHUFFLED_FROZEN": 0
+    },
+    "strongest_return_control": "SHUFFLED_FROZEN",
+    "mean_direct_gain_over_best_return_control": -0.0020833333333333537,
+    "gain_bootstrap_world_cluster_95ci": [
+      -0.09791666666666668,
+      0.060416666666666674
+    ],
+    "prespecified_direct_required_gain": 0.1,
+    "prespecified_progress_requirement": ">=1.25x strongest positive-progress event total",
+    "prespecified_goal_requirement": ">=1 actual goal event and no >1 deficit",
+    "preregistered_dev_action_signal": false,
+    "classification": "DEV_MIXED_BEATS_WEAK_NOT_STRONG",
+    "scientific_pass": false,
+    "whole_process_compute_matched": false,
+    "timings_seconds": {
+      "all_wall": 177.542401036,
+      "all_cpu": 256.18382025,
+      "development_controllers_wall": 98.39978898199999,
+      "model_training_wall": 36.233159172000015
+    }
+  },
+  "engineering": {
+    "atlas_source_custody": "PASS",
+    "focused_tests": "7/7 both ubuntu-24.04 windows-2022 before first-use",
+    "code_atlas_g29": "4/4 both ubuntu-24.04 windows-2022",
+    "mandatory_root_regression": "54/54 both platforms before original DEV, 54/54 original Linux after DEV, 54/54 final Windows after consumed-source replay",
+    "windows_consumed_source_replay": "PASS train/validation/source-blind development SHA256 match, no second first-use; nine learned on-policy development trajectories not replayed on Windows",
+    "workflow_all_jobs": "5/5 completed success",
+    "qualified_accepted_native_main": false
+  },
+  "interpretation": [
+    "Direct numeric memory is demonstrably updated and cold-retained on real public action consequences; no causal mechanism advantage established.",
+    "Direct learner did not beat source training-label shuffled negative control on mean return and failed bootstrap, +0.10 return, positive progress and goal constraints.",
+    "Macro8 obtained one goal while suffering worse overall negative return; the direct model obtained zero goals.",
+    "Action policies generate distinct on-policy histories; do not claim data equality during DEV; all have the same pre-DEV supervised data and legal action budget.",
+    "Original model's actual performance was not independently reproduced by Windows (only source-blind replay and root regression).",
+    "No native model promotion, no scientifically validated unfamiliar-family transfer or whole-process matched-compute advantage. Do not tune consumed DEV."
+  ],
+  "authority": {
+    "research_only": true,
+    "no_native_main_change": true,
+    "no_owner_protected_first_use": true,
+    "no_merge_or_promotion_authority": true
+  }
+}
