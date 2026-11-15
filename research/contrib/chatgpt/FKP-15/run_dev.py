@@ -93,7 +93,7 @@ def dev_once(models):
     actual_actions=0
     for seed in source.DEV:
         for anchor in source.ANCHORS:
-            ref=source.real_prefix(seed,anchor)
+            ref=source.real_prefix(seed,anchor,allow_dev=True)
             actual_actions+=ref["source_steps"]
             if not ref["valid"]:
                 observations.append({"seed":seed,"anchor":anchor,"valid":False,
