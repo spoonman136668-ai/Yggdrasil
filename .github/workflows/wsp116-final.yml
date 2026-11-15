@@ -1,0 +1,150 @@
+name: WSP116 freeze positive real-graph diagnostic, final both OS source regression
+on:
+  push:
+    branches: [ci/wsp116-final-evidence-atlas-20261115]
+    paths: [.github/workflows/wsp116-final.yml]
+permissions:
+  contents: write
+concurrency:
+  group: wsp116-final-evidence-archive-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  source-atlas-evidence-only:
+    if: >-
+      github.event.head_commit.message == 'ci(WSP-116): freeze positive consumed source diagnostic and exact G29' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    outputs:
+      qualified: ${{ steps.publish.outputs.qualified }}
+    env:
+      SOURCE: a01fccbe9ac185692a94d4454931e82919f8edb1
+      TREE: 04c8a8293cb4695c6a0b49e82c777ee3add7836e
+      TARGET: research/wsp116-realgraph-foundation-density-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Byte-stable Git source
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a01fccbe9ac185692a94d4454931e82919f8edb1
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify original prereg and model unchanged after consumed diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor ef975c65e87af6393beaa4ae9cae12947d6b171b HEAD
+          git merge-base --is-ancestor c70c9bd12d79a44956dddb81674ebf471d3c3c3b HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/prereg.json)" = 09893da4d6e6a9b20c57275406b837024e85f58e
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/tiered.py)" = 234b80a8d58a449c10f73ef1d4501a5791b8627a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/test_wsp116.py)" = 84a58667c8a55b31353dae89a71b0d9436e77993
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSP-116/result.json)" = 681e924e813f17ddc13ad1261a614af5ec720f67
+          python - <<'PY'
+          import json
+          p="research/contrib/chatgpt/WSP-116/result.json"
+          d=json.load(open(p,encoding="utf-8"))
+          assert d["diagnostic"]["classification"]=="NONINDEPENDENT_SOURCE_DOSE_RESPONSE_DIAGNOSTIC_PASS"
+          assert d["original_evidence"]["run_id"]==43763499255
+          assert d["diagnostic"]["full_vs_quarter_additional_correct_top1"]==209
+          assert [t["facts"] for t in d["tiered_results"]]==[1292824,5172021,20677636]
+          assert d["classification"]["independent_scientific_pass"]==False
+          assert d["classification"]["native_yggdrasil_modified"]==False
+          assert d["source"]["masked_query_labels_already_consumed"]==True
+          print("WSP116_ORIGINAL_CONSUMED_DIAGNOSTIC_FROZEN=PASS")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Generate only G29 derived artifacts for added result.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/changed"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/changed"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+      - name: Publish final archive child with NO original data and NO model edits
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(WSP-116): index frozen historical graph diagnostic"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "qualified=$NEW" >> "$GITHUB_OUTPUT"
+          echo "WSP116_FINAL_ARCHIVE_QUALIFIED_SHA=$NEW"
+
+  exact-candidate-full-both-platform-regressions:
+    needs: source-atlas-evidence-only
+    if: needs.source-atlas-evidence-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Byte-stable checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-atlas-evidence-only.outputs.qualified }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Only pinned dependency for source-safe numeric fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "numpy==1.26.4"
+      - name: G29, frozen diagnostic, full inherited source-family fixtures and root regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-116 -p test_wsp116.py -v
+          for part in WSP-102 WSP-103 WSP-104 WSP-105; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$part" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python - <<'PY'
+          import json
+          d=json.load(open("research/contrib/chatgpt/WSP-116/result.json",encoding="utf-8"))
+          assert d["original_evidence"]["run_id"]==43763499255
+          assert d["tiered_results"][-1]["path_first"]["hits1"]==1190
+          assert d["tiered_results"][1]["path_first"]["hits1"]==981
+          assert d["diagnostic"]["full_vs_quarter_additional_correct_top1"]==209
+          assert d["diagnostic"]["numerical_symbolic_tie"]
+          assert not d["classification"]["independent_scientific_pass"]
+          assert not d["classification"]["native_yggdrasil_modified"]
+          print("WSP116_FROZEN_SOURCE_POSITIVE_DIAGNOSTIC_NOT_SCIENCE=PASS")
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo WSP116_FINAL_FULL_BOTH_OS_REGRESSION=PASS
