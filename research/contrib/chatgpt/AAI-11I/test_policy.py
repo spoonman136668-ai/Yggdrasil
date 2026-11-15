@@ -13,6 +13,8 @@ for name in ("AAI-11P","AAI-11A","AAI-11D"):
 sys.path.insert(0,str(HERE))
 import world,controls
 import calibration,learner
+# Original calibration adjusts sys.path: make current evaluator unambiguous.
+sys.path.insert(0,str(HERE))
 import policy,dev
 
 
@@ -108,6 +110,8 @@ class OriginalCausalFeedbackGate(unittest.TestCase):
         self.assertEqual(actor.rows,policy.restore(snap).rows)
 
     def test_public_train_matches_original_posterior_and_strongest_conventional(self):
+        self.assertEqual(Path(dev.__file__).resolve().parent,HERE)
+        self.assertEqual(dev.CANDIDATE,policy.ARM)
         original,events,timing=dev.train("mechanical:alpha")
         self.assertEqual(len(events),64)
         self.assertEqual(set(original),set(dev.ARMS))
