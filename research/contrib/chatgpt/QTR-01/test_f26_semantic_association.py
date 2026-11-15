@@ -110,6 +110,32 @@ class F26(unittest.TestCase):
         self.assertEqual(hashlib.sha256(x.blob).hexdigest(),
                          dryrun(rows)["numeric_snapshot_sha256"])
 
+    def test_seed_source_request_includes_revision_info_without_network(self):
+        import json
+        from f26_semantic_association import CustodyHTTP
+        class Response:
+            status = 200
+            headers = {}
+            def __init__(self, raw): self.raw = raw
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self, count): return self.raw[:count]
+        class StubOpener:
+            def open(self, request, timeout):
+                self.last_url = request.full_url
+                assert timeout == 18
+                return Response(json.dumps({"entities": {
+                    "Q42": entity("Q42", "Douglas Adams")
+                }}).encode())
+        http = CustodyHTTP()
+        http.opener = StubOpener()
+        got = http.get(("Q42",), "info|claims|labels")
+        self.assertEqual(got["Q42"]["lastrevid"], 12345)
+        self.assertIn("props=info%7Cclaims%7Clabels", http.opener.last_url)
+        self.assertEqual(len(http.receipts), 1)
+        with self.assertRaises(NotAdmitted):
+            http.get(("Q42",), "claims|labels")
+
     def test_source_json_endpoint_and_api_shape_negative(self):
         obj = {"entities": {"Q42": entity("Q42", "Douglas Adams")}}
         import json

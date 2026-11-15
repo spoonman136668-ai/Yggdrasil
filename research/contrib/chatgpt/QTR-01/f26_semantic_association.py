@@ -315,7 +315,7 @@ class CustodyHTTP:
 
     def get(self, ids, props):
         if (type(ids) not in (tuple, list) or not ids or len(ids) > 20 or
-            type(props) is not str or props not in ("claims|labels", "labels") or
+            type(props) is not str or props not in ("info|claims|labels", "labels") or
             any(not isinstance(x, str) or not (ITEM_RE.fullmatch(x) or PROP_RE.fullmatch(x)) for x in ids)):
             raise NotAdmitted("UNFROZEN_REQUEST")
         parameters = {
@@ -352,7 +352,7 @@ def capture():
     transfer = CustodyHTTP()
     seed_entities = {}
     for batch in batched(SOURCE_ITEMS, 2):
-        seed_entities.update(transfer.get(batch, "claims|labels"))
+        seed_entities.update(transfer.get(batch, "info|claims|labels"))
     rows, inventory = extract_seed_edges(seed_entities)
     endpoint_ids = sorted(
         {r["o"] for r in rows if r["o"] not in SOURCE_ITEMS},
