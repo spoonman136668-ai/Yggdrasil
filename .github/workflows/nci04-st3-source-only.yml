@@ -39,7 +39,7 @@ jobs:
           git merge-base --is-ancestor 63133626dbd914c2d525dbd7358c87fdcfcabdc7 HEAD
           git merge-base --is-ancestor def4e3a9d803c80631c00b7e138a5c54cda349e9 HEAD
           test "$(git rev-parse HEAD:research/nci04_st3/frozen_protocol.json)" = ce51862f6b5af6a130b6ad93c30f019131bfeb16
-          python - <<'PY'
+          python -B - <<'PY'
           from research.nci04_st3.source_audit import verify_prereg
           p=verify_prereg()
           assert p['source']['no_protected_first_use'] is True
