@@ -43,7 +43,11 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE"
           test "$(git rev-parse HEAD^{tree})" = "$TREE"
           git fetch origin "refs/heads/$TARGET"
-          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          test "$(git rev-parse FETCH_HEAD)" = "b268c7eff94d31eb9b09af315bc3494ee88a3ab7"
+          test "$(git rev-parse FETCH_HEAD^)" = "$SOURCE"
+          git diff --name-only "$SOURCE" FETCH_HEAD | LC_ALL=C sort > "$RUNNER_TEMP/atlas-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/atlas-expected"
+          diff -u "$RUNNER_TEMP/atlas-expected" "$RUNNER_TEMP/atlas-actual"
           git merge-base --is-ancestor 051209736a7786698205d86c94cd997e24cdac82 "$SOURCE"
           git merge-base --is-ancestor 5d99679baaf5ea57b615ff07ec691159585ed02a "$SOURCE"
           git merge-base --is-ancestor 480b452cf0b6d698b86b8004d7416beab290b471 "$SOURCE"
@@ -65,30 +69,25 @@ jobs:
           print("FKP16_FROZEN_SOURCE_AND_PRE_REGISTRATION=PASS")
           PY
           test -z "$(git status --porcelain --untracked-files=all)"
-      - name: Generate only approved G29 derived source atlas
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
-          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
-          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
-          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
-          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
-          test "$(git diff --cached --name-only | wc -l)" -eq 3
-      - name: Publish exactly three generated index artifacts, no science mutation
+      - name: Reuse already-qualified generated-only G29 atlas, no duplicate child commit
         id: seal
         shell: bash
         run: |
           set -euo pipefail
-          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-16): source-locked G29 atlas"
-          NEXT="$(git rev-parse HEAD)"
-          test "$(git rev-parse HEAD^)" = "$SOURCE"
-          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/indexed-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/indexed-expected"
+          diff -u "$RUNNER_TEMP/indexed-expected" "$RUNNER_TEMP/indexed-actual"
+          git diff --quiet FETCH_HEAD -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json || {
+            echo FKP16_REGENERATED_ATLAS_MISMATCH
+            exit 1
+          }
+          git reset --hard FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "b268c7eff94d31eb9b09af315bc3494ee88a3ab7"
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain --untracked-files=all)"
-          git push origin "HEAD:refs/heads/$TARGET"
-          echo "candidate=$NEXT" >> "$GITHUB_OUTPUT"
-          echo "FKP16_FROZEN_SOURCE_CANDIDATE=$NEXT"
+          echo "candidate=b268c7eff94d31eb9b09af315bc3494ee88a3ab7" >> "$GITHUB_OUTPUT"
+          echo "FKP16_REUSED_EXACT_G29_CANDIDATE=b268c7eff94d31eb9b09af315bc3494ee88a3ab7"
 
   before-first-use-two-os:
     needs: source-atlas-only
