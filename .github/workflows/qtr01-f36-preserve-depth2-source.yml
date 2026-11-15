@@ -1,0 +1,84 @@
+name: QTR-01 F36 seal already-qualified depth-two CC0 knowledge source
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  preserve-f35-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F36 seal existing F35 source without new source calls'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Immutable F35 original-source receipt and isolated empty trigger
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f36_prereg.json)" = "fc1c8d8af8c072c4790d8ca10cbbd8f2be6719fd"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f35_pinned_depth2.py)" = "c55911a1784d4b54a18c8b4c7b1dec7acf49baa9"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = "453dad0363689cff785c26db5441555c6841f95d"
+          test "$(git log -1 --format=%s)" = "ci(qtr): F36 seal existing F35 source without new source calls"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+          test ! -f research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json
+          echo F36_ARCHIVE_SOURCE_CUSTODY=PASS
+      - name: Retrieve prior original source artifact from GitHub only, never query Wikidata
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f36-existing-f35-source"
+          gh run download 43666369249 --repo spoonman136668-ai/Yggdrasil --name qtr01-f35-original-revision-depth2-source --dir "$RUNNER_TEMP/f36-existing-f35-source"
+          SOURCE="$RUNNER_TEMP/f36-existing-f35-source/qtr01-f35-original-depth2-source.json"
+          test -s "$SOURCE"
+          printf '%s  %s\n' cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954 "$SOURCE" | sha256sum --check
+          F36_SOURCE="$SOURCE" python - <<'PY'
+          import hashlib,json,os,pathlib
+          raw=pathlib.Path(os.environ["F36_SOURCE"]).read_bytes()
+          o=json.loads(raw); p=o["composition"]
+          assert len(raw)==15115
+          assert o["schema"]=="yggdrasil.qtr01.f35.pinned-witnessed-depth2-source-dev.v1"
+          assert o["original_source_snapshot_sha256"]=="e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb"
+          assert o["preregistration_commit"]=="e89403f04c6780ae716dd167f9ea83049fc969a2"
+          assert o["source_subjects_fully_pinned"] and o["original_snapshot_rows_unchanged"]
+          assert len(o["read_only_first_party_receipts"])==19
+          assert p["total_witnessed_triples"]==33
+          assert p["new_witnessed_triples"]==20
+          assert p["real_twohop_queries"]==4 and p["real_twohop_paths"]==20
+          assert p["matched_exact_source_symbolic_parity"]
+          assert p["canonical_numeric_cold_restore"]
+          assert o["scientific_pass"] is False and o["no_native_model_edits"] is True
+          assert hashlib.sha256(raw).hexdigest()=="cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954"
+          print("F36_EXISTING_VERIFIED_SOURCE_ONLY=PASS")
+          PY
+      - name: Commit only exact previous CC0 depth-two source to existing QTR draft
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$RUNNER_TEMP/f36-existing-f35-source/qtr01-f35-original-depth2-source.json"
+          DEST=research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json
+          cp "$SOURCE" "$DEST"
+          printf '%s  %s\n' cf5ffeab63384a61e66e30930f16ce3af07df81cb28472b0142f7a5c6b673954 "$DEST" | sha256sum --check
+          git add -- "$DEST"
+          test "$(git diff --cached --name-only)" = "$DEST"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(qtr): preserve exact F35 original-source two-hop CC0 receipt"
+          FINAL="$(git rev-parse HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r "$FINAL")" = "$DEST"
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo "F36_VERIFIED_SOURCE_COMMIT=$FINAL"
+          echo F36_CC0_DEPTH2_DRAFT_SOURCE_PERSISTED=PASS
