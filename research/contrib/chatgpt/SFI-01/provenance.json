@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.external-research-provenance.v1",
+  "experiment_id": "SFI-01-DELAYED-CONTEXT-SWITCHED-GOAL-SOURCE",
+  "source_repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/sfi01-delayed-law-goal-source-20261115",
+  "first_protocol_commit": "bc9bbc52b6ced163d74c431fe1c817a612390014",
+  "source_test_pre_result_commit": "1eda8fd47908ac22aa30ebf1c15b4af6e0f2b630",
+  "result_commit": "28fc8f08e94bd09ffe23ef147a2f7406dd94e821",
+  "source_file": {
+    "path": "research/contrib/chatgpt/SFI-01/source_audit.py",
+    "github_git_blob_sha": "643abf8af9047ef888a0d9952f71df2d2b18dcdb",
+    "local_git_hash_object": "643abf8af9047ef888a0d9952f71df2d2b18dcdb",
+    "local_sha256": "7182f41ae6fd105ce43fdbf1d3ac38a5831db50bcd97f4412fdd754af1e56c2c"
+  },
+  "test_file": {
+    "path": "research/contrib/chatgpt/SFI-01/test_source_audit.py",
+    "github_git_blob_sha": "e37a0cfc6e915f3503e7821565941afaba067790",
+    "local_git_hash_object": "e37a0cfc6e915f3503e7821565941afaba067790",
+    "local_sha256": "4873c0000f3e42c4a0dfc6a09983c902363daa396434ea4f678f528c8f750446"
+  },
+  "public_per_world_sha256": "97789288c68abe0be214411befd8c7c3bf3b5f02a09c8d828ac986c624ff7226",
+  "environment": {
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "cores": 5,
+    "host": "unprivileged assistant local sandbox",
+    "paid_apis_used": false
+  },
+  "commands": [
+    "cd research/contrib/chatgpt/SFI-01",
+    "python -m unittest discover -s . -p 'test_source_audit.py' -v",
+    "python -m compileall -q source_audit.py test_source_audit.py",
+    "python source_audit.py"
+  ],
+  "verification": {
+    "focused_unittest": "PASS 8/8",
+    "py_compile": "PASS",
+    "git_blob_equality": "PASS BOTH FILES",
+    "source_run_classification": "SOURCE_FEASIBLE",
+    "cross_platform_full_regression": "NOT RUN / UNVERIFIED",
+    "native_acceptance": "NOT RUN"
+  },
+  "source_custody": {
+    "synthetic_worlds": 32,
+    "public_action_tape_steps": 24,
+    "individually_scored_actual_steps": 16,
+    "source_owner_permitted_hypothesis_replay": "32 operator/shift hypotheses, only in source audit",
+    "protected_first_use_involved": false,
+    "fkp17_protected_worlds": "NOT OPENED",
+    "fkp16_consumed_cohorts": "NOT OPENED",
+    "original_acceptance_branch": "main@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "receipt_notes": "Elapsed time is host measurement, not matched process-cost proof. The raw all-entries digest excludes variable timing. No post-outcome protocol/method edits. Results do not establish scientific learner superiority."
+}
