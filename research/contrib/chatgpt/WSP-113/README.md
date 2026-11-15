@@ -36,3 +36,7 @@ Fixture-only command (uses no original hidden oracle):
 ## One-shot generated-source qualification
 
 The branch-scoped GitHub CI source-pin job is armed only by this exact commit message. It may update only the three mandatory G29-generated atlas artifacts after both platform fixtures pass; the scientific generator and learner files stay unchanged. The resulting generated-only companion commit then activates mandatory complete dual-platform regression, without running the original heldout experiment.
+
+## Original DEV first-use fence
+
+After the one-shot generated G29 commit, CI must pass the **entire** inherited and root regression on Linux and Windows and a separate two-platform independent G29 atlas job at the exact candidate HEAD. Only then, and only on the original non-rerun attempt, does the single new original synthetic 128-world transfer evaluation run. The original WSP112 heldout cohort is never accessed. This experiment never merges, deploys or declares SCIENTIFIC_PASS on its own.
