@@ -78,7 +78,13 @@ class ST4NativeDevelopmentFixtures(unittest.TestCase):
         a=artificial_arm(m,2,170)
         b=artificial_arm(m,3,0)
         self.assertNotEqual(a,b)
-        self.assertLess(brier(a,bits(170)),brier(b,bits(170)))
+        x1=after(bits(75),1)
+        treatment_after=after(x1,1,170)
+        actual_treatment_change=tuple(u^v for u,v in zip(x1,treatment_after))
+        self.assertLess(
+            brier(a,actual_treatment_change),
+            brier(b,actual_treatment_change)
+        )
         self.assertGreater(m.updates,0)
 
     def test_delay_credit_ablation_and_fixed_sham_do_not_gain_free_memory(self):
