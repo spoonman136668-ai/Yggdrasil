@@ -6,12 +6,14 @@ To run only after source-safe focus/G29/full regression on this exact candidate.
 """
 from __future__ import annotations
 
-import hashlib
+import os
+import tempfile
 import json
 from pathlib import Path
 import time
 
 import public_policies
+import portable_recurrent
 import recurrent_control
 import source_fixture
 
@@ -54,6 +56,23 @@ def run_public_foundation_training():
     learner.begin_world()
     if learner.state_receipt() != snapshot:
         raise AssertionError("FKP17_RECURRENT_COLD_RESET_NOT_EXACT")
+    # Persistent file is intentionally a public foundation-only artifact;
+    # it is never added to the accepted/native repository history.
+    checkpoint_file = Path(os.environ.get(
+        "FKP17_CHECKPOINT_PATH",
+        str(Path(tempfile.gettempdir()) / "fkp17-public-gru-f32.json")))
+    snapshot_info = portable_recurrent.export_public_gru(learner, checkpoint_file)
+    replay = portable_recurrent.restore_public_gru(
+        checkpoint_file, reference.foundation_sha256)
+    if replay.state_receipt() != snapshot or (
+            not recurrent_control.assert_science_ready(
+                replay, reference.foundation_sha256)):
+        raise AssertionError("FKP17_RECURRENT_PORTABLE_REPLAY_MISMATCH")
+    for public_state in ((0,) * 8, tuple(range(8)), (15,) * 8):
+        if replay.choose_public(public_state) != learner.choose_public(public_state):
+            raise AssertionError("FKP17_RECURRENT_PORTABLE_PUBLIC_ACTION_MISMATCH")
+    if not checkpoint_file.exists() or checkpoint_file.stat().st_size > 512000:
+        raise AssertionError("FKP17_RECURRENT_PORTABLE_CHECKPOINT_SIZE")
     receipt = learner.training_receipt
     output = {
         "schema": "fkp17.public-recurrent-foundation-only.v1",
@@ -71,6 +90,10 @@ def run_public_foundation_training():
         "fit_wall_seconds": receipt["wall_seconds"],
         "total_wall_seconds": time.perf_counter() - t0,
         "cold_public_context_reset": "PASS",
+        "portable_cold_replay": "PASS",
+        "checkpoint_sha256": snapshot_info["checkpoint_sha256"],
+        "checkpoint_bytes": snapshot_info["checkpoint_bytes"],
+        "checkpoint_cold_state_sha256": snapshot_info["cold_state_sha256"],
         "original_dev_opened": False,
         "reserved_transfer_opened": False,
         "scientific_pass": False,
