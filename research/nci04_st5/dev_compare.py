@@ -289,6 +289,12 @@ def original_recall(models,seed=100,*,record_state=False):
                            cold_check=(trial==0))
         result.append(rec)
     for n in NAMES:
+        # Erasure is an explicit negative: reset_episode wipes its OWN
+        # bank even when train=False. That is not outcome fitting.
+        if n=="erase":
+            if any(b is not None for b in models[n].banks):
+                raise ValueError("ST5_COLD_ERASURE_NEGATIVE_STORED_LAW")
+            continue
         if frozen[n]!=model_counters(models[n]):
             raise ValueError("ST5_COLD_RECALL_RETRAINED_ORIGINAL_"+n)
     scores=aggregate(result)
