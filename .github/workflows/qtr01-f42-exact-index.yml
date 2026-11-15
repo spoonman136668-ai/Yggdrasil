@@ -9,7 +9,7 @@ jobs:
   focused:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F42 focused exact-index qualification'
+      github.event.head_commit.message == 'ci(qtr): F42 focused exact-index qualification repair'
     name: F42 exact reversible knowledge DEV (${{ matrix.os }})
     strategy:
       fail-fast: false
@@ -38,12 +38,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = 'c3581987ef4cfb97f7de41f8aa2eb74c00414e15'
-          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 focused exact-index qualification'
+          test "$(git rev-parse HEAD^)" = '8bfc333869903c61d19f691c5bd9d06ccbc1efc8'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 focused exact-index qualification repair'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f42-exact-index.yml'
           git merge-base --is-ancestor cc86a81d42e3f1c4537c3cb28dc9ba24bf8fdf46 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_prereg.json)" = 'b9350c4278404a6f7f6a203d861a7132791313c5'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = 'd432f145a4ddfdc236b02822d64aa339c1a0e2ea'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = '997d2d13c4725d5b33d993d252aac7108304b529'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f42_exact_index_dev.py)" = '43e7f0cca2cfb87fb32cbc981968159869a4ae8f'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = '4f740d5f573364fb83bc5c3d565845c23494b6ca'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
@@ -65,7 +65,7 @@ jobs:
     needs: focused
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F42 focused exact-index qualification'
+      github.event.head_commit.message == 'ci(qtr): F42 focused exact-index qualification repair'
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     permissions:
@@ -82,10 +82,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = 'c3581987ef4cfb97f7de41f8aa2eb74c00414e15'
-          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 focused exact-index qualification'
+          test "$(git rev-parse HEAD^)" = '8bfc333869903c61d19f691c5bd9d06ccbc1efc8'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 focused exact-index qualification repair'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_prereg.json)" = 'b9350c4278404a6f7f6a203d861a7132791313c5'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = 'd432f145a4ddfdc236b02822d64aa339c1a0e2ea'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = '997d2d13c4725d5b33d993d252aac7108304b529'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f42_exact_index_dev.py)" = '43e7f0cca2cfb87fb32cbc981968159869a4ae8f'
           test -z "$(git status --porcelain)"
           echo F42_ATLAS_SOURCE_PIN=PASS
@@ -147,7 +147,7 @@ jobs:
           test -z "$(git diff --name-only HEAD^ HEAD)"
           git merge-base --is-ancestor cc86a81d42e3f1c4537c3cb28dc9ba24bf8fdf46 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_prereg.json)" = 'b9350c4278404a6f7f6a203d861a7132791313c5'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = 'd432f145a4ddfdc236b02822d64aa339c1a0e2ea'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = '997d2d13c4725d5b33d993d252aac7108304b529'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f42_exact_index_dev.py)" = '43e7f0cca2cfb87fb32cbc981968159869a4ae8f'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
