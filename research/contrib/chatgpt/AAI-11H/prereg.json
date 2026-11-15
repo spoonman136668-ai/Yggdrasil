@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.contrib.aai11h.structural-runlength-posterior.v1",
+  "id": "AAI-11H",
+  "phase": "NEW_MECHANISM_SOURCE_ONLY_PREREG_BEFORE_IMPLEMENTATION",
+  "parent": {
+    "pr": 1070,
+    "head": "2f1a0d8e73465081d24c8d7364883d9836ba69d1",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "G_benchmark_blob": "7fbeaf898d65cded838f74f1963da3b88af9604d",
+    "G_prereg_blob": "260c815900cc7f12aeab9a41a2caa6627482b6e9",
+    "original_world_blob": "88d220e94ccf736e490f20922f1c7f5d3c1d3746",
+    "original_11_control_learner_blob": "331a97b566d41785be06923a7acc63df6105cffd",
+    "original_control_fixture_blob": "191575e68f64858acf036cd1e10c1e266cf16692",
+    "original_posterior_blob": "49f7de063e3577ef8f0b4e42043a24581e6cd09c",
+    "G_source_run": 43657291796,
+    "G_full_final_regression": 43657499380
+  },
+  "research_hypothesis": "An uncertainty-normalized causal run-length posterior over hypothesis grammars can detect an unfamiliar structural-law change without private phase labels, retaining more public observations and exploiting causal invariants better than a fixed eight-observation posterior, while preserving same legal actions and fully matched conventional controls.",
+  "new_native_substrate": false,
+  "native_architecture_prototype": "Independent tokenless 16-public-row causal graph posterior that maintains a mixture over run-lengths 4/8/16, internally computes per-mediator rule posteriors over original 45/45/84 public XOR/AND/OR hypotheses and a joint-marginal downstream causal prediction. No transformer/tokenizer, no native model integration.",
+  "frozen_mechanism": {
+    "arms": [
+      "fixed16_posterior_ablation",
+      "runlength_posterior_candidate"
+    ],
+    "matched_same_storage": "Both arms retain ONLY the most recent 16 public observed x,mediator rows. The candidate updates online from public observations and uses no more information than the fixed16 ablation, original graph_all/graph_recent16 matched baselines, and other fully trained 11 controls.",
+    "full_grammar": "Exactly the original 45/45/84 operator hypotheses, downstream m2 evaluated using actual OBSERVED m0/m1 when computing public row likelihood, and predicted upstream marginals only for unobserved future x.",
+    "likelihood": "Per-row independent mediator correctness .9 and mismatch .1, uniform operator prior within each output, no hidden simulator structure or law label.",
+    "runlength_candidates": [
+      4,
+      8,
+      16
+    ],
+    "truncation": "For each runlength r use the most recent min(r,observations_available) public rows. No unbounded history.",
+    "model_evidence": "For every candidate r, sum three output marginal log-likelihoods; for output o, log( sum_h .9^(n-errors_o(h))*.1^(errors_o(h)) / number_of_hypotheses ), plus n*log(2) per output to compare against an iid 0.5-null reference. Prior P(r)=1/3. Softmax via subtract-max. NEVER tune after data.",
+    "runlength_posterior": "Candidate prediction is runlength-weighted average of each horizon's fully Bayesian posterior predictive P(m0),P(m1),P(m2) using separate operator posteriors; m2 expectation integrates m0,m1 independent Bernoulli marginals, uses original 84 rules and no private formula.",
+    "ablation": "fixed16_posterior uses identical recent16 public rows, fixed length16 and same posterior structural grammar/likelihood; no mixture/adaptive weighting.",
+    "policy": "BOTH arms use original unchanged controls.plan 0..2 actual setbit interventions, same .05 action cost and exact public reward STOP, only own actual observed intervention outcomes update posteriors.",
+    "memory": "Store canonical 16 public (x,m) rows, no raw secrets, hidden law, oracle or derived caches in checkpoint; cold exact restore, no protected A/B slots, no induced first-use learner promotion.",
+    "no_prior_retuning": "AAI-11A/B/D and their failures stay frozen; this is not a coefficient adjustment to their old learner."
+  },
+  "frozen_trial": {
+    "mechanical_fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta",
+      "mechanical:gamma"
+    ],
+    "common_public_training": "Original 16 A +16 B exogenous true single-do trials =64 shared public rows for all models, no source phase labels to learner.",
+    "challenge": "Original C/D/E/F unfamiliar structural laws, 2/4 exogenous true do-action trials =4/8 public rows; each method restored from own exact A/B post-B checkpoint.",
+    "scored_episodes": "12 unchanged original x/goal contexts per law,budget,fixture, independent cold snapshot per episode; 288 real 0–2 do-action consequence episodes per arm; only selected true do-action feedback observed, never unselected outcomes.",
+    "fixed_baselines": "Original fully qualified G 11 conventional controls and original AAI-11D posterior8 (source-only diagnostic) reused without re-running for early stop; original strongest graph_recent8 reward 2.134027778, reachable recovery108/144=.75, unreachable regret .185763889 and familiar A/B 2.210416667; posterior8 mean reward 2.189756944, recovery117/144=.8125.",
+    "preregistered_screen": {
+      "candidate_actual_reward_min": 2.214027778,
+      "candidate_oracle_reachable_recovery_min": 0.8,
+      "candidate_gain_over_same_memory_fixed16_min": 0.03,
+      "candidate_gain_over_original_posterior8_min": 0.03,
+      "candidate_unreachable_regret_max": 0.215763889,
+      "candidate_familiar_AB_return_min": 2.180416667
+    },
+    "screen_logic": "ALL conditions must pass; method effect fixed16 is separate ablation; compare original strongest reward, original best conditional recovery, actual reward and unreachable regret as G. If any FAIL, stop after first source-only mechanical screen, no rerun 11 conventional, no detailed science first-use, no posterior odds/horizon/temperature/hazard editing after observing results.",
+    "if_screen_passes": "Complete source-only full original 11 conventional plus both candidate/ablation and original posterior8, recompute strongest reward and best recovery, A/B return and matched 2x whole process time vs fastest on each OS, negative controls, then only separately authorize science first-use. Do not call a test fixture scientific proof.",
+    "qualification": "Mandatory full final original native repo regression + all AAI-11P/11A/11B/11C/11D/11E/11F/11G and new AAI-11H focused tests on pinned final immutable SHA both Linux/Windows. G29 original three source-pinned atlas files only. Emit deterministic policy/reward traces and snapshot SHA across platforms. Do not run --primary."
+  },
+  "science": {
+    "reserved_DEV": [
+      994000,
+      994015
+    ],
+    "reserved_TRANSFER": [
+      995000,
+      995063
+    ],
+    "reserved_NEGATIVE": [
+      996000,
+      996031
+    ],
+    "used": 0,
+    "first_use_authorized": false,
+    "independent_64world_qualification": false
+  },
+  "authority": {
+    "development_source_only": true,
+    "draft_unmerged": true,
+    "no_native_modification": true,
+    "no_original_model_edit": true,
+    "no_old_failed_cohort_replay": true,
+    "no_firstuse": true,
+    "no_merges_or_main_ref_edits": true,
+    "no_F0RGE_Wingless_Hybrid": true,
+    "no_controller_queue_runner_scheduler": true,
+    "no_paid_api": true,
+    "no_user_Library_artifacts": true
+  },
+  "no_post_result_tuning": true
+}
