@@ -22,8 +22,8 @@ jobs:
     permissions:
       contents: write
     env:
-      SOURCE: 7af7668f97e9e05a1dd74c7425b17346a1cb67e5
-      SOURCE_TREE: db87784b135df3b21ff8b773d4e45c915150b1ff
+      SOURCE: 8d7284b740910db7a4d90318ce40f09aa70ef229
+      SOURCE_TREE: 307162ffdf233ea584ff2226d3d6ebc61be3bb60
       TARGET: research/fkp09-shared-core-rebase-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     outputs:
@@ -36,7 +36,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 7af7668f97e9e05a1dd74c7425b17346a1cb67e5
+          ref: 8d7284b740910db7a4d90318ce40f09aa70ef229
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -56,7 +56,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/source.py)" = 9c971c0b0c8fc433147c76ef79d82f5aa5b89e5c
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/model.py)" = cf9de7a3762de7246935a779d3d6e3ff6fe0638a
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/run_dev.py)" = 9709f3d8c3f2eacc23009b10bf638983fcb64587
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/test_fkp09.py)" = fb4fe64515e6f80cd742780abdc06fda287599d9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/test_fkp09.py)" = e3461d720dd09b1959a06d8e1f546b12590843ea
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-09/README.md)" = 7a574dce239d95319cf7f0582cdade2a7c45a9b9
           echo "FKP09_SOURCE_CUSTODY_PASS"
       - name: Regenerate only exactly three G29 source-index artifacts
