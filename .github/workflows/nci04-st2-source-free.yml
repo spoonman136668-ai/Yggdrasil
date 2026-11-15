@@ -1,0 +1,66 @@
+name: NCI04 ST2 source-free candidate qualification
+on:
+  push:
+    branches:
+      - research/nci04-st2-event-grounded-entities-20261114
+  pull_request:
+    branches:
+      - research/nci04-s2-learned-topology-necessity-20261021
+permissions:
+  contents: read
+jobs:
+  mechanical:
+    name: ST2 source-only Linux/Windows mechanics (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Normalize Windows Git checkout bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Exact isolated source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm pre-code prereg and parent lineage
+        shell: bash
+        run: |
+          git merge-base --is-ancestor 8ce9e435dd2e4e67a8a32b44b6124d2d0abf3e51 HEAD
+          git merge-base --is-ancestor def4e3a9d803c80631c00b7e138a5c54cda349e9 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st2/frozen_protocol.json)" = e7417272ddb9ffb6af183b23ddd78512cde93399
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('research/nci04_st2/frozen_protocol.json').read_text('utf-8'))
+          assert d['schema']=='yggdrasil.nci04.st2.event-grounded-entity-state.dev.v1'
+          assert d['status']=='PREREG_FROZEN_BEFORE_ST2_IMPLEMENTATION_OR_OUTCOME'
+          assert d['boundaries']['first_use'] is False
+          assert d['boundaries']['main_edits'] is False
+          print('ST2_PREREG_FROZEN_PASS')
+          PY
+      - name: Bounded event-grounded memory fixtures, restarts, negatives
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+        run: |
+          python -B -m unittest discover -s tests -p 'test_nci04_st2_event_memory.py' -v
+          python -B -m unittest discover -s tests -p 'test_nci04d2_task.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_cells.py' -v
+          echo ST2_SOURCE_FREE_MECHANICS_PASS
+      - name: No generated or altered source
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
