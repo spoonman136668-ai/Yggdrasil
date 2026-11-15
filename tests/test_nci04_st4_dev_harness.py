@@ -20,7 +20,7 @@ def fake_receipt(law,seed,candidate=.08,control=.18):
     n["erase"]=.2
     return {
         "law_evaluator_only":law,"seed_evaluator_only":seed,
-        "source_real_actions":64,"cold_restarts":len(MODELS),
+        "source_real_actions":64,"cold_restarts":2*len(MODELS),
         "paired_true_opposing_bits":90,
         "paired_candidate_directionally_correct_bits":85,
         "paired_mean_candidate_probability_separation":.6,
@@ -64,7 +64,7 @@ class ST4FrozenDevelopmentHarnessTest(unittest.TestCase):
             3,100,models,"train",True,state_sha=True
         )
         self.assertEqual(report["source_real_actions"],64)
-        self.assertEqual(report["cold_restarts"],len(MODELS))
+        self.assertEqual(report["cold_restarts"],2*len(MODELS))
         self.assertEqual(len(report["original_pair_sha256"]),16)
         self.assertEqual(len(report["candidate_per_actual_action_state_hash"]),64)
         self.assertTrue(report["model_received_private_source_fields"] is False)
