@@ -1,0 +1,183 @@
+{
+  "schema": "fkp17.original-source-128step-headroom-evidence.v1",
+  "experiment_id": "FKP-17-128STEP-TEMPORAL-PLAN-HEADROOM",
+  "research_classification": "DEV_NO_GO_LONG_HORIZON_GOAL_SUFFICIENCY",
+  "engineering_status": "PASS_EXACT_SOURCE_DUAL_OS_G29_FOCUSED_AND_COMPLETE_ROOT_REGRESSION",
+  "source_information_signal": false,
+  "scientific_pass": false,
+  "independent_scientific_test": false,
+  "native_model_changed": false,
+  "accepted_main_changed": false,
+  "protected_first_use": false,
+  "source_first_use_scope": "Previously consumed FKP16 TRAIN/VAL world IDs, NEW physically observed extended 128-step outcomes. NOT independent original blinded DEV.",
+  "pristine_lineage": {
+    "upstream_repository": "MarcoMeter/endless-memory-gym",
+    "upstream_sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "upstream_original_license": "MIT",
+    "upstream_modified": false,
+    "environment": "MysteryPath-v0",
+    "reward_mode": {
+      "reward_fall_off": -0.05,
+      "max_steps": 512
+    },
+    "official_original_benchmark_scoring": false,
+    "parent_research_FKP16_final": "2de698ceedb28572ebb535a956c7b7e66e2cedad",
+    "original_prereg_only_commit": "11133597b3e0e59dcb27e0c563e30d6b150287e1",
+    "original_method_source_commit": "3e776e8bc32a3b6bf6d63442fe5ffdcca0826e2f",
+    "original_method_tree": "e2512afd7d77f465ebb6c8752ac3b5d92d924690",
+    "G29_machine_generated_only_source_child": "240b2c53ccdecc3a7ada477c335c603a053a4de9",
+    "G29_machine_generated_only_source_tree": "692367566b6e94dacbd474bdeeb0bd97ef907e23",
+    "source_headroom_py_blob": "b60be958dd2c4d4d9867d574fcf0f0e9f2e9d61d",
+    "source_test_blob": "381236ecad49ae6c1b4306f7a941d21dfc8da163",
+    "frozen_prereg_blob": "1d3eadeac9b6ca7179c6f99ef14d0c58f30fe51f",
+    "original_FKP16_source_py_blob": "bf620c3521c42c3915e6dc54a755dcb42b1675bb"
+  },
+  "source_partition": {
+    "FIT": "975100..975107 (8 previously consumed FKP16 TRAIN source worlds)",
+    "AUDIT": "975200..975207 (8 previously consumed FKP16 VALIDATION source worlds)",
+    "original_FKP16_DEV": "976500..976531 CONSUMED PREVIOUSLY; NOT TOUCHED BY FKP17",
+    "owner_transfer": "976600..976663 UNOPENED",
+    "owner_protected_science": "UNOPENED"
+  },
+  "frozen_actions": {
+    "source_worlds": 16,
+    "anchors_per_world": 4,
+    "plans_per_anchor": 24,
+    "FIT_original_real_rollouts": 768,
+    "AUDIT_original_real_rollouts": 768,
+    "horizons": [
+      16,
+      32,
+      64,
+      128
+    ],
+    "special_note": "Each 16/32/64 outcome is scored from the same physically executed 128-step trajectory, not an independent new world or separate source action.",
+    "policies": {
+      "constant": 9,
+      "alternating8": 9,
+      "source_blind_random8": 3,
+      "public_reward_feedback8": 3
+    },
+    "full_original_source_actions": {
+      "fit": 119178,
+      "audit": 119477,
+      "total": 238655,
+      "preregistered_cap": 315000
+    }
+  },
+  "original_frozen_fit_only_global_action_plan": {
+    "name": "PUBLIC_REWARD_FEEDBACK8_1",
+    "integer_plan_id": 22,
+    "learned_only_from_FIT_return_outcomes": true,
+    "plan_selection_receipt_sha256": "c385e4992ef32616b942bf89c78cde5014400cdacc481751941e99475d45d3a5"
+  },
+  "H16": {
+    "audited_anchors": 32,
+    "goal_reachable_anchors": 1,
+    "distinct_worlds_with_some_goal": 1,
+    "privileged_oracle24_mean_return": 0.165625,
+    "privileged_constant9_mean_return": 0.128125,
+    "chosen_fixed_plan_mean_return": -0.0359375,
+    "blind_random_plan18_mean_return": -0.071875,
+    "privileged_minus_fixed": 0.2015625,
+    "paired_world_bootstrap_ci95": [
+      0.140625,
+      0.28750000000000003
+    ],
+    "source_reward_positive_events_all24": 249,
+    "source_reward_negative_events_all24": 1517,
+    "native_future_steps_across_all24": 12286
+  },
+  "H32": {
+    "audited_anchors": 32,
+    "goal_reachable_anchors": 2,
+    "distinct_worlds_with_some_goal": 1,
+    "privileged_oracle24_mean_return": 0.1796875,
+    "privileged_constant9_mean_return": 0.1140625,
+    "chosen_fixed_plan_mean_return": -0.037500000000000006,
+    "blind_random_plan18_mean_return": -0.1265625,
+    "privileged_minus_fixed": 0.21718749999999998,
+    "paired_world_bootstrap_ci95": [
+      0.115625,
+      0.384375
+    ],
+    "source_reward_positive_events_all24": 291,
+    "source_reward_negative_events_all24": 3038,
+    "native_future_steps_across_all24": 24533
+  },
+  "H64": {
+    "audited_anchors": 32,
+    "goal_reachable_anchors": 2,
+    "distinct_worlds_with_some_goal": 1,
+    "privileged_oracle24_mean_return": 0.1484375,
+    "privileged_constant9_mean_return": 0.09687499999999999,
+    "chosen_fixed_plan_mean_return": -0.037500000000000006,
+    "blind_random_plan18_mean_return": -0.2984375,
+    "privileged_minus_fixed": 0.18593750000000003,
+    "paired_world_bootstrap_ci95": [
+      0.08906250000000002,
+      0.35624999999999996
+    ],
+    "source_reward_positive_events_all24": 328,
+    "source_reward_negative_events_all24": 6037,
+    "native_future_steps_across_all24": 49013
+  },
+  "H128": {
+    "audited_anchors": 32,
+    "goal_reachable_anchors": 2,
+    "distinct_worlds_with_some_goal": 1,
+    "privileged_oracle24_mean_return": 0.125,
+    "privileged_constant9_mean_return": 0.0875,
+    "chosen_fixed_plan_mean_return": -0.037500000000000006,
+    "blind_random_plan18_mean_return": -0.64375,
+    "privileged_minus_fixed": 0.1625,
+    "paired_world_bootstrap_ci95": [
+      0.0671875,
+      0.33437500000000003
+    ],
+    "source_reward_positive_events_all24": 383,
+    "source_reward_negative_events_all24": 11983,
+    "native_future_steps_across_all24": 97973
+  },
+  "prereg_source_positive_goal_gate": {
+    "min_distinct_worlds_with_reached_goals": 2,
+    "observed": 0.1625,
+    "min_goal_reachable_anchors": 4,
+    "min_privileged_minus_FIT_selected_fixed_return": 0.15,
+    "paired_95ci_lower_gt_zero": true,
+    "conjunction_pass": false,
+    "interpretation": "Actual action-value hindsight regret exists, but goals remain concentrated in just one of eight historical validation worlds, two contexts. 128-step schedules did not extend achieved goal contexts past 32 steps. Do not claim ability to learn general goal-reaching or causal planning."
+  },
+  "provenance": {
+    "original_run_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43764698791",
+    "original_run_id": 43764698791,
+    "original_run_attempt": 1,
+    "run_status": "completed_success",
+    "source_qualification_job_id": 132967064774,
+    "linux_pre_source_full_job_id": 132967144217,
+    "windows_pre_source_full_job_id": 132967144253,
+    "original_linux_trial_job_id": 132967358547,
+    "windows_consumed_world_replay_job_id": 132967734163,
+    "original_full_ledger_artifact_id": 14182315855,
+    "original_full_ledger_artifact_name": "fkp17-source-actual-128step-plan-ledger",
+    "original_full_ledger_artifact_expires_at": "2026-12-15T21:39:38Z",
+    "original_FIT_trace_sha256": "e0e127f299fcf1ace4e76bb5d2afe3bcb4cf539bb4b49ff8335ba76d1bf69289",
+    "original_AUDIT_trace_sha256": "30d2e27352fad3d8fa4b34f1996331ab894ab6993a369c8b90d178acdadfc9d3",
+    "source_SHA_and_action_charge_cross_platform_exact": true,
+    "G29_each_OS": "4/4 PASS",
+    "FKP17_fixture_each_OS": "6/6 PASS",
+    "full_inherited_regression_each_OS_pre_first_use": "54/54 PASS",
+    "original_linux_post_source_regression": "54/54 PASS",
+    "windows_final_full_regression": "54/54 PASS",
+    "independent_windows_scientific_generalization": false
+  },
+  "causal_limits": [
+    "All anchors and world IDs were previously consumed FKP16 TRAIN/VAL sources, even though these H128 future consequences were new. This is NOT virgin independent scientific development.",
+    "Best-of-24 return is a hindsight privileged physical upper bound and cannot be acquired by a learner choosing one plan.",
+    "No fully trained recurrent, model-based, causal-learning or replay learner is improved or tested by FKP17.",
+    "The selected global fixed feedback plan uses historical TRAIN only, but it is not an unfamiliar-world adaptive trained intelligence mechanism.",
+    "At H128 oracle mean return is lower than H32; more physical steps accumulated much more negative reward. Higher horizon did not yield broader goal reachability.",
+    "No matched whole-process compute, cold retention under interference, unfamiliar-law transfer, owner protected first-use, accepted main promotion, deployment or autonomous learning claim."
+  ],
+  "frozen_disposition": "DEV_NO_GO_LONG_HORIZON_GOAL_SUFFICIENCY. Stop this particular 24-plan H128 schedule family without tuning on the exposed public worlds. Preserve original negative results; next distinct source with multiple independently reachable goals and delayed feedback, then learn/model only if source headroom verified. No native Yggdrasil main change."
+}
