@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.qtr01.f44.source-free-interventional-edge-induction-dev.v1",
+  "status": "FROZEN_PRECODE_BEFORE_ANY_F44_WORLD_EXECUTION",
+  "exact_parent_F43": "8f49febe7a83d13c6db9083deb0007f33bc28316",
+  "hypothesis": "Can a deterministic tokenless, local-plasticity edge-binding mechanism learn the direction and sign of previously unknown synthetic causal links by intervening and observing public consequences, compose two-step links, retain learned links after cold restore, and transfer the same procedure across independently generated worlds? Do not assert superiority if a matched fully fitted conventional control matches.",
+  "worlds": {
+    "scales_nodes_high_to_low": [
+      64,
+      32,
+      16
+    ],
+    "development_seeds": [
+      11,
+      29,
+      47
+    ],
+    "split": "Each (scale,seed) is a separately generated complete synthetic world; no graph edge/candidate label is provided to learner before scoring; all worlds DEV, not protected unseen first-use",
+    "world_generation": "For each source node choose the two lowest-hash-ranked distinct nonself target IDs under sha256('F44/world/v1|N|seed|source|target'), assigning the first a + edge and second a - edge. Each node has exactly 1 excitatory and 1 inhibitory outgoing edge, no self edge, all other directed pairs are zero.",
+    "public_observation": "Intervention do(source=0 or 1) and record public binary outcome for every target at one time step; no graph parents, edge IDs, law parameters or answer labels passed to learner.",
+    "observation_law": "P(y=1 | do(source=a), target=t) is 1/4 for unrelated target and for + edge with a=0; 7/8 for + edge with a=1; 7/8 for - edge with a=0; 1/4 for - edge with a=1. Deterministic Bernoulli draw via first 8 bytes of sha256('F44/obs/v1|N|seed|source|action|replicate|target') scaled to [0,2^64).",
+    "fixed_intervention_order": "For each node in numeric ascending order, for each replicate in [0..23], intervene on action=0 then action=1 (balanced); every chosen action and its target response vector is observable only after taking that action.",
+    "scale_budget_max_per_action": 24,
+    "action_budget_by_scale": {
+      "16": 768,
+      "32": 1536,
+      "64": 3072
+    },
+    "high_first_readout_replicates_per_arm": [
+      24,
+      12,
+      6
+    ],
+    "observations_subset_rule": "For reduced budgets use exact prefix of first b replicate rounds per source/action (same source world/seed); no new samples or ad hoc selection; evaluate 24 first in reporting, then 12, then 6."
+  },
+  "methods": {
+    "native_dev": "Implement isolated local tokenless signed-association weights w[source,target] int16, updated by (2*a-1)*(2*y-1) on each public action-outcome vector (same action0/1 counts per source). Predict +/− only if per-target signed weight >=2*ceil(0.45*repeats_per_arm) or <=negative threshold. Exact integer, no gradients, source graph never used in update.",
+    "fully_trained_conventional": "Fit independent two-arm Bernoulli empirical maximum-likelihood response rates per (source,target) using all action/outcome samples, threshold their fitted difference at same 0.45. This is fully fit for the specified factorized Bernoulli family, not a weaker unfitted baseline. It has identical exposures, source IDs, target IDs, actions, and outcomes.",
+    "same_capacity_conventional": "Control with one signed contrast counter per (source,target), same weights/known action counts as native; must match native exactly if both implement the same sufficient statistic. Disclose parity, not intelligence.",
+    "perfect_oracle": "Exact hidden true signed graph scores only in evaluator, never passed to learners; ceiling on source to target edge and two-hop queries.",
+    "shams": [
+      "Passive action=0 only -> cannot identify causal contrasts and must abstain",
+      "Wrong-source label permutation: train same public observations under (source+1)%N and evaluate original IDs, must score strictly below correct learned model at highest-width stage",
+      "Cold checkpoint corruption must be rejected; deliberate additional isolated observations must not mutate a different source row."
+    ]
+  },
+  "frozen_evaluation": {
+    "metrics": [
+      "True positive correctly signed edges",
+      "wrong-sign or nonexistent predicted edges",
+      "missed true signed edges",
+      "direct precision, recall, macro world F1",
+      "2-hop signed composition precision, recall, F1 on pairs with exactly one two-hop signed path (ambiguous multi-paths excluded by evaluation rule)",
+      "false nonedge predictions across full N*(N-1) bounded synthetic universe",
+      "native-vs-MLE and same-capacity control paired per world",
+      "cold checkpoint bit-exact parity",
+      "interference preservation of unrelated trained source rows",
+      "bytes for learned weights/counters/full checkpoint; total actions and public outcome bits",
+      "fit and inference wall-clock times separately, exploratory only"
+    ],
+    "direct_threshold_difference_min": 0.45,
+    "thresholds": {
+      "at_max_replicates_macro_direct_f1_min": 0.86,
+      "at_max_replicates_direct_precision_min": 0.9,
+      "at_max_replicates_direct_recall_min": 0.82,
+      "at_max_replicates_twohop_F1_min": 0.75,
+      "min_seed_count": 3,
+      "all_world_sizes_required": true,
+      "zero_cold_prediction_mismatches": true,
+      "zero_other_row_interference": true,
+      "wrong_source_permutation_below_native": true
+    },
+    "pass_rule": "DEV_CAUSAL_EDGE_INDUCTION_GO only when every (size, seed) at highest budget meets direct/2hop thresholds and controls/retention, otherwise DEV_CAUSAL_EDGE_INDUCTION_NO_GO; lower budgets diagnostic only and must not rescue highest-budget failure; report strongest fitted conventional comparison without thresholding it away.",
+    "scientific_pass_rule": "Always FALSE. Worlds, seeds, laws and test procedure all known in advance; no prospective held-out world custody, independent replication or compute-matched strongest native/conventional scientific control. Count observed successes as developmental mechanism capability only.",
+    "compute_and_safety": "All source-free deterministic stdlib experiments; no new external source, paid API, simulator runner, controller, scheduled task, accepted Yggdrasil code, F42/F43 changes, protected scientific first-use or model promotion; only research contribution and existing CI."
+  },
+  "protected_fences": {
+    "no_public_or_private_source_ingestion": true,
+    "no_protected_first_use": true,
+    "no_accepted_Yggdrasil_model_changes": true,
+    "no_other_architecture_rewrites": true,
+    "no_paid_API": true,
+    "no_controllers_or_schedulers": true,
+    "no_new_runners": true,
+    "no_merge_or_main": true,
+    "no_deployment": true,
+    "no_scientific_pass_claim": true
+  }
+}
