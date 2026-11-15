@@ -31,3 +31,5 @@ python -B scripts/build_code_atlas.py --check-if-present
 ```
 
 Unit tests use only the isolated engineering source `120900`, not the unconsumed original public cohort. A successful unit test is not a primary science result or final source-archive acceptance. No new controller, scheduler, paid service, research runner, merge, accepted-ref update or automatic native integration is authorized by this contribution.
+
+Source-safe development qualification (before G29 archive): [run 43777178612](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43777178612) passed the six WSP120 engineering fixtures on each of Ubuntu and Windows. Full inherited regression remains required **at the exact post-G29 archive SHA**; do not infer science or admission from this checkpoint.
