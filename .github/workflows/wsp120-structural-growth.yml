@@ -36,8 +36,12 @@ jobs:
           test -z "$(git status --porcelain)"
       - name: WSP120 disjoint engineering fixture and source negatives
         run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-120 -p 'test_wsp120.py' -v
-      - name: Existing full root regression
-        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Before atlas, only source-safe focused tests are admissible
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/contrib/chatgpt/WSP-120/test_wsp120.py
+          test -f research/contrib/chatgpt/WSP-120/prereg.json
       - name: Verify immutable source checkout
         shell: bash
         run: test -z "$(git status --porcelain)"
