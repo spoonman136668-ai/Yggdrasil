@@ -11,15 +11,15 @@ concurrency:
 jobs:
   source-atlas-only:
     if: >-
-      github.event.head_commit.message == 'ci(FKP-15): one corrected public DEV after source accounting repair' &&
+      github.event.head_commit.message == 'ci(FKP-15): qualify repaired prediction API without DEV reuse' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
       candidate: ${{ steps.seal.outputs.candidate }}
     env:
-      SOURCE: 1610415e2d2e96e0d7f3ad558d37ce1f3e5d78a4
-      TREE: fdc5ba1130efa8ef569e8c02aaa506fbceefbecb
+      SOURCE: 0d11124f0af2a1a363c926e18d00c64b83e991a0
+      TREE: d100bbd09630d749b4b3746bbe93590f979a264f
       TARGET: research/fkp15-observation-to-16step-action-value-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 1610415e2d2e96e0d7f3ad558d37ce1f3e5d78a4
+          ref: 0d11124f0af2a1a363c926e18d00c64b83e991a0
           persist-credentials: true
           fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -49,9 +49,10 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/prereg.json)" = 121a2a602a19a1b9b16e035737ea285eb47542e2
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/source.py)" = 3341d36270ef36d7f2e1ac8b7ae9aa1b81bf2212
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/learners.py)" = 29ed00e5db7d79c9889e87cbaf0240dca4f14443
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/baselines.py)" = c08c03d9159ac6a791f9c2fce8f7cd7d859287b4
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/baselines.py)" = 8d2fa9af720be7e550804bfdab03e518e00df10f
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/run_dev.py)" = 037679da0f6fb8d39c6feb0e4767a2e80c0ac8af
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/test_fkp15.py)" = c8f9566434d6ad64580dc2998829979d4813be55
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/test_fkp15.py)" = 9707431e40ec9459c1282309510a77ad45549447
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/firstuse_incident.json)" = 5840113520a6da3463e7fd9b4b1f6c9222423340
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/README.md)" = b95e5ca14c5962d34425c8e16b4ea77410ea9cc9
           python - <<'PY'
           import ast,json,pathlib
@@ -164,7 +165,8 @@ jobs:
 
   first-public-source-dev:
     needs: [source-atlas-only,before-first-use-two-os]
-    if: needs.before-first-use-two-os.result == 'success'
+    # SCIENTIFIC FIRST USE ALREADY PARTIALLY OPENED; never rerun stale original cohort.
+    if: false
     runs-on: ubuntu-24.04
     timeout-minutes: 95
     permissions:
