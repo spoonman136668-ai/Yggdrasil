@@ -1,0 +1,143 @@
+name: FKP16 archived original DEV exact-source final regression (NO DEV)
+on:
+  push:
+    branches: [ci/fkp16-postresult-once-20261115]
+    paths: [.github/workflows/fkp16-final-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: fkp16-final-post-original-dev-evidence-20261115
+  cancel-in-progress: false
+jobs:
+  atlas-generated-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-16): one-shot postresult frozen evidence qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      SOURCE: 93a1df86e4aa304b16d0627c3ba0423525f409ad
+      TREE: 982a82f887592acf1cb657d6b2b2e7005e448d0e
+      TARGET: research/fkp16-fresh-blind-return-value-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      qualified_child: ${{ steps.seal.outputs.qualified_child }}
+    steps:
+      - name: Stable Git line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 93a1df86e4aa304b16d0627c3ba0423525f409ad
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pin original protocol source and archived original outcome exactly
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 051209736a7786698205d86c94cd997e24cdac82 "$SOURCE"
+          git merge-base --is-ancestor ccd8c72964c3bf7430243f33fd0cda8f07179f25 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/prereg.json)" = 2b51e1883e41536da33d0d18c8d460ea07bd1e19
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/source.py)" = bf620c3521c42c3915e6dc54a755dcb42b1675bb
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/baselines.py)" = f60e2fffdaf1df0ca54cffd24d7fa1edceeb114a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/run_dev.py)" = 7ed09e0342e121c3d6d19aef3694b738912982f3
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/test_fkp16.py)" = cd4e619915290de13d062790ef4e8e69376d7932
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/learners.py)" = 29ed00e5db7d79c9889e87cbaf0240dca4f14443
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/README.md)" = 1a12750df6caf3d446d9b70ca643e5f17d048d48
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/result.json)" = d3e8db071ddb1b29022983a145a3668c393f3d8b
+          python - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/FKP-16/result.json",encoding="utf-8"))
+          assert p["source_actions"]["total"]==193525
+          assert p["candidate_direct_minus_strongest"]==0
+          assert p["scientific_pass"] is False
+          assert p["provenance"]["original_one_shot_run_id"]==43760428106
+          print("FKP16_ORIGINAL_PUBLIC_DEV_NEGATIVE_ARCHIVED=PASS")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Regenerate exactly three machine-derived G29 artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Publish only generated G29 atlas, never change source science
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-16): index archived original DEV negative and immutable source"
+          CHILD="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "qualified_child=$CHILD" >> "$GITHUB_OUTPUT"
+          echo "FKP16_FINAL_SOURCE_LOCKED_CHILD=$CHILD"
+
+  final-full-regression:
+    needs: atlas-generated-only
+    if: needs.atlas-generated-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+    steps:
+      - name: Stable source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-generated-only.outputs.qualified_child }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pinned source-safe fixture dependencies, no source-world execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+      - name: Mandatory G29, all model controls focused, full root, and negative evidence intact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-16 -p test_fkp16.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test "$(git rev-parse HEAD^)" = "93a1df86e4aa304b16d0627c3ba0423525f409ad"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/result.json)" = d3e8db071ddb1b29022983a145a3668c393f3d8b
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP16_FINAL_EVIDENCE_DUAL_OS_FULL_REGRESSION=PASS
