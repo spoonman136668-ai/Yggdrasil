@@ -1,0 +1,171 @@
+name: QTR-01 F42 reversible indexed exact knowledge DEV and full regression
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+permissions:
+  contents: read
+jobs:
+  focused:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F42 focused exact-index qualification'
+    name: F42 exact reversible knowledge DEV (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Normalize Windows source bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact frozen baseline, prereg and implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = 'c3581987ef4cfb97f7de41f8aa2eb74c00414e15'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 focused exact-index qualification'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f42-exact-index.yml'
+          git merge-base --is-ancestor cc86a81d42e3f1c4537c3cb28dc9ba24bf8fdf46 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_prereg.json)" = 'b9350c4278404a6f7f6a203d861a7132791313c5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = 'd432f145a4ddfdc236b02822d64aa339c1a0e2ea'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f42_exact_index_dev.py)" = '43e7f0cca2cfb87fb32cbc981968159869a4ae8f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = '4f740d5f573364fb83bc5c3d565845c23494b6ca'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          echo F42_PRECODE_SOURCE_CUSTODY=PASS
+      - name: Focused F42 source-free exact storage and tampering tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f42_*.py' -v
+      - name: Emit source-only exact indexed baseline result
+        run: python -B research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py
+      - name: Verify unchanged checkout and no first-use
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F42_SOURCE_ONLY_EXACT_TESTS_PASS
+
+  atlas-once:
+    needs: focused
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F42 focused exact-index qualification'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm exactly qualified frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = 'c3581987ef4cfb97f7de41f8aa2eb74c00414e15'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 focused exact-index qualification'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_prereg.json)" = 'b9350c4278404a6f7f6a203d861a7132791313c5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = 'd432f145a4ddfdc236b02822d64aa339c1a0e2ea'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f42_exact_index_dev.py)" = '43e7f0cca2cfb87fb32cbc981968159869a4ae8f'
+          test -z "$(git status --porcelain)"
+          echo F42_ATLAS_SOURCE_PIN=PASS
+      - name: Generate exactly three ICE code atlas companions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          EXPECTED="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          ACTUAL="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$ACTUAL" = "$EXPECTED"
+          git diff --cached --quiet && exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m 'ci(qtr): derive F42 exact-source ICE atlas'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo F42_ATLAS_DERIVED_CLEAN=PASS
+
+  full-final:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F42 final full exact-source qualification'
+    name: F42 full final regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - name: Normalize Windows source bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify F42 source SHA, prereg and derived ICE atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F42 final full exact-source qualification'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          git merge-base --is-ancestor cc86a81d42e3f1c4537c3cb28dc9ba24bf8fdf46 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_prereg.json)" = 'b9350c4278404a6f7f6a203d861a7132791313c5'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f42_exact_index_dev.py)" = 'd432f145a4ddfdc236b02822d64aa339c1a0e2ea'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f42_exact_index_dev.py)" = '43e7f0cca2cfb87fb32cbc981968159869a4ae8f'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          echo F42_FINAL_SOURCE_AND_ATLAS=PASS
+      - name: Install identical inherited full-regression dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+      - name: Full original root regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Full contributor regression with F42 exact indexed source
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+      - name: Verify final exact-source clean checkout
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F42_FULL_FINAL_SOURCE_EXACT_PASS
