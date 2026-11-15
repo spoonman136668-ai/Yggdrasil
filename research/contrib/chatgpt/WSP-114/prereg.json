@@ -1,0 +1,54 @@
+{
+  "schema": "wsp114.high-first-nonlinear-causal-weight-capacity.v1",
+  "status": "PREIMPLEMENTATION_FROZEN_DEV",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1082,
+    "sha": "e814137946e20452d7db4595f9c1fa7214a6e228",
+    "tree": "a59e7c9b81af9c0d53f5e1fc3fcce9f22aa2e770",
+    "result": "WSP113 direct=exact symbolic=Bayesian=passive 100% across 8192 four-bit outcomes after 8 probes; no scientific superiority; v1 consumed"
+  },
+  "question": "Starting at maximal budget and complexity, can an explicit native numeric synaptic memory infer unfamiliar quadratic causal laws across 64 interdependent state variables from 1024 real action consequences per world, and how far can the required observation budget be reduced after high-budget success? If it fails at 64 nodes, identify the first preregistered smaller capacity that works without post-result tuning.",
+  "primary": {
+    "nodes": 64,
+    "max_candidate_parents_per_node": 12,
+    "feature_grammar": "For output node j: all singleton previous updated nodes among max(0,j-12)..j-1, plus all unordered pairs in that same window. Hidden rule is XOR of a deterministic subset of these linear/pair monomials plus old state bit; when intervention forces node j, override to forced bit. Every intervention reveals full 64-bit propagated state.",
+    "input": "Arbitrary 64-bit initial state plus 7-bit action=force one node 0/1 (128 available actions). Each intervention has meaningful downstream consequences; no reset cost in this artificial simulator, all arms use identical access.",
+    "original_laws": "New WSP114 SHA256('WSP114|LAW|v1|split|size|world|node|feature-index') selects coefficients; training family linear-only, transfer family nonzero pair interactions and mixed linear/pair interactions. Hidden coefficient vectors never exposed to models.",
+    "train": "32 disjoint fully observed *linear-only* example worlds, each receives 256 deterministic public state-action pairs from SHA256('WSP114|TRAIN|v1|size|world|sample'); all arms identical access. Full solver grammar disclosed; transfer quadratic coefficients unknown.",
+    "transfer": "16 originally unseen nonlinear worlds at 64 nodes; one unique full 64-bit effect per adaptive intervention, 1024 max per world; 512 heldout state-action queries per world from independent SHA256('WSP114|HOLDOUT|v1|size|world|index'), never used for fitting or action choice, all original heldout outcomes opened only after all arms' predictions and intervention transcripts are sealed.",
+    "budget_ladder": [
+      1024,
+      512,
+      256,
+      128,
+      64,
+      32,
+      16,
+      8
+    ],
+    "interpretation": "RUN 1024 FIRST, not eight. Score preregistered *snapshots at all prefixes* from the same frozen policy and same original cohort, to find last non-saturated budget. Each prefix has the original model state at that step, never retroactively retrained after the labels are opened. Do not call any exposed prefix a fresh first-use.",
+    "capacity_fallback": "Only if maximal 64-node 1024-intervention test fails its 95% exact holdout threshold, run independent preregistered 48-node then 32-node 1024-intervention worlds in order, stopping at first pass; each is an entirely separate source split and not evidence of superiority; do not shrink action budget as a rescue for failing 64-node mechanism.",
+    "validation": "v2–v5 independent cohorts only if separately qualified; v1 is one-shot synthetic DEV, no SCIENTIFIC_PASS from a single run.",
+    "candidate_actions": "Per step choose among eight new deterministic SHA256-hashed 64-bit start-state / forced node-value candidates; rank novelty of predicted local causal feature constraints without querying any oracle, tie-break deterministic. Hash namespace includes world and observation-step but no heldout outcomes."
+  },
+  "methods": {
+    "direct": "Online GF(2) rank-bearing numerical causal-weight programmer: sparse causal feature rows from known previous updated parent observations, local incremental elimination, write float32 learned synapses for every singleton/pair coefficient after each event, generic numeric parity execution (no hidden graph-mask lookup). Causal trajectory simulation depends on newly written synapses only; every world cold checkpoint retains full basis+synapses and input evidence.",
+    "independent_symbolic": "Distinct implementation of GF(2) symbolic linear-equation solving with matched observed consequences, no native learner import, full-rank/underidentified diagnostics; independent probe policy but score also on the direct arm's exact observed interventions.",
+    "conventional": "Closed-form fitted ridge-regression control on exactly the disclosed 64-variable singleton/pair nonlinear feature grammar with all 1024 observations and prefixes; fit separately for each node using fixed ridge 1.0 and no oracle coefficients, compare predictive accuracy/total fit time. Numerical ridge is a valid converged conventional control but cannot model arbitrary GF(2) parity as well as an exact symbolic control; do not represent it as the strongest competitor.",
+    "negatives": "Frozen hash-random unique interventions, fixed passive probe schedule, zero memory, permuted node binding, broken pair-feature ablation, source-interference cold replay, and tampered checkpoint rejection. All arms identical 1024 observation ceiling. Matched-action controls isolate action selection from inference.",
+    "identifiability": "If 1024 observations cannot uniquely identify a node's feature weights, measure rank deficits; do not silently use hidden coefficients or output underdetermined labels as certain."
+  },
+  "metrics": {
+    "primary": "512 heldout full-state EXACT accuracy per world at budget=1024 (16 transfer worlds), per-bit accuracy/precision/recall, graph coefficient exact recovery where identifiable, unseen rollout under chained interventions, and full-data rank distribution. Strong independent symbolic + conventional/negative comparison.",
+    "secondary": "Complete presealed heldout predictions for every preregistered prefix; earliest budget reaching >=95% heldout 64-bit exact and <=1% absolute deficit vs strongest independent control, plus per-world spread and heldout subgroup. If none reaches threshold record failure without tuning.",
+    "cost": "Per-arm entire training+fitting+interventions+heldout inference+snapshot/cold-retention CPU, wall, peak memory and byte counts at each budget; compare like-for-like optimized independent controls and include all environmental work; no unsupported speedup from a subset of stages.",
+    "scientific": "Mechanism/capacity-development PASS only if at 1024 >=95% 64-bit heldout exact, 16/16 cold restores, zero tamper accepts, no leakage and full regression; superiority requires >=2pp above best exact symbolic or predeclared >=2x fully matched process speed + memory parity with noninferior accuracy replicated on v2–v5 and independently qualified, otherwise SCIENTIFIC_PASS=false."
+  },
+  "custody": {
+    "first_commit": "Commit this frozen protocol BEFORE generator, fixture, implementation, validation and ANY originally heldout evaluation.",
+    "qualification": "Fabricated-coefficient fixtures first, full inherited WSP80–114 and root Yggdrasil regression on Linux+Windows, exact pinned G29 source atlas, independent dual-OS G29 acceptance, all at same SHA/tree, THEN one original 64-node high-budget synthetic DEV only; fallback experiments only if expressly triggered by predeclared failure.",
+    "stop": "No post-results tuning, rerunning originally exposed cohorts as fresh, reducing benchmark difficulty after observed results except preregistered size fallback with independent cohorts, hidden-parameter leakage, claim of AGI or production model improvement without independent qualification.",
+    "isolation": "New stacked draft only, no main merge, no accepted Yggdrasil/Wingless/TTT-Hybrid edits, FORGE integration, owners, schedulers, private runners, paid API, deployment, protected WSP101/WSP112/WSP113 first-use reuse."
+  }
+}
