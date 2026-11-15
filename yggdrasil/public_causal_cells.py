@@ -82,6 +82,26 @@ class PublicCausalCells:
             return 0 if left > right else 1
         return self.choose(address, retained=retained)
 
+    def choose_verified_contextual(self, address: int, context: int, relations, *,
+                                   retained: bool = False) -> int | None:
+        """Select only from both public intervention consequences at this context.
+
+        Unobserved compositions are *not* automatically identifiable: low-order
+        weights alone cannot exclude higher-order causal terms. When no direct
+        evidence for both action outcomes exists, preserve legacy choose().
+        This is a separately opt-in safer path; YPC1 counters/checkpoints stay
+        bit-for-bit unchanged, and no source label is an authority certificate.
+        """
+        from yggdrasil.native_relation_memory import NativeRelationMemory
+
+        if not isinstance(relations, NativeRelationMemory):
+            raise ValueError("PUBLIC_CAUSAL_VERIFIED_RELATIONS_INVALID")
+        pair = relations.observed_action_pair(address, context,
+                                             retained=retained)
+        if pair is not None and pair[0] != pair[1]:
+            return 0 if pair[0] > pair[1] else 1
+        return self.choose(address, retained=retained)
+
     def observed_action_contrast(self, address: int, *,
                                  retained: bool = False) -> tuple[int, int] | None:
         """Exact public-outcome rate contrast (action 1 minus action 0).
