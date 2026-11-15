@@ -1,0 +1,132 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-17-STRUCTURED-FOUNDATION-NOVEL-CAUSAL-LAWS",
+  "phase": "PROTOCOL_ONLY_BEFORE_SOURCE_IMPLEMENTATION_AND_BEFORE_NEW_FIRST_USE",
+  "origin_issue": 1088,
+  "predecessor": {
+    "experiment": "FKP-16",
+    "draft_pr": 1107,
+    "final_research_head": "2de698ceedb28572ebb535a956c7b7e66e2cedad",
+    "classification": "DEV_MIXED_BEATS_WEAK_NOT_STRONG",
+    "scientific_pass": false,
+    "direct_minus_strongest": 0,
+    "observed_goal_events": 0
+  },
+  "accepted_native_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "question": "With exactly the same prior facts, public observations, and action opportunities, does a persistent tokenless structured concept/relationship memory enable faster discovery and consequential action under unfamiliar causal laws than unstructured memories, shuffled wiring, independent Bayesian/symbolic inference, and fully trained recurrent controls?",
+  "hypothesis": "Relationship structure and experience-driven revision—not extra facts, hindsight outcome access, an oracle, or copying a known rule family—causally improve discovery, intervention choice, retention and disjoint unfamiliar-law transfer.",
+  "domain": {
+    "task": "SOURCE-PRIVATE SYNTHETIC INTERVENTION WORLDS WITH PHYSICAL SIMULATED ACTION CONSEQUENCES; NOT REAL-WORLD INTELLIGENCE PROOF",
+    "public_interface": "Eight observable uint4 registers [0..15], one public action index [0..7], a public scalar reward in [-1,1], public done flag, and up to 16 prior public transitions; no latent law identity, oracle, simulator state, source code, private debug or alternate future outcomes presented to learners",
+    "source_law_separation": {
+      "foundation": "Public factual records from separate foundation worlds with ordinary directed dependence, conditional co-occurrence and signed/delayed effects; NO target DEV/TRANSFER law instance or generator key",
+      "training": "Local single-step affine-mod16 and bounded pairwise monotone-mixing laws; no DEV/TRANSFER operator templates supplied to a learner",
+      "validation": "Disjoint parameter and graph draws from training families, used for model selection only",
+      "development": "Context-switched delayed parity-gated carry and inhibitory two-step coupling; withheld as a disjoint law-family first-use, not pre-enumerated to learner",
+      "transfer": "Disjoint world instances with independent mixtures of delayed switching and reversal under observable interventions; held untouched until separately qualified"
+    },
+    "identifiability": "Before scored first-use, a source-owner-only deterministic probe must verify that two law hypotheses inconsistent on relevant consequences can be distinguished by <=24 allowed public interventions; all 32 preset DEV worlds are reported, never filtered after scoring; inadequate headroom or indistinguishability yields SOURCE_NOT_IDENTIFIABLE rather than learner NO-GO",
+    "source_contract": "Implement and freeze a separate independent law generator, source digest, full semantics and redaction tests before any new original DEV or TRANSFER outcome; source-private branch/law code is evaluator-only, not importable by any model"
+  },
+  "frozen_splits": {
+    "foundation": {
+      "world_seed_start": 979100,
+      "world_seed_end": 979227,
+      "worlds": 128,
+      "observed_records_per_world": 256,
+      "total_records": 32768
+    },
+    "train": {
+      "world_seed_start": 978100,
+      "world_seed_end": 978163,
+      "worlds": 64
+    },
+    "validation": {
+      "world_seed_start": 978200,
+      "world_seed_end": 978215,
+      "worlds": 16
+    },
+    "fresh_dev": {
+      "world_seed_start": 978500,
+      "world_seed_end": 978531,
+      "worlds": 32
+    },
+    "transfer_reserved": {
+      "world_seed_start": 978600,
+      "world_seed_end": 978663,
+      "worlds": 64
+    },
+    "bootstrap_seed": 1515,
+    "model_seeds": [
+      1515,
+      2626
+    ],
+    "frozen_before_source_first_use": true,
+    "reuse_of_fkp16_dev": false,
+    "no_duplicate_first_use": true
+  },
+  "equal_information_arms": {
+    "STRUCTURED": "Candidate tokenless bounded graph-like prior with explicit concept identity, directional conditional/delayed edges, bounded confidence, public intervention updates, compositional reads and reversible corrections",
+    "FLAT": "Same exact 32,768 foundation records, observations, metadata and memory budget as STRUCTURED but no persistent relationship connectivity",
+    "SHUFFLED": "Same facts and edge-count/degree histogram as STRUCTURED, deterministically permuted endpoints; keep equal capacity and public action data",
+    "MINIMAL": "No large foundation, same action and observation budget; tests contribution of prior facts",
+    "NO_UPDATE": "Same STRUCTURED initial prior and readout, freeze all relation updates after initialization",
+    "BAYES_SYMBOLIC": "Independent competent factored Bayesian/symbolic causal structure learner; same full 32,768 public facts and action/observation tape, unrestricted rule hypotheses within matched capacity limits",
+    "RECURRENT": "Fully trained recurrent sequence learner at least 24 complete epochs per seed for seeds 1515 and 2626, validation-only checkpoint selection, same complete public history and prior facts",
+    "COUNT_RETRIEVAL": "Standard empirical conditional transition and nearest-neighbor controls with same public fact corpus, fit/selection only on train/validation"
+  },
+  "fairness": {
+    "foundation_records_each_informed_arm": 32768,
+    "identical_shared_exploration_tape_actions_per_world": 24,
+    "held_on_policy_scored_actions_per_world": 16,
+    "sequence_length": 16,
+    "action_count": 8,
+    "prior_information_digest_same_for_structured_flat_shuffled_bayes_recurrent_counts": true,
+    "source_hidden_labels_not_seen_until_action_committed": true,
+    "independent_seeded_reset_per_arm": true,
+    "shared_exploration_then_diverging_scored_actions_reported_separately": true,
+    "target_private_rule_templates_not_available_to_learners": true,
+    "memory_budget_bytes_max_each": 1048576,
+    "process_cost": "Report source actions, initialization time, fit time/epochs, online update CPU and wall time, inference CPU and wall time, memory, checkpoints, and full trials; do not assert FLOP/time parity without measured receipts"
+  },
+  "frozen_metrics": {
+    "primary": "Mean 16-step actual collected reward per independent fresh DEV world; STRUCTURED minus the best non-oracle matched-information qualified control (including FLAT, SHUFFLED, BAYES_SYMBOLIC, RECURRENT, COUNT_RETRIEVAL), world-cluster paired bootstrap with 10,000 replicates and control reselected per replicate",
+    "dev_required_absolute_gain": 0.1,
+    "dev_world_bootstrap_lower_95_gt": 0.02,
+    "valid_dev_worlds_min": 24,
+    "source_oracle_minus_random_min": 0.1,
+    "held_transfer_gain_required": 0.05,
+    "held_transfer_world_bootstrap_lower_95_gt": 0,
+    "cold_return_to_old_world_accuracy_retained_min": 0.95,
+    "cold_accuracy_relative_drop_max": 0.03,
+    "candidate_false_causes_rate_max": 0.05,
+    "action_headroom_should_be_genuinely_consequential": true,
+    "negative_controls_must_be_beaten": true,
+    "model_parameter_and_prior_count_reported": true,
+    "process_cost_reported": true,
+    "compound_success": "All DEV/TRANSFER thresholds AND cold retention and interference controls, no leakage, >=24 valid independent DEV worlds, real source headroom and complete scientifically independent replication; mere DEV advantage never SCIENTIFIC_PASS"
+  },
+  "stop_and_reporting": {
+    "stop_on": "Missing independent first-use owner; custody collision; source-label leakage; capacity/action information mismatch; unidentified action effects; absent strong fully trained controls; protocol or SHA drift; insufficient headroom; overbudget",
+    "if_flat_ties": "NO_GO_FOR_STRUCTURED_RELATIONSHIP_ADVANTAGE",
+    "if_bayes_or_recurrent_wins": "NO_GO_STRONG_CONTROL",
+    "if_dev_is_positive": "DEV_SIGNAL_ONLY; independent disjoint TRANSFER and separate owner/replication required",
+    "after_result": "Freeze all source/method/seeds/thresholds; preserve negative/null records; no retuning original consumed DEV",
+    "integration": "No merge or native Yggdrasil model admission absent independent SCIENTIFIC_PASS, exact-source full dual-platform engineering qualification, and separately verified project owner approval",
+    "native_north_star": "Distinct tokenless, non-transformer, non-next-token Yggdrasil substrate; no replacement by donor architecture",
+    "source_and_science": "Synthetic task success is narrow and must never be presented as general intelligence, goal competence outside this source, or improvements in native Yggdrasil",
+    "no_paid_api": true,
+    "no_runner_or_scheduler_mutation": true,
+    "no_external_source_ingestion": true,
+    "no_protected_first_use": true
+  },
+  "qualification_plan": {
+    "prereg_commit_before_implementation": true,
+    "source_safe_fixtures": "Public-only input projection, no hidden-law leakage, action-before-reward seal, identical 24-step exploration, fact equality, shuffled-degree matching, negative/cold/contradiction tests, model-capacity rejection, source seed guards and no DEV open in fixture",
+    "before_first_use": "Exact frozen science-source SHA/tree, source independent owner, precommitted source ID and disjoint seed/custody verification, all focused and complete inherited 54/54 final regression on Ubuntu24.04 and Windows2022, G29/atlas, clean tree",
+    "original_dev": "Exactly once after scoped owner permission; 32 original worlds, all arms and action receipts, saved unredacted immutable artifact and durable succinct signed report",
+    "after_dev": "Postsource exact SHA full regression, deterministic consumed public replay, independent validation/replication only if original outcome eligible",
+    "protected_transfer": "Remains closed without separately verified owner approval"
+  }
+}
