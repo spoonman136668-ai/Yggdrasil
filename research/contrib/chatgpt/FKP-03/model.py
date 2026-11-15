@@ -139,6 +139,8 @@ class Posterior:
         return total,ones
 
     def add(self,action:int,outcome:int)->None:
+        if type(action) is not int or not 0<=action<1<<N_INPUT:
+            raise ValueError("FKP03_PUBLIC_ACTION_INVALID")
         if type(outcome) is not int or outcome not in (0,1):
             raise ValueError("FKP03_BAD_OBSERVED_EFFECT")
         if action in (a for a,y in self.observations):
