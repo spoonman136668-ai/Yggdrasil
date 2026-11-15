@@ -1,0 +1,291 @@
+name: FKP15 original 16-step source return learning once
+on:
+  push:
+    branches: [ci/fkp15-one-shot-20261115]
+    paths: [.github/workflows/fkp15-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: fkp15-original-firstuse-once-20261115
+  cancel-in-progress: false
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-15): one-shot source-locked 16-step learning and controls' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      SOURCE: 2645ee662306b4db51f84a7875df93f59d609272
+      TREE: b1062e23cc85fc3449366c138cc9e2c959bb8b12
+      TARGET: research/fkp15-delayed-return-public-learning-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      exact_head: ${{ steps.seal.outputs.exact_head }}
+    steps:
+      - name: Stable source checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 2645ee662306b4db51f84a7875df93f59d609272
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify prereg first and exact original source and frozen method/test blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor bdcdf66396af41604fb9d27b8f3366887e10fea4 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/prereg.json)" = 9117532538b7746228c9776743229bf58d1ca33d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/source.py)" = ab36149dd4bc9defcc2c8b958a918921afa0f85a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/models.py)" = a057a94af602af9112ebf914d0f298616a75407d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/run_dev.py)" = c4a54ca85e197c7ade109390249ac84fd24501cc
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/test_fkp15.py)" = da4410f26603445ac1ca7b0a3c6e0d133ed2d743
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-15/README.md)" = 0aeb30da2c624428ef84ab303cc768c38c0f7540
+          echo FKP15_PREREG_AND_CANDIDATE_PIN=PASS
+      - name: Rebuild only exact three G29 generated artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Commit generated-only child source index
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-15): index source without changing model or experiment"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_head=$NEW" >> "$GITHUB_OUTPUT"
+          echo FKP15_INDEXED_SOURCE=$NEW
+
+  pre-dev-full-qualification:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+    steps:
+      - name: Avoid source CRLF mutation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install pinned free source and baseline CPU runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+          python - <<'PY'
+          import numpy,pygame,torch,gymnasium
+          assert numpy.__version__=="1.26.4"
+          assert gymnasium.__version__=="0.29.0"
+          assert torch.__version__.startswith("2.5.1")
+          PY
+      - name: Source-index G29, focused GRU source fixtures, full inherited regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-15 -p test_fkp15.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP15_FULL_PRE_FIRSTUSE_REGRESSION=PASS
+
+  original-public-dev-once:
+    needs: [atlas-only, pre-dev-full-qualification]
+    if: needs.pre-dev-full-qualification.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+    outputs:
+      train_hash: ${{ steps.seal.outputs.train_hash }}
+      val_hash: ${{ steps.seal.outputs.val_hash }}
+      random_hash: ${{ steps.seal.outputs.random_hash }}
+    steps:
+      - name: Byte-exact checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Pin original unmodified MIT benchmark and full conventional runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp15-original-upstream"
+          git -C "$RUNNER_TEMP/fkp15-original-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp15-original-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+          test -z "$(git -C "$RUNNER_TEMP/fkp15-original-upstream" status --porcelain --untracked-files=all)"
+      - name: ONE original fresh public DEV - train FULL conventional controls first
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-15/run_dev.py --public-dev --upstream-root "$RUNNER_TEMP/fkp15-original-upstream" > "$RUNNER_TEMP/fkp15-original.json"
+          python - "$RUNNER_TEMP/fkp15-original.json" "$GITHUB_OUTPUT" <<'PY'
+          import hashlib,json,sys
+          r=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert r['schema']=='fkp15.public-source-16step-delayed-action-return.v1'
+          assert r['source_original_dev_consumed'] is True
+          assert r['protected_first_use'] is False and r['reserved_transfer_opened'] is False
+          assert r['scientific_pass'] is False and not r['accepted_native_model_modified']
+          assert r['source_actions']['total']<=245760
+          assert r['source_episodes']['train']==1728
+          assert r['source_episodes']['validation']==576
+          assert r['source_episodes']['dev']==768
+          assert r['direct_raw_bytes']==131072
+          for key in ('MLP_FROZEN','GRU_FROZEN'):
+              z=r['fully_fit_baseline_receipts'][key]
+              assert z['trained_epochs_each']==24
+              assert z['trained_seeds']==[1212,3434]
+          h=hashlib.sha256(json.dumps(r['source_blind_random_original_dev'],sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          with open(sys.argv[2],'a',encoding='utf-8') as f:
+              f.write('train_hash='+r['train_source_sha256']+'\n')
+              f.write('val_hash='+r['val_source_sha256']+'\n')
+              f.write('random_hash='+h+'\n')
+          print('FKP15_ORIGINAL_PUBLIC_DEV='+json.dumps({k:r[k] for k in (
+               'classification','source_actions','strongest_return_control',
+               'candidate_return_by_arm','direct_minus_best','paired_world_bootstrap_ci95',
+               'true_goal_events_by_arm','positive_events_by_arm','retention_pass',
+               'preregistered_gain_pass','direct_final_cold_sha256',
+               'original_pre_dev_all_models_sha256','timings')},sort_keys=True))
+          print('FKP15_ORIGINAL_SOURCE_RECEIPTS='+json.dumps({
+               'train':r['train_source_sha256'],'validation':r['val_source_sha256'],
+               'random_dev':h,'all_dev':r['original_dev_sha256']},sort_keys=True))
+          PY
+          test -z "$(git -C "$RUNNER_TEMP/fkp15-original-upstream" status --porcelain --untracked-files=all)"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP15_ORIGINAL_DEV_CONSUMED
+      - name: Preserve full original public DEV result as internal GitHub workflow artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fkp15-original-public-dev-firstuse
+          path: ${{ runner.temp }}/fkp15-original.json
+          retention-days: 30
+      - name: Post-first-use complete immutable-source regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-15 -p test_fkp15.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP15_LINUX_POST_DEV_FULL_REGRESSION=PASS
+
+  windows-consumed-source-replay:
+    needs: [atlas-only, original-public-dev-once]
+    if: needs.original-public-dev-once.result == 'success'
+    runs-on: windows-2022
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      EXPECTED_TRAIN_HASH: ${{ needs.original-public-dev-once.outputs.train_hash }}
+      EXPECTED_VAL_HASH: ${{ needs.original-public-dev-once.outputs.val_hash }}
+      EXPECTED_RANDOM_HASH: ${{ needs.original-public-dev-once.outputs.random_hash }}
+    steps:
+      - name: Byte-exact Windows checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Original pinned public benchmark and source-only dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp15-original-upstream"
+          git -C "$RUNNER_TEMP/fkp15-original-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+      - name: Exact consumed original source trajectories - not new independent learned DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-15/run_dev.py --replay-consumed --upstream-root "$RUNNER_TEMP/fkp15-original-upstream" > "$RUNNER_TEMP/fkp15-source-replay.json"
+          python - "$RUNNER_TEMP/fkp15-source-replay.json" <<'PY'
+          import hashlib,json,os,sys
+          r=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert not r['protected_first_use'] and not r['scientific_pass']
+          h=hashlib.sha256(json.dumps(r['source_blind_random_original_dev'],sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          assert r['train_source_sha256']==os.environ['EXPECTED_TRAIN_HASH']
+          assert r['val_source_sha256']==os.environ['EXPECTED_VAL_HASH']
+          assert h==os.environ['EXPECTED_RANDOM_HASH']
+          print('FKP15_WINDOWS_CONSUMED_SOURCE_MATCH='+json.dumps({
+             'train':r['train_source_sha256'],'validation':r['val_source_sha256'],
+             'original_random_dev':h,'classification':r['classification']}))
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP15_WINDOWS_CONSUMED_REPLAY_SOURCE_AND_FULL_REGRESSION=PASS
