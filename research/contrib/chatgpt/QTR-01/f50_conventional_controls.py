@@ -290,9 +290,15 @@ def _support_summary(sx,sy):
                            np.asarray([float(sy.mean())],dtype=np.float32)))
 
 
-def logistic_source_rows(data):
+def logistic_source_rows(data, *, hide_graph=False):
     """Explicit full lossless graph vector and public source episodic context."""
     graph,sx,sy,qx,qy=source_meta_episode(*data)
+    if type(hide_graph) is not bool:
+        raise ConventionalRejected("F50_LOGISTIC_GRAPH_VISIBILITY_INVALID")
+    # New target law's AST/DAG is unknown. FIT examples must include an
+    # unknown-law graph state; validation always measures that same state.
+    if hide_graph:
+        graph=np.zeros_like(graph)
     summary=_support_summary(sx,sy)
     samples=np.concatenate((np.broadcast_to(graph,(len(qy),GRAPH_DIM)),
                             np.broadcast_to(summary,(len(qy),34)),
@@ -318,7 +324,10 @@ def logistic_fit_source(law_data,fit_ids,val_data,val_ids,*,max_iter=ITERATIONS,
     matrices=[]
     labels=[]
     for law in fit_ids:
-        x,y=logistic_source_rows(law_data[law])
+        # Alternate public source graph visibility at FIT time. All source
+        # graph/episode information is available; hiding it from this predictor
+        # prevents an untrainable target-graph oracle dependency.
+        x,y=logistic_source_rows(law_data[law],hide_graph=((law+SEED)%2==0))
         matrices.append(csr_matrix(x))
         labels.append(y)
         if process_time()-start>budget_seconds:
@@ -347,7 +356,7 @@ def logistic_fit_source(law_data,fit_ids,val_data,val_ids,*,max_iter=ITERATIONS,
                      "cpu_seconds":cost,"scientific_pass":False}
     scores=[]
     for law in val_ids:
-        xval,yval=logistic_source_rows(val_data[law])
+        xval,yval=logistic_source_rows(val_data[law],hide_graph=True)
         z=xval@result.x[:-1]+result.x[-1]
         scores.append(float(np.mean(np.logaddexp(0,z)-yval*z)))
     receipt={"kind":KINDS[2],"status":"TRAINED_SOURCE_ONLY",
@@ -359,6 +368,9 @@ def logistic_fit_source(law_data,fit_ids,val_data,val_ids,*,max_iter=ITERATIONS,
              "final_gradient_max":float(np.max(np.abs(objective(result.x)[1]))),
              "source_validation_bce":float(np.mean(scores)),
              "optimizer":"deterministic full-batch scipy L-BFGS-B",
+             "target_graph_unknown_compatible":True,
+             "validation_target_graph_hidden":True,
+             "source_graph_mask_policy":"FIT: (law_id+11)%2==0; VALIDATION: all hidden",
              "cpu_seconds":cost,"scientific_pass":False}
     return result.x.copy(),receipt
 

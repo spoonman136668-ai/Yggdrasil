@@ -141,6 +141,22 @@ class F50ConventionalControlsTests(unittest.TestCase):
         self.assertEqual(receipt["source_validation_laws"],2)
         self.assertTrue(np.isfinite(receipt["source_validation_bce"]))
 
+    def test_unknown_target_graph_training_and_validation_parity(self):
+        law=self.fit_ids[0]
+        full,labels=c.logistic_source_rows(self.fit[law])
+        hidden,hidden_labels=c.logistic_source_rows(self.fit[law],hide_graph=True)
+        self.assertEqual(full.shape,(168,1102))
+        self.assertGreater(np.count_nonzero(full[:,:c.GRAPH_DIM]),0)
+        self.assertEqual(np.count_nonzero(hidden[:,:c.GRAPH_DIM]),0)
+        np.testing.assert_array_equal(hidden[:,c.GRAPH_DIM:],full[:,c.GRAPH_DIM:])
+        np.testing.assert_array_equal(labels,hidden_labels)
+        validation=c.logistic_source_rows(self.valid[self.val_ids[0]],hide_graph=True)
+        self.assertEqual(np.count_nonzero(validation[0][:,:c.GRAPH_DIM]),0)
+        with self.assertRaises(c.ConventionalRejected):
+            c.logistic_source_rows(self.fit[law],hide_graph="false")
+        self.assertTrue(any((law+c.SEED)%2==0 for law in self.fit_ids+
+                            tuple(sorted(world.source_split(1024)[0]))))
+
     def test_negative_wrong_solver_or_unsupported_neural_fails(self):
         with self.assertRaises(c.ConventionalRejected):
             c.create_neural("baseline_transformer")
