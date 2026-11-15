@@ -1,0 +1,107 @@
+name: QTR-01 F39 preserve already verified CC0 FIT breadth source
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  archive-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F39 archive exact verified FIT source without requery'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen source identity and isolated empty archive marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 8498a05b24157e322502ac43527738688756cebd HEAD
+          git merge-base --is-ancestor 9902c47caf1b39f640cff1227971df748f5a5983 HEAD
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F39 archive exact verified FIT source without requery'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f39_prereg.json)" = "2f103d7c596d710c6060450ccbcf9a955f4bd7bd"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f39_source_breadth.py)" = "b73948067603fffe671b206e2241b894aac5f224"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f39_source_breadth.py)" = "5d47f1f27d263f1c5574c12fb8ab07da95f70461"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_all_language_associations.py)" = "6746518963f07f8355fc4bd66716d86547183005"
+          test ! -e research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json
+          test -z "$(git status --porcelain)"
+          echo F39_ARCHIVE_FIRST_PARTY_SOURCE_IDENTITY=PASS
+      - name: Retrieve existing immutable F39 source artifact; no new Wikidata calls
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f39-existing-source"
+          gh run download 43696876118 --repo spoonman136668-ai/Yggdrasil --name qtr01-f39-fit-breadth-original-cc0-source --dir "$RUNNER_TEMP/f39-existing-source"
+          FILE="$RUNNER_TEMP/f39-existing-source/qtr01-f39-fit-original-source.json"
+          test -s "$FILE"
+          printf '%s  %s\n' 7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044 "$FILE" | sha256sum --check
+          F39_FILE="$FILE" python - <<'PY'
+          import hashlib,json,os,pathlib
+          raw=pathlib.Path(os.environ['F39_FILE']).read_bytes()
+          d=json.loads(raw)
+          assert hashlib.sha256(raw).hexdigest()=="7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044"
+          assert d['schema']=='yggdrasil.qtr01.f39.prospective-breadth-source-fit-only.v1'
+          assert d['preregistered_commit']=='8498a05b24157e322502ac43527738688756cebd'
+          assert d['data_stage']=='SOURCE_ONLY_FIT_NOT_SCIENCE'
+          assert d['headroom_status']=='FIT_SOURCE_BREADTH_PRESENT'
+          assert d['labeled_witnessed_rows']==49
+          assert len(d['fit_roots_with_twohop'])==8
+          assert len(d['fit_groups_with_twohop'])==5
+          assert len(d['fit_relation_pairs'])==8
+          assert len(d['fit_query_signatures'])==16
+          assert d['source_http_get_count']==86
+          assert d['source_http_bytes']==16320676
+          assert d['reserved_unseen_read_count']==0
+          reserved=set(d['reserved_unseen_roots_NOT_READ'])
+          assert reserved=={'Q142','Q183','Q312','Q1490'}
+          assert len(d['witnessed_rows'])==49
+          assert all(x['s'] not in reserved and x['o'] not in reserved and
+                     x['source_claim'].startswith(x['s']+'$') and
+                     isinstance(x['source_revision'],int) and x['source_revision']>0 and
+                     all(x.get(f) for f in
+                         ('s_label','p_label','o_label','s_language','p_language','o_language'))
+                     for x in d['witnessed_rows'])
+          assert d['scientific_pass'] is False
+          assert d['native_model_weights_edited'] is False
+          assert d['trained_conventional_or_native_baseline_run'] is False
+          assert d['protected_scientific_first_use_consumed'] is False
+          assert len(raw)<=786433
+          print('F39_EXACT_SOURCE_SHA256=7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044')
+          print('F39_SOURCE_ARCHIVE_PROVENANCE=PASS')
+          PY
+      - name: Commit only exact previous CC0 source evidence to draft branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$RUNNER_TEMP/f39-existing-source/qtr01-f39-fit-original-source.json"
+          DEST="research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json"
+          cp "$SRC" "$DEST"
+          printf '%s  %s\n' 7d223dcb9d9082059cdc237d7a551c2a3a0f21ca81824318bec1624aa25c4044 "$DEST" | sha256sum --check
+          git add -- "$DEST"
+          test "$(git diff --cached --name-only)" = "$DEST"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research(qtr): preserve exact F39 CC0 FIT breadth source'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = "$DEST"
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo "F39_SOURCE_ARCHIVE_COMMIT=$(git rev-parse HEAD)"
+          echo F39_SOURCE_ARCHIVED_WITHOUT_REQUERY=PASS
