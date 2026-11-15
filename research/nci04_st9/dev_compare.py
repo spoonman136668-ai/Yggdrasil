@@ -189,6 +189,11 @@ def train_once(path):
         )):
             limited={n:cohort[n] for n in names}
             rec=original_episode(law,seed,0,B,limited,True,cold=(i==0))
+            # Cold restore replaces limited[name] with a NEW model object.
+            # Rebind it into the canonical trained cohort or the first
+            # genuine fitted intervention is silently lost.
+            for name in names:
+                cohort[name]=limited[name]
             source_hash.update(bytes.fromhex(rec[
                 "real_source_action_bytes_hex"]))
             source_wall+=rec["source_wall_ns"]
