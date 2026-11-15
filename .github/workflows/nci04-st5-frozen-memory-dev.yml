@@ -38,7 +38,7 @@ jobs:
           python -B - <<'PY'
           from research.nci04_st5.dev_compare import guard_provenance
           p=guard_provenance()
-          assert p['authority']['first_use'] is not True if 'first_use' in p['authority'] else True
+          assert p['authority']['protected_first_use'] is False
           assert p['authority']['merge'] is False
           print('ST5_PREHELD_PROTOCOL_SOURCE_MODEL_CONTROLS_AND_EVALUATOR_FROZEN=PASS')
           PY
