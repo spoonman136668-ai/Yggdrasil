@@ -1,0 +1,239 @@
+name: NCI04 ST4 frozen matched actual paired causal development
+on:
+  push:
+    branches:
+      - research/nci04-st4-balanced-intervention-pairs-20261114
+permissions:
+  contents: read
+jobs:
+  training:
+    if: "github.event.head_commit.message == 'science(st4): run frozen paired DEV comparison'"
+    name: ST4 single original training checkpoint on Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin process accounting dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Verify source boundary and preregistration before original actions
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor b03a33159905c1d0e8b2aa0965f418b9a35c455e HEAD
+          test "$(git rev-parse HEAD:research/nci04_st4/frozen_protocol.json)" = edaea790d3457bd91ea136a6b266c19e6dd61575
+          test "$(git rev-parse HEAD:research/nci04_st4/paired_world.py)" = 447b946ee03c725902ce4d96f17bbc22aaeb814d
+          test "$(git rev-parse HEAD:research/nci04_st4/source_audit.py)" = ce3677964459efab1b783387d43bb2e4d63a8054
+          python -B -m unittest discover -s tests -p 'test_nci04_st4_dev_harness.py' -v
+      - name: Train ONCE on 96 source-law/seed development episodes, held unopened
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st4.dev_compare import train_once,read_checkpoint
+          out=Path(os.environ['RUNNER_TEMP'])/'st4-common-training.json'
+          d=train_once(out)
+          receipt,sha=read_checkpoint(out)
+          assert d==receipt
+          assert d['training_source_action_steps']==6144
+          assert d['protected_scientific_first_use'] is False
+          assert d['held_development_opened'] is False
+          print('ST4_COMMON_TRAINING_CHECKPOINT_SHA256='+sha)
+          print('ST4_TRAINING_CUSTODY=PASS')
+          PY
+      - name: Exact unchanged repository after training
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st4-exact-single-training-models
+          path: ${{ runner.temp }}/st4-common-training.json
+          if-no-files-found: error
+          retention-days: 14
+  matched_held:
+    if: "github.event.head_commit.message == 'science(st4): run frozen paired DEV comparison'"
+    needs: training
+    name: ST4 original held in-house paired development (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Prevent source byte drift on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin resource and time accounting package
+        shell: bash
+        run: python -m pip install --disable-pip-version-check psutil==6.1.1
+      - name: Retrieve the SAME frozen preheld checkpoint bytes
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st4-exact-single-training-models
+          path: ${{ runner.temp }}
+      - name: Verify exact trained models before first original held law
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st4.dev_compare import guard_source,read_checkpoint
+          guard_source()
+          c,h=read_checkpoint(Path(os.environ['RUNNER_TEMP'])/'st4-common-training.json')
+          assert c['held_development_opened'] is False
+          assert c['protected_scientific_first_use'] is False
+          print('ST4_SAME_PREHELD_TRAINING_BLOB='+h)
+          print('ST4_NO_PRIVATE_SOURCE_OR_PROTECTED_FIRST_USE=PASS')
+          PY
+      - name: Frozen paired genuine held-development source predictions and interference
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONHASHSEED: '0'
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          from research.nci04_st4.dev_compare import compare
+          temp=Path(os.environ['RUNNER_TEMP'])
+          d=compare(
+              temp/'st4-common-training.json',
+              temp/'st4-frozen-held-dev.json'
+          )
+          assert d['held_laws_opened_once']==[29,31,37,41]
+          assert len(d['held_source_receipts'])==32
+          assert sum(x['source_real_actions'] for x in d['held_source_receipts'])==2048
+          assert d['protected_first_use'] is False
+          assert d['independent_source'] is False
+          assert d['scientific_pass'] is False
+          print('ST4_INHOUSE_HELD_ACTUAL_ACTIONS_AND_BRIER=RECORDED')
+          PY
+      - name: Source worktree remains unchanged
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: st4-frozen-original-held-${{ matrix.os }}
+          path: ${{ runner.temp }}/st4-frozen-held-dev.json
+          if-no-files-found: error
+          retention-days: 14
+  parity:
+    if: "github.event.head_commit.message == 'science(st4): run frozen paired DEV comparison'"
+    name: ST4 original-source, integer-state and independent cost parity
+    needs: matched_held
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st4-frozen-original-held-ubuntu-latest
+          path: linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: st4-frozen-original-held-windows-2022
+          path: windows
+      - name: Source/action integrity, forecast and cold-state byte parity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          x=json.loads(Path('linux/st4-frozen-held-dev.json').read_text('utf-8'))
+          y=json.loads(Path('windows/st4-frozen-held-dev.json').read_text('utf-8'))
+          root=('schema','source_kind','frozen_protocol_blob',
+                'source_original_blob','training_checkpoint_sha256',
+                'training_source_per_law_receipts','held_laws_opened_once',
+                'held_seeds_opened_once','candidate_or_control_saw_private_law_or_pair_id',
+                'protected_first_use','independent_source','scientific_pass',
+                'frozen_hypothesis_changed_after_held')
+          for key in root:
+              if x[key]!=y[key]:
+                  raise SystemExit('ST4_SOURCE_AND_SINGLE_TRAIN_BLOB_DRIFT_'+key)
+          if len(x['held_source_receipts'])!=len(y['held_source_receipts'])!=32:
+              raise SystemExit('ST4_HELD_COHORT_INCOMPLETE')
+          if len(x['held_source_receipts'])!=32 or len(y['held_source_receipts'])!=32:
+              raise SystemExit('ST4_HELD_EXACT_32_MISSING')
+          source_equal=True
+          native_state_equal=True
+          scores_equal=True
+          for a,b in zip(x['held_source_receipts'],y['held_source_receipts']):
+              keys=('law_evaluator_only','seed_evaluator_only','phase',
+                    'source_real_actions','original_paired_source_sha256',
+                    'original_pair_sha256','paired_true_opposing_bits',
+                    'paired_candidate_directionally_correct_bits',
+                    'cold_restarts','model_received_private_source_fields',
+                    'protected_scientific_first_use')
+              if any(a[k]!=b[k] for k in keys):
+                  source_equal=False
+              if a['candidate_per_actual_action_state_hash']!=b['candidate_per_actual_action_state_hash']:
+                  native_state_equal=False
+              for name in a['preaction_brier']:
+                  for part in a['preaction_brier'][name]:
+                      if not math.isclose(
+                          a['preaction_brier'][name][part],
+                          b['preaction_brier'][name][part],
+                          rel_tol=0,abs_tol=1e-12
+                      ):
+                          scores_equal=False
+          if not source_equal:
+              raise SystemExit('ST4_ORIGINAL_SOURCE_ACTIONS_NOT_CROSS_OS_IDENTICAL')
+          if x['metrics']['frozen_checks'].keys()!=y['metrics']['frozen_checks'].keys():
+              raise SystemExit('ST4_FROZEN_CHECK_SET_DRIFT')
+          cost='whole_source_actor_model_wall_ratio_under_1_5'
+          for key in x['metrics']['frozen_checks']:
+              if key!=cost and x['metrics']['frozen_checks'][key]!=y['metrics']['frozen_checks'][key]:
+                  raise SystemExit('ST4_NONCOST_FROZEN_SCIENCE_DIVERGENCE_'+key)
+          same_cost=x['metrics']['frozen_checks'][cost]==y['metrics']['frozen_checks'][cost]
+          observed=(
+              native_state_equal and scores_equal and same_cost and
+              all(x['metrics']['frozen_checks'].values()) and
+              all(y['metrics']['frozen_checks'].values())
+          )
+          print('ST4_ACTUAL_PUBLIC_SOURCE_CROSS_OS=PASS')
+          print('ST4_SHARED_TRAIN_SHA256='+x['training_checkpoint_sha256'])
+          print('ST4_NATIVE_INTEGER_STATE_PARITY='+('PASS' if native_state_equal else 'FAIL'))
+          print('ST4_PREACTION_BRIER_CROSS_OS='+('PASS' if scores_equal else 'FAIL'))
+          print('ST4_COST_THRESHOLD_BOTH_OS_IDENTICAL='+('YES' if same_cost else 'NO'))
+          print('ST4_LINUX_SOURCE_ACTOR_MODEL_WALL_RATIO='+str(x['metrics']['candidate_vs_best_control_total_wall_ratio']))
+          print('ST4_WINDOWS_SOURCE_ACTOR_MODEL_WALL_RATIO='+str(y['metrics']['candidate_vs_best_control_total_wall_ratio']))
+          print('ST4_DEV_DISPOSITION='+(
+              'DEV_SIGNAL_NOT_SCIENCE' if observed else 'DEV_NO_GO'
+          ))
+          print('ST4_PROTECTED_FIRST_USE_NOT_RUN=PASS')
+          PY
