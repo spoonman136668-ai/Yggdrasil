@@ -27,3 +27,7 @@ python scripts/build_code_atlas.py --check-if-present
 ## Fabricated-source fixture verification
 
 Both GitHub-hosted Windows 2022 and Ubuntu focused NKR-01 tests, incumbent causal-cells/Wilson tests, and exact preregistration were **SUCCESS** at `4dee776c2b5e8b05dc98a61e89320865330ee12c`, [run #43711589118](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43711589118). This is pre-acceptance DEV evidence only. Final exact-source qualification and independent G29 both operating systems remain mandatory.
+
+### Exact-source independent G29 hygiene repair
+
+First exact-source final regression passed on **both** Linux and Windows at `4355c555872115aa8ea4899567bfae6accef9ad3`, but independent G29 failed at the final `git status --porcelain` cleanliness check **after all four atlas tests passed** on both OS. Root cause is this independent job did not disable Python bytecode, unlike its passing final-regression counterpart. Workflow-only fix `83acfb3a0228c3a0b619b807e7504b8a6957a9ec` exports `PYTHONDONTWRITEBYTECODE=1` and `PYTHONHASHSEED=0` for all jobs. No learner or test outcome was modified; requalification on a newly pinned complete exact source is mandatory. The failed receipts remain recorded; no merge or scientific acceptance.
