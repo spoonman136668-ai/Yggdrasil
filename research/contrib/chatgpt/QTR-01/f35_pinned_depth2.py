@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import sys
 
-from f26_semantic_association import NotAdmitted, ITEM_RE, qnum, stable_json, digest, dryrun
+from f26_semantic_association import NotAdmitted, ITEM_RE, qnum, stable_json, digest, PackedAssociationWeights
 from f27_versioned_entitydata import LiveEntityData
 from f31_all_language_associations import source_label
 
@@ -230,17 +230,28 @@ def twohop_analysis(original, added):
         for p2, obj in control.get(mid, ()):
             paths.append((s, p1, mid, p2, obj))
     paths.sort()
-    normalized = [dict(
-        s=row["s"], p=row["p"], o=row["o"],
-        s_label=row["s_label"], p_label=row["p_label"],
-        o_label=row["o_label"], source_claim=row["source_claim"],
-        source_revision=row["source_revision"]) for row in raw]
-    numeric = dryrun(normalized)
+    # Reuse F26's architecture-independent *integer* carrier, not its
+    # F26-only original-seed admission validator. New witnessed source subjects
+    # are legitimate new QIDs; all source/claim custody stays independently
+    # checked before this stage.
+    weights = PackedAssociationWeights(sorted(keys))
+    restored = PackedAssociationWeights.restore(weights.blob)
+    subjects = sorted({s for s, _, _ in keys})
+    predicates = sorted({p for _, p, _ in keys})
     queries = sorted({(s, p1, p2) for s, p1, _, p2, _ in paths})
-    if (numeric["twohop_compositions_checked"] != len(queries)
-        or not numeric["equal_info_symbolic_control_parity"]
-        or not numeric["cold_restore_exact"]):
-        raise NotAdmitted("F35_NUMERIC_VS_EXACT_SOURCE_SYMBOLIC_COMPOSITION_DRIFT")
+    if restored.blob != weights.blob or restored.triples != weights.triples:
+        raise NotAdmitted("F35_NUMERIC_COLD_RESTORE_NOT_CANONICAL")
+    # Strongest exact source-informed symbolic control for EVERY candidate
+    # subject/predicate pair, not merely queries with nonempty answers.
+    for subject in subjects:
+        for first_property in predicates:
+            mids = {obj for p, obj in control.get(subject, ())
+                    if p == first_property}
+            for second_property in predicates:
+                symbolic = {obj for mid in mids for p, obj in control.get(mid, ())
+                            if p == second_property}
+                if weights.twohop(subject, first_property, second_property) != symbolic:
+                    raise NotAdmitted("F35_NUMERIC_VS_EXACT_SOURCE_SYMBOLIC_COMPOSITION_DRIFT")
     return {
         "total_witnessed_triples": len(raw),
         "new_witnessed_triples": len(added),
