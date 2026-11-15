@@ -27,3 +27,7 @@ The exact frozen candidate must pass fabricated WSP115 fixture + complete inheri
 ### Original protected first-use (CI only, after qualification)
 
 `python research/contrib/chatgpt/WSP-115/experiment_v2.py --frozen-v2-shard 0` — each shard index 0..7 runs exactly once via the qualified GitHub workflow and prints its unique first-use receipt.
+
+## Pre-original fixture qualification receipt
+
+Fabricated v2 two-world shard fixture **PASS on Linux and Windows** at source candidate `1356daa2ae6c8f470f86518ecb7b4c28fa289bb4`, GitHub Actions [#43706400227](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43706400227). No hidden WSP115 v2 oracle first-use was called. Generated-only G29 source companion and mandatory inherited regression still gate first use. Do not run scientific shards on this pre-atlas commit.
