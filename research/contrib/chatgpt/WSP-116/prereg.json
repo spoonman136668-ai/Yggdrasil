@@ -1,0 +1,60 @@
+{
+  "schema": "wsp116.real-graph-foundation-density.prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-116",
+  "contribution_class": "research-only-consumed-source-diagnostic",
+  "question": "Does increasing already-observed real interconnected factual source coverage improve previously masked subject-conditioned multi-hop relationship answers rather than just storage?",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "sha": "c4f2021d0b1c3a774ec1486ab7ae16eca9f10b94",
+    "pr": 1056,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "source": {
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "archive_bytes": 174515774,
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "train_rows": 21343681,
+    "train_bytes": 436189882,
+    "relation_types": 828,
+    "retained_after_original_group_mask": 20677636,
+    "masked_rows": 666045,
+    "original_consumed_query_count": 4096,
+    "original_answer_sha256": "008249f2c9731a426645c584e887bb056662c96f8c2385ba946b98ca3d9f49dc",
+    "official_benchmark_variant": "noncanonical historical mirror, not published canonical Wikidata5M benchmark",
+    "license": "Wikidata structured statements CC0 only"
+  },
+  "cohorts": "EXACT already-consumed WSP103/WSP105 4096 masked TRAIN subject-predicate query groups, and previously disclosed labels. No fresh official VALID/TEST, protected WSP101, science first-use or model training. All results nonindependent diagnostics.",
+  "tiers": [
+    {
+      "name": "6.25%",
+      "bucket_lt": 16
+    },
+    {
+      "name": "25%",
+      "bucket_lt": 64
+    },
+    {
+      "name": "100%",
+      "bucket_lt": 256
+    }
+  ],
+  "source_selection": "After excluding ALL WSP103 hidden subject-predicate groups, include each retained triple when sha256(b'WSP116-TIER-v1\\0' + little-endian three uint32 s,p,o)[0] < tier.bucket_lt. Nested, value-blind, no outcomes used.",
+  "numerical_storage": "Stream each admitted retained triple as three little-endian uint32 direct numeric factual weights (12 bytes per fact). Hash packed source and cold reread; this is literal storage, not trained neural embeddings. Limit full tier to 256MB.",
+  "association_engine": "Refit frozen WSP105 64-slot relation heavy-hitter candidates, independent exact frequency recount, 32 SHA-priority subject neighbor facts, and bounded two-hop path votes at every tier, using only that tier's retained rows. A separate symbolic Counter plus numeric int32 arrays must rank identically; parity means no unique numeric advantage.",
+  "controls": [
+    "Same-tier frequency-only vs path-first and path-only/wrong-reverse controls.",
+    "Full tier must reproduce already known WSP105 frequency Hits@1=921/4096, path-first Hits@1=1190/4096, frequency Hits@10=1853/4096, path-first Hits@10=2038/4096, answer SHA and full candidate score receipt.",
+    "Report full vs quarter path-first Hits@1 per-query delta, and 10k paired bootstrap CI seeded 1160."
+  ],
+  "frozen_gate": "Nonindependent source utility diagnostic only if 100% tier path-first Hits@1 exceeds 25% tier ≥100/4096 (2.44 percentage points) and paired bootstrap 95% lower>0, full prior historical integrity matches, source leak count 0, cold packed SHA256 exact, symbolic/numeric rank parity. Never SCIENTIFIC_PASS.",
+  "negative": "No dose response => saturated/underidentified on this candidate set. Numeric-symbolic tie is expected. Source hash/count mismatch INVALID. Upstream unavailable INFRA_FAILURE. Existing source labels are not virgin science.",
+  "engineering": "Prereg FIRST; fixture-only source/negative tests and full repo regression plus G29 both Ubuntu and Windows at exact candidate SHA/tree BEFORE historical-source diagnostic; one existing GitHub hosted read-only run; after scan full inherited regression. No native accepted-main edits, new scheduler, protected cohorts or paid APIs.",
+  "budget": {
+    "compressed_source_bytes_max": 268435456,
+    "real_source_rows_max": 21343681,
+    "stream_passes": 3,
+    "max_wall_seconds": 1800,
+    "max_packed_bytes_per_tier": 256000000
+  }
+}
