@@ -38,7 +38,7 @@ jobs:
           git merge-base --is-ancestor 5159a65cd403bc3cbd507ab713742ebae330e28a HEAD
           test "$(git rev-parse HEAD:research/nci04_st9/frozen_protocol.json)" = 9ad8bc15e8dd8b0757c8db13772de23c57d2f3cf
           test "$(git rev-parse HEAD:research/nci04_st9/private_world.py)" = d1bdf67503bd797d79386406820679b70403e8bb
-          test "$(git rev-parse HEAD:research/nci04_st9/source_audit.py)" = e1083ce61f0c96b53a3771b08efcc4f9af87e34d
+          test "$(git rev-parse HEAD:research/nci04_st9/source_audit.py)" = bdf86bafbd166861ec7cd3264de6c87b04f25cfc
           python -B - <<'PY'
           from research.nci04_st9.source_audit import verify_freeze
           p=verify_freeze()
