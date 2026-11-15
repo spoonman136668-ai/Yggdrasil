@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '3d2748da05ffd6a9354bc58619c736b32373b0cf'
+          test "$(git rev-parse HEAD^)" = '8277e668d761368efb2779b13361ca09681ff45f'
           test "$(git log -1 --format=%s)" = 'ci(qtr): F48 focused counterfactual witness versus Bayesian IG DEV'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f48-counterfactual-witness.yml'
           git merge-base --is-ancestor c5f831ea4e5615c8d35d472ac24c40b78674786a HEAD
