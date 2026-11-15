@@ -21,7 +21,7 @@ class FKP08Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             source.observe(700,1,256)
         with self.assertRaises(PermissionError):
-            source.view(1800,1) if False else source.observe(1800,1,0)
+            source.view(1800,1)
         with self.assertRaises(PermissionError):
             source.held_dev(1800,1,())
         with self.assertRaises(ValueError):
