@@ -257,7 +257,10 @@ class FullyTrainedRecurrent:
         h.update(bytes.fromhex(self._digest))
         for k, tensor in sorted(self._net.state_dict().items()):
             h.update(k.encode("ascii"))
-            h.update(tensor.detach().cpu().contiguous().numpy().tobytes())
+            # Convert directly from contiguous float32 tensor to little-endian
+            # bytes without assuming a NumPy installation in the CPU runner.
+            values = tensor.detach().cpu().contiguous().reshape(-1).tolist()
+            h.update(struct.pack("<" + "f" * len(values), *values))
         h.update(json.dumps(self._history, separators=(",", ":")).encode("ascii"))
         h.update(struct.pack("<I", self.world_count))
         return h.hexdigest()
