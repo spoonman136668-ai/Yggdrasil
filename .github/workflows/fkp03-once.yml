@@ -1,0 +1,150 @@
+name: FKP03 isolated exact-source G29 and public-DEV active-learning qualification
+
+on:
+  push:
+    branches: [ci/fkp03-g29-one-shot-20261115]
+    paths: [.github/workflows/fkp03-once.yml]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fkp03-qualify-once-20261115
+  cancel-in-progress: false
+
+jobs:
+  atlas-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-03): one-shot exact-source public DEV qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      exact_head: ${{ steps.seal.outputs.exact_head }}
+    env:
+      SOURCE: a185efe3c91988ac5e5d2992ec39a71dfc63c3c1
+      SOURCE_TREE: 8423c5f643f6f99fbb6bb536c4b15a90b21f9743
+      TARGET: research/fkp03-active-information-probe-20261115
+    steps:
+      - name: Byte-stable git setup
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a185efe3c91988ac5e5d2992ec39a71dfc63c3c1
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Require exact head, prior protocol and ALL source blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor da035763b42834828d3ea185b1074463b3e38172 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-03/prereg.json)" = 02fe79d4dbc060c77d171855417f8da83a83828b
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-03/source.py)" = df05deffda9ab15907d0cdc768e8286958e73b42
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-03/model.py)" = e6789c6ae74d3cdbe54b5d117e600b7be1095a40
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-03/run_dev.py)" = 52ca6c12d687882316656451469f897f5058d032
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-03/test_fkp03.py)" = bdbc09ea9fdefb6fa86c43a36898f87c2fcb281a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-03/README.md)" = 26521af1cb2e028891a2cdf618cd93f175ee83df
+          echo "FKP03_CUSTODY=PASS"
+      - name: Regenerate ONLY G29 atlas snapshot on pinned source
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual.txt"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected.txt"
+          diff -u "$RUNNER_TEMP/expected.txt" "$RUNNER_TEMP/actual.txt"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Seal exact original indexed source on existing research branch
+        id: seal
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-03): refresh generated G29 source atlas"
+          NEW="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "exact_head=$NEW" >> "$GITHUB_OUTPUT"
+          echo "FKP03_ATLAS_ONLY_NEW_SHA=$NEW"
+
+  full-dev-engineering:
+    needs: atlas-only
+    if: needs.atlas-only.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Prevent CRLF source mutation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-only.outputs.exact_head }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: G29 original atlas and focused full repo checks
+        shell: bash
+        run: |
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: FKP03 public source and active learner focused tests
+        shell: bash
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-03 -p test_fkp03.py -v
+          python -B research/contrib/chatgpt/FKP-03/source.py
+      - name: Frozen FKP03 public DEV comparison, no protected world
+        shell: bash
+        run: |
+          python -B research/contrib/chatgpt/FKP-03/run_dev.py > "$RUNNER_TEMP/fkp03-dev.json"
+          python - "$RUNNER_TEMP/fkp03-dev.json" <<'PY'
+          import json,sys
+          x=json.load(open(sys.argv[1],encoding="utf-8"))
+          assert x["schema"]=="fkp03.public-dev-active-learning.v1"
+          assert not x["protected_first_use"] and x["distinct_dev_worlds"]==16
+          assert x["action_budget_per_world_per_policy"]==16
+          assert x["learned_compositional_three_input_functions"]==256
+          print("FKP03_DEV_RESULT="+json.dumps({
+             k:x[k] for k in ("mean_accuracy","paired_bootstrap",
+             "actual_source_owner_dev_family_accuracy","dev_policy_threshold_met",
+             "classification","strict_scientific_advantage",
+             "learned_foundation_vs_preloaded_equal_by_construction",
+             "wall_seconds_local_dev")},sort_keys=True))
+          PY
+      - name: Mandatory inherited full final repo regression
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "FKP03_FULL_CROSS_OS_REGRESSION=PASS"
