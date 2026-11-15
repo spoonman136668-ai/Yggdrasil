@@ -26,13 +26,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '5e0ab7d1cf40f1a05ea2cb64492ab6beee448ca7'
+          test "$(git rev-parse HEAD^)" = '27819e38c57eb1ede7f1d820a8cfb23309cad23b'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f49-controls.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_prereg.json)" = '839309211feef018d1c308091716bc6e0d4e7a70'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_worlds.py)" = '9a5185584b965f6529ceceadc1da8da8eb36be70'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_discrete_learners.py)" = '4981cdbcd3f46e4b54d5b991fd872e5a8d5761a0'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_discrete_learners.py)" = 'cb9621fc8bc69e33ccd080cf1ddd69f9fecfc3a7'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_conventional_controls.py)" = '5eaad015cc0388854268bc36fda1a673b28ffcaf'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_discrete_learners.py)" = 'ce091e7cc3747beefff00a6d90d129ae6fbe4d1e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_discrete_learners.py)" = '12195bea3083e37b179476606279f442be9e4277'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_conventional_controls.py)" = '8b8b133f57819cb7316a8cdd409c7a6dd26ea618'
           test -z "$(git status --porcelain)"
           echo F49_CONTROL_ATLAS_SOURCE_PIN=PASS
@@ -96,9 +96,9 @@ jobs:
           git merge-base --is-ancestor 5e0ab7d1cf40f1a05ea2cb64492ab6beee448ca7 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_prereg.json)" = '839309211feef018d1c308091716bc6e0d4e7a70'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_worlds.py)" = '9a5185584b965f6529ceceadc1da8da8eb36be70'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_discrete_learners.py)" = '4981cdbcd3f46e4b54d5b991fd872e5a8d5761a0'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_discrete_learners.py)" = 'cb9621fc8bc69e33ccd080cf1ddd69f9fecfc3a7'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_conventional_controls.py)" = '5eaad015cc0388854268bc36fda1a673b28ffcaf'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_discrete_learners.py)" = 'ce091e7cc3747beefff00a6d90d129ae6fbe4d1e'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_discrete_learners.py)" = '12195bea3083e37b179476606279f442be9e4277'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_conventional_controls.py)" = '8b8b133f57819cb7316a8cdd409c7a6dd26ea618'
           python scripts/build_code_atlas.py --check
           echo F49_SEVEN_ARM_CODE_SOURCE_PIN_PASS
