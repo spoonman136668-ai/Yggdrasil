@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.qtr01.f30.language-preserving-cc0-associations.v1",
+  "stage": "FROZEN_BEFORE_SOURCE_CAPTURE_OR_IMPLEMENTATION",
+  "parent_sha": "4220f719f1e90dc2f3c98441b538747d2811d4ff",
+  "question": "Can original first-party Wikidata source statements be admitted as real, source-versioned, labeled Q-P-Q associations when the original source uses a non-English label? Carry exact original language tags; never translate or fabricate an English label.",
+  "source": "https://www.wikidata.org/wiki/Special:EntityData/{id}.json",
+  "rights": "Wikidata structured statement data CC0, not Wikipedia text or OpenAI/Qwen output; label text must be returned by first-party source itself",
+  "allowed_seed_qids": [
+    "Q42",
+    "Q5"
+  ],
+  "allowed_properties": [
+    "P31",
+    "P279",
+    "P106",
+    "P19",
+    "P69",
+    "P27",
+    "P50",
+    "P463"
+  ],
+  "allow_label_languages_in_preference_order": [
+    "en",
+    "en-gb",
+    "en-ca",
+    "en-us",
+    "fr",
+    "de",
+    "es",
+    "it"
+  ],
+  "language_selection": "First usable exact first-party label in frozen priority order; preserve source_language for subject/predicate/object per triple. No cross-language equivalence or translation claims.",
+  "identity": "Original first-party item QIDs and source statement IDs; all seed claims must bind to subject; only normal/preferred unqualified mainsnak value wikibase-item; no inferred links.",
+  "fixed_revision": "Each seed gets one live first-party read and one exact returned lastrevid query read, requiring identical canonical entity SHA256 and revision; other endpoint/property objects fetched at most once with SHA256/revision custody.",
+  "candidate_endpoint_selection": "For source admissibility only, first favor observed object QIDs from connected Q42->Q5->object relations when present; then all others ascending QID; maximum 24, no label-conditioned selection.",
+  "max_source_statements": 160,
+  "max_endpoint_queries": 24,
+  "source_per_get_max_bytes": 4194304,
+  "source_aggregate_max_bytes": 16777216,
+  "max_output_metadata_bytes": 393216,
+  "timeout_seconds": 15,
+  "source_network_retries": 0,
+  "pre_registered_acceptance": "At least one fully witnessed, source-labeled Q-P-Q association and exact cold numeric carrier equality to the same-row symbolic set. Composed 2-hop queries may be zero; disclose honestly. A first-party source error, missing permitted label, revision discrepancy or too-large response is a BLOCKED source result, not scientific NO-GO.",
+  "negative_controls": [
+    "absence of allowed language never replaced by a guessed name",
+    "alternate-language provenance preserved and all three Q/P endpoint source label languages explicit",
+    "torn/mismatching exact revision rejected",
+    "incorrect source statement witness, qualifiers, deprecated or non-item values excluded",
+    "shuffled numeric edge set changes canonical/observed composition",
+    "original byte-hash and raw request ID provenance mandatory",
+    "frozen zero-training equal-info symbolic control included"
+  ],
+  "fences": {
+    "no_training_or_protected_first_use": true,
+    "no_model_weight_modification": true,
+    "no_qwen_hidden_activations": true,
+    "no_chatgpt_generated_training_content": true,
+    "no_accepted_yggdrasil_wingless_hybrid_state": true,
+    "no_merge": true,
+    "no_research_loop_or_controller": true,
+    "no_schedule": true,
+    "no_paid_api": true
+  },
+  "test_scope": "Independent QTR draft/source only. One-shot public GitHub Actions original-source read and separate Linux/Windows source-free negative tests. No user-library output.",
+  "evidence": "Actions-only bounded source JSON, raw-response SHA256 and revision receipts, typed fact triple IDs, original multilingual label text with exact language, numerical carrier summary, symbolic parity. No user-visible raw model files.",
+  "scientific_claim": "None. Numeric fixed adjacency is direct integer programming of source associations, not native neural weight programming, learned causal association, retention or AGI. Later scientific evaluation needs frozen independently owned recipient adapters and trained strongest controls.",
+  "stop": "Never rerun blocked F26/F27/F28 as a way to pass F30, and never change this language/source budget after seeing F30 results."
+}
