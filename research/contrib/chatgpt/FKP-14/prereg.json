@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "FKP-14",
+  "research_class": "source-only real-intervention branchability falsification; NOT trained learner",
+  "question": "At the very same observed original source state reached by exactly the same independently chosen PUBLIC action prefix, does a different legal 8-/16-step action macro produce a sufficiently different ACTUAL environmental consequence to make delayed-action value learning meaningful?",
+  "baseline": {
+    "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "accepted_main_tree_sha": "180008502f6bdfe5a06c3d0d6f47f941dd01f20b",
+    "fkp10_qualified_parent_sha": "942181ce7bda76386226d203db62d9f46c9dd406",
+    "fkp13_negative": "run #43740969167 complete 175302 real source actions, learned DIRECT_ONLINE return -0.15625 vs shuffled-frozen -0.1541667; 0 learned goals, CI [-0.0979167,0.0604167]; source learned weights retained but prereg action-gain NO-GO",
+    "novelty": "FKP14 is a source FEASIBILITY experiment on nine physically replayed alternative future action macros from the SAME REAL public history. No FKP13 original DEV rerun, model retune or protected evaluation."
+  },
+  "upstream": {
+    "repo": "MarcoMeter/endless-memory-gym",
+    "sha": "a94f2b60d1769ea44df3226561488768e1dff9f4",
+    "original_environment": "MysteryPath-v0",
+    "source_git_blobs": "Use FKP10.source_custody pinned five original upstream Git objects incl original mystery_path.py=2f80721f8dd33f4f438e07c42fa65b920fd301ed; external source cloned at exact commit no modifications",
+    "runtime": "CPython 3.11, gymnasium 0.29.0, pygame 2.4.0, numpy 1.26.4, SDL dummy, Ubuntu 24.04 and Windows 2022"
+  },
+  "protocol": {
+    "worlds": "32 entirely new public DEV worlds seed 974000..974031. Explicitly disjoint FKP10/11/12/13 and all reserved transfer and owner-protected worlds.",
+    "reserved": "974500..974563 future TRANSFER UNTOUCHED; any owner protected FIRST USE UNTOUCHED",
+    "prefix_actions": "Per source seed, use one source-blind Python Random(seed XOR 0xF14A0); draw TWO legal MultiDiscrete([3,3]) symbols once per 8 original native steps and hold that action for 8 steps; fixed before any consequences. The same exact prefix is replayed (reset from original source with same seed) for every contrast.",
+    "anchors": [
+      0,
+      16,
+      32,
+      64
+    ],
+    "macro_horizons": [
+      8,
+      16
+    ],
+    "alternatives": "ALL nine exact legal publicly defined MultiDiscrete([3,3]) action pairs (0,0)..(2,2) repeated for exactly horizon native env.step events, stop early on original done/truncated. This is a retrospective privileged evaluator-only 9-action consequence ceiling; future learner is NEVER shown unchosen branch consequences.",
+    "genuine_source": "For each world/anchor/horizon/branch, call actual original Gymnasium reset and then actual source step for every frozen prefix action. Verify deterministic complete original returned observation/action/reward before the branch against one independent reference replay. Continue with original source-native 8/16 macro steps and score emitted return/progress/failure/goal. NEVER call env.unwrapped, debug info/ground truth, hidden coordinates, original path layout, or true target. We are not changing source physics.",
+    "reward": "Explicit source-public original built-in reset options reward_fall_off=-0.05, max_steps=512, identical to FKP13. NOT original default reward benchmark. No new reward shaping after results.",
+    "observation": "Use only official returned RGB public observations; source hash canonical packed dtype/shape/full bytes + chosen action + source reward + terminal flags. No inferred private state.",
+    "planned_budget": "At most 32 world ×4 anchors ×2 horizons ×9 alternatives ×(prefix<=64 + future<=16) = 184320 actual env.step actions, plus 32×4 independently verified prefix reference plays (<=64 each). Termination may reduce actual steps. Each branch physically reset-and-replayed; no simulators cloned or fake counterfactual responses.",
+    "public_positive": "Track source reward >0 and >=1 official terminal goal events distinctly; do not infer goal from reward unless original source returned reward_goal 1 (and terminal) under pinned protocol.",
+    "source_identifiability": "An action-comparison anchor shows return contrast if max(return)-min(return) >= 0.05; count original 8 and 16 horizon values independently. Also count whether at least one action produces positive native progress/reward and whether actual terminal goal exists. Record per-world and per-anchor physical source query/action counts.",
+    "benchmark_sanity": "Require at least 96 of 128 anchors have identical deterministic source prefix and un-terminated original prefix. If a prefix terminated, record it explicitly; never stage/teleport a different state.",
+    "protocol_cost": "Record original source actions, reset counts, wall and CPU time and raw source hashes, Linux/Windows exact classification and transcript hash parity. Source read-only; no model fitted.",
+    "frozen_gate": "SOURCE_ACTION_HEADROOM_PASS only if prefix equality 100%, valid anchors>=96, >=20% of valid anchors with 16-step return spread >=0.05, >=10% with at least one positive-return branch by 16 steps, and oracle best-of-nine minus fixed frozen (seed,anchor) random macro arm >=0.10 mean native return per anchor. Also require 100% correct native external blobs and dual-OS identical exact receipts. Otherwise SOURCE_NO_GO_OR_MIXED; retain original cohort consumed, no retuning.",
+    "negative_control": "Different physical branches must change reward/actual public successor state where reported; freeze stationary action as (1,1) diagnostic only (do not falsely assume no-op). The counterfactual BEST-OF-NINE is privileged evaluator-only and must NOT be compared as if it were learned policy or fair online control.",
+    "science_boundary": "Neither positive source headroom nor a privileged best-of-nine oracle proves learned causal model effectiveness, transfer, memory, AGI, or scientific superiority. If headroom positive, freeze distinct source-disjoint protocol with real trained recurrent/GRU, model-based Q/planner, random, and direct-weight candidate and match observations, action budget, information and whole-process compute. Protected first-use requires separate owner authority."
+  },
+  "authority": {
+    "research_branch_only": true,
+    "accepted_main_untouched": true,
+    "no_native_weights_or_loop_change": true,
+    "no_paid_api": true,
+    "no_new_runner_or_scheduler": true,
+    "no_owner_protected_first_use": true,
+    "no_merge_or_promotion": true
+  }
+}
