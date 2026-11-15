@@ -69,7 +69,7 @@ class RelationDiscoveryFixture(unittest.TestCase):
         with self.assertRaises(ValueError):
             w.compose(0,6,0)
         with self.assertRaises(ValueError):
-            fixture.NumericDirectRelations.restore(b"W117"+"123")
+            fixture.NumericDirectRelations.restore(b"W117"+b"123")
 
     def test_equal_data_control_is_not_misrepresented_as_agi(self):
         w=fixture.world(117002)
