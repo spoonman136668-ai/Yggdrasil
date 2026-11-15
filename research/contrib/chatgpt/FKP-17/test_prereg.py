@@ -60,7 +60,8 @@ def verify_source_safe_contract(p):
     assert fence["no_runner_or_scheduler_mutation"] is True
     assert fence["no_paid_api"] is True
     assert "No merge" in fence["integration"]
-    assert p["source_law_separation"] if "source_law_separation" in p else True
+    assert "source_law_separation" in p["domain"]
+    assert "not importable by any model" in p["domain"]["source_contract"]
     return True
 
 
