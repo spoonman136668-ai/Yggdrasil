@@ -23,3 +23,7 @@ At the highest 12 intervention budget each family must achieve all **96/96** dir
 This is a **scientific-development capability/safety study only**, not evidence that Yggdrasil has learned open-domain language, outside-family causal transfer or reliable autonomous generalization. The directly observed six pairs are supported because they were actually probed; unseen triples remain outside the earned evidence. Recording observed higher-order exceptions is genuine direct knowledge intake, not evidence of generalized world understanding.
 
 **No automatic merge or trained-knowledge import** is authorized by this proposal. No Yggdrasil accepted main state, Wingless, Hybrid, FORGE, native controllers, schedulers, paid APIs, self-hosted runners or hidden WSP/NKR prior worlds are changed.
+
+## Fabricated qualification checkpoint before frozen public DEV
+
+[Run #43718149966](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43718149966) **SUCCESS** Linux and Windows on candidate `985260821ca2ed31fe14eebfd6016f2729dddc72`: new NKR03 native exception/guard tests, legacy NKR01 relationship tests and incumbent cell tests PASS. Frozen prereg SHA `257a37a0e5c6c962191da5c247a2fc133eb9ba42` is an ancestor; no protected WSP114/115/NKR02 data or accepted model writes. This is only fabricated fixture qualification, **not** independently qualified original public DEV or scientific acceptance.
