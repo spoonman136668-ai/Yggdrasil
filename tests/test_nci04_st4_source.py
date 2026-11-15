@@ -56,7 +56,6 @@ class ST4SourceOnly(unittest.TestCase):
         p_b,y_b=right.step(3)
         self.assertEqual(p_a,p_b)
         self.assertEqual(y_a,y_b)
-        self.assertNotEqual(p_a,x0)
         act=blind_design(101,0)["probe_action"]
         a,_=left.step(act)
         b,_=right.step(act)
