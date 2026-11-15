@@ -1,0 +1,199 @@
+name: QTR-01 F50 exact-role source-control reconciliation
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+permissions:
+  contents: read
+jobs:
+  atlas-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F50 source-reuse derive G29'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify isolated reconciliation source and unchanged source models
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = 'e58ecf8888546fc4f9e022a3a55a62890afc9e92'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f50-source-reuse.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '01c3b1d0540af5911518850cf30b5b7522425a98'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_reconcile.py)" = '764b689e76dbc4f91433a55ddb39ef47902d86bd'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_source_reconcile.py)" = 'ff721437a2f7309bc772c9d29d88007ddfe333df'
+          test -z "$(git status --porcelain)"
+          echo F50_ROLE_KEY_REUSE_SOURCE_SCOPE=PASS
+      - name: Derive source-only G29 atlas companion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          expected="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          actual="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          git diff --cached --quiet && exit 1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'ci(qtr): derive F50 source role-key reuse G29 atlas'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo F50_ROLE_KEY_SOURCE_ATLAS=PASS
+  qualify:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F50 source role-key full qualification'
+    name: F50 role-key exact-source full regression (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - name: Normalize Windows checkout bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact source and frozen F50 protocol
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 source role-key full qualification'
+          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): derive F50 source role-key reuse G29 atlas'
+          git merge-base --is-ancestor e58ecf8888546fc4f9e022a3a55a62890afc9e92 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '01c3b1d0540af5911518850cf30b5b7522425a98'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_public_controls.py)" = '05f54f3b7f517d0eb23ccdb133b3a81988ec29f7'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_fit.py)" = 'cb4fbf8ebf26cb2feded2bc0c9ee2ae6b9de877c'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_reconcile.py)" = '764b689e76dbc4f91433a55ddb39ef47902d86bd'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_source_reconcile.py)" = 'ff721437a2f7309bc772c9d29d88007ddfe333df'
+          python scripts/build_code_atlas.py --check
+          echo F50_ROLE_KEY_EXACT_CANDIDATE=PASS
+      - name: Install pinned CPU source and regression dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check numpy==2.1.3 scipy==1.14.1 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+          python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+      - name: All focused no-target F50 tests and exact neural-role math checks
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f50_*.py' -v
+      - name: Mandatory full native Yggdrasil regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Mandatory full contributor regression
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+      - name: Clean checkout, accepted model unchanged, no DEV first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F50_SOURCE_ROLE_KEY_FULL_REGRESSION=PASS
+  reconcile:
+    needs: qualify
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F50 source role-key full qualification'
+    name: F50 reuse qualified GRU/MLP and fit corrected logistic only
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install pinned source-only CPU toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check numpy==2.1.3 scipy==1.14.1
+          python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_conventional_controls.py)" = '01c3b1d0540af5911518850cf30b5b7522425a98'
+      - name: Download exact completed V1 source MLP/receipt (no target)
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: f50-4096-source-only-first-fit-receipts
+          path: ${{ runner.temp }}/f50-v1-complete
+          run-id: 43767024842
+          github-token: ${{ github.token }}
+      - name: Download exact V2 corrected GRU/partial receipt (no target)
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: f50-4096-source-only-target-unknown-parity-v2
+          path: ${{ runner.temp }}/f50-v2-partial
+          run-id: 43769382063
+          github-token: ${{ github.token }}
+      - name: Verify exact-role semantic cache and fit ONLY corrected logistic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/QTR-01/f50_source_reconcile.py --source-only --legacy "$RUNNER_TEMP/f50-v1-complete" --corrected-partial "$RUNNER_TEMP/f50-v2-partial" --output "$RUNNER_TEMP/f50-reconciled" --candidate-sha "$GITHUB_SHA" --logistic-cpu-budget 600
+          F50_FINAL_RECEIPT="$RUNNER_TEMP/f50-reconciled/f50-source-reconciliation-receipt.json" python - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['F50_FINAL_RECEIPT'])
+          r=json.loads(p.read_text())
+          assert r['source_data_sha256']=='5ffae27d69f20188f9fe987b2139cf6a8ca17be74875da269e4caaea8c9ce369'
+          assert r['frozen_prereg_blob']=='4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
+          assert r['target_outcomes']==0 and r['scientific_pass'] is False
+          assert r['status'] in ('ALL_THREE_SOURCE_CONTROLS_ROLE_KEY_VERIFIED','RESOURCE_STOP')
+          assert r['v2_discarded_incomplete_mlp_cpu']>0
+          print('F50_FINAL_ROLE_KEY_STATUS='+r['status'],flush=True)
+          print('F50_FINAL_SOURCE_CONTROL_COUNT='+str(len(r['models'])),flush=True)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: f50-4096-complete-role-key-source-controls
+          path: ${{ runner.temp }}/f50-reconciled/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Confirm all work remains source-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F50_NO_DEV_TARGET_FIRST_USE_AND_NO_MAIN_PROMOTION=PASS
