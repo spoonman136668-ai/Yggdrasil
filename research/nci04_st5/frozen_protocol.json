@@ -1,6 +1,6 @@
 {
   "schema": "yggdrasil.nci04.st5.public-diagnostic-native-retention.dev.v1",
-  "status": "FROZEN_BEFORE_ST5_SOURCE_LEARNER_OR_OUTCOME",
+  "status": "FROZEN_PRE_SOURCE_CORRIGENDUM_NO_SOURCE_CODE_OR_OUTCOME",
   "source_parent_st4_sha": "166388855ccba8610c2d1638c1f3193bee324867",
   "source_parent_st4_pr": 1077,
   "source_parent_st4_protocol_git_blob": "edaea790d3457bd91ea136a6b266c19e6dd61575",
@@ -10,7 +10,7 @@
   "source": {
     "kind": "IN_HOUSE_DEV_NOT_INDEPENDENT_SCIENTIFIC_FIRST_USE",
     "rule": "Unchanged ST4 private rotation, action0/action1 immediate masks and delayed action2 mask. ST5 genuinely executes five actions in one causal world: action3 neutral to reveal public rotation; action0 to reveal mask0; action1 to reveal mask1; action2 schedules a one-step delayed causal effect; final action3 probes that effect.",
-    "actor": "Sequence [3,0,1,2,3] identical for every private law/seed/trial, blind to learner forecasts. Initial public x0=SHA256('ST5-state|'+seed+'|'+trial)[0], pending=0. Each model gets ONLY current eight public bits, announced action and genuine afteraction public change bits. Never private law ID, seed/trial, rotation/masks/pending, source API or paired oracle.",
+    "actor": "Sequence [3,0,1,2,3] identical for every private law/seed/trial. Initial public x0 is computed from SHA256('ST5-state|'+seed+'|'+trial+'|'+nonce)[0], with the smallest nonce 0..255 such that rotation1,2,3 of x0 are pairwise distinct. This guarantees the FIRST actual public neutral transition uniquely identifies a rotation hypothesis, without source-private law access. If no eligible nonce exists, fail closed. Pending=0. Each model gets ONLY current eight public bits, announced action and genuine afteraction public change bits. Never private law ID, seed/trial, hidden rotation/masks/pending, source API, or paired oracle.",
     "train_laws": [
       3,
       5,
@@ -73,7 +73,7 @@
     "no_protected_first_use": true
   },
   "stage0": {
-    "scope": "Source-only train and interference laws, BEFORE any learner training or held-development exposure. Every true law has one reproducible 3-byte observed diagnostic signature [rotation, mask0, mask1]; all sixteen training plus interference laws must yield distinct signatures, each exactly recovered from genuine public action consequences. All 7680 original training actions and actor events must be accounted. Exact source and signature receipts match Linux and Windows.",
+    "scope": "Source-only train and interference laws, BEFORE any learner training or held-development exposure. Every true law has one reproducible 3-byte observed diagnostic signature [rotation, mask0, mask1]; all sixteen training plus interference laws must yield distinct signatures, each exactly recovered from genuine public action consequences. All 7680 original training actions and actor events must be accounted. Exact source and signature receipts match Linux and Windows. All source initial public states pass the preregistered rotation-observability condition. No hidden-law information used in selecting x0.",
     "fail": "SOURCE_DIAGNOSTIC_IDENTIFIABILITY_NO_GO. No changes to frozen source/IDs/splits/thresholds after observation."
   },
   "model": {
@@ -112,5 +112,10 @@
     "cross_project": false,
     "deploy": false
   },
-  "science_status": "PREREGISTERED_NO_OUTCOMES"
+  "science_status": "PREREGISTERED_NO_OUTCOMES",
+  "corrigendum": {
+    "reason": "Before ANY ST5 source implementation or outcome, identified mathematical ambiguity of random 8-bit public states under rotations 1..3. A deterministic law-independent rejection sampler replaces unconstrained SHA first byte. This is task identifiability by design, not post-result tuning.",
+    "prior_prereg_commit": "3b3cc1ec1e2f6750756de9e5fb873b417126fe6a",
+    "phase": "NO_SOURCE_CODE_OR_OBSERVED_OUTCOMES"
+  }
 }
