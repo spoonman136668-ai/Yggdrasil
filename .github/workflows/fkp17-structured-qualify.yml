@@ -1,0 +1,128 @@
+name: FKP17 structured facts source safe dual OS once (no held use)
+on:
+  push:
+    branches: [ci/fkp17-structured-source-qualification-once-20261115]
+    paths: [.github/workflows/fkp17-structured-qualify.yml]
+permissions:
+  contents: read
+concurrency:
+  group: fkp17-structured-pr1109-source-safe-fixtures-20261115
+  cancel-in-progress: false
+
+jobs:
+  generated-only-atlas:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-17): source-safe facts exact SHA and full two-OS qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      SOURCE: 38989c07622540d824833e576981c1703ec4f53e
+      TREE: 1e6a6dbef3f6d9ae3c8953af04f345c48e1a2423
+      TARGET: research/fkp17-structured-prior-novel-causal-law-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      candidate: ${{ steps.sealed.outputs.candidate }}
+    steps:
+      - name: Preserve original source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 38989c07622540d824833e576981c1703ec4f53e
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Fail closed on PR drift, prereg source mutation or private first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD^{tree})" = "$TREE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor fe5e259d24100c03b5de8184090e3d6f56fcb7e3 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/prereg.json)" = 17d676c9374060515c7ebee2e2fdc262a884343c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/source_fixture.py)" = c715da5200e64f4a6708bb8d68841b173fad7a62
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_source_fixture.py)" = 9760be4a9e81dfd68bd0ca1a2e0013fde7259c0e
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_prereg.py)" = 7f5b11339b4464459b7590a5fbd3b08cdae4aa53
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/README.md)" = d3b560a724f03ca7a53229e44e8656e6d682c8cc
+          python -B - <<'PY'
+          import json
+          p=json.load(open("research/contrib/chatgpt/FKP-17/prereg.json",encoding="utf-8"))
+          assert p["experiment_id"]=="FKP-17-STRUCTURED-FOUNDATION-NOVEL-CAUSAL-LAWS"
+          assert p["stop_and_reporting"]["no_protected_first_use"] is True
+          assert p["frozen_splits"]["foundation"]["total_records"]==32768
+          assert p["frozen_splits"]["fresh_dev"]["world_seed_start"]==978500
+          print("FKP17_SOURCE_SAFE_PREREG_FIRST=PASS")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Rebuild exactly the three G29 machine-generated artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 3
+          test -z "$(git diff --name-only)"
+      - name: Push generated only as child of original PR head
+        id: sealed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "chore(FKP-17): index public-only source fixture without science changes"
+          CANDIDATE="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          test "$(git show --pretty= --name-only HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$TARGET"
+          echo "candidate=$CANDIDATE" >> "$GITHUB_OUTPUT"
+          echo FKP17_SOURCE_SAFE_CHILD=$CANDIDATE
+
+  full-fixture-and-root-regression:
+    needs: generated-only-atlas
+    if: needs.generated-only-atlas.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Canonical source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generated-only-atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: G29, both public-only fixtures and mandatory complete regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test "$(git rev-parse HEAD^)" = "38989c07622540d824833e576981c1703ec4f53e"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_PUBLIC_ONLY_FIXTURE_FULL_BOTH_OS=PASS
