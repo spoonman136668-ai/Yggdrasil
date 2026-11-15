@@ -9,7 +9,7 @@ jobs:
   focused:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): qualify F41 source-only scale'
+      github.event.head_commit.message == 'ci(qtr): qualify F41 inventory-corrected source-only scale'
     name: F41 source-exact DEV focused (${{ matrix.os }})
     strategy:
       fail-fast: false
@@ -38,13 +38,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = '42143907622ecc6e34f00e570f4a9ead344aa83e'
-          test "$(git log -1 --format=%s)" = 'ci(qtr): qualify F41 source-only scale'
+          test "$(git rev-parse HEAD^)" = 'b75dc00e4c603d94ba74b3032fb7c5417d74d669'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): qualify F41 inventory-corrected source-only scale'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f41-bit-scaling.yml'
           git merge-base --is-ancestor 328114c5d246ba63f1c7fc2589669b28089c3c63 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_prereg.json)" = 'bec761a5189142056afb63336de0374077e3a4e4'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = 'a37b9a3559eca0bb472942c9759eec0557bba7bf'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = 'a215c80bb8b34abfd893b6b50970615c908d00b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_source_inventory_erratum.json)" = 'e6ef619f2397382c1e87ef1d947cabadfc0a6fcc'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = '4f740d5f573364fb83bc5c3d565845c23494b6ca'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = '10ef8daceba8f1bfb8e487011c318f7a4fb0e3d9'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f34_direct_bitweights.py)" = '2df50bedccc2fc674231f440891107ea5b96f6d9'
           echo F41_FROZEN_SOURCE_EXACT=PASS
       - name: F41 frozen focused tests, including actual offline capacity comparison
@@ -62,7 +63,7 @@ jobs:
     needs: focused
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): qualify F41 source-only scale'
+      github.event.head_commit.message == 'ci(qtr): qualify F41 inventory-corrected source-only scale'
     runs-on: ubuntu-24.04
     timeout-minutes: 16
     permissions:
@@ -79,11 +80,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git log -1 --format=%s)" = 'ci(qtr): qualify F41 source-only scale'
-          test "$(git rev-parse HEAD^)" = '42143907622ecc6e34f00e570f4a9ead344aa83e'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): qualify F41 inventory-corrected source-only scale'
+          test "$(git rev-parse HEAD^)" = 'b75dc00e4c603d94ba74b3032fb7c5417d74d669'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_prereg.json)" = 'bec761a5189142056afb63336de0374077e3a4e4'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = 'a37b9a3559eca0bb472942c9759eec0557bba7bf'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = 'a215c80bb8b34abfd893b6b50970615c908d00b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_source_inventory_erratum.json)" = 'e6ef619f2397382c1e87ef1d947cabadfc0a6fcc'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = '4f740d5f573364fb83bc5c3d565845c23494b6ca'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = '10ef8daceba8f1bfb8e487011c318f7a4fb0e3d9'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
@@ -104,10 +106,9 @@ jobs:
           git commit -m 'ci(qtr): derive F41 source-exact ICE code atlas'
           python scripts/build_code_atlas.py --check
           test -z "$(git status --porcelain)"
-          git commit --allow-empty -m 'ci(qtr): F41 final full exact-source qualification'
-          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
           git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
-          echo F41_ICE_ATLAS_AND_FULL_FINAL_DISPATCH=PASS
+          echo F41_ICE_ATLAS_DERIVED_SOURCE_EXACT=PASS
 
   full-final:
     if: >-
@@ -149,8 +150,9 @@ jobs:
           test -z "$(git diff --name-only HEAD^ HEAD)"
           git merge-base --is-ancestor 328114c5d246ba63f1c7fc2589669b28089c3c63 HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_prereg.json)" = 'bec761a5189142056afb63336de0374077e3a4e4'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = 'a37b9a3559eca0bb472942c9759eec0557bba7bf'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = 'a215c80bb8b34abfd893b6b50970615c908d00b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_source_inventory_erratum.json)" = 'e6ef619f2397382c1e87ef1d947cabadfc0a6fcc'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f41_bit_scaling_dev.py)" = '4f740d5f573364fb83bc5c3d565845c23494b6ca'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f41_bit_scaling_dev.py)" = '10ef8daceba8f1bfb8e487011c318f7a4fb0e3d9'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = '453dad0363689cff785c26db5441555c6841f95d'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = '3fc50ddf7453958c458db697eacf2e27d3d52f57'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = 'f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108'
