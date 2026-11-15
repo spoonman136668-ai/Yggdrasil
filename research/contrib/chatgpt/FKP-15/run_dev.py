@@ -165,8 +165,8 @@ def run(upstream:Path):
     sys.path.insert(0,str(upstream))
     train=source.collect(source.TRAIN)
     val=source.collect(source.VAL)
-    source_train=sum(r.get("physical_steps",r["source_steps"]) for r in train)
-    source_val=sum(r.get("physical_steps",r["source_steps"]) for r in val)
+    source_train=sum((r["physical_steps"] if r["valid"] else r["source_steps"]) for r in train)
+    source_val=sum((r["physical_steps"] if r["valid"] else r["source_steps"]) for r in val)
     if len(train)!=256 or len(val)!=64:
         raise AssertionError("FKP15_TRAIN_VAL_ANCHOR_COUNT")
     began=time.perf_counter()
@@ -260,9 +260,9 @@ def replay_consumed_public_only(upstream:Path):
       "validation_source_sha256":source.cohort_digest(validation),
       "dev_source_sha256":source.cohort_digest(development),
       "initial_direct_snapshot_sha256":hashlib.sha256(init_memory.snapshot()).hexdigest(),
-      "source_actions_train":sum(r.get("physical_steps",r["source_steps"]) for r in training),
-      "source_actions_validation":sum(r.get("physical_steps",r["source_steps"]) for r in validation),
-      "source_actions_dev_without_blind_selection":sum(r.get("physical_steps",r["source_steps"]) for r in development),
+      "source_actions_train":sum((r["physical_steps"] if r["valid"] else r["source_steps"]) for r in training),
+      "source_actions_validation":sum((r["physical_steps"] if r["valid"] else r["source_steps"]) for r in validation),
+      "source_actions_dev_without_blind_selection":sum((r["physical_steps"] if r["valid"] else r["source_steps"]) for r in development),
       "protected_first_use":False,"transfer_opened":False,"scientific_pass":False
     }
 
