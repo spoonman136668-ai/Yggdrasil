@@ -43,3 +43,26 @@ python -B -m unittest discover -s tests -p 'test_*.py' -v
 The original GH workflow executes frozen fixture checks + full inherited G29/root regression on **both OS BEFORE first original public DEV**; then runs once on Ubuntu and a determinism-only Windows replay. Any result on consumed world seeds afterwards is an engineering replay, not fresh science. Preserve both positive and negative outcomes, source SHA/tree and exact measured action charges in this branch.
 
 **Yggdrasil accepted main and protected scientific evaluator remain untouched.**
+
+## Frozen original real-source result — 2026-11-15
+
+**ENGINEERING SOURCE PASS, CURIOSITY SCIENCE NO-GO.** Original frozen public study executed exactly once, after pre-DEV Linux+Windows source G29/fixture/full inherited regression PASS on both OS, in [one-shot run #43730980312](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43730980312). Original code SHA `824c78cdff6cffb9d0d8b933d355a458cc73b41f`, G29-generated-only child `c5e5109d8b2aaf482f230159fe4b526a1624f724`, prereg FIRST `a84eda5246b9eedb3515ef0e6c7c1bda36fbdc08`. Original source/method/test code was **not changed after seeing the outcomes**.
+
+The source produced **48 actual benchmark episodes**, **2,953 original native environment actions**, and **30 genuine nonzero reward events**. No source targets, hidden positions, labels, environment internals or private evaluation data entered the learner. Source and source custody were unchanged (original upstream SHA `a94f2b60d1769ea44df3226561488768e1dff9f4`, MIT, five blobs). Original 8 task-seeds were shared across three policies; same 9 warmup actions and public frames per seed before policy divergence. Each policy used at most 64 real native actions/episode, but actual trajectories could terminate at different steps.
+
+| Original task/arm | Quantized unique state rate | Total real reward events | Actual steps |
+|---|---:|---:|---:|
+| Mortar Mayhem / curiosity | 0.1120016164 | 1 | 470 |
+| Mortar Mayhem / balanced action cycle | 0.1088362069 | 2 | 476 |
+| Mortar Mayhem / frozen random | 0.1082802911 | 2 | 471 |
+| Mystery Path / curiosity | 0.1308593750 | 9 | 512 |
+| Mystery Path / balanced action cycle | 0.0644531250 | 5 | 512 |
+| Mystery Path / frozen random | **0.1640625000** | **11** | 512 |
+
+Original paired seed-bootstrap CI (10,000 fixed draws) on **curiosity minus balanced** quantized novelty: Mortar Mayhem **+0.0031654**, CI **[-0.0160291,+0.0213497]** (includes zero); Mystery Path **+0.06640625**, CI **[+0.0371094,+0.0996094]** (positive). But **curiosity minus random**: Mortar Mayhem **+0.0037213**, CI **[-0.0244477,+0.0300377]**; Mystery Path **−0.033203125**, CI **[-0.0625,−0.001953125]** (random superior). The prereg requirement to outperform BOTH controls, across BOTH tasks without reward loss **FAILS**. Classification: `DEV_NO_GO_CURIOSITY_POLICY`.
+
+**Cross-platform source proof:** Original Ubuntu DEV job `132863395718` and Windows determinism replay job `132863483435` completed SUCCESS. The exact **48/48 per-episode public image/action/reward/termination trace SHA256 digests were identical**, with **0 mismatched episodes**. Both produced combined public SHA256 `5766c21dcc8b057c2a6638e51efd31968aebd92618f1a1b36c5d6f8bc99cc95c`, and the same 2,953 genuine steps, 30 reward events and policy classification. Both OS prerequisites: G29 **4/4**, FKP11 fixture **5/5**, inherited final root **54/54** PASS. The independent pre-existing CKB proxy-fanout workflow failed separately; it is not the source trial or a learning negative.
+
+**Scientific interpretation:** This confirms the source can provide richer *real* public reward and action-conditioned observation feedback than FKP10's 256-step random mechanical admission (2 reward events), but neither method is capacity-/trajectory-matched to a full trained temporal learner. The observed novelty is a quantized image fingerprint, **not** a proven causal state, and reward increases are not attributable to learned relationship reasoning. Curiosity did NOT beat random; no unique native capability, model learning, retention, unfamiliar transfer, autonomous planning, efficiency or AGI proven. Source-data DEV cohorts `971000..971007` are now consumed and must not be retuned/reused as fresh science. No owner-protected scientific first use, accepted main-model changes, merge or deployment.
+
+The complete original source-trace receipts and bootstrap by-task summaries are committed in `result.json`. A separate future trial would have to precommit a genuinely learned temporal state/action world model, stronger fully trained recurrent/GRU and nonrecurrent comparator, disjoint source worlds, downstream delayed reward/action success, actual retained knowledge under interference and matched whole-process cost **before** protected first-use.
