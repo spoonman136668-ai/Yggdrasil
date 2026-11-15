@@ -27,7 +27,7 @@ class FKP09FixtureTests(unittest.TestCase):
             Source(protected_key=b"x")
         with self.assertRaises(ValueError):
             cohort(900.0)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PermissionError):
             owner.observe_core(4,0)
 
     def test_real_fixture_actions_are_counted_and_never_replayed(self):
