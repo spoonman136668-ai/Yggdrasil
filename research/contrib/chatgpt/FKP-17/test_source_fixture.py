@@ -115,7 +115,10 @@ class PublicFixtureTests(unittest.TestCase):
         for path in root.glob("*.py"):
             # Fixtures may import their source; production learner modules
             # must never import a simulator or its private law state.
-            if path.name == "source_fixture.py" or path.name.startswith("test_"):
+            # The sole source-safe training entrypoint may import its public
+            # evaluator to assemble already-committed observations. Learned
+            # policies must NOT import source_fixture or an evaluator.
+            if path.name in ("source_fixture.py", "qualify_public_recurrent.py") or path.name.startswith("test_"):
                 continue
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
