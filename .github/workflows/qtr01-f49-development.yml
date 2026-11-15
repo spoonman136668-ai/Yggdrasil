@@ -1,0 +1,194 @@
+name: QTR-01 F49 frozen nine-world development comparison
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+permissions:
+  contents: read
+jobs:
+  atlas-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F49 development firstuse derive G29 atlas'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen evaluator, no new scientific sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = 'e41afdafd2e64a423ab599c77ac45865859ceec9'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f49-development.yml'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_prereg.json)" = '839309211feef018d1c308091716bc6e0d4e7a70'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_worlds.py)" = '9a5185584b965f6529ceceadc1da8da8eb36be70'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_dev_compare.py)" = '4dee5d2e7a8de850675a11c149537c15d0ee734a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_dev_compare.py)" = '5747d9fa53fdf843b8b429365cdc7f3da4e0705a'
+          echo F49_FROZEN_DEVELOPMENT_SOURCE_IDENTITY=PASS
+      - name: Build only exact G29 source-atlas companion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          expected="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          actual="$(git diff --cached --name-only | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          git diff --cached --quiet && exit 1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'ci(qtr): derive F49 development G29 atlas companion'
+          python scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
+          echo F49_G29_SOURCE_ATLAS_COMPANION=PASS
+  qualify:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F49 frozen nine-world DEV first-use'
+    name: F49 exact-source pre-first-use qualification (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - name: Normalize Windows checkout
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Lock source, protocol, atlas and first-use cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F49 frozen nine-world DEV first-use'
+          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): derive F49 development G29 atlas companion'
+          git merge-base --is-ancestor e41afdafd2e64a423ab599c77ac45865859ceec9 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_prereg.json)" = '839309211feef018d1c308091716bc6e0d4e7a70'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_worlds.py)" = '9a5185584b965f6529ceceadc1da8da8eb36be70'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f49_dev_compare.py)" = '4dee5d2e7a8de850675a11c149537c15d0ee734a'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f49_dev_compare.py)" = '5747d9fa53fdf843b8b429365cdc7f3da4e0705a'
+          python scripts/build_code_atlas.py --check
+          echo F49_FROZEN_FIRST_USE_SOURCE_CUSTODY=PASS
+      - name: Install exact regression and source-training dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
+      - name: All pre-first-use negative, retention and evaluator tests
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f49_*.py' -v
+      - name: Mandatory full original regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Mandatory full contributor regression
+        run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_*.py' -v
+      - name: No accepted or main source mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F49_PRE_FIRST_USE_DUAL_OS_REGRESSION=PASS
+  develop:
+    needs: qualify
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F49 frozen nine-world DEV first-use'
+    name: F49 nine DEV worlds high-first with all strong controls
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install frozen CPU dependencies
+        run: python -m pip install --disable-pip-version-check numpy==2.1.3
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: f49-source-fit-ubuntu-24.04
+          path: ${{ runner.temp }}/f49-source-reuse
+          run-id: 43743198013
+          github-token: ${{ github.token }}
+      - name: Exactly nine frozen DEV worlds, 1024 first, journal each completed world
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f49-development"
+          F49_MODELS="$RUNNER_TEMP/f49-source-reuse" F49_RESULTS="$RUNNER_TEMP/f49-development/f49-dev-results.json" python -u - <<'PY'
+          import json, os, pathlib, sys
+          sys.path.insert(0,'research/contrib/chatgpt/QTR-01')
+          import f49_dev_compare as d
+          import f49_worlds as w
+          models=pathlib.Path(os.environ['F49_MODELS'])
+          out=pathlib.Path(os.environ['F49_RESULTS'])
+          w.freeze()
+          results=[]
+          for size in w.BANK_SIZES:
+              for seed in w.SEEDS:
+                  result=d.run_world(size,seed,models)
+                  results.append(result)
+                  status=d.classify(results)
+                  receipt={'schema':d.SCHEMA,'source_sha':os.environ['GITHUB_SHA'],
+                      'source_baseline_sha':d.BASELINE_SHA,'source_baseline_run':d.BASELINE_RUN,
+                      'frozen_prereg_blob':w.FROZEN_BLOB,'worlds':results,
+                      'completed_worlds':len(results),'decision':status,
+                      'scientific_pass':False,'protected_first_use':False,
+                      'accepted_model_mutated':False}
+                  temporary=out.with_suffix('.tmp')
+                  temporary.write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+                  temporary.replace(out)
+                  print(f'F49_DEV_WORLD_PRESERVED_SIZE={size}_SEED={seed}_COUNT={len(results)}',flush=True)
+          assert len(results)==9
+          print('F49_DEV_CLASSIFICATION='+status['classification'],flush=True)
+          print('F49_SCIENTIFIC_PASS=FALSE',flush=True)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: f49-nine-world-development-frozen-results
+          path: ${{ runner.temp }}/f49-development/f49-dev-results.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: End fence source state unchanged and no accepted-model promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F49_DEV_ONLY_UNMERGED_NO_ACCEPTED_MODEL_MUTATION=PASS
