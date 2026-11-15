@@ -1,0 +1,241 @@
+name: FKP17 64 known TRAIN world frozen eight-arm falsification
+on:
+  push:
+    branches: [ci/fkp17-known-train-matrix-64-20261115]
+    paths: [.github/workflows/fkp17-train-matrix.yml]
+permissions:
+  contents: write
+concurrency:
+  group: fkp17-known-train-matrix-64-20261115
+  cancel-in-progress: false
+jobs:
+  source-only-atlas:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-17): one shot 64 known TRAIN matrix with frozen source and reused weights' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    outputs:
+      candidate: ${{ steps.publish.outputs.candidate }}
+    env:
+      SOURCE: 2758f4fb0c431f125007f83985afb55aa8623ef3
+      TARGET: research/fkp17-structured-prior-novel-causal-law-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep native Git line endings
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 2758f4fb0c431f125007f83985afb55aa8623ef3
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install pinned free CPU gradient reference for source-only tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1+cpu'
+      - name: Assert exact frozen source and preregistration before tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor fe5e259d24100c03b5de8184090e3d6f56fcb7e3 "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/prereg.json)" = 17d676c9374060515c7ebee2e2fdc262a884343c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/source_fixture.py)" = 8da7aa4a0892f2277bccca610bd2ad0b5cf9fcb3
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_source_fixture.py)" = 3f030027b1e8c94df48638b7f983bc0c7d633923
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/public_policies.py)" = a8837bf7edfc0a229b43c4bd97faa9de4bfadcf0
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_public_policies.py)" = ca3413d2105add3403dd8156dee90aa2e7c8f684
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/README.md)" = 3876ffd8ab29e7357cf365f18749c19126881951
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_prereg.py)" = 7f5b11339b4464459b7590a5fbd3b08cdae4aa53
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/train_matrix_lock.json)" = a81e795089a46f103832df1b448883c4d21dc868
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/run_train_matrix.py)" = c8ced663cd2fb6e7645427fdf15e290c2bc07873
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_train_matrix.py)" = 0e67d956bb82c5d6be2ca53c088b9139181af860
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/portable_recurrent.py)" = 43d161bf438b2023c0cbf61b18559ec4447767d1
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_portable_recurrent.py)" = edd375c914165bf82ef7db4a122d3ef3b9d5e9e3
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/blind_public_harness.py)" = 8dd0e9a1dfc59c5607ce06216bfecbfee13b36aa
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_blind_public_harness.py)" = ddb0e9dd8260c342f204fe78a94e4628f514fda4
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/run_public_onpolicy.py)" = f12a9b29228b3a148a4a732b320de5fd12ca5961
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_run_public_onpolicy.py)" = b6206797741e36b5e5200bf9ef3f0f1745c86e2a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/verify_public_checkpoint.py)" = 82b42f73ebf9f8f35ee1a9faa6e836fbdad22cde
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/strong_controls.py)" = f2d37ffcc628194eb443cc721524b2f625a7f148
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_strong_controls.py)" = 23db82cd95650a22cc2c68913c26ff3fbeb3201e
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/recurrent_control.py)" = 59a91fdf814e0c52c6172dbad681ef845be2a55e
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/test_recurrent_control.py)" = 6984fa0721e3e7d83540dace6a8810fc55223f54
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-17/qualify_public_recurrent.py)" = 8c9106b0d82c70a20047c82f798fac2f87304c6f
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_SOURCE_SAFE_FOCUSED_QUALIFIED=PASS
+      - name: Require all current model and control tests before derived-index publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+          echo FKP17_POLICY_PRE_ATLAS_FOCUSED=PASS
+      - name: Generate and publish only 3 derived G29 files to existing draft branch
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/actual"
+          printf "%s\n" .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/expected"
+          diff -u "$RUNNER_TEMP/expected" "$RUNNER_TEMP/actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-17): exact-source G29 atlas only'
+          NEXT="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          diff -u "$RUNNER_TEMP/expected" <(git diff --name-only "$SOURCE" "$NEXT" | LC_ALL=C sort)
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git push origin "HEAD:refs/heads/$TARGET"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "candidate=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "FKP17_G29_GENERATED_ONLY_CANDIDATE=$NEXT"
+  qualification-two-os:
+    needs: source-only-atlas
+    if: needs.source-only-atlas.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Disable checkout line translation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-only-atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Install pinned free CPU gradient reference for source-only tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1+cpu'
+      - name: Focused source-safe fixtures and negative held-seed controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-17 -p 'test_*.py' -v
+      - name: G29 source atlas and mandatory inherited complete regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP17_TWO_OS_SOURCE_SAFE_FULL_REGRESSION=PASS
+
+
+
+  original-known-train-matrix-64:
+    needs: [source-only-atlas, qualification-two-os]
+    if: needs.source-only-atlas.result == 'success' && needs.qualification-two-os.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      FKP17_SOURCE_SHA: 2758f4fb0c431f125007f83985afb55aa8623ef3
+    steps:
+      - name: Keep Git source byte parity
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-only-atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Use prior fully trained pinned CPU GRU, never refit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1+cpu'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: fkp17-public-foundation-gru-and-training-only
+          run-id: 43771744616
+          repository: spoonman136668-ai/Yggdrasil
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/fkp17-prior-fully-trained
+      - name: Validate original exact public model without training
+        shell: bash
+        env:
+          GRU_ARTIFACT: ${{ runner.temp }}/fkp17-prior-fully-trained/fkp17-public-gru-f32.json
+        run: |
+          set -euo pipefail
+          test -s "$GRU_ARTIFACT"
+          python -B research/contrib/chatgpt/FKP-17/verify_public_checkpoint.py "$GRU_ARTIFACT" 4cb2ad52ffe9cf5e89c61fadc6751260e5ce8f1d89772d9ffbd17a76cae6e2c3
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Physically score ALL 64 known TRAIN worlds for ALL eight arms
+        shell: bash
+        env:
+          GRU_ARTIFACT: ${{ runner.temp }}/fkp17-prior-fully-trained/fkp17-public-gru-f32.json
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-17/run_train_matrix.py "$GRU_ARTIFACT" --output-json "$RUNNER_TEMP/fkp17-known-train-64-worlds.json" | tee "$RUNNER_TEMP/known-train-summary.log"
+          test -s "$RUNNER_TEMP/fkp17-known-train-64-worlds.json"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Verify all worlds, comparators, source and cost audit after scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,math,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp17-known-train-64-worlds.json'
+          r=json.loads(p.read_text('utf-8'))
+          assert r['schema']=='fkp17.known-train-64-world-diagnostic.v1'
+          assert r['classification']=='KNOWN_TRAIN_ONLY_NOT_UNFAMILIAR_LAW_SCIENCE'
+          assert r['source_commit_original']==os.environ['FKP17_SOURCE_SHA']
+          assert r['checkpoint_sha256']=='4cb2ad52ffe9cf5e89c61fadc6751260e5ce8f1d89772d9ffbd17a76cae6e2c3'
+          assert r['source_public_sha256']=='c8400f67e8d26147de702c0c9bdba1f05581ee6f70635b3e9c90d73d6af81ecf'
+          assert r['worlds']==64 and [x['seed'] for x in r['per_world']]==list(range(978100,978164))
+          assert all(set(x['actual_rewards'])==set(r['bootstrap']['means']) for x in r['per_world'])
+          assert all(set(x['chosen_action_hash_by_arm'])==set(r['bootstrap']['means']) for x in r['per_world'])
+          assert all(all(z==16 for z in x['actual_scored_steps_per_arm'].values()) for x in r['per_world'])
+          assert r['bootstrap']['bootstrap_replicates']==10000 and r['bootstrap']['worlds']==64
+          assert set(r['per_arm_whole_64_world_cost'])==set(r['bootstrap']['means'])
+          assert all(c['inference_calls']==1024 and c['public_observations']==2560 for c in r['per_arm_whole_64_world_cost'].values())
+          assert r['fresh_dev_opened'] is False and r['reserved_transfer_opened'] is False
+          assert r['independent_scientific_pass'] is False and r['native_yggdrasil_changed'] is False
+          assert all(v<=1048576 for v in r['model_parameter_bytes'].values())
+          assert all(math.isfinite(v) for v in r['bootstrap']['means'].values())
+          print('FKP17_64_KNOWN_TRAIN_ONLY_EIGHT_ARM_DIAGNOSTIC=PASS')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fkp17-known-train-64-world-matrix
+          path: ${{ runner.temp }}/fkp17-known-train-64-worlds.json
+          retention-days: 30
+          if-no-files-found: error
