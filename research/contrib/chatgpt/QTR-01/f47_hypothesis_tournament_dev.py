@@ -157,6 +157,7 @@ class RowBudgetArm(Arm):
         super().__init__(parent_kind,n,seed)
         self.policy=policy
         self.priority_votes_count=0
+        self._votes_cached={}
 
     def max_rows(self,step):
         # Cumulative prefixes: 12*N pair queries b6; 24*N b12; 48*N b24.
@@ -186,7 +187,14 @@ class RowBudgetArm(Arm):
         # rows before any discretionary allocation (not F46 heuristic).
         fresh=[(c,s) for c,s in available if self.native.seen[c][s]<4]
         if fresh:return fresh[0]
-        per_source=[qualitative_votes(self.mle,s) for s in range(n)]
+        per_source=[]
+        for s in range(n):
+            version=(self.mle.seen[0][s],self.mle.seen[1][s])
+            prior=self._votes_cached.get(s)
+            if prior is None or prior[0]!=version:
+                prior=(version,qualitative_votes(self.mle,s))
+                self._votes_cached[s]=prior
+            per_source.append(prior[1])
         self.priority_votes_count+=1
         def score(row):
             c,s=row
