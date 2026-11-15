@@ -32,3 +32,7 @@ Fixture-only command (uses no original hidden oracle):
     python -m unittest discover -s research/contrib/chatgpt/WSP-113 -p 'test_*.py' -v
 
 **No merge, accepted ref, model promotion, FORGE/Yggdrasil controller or scheduler change, private runner, paid API, protected historical source, Wingless/Hybrid integration, deployment, or automatic scientific acceptance.**
+
+## One-shot generated-source qualification
+
+The branch-scoped GitHub CI source-pin job is armed only by this exact commit message. It may update only the three mandatory G29-generated atlas artifacts after both platform fixtures pass; the scientific generator and learner files stay unchanged. The resulting generated-only companion commit then activates mandatory complete dual-platform regression, without running the original heldout experiment.
