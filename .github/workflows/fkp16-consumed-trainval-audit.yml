@@ -1,0 +1,148 @@
+name: FKP16 consumed TRAIN/VAL only - source-safe public choice audit
+on:
+  push:
+    branches: [ci/fkp16-consumed-trainval-action-choice-audit-20261115]
+    paths: [.github/workflows/fkp16-consumed-trainval-audit.yml]
+permissions:
+  contents: read
+concurrency:
+  group: fkp16-readonly-consumed-trainval-once-20261115
+  cancel-in-progress: false
+jobs:
+  consumed-trainval-only:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-16): one-shot consumed trainval real-branch audit; no fresh DEV' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYTHONDONTWRITEBYTECODE: '1'
+      FROZEN: a5fff24e84258dfe6f0127da23208a72064d000a
+    steps:
+      - name: Preserve Git bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: a5fff24e84258dfe6f0127da23208a72064d000a
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact research source/first-use custody, no FKP16 DEV permitted
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FROZEN"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/prereg.json)" = 2b51e1883e41536da33d0d18c8d460ea07bd1e19
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/run_dev.py)" = 73d7a57d589074a5d99e88aac6dbc0f105c91707
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-16/baselines.py)" = f60e2fffdaf1df0ca54cffd24d7fa1edceeb114a
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Exact upstream public MIT source and fixed conventional CPU deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install "gymnasium==0.29.0" "pygame==2.4.0" "numpy==1.26.4"
+          python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu"
+          git clone -q https://github.com/MarcoMeter/endless-memory-gym.git "$RUNNER_TEMP/fkp16-upstream"
+          git -C "$RUNNER_TEMP/fkp16-upstream" checkout -q a94f2b60d1769ea44df3226561488768e1dff9f4
+          test "$(git -C "$RUNNER_TEMP/fkp16-upstream" rev-parse HEAD)" = a94f2b60d1769ea44df3226561488768e1dff9f4
+          test -z "$(git -C "$RUNNER_TEMP/fkp16-upstream" status --porcelain --untracked-files=all)"
+      - name: Reuse previously consumed TRAIN and VALIDATION only, no fresh scientific first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RUNNER_TEMP/fkp16-upstream" <<'PY'
+          import hashlib,json,sys,time
+          import numpy as np
+          from pathlib import Path
+          path="research/contrib/chatgpt/FKP-16"
+          sys.path.insert(0,path)
+          import source,run_dev
+          assert source.DEV==tuple(range(976500,976532))
+          assert source.TRAIN==tuple(range(975100,975164))
+          assert source.VAL==tuple(range(975200,975216))
+          assert len(source.TRANSFER)==64
+          root=Path(sys.argv[1])
+          custody=source.admit.source_custody(root)
+          sys.path.insert(0,str(root))
+          started=time.perf_counter()
+          train=source.collect(source.TRAIN)
+          validation=source.collect(source.VAL)
+          assert len(train)==256 and len(validation)==64
+          assert all(r["seed"] in source.TRAIN for r in train)
+          assert all(r["seed"] in source.VAL for r in validation)
+          models=run_dev.value_predictors(train,validation)
+          model_seal=run_dev.prior_seal(train,validation,models)
+          choices=[]
+          for row in validation:
+              if not row["valid"]:
+                  continue
+              # The held-style public input must NOT have any future labels.
+              public={k:row[k] for k in ("seed","anchor","sequence","context","prefix_sha256")}
+              assert "returns" not in public and "branches_sha256" not in public
+              chosen=run_dev.chosen_actions(public,models)
+              real_return=row["returns"]
+              assert set(chosen)==set(run_dev.METHODS)
+              assert all(0<=idx<9 for idx in chosen.values())
+              choices.append({"seed":row["seed"],"anchor":row["anchor"],
+                  "observed":{name:float(real_return[idx]) for name,idx in chosen.items()},
+                  "oracle":float(np.max(real_return)),
+                  "positive":{name:bool(real_return[idx]>0) for name,idx in chosen.items()},
+                  "action_indices":chosen})
+          assert len(choices)>=48
+          # These are VALIDATION values used to tune controls. OPTIMISTIC,
+          # not an independent scientific estimate, and no DEV was touched.
+          scores={k:float(np.mean([r["observed"][k] for r in choices]))
+                  for k in run_dev.METHODS}
+          positive={k:float(np.mean([r["positive"][k] for r in choices]))
+                    for k in run_dev.METHODS}
+          strongest=max(run_dev.STRONG,key=lambda k:scores[k])
+          checksum=hashlib.sha256()
+          for r in choices:
+              checksum.update(json.dumps({"seed":r["seed"],"anchor":r["anchor"],
+                  "indices":r["action_indices"]},sort_keys=True,
+                  separators=(",",":")).encode())
+          report={"schema":"fkp16.consumed-trainval-choice-readiness.v1",
+              "classification":"CONSUMED_VALIDATION_DIAGNOSTIC_NOT_SCIENCE",
+              "original_dev_started":False,"original_dev_opened":False,
+              "protected_first_use":False,"transfer_first_use":False,
+              "source_git":source.SOURCE_SHA,
+              "source_custody":custody,
+              "train_worlds":64,"validation_worlds":16,
+              "valid_validation_prefixes":len(choices),
+              "trained_control_receipts":models["fit_info"],
+              "ridge_choice":models["RIDGE_receipt"],
+              "knn_choice":models["KNN_receipt"],
+              "pre_dev_model_seal_sha256":model_seal,
+              "consumed_train_source_sha256":source.cohort_digest(train),
+              "consumed_validation_source_sha256":source.cohort_digest(validation),
+              "selection_receipt_sha256":checksum.hexdigest(),
+              "validation_means_optimistic":scores,
+              "validation_positive_action_rate_optimistic":positive,
+              "best_strong_control_on_validation":strongest,
+              "direct_minus_best_validation":scores["DIRECT"]-scores[strongest],
+              "oracle_unavailable_to_model_mean_validation":float(np.mean([r["oracle"] for r in choices])),
+              "all_measured_on_validation_used_for_model_selection":True,
+              "scientific_pass":False,
+              "accepted_model_modified":False,
+              "seconds_wall":time.perf_counter()-started}
+          print("FKP16_CONSUMED_TRAINVAL_SOURCE_DIAGNOSTIC="+json.dumps(report,sort_keys=True))
+          PY
+      - name: Final source-safe inherited regression, clean tree and no source writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test -z "$(git -C "$RUNNER_TEMP/fkp16-upstream" status --porcelain --untracked-files=all)"
+          echo FKP16_CONSUMED_TRAINVAL_ONLY_NO_NEW_FIRSTUSE=PASS
