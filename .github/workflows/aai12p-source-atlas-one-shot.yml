@@ -1,0 +1,100 @@
+name: AAI-12P diverse causal world mechanical and all-eight strong-control qualification
+on:
+  push:
+    branches: [research/aai12p-diverse-causal-worlds-20261114]
+    paths: [.github/workflows/aai12p-source-atlas-one-shot.yml]
+permissions:
+  contents: write
+concurrency:
+  group: aai12p-diverse-causal-source-once-20261114
+  cancel-in-progress: false
+jobs:
+  source:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-12P heterogeneous causal benchmark first source mechanical qualification one-shot' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: New independent main-based source, frozen prereg BEFORE world/control implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '3e9d22fa70efe4ed866ccf3397ba67a6a6e05478'
+          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/aai12p-source-atlas-one-shot.yml'
+          test "$(git rev-parse c3a866409bdcf7435c1154c60871801d2b1a8a67^)" = '5e74f8db85b2f5839c42148c0dfba69a88b1a2c9'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/prereg.json)" = '74f57c2175e7ae87926e4f7fd985d741f719c0a9'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/prereg.json)" = "$(git rev-parse c3a866409bdcf7435c1154c60871801d2b1a8a67:research/contrib/chatgpt/AAI-12P/prereg.json)"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/world.py)" = '488c54aee283434599f106b22b6008cd596bac37'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/controls.py)" = '042b36f66fa14e0c7c7f39fe709ed58df9776eed'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/admit.py)" = '1aedb903e6c359c962b3d36009d78ce2d2f235b2'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12P/test_benchmark.py)" = 'e3310597abf3cae08bd860e2a497be920baf3202'
+          test -z "$(git status --porcelain)"
+          echo AAI12P_NEW_ROOT_PREREG_BEFORE_IMPLEMENTATION_SOURCE_CUSTODY_PASS
+      - name: Focused native PUBLIC data, legal do-action, full causal structural grammar and science fence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-12P -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/AAI-12P/admit.py --primary >/dev/null 2>&1; then
+            echo AAI12P_SCIENCE_FIRST_USE_NOT_DISARMED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI12P_FOCUSED_SOURCE_CONTROLS_AND_SCIENCE_FENCE_PASS
+      - name: One preregistered actual intervention mechanical admission versus all eight fully fitted controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-12P/admit.py --source-admission
+          test -z "$(git status --porcelain)"
+          echo AAI12P_SOURCE_MECHANICAL_BENCHMARK_QUALIFIED_OR_FROZEN_NO_GO_NO_SCIENCE
+  atlas:
+    needs: source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate EXACT original three G29 source-pinned code atlas files only
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = '3e9d22fa70efe4ed866ccf3397ba67a6a6e05478'
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          test "$(git diff --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'AAI-12P original source-pinned generated-only G29 atlas'
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 3
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/research/aai12p-diverse-causal-worlds-20261114 | cut -f1)" = "$GITHUB_SHA"
+          git push origin HEAD:refs/heads/research/aai12p-diverse-causal-worlds-20261114
+          echo AAI12P_PINNED_G29_GENERATED_THREE_FILES_ONLY_PASS

@@ -1,0 +1,124 @@
+{
+  "schema": "yggdrasil.aai12p.heterogeneous-causal-world-benchmark.v1",
+  "id": "AAI-12P",
+  "purpose": "Replace overfitted six-bit six-law development fixture with structurally distinct contextual causal worlds, certify information-identifiability, strong fully trained same-information controls, consequential intervention benefit and cold retention BEFORE any new native-learning method.",
+  "baseline_custody": {
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "latest_failed_research_pr": 1073,
+    "latest_failed_research_sha": "7214fc6ba2ec518acfbabf2090edcefee8782f1d",
+    "prior_final_regression": 43660122880,
+    "prior_benchmark_gate": "AAI-11G prospective source benchmark",
+    "no_stacking_on_failed_prototypes": true
+  },
+  "world_design": {
+    "controlled_bits": 8,
+    "observable_mediator_bits": 4,
+    "goals": 16,
+    "actions": "16 do(x_i:=0|1), at most two real sequential actions, cost .08 per action",
+    "families": [
+      "chain",
+      "context_switch",
+      "compensator",
+      "inhibitor"
+    ],
+    "source_only_fit_worlds": [
+      "mechanical:fit:chain:0",
+      "mechanical:fit:chain:1",
+      "mechanical:fit:context_switch:0",
+      "mechanical:fit:compensator:0"
+    ],
+    "source_only_transfer_worlds": [
+      "mechanical:transfer:chain:2",
+      "mechanical:transfer:chain:3",
+      "mechanical:transfer:context_switch:1",
+      "mechanical:transfer:context_switch:2",
+      "mechanical:transfer:context_switch:3",
+      "mechanical:transfer:compensator:1",
+      "mechanical:transfer:compensator:2",
+      "mechanical:transfer:compensator:3",
+      "mechanical:transfer:inhibitor:0",
+      "mechanical:transfer:inhibitor:1",
+      "mechanical:transfer:inhibitor:2",
+      "mechanical:transfer:inhibitor:3"
+    ],
+    "fixture_names": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "source_only_first_use_disarmed": true,
+    "world_seed_derivation": "SHA-256('AAI12P-world-v1|'+exact private world ID+'|'+field), select rule indices deterministically from disjoint permitted candidates, no search or rejected seed loops. Algorithm follows frozen family DAG templates. World ID is never in public observations.",
+    "law_structure": "4-stage causal DAG m0, m1 from distinct x pairs; m2 may depend on upstream mediator and context bit; m3 depends on earlier mediator(s), x and family-specific compensation or inhibition. Three operators xor/and/or plus negated/compositional terms; each template pre-registered and deterministic.",
+    "identity": "Family and specific rule parameters hidden from learner; each episode exposes ONLY public x, mediator bits, goal, reward, actions_taken. Exogenous do-action sets exactly one x bit and recomputes downstream DAG."
+  },
+  "study": {
+    "common_training": "Per fixture 4 original fit worlds in listed order, 8 actual exogenous do-action pairs each, total 64 identical public observations per model. Fit must be completed using only these 64 rows before cold checkpoint.",
+    "challenge": "Each unfamiliar world receives 4 actual exogenous do-action pairs (8 public rows), all matched learners see identical public observations and then a frozen independently restored post-challenge checkpoint per episode.",
+    "evaluation": "8 deterministic original public (x,goal) context pairs per unfamiliar world per fixture, source SHA derived, independent of learner name; total 2 fixtures x12 transfer worlds x8 contexts=192 consequential episodes per method with 0..2 self-selected true interventions and only own observable consequences. Same-goal achievable fraction measured relative to exact oracle; all rewards counted.",
+    "familiar_retention": "Repeat independently cold A/B evaluation on four fit worlds using 4 exogenous challenge pairs and same context algorithm, 2 fixtures x4 worlds x8=64 additional episodes per method; no training source contamination.",
+    "source_mechanical_not_science": true,
+    "source_unique_contexts": 192,
+    "source_familiar_contexts": 64
+  },
+  "controls": {
+    "original_model_reuse": "AAI-11P controls are six-bit/three-mediators and therefore inapplicable as exact matched baselines; implement fresh honest eight-bit/four-mediator fully trained controls on same public data and 0..2 actual action limits; no private world ID/spec hidden-law oracle.",
+    "eligible": [
+      "tabular_all",
+      "tabular_recent16",
+      "knn_recent32",
+      "id3_depth5",
+      "logistic_pair_fullfit",
+      "causal_structure_recent8",
+      "causal_structure_recent16",
+      "causal_structure_all"
+    ],
+    "fit": "All eight eligible method implementations fit on identical 64 public training events, then update with identical four challenge intervention pairs; linear logistic pair model fitted with 250 complete deterministic gradient passes on all available public observations and again after challenge. Causal structure baselines fit exhaustive public pairwise Boolean grammar over x and previous visible m, strongest among full/recent windows selected on actual outcomes, include family-specific m2/m3 interaction grammar (not cripple controls).",
+    "decision": "Shared same two-action planning method with cost .08; independently choose actual interventions and update on own true observed outcome. Compare strongest by actual mean reward, report oracle baseline and incidental reactive/random/STOP diagnostic separately.",
+    "source_only_compute": "CPU with bounded public model/action cache, no paid model, no GPU requirement."
+  },
+  "pre_registered_admission": {
+    "controls_count": 8,
+    "source_worlds_distinct": 12,
+    "source_transfer_episodes": 192,
+    "source_familiar_episodes": 64,
+    "distinct_world_dags_required": true,
+    "structural_signature_uniqueness_min": 12,
+    "minimum_pairwise_one_step_observable_distinguishability_fraction": 0.5,
+    "minimum_fraction_real_first_actions_change_a_mediator": 0.2,
+    "minimum_fraction_contexts_with_positive_oracle_intervention_reward_gain": 0.15,
+    "minimum_oracle_reward_headroom_over_best_fully_trained_conventional": 0.25,
+    "minimum_oracle_reachable_goal_recovery_headroom_over_best_control": 0.1,
+    "minimum_exact_goals_reachable_fraction": 0.15,
+    "maximum_exact_goals_reachable_fraction": 0.9,
+    "minimum_strong_control_reward_above_STOP": 0.05,
+    "minimum_strong_control_reward_above_reactive": 0.05,
+    "negative_control": "Shuffle public post-intervention mediator outcomes across distinct true (x,do) transitions at fixed marginals; compare structural learner on corrupted vs intact, do not call a GO if corrupted learning is better under prespecified guard.",
+    "statistics": "Mechanics source-only descriptive; hold out genuine random independent world clusters until separately authorized scientific first-use. Do not treat sampled fixed worlds as 12 independent science transfer clusters.",
+    "no_post_result_retargeting": true,
+    "stop_on_inadequate_headroom_or_identifiability": true
+  },
+  "safety": {
+    "no_native_model_change": true,
+    "no_main_mutation": true,
+    "create_draft_PR_only": true,
+    "no_merge": true,
+    "no_owner_loop_or_runner_changes": true,
+    "no_other_project_integration": true,
+    "no_paid_API": true,
+    "no_user_Library_files": true,
+    "no_scientific_first_use": true,
+    "no_original_science_seed_replay": true,
+    "science_cohorts_used": 0,
+    "primary_disarmed": true,
+    "qualification": "source-only Linux/Windows original benchmark test + mandatory full exact-head native tests, G29 generated atlas only"
+  },
+  "separate_science": {
+    "not_authorized": true,
+    "require_freeze_new_independent_transfer_worlds": true,
+    "require_fully_fitted_strongest_conventional": true,
+    "require_matching_actions_and_total_process_compute": true,
+    "require_interference_and_cold_retention": true,
+    "require_paired_reproducible_multiple_seed_test": true,
+    "require_frozen_primary_gain_and_CI": true
+  },
+  "no_post_result_tuning": true
+}
