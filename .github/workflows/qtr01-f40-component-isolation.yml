@@ -1,0 +1,62 @@
+name: QTR-01 F40 archived graph component isolation DEV
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  component-isolation:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'research(qtr): F40 archived graph component isolation DEV tests'
+    name: F40 archive-only provenance and disjointness (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Stable Windows checkout bytes
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm exact source archive SHA, frozen predeclared audit, no scientific first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor a0be13414884e6a10b0cbec5d1dccfa8c39f6715 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_prereg.json)" = "04d405a7b5697ce0ca7c573303bd366cb586dca5"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f32_source_snapshot.json)" = "453dad0363689cff785c26db5441555c6841f95d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f35_source_depth2_snapshot.json)" = "3fc50ddf7453958c458db697eacf2e27d3d52f57"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/evidence/f39_fit_breadth_source_snapshot.json)" = "f0972e2d2987a0ee3205a7e3b7e3c0c2b60c6108"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f40_component_isolation_audit.py)" = "ae6ab67997d230de58e22645a61e976b4b4a21b5"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f40_component_isolation_audit.py)" = "a7e6c289fa996da21945b02427a03a7c9cbe9522"
+          echo F40_FROZEN_SOURCE_CUSTODY=PASS
+      - name: Reproduce actual 82-source-triple archive isolation and negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f40_*.py' -v
+          python -B research/contrib/chatgpt/QTR-01/f40_component_isolation_audit.py
+      - name: Require unchanged source, no reserved lookup or model first-use
+        shell: bash
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo F40_SOURCE_ONLY_NO_FIRST_USE=PASS
