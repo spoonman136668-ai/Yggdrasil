@@ -1,0 +1,86 @@
+name: QTR-01 F32 durable source snapshot archive custody
+
+on:
+  push:
+    branches:
+      - research/qtr01-qwen38-donor-intake-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  source-archive-once:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event.head_commit.message == 'ci(qtr): F32 one-shot original CC0 source archival receipt'
+    runs-on: ubuntu-24.04
+    name: F32 bounded first-party source archival only
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Read-only checkout exact F32 source candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source identity, protocol and one-shot empty marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 9542fa02a513aa9c68e11f361b27d83621def22e HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f32_prereg.json)" = "639cf6be9963979ccc6d7ea0053b1b98296207aa"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_prereg.json)" = "7017afb712f087e818942841cffbca4ae296c629"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f31_all_language_associations.py)" = "6746518963f07f8355fc4bd66716d86547183005"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f31_all_language_associations.py)" = "1ced11c7544add3f3a5653d3393ce837a09c00d1"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f30_multilingual_associations.py)" = "b8a7d9f47a160d40a97fe6fc0008f591e7fdb025"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f27_versioned_entitydata.py)" = "db561564c949ffe1a15c99dc460d18d0143588d1"
+          test "$(git log -1 --format=%s)" = "ci(qtr): F32 one-shot original CC0 source archival receipt"
+          test -z "$(git diff --name-only HEAD^ HEAD)"
+          test -z "$(git status --porcelain)"
+          echo F32_FROZEN_PRIOR_F31_SOURCE_IDENTITY=PASS
+      - name: One bounded source-only CC0 receipt to runner temporary artifact folder
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="$RUNNER_TEMP/qtr01-f32-first-party-cc0-snapshot.json"
+          test ! -e "$TARGET"
+          python -B research/contrib/chatgpt/QTR-01/f31_all_language_associations.py --frozen-first-party-only --output "$TARGET"
+          TARGET="$TARGET" python - <<'PY'
+          import hashlib,json,os,pathlib
+          path=pathlib.Path(os.environ["TARGET"])
+          raw=path.read_bytes()
+          x=json.loads(raw)
+          ctrl=x["matched_symbolic_numeric_control"]
+          assert ctrl["source_labeled_rows"]>0
+          assert ctrl["canonical_cold_restore"]
+          assert ctrl["numeric_vs_equal_info_symbolic_2hop_parity"]
+          assert all(row["s_language"] and row["p_language"] and row["o_language"] for row in x["typed_source_rows"])
+          assert x["native_recipient_model_weights_edited"] is False
+          assert x["scientific_pass"] is False
+          assert len(raw)<=393217
+          digest=hashlib.sha256(raw).hexdigest()
+          historical="e9ead9ac15e4ecbe4d99216cda43657e1aeb030d22f59fd852f8b99fa0d440eb"
+          print("F32_REAL_SOURCE_SNAPSHOT_SHA256="+digest)
+          print("F32_SAME_EXACT_SOURCE_BYTES_AS_F31="+str(digest==historical).lower())
+          print("F32_TYPED_LABELED_ASSOCIATIONS="+str(ctrl["source_labeled_rows"]))
+          print("F32_SOURCE_TWOHOP_QUERIES="+str(ctrl["actual_observed_twohop_queries"]))
+          print("F32_SOURCE_REVISIONS_RAW_RECEIPTS_PRESENT="+str(len(x["source_request_receipts"])))
+          print("F32_SCIENCE_AND_ACCEPTED_MODEL_MUTATIONS=NONE")
+          PY
+      - name: Source repository unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+      - name: Upload valid absolute runner temporary path, no parent relative traversal
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qtr01-f32-source-receipt-cc0
+          path: ${{ runner.temp }}/qtr01-f32-first-party-cc0-snapshot.json
+          retention-days: 14
+          if-no-files-found: error
