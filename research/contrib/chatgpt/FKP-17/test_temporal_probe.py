@@ -88,5 +88,20 @@ class TemporalResearchProbeTests(unittest.TestCase):
             self.assertEqual(model.choose_public(STATE, history(p)), control)
 
 
+    def test_overflow_rejection_is_atomic(self):
+        model = TemporalRewardProbe()
+        model._count[0] = 65535
+        prior = model.state_receipt()
+        with self.assertRaises(OverflowError):
+            model.observe_public(event(0, 0, 1.0))
+        self.assertEqual(model.state_receipt(), prior)
+
+    def test_deterministic_replay_same_public_records(self):
+        one, two = self.trained(), self.trained()
+        self.assertEqual(one.state_receipt(), two.state_receipt())
+        self.assertEqual(one.choose_public(STATE, history(0)),
+                         two.choose_public(STATE, history(0)))
+
+
 if __name__ == "__main__":
     unittest.main()
