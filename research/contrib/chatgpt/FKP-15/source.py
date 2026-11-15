@@ -85,7 +85,8 @@ def public_digest(h,obs):
     h.update(frame.tobytes(order="C"))
 
 
-def real_prefix(seed:int,anchor:int):
+def real_prefix(seed:int,anchor:int,allow_dev=False):
+    gate(seed,allow_dev=allow_dev)
     """Only public returned RGB+actions+rewards; no simulator private fields."""
     import gymnasium as gym
     import memory_gym  # noqa: F401 source-original native registration
@@ -124,7 +125,7 @@ def replay_branch(seed:int,anchor:int,action_index:int,allow_dev=False):
     gate(seed,allow_dev=allow_dev)
     if type(action_index) is not int or not 0<=action_index<9:
         raise ValueError("FKP15_ACTION_INDEX")
-    pre=real_prefix(seed,anchor)
+    pre=real_prefix(seed,anchor,allow_dev=allow_dev)
     if not pre["valid"]:
         return pre
     env=pre.pop("env")
@@ -156,7 +157,7 @@ def replay_branch(seed:int,anchor:int,action_index:int,allow_dev=False):
 
 def collect_one(seed:int,anchor:int,allow_dev=False):
     gate(seed,allow_dev=allow_dev)
-    ref=real_prefix(seed,anchor)
+    ref=real_prefix(seed,anchor,allow_dev=allow_dev)
     if not ref["valid"]:return {"valid":False,"seed":seed,"anchor":anchor,"source_steps":ref["source_steps"]}
     env=ref.pop("env")
     env.close()
