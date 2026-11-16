@@ -1,0 +1,65 @@
+{
+  "schema": "yggdrasil.cvh04.public-only-process-boundary.prereg.v1",
+  "study": "CVH-04",
+  "purpose": "Provide real OS process separation between the existing tokenless CVH02 learned policy and a finite public consequence channel, without first use of any genuine external source world.",
+  "source": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "base_pr": 1160,
+    "base_sha": "0975c5d83aa9b0357735139cae3457338ec67027",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "inherited_original_constructor_ci": 43930592515,
+    "inherited_full_dual_os_ci": 43931418817,
+    "original_upstream": "CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "actual_original_env_actions": 0,
+    "all_test_sources": "source-free mocked public toy process; NOT original causal environment and no upstream package import"
+  },
+  "hypothesis": "A source-side subprocess communicating through an exact binary public-event JSON-lines IPC can execute source-free policy actions without handing the source object, privileged metadata, unselected labels, or uncertain-effect replay to CVH02's model; reject tampering, reordering, wrong action and unsafe continuation.",
+  "implementation": {
+    "scope": "research/contrib/chatgpt/CVH-04/** only plus independent generated-only G29 on separate exact source child",
+    "process": "short-lived OS subprocess launched only by explicit test invocation; no scheduler, owner loop, daemon, background work, local runner, network or original environment access",
+    "source": "toy_source_child.py, deterministic unrelated binary mock with one episode and private-only hidden variable, toy seed IDs 1..6",
+    "parent": "public_ipc.py using existing CVH02 PublicEarnedPolicy and inherited independent CVH01 conventional batch baseline; exact public tuple fields and source-observation order",
+    "wire": "JSON line version v1 exact keys, max 6 actions, 4096 bytes per event, strict int-not-bool validators, opaque source PID kept outside model; timeout/error closes and never replays",
+    "event_flow": "policy chooses using only previous public records -> explicit source action -> validates six-field returned consequence -> policy observes only validated event; no source-private info",
+    "test": "source-free two subprocesses per toy pair, same source public seeds for cold-replay and uninterrupted, compare checkpoint, action/reward transcript SHA, independent batch returns, process IDs distinct, intentionally malformed/wrong-action/private data/duplicate rejection, refused protected original seed, guaranteed source-first-use disabled"
+  },
+  "frozen_gates": {
+    "source_free_test_count_at_least": 14,
+    "strict_public_no_private_fields": true,
+    "real_os_subprocess_distinct_pid": true,
+    "observed_only_choose_before_outcome": true,
+    "public_return_exact_batch_equal": true,
+    "source_worker_closed_after_terminal": true,
+    "checkpoint_cold_same_public_trace": true,
+    "source_communication_timeout_fails_closed": true,
+    "wrong_or_extra_event_fails_closed": true,
+    "original_env_reset_calls": 0,
+    "original_env_do_calls": 0,
+    "original_seed_996100_996103_unused": true,
+    "protected_dev_transfer_unused": true,
+    "dual_os_focused_and_full_root_regression": true,
+    "source_pinned_G29_final": true
+  },
+  "science": {
+    "scientific_first_use": false,
+    "independent_external_interventions": false,
+    "fully_trained_matched_controls": false,
+    "novel_law_learning": false,
+    "scientific_pass": false,
+    "claim": "ENGINEERING_SOURCE_FREE_PROCESS_SEAM_ONLY; synthetic mock tests cannot support scientific gains"
+  },
+  "authority": {
+    "actual_original_source_firstuse": false,
+    "accepted_source_change": false,
+    "model_weights_change": false,
+    "main_write": false,
+    "merge": false,
+    "new_runner": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false,
+    "sibling_project_changes": false,
+    "worker_background": false
+  },
+  "exit_criteria": "If inherited qualified adapter/policy cannot be connected across OS subprocess while preserving public-only action consequence protocol, report engineering fail and stop; no source first-use to work around it."
+}
