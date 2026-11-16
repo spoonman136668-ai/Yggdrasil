@@ -1,0 +1,123 @@
+{
+  "schema": "wsp131.semantic-rebinding-evidence-first.prereg.v1",
+  "id": "WSP-131",
+  "research_track": "isolated direct native weight programming",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "exact_sha": "86f7afeeff4f0f93ddd4b73adcd92f73ad5f25a2",
+    "pr": 1162,
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_classification": "WSP130 DEVELOPMENT_MIXED_WITHIN_SUPPLIED_ANF_FAMILY"
+  },
+  "title": "Can learned causal weights survive unknown variable-role permutation and detect unseen non-permutation rebindings?",
+  "motivation": "WSP130 tested only relabeling opaque subject IDs, not semantics. Separately published CausalGym 124 events already used in NKR19/CVH04; this development must not duplicate or reopen that first-use. Test true variable semantic binding under equal intervention information.",
+  "hypothesis": "An old source-blind learned causal function can be transferred to an unannounced permutation of SIX of its EIGHT public input bits using at most 32 new paid effects, with >=95% correct held effects and <=1% confident wrong. A hidden invertible nonlinear/linear shear outside the permutation family must be rejected, not mistakenly treated as a familiar permutation.",
+  "old_knowledge": {
+    "origin": "64 previously exposed WSP130 synthetic degree4/5 single-support laws, selected by source-only sorted ascending law_id from WSP130 public source",
+    "warm_actions_per_world_per_arm": 128,
+    "warm_laws": 64,
+    "warm_actions_total": 8192,
+    "prior": "WSP130 source-blind DirectInducer and separately independent symbolic strong warm learner; both must fit actual paid original source consequences and must retain warm knowledge unchanged",
+    "known": "Prior learned exact function inferred from WSP130 public observations, NOT original secret masks or source _law metadata."
+  },
+  "source": {
+    "type": "SOURCE-SAFE_PUBLIC_SYNTHETIC_DEVELOPMENT_ONLY",
+    "first_use_protected": false,
+    "train_target_seeds": [
+      160000,
+      160063
+    ],
+    "negative_seeds": [
+      161000,
+      161031
+    ],
+    "relabel_seeds": [
+      162000,
+      162015
+    ],
+    "target_family": "Reindex old truth table by one hidden permutation of lower six public input coordinates (0..5) sampled deterministically from 720 possible permutations, top two coordinates (6,7) remain fixed; all subjects remapped to new opaque IDs.",
+    "source_seed": "random.Random(int.from_bytes(sha256('WSP131|MAP|'+decimal target_seed).digest(),'big')) selects permutation from lexicographically enumerated itertools.permutations(range(6)); also permutes opaque subject IDs by per-view seeded Random.",
+    "negative_family": "Same unknown permutation followed by an unknown single GF2 input shear among the six variable bits: transform toggles one mapped coordinate by another (a linear bijection that is NOT a coordinate permutation). Source-only selects first SHA256-seeded pair with truth table not equivalent to any of the 720 available pure-permutation signatures, or rejects the source law if no such pair exists (frozen source asserts a pair exists).",
+    "label_isolation": "World exposes ONLY seed, law_id, cohort='probe' or 'transfer', opaque actions and typed 8-bit input x. It never exposes permutation or shear or condition. Source evaluator alone holds original causal truth and transformed condition.",
+    "worlds": {
+      "in_family": 64,
+      "out_family": 32,
+      "transfer_existing": 16
+    },
+    "transfers": "16 new opaque-ID views of first 16 learned target-binding laws, zero source actions. Do not interpret as independent-world transfer.",
+    "exclude": "All source seeds beyond exact 160000..160063, 161000..161031, 162000..162015 denied before source RNG. Explicitly reject WSP130 original/reserved and all ancestor 131xxx, 135xxx, 138xxx, 148xxx, 150xxx, 154xxx, 155xxx, 156xxx protected ranges. No other official original source opened."
+  },
+  "actions": {
+    "per_target_world_per_arm": 32,
+    "total_target_effects_per_arm": 3072,
+    "source_held_per_world_per_arm": 224,
+    "in_grammar_held_per_arm": 14336,
+    "negative_held_per_arm": 7168,
+    "transfer_scored_per_arm": 4096,
+    "transfer_actions": 0,
+    "checkpoints": [
+      0,
+      4,
+      8,
+      16,
+      32
+    ],
+    "checkpoints_score_only_final_unqueried_224": "At earlier checkpoints score predictions on the final 224 held action identities, but never expose or use future source outcomes; perform interim scoring only after all actions with frozen per-checkpoint snapshots.",
+    "constant_information": "Active numeric, independent exhaustive symbolic, decision-tree and no-update receive same 32 source consequences; optimized fixed symbolic receives 32 genuinely distinct source-blind predetermined probes; preserve all action transcript digests."
+  },
+  "arms": [
+    "ACTIVE_NUMERIC_BINDER: new trainable packed 720-bit permutation-identity coefficient weights, initially every mapping possible, actual outcomes eliminate mappings; select next action with maximally balanced candidate predictions, ties lowest public x.",
+    "ACTIVE_EXACT_SYMBOLIC: separate plain Python exact 720-permutation search over immutable learned source function on SAME active actions, disagree->abstain, empty->abstain",
+    "FIXED_EXACT_SYMBOLIC: 720-permutation exact search on 32 predeclared information-rich public x chosen greedily for maximum initial signature split but never conditioned on feedback (no oracle of hidden mapping).",
+    "FULLY_TRAINED_CART: independently implemented deterministic greedy Gini decision tree trained to completion on same 32 active consequences, binary features of x, max_depth 8, min_leaf 1, tie prefer lower feature index, no early source labels.",
+    "STALE_PRIOR: old unpermuted learned model predicts target inputs with zero rebinding, no updates; receive same 32 actions for fairness.",
+    "NO_UPDATE: source contacts identical, abstains on all held."
+  ],
+  "methods": {
+    "candidate_prior": "For each source-blind learned original function, generate 720 possible bit-permutation readouts using public input rules; compute packed 720-bit output-one masks for each of 256 target x. No true permutation supplied. Canonical order itertools.permutations(range(6)).",
+    "active_choice": "For each unqueried x compute #candidate1 vs #candidate0 among remaining packed identity weights; maximize min(count1,count0), tie choose smallest x. If 0 or 1 candidate, fill remaining source action budget with smallest unqueried x. All policies have source-safe deterministic action IDs.",
+    "updates": "New consequence y intersects packed weights with predicted-one mask if y=1, complement if y=0; if candidate set empty, label unknown and abstain all unqueried effects, no post-hoc prediction correction. Cold replay each observed action (including receipt chain) recovers identical packed weights, reject tampered state even when digest recomputed.",
+    "inference": "Return 0 or 1 only if every surviving permutation predicts the same consequence; else ABSTAIN; if zero survivors ABSTAIN. Named mapping is correct only up to functionally equivalent permutations, evaluated against all 256 original values.",
+    "fixed_choice": "32 unique x greedily chosen from 256 without observing target outcomes, successively maximizing expected eliminated identities under uniform initial 720 prior and ignoring actual target feedback; initial signature split tie lowest x. Checkpoint scores 0/4/8/16/32.",
+    "resource": "Record actual CPU time, wall time, tracemalloc peak, candidate count, snapshots, all source costs. No energy/whole-process efficiency claim until independently matched."
+  },
+  "controls": {
+    "equal_evidence_exhaustive": "The strongest exact symbolic implementation must tie native predictions on each arm's exact shared actions; classify any mismatch as ENGINEERING_INVALID, not scientific gain.",
+    "source_blind": "Numerical binder and symbolic and CART must not import source, source-only parent law masks, true mapping, shear, transfer scores or withheld outcomes. Parent WSP130 direct model is warm-trained from actual public actions first, rather than initializing hidden source functions.",
+    "consistency": "Same observations for native/exact symbolic/CART/stale/no-update; same32 for fixed symbolic separate matched charged transcript. Each world 32/32 without duplicates and one-score-only, no leak.",
+    "conventional": "CART is fully fitted in given capacity on actual 32 actions but not a compute/capacity matched conventional deep learner. No SCIENTIFIC_PASS."
+  },
+  "frozen_gates": {
+    "positive": "At 32 probes >=95% correct of 14,336 held, <=1% confidently wrong, >=58/64 target worlds have a functionally unique surviving readout compatible with true truth table, and >=20 pp correct coverage gain against STALE_PRIOR at same information. Every warm world retains all 256 prior predictions unchanged and 16 transfer zero-shot maps yield 4096/4096 correct.",
+    "negative": "For 32 pure-shear out-of-permutation worlds, >=30/32 have ZERO surviving identity weights, <=1% confident wrong on 7168 held, and no source family label leak.",
+    "comparative": "Active >= fixed optimized symbolic coverage minus2 percentage points (unconfident correct count over identical 64*224 denominator). Native vs same-action exact symbolic decision parity is required and is not a numeric advantage.",
+    "invalid": "Prereg/source/runner authority drift, source code imports in learners, unequal budget, test label leakage, forged snapshots not rejected, WSP130 original source reopened as new independent science, no G29 or full two OS final regression.",
+    "if_pass": "DEVELOPMENT_SUPPORTED_SEMANTIC_REBINDING_WITHIN_SUPPLIED_PERMUTATION; scientific UNVERIFIED, strongest symbolic exact tie, no general variable-binding claim.",
+    "if_failure": "DEVELOPMENT_NO_GO with full frozen positive/negative outcomes and miscalibration counted; no post-result threshold/policy update on same cohorts.",
+    "science": "Independent scientific source never used. No claim of general AGI, original unseen environmental transfer, native model accepted or deployed. Fully trained strong real-world controls, matched compute, seed splits and independent source first-use must separately qualify."
+  },
+  "governance": {
+    "first_commit_prereg_only": true,
+    "allowed_paths": [
+      "research/contrib/chatgpt/WSP-131/**",
+      ".github/workflows/wsp131-source-safe.yml",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice",
+      ".ice/code-atlas.json"
+    ],
+    "draft_only": true,
+    "merge": false,
+    "main_mutation": false,
+    "native_install": false,
+    "science_first_use": false,
+    "controllers_schedulers_runners_queues": false,
+    "paid_api": false,
+    "source_masks_excluded": true
+  },
+  "refs": [
+    "WSP130 PR #1162 exact 86f7afeeff4f0f93ddd4b73adcd92f73ad5f25a2",
+    "Yggdrasil issue #910",
+    "Yggdrasil CONTRIBUTING_RESEARCH.md",
+    "NKR19 PR #1161 and CVH04 PR #1164 already consumed authentic source; no duplication"
+  ]
+}
