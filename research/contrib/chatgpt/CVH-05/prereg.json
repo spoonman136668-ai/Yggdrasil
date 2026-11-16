@@ -1,0 +1,134 @@
+{
+  "schema": "yggdrasil.cvh05.authentic-consumed-public-sixfold-identifiability-prereg.v1",
+  "status": "FROZEN_BEFORE_NEW_SIXFOLD_SCORES",
+  "date": "2026-11-16",
+  "research": "CVH-05",
+  "scope": "Retrospective, already consumed independent original CausalGym FKP26 public logs; no source first-use; scientifically honest robustness/falsification of CVH04 selective-coverage MSE signal and off-policy identification.",
+  "parent": {
+    "pr": 1164,
+    "sha": "5836c5dcdb74a8a1a7c5c32097d02ee955a4b2c3",
+    "tree": "9ca402028f45c4ab1dcf8e276d02b0989df414db",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "source": {
+    "original_repo": "CausalAILab/Causal-Gymnasium",
+    "original_sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "fkp26_pr": 1158,
+    "fkp26_github_run": 43930489602,
+    "cvh04_pr": 1164,
+    "cvh04_original_public_fixture": "research/contrib/chatgpt/CVH-04/consumed_public_fixture.json",
+    "consumed_physical_actions": 124,
+    "source_seed_ids": [
+      996100,
+      996101,
+      996102,
+      996103
+    ],
+    "transcript_hashes": {
+      "996100": "c8c151065c6bdd6f303ae28f995a55b33a910c1985c536b7cf30cdb360d89179",
+      "996101": "53b06c8cbdc22b8da399e75f60aa4d55a3179fba28f5284ddeb9012435f632df",
+      "996102": "9b63fbefe5dcfd98801b058277cac9141574a5bede072cea228a976ac69d7cca",
+      "996103": "34929d6cc2e1145a6a930b9e6e1542dc2733ac0366ea8c5be70fb76223e31676"
+    },
+    "new_source_actions": 0,
+    "source_original_first_use": false,
+    "protected_dev_unused": true,
+    "protected_transfer_unused": true
+  },
+  "knowledge_about_scores": "Prior CVH04 fixed split TRAIN 996100/996101 vs held 996102/996103 yielded support 55/62 and global prior MSE reduction 0.014917846867. 124 original rewards aggregate, 4 episodes summary, entire source now consumed. This 6-fold evaluation is deliberately retrospective and its scientific threshold is not a prospective discovery.",
+  "frozen_pairs": [
+    [
+      996100,
+      996101
+    ],
+    [
+      996100,
+      996102
+    ],
+    [
+      996100,
+      996103
+    ],
+    [
+      996101,
+      996102
+    ],
+    [
+      996101,
+      996103
+    ],
+    [
+      996102,
+      996103
+    ]
+  ],
+  "n_folds": 6,
+  "per_fold": {
+    "train_episodes": 2,
+    "retrospective_held_episodes": 2,
+    "train_events": 62,
+    "held_events": 62,
+    "labels": "Four-step discounted future observed earned return r[t]+0.5r[t+1]+0.25r[t+2]+0.125r[t+3] until episode closes.",
+    "prefix": "prior public action,reward; current before and recorded action",
+    "abstention": "CVH01 support count less than 2 => abstain. Do not impute as native prediction.",
+    "predictions": "seal from train-only public consequences; evaluator computes historical held return targets afterward",
+    "cold": "checkpoint exact cold restore before predictions; train values and cold checksum preserved after isolated held-update replay"
+  },
+  "candidate": {
+    "implementation": "Reuse unchanged CVH01 EarnedReturnMemory from original CVH04 parent; no learned method edit",
+    "min_support": 2,
+    "capacity": 36,
+    "training_actions_per_fold": 62,
+    "confident_wrong_definition": "Not applicable to continuous earned return; report MSE; don't claim zero wrong binary effects"
+  },
+  "controls": {
+    "information_equivalent_exact": "Reuse independently implemented batch_public_returns on identical train tape; candidate must tie on every supported prediction, otherwise engineering FAIL",
+    "global_train_prior": "mean observed four-step train return, evaluated on candidate-supported rows and all held rows",
+    "simple_fitted_4_cell": "train-only mean four-step return grouped by public (before, action), two pseudocounts to train global prior; all held rows, no future labels",
+    "bayesian36": "fitted 2-pseudocount shrinkage to train global, all held rows; independently batch fitted",
+    "immediate_only": "reused original independent immediate-only estimator, candidate-supported rows",
+    "no_train": "global TRAIN mean. Distinguish fallback versus native-supported"
+  },
+  "predeclared_robustness": {
+    "supported_each_fold_min": 16,
+    "positive_fold_count_min": 5,
+    "aggregate_supported_mse_reduction_over_train_global_min": 0.01,
+    "worst_fold_mse_reduction_min": -0.02,
+    "all_6_control_ties_required": true,
+    "original_cvh04_split_unchanged": true,
+    "if_fail": "RETROSPECTIVE_DEVELOPMENT_ROBUSTNESS_NO_GO, preserve CVH04 positive single-split as historical without retuning source, model, contexts or thresholds",
+    "if_pass": "RETROSPECTIVE_DEVELOPMENT_ROBUSTNESS_PASS_ONLY, still not scientific superiority or independent source learning"
+  },
+  "identifiability": {
+    "behavior_policy": "Original FKP24 fixed public action is (before_state+current_episode_row_index)%2, deterministic given public observation and local time index.",
+    "witness": "For each of 124 original public event histories, define two potential reward completion tables for the UNEXECUTED opposite action: 0 versus 1. Both completions reproduce all already witnessed source transitions and rewards, but disagree on 124 counterfactual rewards. This logical test proves logged fixed-policy data alone cannot identify unexecuted action reward (not an assertion about the upstream actual SCM).",
+    "model_claim": "Cannot claim improved online action selection or off-policy causal decision from these logs; require new owner-authorized prospective interaction with randomized/matched baseline actions."
+  },
+  "reproducibility": {
+    "seed": "No new random source; deterministic enumeration 6 pairs and 4 original tapes",
+    "windows_linux": "Same 12-decimal report normalization as CVH04, raw science comparisons unchanged, identical source and predictions/checkpoint SHA",
+    "negative_controls": [
+      "mutate source fixture row => reject source SHA",
+      "mutate checkpoint => reject cold restore",
+      "assert 6 train pairs exactly unique and each held unused in training",
+      "no source/import/reset/do/network call in evaluator",
+      "strong exact symbolic tie every fold",
+      "single-split CVH04 frozen MSE/coverage reproduced exactly",
+      "counterfactual witness must not be used to train model or called genuine source action"
+    ],
+    "qualification": "Mandatory final exact SHA/tree regression root+CVH01..05+G29 Ubuntu/Windows; only generated G29 files and no main merge"
+  },
+  "authority": {
+    "owner_protected_source_science_approved": false,
+    "no_external_source_first_use": true,
+    "no_reset_do": true,
+    "no_replay_of_consumed_actions": true,
+    "no_accept_or_merge": true,
+    "no_live_loop": true,
+    "no_controller_scheduler_runner": true,
+    "no_paid_api": true,
+    "no_new_original_science_claim": true
+  },
+  "scientific_pass": false,
+  "native_accepted": false
+}
