@@ -82,15 +82,22 @@ def reduce_original(directory):
 
     # Source and numeric/symbolic predictions MUST reproduce across OS.
     disagreements = 0
+    gru_disagreements = 0
     for key, a in platforms["Linux"].items():
         b = platforms["Windows"][key]
         for arm in ARMS:
             first, other = a["arms"][arm], b["arms"][arm]
             keys = ("correct", "wrong_confident", "abstained", "held",
                     "predictions", "source_calls", "source_sha256", "cold_ok",
-                    "numeric_bytes", "law_declared")
+                    "numeric_bytes", "law_declared",
+                    "full_function_identified")
             if any(first.get(k) != other.get(k) for k in keys):
                 disagreements += 1
+        if key[3] == 32:
+            g1, g2 = a["arms"]["TRAINED_GRU_PASSIVE"], b["arms"]["TRAINED_GRU_PASSIVE"]
+            if any(g1.get(k) != g2.get(k) for k in
+                   ("converged", "correct", "predictions")):
+                gru_disagreements += 1
     if disagreements:
         _fail("CROSS_PLATFORM_NUMERIC_OR_SOURCE_DISAGREEMENT")
 
@@ -111,6 +118,8 @@ def reduce_original(directory):
                                            for x in cases),
                     "abstained": sum(x["arms"][arm]["abstained"] for x in cases),
                     "held": len(cases) * 24,
+                    "full_function_identified": sum(bool(x["arms"][arm]
+                        .get("full_function_identified")) for x in cases),
                 }
             if exposure == 32:
                 totals["TRAINED_GRU_PASSIVE"] = {
@@ -129,8 +138,10 @@ def reduce_original(directory):
            for os_name in PLATFORMS for shard in range(SHARDS)):
         _fail("SHARD_COUNTS")
 
-    science = "COMPARISON_INVALID_GRU_NONCONVERGENCE" if failures else (
-        "PUBLIC_DEV_DIAGNOSTIC_ONLY_NO_NATIVE_ADVANTAGE_PROVEN")
+    science = ("COMPARISON_INVALID_GRU_NONCONVERGENCE" if failures else
+               "COMPARISON_INVALID_GRU_PLATFORM_DISAGREEMENT"
+               if gru_disagreements else
+               "PUBLIC_DEV_DIAGNOSTIC_ONLY_NO_NATIVE_ADVANTAGE_PROVEN")
     report = {
         "schema": "wsp120.original-public-aggregated.v1",
         "source_commit": source_sha,
@@ -139,6 +150,7 @@ def reduce_original(directory):
         "native_model_modified": False,
         "world_tasks_per_platform": 216,
         "cross_platform_numeric_source_differences": disagreements,
+        "cross_platform_gru_prediction_differences": gru_disagreements,
         "paired_full_graph_16_call": diagnostic,
         "coverage_checkpoints": counts,
         "full_32call_gru_nonconverged_cases": failures,

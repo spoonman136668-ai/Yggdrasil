@@ -77,7 +77,7 @@ def run_world(world, *, tier, family, max_calls=32, include_gru=True):
     law = world.targets[family]
     learners = {name: _learner(name, graph) for name in ARM_NAMES}
     sources = {name: S.EvidenceSource(world, law) for name in ARM_NAMES}
-    start = {name: time.monotonic() for name in ARM_NAMES}
+    elapsed = {name: 0.0 for name in ARM_NAMES}
     rows = []
 
     for step in range(max_calls + 1):
@@ -87,6 +87,7 @@ def run_world(world, *, tier, family, max_calls=32, include_gru=True):
             predicted = {}
             cold = {}
             for name in ARM_NAMES:
+                clock = time.monotonic()
                 learner = learners[name]
                 if sources[name].count != step:
                     raise AssertionError("WSP120_SOURCE_BUDGET")
@@ -102,6 +103,7 @@ def run_world(world, *, tier, family, max_calls=32, include_gru=True):
                     pred = tuple(learner.infer(subject) for subject in held)
                     cold[name] = None
                 predicted[name] = pred
+                elapsed[name] += time.monotonic() - clock
             trained = None
             if step == 32 and include_gru:
                 # Give conventional training the exact passive-arm evidence.
@@ -114,18 +116,25 @@ def run_world(world, *, tier, family, max_calls=32, include_gru=True):
             # Single dedicated scoring boundary AFTER all predictions.
             full_graph = tuple(dict(enumerate(row)) for row in world.edges)
             truth = tuple(S.walk(full_graph, subject, law) for subject in held)
+            true_signature = tuple(S.walk(full_graph, subject, law)
+                                   for subject in range(S.N))
             arms = {}
             for name in ARM_NAMES:
                 learner, source = learners[name], sources[name]
                 record = _score(predicted[name], truth)
+                candidate = learner.law()
+                recovered = (candidate is not None and
+                             tuple(S.walk(full_graph, subject, candidate)
+                                   for subject in range(S.N)) == true_signature)
                 record.update({
                     "source_calls": source.count,
                     "source_sha256": source.receipt.hexdigest(),
                     "cold_ok": cold[name],
-                    "wall_seconds": time.monotonic() - start[name],
+                    "wall_seconds": elapsed[name],
                     "numeric_bytes": len(learner.weights) * 4
                                      if isinstance(learner, S.NumericGrow) else 0,
-                    "law_declared": learner.law() is not None,
+                    "law_declared": candidate is not None,
+                    "full_function_identified": recovered,
                 })
                 arms[name] = record
             if trained is not None:
@@ -155,10 +164,12 @@ def run_world(world, *, tier, family, max_calls=32, include_gru=True):
         if step == max_calls:
             break
         for name in ARM_NAMES:
+            clock = time.monotonic()
             learner = learners[name]
             subject = learner.choose(pool)  # Only public graph/evidence.
             answer = sources[name].query(subject)  # Real toy consequence.
             learner.observe(subject, answer)
+            elapsed[name] += time.monotonic() - clock
     return rows
 
 
