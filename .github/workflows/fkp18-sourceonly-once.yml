@@ -19,7 +19,7 @@ jobs:
     outputs:
       candidate: ${{ steps.atlas.outputs.candidate }}
     env:
-      SOURCE: 43705d0fbe3656072eeaad4d1820b09899742336
+      SOURCE: d6f50d142462341023b3a300ec36b8d10f7c1724
       TARGET: research/fkp24-independent-causalgym-mdp-admission-20261116
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 43705d0fbe3656072eeaad4d1820b09899742336
+          ref: d6f50d142462341023b3a300ec36b8d10f7c1724
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -90,7 +90,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/prereg.json)" = f990e1d502dad89519d1af9069f149a0555ab065
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/native_public_mdp.py)" = 4424eadef179996ff491911efadfbe4e07761062
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/verify_upstream.py)" = e208f09870bb4dbcab3956e865298196e6629b08
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/test_native_public_mdp.py)" = 15722196a77d9b1322cedac5feba9bb0fa229e5d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/test_native_public_mdp.py)" = 718bc4fee411ce958062b4a3a6b299732e110aed
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/test_prereg.py)" = 29c31c726d54c4a9fced66548ce390e0ce100dcd
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/README.md)" = fc97007370f84f61ad8ab735e2cc20d47e3b8a8c
           test -z "$(git status --porcelain --untracked-files=all)"
@@ -146,7 +146,7 @@ jobs:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP24_SOURCE_SHA: 43705d0fbe3656072eeaad4d1820b09899742336
+      FKP24_SOURCE_SHA: d6f50d142462341023b3a300ec36b8d10f7c1724
     steps:
       - name: Prevent source line translation
         shell: bash
