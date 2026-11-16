@@ -1,0 +1,136 @@
+{
+  "schema": "wsp133.active-challenger-audit-bounded-r2.prereg.v1",
+  "id": "WSP-133",
+  "research": "source-safe bounded weight programming repair attempt 2",
+  "status": "FROZEN_FIRST_COMMIT",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "exact_commit": "17388464a6ce2c3f829bc61190ba9c38eb9450f1",
+    "parent_pr": 1171,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "source_first_use": "DENIED"
+  },
+  "before": {
+    "original_WSP131": "known 14336/14336 correct; unfamiliar wrong240/7168, original NO_GO",
+    "r1_WSP132": "new synthetic known 7555/14336 correct (52.6995%), 0 wrong, 6781 abstain; shear 5967/7168 correct (83.245%), 0 wrong; zero-source old-rule relabel 2545/4096; R1 NO_GO",
+    "prior_provenance": {
+      "wsp131_sha": "bee103460bb4bd9591a07694ee71d33d34ba922a",
+      "wsp132_r1_original_source": "a56f407dd081a7b08affee36a2a8c7a15a5f271e",
+      "wsp132_r1_result_receipt_sha": "17388464a6ce2c3f829bc61190ba9c38eb9450f1",
+      "source_score": "76def4d7c5ab678f9f032cd098f785628c0a1728f1bc2cdd320cd15ed1f85c95"
+    },
+    "failure_mechanism": "Posthoc R1 conservative 21,600-shear confidence gate catches false confidence but original 32 queries selected solely for 720-pure-permutation identification; many viable shears remain and force abstention on approximately 47% of familiar effects despite full original knowledge."
+  },
+  "proposal": {
+    "hypothesis": "Within same 32 paid queries, allocating final16 to maximize outcome disagreement among all remaining 720+21,600 alternative role bindings after16 original pure-permutation probes can preserve >=95% familiar correct readout and <1% unfamiliar false confidence while retaining >=25% correct unfamiliar effect coverage.",
+    "algorithm": "First16 actions: WSP131 original source-blind pure 720-hypothesis max-balanced policy, using actually paid outcome feedback. After first16, enumerate every pure permutation and every 1-bit invertible GF2 shear (21600) on the old fully learned causal function and eliminate inconsistent alternatives by all16 observed effects. For the remaining16 actions, choose from 256 unqueried typed inputs the x that best balances #surviving hypotheses predicting0 versus1, tie lowest x. Observe source effect once; eliminate incompatible hypotheses. Never exceed32 queries, change initial source/hidden labels, use scorer answers, alter old frozen priors, or edit original WSP131/WSP132 code. On later steps if no candidate remains abstain and fill remaining budget with lowest unqueried x. At test time output confident y only when ALL surviving hypotheses agree, else abstain.",
+    "candidate_space": {
+      "pure": 720,
+      "single_invertible_gf2_shear": 21600,
+      "total": 22320,
+      "pure_mapping": "six of eight source input bits permuted, top2 anchors unchanged",
+      "shear_mapping": "after hidden permutation, toggle one of six mapped bits by a distinct mapped input bit",
+      "primitive_supplied": true
+    },
+    "adaptation": "A learned source-blind candidate identity ledger updates by actual observation, not a mathematical primitive invented from first principles. Save all original WSP130 warm causal knowledge and exact WSP133 learned binding states."
+  },
+  "source": {
+    "origin": "already-exposed WSP130 public synthetic 64 quartic/quintic causal laws, warm retrained on 128 paid actions per law/arm (8192) for equal source custody",
+    "evaluator": "NEW 96 independently seeded public synthetic role mapping worlds constructed only after prereg; 64 pure permutations and 32 single-shear nonpermutation transformations. No model receives hidden mapping/shear identity.",
+    "new_seeds": {
+      "positive": [
+        169000,
+        169063
+      ],
+      "negative": [
+        170000,
+        170031
+      ],
+      "transfer": [
+        171000,
+        171015
+      ]
+    },
+    "source_generator": "SHA256('WSP133|MAP|'+str(seed)) draws mapping using random.Random(int.from_bytes(hash,'big')); pure mapping from 720 lexicographic permutations of range(6); negative source draws shear from 30 options and rejects source-only shear identical to any of720 pure mappings over all256 typed inputs. New opaque subject IDs sample using independent seeded random.Random(seed); 256 distinct IDs per view; transfer seed 171000..171015 relabels first16 positive worlds.",
+    "exposed_splits": "WSP131/WSP132 previous 160/161/165/166 cohorts available only as archived exploratory development. WSP133 tests new 169/170/171 synthetic cohort for the first time after freezing this prereg. NEVER claim independent scientific first-use.",
+    "no_protected_original_first_use": true,
+    "explicit_protected_blocks": [
+      "131000..131063",
+      "131800..131863",
+      "135800..135863",
+      "138800..138863",
+      "148800..148863",
+      "150800..150863",
+      "154800..154863",
+      "155800..155863",
+      "156000..156063",
+      "160800..160863",
+      "161800..161863",
+      "162800..162863",
+      "165800..165863",
+      "166800..166863",
+      "167800..167863",
+      "169800..169863",
+      "170800..170863",
+      "171800..171863",
+      "172000..172063",
+      "all unregistered source seeds"
+    ],
+    "cohort_size": {
+      "positive_worlds": 64,
+      "negative_worlds": 32,
+      "transfer_renamed_views": 16,
+      "observations_per_world_per_arm": 32,
+      "positive_held": 14336,
+      "negative_held": 7168,
+      "transfer_held": 4096,
+      "source_effects_per_arm_target": 3072,
+      "source_effects_per_arm_warm": 8192,
+      "transfer_source_effects": 0
+    }
+  },
+  "arms": [
+    "R2_ACTIVE_NUMERIC: original WSP130 warm direct weights and packed native hypothesis ledger after first16, actively selecting final16 with max-balanced alternatives",
+    "R2_INDEPENDENT_EXACT_SYMBOLIC: separately implemented complete hypothesis list, action selection and update on identical R2 paid effects; every selected x and unqueried prediction must match numerical",
+    "R1_FROZEN_NUMERIC: original WSP131 32 adaptive pure source effects followed by WSP132 posthoc conservative challenger gate, equal32 charged effects",
+    "R1_INDEPENDENT_EXACT_SYMBOLIC: independent R1 on same R1 paid effects",
+    "LEGACY_WSP131_NUMERIC: original pure-variable learner on same R1 effects, equal cost",
+    "OPTIMIZED_FIXED_SYMBOLIC: source-blind fixed 32 probes optimized for original 720 hypotheses, same capacity budget",
+    "FULLY_FITTED_CART: deterministic exact no-gradient CART on same R2 paid 32 effects, max_depth8 min_leaf1, train to full optimum of its greedy splitting rule",
+    "NO_UPDATE: abstains all, receives same 32 paid R2 source effects"
+  ],
+  "frozen_gates": {
+    "known": "On new64 positive worlds, R2 >=95% correct of 14336 held, zero confident wrong. Relabel transfer 4096/4096 correct with ZERO new source calls. Parent WSP130 source knowledge 256-input readout retained for all64 laws; cold replay R2 states after all96.",
+    "negative": "On new32 shear worlds, R2 <=1% confident wrong of 7168 held AND >=25% correctly predicted (1792 effects), no always-abstain cheating.",
+    "comparative": "R2 >= R1 familiar held correct + 20pp (same new cohort and equal32 actions), while never more confident wrong than R1. R2 exact symbolic strong comparator must tie EVERY observed chosen action and every withheld prediction; otherwise engineering invalid, not supported.",
+    "bound": "Max 3 repair attempts total in this family, this is repair2. Commit every unsuccessful attempt and development NO_GO independently. No retune the frozen WSP132 R1 acceptance or WSP131 source.",
+    "stop": "If any frozen criterion fails, report DEVELOPMENT_REPAIR_R2_NO_GO, preserve records, and only consider last authorized R3 under another prospective preregistration without reopening original source."
+  },
+  "controls": {
+    "source_blind": true,
+    "actions_matched_same_info": "R2 numerical/exact symbolic/CART/NO_UPDATE get identical32 action-consequence events; R1 numeric/symbolic/legacy get identical distinct R1 32 outcomes; fixed gets32 independently selected events; budgets equal for every arm.",
+    "retention": "old warmed weights unchanged through all target learning, cold restore from evidence, tamper negative",
+    "cost": "record wall, process CPU, tracemalloc memory and source actions per arm; fully trained deep conventional baseline and whole-process energy remain unqualified"
+  },
+  "classification": {
+    "pass": "DEVELOPMENT_REPAIR_R2_SUPPORTED_WITHIN_SUPPLIED_PERMUTATION_PLUS_SHEAR",
+    "fail": "DEVELOPMENT_REPAIR_R2_NO_GO",
+    "invalid": "Source labels/evaluator leak, tamper/replay failure, source-call inequity, independent symbolic mismatch, post-result threshold or source editing, missing full final dual OS WSP117..133 and G29 acceptance",
+    "science": "NO_SCIENTIFIC_PASS, no robust unknown grammatical discovery or native model integration without separate real owner-approved independently sourced first-use."
+  },
+  "governance": {
+    "prereg_first_only": true,
+    "accepted_main_edit": false,
+    "allowed_paths": [
+      "research/contrib/chatgpt/WSP-133/**",
+      ".github/workflows/wsp133-source-safe.yml",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice",
+      ".ice/code-atlas.json"
+    ],
+    "merge": false,
+    "first_use": false,
+    "no_paid_api": true,
+    "no_new_scheduler_controller_runner": true
+  }
+}
