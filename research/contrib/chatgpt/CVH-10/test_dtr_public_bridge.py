@@ -10,7 +10,14 @@ from collections import namedtuple
 from hashlib import sha256
 import json
 from pathlib import Path
+import sys
 import unittest
+
+HERE=Path(__file__).resolve().parent
+for p in (HERE.parent/"CVH-02",HERE.parent/"CVH-06",
+          HERE.parent/"CVH-07",HERE.parent/"CVH-08"):
+    if str(p) not in sys.path:
+        sys.path.insert(0,str(p))
 
 import dtr_public_bridge as bridge
 
