@@ -31,8 +31,12 @@ def _learner(name, graph):
     raise ValueError("WSP120_UNKNOWN_ARM")
 
 
-def _score(learner, subjects, truth):
-    predicted = tuple(learner.infer(s) for s in subjects)
+def _score(learner, subjects, truth, *, batched=False):
+    # The conventional GRU accepts a sequence; structural learners take one subject.
+    predicted = (tuple(learner.infer(subjects)) if batched else
+                 tuple(learner.infer(s) for s in subjects))
+    if len(predicted) != len(subjects):
+        raise RuntimeError("WSP120_SCORE_SHAPE_MISMATCH")
     return {
         "correct": sum(p == y for p, y in zip(predicted, truth)),
         "wrong_confident": sum(p is not None and p != y
@@ -106,7 +110,7 @@ def run_fixture(*, tier=384, family=0, exposure=4, include_gru=False):
         passive = result["arms"]["NUMERIC_GROW_PASSIVE"]["observations"]
         comparison = G.train_conventional_gru(graph, passive)
         result["arms"]["TRAINED_GRU_PASSIVE"] = {
-            **_score(comparison, held, truth),
+            **_score(comparison, held, truth, batched=True),
             "converged": comparison.converged,
             "epochs_by_seed": comparison.epochs_by_seed,
             "training_loss": comparison.training_loss,
