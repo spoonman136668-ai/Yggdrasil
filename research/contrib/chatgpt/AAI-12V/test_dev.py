@@ -65,7 +65,7 @@ class DevelopmentTests(unittest.TestCase):
             observations=seen if arm!='sham_probe' else {0:1,1:0}
             snap=learner.cold(m,observations,p,arm)
             self.assertEqual(learner.restore(snap),(m,observations,p))
-            data=json.loads(snap);data['masks'][0]^=1
+            data=json.loads(snap);data['state']['masks'][0]^=1
             with self.assertRaises(ValueError):learner.restore(json.dumps(data,sort_keys=True,separators=(',',':')))
     def test_no_hidden_world_import_in_learner(self):
         with open(learner.__file__,encoding='utf8') as f:code=f.read()
