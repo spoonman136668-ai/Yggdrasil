@@ -8,6 +8,33 @@ WSP-121 switches to a bounded, persistent, source-verified local numeric operato
 
 The source-safe fixture gate is XOR3 and the feature basis and route alternatives are supplied. This is NOT spontaneous invention of an arbitrary computation primitive, an emergent general learner, or proof of native numerical superiority. The optimized independent symbolic table is the principal strong control; the 256-table enumerator is diagnostic only. The engineering fixture can and does produce symbolic ties. The conventionally trained MLP baseline and full scientific economy/retention experiment are not yet implemented or qualified.
 
+## Matched gradient-trained conventional comparator — fixture only
+
+`trained_mlp.py` implements the frozen standard-learning control as a
+3-input / 32-hidden / 32-hidden / 2-output tanh MLP, 1,250 trainable
+float64 parameters (10,000 model-parameter bytes), Adam learning rate
+0.03, up to 1,600 epochs, three optimization seeds 121951/121952/121953,
+cross-entropy at most 0.005 and training accuracy 100%. All three seeds
+must be trained; checkpoint selection uses **training loss only**, never
+held endpoint labels. Pinned CPU PyTorch 2.10.0, single training thread,
+deterministic algorithms, explicit RNG restoration and input validation.
+
+`control_fixture.py` exercises the model against the existing numeric
+fast-weight and optimized symbolic controls on exactly the same verified
+observations and legal subjects. Only disjoint worlds 121900..121903 are
+permitted, with query budgets 8/8/4/4; the trained model sees public
+3-bit causal contexts and verified 0/1 route labels, never any held
+answers. All methods are scored after fitting, with source receipt
+parity, cold numeric checks, convergence requirements, and full 24
+held-subject accounting. A nonconverged MLP invalidates the comparator
+instead of being counted as a numeric victory.
+
+This engineering fixture is **not** the sealed primary experiment.
+It does not establish an unfamiliar operator outside the supplied
+basis, a cost-normalized numeric advantage, future original first-use
+permission or native model admission. The **optimized symbolic table**
+remains the strongest causal-memory comparison even if the MLP underperforms.
+
 ## Frozen preregistration
 - Original prereg commit: cb7d848dfb7e0cb47fe924b8ce012c40ae7e7282.
 - Preimplementation source-budget arithmetic correction: d2df53db5f5709086bf03a5b50ed401af7e2cb00. Exactly 288 planned primary source calls (24 fit x8 +24 transfer x4), not 384.
