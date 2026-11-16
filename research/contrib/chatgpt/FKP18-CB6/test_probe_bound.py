@@ -1,7 +1,7 @@
 """CB6 deterministic decision-theoretic scope checks; no CB5 source generation."""
 import unittest
 from itertools import permutations
-from probe_bound import DirectExclusion, exhaustive_symmetric_worlds, exact_bayes_optimal_cost
+from probe_bound import DirectExclusion, exhaustive_symmetric_worlds, exact_bayes_optimal_cost, archived_cb5_cost_reduction
 
 class BoundTests(unittest.TestCase):
     def test_all_six_actual_identity_labels(self):
@@ -50,6 +50,18 @@ class BoundTests(unittest.TestCase):
         for ps,cs in [((1,)*5,(1,)*6),((0,1,1,1,1,1),(1,)*6),
                       ((1,)*6,(-1,1,1,1,1,1)),((float('nan'),1,1,1,1,1),(1,)*6)]:
             with self.assertRaises(ValueError):exact_bayes_optimal_cost(ps,cs)
+    def test_archived_six_column_receipt_parser_and_cost_accounting(self):
+        counts=[6]*5+[7]*4+[8]*5+[9]*2+[10]*5+[11]*11
+        rows=[[82500+i,0,price,0,1,('a'*64)] for i,price in enumerate(counts)]
+        fixture={'schema':'yggdrasil.cb5.blind-mechanism-result.v1',
+                 'per_world_receipts':{'world_summary':rows}}
+        result=archived_cb5_cost_reduction(fixture)
+        self.assertEqual(result['original_total_paid'],287)
+        self.assertEqual(result['logical_last_positive_confirmations_eliminated'],11)
+        self.assertEqual(result['reduced_total_paid'],276)
+        fixture['per_world_receipts']['world_summary'][0].append('fake extra field')
+        with self.assertRaises(ValueError):archived_cb5_cost_reduction(fixture)
+
     def test_no_original_scientific_first_use_or_generator(self):
         import inspect,probe_bound
         source=inspect.getsource(probe_bound)
