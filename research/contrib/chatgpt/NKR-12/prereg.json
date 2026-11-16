@@ -1,0 +1,144 @@
+{
+  "schema": "yggdrasil.nkr12.out-of-family-and-noisy-feedback-falsification.prereg.v1",
+  "experiment": "NKR-12",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_TEST",
+  "parent": {
+    "sha": "e67a24af2cff1d9b4599c5bb7681813e6740aa05",
+    "pr": 1145,
+    "tree": "3c199979440e7ce2f7b0d3b48e6f9be6289e6d15",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Does NKR-11's fixed 10-feature parity intervention repair fail closed, rather than issue confidently wrong predictions, when the action effect depends on unmodeled AND conjunctions or a single inconsistent post-shift measurement? Can the equal-information broader exact symbolic AND control identify when evidence is ambiguous?",
+  "hypothesis": "In 12 fixed nonlinear heldout worlds, the fixed NKR11 model either rejects exact inconsistent training consequences or confidently errs for unseen high-order interactions. Both cases will be explicitly measured rather than optimized away. Under 4 fixed single-corruption worlds, warm checkpoint remains unchanged and false permanent repair should never be admitted.",
+  "source": {
+    "mode": "engineering_fixture_only",
+    "environment": "deterministic locally defined binary action/consequence process not imported by learner",
+    "external_ground_truth": false,
+    "authentic_actions": false,
+    "first_use": false,
+    "real_wikidata_image_scanned": false
+  },
+  "worlds": {
+    "count": 12,
+    "base_masks": [
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      6,
+      9,
+      10,
+      12,
+      13,
+      14
+    ],
+    "action_and_masks": [
+      3,
+      5,
+      6,
+      9,
+      10,
+      12,
+      7,
+      11,
+      13,
+      14,
+      15,
+      7
+    ],
+    "old": "parity(context & (1<<(world_id%4))) XOR action",
+    "nonlinear_new": "parity(context & base_mask[world]) XOR (action AND int((context & action_and_mask)==action_and_mask))",
+    "warm": "16 x both actions (32 source-visible old-mechanism outcomes), frozen before new actions",
+    "training_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      10
+    ],
+    "new_training": "both actions once per eight training contexts, 16 genuine simulator-returned outcomes; first x0,a1, second x0,a0, otherwise x ascending original fixed order",
+    "cold_contexts": [
+      6,
+      7,
+      9,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "cold": "both actions across eight completely unseen contexts per world, 192 cold queries overall",
+    "old_retention": "both actions x all 16 contexts across all 12 worlds = 384 checks, old checkpoint exact",
+    "repair_first": "always old predicts 1 at (0,1), new observed 0; no hidden phase flag delivered"
+  },
+  "noise": {
+    "count": 4,
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "source": "after warmup the environment continues the unchanged OLD mechanism; first observed event (x=0,a=1) flipped once as a documented simulated sensor bit error, following fifteen events correct",
+    "protocol": "same 16 intervention positions as nonlinear shift; one error record, cannot claim source authentication; repair attempt may reject inconsistent epoch or abstain, must not mutate old frozen checkpoint",
+    "metric": "false accepted repair count, caught inconsistency count, no other state mutation"
+  },
+  "strong_control": {
+    "kind": "independent explicit exact symbolic hypothesis search",
+    "hypothesis_family": "base outcome parity of four bits plus action AND a context conjunction of 1..4 bits; masks enumerated 1..15, no direct learner-code reuse; all exact equal-source 16 new training outcomes",
+    "selection": "fit parity main mask from a0 outcomes and all conjunction masks exactly consistent with observed action effects; for each untouched context and action, predict only when every surviving hypothesis gives identical outcome; otherwise ABSTAIN",
+    "expected": "a known family-specific model can often identify observed low-order AND effects; for unobserved 3/4-way triggers it will abstain if ambiguous, rather than guarantee confidence",
+    "noise_control": "same broad family plus the old constant action-effect signature; identify best exact agreement over 16 outcomes, tolerate at most one mismatch, abstain whenever tied predictions differ; count true/no-change retained"
+  },
+  "primary_metrics": [
+    "NKR11 irreversible confident-wrong cold predictions on unmodeled relationships",
+    "NKR11 rejected new repair bundles due inconsistent same epoch",
+    "strong exact symbolic safe abstentions on NKR11 confidently-wrong samples",
+    "native cold correct, native coverage, strong cold correct and coverage with abstains treated separately",
+    "old warm 384/384 retained",
+    "four one-bit-noise false accepted repairs = 0",
+    "all 16 observed consequences per candidate world and no hidden query leakage",
+    "no accepted-model or original knowledge mutation"
+  ],
+  "precommitted_interpretation": {
+    "failure_exposed": "at least one NKR11 confident cold error AND at least one failed exact GF2 fit, and strongest exact conjunctive symbolic model abstains where native is confidently wrong",
+    "fail_closed": "no accepted-native or fact-ledger writes, no old warm overwrite, no false persisted shift on noisy single-error worlds",
+    "null": "if no errors or no contradictions under frozen worlds, report nonfalsification; never retune masks, training contexts or tests to force failure",
+    "scientific_pass": false,
+    "science": "Synthetic benchmark is diagnostic for hypothesis misspecification. Even if strong control works, no novel general intelligence, outside-finite-family invention or superiority over fully trained broad conventional model.",
+    "recommended_followup": "If falsified, isolate a new operator proposal/selection mechanism under separately preregistered causal intervention budgets; do NOT promote NKR11 to accepted native."
+  },
+  "budgets": {
+    "nonlinear_worlds": 12,
+    "noise_worlds": 4,
+    "training_interventions_per_world": 16,
+    "cold_queries": 192,
+    "old_retention_queries": 384,
+    "max_exact_control_masks": 16,
+    "max_seconds": 120,
+    "max_new_source_downloads": 0,
+    "paid_api_calls": 0,
+    "new_runners": 0
+  },
+  "gates": {
+    "source_safe": "focused on Ubuntu and Windows",
+    "final": "mandatory whole root regression and independent G29 Ubuntu/Windows exact candidate source SHA/tree",
+    "real_world": "no independent authentic scientific first-use; no source promotion"
+  },
+  "authority": {
+    "research_only": true,
+    "merge": false,
+    "main_mutation": false,
+    "owner_runtime_mutation": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false,
+    "original_science_first_use": false,
+    "source_expansion": false
+  }
+}
