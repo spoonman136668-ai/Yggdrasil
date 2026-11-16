@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.nkr15.factorized-baseline-vs-effect.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION",
+  "experiment": "NKR-15",
+  "parent": {
+    "pr": 1151,
+    "sha": "8018fd4d08e155efccd7bc0524ca83aa9645b4e2",
+    "tree": "c5dd682344d7e7484bdafc8aeee317ec0af06e75",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "problem": "NKR14 (frozen) showed NKR13 could not infer new operator family in 10/12 unseen worlds and discarded all changed-world evidence on those cases. NKR13 also confidently mispredicted 6/192 on 2 spurious conjunction fits. The unrestricted exact truth-table safety bound is 256 completions per world with eight unobserved effects. Preserve NKR14 result/threshold; do not overwrite original retrospective.",
+  "hypothesis": "Separating identifiable parity action-zero baseline from unknown action-dependent effect enables useful partially qualified cold predictions without assuming a conjunction relation family, while retaining original NKR13 conditional inference for source-frozen engineering comparisons. Source evidence with <2 mismatches cannot induce a new persistent model due one-bit-noise possibility.",
+  "changes": {
+    "small_coherent_patch": "Extend existing NKR13 native_operator_discovery.py only, no new accepted controller or owner interface. When >=2 source-visible old contradiction events and visible action-zero outcomes fit frozen 4-bit parity baseline but no positive conjunction operator fits, store a canonical immutable baseline-only repair with candidate_masks=[] instead of dropping all new-world evidence. Keep original conditional predict interface and introduce separate explicit predict_unrestricted(context,action) that is safe under the action-zero-parity-only prior.",
+    "unknown_policy": "In predict_unrestricted if no new repair qualification: always UNKNOWN_ABSTAIN on changed-world query, NEVER silently return stale warm prior. If source-qualified: action-zero values can be predicted by parity baseline (valid only under action-zero-parity assumption); unseen action-one values always UNKNOWN_ABSTAIN; previously observed exact action outcomes may be returned as observations, not predictions.",
+    "legacy": "NKR13 family-conditional predict remains unchanged for fitted conjunctions and its 129/192 / 0-error result on the original conjunction cohort; all outputs remain UNVERIFIED not confirmed facts. No material action-consequence writes to actual YPC1/DG1 or historical fact ledger.",
+    "source": "existing canonical SHA-pinned public synthetic bundles and exact cold checkpoint regeneration, rejecting malformed source or new assumptions. One-bit-noise worlds remain with exactly one public mismatch and MUST NOT create baseline-only repairs."
+  },
+  "frozen_replay": {
+    "baseline": "NKR14 original source exactly same frozen 12 unseen operators, 16 new public action outcomes (8 paired contexts)/world, 192 protected cold queries, prior 384 old retention; use original public simulator module without alteration",
+    "expected_original_nkr14": "NKR13 original NKR14 diagnostic 26/192 correct, 6 confidently wrong, 160 abstentions; original frozen falsification remains immutable on PR1151",
+    "expected_new_family_conditional": "98/192 correct, 6 confidently wrong, 104 covered, 88 abstentions: nine baseline-only models yield 8 safe action-zero cold predictions each; two conditional conjunction fits unchanged; one <=1 mismatch world refused",
+    "expected_new_family_agnostic": "88/192 correct, 0 confidently wrong, 104 abstentions: 11 source-qualified worlds with 8 cold action-zero predictions each, one <=1 mismatch world refused",
+    "strong_information_control": "Independent unrestricted truth-table version-space (from NKR14) returns 96/192 correct, 0 wrong, 96 abstentions: the extra 8 correct over native conservative mode come from a world with only one public contradiction, which a safety gate cannot distinguish from a single sensor bit without more interventions.",
+    "old_conjunction": "Original NKR13 12 synthetic conjunctive worlds family-conditional predictions must remain exactly 129/192 correct, 0 wrong, 63 abstentions. Conservative agnostic mode action-zero-only 96/192, 0 wrong, 96 abstentions.",
+    "noise": "Four previously frozen one sensor bit corrupted unchanged-mechanism worlds produce no new checkpoint/repaired model, 0 false change. No post-result data tuning."
+  },
+  "thresholds": {
+    "native_agnostic_correct_min": 88,
+    "native_agnostic_wrong_max": 0,
+    "family_conditional_correct_min": 98,
+    "old_conjunction_family_conditional_exact_correct": 129,
+    "old_conjunction_confident_wrong_max": 0,
+    "prior_retention": 384,
+    "legacy_causal_mutations": 0,
+    "source_replay_changes": 0,
+    "noise_false_repairs": 0,
+    "scientific_pass": false
+  },
+  "limitations": "No family-agnostic guarantee of action-zero parity outside this preregistered environment. Full unrestricted causal functions on all (context,action) pairs remain unidentifiable from finite observations. Generating a bounded candidate family remains a structural prior, not unrestricted relation invention. No authentic source; strongest independent unrestricted control is more conservative and avoids source-gate misses, so no scientific superiority.",
+  "authority": {
+    "research_only": true,
+    "merge": false,
+    "main_mutation": false,
+    "owner_runtime_launch": false,
+    "model_accepted": false,
+    "paid_api": false,
+    "new_controller": false,
+    "new_scheduled_task": false,
+    "original_science_first_use": false
+  },
+  "qualification": {
+    "dev": "focused NKR15 fixtures on Ubuntu+Windows",
+    "full": "mandatory full complete source regression and independent G29 both OS on exact candidate tree",
+    "history": "NKR14 original evidence preserved; new NKR15 results reported separately, not retroactively substituted into original NKR14"
+  }
+}
