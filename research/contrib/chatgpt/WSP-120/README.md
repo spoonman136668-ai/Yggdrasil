@@ -82,6 +82,23 @@ of unfamiliar primitives, accepted native model benefit or promotion. Original
 worlds `120000..120023` and reserved `120800..120863` remain unopened.
 The separately controlled `scientific_first_use=false` boundary is unchanged.
 
+## Source-free frozen 24-world statistical reducer
+
+`diagnostic_reducer.py` implements the preregistered 384-edge / 16-query
+development criterion **without opening a source**. It takes already-scored
+summaries, requires 24 complete worlds with three families, all five arms,
+matched verified query counts, SHA256 evidence receipts, cold integrity,
+and correct/incorrect/abstention accounting. It bootstraps paired worlds
+(not 72 pseudoreplicates) 10,000 times at fixed seed 1200. It compares
+active numerical weight writing against fixed3, passive numerical, and
+independent symbolic synthesis; a symbolic win is retained. Development
+signal requires active >=60%, active-fixed3 >=15pp, lower CI >0 and no
+wrong-confident predictions. Every output is SCIENTIFIC_UNVERIFIED, never
+first-use authorization or native admission. The `test_diagnostic_reducer.py`
+negative controls use *fabricated summary counts*, not original worlds.
+The stronger independent 32-query trained-GRU/cost/retention scientific
+comparison remains unrun and separately authorized.
+
 ## Engineering commands
 
 ```console
