@@ -1,0 +1,145 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-22-ACTIVE-CONSEQUENCE-INTERVENTION-PRIOR-SHIFT",
+  "contributor": "chatgpt",
+  "prereg_first": true,
+  "exact_parent_sha": "446e8c008bbab3ffbabeb755f3927a33bab90d0d",
+  "question": "Can bounded source-independent tokenless feedback memories choose physical interventions that reveal novel relational structure more efficiently than fixed or randomized queries, while matching an independent exact Bayesian information-gain control and detecting prior shift limitations?",
+  "hypothesis": "After the same 16 support-world physical trajectories, a sparse evidence-partition policy will select two informative of four genuinely unobserved inputs and correctly predict the two remaining source outcomes in 16 known-family evaluation worlds, beating prespecified fixed/random and no-support controls; exact independent Bayesian entropy gain may tie. Under an unseen-to-support correlation shift, the confident posterior will sometimes fail; preserve shifted negatives.",
+  "source": {
+    "authority": "Original inspectable synthetic known TRAIN public source; NOT independent held-law SCIENTIFIC first-use",
+    "support_seeds": "994000..994015",
+    "known_family_eval_seeds": "994100..994115",
+    "prior_shift_eval_seeds": "994200..994207",
+    "protected_dev": "994500..994531",
+    "protected_transfer": "994600..994663",
+    "previous_protected_cohorts": "FKP16/FKP17/FKP19/FKP20/FKP21 remains unopened",
+    "public_api": "public context, three 0/1 physically selected earlier actions and fourth selected distractor action, zero early rewards, actual ±1 terminal reward only after fourth action",
+    "basis": "same constant + 4 singles + 6 pairwise Boolean features as frozen FKP21, but original standalone FKP22 source, no FKP21 fixture imported into learner",
+    "support_base_masks": [
+      1105,
+      808,
+      1709,
+      315
+    ],
+    "eval_base_masks": [
+      749,
+      1961,
+      1475,
+      926
+    ],
+    "residual_patterns_bit_order": [
+      0,
+      1,
+      2,
+      7
+    ],
+    "support_residual_signatures": [
+      0,
+      3,
+      12,
+      15
+    ],
+    "shift_residual_signatures": [
+      0,
+      5,
+      10,
+      15
+    ],
+    "support_mask_selector": "((seed-994000)//4)%4",
+    "eval_mask_selector": "((seed-994100)//4)%4",
+    "shift_mask_selector": "((seed-994200)//4)%2",
+    "class_selector": "(seed-start)%4",
+    "physical_inputs_before_feedback": "training 12 values [3,4,5,6,8,9,10,11,12,13,14,15] then for SUPPORT all four values [0,1,2,7]; evaluation 2 chosen physical probes then 2 unqueried actions scored from pre-action predictions, with NO scoring feedback use",
+    "source_held_first_use": false
+  },
+  "arms": [
+    "SPARSE_PARTITION_GAIN",
+    "INDEPENDENT_BAYES_ENTROPY",
+    "FIXED_0_1",
+    "DETERMINISTIC_RANDOM_TWO",
+    "NO_SUPPORT_ABLATION"
+  ],
+  "learning": {
+    "same_information": "All five arms receive identical 16 support-world complete physical action-consequence transcripts: 16 worlds*16 patterns*4 actions=1024 actual source actions. They each independently observe identical 12 actual base-learning episodes per evaluation world; candidate, exact Bayes, fixed and random use same support signatures; no support explicitly ablates this information.",
+    "candidate": "Instead of source-coded operators, retain repeated physically witnessed 4-bit deviation signatures and select the next public pattern maximizing the smaller posterior branch count given actually observed probe outcomes; after exactly two chosen probes, predict remaining two using majority residual vote, with tie->0",
+    "strong_control": "Separate independent exact Bayesian posterior from the same public support signatures; choose each physical query to maximize Shannon expected entropy reduction; tie choose lowest index; fully incorporate all 16 support signatures, no source law/hidden class",
+    "fixed": "Always probe [0,1] in order without outcome-sensitive query selection; still uses full support posterior for predictions",
+    "random": "For evaluation ordinal j (0..23) independent of hidden model values, use fixed random.Random(2200+j).sample(range(4),2). No outcomes used to choose query.",
+    "no_support": "Receives public support corpus but deliberately discards its learned cross-world relationships, probes [0,1], and predicts unqueried residual 0, with identical two query actions/scored actions",
+    "max_logical_learned_bytes": 65536,
+    "cold": "Canonical bounded SHA covered JSON; restore exact support counts + two actual public query outcomes, verify policy predictions and action plan identity, no pickle or dynamic code",
+    "no_source_import": "Policies only receive public residual signatures and actual post-action evidence, no fixture module, seed ID, private class, future reward or counterfactual."
+  },
+  "protocol": {
+    "support_worlds": 16,
+    "known_eval_worlds": 16,
+    "shift_eval_worlds": 8,
+    "train_actions_per_eval_arm": 48,
+    "probe_actions_per_eval_arm": 8,
+    "scored_actions_per_eval_arm": 8,
+    "physical_action_count_total": 8704,
+    "source_only": true,
+    "frozen_action_order": "two adaptive 4-action physical probes, then score two previously unqueried inputs with prediction BEFORE physically selecting its action, without any parameter updates from those scored outcomes",
+    "support_first_use_order": "no source eval worlds in engineering unit tests; exact-source dual-OS tests before first public TRAIN evaluation",
+    "primary_metric": "number correct of two withheld initial predictions per eval world after exactly two physically earned intervention outcomes; report 16 known-family and 8 shifted worlds separately",
+    "secondary_metrics": [
+      "posterior surviving support signatures",
+      "physical selected probe indices and earned outcomes",
+      "initial unqueried predictions and actual outcomes",
+      "impossible post-query support hypotheses/false-confidence",
+      "cold source-visible evidence retention",
+      "full-process wall/CPU and per-arm fit/inference durations",
+      "source SHA, identical support/exploration digest"
+    ],
+    "bootstrap": {
+      "resamples": 10000,
+      "seed": 2222,
+      "unit": "known-family eval world clusters",
+      "strongest_control": "INDEPENDENT_BAYES_ENTROPY reselected each replicate",
+      "no_science_claim": true
+    }
+  },
+  "expected_source_safe": {
+    "known_candidate_correct": 32,
+    "known_bayes_correct": 32,
+    "known_fixed_correct": 16,
+    "known_random_correct": 22,
+    "known_no_support_correct": 16,
+    "shift_candidate_correct": 8,
+    "shift_bayes_correct": 8,
+    "known_posterior_candidate_singleton": 16,
+    "known_posterior_fixed_singleton": 0,
+    "claim": "development active-vs-fixed query value only; strong Bayes tie and shift failure"
+  },
+  "negatives": [
+    "Private/held/unknown source seed denied",
+    "No oracle outcome before physical fourth action",
+    "No scoring reward used for subsequent predictions",
+    "Exact same source support and initial 12 public observations for all arms",
+    "No duplicated/counterfactual actions on a single episode",
+    "Probe not chosen twice",
+    "Unchosen outcome refused as prequery evidence",
+    "No source rule import in learner",
+    "Cold checkpoint tamper and duplicate JSON denied",
+    "No new native model, main, unrelated WSP120, runner, controller, scheduler, paid API"
+  ],
+  "classifications": {
+    "engineering_pass": "source/prereg exact SHA, original source safe tests then G29 generated-only child and mandatory full Ubuntu/Windows root regressions plus isolated evaluation custody",
+    "development_pass": "real conditional action queries improve expected remaining public prediction vs fixed/random/no support on 16 known-family worlds",
+    "shift_negative": "candidate and Bayes both overconfident under novel residual correlation shift; this is a genuine limitation and must not be retuned away",
+    "science": "UNVERIFIED. No independent owner-hidden unfamiliar world, fully general law discovery or superiority over strongest exact Bayes."
+  },
+  "authority": {
+    "research_only": true,
+    "protected_scientific_first_use": false,
+    "merge": false,
+    "main_ref_mutation": false,
+    "controller_or_scheduler_changes": false,
+    "private_runner": false
+  },
+  "no_paid_api": true,
+  "no_new_workflow_file": true,
+  "no_postresult_tuning": true
+}
