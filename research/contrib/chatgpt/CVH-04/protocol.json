@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.cvh04.original-external-long-horizon-benchmark-admission.v1",
+  "experiment": "CVH-04-DOORKEY-ORIGINAL-SOURCE-SELECTION-AND-FROZEN-SCIENCE-PROTOCOL",
+  "status": "FROZEN_READ_ONLY_SOURCE_TRIAGE_BEFORE_ANY_EXTERNAL_ENV_FIRST_USE",
+  "nature": "Post-CVH03 static benchmark suitability and prospective (unconsumed) future-science design; not itself science evaluation.",
+  "lineage": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "qualified_CVH02_SHA": "ae61ecdf535e5c4de35ea48f1223a7afe871a09b",
+    "source_analytic_CVH03_parent": "21cd39651c611dcec3edc0d0d8da4b50d8814f68",
+    "qualified_CVH02_PR": 1130
+  },
+  "candidate_primary": {
+    "repo": "Farama-Foundation/Minigrid",
+    "sha": "d9c0416dec36c43f304693fea9fcdbb9f9d17595",
+    "env": "MiniGrid-DoorKey-8x8-v0",
+    "sequence": "Collect yellow key, unlock/activate yellow door, traverse to goal; key and door do not reward, reward on goal only; true delayed prerequisite with partial view.",
+    "original_file_git_blobs": {
+      "minigrid/envs/doorkey.py": "df5b29ef063be34e6d83b8b478e092c6e3e01512",
+      "minigrid/minigrid_env.py": "eb29e9a902de0715ab77ec981a2113576d7664fa",
+      "minigrid/core/world_object.py": "ea13f6d452e9762a28354611f36738a1f77c26d9",
+      "pyproject.toml": "61ab88372ca553af255a42564260994be808ac12",
+      "LICENSE": "880057397a1f9f7b3b1f0870eb84fa699ecbf50c"
+    },
+    "allowed_public_input": "Only env.reset/step public observation: (7x7x3 uint8 tile observation, direction 0..3), public observed reward and done flags; mission is a constant natural-language instruction and MUST be excluded from every arm for tokenless evaluation.",
+    "action_space": "Seven discrete actions 0..6, 0=left,1=right,2=forward,3=pickup,4=drop,5=toggle,6=done. No binary proxy or remapped environment unless separately preregistered and equal for controls.",
+    "reward": "Only goal entry yields 1 - 0.9*step_count/max_steps; otherwise zero. For 8x8 default max_steps=640. Terminated on goal, truncated when step_count>=max_steps.",
+    "source_usage": "Read original GitHub files and legal metadata by Git blob; do not construct/reset/step original environment or inspect seed-specific maps. No privileged internal grid state passed to a learner.",
+    "risk": {
+      "licensing": "SOURCE LICENSE METADATA INCONSISTENCY: repository LICENSE is Apache-2.0 text, pyproject states MIT; legal/owner documentation must be resolved before vendoring/redistribution.",
+      "platform": "Official README reports Linux/macOS supported; Windows not officially supported. Windows must be tested rather than assumed.",
+      "dependency": "Python>=3.11, numpy>=1.18.0, gymnasium>=0.28.1, pygame-ce>=2.4.0 are declared; freeze concrete transitive lock and no display/render dependency in headless run.",
+      "compatibility": "CVH02 accepts 0/1 current state/actions and 36 slots. DoorKey has 7 actions and 7x7x3 observations: CVH02 is INVALID as-is. New tokenless typed observation/action adapter and multistep model must be independently developed/tested without editing qualified CVH02."
+    }
+  },
+  "secondary_control": {
+    "repo": "google-deepmind/bsuite",
+    "sha": "16eef71d0121b5bad5c8bfe6cf111492b4097d68",
+    "path": "bsuite/environments/deep_sea.py",
+    "source_git_blob": "8a4e016740d38aa83f32a34645f2f535161cfa59",
+    "role": "Supplementary two-action deep-exploration and scalable retention challenge; NOT substitute for DoorKey's true prerequisite chain.",
+    "caveat": "A local action's right-move may be inferable from immediate state transition or move-cost signal; avoid claiming a unique planning advantage solely from delayed terminal reward."
+  },
+  "frozen_future_science_contract": {
+    "only_after_separate_source_owner_first_use_and_environment_receipt": true,
+    "protocol_seeds": {
+      "TRAIN": "997200..997231",
+      "VALIDATION": "997240..997255",
+      "HELD_TRANSFER": "997300..997363",
+      "algorithm_seeds": [
+        101,
+        202,
+        303,
+        404
+      ],
+      "experimental_usage": "NONE YET; held seed assignments are proposed prospective and unavailable to learners before owner approval."
+    },
+    "task_progression": [
+      "DoorKey 5x5 and 6x6 TRAIN curriculum",
+      "DoorKey 8x8 transfer unchanged trained policy",
+      "DoorKey 16x16 optional separately qualified harder transfer; not pooled into primary"
+    ],
+    "candidate": "Novel tokenless persistent causal action-consequence/successor-value learner, no raw mission text, maintained numerical observation/event encoding and cold-store; source blind.",
+    "same_information_actions_budget": "All candidate and conventional learners receive identical public image+direction, action set, episode budget, allocated transitions/training compute/eval maps; never private grid coordinates/key/door placement.",
+    "strong_controls": [
+      "Fully trained recurrent PPO/LSTM or recurrent Q learner with matched observed public inputs and transition budget",
+      "Independent optimized symbolic/graph belief-state controller built only from the same public observation history",
+      "Numerical return-to-go batch estimator and immediate-reward-only ablation",
+      "Oracle planner with full original map only as NONCOMPARABLE ceiling, never strong-control equity baseline",
+      "Random and scripted demonstration-only sanity controls"
+    ],
+    "blinding": "Source owner generates and scores held maps with pre-frozen source SHA and seeds, no policy tuning on held; store action tapes/source IDs and independent reevaluation.",
+    "primary_metric": "Held DoorKey 8x8 success proportion (goal reached), averaged across four independent model seeds ×64 held layouts, paired by maps.",
+    "secondary": [
+      "Normalized discounted return and mean steps-to-goal",
+      "Steps/actions spent learning, training FLOPs/CPU/GPU/RAM/time, cold serialization and inference overhead",
+      "Cold retained previously earned sequences after training other maps; interference and unfamiliar transfer",
+      "Real action consequences, successful key acquisition/door unlock/goal chain, failure modes"
+    ],
+    "success_gate": "Independently reproduced held success +0.10 absolute over strongest fully trained equal-information/compute control, paired map/bootstrap 95% lower bound >0, reproducible >=3/4 algorithm seeds, no material retention deficit. If controls tie or superior: SCIENTIFIC_NO_GO.",
+    "stop_rule": "No post-held retuning, source first-use or protected replay. If original public source can't be run cleanly with same semantics on required platforms, classify INFRA_UNVERIFIED, not scientific failure. If data/action/compute mismatch, fail closed.",
+    "source_setup_constraints": "Must qualify external dependency/Windows path, license clarity, exact source Git tree and self-contained native adapter first. A source-safe repository protocol is NOT execution approval."
+  },
+  "authority": {
+    "read_only_source_inspection": true,
+    "original_DOORKEY_reset_or_step": 0,
+    "original_DEEPSEA_reset_or_step": 0,
+    "qualified_CVH02_PR_stays_draft": true,
+    "no_FKP_first_use": true,
+    "no_protected_cohorts": true,
+    "no_existing_owner_ref_edit": true,
+    "no_new_workflow_scheduler_controller_runner": true,
+    "no_paid_API": true,
+    "no_native_main_admission_or_merge": true
+  }
+}
