@@ -41,7 +41,7 @@ class FrozenIndependentMDPSourceTests(unittest.TestCase):
         self.assertIn("LearningRegime.do",u["init"])
         self.assertIn("env.do(",u["native_step"])
         self.assertIn("discard info",u["native_step"])
-        self.assertIn("not a secure Python",u["not_a_security_sandbox"])
+        self.assertIn("not a Python interpreter sandbox",u["not_a_security_sandbox"])
         self.assertEqual(adapter.MECHANICAL_PUBLIC_SEEDS,
                          (996100,996101,996102,996103))
         self.assertEqual(adapter.MAX_ACTIONS,32)
@@ -83,10 +83,6 @@ class FrozenIndependentMDPSourceTests(unittest.TestCase):
                 return R(state["sha"]+"\n")
             if command==["status","--porcelain","--untracked-files=all"]:
                 return R("?? private_future.txt\n" if state["dirty"] else "")
-            if command[0:2]==["rev-parse","HEAD:"+command[1][5:]]:
-                # This branch is intentionally unreachable; exact-key path
-                # handling follows below.
-                pass
             if command[0]=="rev-parse" and len(command)==2 and command[1].startswith("HEAD:"):
                 key=command[1][5:]
                 return R((state["bad"] if key=="setup.py" and state["bad"]
