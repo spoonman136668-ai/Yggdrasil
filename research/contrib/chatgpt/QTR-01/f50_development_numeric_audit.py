@@ -10,7 +10,7 @@ source/action parity, independent target novelty, negative canary, cost,
 once-only target custody, and independent science verification are separate.
 """
 from decimal import Decimal
-from math import isfinite, fsum
+from math import isfinite
 
 import f50_worlds as world
 import f50_comparison_harness as harness
@@ -130,12 +130,24 @@ def audit_numeric_envelope(report):
     reasons = []
     if native_mean - best_control_mean < Decimal("0.05"):
         reasons.append("NATIVE_MEAN_GAIN_BELOW_005")
+    # Frozen criterion is +0.02 per unseen FAMILY (one seed, 3 sizes)
+    # against the WORLDWISE strongest control. A +0.02 test in each of
+    # nine worlds would improperly strengthen the frozen criterion.
+    family_gaps, world_gaps = {}, {}
+    for seed in world.DEV_SEEDS:
+        gaps = []
+        for size in world.BANK_SIZES:
+            native32 = scores[(size, seed, "native")][32]
+            best_world32 = max(scores[(size, seed, k)][32] for k in CONTROLS)
+            gap = native32 - best_world32
+            world_gaps[(size, seed)] = gap
+            gaps.append(gap)
+        family_gaps[seed] = mean(gaps)
+        if family_gaps[seed] < Decimal("0.02"):
+            reasons.append("FAMILY_B32_GAP_" + str(seed))
     for size,seed in plan:
         native32 = scores[(size,seed,"native")][32]
-        best_world32 = max(scores[(size,seed,k)][32] for k in CONTROLS)
         best_world64 = max(scores[(size,seed,k)][64] for k in CONTROLS)
-        if native32-best_world32 < Decimal("0.02"):
-            reasons.append("FAMILY_B32_GAP_"+str(size)+"_"+str(seed))
         if scores[(size,seed,"native")][64]-best_world64 < Decimal("-0.01"):
             reasons.append("B64_REGRESSION_"+str(size)+"_"+str(seed))
         if any(native32-scores[(size,seed,k)][32] <= Decimal("0.01")
@@ -162,6 +174,11 @@ def audit_numeric_envelope(report):
         "best_control_kind":best_control_kind,
         "best_single_control_b32_mean":str(best_control_mean),
         "best_conventional_b32_mean":str(best_conventional),
+        "family_gap_interpretation":"three_bank_mean_of_worldwise_best_control_gaps",
+        "family_b32_gaps":{str(seed):str(family_gaps[seed])
+                           for seed in world.DEV_SEEDS},
+        "world_b32_gaps":{str(size)+"_"+str(seed):str(world_gaps[(size,seed)])
+                          for size,seed in plan},
         "source_training_cost_verified":False,
         "total_process_cpu_cost_verified":False,
         "source_and_action_parity_independently_verified":False,

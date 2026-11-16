@@ -93,8 +93,11 @@ class NumericEnvelopeTests(unittest.TestCase):
         r=fabricated_report()
         r["arm_runs"][0]["checkpoints"][1]["clean_heldout_accuracy"]=0.70
         x=audit.audit_numeric_envelope(r)
-        self.assertEqual(x["numeric_diagnostic"],"NUMERIC_THRESHOLDS_NO_GO")
-        self.assertIn("FAMILY_B32_GAP_4096_4013",x["numeric_reasons"])
+        self.assertEqual(x["numeric_diagnostic"],
+                         "NUMERIC_THRESHOLDS_MET_CUSTODY_AND_COST_UNVERIFIED")
+        self.assertEqual(x["world_b32_gaps"]["4096_4013"],"0.00")
+        self.assertEqual(x["family_b32_gaps"]["4013"],"0.08")
+        self.assertFalse(x["scientific_pass"])
         r=fabricated_report()
         r["arm_runs"][0]["target_cpu_seconds"]=1200.001
         self.assertEqual(audit.audit_numeric_envelope(r)["numeric_diagnostic"],
@@ -105,6 +108,24 @@ class NumericEnvelopeTests(unittest.TestCase):
                 row["checkpoints"][1]["clean_heldout_accuracy"]=0.54
         self.assertEqual(audit.audit_numeric_envelope(r)["numeric_diagnostic"],
                          "TASK_HEADROOM_INVALID")
+
+    def test_aggregate_each_family_over_all_three_source_bank_sizes(self):
+        report=fabricated_report()
+        # One world at 0 gap, two at +0.12. Family mean +0.08
+        # must pass the frozen +0.02 aggregate threshold.
+        report["arm_runs"][0]["checkpoints"][1]["clean_heldout_accuracy"]=0.70
+        x=audit.audit_numeric_envelope(report)
+        self.assertNotIn("FAMILY_B32_GAP_4013",x["numeric_reasons"])
+        self.assertEqual(x["family_b32_gaps"]["4013"],"0.08")
+        self.assertFalse(x["scientific_pass"])
+        # All three bank sizes miss in one unseen family -> numeric NO_GO.
+        for row in report["arm_runs"]:
+            if row["seed"]==4013 and row["arm"]=="native":
+                row["checkpoints"][1]["clean_heldout_accuracy"]=0.70
+        fail=audit.audit_numeric_envelope(report)
+        self.assertEqual(fail["numeric_diagnostic"],"NUMERIC_THRESHOLDS_NO_GO")
+        self.assertIn("FAMILY_B32_GAP_4013",fail["numeric_reasons"])
+        self.assertFalse(fail["scientific_pass"])
 
     def test_no_hidden_target_or_authority_imports(self):
         self.assertNotIn("PrivateTargetEvaluator",audit.__dict__)
