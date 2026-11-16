@@ -19,7 +19,7 @@ jobs:
     outputs:
       candidate: ${{ steps.atlas.outputs.candidate }}
     env:
-      SOURCE: 577c14fd35c2f651fa1dadc01b1873d83b8a51c6
+      SOURCE: e02683c18ecde246b4d91da049061e6ac361af71
       TARGET: research/fkp25-targeted-original-mdp-constructor-20261116
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 577c14fd35c2f651fa1dadc01b1873d83b8a51c6
+          ref: e02683c18ecde246b4d91da049061e6ac361af71
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -94,8 +94,8 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/test_prereg.py)" = 29c31c726d54c4a9fced66548ce390e0ce100dcd
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/README.md)" = fc97007370f84f61ad8ab735e2cc20d47e3b8a8c
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/prereg.json)" = 2175ae65da0e3e3c7fdb3b7557ca47dc8b36ea04
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/runtime_probe.py)" = 6234354c9617f639ad05e09699fb64d7a2cce063
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/test_runtime_probe.py)" = 44fcf9aca9f092bb1fee2058174b06c886df52d0
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/runtime_probe.py)" = 1cfe7fe6cc7b2273cc7232cb38e4d648b25b0236
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/test_runtime_probe.py)" = 5183de00acc393f57ac872da5579293638def0f1
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/test_prereg.py)" = fa29373818380445cd2b21ecaac23646010f6033
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/README.md)" = ae30d0ebc713daf5130a3af691b65324e7715c07
           test -z "$(git status --porcelain --untracked-files=all)"
@@ -152,7 +152,7 @@ jobs:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP25_SOURCE_SHA: 577c14fd35c2f651fa1dadc01b1873d83b8a51c6
+      FKP25_SOURCE_SHA: e02683c18ecde246b4d91da049061e6ac361af71
     steps:
       - name: Prevent source line translation
         shell: bash
