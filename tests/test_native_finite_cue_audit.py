@@ -32,7 +32,7 @@ class NativeFiniteCueAuditTests(unittest.TestCase):
         for forbidden in ("import study","import fixture","import world",
                           "true_step","world_id","hidden_mask",
                           "source_id","env.intervene"):
-            self.assertNotRegex(s,r"\\b"+re.escape(forbidden)+r"\\b")
+            self.assertNotRegex(s,r"\b"+re.escape(forbidden)+r"\b")
 
     def test_source_domains_exhaustive_and_unique(self):
         self.assertEqual(MAX_PUBLIC_PROBES,32)
