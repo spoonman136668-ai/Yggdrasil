@@ -1,0 +1,62 @@
+name: CVH-03 frozen source-free constructor-factory qualification
+on:
+  push:
+    branches: [qualification/cvh03-sourcefree-first-once-20261116]
+    paths: [.github/workflows/cvh03-first-source-safe.yml]
+permissions:
+  contents: read
+concurrency:
+  group: cvh03-frozen-first-test-20261116
+  cancel-in-progress: false
+jobs:
+  frozen-source-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'CVH-03 frozen source-free first qualifier'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      ORIGINAL_SHA: e0b1ffb7b50f5bda7fba437a522b6077e6fee8d5
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: e0b1ffb7b50f5bda7fba437a522b6077e6fee8d5
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact frozen source and no changed qualified CVH02 ancestors
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$ORIGINAL_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/prereg.json)" = d332023a09f2c1e7f33ac1a9a40b9f2528aa0068
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/source_binding.py)" = 7d38d861044d844f4bd8f59c1e234c4d7f01ee76
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/probe_constructor.py)" = ca5c9f6f07e78acd3ec1be00807298fad3296012
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/test_source_binding.py)" = f97fc0590f69ebde1c23939ae2d56c0f6a242175
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/public_policy.py)" = b0efc964312d62930c3a97632ca02d8d17ef84aa
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/runtime_probe.py)" = 1cfe7fe6cc7b2273cc7232cb38e4d648b25b0236
+          test -z "$(git status --porcelain)"
+          echo CVH03_EXACT_PREREG_AND_INHERITED_SOURCE_PASS
+      - name: New source-free factory and stale-lifetime negative tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-03 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH03_SOURCEFREE_FOCUSED_PASS
+      - name: First-use source actions forbidden
+        run: |
+          set -euo pipefail
+          if python -B research/contrib/chatgpt/CVH-03/probe_constructor.py --checkout /missing/explicit --out /tmp/out.json --source-action >/dev/null 2>&1; then exit 1; fi
+          test -z "$(git status --porcelain)"
+          echo CVH03_NO_RESET_DO_AND_CLEAN_FIRST_GATE_PASS
