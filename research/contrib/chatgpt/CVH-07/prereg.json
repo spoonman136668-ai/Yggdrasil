@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.cvh07.recurrent-and-exploration-fully-train-sourcefree-prereg.v1",
+  "status": "FROZEN_BEFORE_MODEL_CODE_TRAINING_AND_RESULT",
+  "date": "2026-11-16",
+  "project": "Yggdrasil",
+  "study": "CVH-07",
+  "parent": {
+    "pr": 1168,
+    "sha": "b4ad72bad038223a722ef7e052407c26484ee0ce",
+    "tree": "5631a0bdbddfe127f4b2b299c0a7d8f201a0e299",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "motivation": "CVH06 qualified existing native and fully fitted strong fourcell public reward policy, but a matched fully TRAINED recurrent baseline and unbiased public-only exploration are absent. Fill those two exact controls and source-free qualification; never open new original source without separately verified owner authority.",
+  "source_firstuse": "NONE. Original CausalAILab/Causal-Gymnasium c94e9a4cd3641588b6b8507e71ccee5c27032bdf only historical source provenance, no import/constructor/reset/do. 124 actual original actions on 4 FKP26 seeds consumed; DEV 996500..531, TRANSFER 996600..663 and any other original source fenced.",
+  "four_arms": [
+    "INHERITED unchanged CVH02 native tokenless earned-return policy",
+    "INHERITED unchanged CVH06 conventional public four-cell return policy",
+    "NEW fully trained CPU pure-Python conventional Elman tanh recurrent public reward policy",
+    "NEW independently seeded public exploration policy"
+  ],
+  "toy_only_data": {
+    "schema": "cvh07.synthetic-public-only-training.v1",
+    "train_episode_seeds": "101..196 inclusive (96)",
+    "validation_episode_seeds": "301..316 inclusive (16)",
+    "test_episode_seeds": "501..516 inclusive (16)",
+    "steps_per_episode": 8,
+    "train_generator": "Pure Python deterministic local public six-field outcomes, no original source code. Each episode hides one binary context bit = seed & 1; public before is seeded bit, action chosen by independent deterministic logging policy random.Random(seed*8191+31) with independent action bits; public reward = int(action==hidden), next visible before = before ^ action ^ ((seed+step)&1), episode closes at step 8. Hidden bit never passed to any learner; only previously witnessed rewards. The environment rule itself is authored as an experiment fixture and is not evidence of novel causal discovery.",
+    "training_info_equal": true,
+    "no_source_private_labels": true
+  },
+  "recurrent": {
+    "architecture": "vanilla non-native conventional Elman RNN, 8 tanh units, 6 public non-token numeric inputs (before,action,prev_action,prev_reward,has_previous,constant); one Bernoulli immediate reward readout",
+    "optimization": "full sequence exact backpropagation through time on 96 generated complete training episodes; CPU float64 deterministic initialization Random(1707); 48 epochs, batch updates after each complete 8-step train-only episode in sorted order, SGD learning rate 0.06, per-step weighted Brier loss (p-r)^2; per-parameter gradient clamp[-5,5]; no validation-driven hyperparameter selection; holdout used only after frozen training",
+    "train_epochs": 48,
+    "lr": 0.06,
+    "hidden": 8,
+    "weight_seed": 1707,
+    "train_objective": "observed action immediate binary reward Brier under logging policy, not unexecuted action or four-step target",
+    "success_predeclared": "all 48 train epochs complete and source-only train Brier decreases >=0.02 absolute vs epoch0 untrained; validation Brier is measured but no tuning/selection or claim from this fabricated generator",
+    "cold": "hash-sealed snapshot with full trained weights and public latent state; exact restore of action and state, strict 6-field public observations and no replay",
+    "cost": "measure training CPU wall seconds and serialized weight state bytes, not substitute for real original source whole-process efficiency"
+  },
+  "exploration": {
+    "method": "deterministic seeded uniform binary public exploration with Random(seed), choosing next action based only on public state/history and local pseudo-RNG; fixed random seed 1777 for independent test, no future labels or origin source private access",
+    "cold": "lossless portable RNG state + hash-verified public trace, closed episode safeguards",
+    "fitness": "both native and recurrent expected policy interface choose(observed_state,tuple(prior_public_consequences)) then observe(six-field-public-event); exact original per-arm budget same for mock tests"
+  },
+  "controls": {
+    "native": "Reuse unchanged inherited CVH02 (no edits)",
+    "fourcell": "Reuse unchanged inherited CVH06 (no edits)",
+    "recurrent": "NEW RNN controls; conventional architecture explicit, no transfer of donor model",
+    "explorer": "Independent randomized public-only control. It is not an intelligent trained learner.",
+    "same_data": "For RNN training use exclusively exactly same public logged TRAIN six-field observations the other fitted candidate/control estimators can be shown; all four arms used same synthetic validation/test episode count and per-arm step budget, but their action histories can differ because actually chosen actions differ."
+  },
+  "toy_evaluation": {
+    "new_scientific_original_actions": 0,
+    "arms": 4,
+    "test_episodes_per_arm": 16,
+    "actions_per_episode": 8,
+    "total_mock_actions_per_arm": 128,
+    "all_mock_actions": 512,
+    "public_reward_count_just_a_toy_diagnostic": true,
+    "no_science_pass_from_toy": true,
+    "no_original_source_usage": true
+  },
+  "negative_controls": [
+    "no user/owner first-use lease; original source TRAIN/DEV/TRANSFER seed lists remain empty",
+    "tampering with six-field event/private extras fails without learning",
+    "action chosen before observing any current reward; unobserved chosen action cannot be replayed",
+    "cold checkpoint readback reproduces observed transcript and selected actions",
+    "no source hidden seed or unknown counterfactual in learner inputs",
+    "RNN train-only real convergence measured honestly, overfitting/weak validation preserved; no post-result parameter edit",
+    "same synthetic exposure count and held source-free test budget across arms",
+    "strict per-step independent batch comparator for four-cell policy",
+    "full root CVH01..07 + G29 on exact unchanged final tree Ubuntu+Windows; same final canonical receipt checksum both systems"
+  ],
+  "authority": {
+    "first_use_original": false,
+    "protected_external_cohorts": false,
+    "owner_signed_lease": false,
+    "real_source_executor": false,
+    "merge_or_promotion": false,
+    "accepted_main_write": false,
+    "controller_or_scheduler": false,
+    "paid_api": false,
+    "unapproved_runner": false,
+    "another_model_integration": false
+  },
+  "thresholds": {
+    "engineering": "Each new baseline trains and exposes only public event fields; 48 epoch training completes deterministically with decrease>=0.02; cold and strict action budget tests PASS; full dual OS full root/G29 PASS; source actions 0.",
+    "scientific_pass": false,
+    "prospective_real_science": "Original source untouched by CVH07. Later original study requires separate approval, owner-vetted untouched independent world family and full baseline controls."
+  }
+}
