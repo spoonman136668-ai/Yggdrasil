@@ -1,0 +1,147 @@
+name: CVH-03 exact original-source-bound factory final G29 and dual-OS regression
+on:
+  push:
+    branches: [qualification/cvh03-final-regression-20261116]
+    paths: [.github/workflows/cvh03-final-regression-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: cvh03-exact-factory-full-final-20261116
+  cancel-in-progress: false
+jobs:
+  generated-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'CVH-03 original factory final G29 and full regression once'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      qualified_sha: ${{ steps.seal.outputs.qualified_sha }}
+    env:
+      SOURCE_SHA: 2c3dece0af982a2d96c03dee891a6d952e81df2b
+      REPAIR_BRANCH: repair/cvh03-generated-atlas-20261116
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact Git source LF on both platforms
+        run: git config --global core.autocrlf false
+      - name: Original frozen source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 2c3dece0af982a2d96c03dee891a6d952e81df2b
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Pin Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly three pinned code atlas files
+        id: seal
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/prereg.json)" = d332023a09f2c1e7f33ac1a9a40b9f2528aa0068
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/source_binding.py)" = 7d38d861044d844f4bd8f59c1e234c4d7f01ee76
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/probe_constructor.py)" = b5eed6c7defbd76987d98bd119dfef49019f942c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/result.json)" = 32faf1b7b065d957e0ad014bc5c285156a5fbb24
+          test -z "$(git status --porcelain)"
+          remote="$(git ls-remote origin "refs/heads/$REPAIR_BRANCH" | cut -f1)"
+          test "$remote" = "$SOURCE_SHA"
+          git config core.autocrlf false
+          git config core.eol lf
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE_SHA"
+          actual="$(git diff --name-only | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          git config user.name 'cvh03-isolated-atlas-bot'
+          git config user.email 'cvh03-isolated-atlas-bot@users.noreply.github.com'
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m 'fix(CVH-03): generated-only G29 at frozen original factory source'
+          sha="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/$REPAIR_BRANCH"
+          echo "qualified_sha=$sha" >> "$GITHUB_OUTPUT"
+          echo CVH03_EXACT_GENERATED_ONLY_CHILD_PASS="$sha"
+  full:
+    needs: generated-only
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_SHA: 2c3dece0af982a2d96c03dee891a6d952e81df2b
+      FULL_SHA: ${{ needs.generated-only.outputs.qualified_sha }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Prevent checkout CRLF mutation
+        run: git config --global core.autocrlf false
+      - name: Exact final generated-only child checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generated-only.outputs.qualified_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Assert original science source and only generated three-file patch
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FULL_SHA"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          actual="$(git diff --name-only "$SOURCE_SHA" "$FULL_SHA" | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/source_binding.py)" = 7d38d861044d844f4bd8f59c1e234c4d7f01ee76
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/probe_constructor.py)" = b5eed6c7defbd76987d98bd119dfef49019f942c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/test_source_binding.py)" = f97fc0590f69ebde1c23939ae2d56c0f6a242175
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/result.json)" = 32faf1b7b065d957e0ad014bc5c285156a5fbb24
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/public_policy.py)" = b0efc964312d62930c3a97632ca02d8d17ef84aa
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/runtime_probe.py)" = 1cfe7fe6cc7b2273cc7232cb38e4d648b25b0236
+          test -z "$(git status --porcelain)"
+          echo CVH03_ORIGINAL_CODE_AND_GENERATED_CHILD_CUSTODY_PASS
+      - name: Authoritative generated G29 and full inherited root tests
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH03_G29_AND_FULL_INHERITED_ROOT_PASS
+      - name: Reuse exact inherited CVH-01 earned-return tests and stress
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-01 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH03_INHERITED_EARNED_RETURNS_AND_CONVENTIONAL_CONTROL_PASS
+      - name: Reuse original FKP24 adapter CVH-02 mock policy and cold tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-02 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH03_EXACT_FKP24_PUBLIC_POLICY_SOURCE_FREE_PASS
+      - name: New CVH03 original source-bound factory negative tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-03 -p 'test_*.py' -v
+          if python -B research/contrib/chatgpt/CVH-03/probe_constructor.py --checkout /missing --out /tmp/never.json --source-action >/dev/null 2>&1; then exit 1; fi
+          test -z "$(git status --porcelain)"
+          echo CVH03_ORIGINAL_FACTORY_FOCUSED_FIRSTUSE_FENCE_PASS
+      - name: Verify final source remains clean on both OS
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FULL_SHA"
+          test -z "$(git status --porcelain)"
+          echo CVH03_EXACT_FULL_QUALIFICATION_SOURCE_CLEAN_PASS
