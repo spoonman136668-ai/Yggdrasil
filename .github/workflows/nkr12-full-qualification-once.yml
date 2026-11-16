@@ -1,0 +1,153 @@
+name: NKR-12 generated-only atlas and exact-source full dual-OS regression
+on:
+  push:
+    branches: [qualification/nkr12-full-qualification-20261116]
+    paths: [.github/workflows/nkr12-full-qualification-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: nkr12-frozen-full-qualification-20261116
+  cancel-in-progress: false
+jobs:
+  generated-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'NKR-12 once source-pinned full qualification'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      qualified_sha: ${{ steps.seal.outputs.qualified_sha }}
+    env:
+      SOURCE_SHA: 3ffaffced002581ac0ef9a1cddd63291b0c0a7e6
+      REPAIR_BRANCH: repair/nkr12-generated-atlas-20261116
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout frozen source without workflow helper material
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 3ffaffced002581ac0ef9a1cddd63291b0c0a7e6
+          persist-credentials: true
+          fetch-depth: 0
+      - name: Python pinned 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only existing three G29 derived files with repo generator
+        id: seal
+        run: |
+          set -euo pipefail
+          git config core.autocrlf false
+          git config core.eol lf
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
+          test "$(git rev-parse HEAD:tests/test_native_cumulative_action_bank.py)" = 03ba6f20bfa62feeb8fcf9d2f61c0db7a1f42d5a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/NKR-12/prereg.json)" = 8f2569412055ff2c0a2c8ec16c0bfa647326687d
+          test -z "$(git status --porcelain)"
+          remote="$(git ls-remote origin "refs/heads/$REPAIR_BRANCH" | cut -f1)"
+          test "$remote" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE_SHA"
+          changed="$(git diff --name-only | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$changed" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          git config user.name 'nkr12-atlas-isolated-bot'
+          git config user.email 'nkr12-atlas-isolated-bot@users.noreply.github.com'
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m 'fix(NKR-12): generated-only atlas at frozen source 3ffaffc'
+          sha="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/$REPAIR_BRANCH"
+          echo "qualified_sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "NKR12_GENERATED_ONLY_ATLAS_PUSH_PASS=$sha"
+  full-regression:
+    needs: generated-only
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    permissions:
+      contents: read
+    env:
+      SOURCE_SHA: 3ffaffced002581ac0ef9a1cddd63291b0c0a7e6
+      QUALIFIED_SHA: ${{ needs.generated-only.outputs.qualified_sha }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact generated-only source SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generated-only.outputs.qualified_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify one-parent three-generated-only custody and original native modules
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$QUALIFIED_SHA"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          files="$(git diff --name-only "$SOURCE_SHA" "$QUALIFIED_SHA" | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$files" = "$expected"
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
+          test "$(git rev-parse HEAD:yggdrasil/native_intervention_repair.py)" = 8ed291fb77bb734fbc049c947e7f9c6456b1742c
+          test "$(git rev-parse HEAD:tests/test_native_cumulative_action_bank.py)" = 03ba6f20bfa62feeb8fcf9d2f61c0db7a1f42d5a
+          test -z "$(git status --porcelain)"
+          echo NKR12_FROZEN_SOURCE_CUSTODY_PASS
+      - name: Source-pinned G29 atlas
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+      - name: Complete existing native Yggdrasil Python regression
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo NKR12_FULL_REPO_REGRESSION_PASS
+      - name: Mechanism, retained memory and hostile source controls
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_cumulative_action_bank.py -v
+          test -z "$(git status --porcelain)"
+          echo NKR12_FOCUSED_AND_NEGATIVE_CONTROLS_PASS
+      - name: Replay same consumed-only development source and verify fixed scores
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/NKR-12/dev.py --source-dev > "$RUNNER_TEMP/nkr12-final.txt"
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/NKR-12")
+          expected=json.loads((root/"result.json").read_text())
+          line=(Path(os.environ["RUNNER_TEMP"])/"nkr12-final.txt").read_text().strip()
+          assert line.startswith("NKR12_DEV=")
+          result=json.loads(line.removeprefix("NKR12_DEV="))
+          s=expected["reused_development_fixture"]
+          assert result["public_evidence_sha256"]==s["public_evidence_sha256"]
+          assert result["prediction_trace_sha256"]==s["prediction_trace_sha256"]
+          assert (result["warm_correct"],result["cold_correct"]) == (384,192)
+          assert (result["fully_fit_symbolic_correct"],result["independent_reference_equal_predictions"])==(192,192)
+          assert result["checkpoint_bytes"]==24773
+          assert result["scientific_first_use_consumed"]==0
+          assert result["accepted_native_changed"] is False
+          print("NKR12_SOURCE_ONLY_IDENTICAL_REPLAY_PASS")
+          print("NKR12_BANK_CHECKPOINT_SHA="+result["bank_checkpoint_sha256"])
+          PY
+          if python -B research/contrib/chatgpt/NKR-12/dev.py --primary >/dev/null 2>&1; then
+            echo NKR12_PROTECTED_FIRST_USE_FENCE_FAILED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo NKR12_FIRST_USE_DENIED_AND_CLEAN_PASS
