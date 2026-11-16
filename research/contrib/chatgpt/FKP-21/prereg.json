@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-21-OPEN-RULE-IDENTIFIABILITY-MICROFEEDBACK",
+  "north_star": "Tokenless action-consequence rule construction, no transformers; independent of WSP120",
+  "prereg_first": true,
+  "exact_parent_sha": "a3f560435f8d23043b81438ec0e5d6b149ff0bec",
+  "hypothesis": "A compositional GF2 relation memory predicts unseen Boolean action-consequence input patterns for degree<=2 laws after 12 physically observed interventions, but cannot identify high-order alternatives deliberately identical on all 12 observations. A single actual held-out outcome provides microfeedback that supports exact later recall, not generalization.",
+  "source": {
+    "classification": "inspectable synthetic TRAIN family, not independently hidden science",
+    "train_start": 993100,
+    "train_end": 993115,
+    "train_worlds": 16,
+    "paired_base_worlds": 8,
+    "paired_adversarial_worlds": 8,
+    "held_first_use_authorized": false,
+    "protected_dev": "993500..993531",
+    "protected_transfer": "993600..993663",
+    "prior_protected_sources_unopened": true
+  },
+  "design": {
+    "public_input": "four bits: context c and three chosen 0/1 earlier actions; physically selected fourth distractor; reward ±1 revealed only after fourth action",
+    "train_patterns": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "unseen_first_probe_patterns": [
+      0,
+      1,
+      2,
+      7
+    ],
+    "monomial_features": "constant plus four single bits and all six distinct pair products, full rank 11 on frozen 12 training patterns",
+    "baseline_masks": [
+      1105,
+      808,
+      1709,
+      315,
+      749,
+      1961,
+      1475,
+      926
+    ],
+    "adversarial": "world i+8 shares all 12 public training outcomes with world i but flips exactly one of the four unseen patterns at index i%4; physical chosen action receipts not private labels",
+    "learner": "online source-independent GF2 innovation elimination, minimum-degree relation synthesis from observations, no operator names; bounded explicit correction cache after actual new evidence",
+    "comparators": [
+      "INDEPENDENT_GF2_ELIMINATION",
+      "EXACT_PUBLIC_LOOKUP_ABSTAIN",
+      "NO_UPDATE",
+      "SHUFFLED_OBSERVATION_TO_INPUT"
+    ],
+    "comparison": "each method receives same 12 real training outcomes and predicts each of four unseen combinations before physical source action, then updates direct feedback cache and verifies cold retrieval only; no hidden private law or source mask in model interface",
+    "bootstrap": {
+      "draws": 10000,
+      "seed": 2121,
+      "unit": "paired world clusters",
+      "select_strongest_in_each_resample": true
+    },
+    "expected": {
+      "base_unseen_correct": 32,
+      "adversarial_unseen_correct": 24,
+      "total_unseen_correct": 56,
+      "min_unavoidable_errors": 8,
+      "exact_symbolic_tie_allowed": true
+    },
+    "limits": {
+      "logical_learned_bytes": 65536,
+      "actions_per_physical_episode": 4,
+      "training_patterns": 12,
+      "first_probes": 4
+    },
+    "no_postresult_tuning": true,
+    "no_new_schedulers": true,
+    "no_new_workflow_files": true,
+    "no_paid_api": true
+  },
+  "negative_controls": [
+    "no reward before fourth chosen action",
+    "private and protected seed denied",
+    "future oracle label refused",
+    "shuffled mapping cannot win as lawful source",
+    "checkpoint tamper rejected",
+    "pairwise initial training identity confirmed",
+    "correction only after observed feedback"
+  ],
+  "classification": {
+    "engineering": "frozen first prereg, source SHA and 2OS focused plus mandatory G29 and full root tests, exact source-only generated child",
+    "development": "base family degree<=2 prediction; paired adversarial counterexample; witnessed cold feedback repair",
+    "scientific": "UNVERIFIED: no independent new hidden-law first use, strongest exact symbolic tie not superiority, no native main/merge"
+  },
+  "authority": {
+    "research_only": true,
+    "protected_first_use": false,
+    "production_mutation": false,
+    "main_ref_update": false,
+    "private_runner_dispatch": false,
+    "scheduler_changes": false,
+    "merge_authority": false
+  }
+}
