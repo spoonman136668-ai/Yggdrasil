@@ -1,0 +1,24 @@
+# WSP-121 — Isolated fast-weight operator transfer
+
+**Source-safe engineering only. Scientific first-use: DENIED. No native Yggdrasil mutation, controller, scheduling, merge, or promotion.**
+
+WSP-120 original public science is frozen at source SHA 0ecc75cf2e8e1ebdd0d441416547ee6e44b224fc and canonical aggregate SHA256 259b084c03d946eba002964e8d3f348daa6399e6081963beeb69a8620fed721e. Its numerical program enumeration tied exact symbolic synthesis at full coverage, and had worse recorded Python timing; a single trained GRU prediction disagreed across operating systems. See wsp120_forensic.json, derived read-only from the 16 first-use shard artifacts; it does not rerun WSP-120.
+
+WSP-121 switches to a bounded, persistent, source-verified local numeric operator table (16 signed int32 weights, 64 learned bytes). Its input is a public three-bit causal context and two public two-hop routes; an unnamed hidden gate selects an endpoint. The learner updates numeric counters from externally queried consequences, not gradient descent or an explicit list of 10548 candidate programs. Cold restore recomputes counters from the observed ledger and rejects forged digests. Unknown contexts abstain; contradictory operator updates fail closed.
+
+The source-safe fixture gate is XOR3 and the feature basis and route alternatives are supplied. This is NOT spontaneous invention of an arbitrary computation primitive, an emergent general learner, or proof of native numerical superiority. The optimized independent symbolic table is the principal strong control; the 256-table enumerator is diagnostic only. The engineering fixture can and does produce symbolic ties. The conventionally trained MLP baseline and full scientific economy/retention experiment are not yet implemented or qualified.
+
+## Frozen preregistration
+- Original prereg commit: cb7d848dfb7e0cb47fe924b8ce012c40ae7e7282.
+- Preimplementation source-budget arithmetic correction: d2df53db5f5709086bf03a5b50ed401af7e2cb00. Exactly 288 planned primary source calls (24 fit x8 +24 transfer x4), not 384.
+- Future primary seeds 121000..121047 are NOT authorized. Reserved 121800..121863 and inherited 120800..120863 must stay closed.
+- Engineering-only seeds 121900..121903. All four generate independent public permutation graphs and separate legal/held source splits.
+- Fully independent source generator, matched trained conventional control, resource profiling and first-use permission must be qualified separately BEFORE any primary cohort evaluation.
+
+## Engineering qualification
+
+Command: python -B -m unittest discover -s research/contrib/chatgpt/WSP-121 -p 'test_*.py' -v
+
+Tests cover direct local programming, strong symbolic parity, new-graph transfer, abstention, negative no-update/reset, protected/source budget denial, verified source receipts, cold tamper and even valid-digest forgery rejection, and operator contradiction detection. GitHub push-only CI generates the existing G29 three-file source atlas on this isolated branch, then runs full WSP117–121 focused and inherited root regression on the exact archive source tree on Linux and Windows.
+
+Scientific acceptance requires the separately frozen 48-world original cohort, matched optimally implemented symbolic and fully trained conventional controls, independent new-world transfer, meaningful accuracy or process-cost superiority with preregistered confidence limits, and independent approval. Engineering PASS by itself is not SCIENTIFIC_PASS.
