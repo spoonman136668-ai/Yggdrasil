@@ -1,5 +1,5 @@
 # FKP-20 source-only one-shot: source SHA and publish target are pinned below.
-name: FKP22 active physical query choice versus exact Bayes and correlation shift
+name: FKP23 contradiction-gated prior repair and return retention
 on:
   push:
     branches: [ci/fkp18-sourceonly-once-20261115]
@@ -12,15 +12,15 @@ concurrency:
 jobs:
   source-only-atlas:
     if: >-
-      github.event.head_commit.message == 'ci(FKP-22): qualify physical active feedback and prior-shift source' &&
+      github.event.head_commit.message == 'ci(FKP-23): exact source safe prior repair with pre-audit per-world evidence' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
       candidate: ${{ steps.atlas.outputs.candidate }}
     env:
-      SOURCE: 4021c9258e30a167ff87a1a3530b9b271a4092d2
-      TARGET: research/fkp22-active-physical-intervention-20261115
+      SOURCE: 1fb9b5ad55e7d07076d3ae82145b6d3612574c11
+      TARGET: research/fkp23-contradiction-retained-prior-repair-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Keep byte stable Git
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 4021c9258e30a167ff87a1a3530b9b271a4092d2
+          ref: 1fb9b5ad55e7d07076d3ae82145b6d3612574c11
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -41,8 +41,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE"
-          git merge-base --is-ancestor c05d9002ab63163e8b4e296c02dda1f2b8134cb0 "$SOURCE"
-          test "$(git rev-parse c05d9002ab63163e8b4e296c02dda1f2b8134cb0^)" = 446e8c008bbab3ffbabeb755f3927a33bab90d0d
+          git merge-base --is-ancestor 53185e1e0df4ecb7ce45b57379ded7d387b63a16 "$SOURCE"
+          test "$(git rev-parse 53185e1e0df4ecb7ce45b57379ded7d387b63a16^)" = 65801e5777c9d399cdd49d919bcd4428d3cad951
           git fetch origin "refs/heads/$TARGET"
           test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/prereg.json)" = 0c5b3d12f99071d145e65eb85700782370397180
@@ -80,19 +80,27 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-22/test_active_policy.py)" = 0f0ca83921144dd132bfcc6e04f0f24f06f4d4c5
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-22/test_prereg.py)" = 05e137595ee08d3c924001b7f17715b699ba84ba
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-22/README.md)" = fb1e7ae486306803a7809bbbe9f8b70985459e5c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/prereg.json)" = a6374bf9249818e13419ebe09b4ca843e85d8f67
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/public_repair_source.py)" = 4fc475fdbac69c94ce24060cd91d6cabf06026ee
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/prior_repair.py)" = 3abaa8c8f02acefb9275c82b1613aa941fe373c5
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/run_repair.py)" = a5751128b84461e031b6dafb7a5ebd9a16a47d8f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/test_prior_repair.py)" = 9114d0f1f628531be9e831d69375f6cf410f5927
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/test_prereg.py)" = 422032e860757c9712195a8a9e0bb595370de3f5
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-23/README.md)" = 2806b2d060bc83ee6b26ea5a65cf732a92ae19b2
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo FKP22_PREREG_AND_EXACT_SOURCE_PIN=PASS
+          echo FKP23_PREREG_AND_EXACT_SOURCE_PIN=PASS
       - name: Complete source-safe tests before generated atlas
         shell: bash
         run: |
           set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-23 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-22 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-21 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-20 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-19 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-18 -p 'test_*.py' -v
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo FKP22_PUBLIC_NEGATIVE_TESTS=PASS
+          echo FKP23_PUBLIC_NEGATIVE_TESTS=PASS
       - name: Regenerate exactly three derived G29 files only
         id: atlas
         shell: bash
@@ -103,7 +111,7 @@ jobs:
           printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/fkp18-expected"
           diff -u "$RUNNER_TEMP/fkp18-expected" "$RUNNER_TEMP/fkp18-actual"
           git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-22): exact-source G29 atlas only'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-23): exact-source G29 atlas only'
           NEXT="$(git rev-parse HEAD)"
           test "$(git rev-parse HEAD^)" = "$SOURCE"
           diff -u "$RUNNER_TEMP/fkp18-expected" <(git diff --name-only "$SOURCE" "$NEXT" | LC_ALL=C sort)
@@ -113,8 +121,8 @@ jobs:
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain --untracked-files=all)"
           echo "candidate=$NEXT" >> "$GITHUB_OUTPUT"
-          echo FKP22_GENERATED_G29_ONLY_CANDIDATE="$NEXT"
-  full-two-os-fkp22:
+          echo FKP23_GENERATED_G29_ONLY_CANDIDATE="$NEXT"
+  full-two-os-fkp23:
     needs: source-only-atlas
     if: needs.source-only-atlas.result == 'success'
     strategy:
@@ -131,7 +139,7 @@ jobs:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP22_SOURCE_SHA: 4021c9258e30a167ff87a1a3530b9b271a4092d2
+      FKP23_SOURCE_SHA: 1fb9b5ad55e7d07076d3ae82145b6d3612574c11
     steps:
       - name: Prevent source line translation
         shell: bash
@@ -146,11 +154,12 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.py }}
-      - name: Run FKP22, inherited FKP21/FKP20/FKP19/FKP18, G29 and complete root
+      - name: Run FKP23, inherited FKP22/FKP21/FKP20/FKP19/FKP18, G29 and full root
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "$FKP22_SOURCE_SHA"
+          test "$(git rev-parse HEAD^)" = "$FKP23_SOURCE_SHA"
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-23 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-22 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-21 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-20 -p 'test_*.py' -v
@@ -161,23 +170,24 @@ jobs:
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo FKP22_FULL_REGRESSION_AND_G29=PASS
+          echo FKP23_FULL_REGRESSION_AND_G29=PASS
 
 
 
 
-  first-physical-active-public-train:
-    needs: [source-only-atlas, full-two-os-fkp22]
-    if: needs.source-only-atlas.result == 'success' && needs.full-two-os-fkp22.result == 'success'
+
+  first-prospective-repaired-prior-evaluation:
+    needs: [source-only-atlas, full-two-os-fkp23]
+    if: needs.source-only-atlas.result == 'success' && needs.full-two-os-fkp23.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP22_SOURCE_SHA: 4021c9258e30a167ff87a1a3530b9b271a4092d2
+      FKP23_SOURCE_SHA: 1fb9b5ad55e7d07076d3ae82145b6d3612574c11
     steps:
-      - name: Preserve pinned source without Windows line conversion
+      - name: Preserve exact git object bytes
         shell: bash
         run: |
           git config --global core.autocrlf false
@@ -190,65 +200,81 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.11'
-      - name: First full physically selected support, known-family and prior-shift comparison
+      - name: Execute original physical TRAIN-only action experiment once
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "$FKP22_SOURCE_SHA"
-          python -B research/contrib/chatgpt/FKP-22/run_active_eval.py --output-json "$RUNNER_TEMP/fkp22-physical-active.json" | tee "$RUNNER_TEMP/fkp22-primary-summary.log"
-          test -s "$RUNNER_TEMP/fkp22-physical-active.json"
+          test "$(git rev-parse HEAD^)" = "$FKP23_SOURCE_SHA"
+          python -B research/contrib/chatgpt/FKP-23/run_repair.py --output-json "$RUNNER_TEMP/fkp23-original-per-world.json" | tee "$RUNNER_TEMP/fkp23-original-summary.log"
+          test -s "$RUNNER_TEMP/fkp23-original-per-world.json"
           test -z "$(git status --porcelain --untracked-files=all)"
-      - name: Independently verify source-first physical actions, strongest control and shift negatives
+      - name: FIRST archive complete per-world actual source-action evidence BEFORE independent audit
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: fkp23-original-physical-prior-repair-per-world
+          path: ${{ runner.temp }}/fkp23-original-per-world.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Independent source-action custody audit with no hardcoded winning scores
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json,math,os,pathlib
-          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp22-physical-active.json'
-          r=json.loads(p.read_text(encoding='utf-8'))
-          assert r['schema']=='fkp22.active-physical-info-value.v1'
-          assert r['classification']=='SOURCE_SAFE_TRAIN_ACTIVE_INFORMATION_EXPERIMENT_ONLY'
-          assert r['source_sha']==os.environ['FKP22_SOURCE_SHA']
-          assert r['prereg_first']=='c05d9002ab63163e8b4e296c02dda1f2b8134cb0'
-          assert r['physical_actions']==8704
-          assert r['same_support_signatures_for_all_methods'] is True
-          assert len(r['support_source_evidence'])==16
-          assert len(r['per_world'])==24
-          assert [w['world_ordinal'] for w in r['per_world']]==list(range(24))
-          assert all(set(w['arms'])=={
-            'SPARSE_PARTITION_GAIN','INDEPENDENT_BAYES_ENTROPY',
-            'FIXED_0_1','DETERMINISTIC_RANDOM_TWO','NO_SUPPORT_ABLATION'} for w in r['per_world'])
-          assert all(len({v['public_training_sha256'] for v in w['arms'].values()})==1
-                     for w in r['per_world'])
-          assert all(len(v['chosen_physical_queries'])==2
-                 and len(v['scored_preaction_physical_outcomes'])==2
-                 and len({x[0] for x in v['chosen_physical_queries']})==2
-                 and {x[0] for x in v['chosen_physical_queries']}.isdisjoint(
-                     {x[0] for x in v['scored_preaction_physical_outcomes']})
-                 and v['score_used_to_update_model'] is False
-                  for w in r['per_world'] for v in w['arms'].values())
-          v=r['scores_by_method']
-          assert v['SPARSE_PARTITION_GAIN']['known_family']['correct_unqueried']==32
-          assert v['INDEPENDENT_BAYES_ENTROPY']['known_family']['correct_unqueried']==32
-          assert v['FIXED_0_1']['known_family']['correct_unqueried']==16
-          assert v['NO_SUPPORT_ABLATION']['known_family']['correct_unqueried']==16
-          assert v['SPARSE_PARTITION_GAIN']['prior_shift']['correct_unqueried']==8
-          assert v['INDEPENDENT_BAYES_ENTROPY']['prior_shift']['correct_unqueried']==8
-          assert v['SPARSE_PARTITION_GAIN']['known_family']['singleton_posterior_count']==16
-          assert v['FIXED_0_1']['known_family']['singleton_posterior_count']==0
-          assert all(record['max_logical_learned_bytes']<=65536
-                for arm in v.values() for record in arm.values())
-          assert r['paired_known_bootstrap']['draws']==10000
-          assert r['paired_known_bootstrap']['bootstrap_seed']==2222
-          assert r['paired_known_bootstrap']['candidate_minus_independent_strong_95_interval']==[0,0]
-          assert r['held_dev_first_use'] is False and r['protected_transfer_opened'] is False
-          assert r['unfamiliar_law_scientific_pass'] is False
-          assert r['accepted_native_changed'] is False
-          print('FKP22_SOURCE_PUBLIC_ACTIVE_PROBES_AND_SHIFT_PROOF=PASS')
+          import json,os,pathlib
+          file=pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp23-original-per-world.json'
+          r=json.loads(file.read_text('utf-8'))
+          assert r['schema']=='fkp23.cold-contradiction-prior-repair-source.v1'
+          assert r['classification']=='SOURCE_SAFE_TRAIN_PRIOR_REPAIR_DEVELOPMENT_ONLY'
+          assert r['exact_source_sha']==os.environ['FKP23_SOURCE_SHA']
+          assert r['prereg_first_commit']=='53185e1e0df4ecb7ce45b57379ded7d387b63a16'
+          assert (r['support_worlds'],r['adaptation_worlds'],
+                  r['shift_eval_worlds'],r['return_eval_worlds'])==(16,8,16,16)
+          assert r['physical_action_count']==11776
+          assert len(r['observed_prior_world_custody'])==24
+          assert [s['stage'] for s in r['observed_prior_world_custody']]==(['support']*16+['update']*8)
+          assert all(s['physical_episode_count']==16 for s in r['observed_prior_world_custody'])
+          assert len(r['per_world'])==32
+          assert [w['cohort'] for w in r['per_world']]==['shift']*16+['return']*16
+          assert [w['world_index_within_cohort'] for w in r['per_world']]==list(range(16))*2
+          methods={'SPARSE_CONTRADICTION_REPAIR','EXACT_BAYES_ALL_HISTORY',
+                   'FROZEN_OLD_PRIOR','RECENT_ONLY_PRIOR','NO_MEMORY'}
+          assert set(r['summary'])==methods and set(r['prior_checkpoint_sha256_by_arm'])==methods
+          assert all(set(w['arms'])==methods for w in r['per_world'])
+          assert all(len({v['physical_base_sha256'] for v in w['arms'].values()})==1
+                      for w in r['per_world'])
+          for w in r['per_world']:
+              for name,arm in w['arms'].items():
+                  q=arm['chosen_physical_probe_events']
+                  score=arm['scored_preaction_source_event']
+                  assert len(q)==3 and len(score)==6
+                  selected={x[0] for x in q}
+                  assert len(selected)==3 and selected<=set(range(4))
+                  assert score[0] in set(range(4))-selected
+                  assert all(len(x)==6 and x[0] in range(4)
+                             and x[4] in (0,1) and isinstance(x[5],str)
+                             and len(x[5])==64 for x in q)
+                  assert isinstance(score[5],str) and len(score[5])==64
+                  assert score[2] in (0,1) and score[3] in (0,1)
+                  assert score[4]==int(score[2]==score[3])==arm['correct_score']
+                  assert arm['source_consequence_not_used_for_update'] is True
+                  assert arm['max_logical_learned_bytes']<=65536
+                  assert arm['distinct_posterior_signatures']>=0
+                  assert arm['support_examples_after_3_probes']>=0
+          for method,cohorts in r['summary'].items():
+              assert set(cohorts)=={'shift','return'}
+              for cohort,totals in cohorts.items():
+                  evidence=[w['arms'][method] for w in r['per_world'] if w['cohort']==cohort]
+                  assert totals['total_first_unqueried']==16
+                  assert totals['first_unqueried_correct']==sum(x['correct_score'] for x in evidence)
+                  assert 0<=totals['first_unqueried_correct']<=16
+                  assert totals['max_learned_logical_bytes']==max(x['max_logical_learned_bytes'] for x in evidence)
+          for cohort,report in r['paired_bootstrap_by_cohort'].items():
+              assert cohort in ('shift','return') and report['draws']==10000
+              assert report['seed']==2323 and report['scientific_pass'] is False
+          assert r['original_protected_first_use'] is False
+          assert r['native_main_modified'] is False
+          assert r['scientific_pass'] is False
+          print("FKP23_FULL_PER_WORLD_SOURCE_CUSTODY=PASS")
+          print("FKP23_MEASURED_RESULTS="+json.dumps(r['summary'],sort_keys=True))
           PY
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: fkp22-first-physical-active-intervention-and-prior-shift
-          path: ${{ runner.temp }}/fkp22-physical-active.json
-          retention-days: 30
-          if-no-files-found: error
