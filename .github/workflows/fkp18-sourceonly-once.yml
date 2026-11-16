@@ -18,7 +18,7 @@ jobs:
     outputs:
       candidate: ${{ steps.atlas.outputs.candidate }}
     env:
-      SOURCE: 35103d4963ef0183c1538e48128dcdc2fe295cf0
+      SOURCE: b5521b10fd382cf1988522c6613504c6476a4fc2
       TARGET: research/fkp19-observed-delayed-causal-credit-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -29,7 +29,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 35103d4963ef0183c1538e48128dcdc2fe295cf0
+          ref: b5521b10fd382cf1988522c6613504c6476a4fc2
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -52,8 +52,8 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/test_prereg.py)" = 03e27832e50a4589f53740a7cf1c3ec663827d39
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/README.md)" = bc2e9f31a30399df260419fc989feb079c8e0e07
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/prereg.json)" = c9c3dcd77068bc755bc0903c428505ba4c6e98fb
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/public_delayed_source.py)" = 943625aa57c0faaef46de6e3f5a237c576bdae14
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/lag_credit.py)" = 4086630c59338cf530ed8544bc38442b9096d71d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/public_delayed_source.py)" = 3768ed6b072ac09721409201c5f627d41533d467
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/lag_credit.py)" = 24e428a53e7b592545b2e2ec2b119fbb939bdb5a
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/run_known_train.py)" = d152ef94c3c259eaf00449232e8bc21f1cb6847f
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/test_delayed_credit.py)" = e88bca947ab948b7bd570860fb955f097aec017c
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-19/test_prereg.py)" = c83fca9c0b28554338e35f588793de1bd040d314
@@ -106,7 +106,7 @@ jobs:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP19_SOURCE_SHA: 35103d4963ef0183c1538e48128dcdc2fe295cf0
+      FKP19_SOURCE_SHA: b5521b10fd382cf1988522c6613504c6476a4fc2
     steps:
       - name: Prevent source line translation
         shell: bash
@@ -144,7 +144,7 @@ jobs:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP19_SOURCE_SHA: 35103d4963ef0183c1538e48128dcdc2fe295cf0
+      FKP19_SOURCE_SHA: b5521b10fd382cf1988522c6613504c6476a4fc2
     steps:
       - name: Ensure byte-stable exact candidate
         shell: bash
