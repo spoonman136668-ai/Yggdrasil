@@ -35,8 +35,12 @@ class FrozenScientificBoundaryTests(unittest.TestCase):
         self.assertEqual(self.p["changed_paths"],[
             "research/contrib/chatgpt/FKP-19/**",
             ".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"])
-        for v in self.p["authority"].values():
-            self.assertFalse(v)
+        authority = self.p["authority"]
+        self.assertTrue(authority["research_only"])
+        for name in ("production_authority", "accepted_ref_mutation",
+                     "promotion_authority", "scheduler_or_queue_authority",
+                     "protected_first_use"):
+            self.assertFalse(authority[name])
         self.assertIn("not SCIENTIFIC_PASS",self.p["classification_rules"]["supported"])
 
     def test_inputs_have_no_hidden_experiment_first_use(self):
