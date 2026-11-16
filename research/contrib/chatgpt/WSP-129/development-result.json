@@ -1,0 +1,133 @@
+{
+  "schema": "wsp129.development-receipt.v1",
+  "id": "WSP-129",
+  "classification": "DEVELOPMENT_MIXED_ON_GRAMMAR_ONLY",
+  "engineering": "FOCUSED_PASS_BOTH_OS_FINAL_PENDING",
+  "scientific": "UNVERIFIED",
+  "native_integration": false,
+  "original_first_use": false,
+  "accepted_main_unchanged": true,
+  "provenance": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1159,
+    "branch": "research/wsp129-operator-inference-20261116",
+    "first_prereg_commit": "5eb6addded6fd82b251e3389a1a87d412bcf1ff2",
+    "exact_parent": "d6090288322e58b4e65da3618d344b012947f178",
+    "scored_source_sha": "2265062089c421c71e2dc05c73b29df752c351bc",
+    "prereg_blob_sha": "UNVERIFIED",
+    "source_kind": "inspectable synthetic development, not independent sealed scientific first-use",
+    "ci_url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43930709829",
+    "confirmed_identical_linux_windows": true
+  },
+  "controls": {
+    "active_independent_optimized_symbolic": "IDENTICAL_DECISION_LEVEL",
+    "fixed_independent_optimized_symbolic": "IDENTICAL_DECISION_LEVEL",
+    "ridge": "exact global optimum of convex ridge with 25 linear plus bilinear features; NOT fully trained deep NN",
+    "no_update": "same active paid transcript, abstains",
+    "paired_actions_exact": true
+  },
+  "budget": {
+    "worlds": 128,
+    "fit_worlds": 96,
+    "off_family_worlds": 32,
+    "relabeled_existing_worlds": 32,
+    "paid_actions_per_world_per_arm": 24,
+    "paid_actions_per_arm": 3072,
+    "held_per_original_world": 232,
+    "fit_held_per_arm": 22272,
+    "off_family_held_per_arm": 7424,
+    "relabel_held_per_arm": 8192,
+    "relabel_paid_actions": 0
+  },
+  "scores": {
+    "fit": {
+      "correct": 22272,
+      "held": 22272,
+      "abstained": 0,
+      "wrong_confident": 0,
+      "coverage_percent": 100,
+      "correct_operator_identified_worlds": 96,
+      "operator_identification_percent": 100,
+      "control_fixed_optimized_symbolic_correct": 22016,
+      "fixed_optimized_symbolic_abstained": 256,
+      "active_vs_fixed_optimized_symbolic_gain_pp": 1.1494252873563218,
+      "paired_bootstrap_seed": 129,
+      "paired_10000_95percent_gain_interval_pp": [
+        0.28735632183908044,
+        2.2988505747126435
+      ],
+      "pre_frozen_95percent_fit_gate": true,
+      "pre_frozen_zero_error_gate": true,
+      "pre_frozen_operator_identification_gate": true,
+      "pre_frozen_fixed_noninferiority_gate": true
+    },
+    "off_family": {
+      "correct": 2832,
+      "held": 7424,
+      "abstained": 3248,
+      "wrong_confident": 1344,
+      "wrong_confident_percent": 18.103448275862068,
+      "zero_candidate_elimination_worlds": 14,
+      "total_worlds": 32,
+      "elimination_percent": 43.75,
+      "frozen_wrong_max_pct": 1,
+      "frozen_elimination_min_pct": 90,
+      "off_family_gate": false,
+      "fixed_optimized_symbolic": {
+        "correct": 168,
+        "wrong_confident": 64,
+        "abstained": 7192
+      },
+      "conclusion": "Failed OOD safety. Adaptive hypothesis search still confidently predicts an incorrect single-operator grammar for 18/32 off-grammar worlds. False-confidence is not post-hoc abstained."
+    },
+    "transfer": {
+      "correct": 8192,
+      "held": 8192,
+      "wrong_confident": 0,
+      "abstained": 0,
+      "source_calls": 0,
+      "view_count": 32,
+      "interpretation": "new opaque IDs for previously learned causal rules, not novel physical world transfer"
+    },
+    "ridge": {
+      "train_correct": 2471,
+      "train_total": 3072,
+      "held_fit_correct": 13149,
+      "held_fit_wrong": 9123,
+      "held_fit_total": 22272,
+      "off_family_correct": 3684,
+      "off_family_wrong": 3740,
+      "off_family_held": 7424,
+      "held_brier": "NOT_MEASURED_IMPLEMENTATION_DIAGNOSTIC_GAP",
+      "fully_trained_deep_comparator": false
+    }
+  },
+  "integrity": {
+    "on_grammar_fit_was_all_correct": true,
+    "off_family_negative_preserved": true,
+    "strongest_same_action_symbolic_tied": true,
+    "cold_restore": true,
+    "late_interference_preserved": true,
+    "packed_weight_hypotheses_not_new_primitive": true,
+    "source_result_digest": "a2a34a1c6d70f6a0243f0e5dbda1d50db059e8cda0c074fb40ac8ceba6352f64",
+    "source_action_transcript_digest": "33f291ab590b215943b4946dcb2af62f56eaeac63862d1b08309db176004a480",
+    "transfer_digest": "ecda85cb750a9ed7cf896292f960d4f807b9515f7cea1eadcf51eb7b0c2c21c0"
+  },
+  "resource": {
+    "linux_wall_seconds": 14.131,
+    "windows_wall_seconds": 18.039,
+    "linux_peak_tracemalloc_bytes": 26875133,
+    "full_process_matched_efficiency": "UNQUALIFIED",
+    "energy": "NOT_MEASURED"
+  },
+  "decision": {
+    "fit_thresholds_met": true,
+    "off_family_thresholds_met": false,
+    "scientific_pass": false,
+    "known_grammar_operator_inference": true,
+    "general_knowledge_or_new_physics_discovery": false,
+    "first_use_allowed": false,
+    "merge_or_native_admission": false,
+    "successor_suggestion": "Frozen new experiment with independent off-grammar structural uncertainty and intervention validation, not WSP129 post-outcome tuning."
+  }
+}
