@@ -121,7 +121,7 @@ def world(seed):
                for a in range(64) for b in range(64)]
     rng.shuffle(records)
     return View(seed, law, cohort, tuple(records),
-                tuple(s for s, _, _ in records) if cohort == "fit" else (),
+                frozenset(s for s, _, _ in records) if cohort == "fit" else frozenset(),
                 {s: (a, b) for s, a, b in records},
                 {(a, b): s for s, a, b in records})
 
