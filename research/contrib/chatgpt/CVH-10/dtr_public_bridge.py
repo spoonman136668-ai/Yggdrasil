@@ -199,3 +199,66 @@ def original_source_authority_preflight():
         "public_adapter_source_qualification_only":True,
         "native_scientific_superiority_verified":False,
     }
+
+
+def sourcefree_qualification_receipt():
+    """This is SOURCE CODE/API qualification, never original world behavior."""
+    admission=original_source_authority_preflight()
+    prereg=json.loads((HERE/"prereg.json").read_text(encoding="utf-8"))
+    if (prereg["parent"]["sha"]!="07b213891dc6424b9ea1aa685b0ff77014f49080"
+            or prereg["source"]["commit"]!=SOURCE_SHA
+            or prereg["source"]["blob"]!=DTR_BLOB
+            or prereg["scope"].startswith("Implement only") is False
+            or admission["first_use_execution_allowed"]):
+        raise PermissionError("CVH10_FROZEN_DTR_SOURCE_OR_AUTHORITY_DRIFT")
+    output={
+        "schema":"yggdrasil.cvh10.real-upstream-dtr-public-two-stage-sourcefree-qualification.v1",
+        "parent":"07b213891dc6424b9ea1aa685b0ff77014f49080",
+        "prereg_first":"8f59c7dbb3bd96078a8bc31658c86ca8fe59ece7",
+        "upstream_repo":SOURCE_REPO,
+        "original_source_commit":SOURCE_SHA,
+        "upstream_source_module":"causal_gym/envs/dtr.py",
+        "upstream_source_blob_git_sha":DTR_BLOB,
+        "source_family":"DTRPCH_DTRSCM_TWO_STAGE_DELAYED_TERMINAL",
+        "original_MDPPCH_same_mechanism":False,
+        "stage0_original_callback_arity":1,
+        "stage1_original_callback_arity":3,
+        "stage0_source_public_shape":"binary S1, observed binary S2, public reward=0, not done",
+        "stage1_source_public_shape":"binary S2, terminal source observation None, binary Y, terminated=True",
+        "terminal_no_observation_public_sentinel":0,
+        "terminal_after_is_actual_source_state":False,
+        "only_public_source_fields_to_policy":list(PUBLIC_FIELDS),
+        "source_owner_firstuse_authority":admission,
+        "new_original_source_construct_reset_or_do_calls":0,
+        "original_source_seeds_reserved":0,
+        "original_source_intervention_budget_approved_but_unspent":13312,
+        "original_DTR_observations_train_held_transfer":0,
+        "frozen_original_native_model_unchanged":True,
+        "frozen_original_conventional_controls_unchanged":True,
+        "strong_original_source_science_control_fit_executed":False,
+        "original_unfamiliar_family_transfer_scientifically_proven":False,
+        "scientific_pass":False,
+        "deployment":False,
+        "classification":"PINNED_DISTINCT_DTR_PUBLIC_TWO_STAGE_BOUNDARY_QUALIFIED_SOURCEFIRSTUSE_DENIED",
+    }
+    output["receipt_sha256"]=sha256(json.dumps(
+        output,sort_keys=True,separators=(",",":"),allow_nan=False).encode("ascii")).hexdigest()
+    return output
+
+
+if __name__=="__main__":
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--output-json",required=True)
+    args=parser.parse_args()
+    out=sourcefree_qualification_receipt()
+    destination=Path(args.output_json)
+    destination.parent.mkdir(parents=True,exist_ok=True)
+    destination.write_text(json.dumps(out,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+    print("CVH10_DTR_SOURCEFREE_PUBLIC_QUALIFICATION="+json.dumps({
+        "status":out["classification"],
+        "source_actions":0,
+        "upstream_blob":out["upstream_source_blob_git_sha"],
+        "public_fields":out["only_public_source_fields_to_policy"],
+        "receipt":out["receipt_sha256"],
+    },sort_keys=True,separators=(",",":")),flush=True)
