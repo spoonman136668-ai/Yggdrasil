@@ -14,7 +14,7 @@ jobs:
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
       github.run_attempt == 1 &&
-      github.event.head_commit.message == 'CVH-03 frozen source-free first qualifier'
+      github.event.head_commit.message == 'CVH-03 exact-source bytes Windows checkout correction'
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +28,8 @@ jobs:
       ORIGINAL_SHA: e0b1ffb7b50f5bda7fba437a522b6077e6fee8d5
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
+      - name: Preserve exact Git blob bytes before checkout
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: e0b1ffb7b50f5bda7fba437a522b6077e6fee8d5
