@@ -1,5 +1,5 @@
 # FKP-20 source-only one-shot: source SHA and publish target are pinned below.
-name: FKP20 sparse two-parent temporal credit - public source safe training
+name: FKP21 compositional causal rules versus indistinguishable hidden extensions
 on:
   push:
     branches: [ci/fkp18-sourceonly-once-20261115]
@@ -12,15 +12,15 @@ concurrency:
 jobs:
   source-only-atlas:
     if: >-
-      github.event.head_commit.message == 'ci(FKP-20): reuse exact source-safe CI for 2-parent delayed credit' &&
+      github.event.head_commit.message == 'ci(FKP-21): qualify rule identifiability and microfeedback exact source' &&
       github.run_attempt == 1
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
       candidate: ${{ steps.atlas.outputs.candidate }}
     env:
-      SOURCE: 4859ab019ea3efba582376e117fd1a6a98a18a84
-      TARGET: research/fkp20-conditional-pair-credit-20261115
+      SOURCE: 21937edc73d36bb22789b6e881d2dae0bee737cd
+      TARGET: research/fkp21-anew-operator-identifiability-feedback-20261115
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Keep byte stable Git
@@ -30,7 +30,7 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 4859ab019ea3efba582376e117fd1a6a98a18a84
+          ref: 21937edc73d36bb22789b6e881d2dae0bee737cd
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -41,8 +41,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$SOURCE"
-          git merge-base --is-ancestor 70f636b34a9ca86b6371068e04c7b0c1368dd62b "$SOURCE"
-          test "$(git rev-parse 70f636b34a9ca86b6371068e04c7b0c1368dd62b^)" = b91aa2b2d9e5fb7c5d1e28ecd0dcccd20e57bfd9
+          git merge-base --is-ancestor ef9ee3fa690a77250829424070ec4a8fc87b2197 "$SOURCE"
+          test "$(git rev-parse ef9ee3fa690a77250829424070ec4a8fc87b2197^)" = a3f560435f8d23043b81438ec0e5d6b149ff0bec
           git fetch origin "refs/heads/$TARGET"
           test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/prereg.json)" = 0c5b3d12f99071d145e65eb85700782370397180
@@ -66,17 +66,25 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-20/test_pair_credit.py)" = 998952a3d6346896c23ff3a8d3627acb3bed98a1
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-20/test_prereg.py)" = d1085cd1e77d88bcef711d52d2567efdc183ddc4
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-20/README.md)" = 024d7a6f28ea4a2b42de3bbf450ab1d7a0441e37
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/prereg.json)" = cc65cc2b0796e3ad177048d7a2c3a98ee8087310
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/public_rule_source.py)" = c759aed670cf25125fe5c382dcd8f7453d47bbbc
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/rule_learning.py)" = bbb0ae7bd3b40525c336888b7b495e05cbbb39d9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/run_public_feedback.py)" = aecabaedc04cc4c119d814a7185471f94f0ea164
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/test_rule_learning.py)" = 52f46d8084fe5fffa13b7b4777537e206762985c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/test_prereg.py)" = 43fdc868900711ac9c1ae7d88f49e628f01d104a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-21/README.md)" = fe25e28cd743173d488fd8ef941bface605ac8b4
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo FKP20_PREREG_AND_EXACT_SOURCE_PIN=PASS
+          echo FKP21_PREREG_AND_EXACT_SOURCE_PIN=PASS
       - name: Complete source-safe tests before generated atlas
         shell: bash
         run: |
           set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-21 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-20 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-19 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-18 -p 'test_*.py' -v
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo FKP20_PUBLIC_NEGATIVE_TESTS=PASS
+          echo FKP21_PUBLIC_NEGATIVE_TESTS=PASS
       - name: Regenerate exactly three derived G29 files only
         id: atlas
         shell: bash
@@ -87,7 +95,7 @@ jobs:
           printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/fkp18-expected"
           diff -u "$RUNNER_TEMP/fkp18-expected" "$RUNNER_TEMP/fkp18-actual"
           git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-20): exact-source G29 atlas only'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-21): exact-source G29 atlas only'
           NEXT="$(git rev-parse HEAD)"
           test "$(git rev-parse HEAD^)" = "$SOURCE"
           diff -u "$RUNNER_TEMP/fkp18-expected" <(git diff --name-only "$SOURCE" "$NEXT" | LC_ALL=C sort)
@@ -97,8 +105,8 @@ jobs:
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain --untracked-files=all)"
           echo "candidate=$NEXT" >> "$GITHUB_OUTPUT"
-          echo FKP20_GENERATED_G29_ONLY_CANDIDATE="$NEXT"
-  full-two-os-fkp20:
+          echo FKP21_GENERATED_G29_ONLY_CANDIDATE="$NEXT"
+  full-two-os-fkp21:
     needs: source-only-atlas
     if: needs.source-only-atlas.result == 'success'
     strategy:
@@ -115,7 +123,7 @@ jobs:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP20_SOURCE_SHA: 4859ab019ea3efba582376e117fd1a6a98a18a84
+      FKP21_SOURCE_SHA: 21937edc73d36bb22789b6e881d2dae0bee737cd
     steps:
       - name: Prevent source line translation
         shell: bash
@@ -130,11 +138,12 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.py }}
-      - name: Run FKP20, inherited FKP19/FKP18, G29 and complete mandatory root regression
+      - name: Run FKP21, inherited FKP20/FKP19/FKP18, G29 and full mandatory root
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "$FKP20_SOURCE_SHA"
+          test "$(git rev-parse HEAD^)" = "$FKP21_SOURCE_SHA"
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-21 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-20 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-19 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/FKP-18 -p 'test_*.py' -v
@@ -143,21 +152,22 @@ jobs:
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo FKP20_FULL_REGRESSION_AND_G29=PASS
+          echo FKP21_FULL_REGRESSION_AND_G29=PASS
 
 
-  public-known-train-eight-arm:
-    needs: [source-only-atlas, full-two-os-fkp20]
-    if: needs.source-only-atlas.result == 'success' && needs.full-two-os-fkp20.result == 'success'
+
+  public-first-operator-probes:
+    needs: [source-only-atlas, full-two-os-fkp21]
+    if: needs.source-only-atlas.result == 'success' && needs.full-two-os-fkp21.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      FKP20_SOURCE_SHA: 4859ab019ea3efba582376e117fd1a6a98a18a84
+      FKP21_SOURCE_SHA: 21937edc73d36bb22789b6e881d2dae0bee737cd
     steps:
-      - name: Preserve exact source without Windows line conversion
+      - name: Preserve exact source without host line translation
         shell: bash
         run: |
           git config --global core.autocrlf false
@@ -170,53 +180,58 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.11'
-      - name: First full 16-TRAIN-world 8-arm physical four-action comparison
+      - name: Independently apply five arms to first public interventions in all 16 TRAIN worlds
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "$FKP20_SOURCE_SHA"
-          python -B research/contrib/chatgpt/FKP-20/run_known_train.py --output-json "$RUNNER_TEMP/fkp20-public-16-train.json" | tee "$RUNNER_TEMP/fkp20-summary.log"
-          test -s "$RUNNER_TEMP/fkp20-public-16-train.json"
+          test "$(git rev-parse HEAD^)" = "$FKP21_SOURCE_SHA"
+          python -B research/contrib/chatgpt/FKP-21/run_public_feedback.py --output-json "$RUNNER_TEMP/fkp21-evidence.json" | tee "$RUNNER_TEMP/fkp21-summary.log"
+          test -s "$RUNNER_TEMP/fkp21-evidence.json"
           test -z "$(git status --porcelain --untracked-files=all)"
-      - name: Independently audit complete source-physical actions and strongest controls
+      - name: Independently verify every public action, paired-world impossibility and cold correction
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json,math,os,pathlib
-          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp20-public-16-train.json'
-          x=json.loads(p.read_text('utf-8'))
-          assert x['schema']=='fkp20.public-multiparent-known-train.v1'
-          assert x['classification']=='REAL_MULTI_PARENT_PUBLIC_TRAIN_ONLY'
-          assert x['source_sha']==os.environ['FKP20_SOURCE_SHA']
-          assert x['prereg_first_commit']=='70f636b34a9ca86b6371068e04c7b0c1368dd62b'
-          assert x['world_count']==16 and x['train_seed_min']==992100 and x['train_seed_max']==992115
-          assert x['full_factorial_explore_episodes_per_arm_world']==32 and x['score_episodes_per_arm_world']==16
-          assert x['physical_public_actions']==24576
-          names=set(x['methods'])
-          assert len(names)==8 and len(x['per_world'])==16
-          assert [z['seed'] for z in x['per_world']]==list(range(992100,992116))
-          assert all(set(z['actual_public_reward'])==names and set(z['arms'])==names for z in x['per_world'])
-          assert all(len({z['arms'][a]['explore_public_sha256'] for a in names})==1 for z in x['per_world'])
-          assert all(isinstance(v,(float,int)) and math.isfinite(v) and -16<=v<=16 and v%2==0
-               for z in x['per_world'] for v in z['actual_public_reward'].values())
-          assert all(z['arms']['FULLY_FITTED_INTERACTION_LOGISTIC']['fully_fit_bce']<=0.05
-                     and z['arms']['FULLY_FITTED_INTERACTION_LOGISTIC']['fully_fit_epochs']<=512
-                     for z in x['per_world'])
-          assert all(z['arms']['SPARSE_CONTRADICTION_PAIRS']['learned_interaction_slots']==3 for z in x['per_world'])
-          assert all(z['arms']['EXACT_VERSION_SPACE']['version_space_one_hypothesis'] for z in x['per_world'])
-          assert all(c['explore_public_actions']==2048 and c['score_public_actions']==1024
-                for c in x['per_arm_cost'].values())
-          assert all(c['max_logical_learned_bytes']<=65536 for c in x['per_arm_cost'].values())
-          assert x['paired_bootstrap']['bootstrap_draws']==10000 and x['paired_bootstrap']['bootstrap_seed']==2020
-          assert x['paired_bootstrap']['scientific_pass'] is False
-          assert x['original_fkp17_held_opened'] is False and x['fkp19_held_opened'] is False
-          assert x['new_held_first_use'] is False and x['native_accepted_changed'] is False and x['scientific_pass'] is False
-          print('FKP20_ACTUAL_16_WORLD_MULTIPARENT_SOURCE_ONLY=PASS')
+          import json,os,pathlib,math
+          r=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp21-evidence.json').read_text('utf-8'))
+          assert r['schema']=='fkp21.public-rule-first-probe-cold-feedback.v1'
+          assert r['classification']=='CONSTRUCTIVE_KNOWN_TRAIN_IDENTIFIABILITY_AND_FEEDBACK_ONLY'
+          assert r['source_sha']==os.environ['FKP21_SOURCE_SHA']
+          assert r['prereg_first']=='ef9ee3fa690a77250829424070ec4a8fc87b2197'
+          assert r['worlds']==16 and r['paired_world_groups']==8
+          assert r['source_physically_selected_actions']==5120
+          assert r['train_patterns']==[3,4,5,6,8,9,10,11,12,13,14,15]
+          assert r['first_unseen_patterns']==[0,1,2,7]
+          assert [x['seed'] for x in r['by_world']]==list(range(993100,993116))
+          assert len(r['paired_identifiability'])==8
+          assert all(x['distinct_first_held_labels']==1 and x['identical_first_held_predictions']
+                     for x in r['paired_identifiability'])
+          assert len(r['per_arm'])==5
+          c=r['per_arm']['INNOVATION_GF2']
+          strong=r['per_arm']['INDEPENDENT_GF2_ELIMINATION']
+          assert c['low_family_first_held_correct']==32
+          assert c['adversarial_first_held_correct']==24
+          assert c['total_first_held_correct']==56 and strong['total_first_held_correct']==56
+          assert c['cold_direct_feedback_recall_correct']==64
+          assert strong['cold_direct_feedback_recall_correct']==64
+          assert r['per_arm']['EXACT_PUBLIC_LOOKUP_ABSTAIN']['total_unseen_abstained']==64
+          assert r['per_arm']['NO_UPDATE']['cold_direct_feedback_recall_correct']==0
+          assert r['paired_bootstrap']['paired_world_groups']==8
+          assert r['paired_bootstrap']['draws']==10000
+          assert r['paired_bootstrap']['seed']==2121
+          assert r['paired_bootstrap']['candidate_minus_strongest_matched_control']==0
+          assert all(x['max_model_logical_bytes']<=65536 for x in r['per_arm'].values())
+          assert r['source_not_independent_hidden_evaluator'] is True
+          assert r['protected_source_first_use'] is False
+          assert r['fkp20_protected_opened'] is False
+          assert r['science_unfamiliar_transfer_run'] is False
+          assert r['scientific_pass'] is False and r['native_accepted_changed'] is False
+          print('FKP21_CONSTRUCTIVE_NOVEL_OPERATOR_INFORMATION_BOUND=PASS')
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: fkp20-actual-variable-lag-multiparent-known-train
-          path: ${{ runner.temp }}/fkp20-public-16-train.json
+          name: fkp21-physical-operator-identifiability-and-feedback
+          path: ${{ runner.temp }}/fkp21-evidence.json
           retention-days: 30
           if-no-files-found: error
