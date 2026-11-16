@@ -124,3 +124,49 @@ source birth and sealed lineage, isolate learner and scoring processes, bind
 the original source/held prediction digests and measured costs to signed
 immutable receipts, and separately authorize first use. These engineering
 hashes alone do not authenticate the source or establish SCIENTIFIC_PASS.
+
+
+## Structural parity falsification — no-original-source accuracy NO-GO
+
+**Model-class result: ACCURACY_ADVANTAGE_NO_GO (source-free analytical
+consequence). Scientific original-first-use remains DENIED; no scientific
+first-use, unique numerical gain, native admission or production claim.**
+
+Both the 16-int32 numerical fast-weight learner and the independently
+implemented optimized symbolic memo receive the **same** verified outcomes
+and public features. For any one of the eight causal contexts, let the
+observed route be `r`. With no observation, both abstain. After the first
+consistent observation, the numerical counts are `(+1, -1)` in route
+`r`'s favor, while the symbolic memo stores `r`. Each subsequent consistent
+observation preserves the counts' sign and the symbolic value. The first
+contradictory observation is rejected by both without changing their
+stored state. This is an induction over the evidence history, with counts
+far from int32 overflow under the frozen 8/4 per-world source budgets.
+
+Consequently, **every** held or transfer prediction is identical under
+matched evidence and the same public graph; the paired world-level accuracy
+difference is identically zero, whatever the hidden truth labels are.
+The frozen >=5-percentage-point numerical superiority criterion against
+`SYMBOLIC_TABLE_STRONG` is **structurally impossible for the current
+WSP-121 architecture**, even if original source labels were later revealed.
+A mismatch from unequal observations, a correctness bug or changed code
+would not be legitimate scientific advantage.
+
+`test_symbolic_equivalence.py` exhaustively checks all **256** hypothetical
+three-input Boolean route tables on all four *engineering-only* graph IDs,
+every partial eight-context evidence prefix, four consistent transfer
+updates, all held-subject predictions, cold restoration, contradiction
+denial and unknown-context abstention. Its truth tables are deliberately
+synthetic programmer inputs, **not discovered rules or a sealed evaluation**.
+The formal argument does not rely on sampling those fixtures.
+
+The preregistered alternative **>=2x end-to-end cost/speed superiority**
+remains open only as an unverified possibility. This parity certificate does
+not measure timing or energy and does not prove that alternative impossible.
+Before consuming any of WSP-121's original 48 worlds, independently qualify
+realistic source/train/inference/restore cost parity and a separately
+operated source custodian; preserve the frozen science thresholds. If
+WSP-121 is discontinued, the next mechanism must have genuine inference
+capacity beyond an eight-context memorized route table, with an equally
+strong symbolic causal-composition baseline. Do not claim new primitive
+invention from pre-supplied features.
