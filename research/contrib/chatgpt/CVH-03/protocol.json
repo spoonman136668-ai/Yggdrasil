@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.cvh03.pinned-native-mdp-postinspection-analytic-audit.v1",
+  "classification": "READ_ONLY_SOURCE_LAW_AUDIT_NOT_BLIND_PREREGISTRATION",
+  "scope": "After reading original public upstream equations; diagnostic motivated by known reward law, NOT prospective independent scientific first-use.",
+  "lineage": {
+    "qualified_CVH02_SHA": "ae61ecdf535e5c4de35ea48f1223a7afe871a09b",
+    "qualified_CVH02_tree": "785d283b9097ffb88e0c0aab09ca00678b83fc98",
+    "existing_CVH02_PR": 1130,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "original_upstream": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "path": "causal_gym/envs/mdp.py",
+    "exact_Git_blob": "6264ec5450754c009e98c3e85f6d5927ece0a9ab",
+    "confirmed_readonly_connector": true,
+    "u1": "Bernoulli(9/10)",
+    "u2": "Bernoulli(1/10)",
+    "u3": "Bernoulli(1/10)",
+    "independent_exogenous_draws": true,
+    "original_reward": "r = ((s != a) != u1) != u3",
+    "original_next_state": "s_next = (u1 != u2) != (s | a)",
+    "original_termination": "terminated=False, truncation when num_step>max_step, max_step=30, thus 31 actual steps"
+  },
+  "audit": {
+    "method": "Enumerate all eight exogenous binary triples with exact rational arithmetic, calculate joint p(r,s_next|s,a), run independent finite-horizon Bellman DP for h=1..31 and closed-form upper bound.",
+    "controls": [
+      "match state",
+      "opposite state",
+      "uniform random action"
+    ],
+    "negative_tests": [
+      "alter exogenous probabilities, verify reward bound changes",
+      "all distributions sum to one",
+      "future-value DP controls distinct from source syntax"
+    ],
+    "known_hypothesis": "The pinned MDP gives expected immediate reward 0.82 for matching state and 0.18 otherwise; state-match reaches an episode-wise expected reward ceiling for each remaining step.",
+    "scientific_limit": "This retrospective formal source-law fact cannot count as experimental science or trained-model gain, and does not invalidate use of source for mechanics; no original source actions, no source seeds or model updates."
+  },
+  "authority": {
+    "isolated_research_branch": true,
+    "no_first_use": true,
+    "no_protected_seeds": true,
+    "no_original_MDP_import_or_constructor": true,
+    "no_original_action": true,
+    "no_main_or_qualified_CVH02_ref_edits": true,
+    "no_existing_PR_modify_until_result": true,
+    "no_workflow_controller_runner_scheduler": true,
+    "no_merge_deploy_or_paidAPI": true
+  }
+}
