@@ -1,0 +1,133 @@
+{
+  "schema": "yggdrasil.aai12t.source-development-evidence.v1",
+  "id": "AAI-12T",
+  "status": "DEV_NO_GO_NO_SCIENCE",
+  "source_only": true,
+  "source_custody": {
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "original_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prereg_before_code_commit": "58b415219373484864bcf63189a7c18f3eeea711",
+    "prereg_blob": "29f79f0d6368840c76c39443ffaefaf5607a6f5f",
+    "implementation_first_commit": "a6464185a9ab1e3c91a7b946c8b2b7297eb0bf46",
+    "implementation_initial_blob": "295f0624b39f3603530c285c07b62db0dc66cb5e",
+    "focused_tests_first_commit": "6c2d15e4bf82b9f25085c43921de106baed0a8d6",
+    "checkpoint_format_mechanical_fix_commit": "f0f0e7084c3e0e47378446f62df211dd9a60cba5",
+    "checkpoint_test_final_commit": "2cb45a83c099a412fcc83a33a8f34fc2c95ced65",
+    "exact_final_source_git_blob": "b8bf17029cb20147042f386251192ace8928097f",
+    "exact_final_tests_git_blob": "0111f2c74a5b7edd6b2a460c12cc64b298e55b12",
+    "exact_final_source_sha256": "bc3a5347ab769b89b85d8cad470caa03d4f90ed12c4a3b135c789a3ddca51d56",
+    "exact_final_tests_sha256": "4994dc18b57cffbeebe6844238bcebdc9eba821638f83a1082db98509e8cb1be",
+    "local_git_blobs_identical_to_repository": true
+  },
+  "local_environment": {
+    "platform": "isolated Linux x86_64 container",
+    "python": "CPython 3.13.5",
+    "official_owner_runner": false,
+    "model_library_changed": false
+  },
+  "source_protocol": {
+    "novel_hidden_ternary_primitive_worlds": 12,
+    "familiar_three_gate_worlds": 4,
+    "unrelated_negative_worlds": 4,
+    "fixtures": 2,
+    "real_one_bit_do_pairs_per_world": 16,
+    "public_observations_per_world": 32,
+    "disjoint_test_inputs_per_world": 32,
+    "novel_test_cases_per_arm": 768,
+    "familiar_test_cases_per_arm": 256,
+    "negative_test_cases_per_arm": 256,
+    "model_arms": 6,
+    "cold_checkpoints": 240,
+    "scientific_cohorts_consumed": 0
+  },
+  "accuracies": {
+    "novel": {
+      "novelty_gate": 0.80859375,
+      "always_ternary_256": 0.947916667,
+      "fixed_program_3gate": 0.682291667,
+      "knn5": 0.518229167,
+      "fully_fitted_id3": 0.731770833,
+      "adaptive_no_growth": 0.657552083
+    },
+    "familiar": {
+      "novelty_gate": 1,
+      "always_ternary_256": 0.734375,
+      "fixed_program_3gate": 1,
+      "knn5": 0.75390625,
+      "fully_fitted_id3": 0.859375,
+      "adaptive_no_growth": 1
+    },
+    "negative": {
+      "novelty_gate": 0.5703125,
+      "always_ternary_256": 0.36328125,
+      "fixed_program_3gate": 0.515625,
+      "knn5": 0.58203125,
+      "fully_fitted_id3": 0.4609375,
+      "adaptive_no_growth": 0.5703125
+    }
+  },
+  "strongest_novel_control": "always_ternary_256",
+  "measured_effects": {
+    "candidate_minus_strongest_novel": -0.139322917,
+    "candidate_minus_no_growth_novel": 0.151041667,
+    "candidate_minus_always_expanded_familiar": 0.265625,
+    "candidate_minus_best_generic_negative": -0.01171875
+  },
+  "novelty_detection": {
+    "novel_worlds_accuracy_at_least_0_80": 7,
+    "novel_worlds_augment_both_fixtures": 3,
+    "familiar_worlds_false_augment_either_fixture": 0
+  },
+  "frozen_checks": {
+    "novel_gain_vs_strongest_control_at_least_0_03": false,
+    "novel_gain_vs_no_growth_at_least_0_06": true,
+    "nine_of_twelve_novel_worlds_at_least_0_80": false,
+    "eight_novel_worlds_both_fixtures_induce_ternary": false,
+    "at_most_one_familiar_world_either_fixture_induces_ternary": true,
+    "familiar_within_0_03_best_generic": true,
+    "unrelated_negative_within_0_03_best_generic": true,
+    "whole_source_fit_predict_cost_within_50x": true
+  },
+  "exact_final_local_timing_seconds": {
+    "adaptive_no_growth": 0.05072,
+    "always_ternary_256": 0.107688,
+    "fixed_program_3gate": 0.031068,
+    "fully_fitted_id3": 0.014255,
+    "knn5": 0.009406,
+    "novelty_gate": 0.169666,
+    "source_free_compiler": 0.008361
+  },
+  "timing_scope": "one local source-only process; includes model fit/model choice, cold recomputation, predictions, and charged fixed-grammar compilation; excludes common fixture generation and external/native build/CI; no platform-independent whole-process qualification",
+  "exact_final_trace_sha256": "bae2cd2b1842b7115b09bd53f8884476a6484aa0fc3834aa8d6ffebd06ab6aae",
+  "exact_final_focused_tests": {
+    "passed": 11,
+    "total": 11,
+    "failed": 0,
+    "primary_first_use_denial": "PASS"
+  },
+  "correction_disposition": {
+    "discovered_after_first_source_screen": true,
+    "initial_defect": "First cold checkpoint serialized mode and public rows but omitted the explicitly learned ternary truth table required by preregistration.",
+    "correction": "Only canonical cold serialization/validation updated to include 8-bit learned truth table and bindings; added corruption-negative test; no source-world, training data, selector, grammar, evaluator, thresholds, or model prediction code changed.",
+    "outcome_after_fix": "Identical predictions/trace, accuracy/gates/classification in two fresh corrected runs, and identical to initial pre-fix outcome; timing diagnostic differed.",
+    "evidentiary_scope": "source-only developmental negative; not independent scientific first-use or a prespecified clean-room original source run",
+    "change_after_outcome_disclosed": true
+  },
+  "repeat_reproduction": {
+    "two_corrected_local_runs_same_scores_checks_trace": true,
+    "all_primary_first_use_routes_disarmed": true
+  },
+  "qualification": {
+    "local_source_only": "PASS focused tests and deterministic exact-source negative result",
+    "development": "NO_GO",
+    "scientific": "NOT_RUN",
+    "github_ci": "UNVERIFIED",
+    "ubuntu_native_final": "UNVERIFIED",
+    "windows_native_final": "UNVERIFIED",
+    "atlas": "UNVERIFIED pending exact-head CI",
+    "native_merge": "NONE",
+    "production": "NONE"
+  },
+  "conclusion": "Novelty-gated selective expansion retains old graph worlds and resists the unrelated-grammar regression but suppresses expansion on most novel worlds, trailing an equally expressive always-expanded learner by 0.1393 accuracy. Fail closed; next research must test a distinct predeclared structural reuse or stable novelty-estimation mechanism, not retune this gate."
+}
