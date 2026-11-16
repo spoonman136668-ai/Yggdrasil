@@ -1,0 +1,129 @@
+{
+  "schema": "yggdrasil.nkr11.contradiction-gated-intervention-relations-prereg.v1",
+  "experiment": "NKR-11",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_FIRST_EXPERIMENT",
+  "parent": {
+    "sha": "c420bd7ecd5655bc529ec1d781e458b62ce4a768",
+    "pr": 1141,
+    "tree": "a19e10ca0436e7fc8e422cd118f3f7271097758a",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Measure whether a tokenless native binary relational causal substrate can detect a contradiction to an independently observed earlier mechanism, induce a context-conditional intervention relation absent from its initial unary operator catalog, retain old knowledge, and transfer to unseen contexts after matched-action intervention feedback.",
+  "source": {
+    "kind": "self-contained deterministic computational binary-action environment; fixture-only",
+    "has_external_ground_truth": false,
+    "authentic_external_actions": false,
+    "real_historical_source_used_in_primary": false,
+    "original_wikidata_valid_test_opened": false,
+    "prior_nkr10_result": "null 106/1270 at4, 8.35%, symbolic tie; do not retune NKR10"
+  },
+  "mechanism": {
+    "input": "four observed context bits x0..x3, binary public action a",
+    "old": "outcome = parity(x & old_mask) XOR a; old_mask = 1 << (world_id mod 4)",
+    "new": "outcome = parity(x & base_mask) XOR (a AND parity(x & action_interaction_mask)); public environment does NOT announce a mechanism switch",
+    "base_masks": [
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      6,
+      9,
+      10,
+      12,
+      13,
+      14
+    ],
+    "interaction_masks": [
+      3,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      6
+    ],
+    "world_ids": "0..11 (12 fully deterministic disjoint hidden mechanisms)",
+    "unfamiliar_family": "old mechanisms had constant action effect, new mechanisms have action/context interactions of 2-4 context bits. All are still within a prespecified parity-feature hypothesis class: no de-novo cognitive operator invention.",
+    "cold_contexts": [
+      6,
+      7,
+      9,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "repair_training_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      10
+    ],
+    "first_repair_event": "x=0,a=1; old outcome is 1 and new outcome is 0 in every world, so contradiction is guaranteed by frozen domain construction (no secret oracle lookup by learner)",
+    "old_training": "for x 0..15, reveal both actions' outcomes; 32 events per world. A warm checkpoint is frozen before any changed-world feedback.",
+    "new_interventions": "eight distinct prespecified contexts; BOTH actions for each, 16 source-revealed intervention outcomes; first event (x=0,a=1) then (x=0,a=0), for subsequent contexts a=0 then a=1; never reveal cold-context outcomes to learner",
+    "evaluation": "cold x in eight untouched contexts, both actions (16 per world, total 192); old checkpoint retention tested on all x0..15, actions 0/1 (32 per world, total 384)",
+    "feedback": "strict canonical source SHA256, unique observation refs, engineering_fixture_only source mode and observed_intervention source kind. No oracle/heldout target visible to learning."
+  },
+  "learner": {
+    "representation": "10-bit GF(2) coefficient signature: bias, four context main effects, global action effect, four action-context interaction effects; exact integer Gaussian elimination; hypotheses only on identifiable predictions; no neural gradient, tokens or transformer",
+    "change_detection": "first observed post-warm public outcome must CONTRADICT old model before an immutable separate repair checkpoint may start; no access to hidden phase flag or world masks",
+    "source_fence": "warm and repair records are given only after public action was executed in the controlled environment; raw event SHA proves byte identity, NOT real-world authenticity; native accepted false",
+    "retention": "old warm checkpoint remains identical and accessible independently after new repair; no interference or mutation of YPC1/accepted DG1 state"
+  },
+  "controls": {
+    "strong_active": "independently coded exhaustive enumeration over all 1024 binary coefficient signatures, same 16 revealed paired intervention events as native; exact parity-equivalent fully fitted conventional symbolic control EXPECTED TIE",
+    "passive": "same 16 real outcome observations, two repeats per training context, actions selected by confounded observational policy a=x_bit0; no other action available; unidentifiable predictions abstain (scored incorrect in denominator)",
+    "random_action": "same training contexts and 16 action budget; two seeded deterministic random actions per context without forcing both arms; no hidden oracle; solve with same 10-feature theory",
+    "static_old": "no model update after reversal, frozen old checkpoint",
+    "instant_reset": "explicitly disclosed phase transition plus same 16 paired outcomes, strong oracle-changepoint upper comparator EXPECTED TIE",
+    "metric": "192 cold action-outcome queries; total correctly identified exact outcomes divided by all queries (abstain counts 0); coverage separately; old retention 384/384; contradiction 12/12; exact control tie for all candidate outputs; budget and checkpoint SHA/bytes"
+  },
+  "threshold": {
+    "development_min_success": "native active >=173/192 correct (90.1%); >=38/192 more correct than passive (19.8pp); 384/384 old retention, 12/12 contradiction trigger, zero cold-label exposure and zero accepted-native mutation",
+    "scientific_pass": "Never from self-created deterministic fixture or parity-equivalent strong control; ENGINEERING_ONLY. Real independent unfamiliar domains, authentic actions, rival conventional trained baseline and whole-process cost required before scientific promotion.",
+    "null_behavior": "Preserve full negative and any tie or lack of intervention lift; do not change seeds, world order, parameter family, split, budgets, controls, threshold or labels after seeing results."
+  },
+  "budgets": {
+    "worlds": 12,
+    "old_events_per_world": 32,
+    "new_events_per_world": 16,
+    "cold_queries_per_world": 16,
+    "retain_queries_per_world": 32,
+    "max_checkpoint_bytes": 65536,
+    "max_events_per_bundle": 32,
+    "max_context": 15,
+    "max_models_exhaustive": 1024,
+    "paid_api_calls": 0,
+    "new_runners": 0,
+    "original_science_first_uses": 0
+  },
+  "gates": {
+    "development": "Source-free focused and negative controls both Ubuntu/Windows before G29",
+    "acceptance": "Mandatory full root regression + independent G29 both OS on exact SHA/tree; no full historical 21M artifact reread because these are typed intervention observations and NKR10 already qualified source interface",
+    "artifacts": "Small CI receipt/prereg & code in repo; no new persistent owner checkpoint or scheduled tasks"
+  },
+  "authority": {
+    "engineering_isolated_branch": true,
+    "merge": false,
+    "accepted_main_mutation": false,
+    "owner_runtime_launch": false,
+    "owner_model_deployment": false,
+    "source_science_first_use": false,
+    "new_controller": false,
+    "paid_api": false,
+    "new_scheduler": false
+  }
+}
