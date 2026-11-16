@@ -6,6 +6,7 @@ Learner sees only FKP24's six public fields, never source-private info.
 """
 from __future__ import annotations
 import hashlib
+import functools
 import json
 import math
 from pathlib import Path
@@ -151,6 +152,7 @@ def synthetic_public_episode(index):
     return tuple(rows)
 
 
+@functools.lru_cache(maxsize=1)
 def sourcefree_training_receipt():
     p=json.loads((HERE/"prereg.json").read_text())
     deny=json.loads((HERE.parent/"CVH-06"/"source_first_use_NOT_AUTHORIZED.json").read_text())
