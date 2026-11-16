@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.cvh10.pinned-genuine-second-family-DTR-public-bridge-prereg.v1",
+  "status": "FROZEN_BEFORE_DTR_PUBLIC_BRIDGE_IMPLEMENTATION_AND_SOURCE_FIRST_USE",
+  "date": "2026-11-16",
+  "parent": {
+    "pr": 1176,
+    "sha": "07b213891dc6424b9ea1aa685b0ff77014f49080",
+    "tree": "67455305747139c38bab6a30f3b1676a326c3626",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "source": {
+    "repo": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "module": "causal_gym/envs/dtr.py",
+    "blob": "6af2371dce21804140ea141ccb7be14e003ba275",
+    "family": "DTRPCH / DTRSCM original 2-stage dynamic treatment regime with terminal binary Y; not MDPPCH",
+    "different_from_original_MDPPCH": true,
+    "distinct_public_observation_grammar": true
+  },
+  "scope": "Implement only a source-independent guarded 2-stage public action/result adapter plus strong negative tests and exact source code pin. No original DTRPCH construction, reset or do, no original source actor, no virgin seed allocation or lease fabrication, no model code change or reward result.",
+  "mapping": {
+    "source_reset": "original DTRPCH reset returns (binary S1, private info) -> allow only public S1; info NEVER touched",
+    "stage1_callback": "original DTRPCH.do calls callback(S1), action chosen from policy.choose(S1, empty public event history) BEFORE seeing next S2 or any Y",
+    "stage1_response": "original do returns (S2 binary, 0 reward, terminated=False,truncated=False, private info) -> PublicConsequence(S1, X1, 0, S2, False,False)",
+    "stage2_callback": "original DTRPCH.do calls callback(S1, X1, S2); verify S1,X1 equal actually witnessed first step, S2 same actually observed after; action selected by policy.choose(S2, tuple(first public event))",
+    "stage2_response": "original do returns (None, terminal binary Y, terminated=True,truncated=False, private info) -> PublicConsequence(S2,X2,Y,0,True,False); final after=0 is SENTINEL not source state, terminal marked and must never be used for next action",
+    "only_six_fields_to_model": true,
+    "source_hidden_variables_never_read": true,
+    "source_private_info_never_read": true,
+    "unobserved_alternative_reward_never_read": true,
+    "one_action_per_callback_no_uncertain_replay": true,
+    "exact_two_physically_executed_actions_per_completed_DTR_episode": true,
+    "one_original_episode_per_signed_source_lease": true
+  },
+  "controls": {
+    "existing_native": "CVH02 original tokenless earned-return policy unchanged; delayed Y credits both first and second action through existing 4-step memory",
+    "existing_fourcell": "CVH06 original fourcell public reward policy unchanged, source family comparison stronger recurrent also required",
+    "existing_recurrent": "CVH08 original 8-unit 48-epoch fully fitted recurrent public-only unchanged",
+    "existing_explorer": "CVH07 original seeded public exploration unchanged",
+    "testing": "Only local mock callback/result grammar, public-only negative tests and CVH08 64 complete 2-action public episode shape. NEVER make mock reward counts a science result."
+  },
+  "future_science": {
+    "user_standing_authorization": true,
+    "original_total_do_cap": 13312,
+    "train_original_MDP_worlds": 64,
+    "held_original_MDP_per_arm": 64,
+    "transfer_original_DTR_per_arm": 24,
+    "train_held_and_transfer_virgin_ledger_independent_owner_required": true,
+    "original_source_owner_lease": null,
+    "original_seed_ids_verified": [],
+    "original_source_runner_identified": null,
+    "actual_original_do_this_gate": 0,
+    "scientific_pass": false,
+    "unfamiliar_family_transfer_claim": false,
+    "original_DTR_penalty": "DTR has 2 physical do per episode; terminal-only reward. Do not compare raw per-action reward to original 31-action MDPPCH without family-specific baseline and reporting.",
+    "source_first_use_approved_to_run_now": false
+  },
+  "qualifications": [
+    "original public module source Git blob must match pinned expected evidence",
+    "exact binary source callbacks first(stage0 S1) and second(S1,X1,S2), no extra privileged arguments or action replay",
+    "stage0 binary S2 with reward=0 and not done; stage1 terminal None and binary Y done true",
+    "source info and reset info never accessed even if forbidden sentinel; no leaked private stage metadata",
+    "strict policy choose action before source consequence, policy observe only after exact public response",
+    "one callback per stage; reject wrong/out-of-sequence callback, repeated stage, invalid reward, invalid None placement and uncertain-effect retry",
+    "normalized six field public event accepted unchanged CVH02 and CVH08 episode validator",
+    "original DTR PCH source factory or runner NOT created; no original world reset or do executed",
+    "root 54 tests and CVH01..10 and G29 exact tree qualified both Windows/Linux; model untouched"
+  ],
+  "authority": {
+    "new_original_source_first_use_execute": false,
+    "owner_signed_lease": false,
+    "protected_cohorts": false,
+    "accepted_main_merge": false,
+    "controller_queue_scheduler": false,
+    "private_runner": false,
+    "live_other_model_integration": false,
+    "paid_api": false
+  }
+}
