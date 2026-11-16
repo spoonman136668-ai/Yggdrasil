@@ -70,6 +70,18 @@ class AAI12TTests(unittest.TestCase):
             self.assertTrue(dev.cold(arm,rows,model))
             self.assertEqual(model,dev.fit_arm(arm,rows))
 
+    def test_ternary_primitive_checkpoint_and_tamper_denial(self):
+        truth=dev.source_mask('novel',dev.NOVEL[0])
+        rows=dev.public_observations(truth,dev.paired_do_inputs(dev.FIXTURES[0],'novel',0))
+        model=dev.fit_arm('always_ternary_256',rows)
+        snapshot=dev.checkpoint('always_ternary_256',rows,model)
+        encoded=json.loads(snapshot)
+        self.assertIn('truth_table_u8',encoded['learned_primitive'])
+        self.assertEqual(dev.restore_checkpoint(snapshot),model)
+        encoded['learned_primitive']['truth_table_u8']^=1
+        damaged=json.dumps(encoded,sort_keys=True,separators=(',',':'))
+        with self.assertRaises(ValueError):dev.restore_checkpoint(damaged)
+
     def test_primary_cli_disarmed(self):
         p=subprocess.run([sys.executable,dev.__file__,'--primary'],capture_output=True,text=True)
         self.assertNotEqual(p.returncode,0)
