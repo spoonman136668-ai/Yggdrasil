@@ -222,7 +222,7 @@ def run_frozen():
         "unrelated_relation_retention_hits1_after":retained_after,
         "unknown_relation_abstains":True,
         "original_fact_checkpoint_unchanged":True,
-        "legacy_ypp_checkpoint_unchanged":True,
+        "legacy_ypc1_checkpoint_unchanged":True,
         "new_real_world_facts":0,
         "scientific_pass":False,
         "original_scientific_first_use":False,
