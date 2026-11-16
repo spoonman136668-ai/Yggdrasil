@@ -2,7 +2,7 @@
 
 Never opens valid/test member contents, original protected science or accepted
 Yggdrasil state. Historical source is already consumed; not new first-use.
-Uses existing WSP-102/103 source custody and exact frozen source hashes.
+Enforces pinned WSP-102/103 source identities without importing unmerged research modules.
 """
 from __future__ import annotations
 
@@ -49,9 +49,9 @@ def _positive_id(value, prefix):
 
 
 def parse_triple(row):
-    if not row.endswith(b"\\n") or len(row) > 10000 or b"\\x00" in row:
+    if not row.endswith(bytes((10,))) or len(row) > 10000 or bytes((0,)) in row:
         raise ValueError("NKR05_INVALID_TRIPLE_LINE")
-    pieces = row.rstrip(b"\\r\\n").split(b"\\t")
+    pieces = row.rstrip(bytes((13, 10))).split(bytes((9,)))
     if len(pieces) != 3:
         raise ValueError("NKR05_INVALID_TRIPLE_COLUMNS")
     return (_positive_id(pieces[0], b"Q"), _positive_id(pieces[1], b"P"),
@@ -111,7 +111,7 @@ def inspect_members(path):
             name = member.name
             if (len(members) >= 16 or not name or name in seen
                     or len(name) > 256 or name.startswith("/")
-                    or "\\\\" in name or "\\x00" in name
+                    or chr(92) in name or chr(0) in name
                     or any(part in ("", ".", "..") for part in name.split("/"))
                     or not (member.isdir() or member.isfile())):
                 raise ValueError("NKR05_UNSAFE_ARCHIVE_MEMBER")
