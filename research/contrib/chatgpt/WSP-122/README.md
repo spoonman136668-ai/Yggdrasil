@@ -65,3 +65,51 @@ Do not merge or promote this work while original-source custody, signed independ
 **Stop/pivot rule:** If the strongest symbolic or conventional method ties under equal resources, report the result as no unique numeric advantage. If structural expansion only memorizes supplied combinations, report bounded capability and design a stronger test, not a discovery claim.
 
 No deployment, controller change, new runner, scheduled task, paid API, merge, original first-use or live native admission is authorized by this branch.
+
+
+## Analytical structural equivalence and source-free falsification
+
+**Mechanism-wide accuracy limitation (development theorem; no original first-use).**
+
+The WSP-122 numerical "growth" mechanism and the equal-information
+`SYMBOLIC_ANF_STRONG` comparator both solve linear equations over GF(2) on
+the **same fixed 16 Boolean monomial features**. Each selects the minimum
+degree (1 through 4) for which the observed consequence equations are
+consistent. Changing which pivot bit is eliminated first changes the
+basis representation, not the linear span of the observations.
+
+For a held public feature vector `x`, either `x` lies in the span of
+the observed feature rows or it does not. If not, both must abstain. If it
+does, the observed equations uniquely determine the same output, regardless
+of row-reduction pivot convention, so both predict the identical answer.
+This argument applies to **every consistent evidence transcript** in this
+frozen monomial family, not just the XOR/conjunction engineering fixture.
+Cold replay preserves the numerical equations. Observed contradictions
+are rejected; they cannot be used as extra unequal information.
+
+`test_anf_equivalence.py` probes all evidence prefixes in two observation
+orders across monomial/complement Boolean laws and 128 deterministic
+additional four-bit truth tables. Its fabricated evidence is explicitly
+**not** the engineering source's responses and does not consume any original
+or reserved world. The theorem is broader than this finite sampling test.
+
+**Consequence:** an independent original-world test cannot prove a
+numerical held-accuracy gain over an equally informed, identically
+parameterized symbolic ANF system, unless a materially different
+mechanism, information budget or evaluation contract is introduced.
+The 16 signed-int32 slots are allocated at construction; WSP-122's
+"growth" means **increasing admissible monomial degree**, not
+inventing an unsupplied representation feature or allocating new
+persistent memory capacity. The prior 16/16 engineering tie is therefore
+mechanistic, not merely an unlucky four-world sample.
+
+This is an **accuracy differentiation NO-GO** for the current mechanism
+class, not a claim that non-gradient weight programming in general is
+impossible. No calibrated full-process speed/memory/energy comparisons
+exist for WSP-122 and it is not SCIENTIFIC_FAIL on original sealed
+cohorts. Do not use original first-use to repeat this representational
+equivalence. A meaningful successor must test **new, intervention-supported
+causal abstraction or compositional structure beyond the supplied
+monomial hypothesis family**, with a strong symbolic causal-composition
+baseline that receives the same observations and actions. No
+scientific acceptance, native admission or merge is authorized.
