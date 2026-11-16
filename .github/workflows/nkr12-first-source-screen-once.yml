@@ -25,12 +25,12 @@ jobs:
       run:
         shell: bash
     env:
-      SOURCE_SHA: b4c1e7ef3cbd93c78c6772e80ea922b4876e596f
+      SOURCE_SHA: c610e31e9284dccdfd36be059af6552bbdc8dce6
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: b4c1e7ef3cbd93c78c6772e80ea922b4876e596f
+          ref: c610e31e9284dccdfd36be059af6552bbdc8dce6
           persist-credentials: false
           fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -43,7 +43,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/NKR-12/prereg.json)" = 8f2569412055ff2c0a2c8ec16c0bfa647326687d
           test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
           test "$(git rev-parse HEAD:tests/test_native_cumulative_action_bank.py)" = 03ba6f20bfa62feeb8fcf9d2f61c0db7a1f42d5a
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/NKR-12/dev.py)" = 049c4948013ab449648b8541e8059400e4d464d9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/NKR-12/dev.py)" = bb20ac6bafb1c4e72b58657d72f3c403b2718594
           test "$(git rev-parse HEAD:yggdrasil/native_intervention_repair.py)" = 8ed291fb77bb734fbc049c947e7f9c6456b1742c
           test -z "$(git status --porcelain)"
           echo NKR12_SOURCE_AND_NATIVE_BASELINE_PINNED_PASS
