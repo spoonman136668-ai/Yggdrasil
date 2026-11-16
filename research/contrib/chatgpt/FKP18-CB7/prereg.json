@@ -1,0 +1,36 @@
+{
+  "schema": "yggdrasil.fkp18-cb7.prereg.v1",
+  "study": "FKP18-CB7-COST-SENSITIVE-ACTIVE-DECISION-VALUE",
+  "state": "FROZEN_BEFORE_SOURCE_MODEL_TEST_IMPLEMENTATION_AND_RESULTS",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_CB6": "b7e9fac479b4547e8825fed79ee0f69bcbeff7cf",
+  "relationship_to_DG1": "CB7 is a diagnostic of value-of-probe planning on a transparent simple identity family, not owner-private DG1 physical context discovery or unknown causal operator invention.",
+  "worlds": {
+    "seeds": "82600..82631, 32 public development worlds",
+    "candidate_hidden_identities": "6, exactly one true causal channel per world, source-private to model",
+    "evaluation": "For each world, evaluate six fresh independent actual action/observation trajectories (one for each possible hidden identity) and weight their net decision returns by the world prior. The model sees only its own charged probe result, not which identity source-owner chose.",
+    "source_observations": "do(channel) public yes/no causal-effect outcome, exactly deterministic and no alternative counterfactual evidence given to model; each charged probe has world-specific asymmetric price.",
+    "terminal_decision": "Stop and name a sensor without probing (risk 1-p), or charge a sensor, observe yes/no, adapt. Final correct=+1, wrong=0. Net reward terminal correctness minus all charged probe costs; no negative probe/refund.",
+    "training": "None; source public prior and cost vector are available to all policies as task context; all inference online from actual consequences. This is decision-value planning, not across-world learning or retention science.",
+    "cohort_generation": "random.Random(seed) deterministic local public priors and prices. Four family regimes (8 worlds each): skewed prior/equal costs, uniform prior/heterogeneous costs, skewed prior/heterogeneous costs, nearly uniform prior/heterogeneous costs. Priors strictly positive and normalized; prices in [0.02,0.45], no paid API.",
+    "first_use": "public synthetic development only; protected original FKP17 DEV/TRANSFER and any independent private source untouched"
+  },
+  "arms": {
+    "DIRECT_GREEDY": "Source-blind candidate with six public posterior weights. Update posterior exactly from actual yes/no; at each step compute best one-step expected gain in terminal correct choice minus probe cost and stop when no one-step improvement >0; capacity six 32bit weights, cost/readout public; no lookahead.",
+    "EXACT_BAYES": "Independent memoized exact dynamic-programming POMDP: compute optimum over STOP and all remaining paid tests for same known six hypotheses, same price vector and prior; equal information and no restricted compute budget. It is an expected-value upper bound; candidate cannot exceed its expected reward on matched source.",
+    "FIXED_CB5": "Fixed ascending sensor order until positive identification or exactly one hypothesis remains; costs charged, ignores stop value.",
+    "NO_PROBE": "Immediately choose highest prior identity without paid tests; controls for effect of freely supplied calibrated prior.",
+    "RANDOM": "Seeded random distinct sensors until first positive or one survivor; matches paid source semantics and no source-private identities."
+  },
+  "frozen_gates": {
+    "full_real_synthetic_source_action_receipts": "All 32x6 weighted worlds and five arms execute independent actual source actions, not merely derived arithmetic. No hidden identity enters policy args.",
+    "direct_vs_fixed_expected_utility": "Candidate greater by at least 0.02 net reward per world average, else NO_GO efficiency benefit",
+    "direct_vs_no_probe_expected_utility": "Candidate greater by at least 0.01, else NO_GO incremental probing benefit",
+    "direct_gap_to_bayes": "Bayes - candidate average expected net reward <= 0.02; stronger gap means NO_GO near-optimality",
+    "strong_control_superiority": "Candidate - Bayes mean >=0.01 AND paired world bootstrap lower95 >0.0; logically expected impossible under correctly implemented Bayes, always NOT SCIENTIFIC PASS if not met",
+    "safety": "Never probe same channel twice or a source-private future outcome; fail on invalid cost or corrupt public observation.",
+    "determinism": "Sufficient input values and source seeds fixed in prereg, 1000 bootstrap world resamples with 82670. Candidate and Bayes must have independent implementations; no source imports by policy.",
+    "full_evaluation": "Report per-world arm expected utility, mean paid cost, mean number of tests, hit rates, actual action counts, regret vs Bayes and seeds; do not tune after outcomes.",
+    "scope": "No native change, protected science, new workflow/PR, runner, scheduler, paid API, controller, merge or deployment. Full Linux/Windows/G29 UNVERIFIED."
+  }
+}
