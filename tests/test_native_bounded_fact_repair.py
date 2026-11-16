@@ -145,5 +145,48 @@ class BoundedFactRepairTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad.objects(1,1,limit=257)
 
+    def test_repaired_memory_drives_existing_two_hop_operator(self):
+        baseline=self.base.two_hop_candidates(1,1,2,max_intermediates=64,max_candidates=64)
+        bad=BoundedFactRepair.inject_fixture_faults(self.base,[9])
+        damaged=bad.two_hop_candidates(1,1,2,max_intermediates=64,max_candidates=64)
+        self.assertNotEqual(damaged["objects"],baseline["objects"])
+        raw=helper.witnesses(bad,[9],"path-restoration",2)
+        restored,_=bad.stage_repair(raw,digest(raw),operation_budget=2)
+        self.assertEqual(restored.two_hop_candidates(
+            1,1,2,max_intermediates=64,max_candidates=64),baseline)
+
+    def test_existing_knowledge_session_keeps_compositions_unverified(self):
+        from yggdrasil.native_knowledge_activation import NativeKnowledgeSession
+        bad=BoundedFactRepair.inject_fixture_faults(self.base,[9])
+        session=NativeKnowledgeSession(bad,{})
+        result=session.hypothesize(1,1,2,max_intermediates=64,max_candidates=64)
+        self.assertEqual(result["classification"],"UNVERIFIED_PATH_HYPOTHESES")
+        self.assertFalse(result["verified_new_knowledge"])
+        self.assertFalse(result["can_write_causal_consequence"])
+        self.assertFalse(result["native_accepted"])
+        self.assertTrue(all(not bad.has_fact(1,2,obj) for obj in result["objects"]))
+
+    def test_composition_is_read_only_and_retains_native_budget_rejections(self):
+        bad=BoundedFactRepair.inject_fixture_faults(self.base,[9])
+        before=bad.checkpoint()
+        for mids,candidates in ((0,64),(65,64),(16,257),(True,64),(16,False)):
+            with self.assertRaises(ValueError):
+                bad.two_hop_candidates(1,1,2,max_intermediates=mids,max_candidates=candidates)
+        bad.two_hop_candidates(1,1,2)
+        self.assertEqual(bad.checkpoint(),before)
+        meta=bad.manifest;meta["packed_sha256"]="0"*64
+        self.assertEqual(bad.manifest,self.base.manifest)
+
+    def test_cold_repair_preserves_path_order_and_truncation(self):
+        bad=BoundedFactRepair.inject_fixture_faults(self.base,[9])
+        raw=helper.witnesses(bad,[9],"cold-composition",2)
+        repaired,_=bad.stage_repair(raw,digest(raw),operation_budget=2)
+        cold=BoundedFactRepair(self.base,repaired.checkpoint(),repaired.checkpoint_sha256)
+        for mids,limit in ((1,1),(16,1),(16,8),(64,64)):
+            self.assertEqual(cold.two_hop_candidates(1,1,2,
+                max_intermediates=mids,max_candidates=limit),
+                self.base.two_hop_candidates(1,1,2,
+                max_intermediates=mids,max_candidates=limit))
+
 if __name__=="__main__":
     unittest.main()

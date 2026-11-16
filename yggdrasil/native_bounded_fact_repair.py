@@ -190,3 +190,16 @@ class BoundedFactRepair:
                     "frozen_parent_sha256":self._sha,"checkpoint_sha256":new._sha,
                     "scientific_pass":False,"accepted_native":False,
                     "real_world_semantic_repair_proved":False}
+
+    @property
+    def manifest(self):
+        # Compatible source identity for existing read-only factual consumers.
+        return dict(self.base.manifest)
+
+    def two_hop_candidates(self,subject,first_relation,second_relation,
+                           *,max_intermediates=16,max_candidates=64):
+        # Reuse the EXISTING bounded operator with this candidate's objects().
+        # Returned paths remain hypotheses; no new fact is installed.
+        return NativeFactualWeights.two_hop_candidates(
+            self,subject,first_relation,second_relation,
+            max_intermediates=max_intermediates,max_candidates=max_candidates)
