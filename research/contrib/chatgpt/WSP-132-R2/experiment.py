@@ -113,12 +113,12 @@ def _one_cohort(cohort,oldN,oldS):
             z=cust[arm].score_once(preds)
             measured[arm]=z
             predictions[arm]=preds
-            _sum(totals[z["kind"]][arm],z)
+            _sum(totals[z.get("kind",z.get("mode"))][arm],z)
         if predictions["R2_ACTIVE_NUMERIC"]!=predictions["R2_SAME_ACTION_SYMBOLIC"]:
             raise AssertionError("WSP132R2_EXACT_SYMBOLIC_MISMATCH")
         if n.compatible(v)!=symbolic.remaining(v):
             raise AssertionError("WSP132R2_SURVIVING_RULE_COUNT_MISMATCH")
-        kind=measured["R2_ACTIVE_NUMERIC"]["kind"]
+        kind=measured["R2_ACTIVE_NUMERIC"].get("kind",measured["R2_ACTIVE_NUMERIC"].get("mode"))
         worlds[kind]+=1
         if kind=="shear" and measured["R2_ACTIVE_NUMERIC"]["correct"]>0:
             confident_right_shear+=1
