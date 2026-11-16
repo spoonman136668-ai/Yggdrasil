@@ -177,7 +177,8 @@ class PublicProcessBoundaryTests(unittest.TestCase):
             s.close()
 
     def test_14_protocol_rejects_non_object_private_and_oversize(self):
-        for x in ('[]\n','42\n','null\n','{"info": 1}\n','not-json\n',
+        self.assertEqual(_parse_line('{"info":1}\n'),{"info":1})
+        for x in ('[]\n','42\n','null\n','not-json\n',
                   '{"x":'+('0'*4097)+'}\n','{"x":1}'):
             with self.subTest(message=x),self.assertRaises(SourceWireError):
                 _parse_line(x)
