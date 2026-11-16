@@ -1,5 +1,16 @@
 # CVH-02 — Public-policy interface for tokenless earned-return memory
 
+## Latest source-free endurance qualification — 2026-11-16
+
+**Local source-exact engineering: 24/24 PASS (11 inherited CVH-01 + 13 CVH-02); no real CausalGym actions.** Added `test_mock_retention_exploratory.py` as an **exploratory post-result engineering check**, not a new preregistered science test. The actual inherited FKP-24 `public_mechanical_episode` adapter (byte-pinned Git blob `4424eadef179996ff491911efadfbe4e07761062`) drove **240 fully completed deterministic MOCK episodes for each of two policies**: one cold-restored after every episode and one uninterrupted. Both received **3,720 earned public action observations each / 7,440 mock callbacks in total**. All public transcript SHA receipts and learned checkpoints matched after every episode, all sampled online return tables matched an independently implemented conventional batch table, private info remained inaccessible, and the largest serialized closed checkpoint was **847 bytes** (not process RSS). Linux Python 3.13.5; compile PASS; exact new test Git blob `04b72bbc0100f3a3f769d42cc649df365fc62512`.
+
+Latest evidence: `qualification_mock_retention_stress.json`; the earlier original `result.json` (9 PASS + 1 SKIP) and subsequent `qualification_exact_adapter.json` (23/23 PASS) are preserved without rewriting prior results. This extension yields **no native learning, unfamiliar causal transfer or unique algorithmic gain**; same-data conventional returns still tie.
+
+**CI classification correction:** The latest candidate push's GitHub Actions run **#43850619624** is a zero-job **proxy-preparation workflow** whose configured push branch is `repair/ckb-research-write-proxy-fanout-r3`, **not** this CVH-02 branch. It is **not** evidence that CVH-02 root tests ran or failed. No exact-final-commit root Ubuntu/Windows regression or generated G29 qualification has been executed for this branch. The upstream FKP-25 separately qualified two-OS results cannot substitute for candidate-specific final acceptance. No new workflow, PR, runner, scheduler, controller, protected first-use, merge, deployment or paid API.
+
+---
+
+
 ## Follow-up exact-source local qualification — 2026-11-16
 
 **Latest scoped result: 12/12 CVH-02 local tests PASS (zero skips), plus inherited CVH-01 11/11 local tests PASS; combined 23/23.** The original FKP-24 `native_public_mdp.py` was fetched from the inherited private GitHub repository and **matched byte-for-byte** to original Git blob `4424eadef179996ff491911efadfbe4e07761062` (6,920 bytes, SHA-256 `ea086f70c17e203c29a8ed6183841f2c0fcfa7e735768d57793b5ba9b2a975af`). The exact **original adapter function** `public_mechanical_episode` ran against deliberately fabricated mock environments twice, completing 5 observed actions per episode. The policy received no private info, retained all 10 witnessed consequences, and the inherited 700-stream/21,231-record CVH-01 offline stress also passed locally.
