@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.cb7.source-exact-provenance.v1",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/fkp18-cb7-cost-sensitive-probe-value-20261116",
+  "baseline": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "isolated_CB6_parent": "b7e9fac479b4547e8825fed79ee0f69bcbeff7cf"
+  },
+  "chronology": {
+    "protocol_first_and_before_outcomes": "8cd229e5342d72eecfb1fffea5cbd0dc2f32d973",
+    "source": "1f4eefcacc1f118e3cb02bb5b37a5c4d2ec5ff0d",
+    "candidate_strong_control": "ed00efb85d7b01c162ae652387718ef7599aec1a",
+    "full_frozen_scoring_harness": "7018c65aee9101969588b4b4267d7ef5c5c75b62",
+    "frozen_focused_tests": "7b12af769f6a0dd0b5ee115fde68bfeff8b73444",
+    "original_scored_result_archived": "ec741cec02c113c4de3199b553d116c2ff0a5804",
+    "source_or_model_or_threshold_changed_after_first_public_score": false
+  },
+  "tested_exact_source_blobs": {
+    "public_world.py": "c0b6c2ad5a874162f1963833f3261e360c57ee46",
+    "policies.py": "af0809fd61a51bdfdd504aedf611449f55b572f1",
+    "study.py": "ac4f62c0faa31c2d50ba838529b917d4b7acfc8b",
+    "test_cb7.py": "3dbc66cbda90bedcd686f37db2aa8adbdce68591"
+  },
+  "execution": {
+    "local": "CPython 3.13 Linux x86_64 unprivileged research sandbox, no paid API",
+    "commands": [
+      "cd research/contrib/chatgpt/FKP18-CB7",
+      "python -m compileall -q .",
+      "python -m unittest -q test_cb7.py",
+      "python study.py > result.original.json",
+      "python study.py > result.replay.json"
+    ],
+    "original_local_focused": "8/8 PASS before scored study",
+    "exact_github_git_blob_hash_matches_local": true,
+    "original_new_public_first_development_experiment": true,
+    "cohort": "32 world configurations seeds 82600..82631, all six source hidden identities exercised per arm",
+    "real_source_paid_actions_across_5_arms": 2159,
+    "source_scored_actual_world_trajectories": 960,
+    "original_full_raw_result_sha256": "77feea318515f636ddc1f76fe02666ffba509268716957f7f922b951ddad0a40",
+    "original_full_raw_bytes": 412907,
+    "nontiming_world_data_sha256": "2a296ecd8c48cdb1b05c2b42801d82bc6b9c85d9c8f126e1ddf8bb401bbf37d2",
+    "independent_second_full_run_same_untimed_world_records": true,
+    "exact_optimal_bayes_DPv_actual_source_rollout_max_absolute_error": 2.220446049250313e-16,
+    "raw_412kb_result_not_committed": true,
+    "raw_reproducible_from_exact_tested_code": true,
+    "compact_32world_metrics_committed_in": "result.json",
+    "full_final_linux_repo_regression": "NOT_RUN",
+    "full_final_windows_repo_regression": "NOT_RUN",
+    "G29": "NOT_RUN"
+  },
+  "statistical": {
+    "primary": "Expected net terminal reward, weighted by known source prior over six actual hidden source identities, after real charged source intervention costs.",
+    "world_count": 32,
+    "paired_bootstrap_seed": 82670,
+    "bootstrap_replicates": 1000,
+    "direct_mean_net": 0.530553,
+    "conventional_full_horizon_bayes_mean_net": 0.57383,
+    "direct_minus_bayes": -0.043277044738803214,
+    "confidence_95": [
+      -0.0681837728426315,
+      -0.02148247422671381
+    ],
+    "paired_worlds_strict_bayes_superiority": 13,
+    "paired_worlds_tie": 19,
+    "direct_vs_fixed_order": "PASS positive utility gain",
+    "direct_vs_no_probe": "PASS positive utility gain",
+    "direct_vs_best_conventional": "FAIL frozen near optimality, mean gap > .02 and 95% paired CI entirely negative",
+    "scientific_pass": false
+  },
+  "limits": {
+    "source": "new public synthetic deterministic channel effects under known exactly-one identity",
+    "no_across_world_training": true,
+    "full_horizon_bayes_is_true_expected_optimal_for_given_public_model": true,
+    "strong_model_has_same_public_prior_and_cost_info": true,
+    "source_owner_hidden_id_does_not_enter_policy": true,
+    "no_private_owner_held_worlds": true,
+    "no_fkp17_DEV_978500_978531": true,
+    "no_fkp17_TRANSFER_978600_978663": true,
+    "no_original_science_replay": true,
+    "no_scientific_first_use": true,
+    "no_native_merge_or_deployment": true,
+    "no_new_scheduler_controller_runner_workflow": true,
+    "no_paid_api": true
+  }
+}
