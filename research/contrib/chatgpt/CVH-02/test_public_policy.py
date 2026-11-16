@@ -7,7 +7,10 @@ from collections import namedtuple
 import unittest
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0,str(HERE.parent/'cvh01'/'CVH-01'))
+PARENT = HERE.parent/'CVH-01'
+if not PARENT.exists():
+    PARENT = HERE.parent/'cvh01'/'CVH-01'
+sys.path.insert(0,str(PARENT))
 from earned_memory import EarnedReturnMemory
 from strong_conventional import batch_public_returns
 from public_policy import PublicEarnedPolicy, _canonical
