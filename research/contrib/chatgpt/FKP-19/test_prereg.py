@@ -40,9 +40,9 @@ class FrozenScientificBoundaryTests(unittest.TestCase):
         self.assertIn("not SCIENTIFIC_PASS",self.p["classification_rules"]["supported"])
 
     def test_inputs_have_no_hidden_experiment_first_use(self):
-        self.assertIn("SOURCE_SAFE",self.p["frozen_design"]["loss_protocol"] if
-                      "SOURCE_SAFE" in self.p["frozen_design"]["loss_protocol"] else
-                      "SOURCE_SAFE_BOUNDARY")
+        self.assertIn("no use of held", self.p["frozen_design"]["loss_protocol"])
+        self.assertTrue(self.p["frozen_design"]["protected_dev"]["no_first_use"])
+        self.assertTrue(self.p["frozen_design"]["reserved_transfer"]["no_first_use"])
         self.assertTrue((ROOT/"public_delayed_source.py").is_file())
         self.assertTrue((ROOT/"lag_credit.py").is_file())
         self.assertTrue((ROOT/"run_known_train.py").is_file())
