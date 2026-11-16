@@ -1,0 +1,156 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-19-OBSERVED-DELAYED-INTERVENTION-CREDIT",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can an isolated native sparse non-token learner infer that reward at time t+1 depends on an earlier controlled action at time t, rather than the current distractor action, and select interventions on physically observed known-family worlds?",
+  "hypothesis": "Under balanced factorial earlier/current action interventions and two public contexts, a sparse intervention-contrast lag selector can identify the lag-one cause and earn higher source-observed reward than no-lag, context-blind, shuffled and no-update controls, but may tie fully fitted exact Bayesian and conventional interaction-regression controls.",
+  "exact_parent_sha": "362b63ed081298284ac66470e06f9ff7653c4562",
+  "predecessor_evidence": [
+    {
+      "pr": 1114,
+      "sha": "362b63ed081298284ac66470e06f9ff7653c4562",
+      "run": 43781351698,
+      "result": "FKP18 engineered context forks and event order but explicitly not causal credit; fully qualified both OS, original protected science unopened"
+    },
+    {
+      "pr": 1109,
+      "sha": "272423baac407d97791409247df05e4e98fcb7da",
+      "result": "FKP17 known-family +0.725 over informed no-update, structural condition/order NO_GO; protected science unrun"
+    },
+    {
+      "pr": 1113,
+      "result": "WSP120 separate graph-program growth; no duplication or merge"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/FKP-19/**",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "observed delayed public two-step training world",
+      "source": "new deterministic FKP19 source with externally observed actions+time-lagged reward; only TRAIN 991100..991115; every scored reward arises from actual session.apply(), not hidden counterfactual; no protected FKP17 or new held first-use",
+      "license": "original source authored for this experiment; no personal/proprietary data",
+      "sha256": "GENERATED_AND_PINN_AFTER_PREREG_BEFORE_ANY_SCORE"
+    },
+    {
+      "name": "FKP18 immutable sparse relation source",
+      "source": "spoonman136668-ai/Yggdrasil@362b63ed081298284ac66470e06f9ff7653c4562:research/contrib/chatgpt/FKP-18/temporal_trace.py",
+      "git_blob_sha": "68d7eb21792ec2f26950a32018d82c914a659c0c"
+    }
+  ],
+  "frozen_design": {
+    "world_seed_train": {
+      "start": 991100,
+      "end": 991115,
+      "count": 16
+    },
+    "protected_dev": {
+      "start": 991500,
+      "end": 991531,
+      "count": 32,
+      "no_first_use": true
+    },
+    "reserved_transfer": {
+      "start": 991600,
+      "end": 991663,
+      "count": 64,
+      "no_first_use": true
+    },
+    "states": "two publicly visible binary context values, public phase 0/1/2 via uint4 registers, hidden per-world polarity constant and hidden delayed pending earlier action; no private law identity, future reward, oracle or counterfactual returned",
+    "mechanism": "episode phase0 chooses early binary intervention; no immediate reward, phase1 independently chooses a distractor binary action; actual phase1 feedback = +1 if early_action == (context xor hidden_polarity) else -1; distractor has zero causal effect; learner must attribute delayed feedback via matched interventional contrast across all combinations",
+    "source_goal": "phase-0 action chosen BEFORE any outcome; phase-1 distractor independent and balanced; reward only after phase-1 chosen action; reward matches actual selected early action only",
+    "exploration": {
+      "episodes_per_world": 8,
+      "context": "(world_seed + episode_index) % 2",
+      "early_action": "(episode_index // 2) % 2",
+      "distractor": "(episode_index // 4) % 2",
+      "design": "exact full factorial context x early action x distractor 2x2x2, each factor combination once; same physical source actions for all arms"
+    },
+    "scoring": {
+      "episodes_per_world": 16,
+      "episode_indices": "8..23",
+      "context": "(world_seed + episode_index) % 2",
+      "early_action": "chosen online BEFORE any outcome using frozen post-exploration policy",
+      "distractor": "(episode_index // 4) % 2",
+      "weight_updates_during_scoring": false,
+      "metrics": "real summed source-public delayed rewards per world, score 16, lower is worse"
+    },
+    "arms": [
+      "ELIGIBILITY_CONTRAST",
+      "EXACT_BAYES_CONTEXT",
+      "FULLY_FITTED_INTERACTION_LOGISTIC",
+      "CURRENT_ACTION_ONLY",
+      "CONTEXT_BLIND",
+      "EARLY_ACTION_SHUFFLED",
+      "NO_UPDATE"
+    ],
+    "candidate": "sparse learned contextual contrast of delayed reward attributable to previous actual action vs current distractor, allocation only after paired witnessed interventions, uses existing FKP18 trace for two physical public observations each episode; no dense predefined causal graph grammar or private labels",
+    "logistic_baseline": {
+      "features": "[bias,ctxsign,earlysign,ctxsign*earlysign,distractorsign]",
+      "loss": "binary cross entropy on 8 independently visible exploration episodes; no hidden law or target leakage",
+      "deterministic_initialization": "all weights zero",
+      "learning_rate": 0.5,
+      "epochs_max": 1024,
+      "training_loss_must_be_at_most": 0.05,
+      "convergence_failure": "INVALID not scientific negative",
+      "inference": "choose early action with higher mean learned expected reward averaged over two distractor actions"
+    },
+    "exact_bayes": "independently coded Beta(1,1) public rewarded-success posterior per context x early action; same exploration facts and actions; ties candidate count as NO distinct advantage",
+    "time_and_capacity": "all learners same source observations and scoring action count, measure per-arm exploration fit time/scoring inference time, candidate logical bytes <=65536, complete process CPU+wall and persist audit receipts",
+    "complete_family_evidence": "16 TRAIN-family worlds; no protective first-use; descriptive paired real source reward; no post-result retune; 10000 world bootstrap resamples seed 1919 with strongest matched informed control reselected each replicate, but NOT scientific CI",
+    "source_kind": "public deterministic inspectable same-repo original toy source; not independently withheld nor cryptographically isolated",
+    "loss_protocol": "no use of held original FKP17 DEV/TRANSFER, no FKP19 reserved DEV/TRANSFER; no editing FKP18 or WSP120; no native admission",
+    "deterministic_expected": true,
+    "platform_qualification": "Python3.11 Ubuntu 24.04, Python3.12 Windows 2022, test FKP19, inherited root 54/54 and G29; source-only G29 derived child",
+    "no_paid_api": true,
+    "no_new_schedule": true
+  },
+  "controls": [
+    "EXACT_BAYES_CONTEXT",
+    "FULLY_FITTED_INTERACTION_LOGISTIC",
+    "CURRENT_ACTION_ONLY",
+    "CONTEXT_BLIND",
+    "EARLY_ACTION_SHUFFLED",
+    "NO_UPDATE"
+  ],
+  "metrics": [
+    "physical rewarded episodes and action order per learner",
+    "chosen-delayed public earned return mean across 16 worlds",
+    "lag-one vs zero-lag intervention contrast and distribution of selected lag",
+    "exact Bayes and fully fit logistic matching and training loss receipts",
+    "cold source-only checkpoint hash preservation",
+    "distinct chosen-action independent source transcript hash",
+    "per-arm logical capacity and whole-process wall/CPU",
+    "false outcome and private oracle denial"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_ONLY_MECHANISM_SIGNAL if ELIGIBILITY_CONTRAST outperforms CURRENT_ACTION_ONLY, CONTEXT_BLIND, EARLY_ACTION_SHUFFLED, NO_UPDATE on paired 16 public TRAIN worlds and actually identifies lag one after balanced interventions. This is not SCIENTIFIC_PASS and not novel unseen-law proof.",
+    "mixed": "Mechanism learns actual delayed effect but ties/loses exact Bayes or fully fitted logistic; report tied or inferior strongest conventional; preserve negative evidence.",
+    "negative": "Learner fails to assign earlier causal action or fails source-public reward/contrast against simple controls at matched actions; do not reinterpret as infrastructure failure.",
+    "invalid": "Source data/action/fairness leak, dev/transfer opened, incomplete model convergence, missing strong arm, changed prereg, missing held denials, unverified source SHA, test/CI failure, nonfinite reward or bad cold replay."
+  },
+  "prohibited_after_primary_run": [
+    "policy or source or thresholds altered after outcome",
+    "repeat consumed diagnostic worlds to select winning variant",
+    "opening original FKP17 or new FKP19 held without owner authorization",
+    "claim unseen causal-law scientific pass from inspectable source",
+    "merge or native integration",
+    "modify WSP120 or FKP18",
+    "new controller or scheduled task",
+    "paid API"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_first_use": false
+  },
+  "preregistration_note": "First sole commit before FKP19 source, policies, tests or outcomes. All TRAIN seeds and source rules fixed; no original protected science first-use."
+}
