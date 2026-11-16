@@ -48,6 +48,10 @@ class AuthenticConsumedCausalMDPTests(unittest.TestCase):
                                       if k!="metric_receipt_sha256"}),
                          r["metric_receipt_sha256"])
         self.assertEqual(x.run_retrospective(),r)
+        # Persistent repo-side evidence must be reproduced exactly, not
+        # merely summarized in a PR or an expiring GitHub artifact.
+        committed=json.loads((x.HERE/"result.json").read_text(encoding="utf-8"))
+        self.assertEqual(committed,r)
 
     def test_missing_or_mutated_original_public_source_fails_closed(self):
         original=json.loads((x.HERE/"consumed_public_fixture.json").read_text())
