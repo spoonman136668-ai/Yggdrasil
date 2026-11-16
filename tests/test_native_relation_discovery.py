@@ -30,8 +30,8 @@ class NativeRelationDiscoveryTests(unittest.TestCase):
     def test_frozen_induction_feedback_transfer_and_symbolic_control(self):
         result = study.run_frozen()
         self.assertEqual(result["frozen_rule_counts"],
-                         [[15, 11, 12, 24], [15, 13, 14, 8],
-                          [16, 11, 12, 8], [16, 13, 14, 24]])
+                         [(15, 11, 12, 24), (15, 13, 14, 8),
+                          (16, 11, 12, 8), (16, 13, 14, 24)])
         self.assertEqual(result["feedback_labels_revealed"], 8)
         self.assertEqual(result["protected_cold_queries"], 12)
         self.assertEqual(result["cold_static_hits1"], 3)
