@@ -111,6 +111,15 @@ class ReadonlyExactSourceNativeConstructor(unittest.TestCase):
         self.assertNotIn("995200",body)
         self.assertNotIn("996500",body)
 
+    def test_receipt_original_paths_are_cross_platform_canonical(self):
+        from pathlib import PurePosixPath, PureWindowsPath
+        text=Path(p.__file__).read_text("utf-8")
+        self.assertIn('"original_core_entrypoint":paths[0].relative_to(root).as_posix()',text)
+        self.assertIn('"original_mdp_entrypoint":paths[1].relative_to(root).as_posix()',text)
+        for name in ("causal_gym/core/__init__.py","causal_gym/envs/mdp.py"):
+            self.assertEqual(PureWindowsPath(name).as_posix(),PurePosixPath(name).as_posix())
+            self.assertEqual(PureWindowsPath(name.replace("/","\\")).as_posix(),name)
+
     def test_no_physical_action_or_privileged_oracle_called_in_probe(self):
         node=ast.parse(Path(p.__file__).read_text("utf-8"))
         forbidden={"reset","do","see","step","ctf_do","_true_consequence"}
