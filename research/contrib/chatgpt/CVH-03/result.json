@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.cvh03.pinned-mdp-exact-rational-result.v1",
+  "classification": "POSTINSPECTION_STATIC_REWARD_CEILING__NO_NATIVE_SCIENTIFIC_PASS",
+  "original_source": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "file": "causal_gym/envs/mdp.py",
+    "verified_git_blob": "6264ec5450754c009e98c3e85f6d5927ece0a9ab",
+    "probabilities": "u1=9/10, u2=1/10, u3=1/10; all independent"
+  },
+  "source_law": {
+    "reward": "((s!=a)!=u1)!=u3",
+    "next_state": "(u1!=u2)!=(s|a)",
+    "max_step": 30,
+    "truncation": "num_step>max_step",
+    "actual_actions_per_full_episode": 31
+  },
+  "method": "Eight exogenous combinations enumerated exactly with fractions; four joint p(reward,next_state|state,action) distributions independently evaluated; Bellman finite-horizon all 31 horizons (2 states, 2 actions), no original source imports/resets/steps.",
+  "per_state_action": {
+    "s0_a0": {
+      "p_reward_one": "41/50",
+      "p_next_state_one": "41/50",
+      "joint": {
+        "(0,0)": "9/100",
+        "(0,1)": "9/100",
+        "(1,0)": "9/100",
+        "(1,1)": "73/100"
+      }
+    },
+    "s0_a1": {
+      "p_reward_one": "9/50",
+      "p_next_state_one": "9/50",
+      "joint": {
+        "(0,0)": "73/100",
+        "(0,1)": "9/100",
+        "(1,0)": "9/100",
+        "(1,1)": "9/100"
+      }
+    },
+    "s1_a0": {
+      "p_reward_one": "9/50",
+      "p_next_state_one": "9/50",
+      "joint": {
+        "(0,0)": "73/100",
+        "(0,1)": "9/100",
+        "(1,0)": "9/100",
+        "(1,1)": "9/100"
+      }
+    },
+    "s1_a1": {
+      "p_reward_one": "41/50",
+      "p_next_state_one": "9/50",
+      "joint": {
+        "(0,0)": "9/100",
+        "(0,1)": "9/100",
+        "(1,0)": "73/100",
+        "(1,1)": "9/100"
+      }
+    }
+  },
+  "expected_earnings": {
+    "state_match_per_step": "41/50",
+    "opposite_per_step": "9/50",
+    "uniform_random_per_step": "1/2",
+    "state_match_full_31": "1271/50",
+    "opposite_full_31": "279/50",
+    "uniform_random_full_31": "31/2",
+    "optimality_gap_Qmatch_minus_Qopposite_all_states_all_horizons": "16/25"
+  },
+  "proof": "The one-step upper bound E[r|s,a]<=41/50 applies to any history-conditioned policy. A policy choosing a=s achieves that bound at every reachable state and time; therefore finite-horizon V_h(0)=V_h(1)=h*41/50 by induction, including h=31. Independent full joint-kernel Bellman DP exactly confirms the same for all horizons.",
+  "negative_exogenous_drift": "Changing u1 to Bernoulli(1/2) changes match-state mean reward to 1/2 and invalidates original 41/50 expected reward; no hard-coded pass on changed source.",
+  "engineering": {
+    "Linux_CPython": "3.13",
+    "local_focused": "10/10 PASS",
+    "local_syntax_compile": "PASS",
+    "deterministic_original_result_sha256": "2a97eaca455e7a86878ffe54b6f6add7916b510081cd29e7741ea83aa7fb8808",
+    "exact_source_git_blobs": {
+      "source_law.py": "380f0459154286e57897bd582741a412ea7d840b",
+      "test_source_law.py": "98f7fcbbb1c8004a8a9f8211a107cee7683e8e47"
+    },
+    "full_repo_Linux_Windows_G29": "NOT_RUN"
+  },
+  "science": {
+    "source_first_use": false,
+    "source_original_actions": 0,
+    "protected_seeds_opened": 0,
+    "trained_model_comparison": "NOT_RUN",
+    "novel_causal_knowledge_discovery": "NOT_DEMONSTRATED",
+    "generalization": "NOT_TESTED",
+    "scientific_pass": false
+  },
+  "decision": "Original pinned native CausalGym MDP can test genuine action observations and reward retention, but CANNOT distinguish added long-horizon planning value over fully informed exact one-step state-match control. Do not spend held source first-use expecting a planning advantage. Seek a different independently owned environment with delayed controllable consequences and nontrivial long-horizon optimal policy."
+}
