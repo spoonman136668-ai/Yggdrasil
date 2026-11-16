@@ -1,0 +1,103 @@
+{
+  "schema": "wsp130.structural-single-interaction-repair.prereg.v1",
+  "id": "WSP-130",
+  "status": "FROZEN_BEFORE_NEW_SOURCE_OR_RESULTS",
+  "lineage": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "parent_pr": 1159,
+    "parent_sha": "e56dbf5d233ba698ad3b10dddab8cc127ed8fffc",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "previous_negative": "WSP129 off-grammar 1344/7424 confident wrong, 14/32 rejection; exact symbolic tie"
+  },
+  "question": "Can direct non-gradient weight updates build the specific support of a previously absent 4- or 5-way Boolean conjunction from intervention evidence, preserve already learned lower-order relationships, and refuse incompatible two-interaction structures instead of guessing? Is same-information inference better than independent exhaustive symbolic search?",
+  "assumption": "The lower-order GF(2) ANF of degree<=3 over eight public Boolean input bits is supplied. Candidate may induce AT MOST ONE new conjunction of degree 4 or 5, mask unknown and not enumerated in direct learner. A strong independent symbolic control may exhaustively enumerate all 126 degree 4/5 supports. Neither learns operators outside this hypothesis class, invents a new primitive, or proves general intelligence.",
+  "source": {
+    "type": "inspectable deterministic public synthetic engineering DEVELOPMENT only; no scientific first-use",
+    "inputs": "8 bit x=(four action bits, four context bits), each of 256 public typed x=0..255 with 256 random opaque subject IDs",
+    "low_degree": "source draws coefficients for all 93 squarefree ANF monomials with popcount 0..3 from random.Random(sha256('WSP130|LAW|'+law_id)) with Bernoulli p=0.25 per coefficient, fixed one low-degree nonzero and both intercept classes appear",
+    "cohorts": "128 source-law IDs 0..127; source-only deterministically shuffle 32 unchanged,32 one 4-way high conjunction,32 one 5-way conjunction,32 distinct two-high-conjunction XOR (off-family), and 16 additional source-only indistinguishability witnesses, 144 total",
+    "new_high": "For single-term worlds add parity (Boolean AND) of a hidden 8-bit mask of Hamming weight exactly4 or5; source generator seeded via SHA256 and chooses mask source-only, no learner uses true mask.",
+    "two_high": "For off-family use XOR of two distinct degree4/5 mask conjunctions. At all-ones residual cancels to0 but at least one single-bit-deletion residual is1, forcing candidate rejection. Source draws two distinct supports.",
+    "stealth": "16 extra worlds with unmodified low-degree polynomial except for a single point-flip at one held input not selected by the preregistered 128-action unchanged-world policy. The source-only evaluator constructs that target from public deterministic probe order BEFORE the run; the learner never sees its identity or label. This adversarial witness intentionally demonstrates no universal safety guarantee from incomplete observations.",
+    "ids": "Seed 154000..154127 for shuffled main worlds with law ID as seed-154000 (0..127). Seed 154500..154515 for stealth law IDs 128..143. Transfer seed 155000..155031 for first 16 law IDs of each single 4-way and 5-way cohort, sorted, with new opaque IDs and zero source consequences.",
+    "seed_rng": "For every world 256 unique opaque IDs sampled by random.Random(seed) from seed*1000..seed*1000+999; trial records shuffled; ground-truth mode, target and masks remain only in separate source scorer.",
+    "first_use_denied": "WSP117-WSP129 protected/original seeds and all unregistered source seeds denied before RNG/source creation; explicit deny 131000..131063,131800..131863,135800..135863,138800..138863,148800..148863,150800..150863,154800..154863,155800..155863. New original 156000..156063 forbidden."
+  },
+  "budget": {
+    "main_worlds": 128,
+    "stealth_worlds": 16,
+    "all_worlds": 144,
+    "paid_source_actions_per_world_per_arm": 128,
+    "total_paid_source_actions_per_arm": 18432,
+    "held_per_world": 128,
+    "one_high_worlds": 64,
+    "one_high_held_per_arm": 8192,
+    "unchanged_worlds": 32,
+    "unchanged_held_per_arm": 4096,
+    "two_high_worlds": 32,
+    "two_high_held_per_arm": 4096,
+    "stealth_held_per_arm": 2048,
+    "relabel_worlds": 32,
+    "relabel_predictions_per_arm": 8192,
+    "relabel_source_actions": 0,
+    "each_source_action_distinct": true,
+    "score_once": true
+  },
+  "policy": {
+    "phase_1": "First 93 inputs in deterministic order (Hamming weight ascending 0..3, integer ascending). Each observation writes one direct numerical GF2 lower ANF coefficient via triangular Möbius recursion using previously written lower coefficients, no task-specific coefficient/mask source leak.",
+    "phase_2": "Next x=255 then eight x=(255 XOR 1<<i) in i=0..7 order, 9 paid probes. After 102 probes, compare observed consequences against full learned cubic ANF. If residual at 255=1, infer mask from zero residual at each bit-deletion and accept only if size4 or5 and each audit residual exactly matches that mask. If residual at 255=0 and all eight deletions have residual0, hypothesize unchanged. Otherwise enter UNSUPPORTED and abstain on all withheld effects. Never use future labels.",
+    "phase_3_active": "After first 102, choose 26 other unqueried inputs. When a valid nonzero mask was induced, prioritize inputs containing that mask (descending Hamming weight, then integer ascending), then fill from a source-blind SHA256 sorted order for other remaining inputs. If status NONE or UNSUPPORTED, all 26 from public SHA256 sorted order. On contradiction invalidate and abstain. No outcome-conditioned stopping or extra paid action.",
+    "phase_3_fixed": "For FIXED_EXACT_SYMBOLIC, use SAME first 102 then 26 never-before-used public SHA256 sorted inputs regardless of observations. This is separately counted and a source-blind fixed comparator.",
+    "ordering_hash": "Sort available x by sha256('WSP130|AUDIT|'+decimal x) then x integer (no seed, source label or hidden mask).",
+    "inference": "On valid model predict lower-degree ANF XOR indicated induced high conjunction (if any); on UNSUPPORTED abstain; observed effects never count as withheld. Preserve per-law prior coefficients separately from repair mask.",
+    "source_views": "No source class names to learner. Only public View.seed, law_id, cohort, x↔opaque ID mapping and legal action set."
+  },
+  "arms": [
+    "DIRECT_NUMERIC: direct 93 lower coefficients plus dynamically induced 8-bit high interaction support, observed events, deterministic digest and validation",
+    "SAME_ACTION_EXACT_SYMBOLIC: separately implemented complete lower-degree Möbius and 126 masks plus no-high enumeration on SAME 128 source interventions",
+    "FIXED_EXACT_SYMBOLIC: independent source-blind 26 fixed validation probes after 102 common probes, equal 128 source interventions",
+    "SAFE_ABORT: receives identical DIRECT source transcript, learns lower ANF but abstains on any high contradiction, otherwise predicts lower baseline",
+    "STALE_PRIOR: lower ANF learned but never updates high interaction, same evidence and source budget",
+    "NO_UPDATE: abstains on every withheld consequence, receives same source calls"
+  ],
+  "primary": {
+    "positive": "Across the 64 single-hidden-high worlds, >=95% of 8192 held predictions correct, ZERO confident wrong, >=60/64 exact previously unseen high-support masks recovered (source-only evaluator comparison), greater than SAFE_ABORT by at least25pp with equal actions. All 32 unchanged worlds predict >=95% of 4096 held correct with zero wrong, zero induced false high masks.",
+    "negative": "All 32 two-high off-grammar worlds have zero confident wrong and >=30/32 enter UNSUPPORTED, with strong symbolic same-action prediction equivalence. Zero-source transfers 8192/8192 correct with no training and all learned worlds retained after later worlds. No first-use consumed.",
+    "adversarial": "All 16 source-only stealth worlds are explicitly unidentifiable because all 128 probed effects equal unchanged prior and at least one withheld bit differs. Record confident-wrong and number of undetected stealth worlds. STEALTH detection must NOT be claimed or retrofitted; count >=1 wrong as mandatory evidence universal-safety is NOT proven.",
+    "fair_controls": "Direct and same-action exact symbolic must agree on every decision including positives/negative/stealth and relabels. Fixed strong symbolic must be separately scored with equal actions, no weak or mismatched info comparator. Same-action symbolic TIE cannot be called a unique numeric advance.",
+    "stronger_science": "Unqualified without matched fully trained conventional baseline, never-before-seen independently sourced first-use, independent owner acceptance, matched whole-process data/compute/cost, validated real action-consequence learning, transfer and new-family robustness."
+  },
+  "metrics": [
+    "correct/abstain/confident-wrong per arm and per condition",
+    "exact newly constructed mask support vs source-only evaluator; abstain on unknown grammar",
+    "all arms exactly 128 source calls/world, 0 calls on relabel",
+    "cold replay for 144 worlds after all learning and bitwise tamper negative",
+    "same-action numeric-symbolic decision parity; fixed-symbolic equal-cost control",
+    "source and score SHA256; wall/processCPU/tracemalloc peak, separate solver state/ledger bytes",
+    "10k paired bootstrap with seed 130 on positive direct gain versus SAFE_ABORT",
+    "impossibility demonstration of stealth one-bit withheld differences at same observed effects; not a claimed safety pass"
+  ],
+  "decision": {
+    "development_supported": "All positive and two-high negative prereg gates pass with sound custody and final engineering PASS; label CONDITIONAL_STRUCTURAL_INDUCTION_DEV_ONLY, clearly disclose identifiability limit and symbolic tie.",
+    "development_mixed": "Positive induction passes but negative gates fail, or numeric tied symbolic (which is expected): report MIXED_WITHIN_SUPPLIED_ANF_FAMILY even if new support constructed. Explicitly report stealth wrong as limitation not a conditional family failure.",
+    "development_no_go": "Positive mask induction or any mandatory positive/negative (excluding deliberately unidentifiable stealth universal-safety stress) threshold fails on valid source; preserve first outcome without post-score tuning.",
+    "invalid": "Source leaks, premature score, prereg drift, unequal actions, output labels ingested by learner, missing strong exact comparator or full exact-SHA regression, replay/custody failure. Engineering test bugs distinct from scientific negatives.",
+    "science": "SCIENTIFIC_PASS unavailable from source-safe synthetic development; native admission, original first-use, controllers/runners/schedulers, paid APIs, merges and accepted-ref modifications not authorized."
+  },
+  "governance": {
+    "first_commit_only_prereg": true,
+    "allowed_paths": [
+      "research/contrib/chatgpt/WSP-130/**",
+      ".github/workflows/wsp130-source-safe.yml",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice",
+      ".ice/code-atlas.json"
+    ],
+    "original_science_authorized": false,
+    "merge_authorized": false,
+    "accepted_main_edit": false,
+    "native_install_authorized": false,
+    "external_service_or_paid_api": false,
+    "no_new_scheduler_controller_runner": true
+  }
+}
