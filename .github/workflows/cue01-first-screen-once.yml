@@ -1,0 +1,87 @@
+name: CUE-01 exact-source public-cue retrieval development screen
+on:
+  push:
+    branches: [qualification/cue01-frozen-development-once-20261116]
+    paths: [.github/workflows/cue01-first-screen-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: cue01-source-only-first-20261116
+  cancel-in-progress: false
+jobs:
+  source-safe:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'CUE-01 first frozen source-only screen'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_SHA: e34f8d30876b53bdbe7dd5fe5f9d37d95edf8a9c
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Read-only exact source checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: e34f8d30876b53bdbe7dd5fe5f9d37d95edf8a9c
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Use pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify first-prereg and frozen source identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-01/prereg.json)" = 142fd349ef9a7f19456056a175c5485119aea8ca
+          test "$(git rev-parse HEAD:yggdrasil/native_action_cue_router.py)" = 0be7452fce87cace6a9348a39120053b5427ceb1
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-01/dev.py)" = 2dc18286b54d6db07c0ad0d1b551d183862059e8
+          test "$(git rev-parse HEAD:tests/test_native_action_cue_router.py)" = de0d9eb3bce72bdaacc14c20c23e6dd5259aec05
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
+          test -z "$(git status --porcelain)"
+          echo CUE01_SOURCE_PRE_SCORE_PIN_PASS
+      - name: Focused source-blind routing, negative and exact-control tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_action_cue_router.py -v
+          test -z "$(git status --porcelain)"
+      - name: One preregistered previously exposed source-only screen
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CUE-01/dev.py --source-dev > "$RUNNER_TEMP/cue01-first.txt"
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          line=(Path(os.environ["RUNNER_TEMP"])/"cue01-first.txt").read_text().strip()
+          assert line.startswith("CUE01_DEV="),line[:200]
+          r=json.loads(line.removeprefix("CUE01_DEV="))
+          print("CUE01_DEVELOPMENT_CLASSIFICATION="+r["classification"])
+          print("CUE01_KNOWN_ACTIVE="+json.dumps(r["policies"]["active"],sort_keys=True))
+          print("CUE01_KNOWN_STRONG="+json.dumps(r["policies"]["strong_symbolic"],sort_keys=True))
+          print("CUE01_NEGATIVE="+json.dumps(r["out_of_family_negative"],sort_keys=True))
+          print("CUE01_TRACE_SHA256="+r["trace_sha256"])
+          print("CUE01_BANK_SHA256="+r["cold_native_bank_sha256"])
+          print("CUE01_FROZEN_GATES="+json.dumps(r["frozen_gates"],sort_keys=True))
+          assert r["source_realness"]=="PREVIOUSLY_EXPOSED_SYNTHETIC_FIXTURE_ONLY"
+          assert r["scientific_first_use_consumed"]==0
+          assert r["accepted_native_changed"] is False
+          assert r["native_memory_unchanged"] is True
+          assert r["classification"]=="ENGINEERING_DEV_PASS_SCIENCE_UNVERIFIED"
+          PY
+      - name: Protected primary first-use stays disabled, source immutable
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test -z "$(git status --porcelain)"
+          if python -B research/contrib/chatgpt/CUE-01/dev.py --primary >/dev/null 2>&1; then exit 1; fi
+          echo CUE01_FIRSTUSE_FENCE_AND_CLEAN_SOURCE_PASS
