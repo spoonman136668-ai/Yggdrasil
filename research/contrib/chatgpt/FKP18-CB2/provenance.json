@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.external-research-provenance.v1",
+  "experiment": "FKP18-CB2-FOUR-LAW-INTERFERENCE-REPAIR",
+  "project": "Yggdrasil",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/fkp18-cb2-interference-repair-20261115",
+  "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "base_CB1": "84503c0b7a1e005bc05770d22a831772adce62fd",
+  "parallel_qualified_FKP18_PR_1114": "362b63ed081298284ac66470e06f9ff7653c4562 (not changed)",
+  "chronology": {
+    "preregister_first_commit": "196bab5c23183f911503037fe35779f222d9af37",
+    "implementation_commit": "80b30bd75335f25366b8115c0a9a7dc15d19989a",
+    "public_source_harness_commit": "6cf46326b36e5433d5ac34216e8d80790685bb61",
+    "focused_tests_commit": "4bfeafc0411b828aa231e7e2dc5aaa8106017a2a",
+    "result_commit": "d287aa9e193b8e3e03766541e291a85365717502",
+    "method_code_changed_after_initial_outcome": false,
+    "source_harness_changed_after_initial_outcome": "Only to add already-preregistered wrong-current-mode negative and timing-independent receipt; source world laws, action schedule, candidate, conventional strong control, and frozen thresholds unchanged",
+    "full_prereg_frozen_before_first_original_public_diagnostic": true
+  },
+  "exact_git_source_and_tests": {
+    "research/contrib/chatgpt/FKP18-CB2/context_bank.py": {
+      "git_blob": "91ed49d9d05979941d4619cfa9636782c85eaf1e",
+      "local_sha256": "0e5ca6c8bc711b28fc87ffd4d3a53ab8eca92606e2b607cb4b33243ff114171e",
+      "bytes": 8511
+    },
+    "research/contrib/chatgpt/FKP18-CB2/study.py": {
+      "git_blob": "83f35a384b2a2945f58f2dbbeabeadf8c2fc0e25",
+      "local_sha256": "28052d4acc7eaf252491a6f47b7b592cbc9b3d076362651e4525cde80c175c6a",
+      "bytes": 8432
+    },
+    "research/contrib/chatgpt/FKP18-CB2/test_cb2.py": {
+      "git_blob": "5911a38f13b432f831a65b8c5ee14d70c092f1ab",
+      "local_sha256": "8275fcda027e33a5ecaa4df567832984c7bd0c3bf08503a48c4066da0904edd2",
+      "bytes": 6417
+    },
+    "research/contrib/chatgpt/FKP18-CB1/binding.py": {
+      "git_blob": "a2c2c64ada23d78ca1872725c31798a57b4f634a",
+      "source_sha256": "17e808b06417e55c7a260e83ae23c88ff29c55cdcd6a2be2554fb1ef37c6e9da"
+    },
+    "research/contrib/chatgpt/FKP18-CB1/strong_control.py": {
+      "git_blob": "f9feb0491b0d9a67a3daf884ae347d57f222aa41",
+      "source_sha256": "962c2c3df9176762b695004b1b02d84395641469c5cebaf0b491d33763845c68"
+    }
+  },
+  "environment": {
+    "python": "3.13.5",
+    "host": "isolated Linux x86_64 research container, standard library only, no GPU",
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "source_mode": "local byte-identical GitHub CB1 binding and conventional strong controls",
+    "execution_commands": [
+      "python -m unittest -q test_cb2.py",
+      "python -m compileall -q binding.py strong_control.py context_bank.py study.py test_cb2.py",
+      "python study.py"
+    ],
+    "focused_tests": "PASS 8/8",
+    "syntax": "PASS",
+    "two_repeated_independent_study_runs": "NON-TIMING RESULT IDENTICAL",
+    "replay_stable_sha256": "f4290f7b4ba35b66e01fe06bfd4095d88225e27bc5b47f123cbab6d88b6d5f47",
+    "local_original_result_bytes_sha256": "1634a86b86b9885d4e7bf01ff045477afadd751159d657ce832f579ef8d1574f"
+  },
+  "source_budget": {
+    "synthetic_public_initial_steps": 515,
+    "synthetic_public_post_change_steps": 600,
+    "actual_delayed_credited_observations": 1109,
+    "initial_train_modes": 4,
+    "initial_credits_per_mode": 128,
+    "revision_trigger": "8 consecutive actual public contradictory earned examples in mode1",
+    "shadow_fit_budget": 128,
+    "validation_queries_held_from_training_but_source_public": 512,
+    "validation_queries_after_change_source_public": 512,
+    "private_evaluator_first_use": false,
+    "protected_FKP17_DEV": "unopened",
+    "protected_FKP17_TRANSFER": "unopened"
+  },
+  "qualification": {
+    "local_exact_source_focused": "PASS",
+    "independent_full_ubuntu_repo_regression": "UNVERIFIED",
+    "independent_full_windows_repo_regression": "UNVERIFIED",
+    "G29_source_atlas_generated": "UNVERIFIED",
+    "independent_scientific_qualification": "NOT_RUN",
+    "new_GitHub_workflows": 0,
+    "new_prs": 0,
+    "native_accepted_changes": 0,
+    "deployments": 0
+  },
+  "interpretation": {
+    "engineering": "four independent context-bound relations retained and one selectively replaced after public contradiction; byte-exact cold replay of sealed version",
+    "strong_baseline": "independently fitted conventional exact 703-pair comparator reusing same public gate and same trigger, identical predictions",
+    "novel_operator_invention": false,
+    "out_of_grammar_transfer": false,
+    "full_eight_action_policy": false,
+    "whole_process_efficiency_gain": "NOT_ESTABLISHED",
+    "true_closed_loop_environment_returns": "NOT_EVALUATED; synthetic actual action-conditioned reward stream then held read-only contextual queries",
+    "cold_interrupted_inflight_repair": "NOT_EVALUATED; snapshot intentionally rejects active shadow repair",
+    "scientific_pass": false
+  }
+}
