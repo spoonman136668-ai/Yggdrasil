@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.aai12w.source-execution-provenance.v1",
+  "experiment": "AAI-12W",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/aai12w-delayed-causal-roles-20261116",
+  "prereg_first_sha": "5a929c491142d7b06ec4fa68278af0edb217c334",
+  "pre_result_source_test_sha": "eb10398f232591e6c9778f303b3a5974e3a9a53c",
+  "base_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+  "main_sha_at_check": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_git_blobs": {
+    "world.py": "9c1c6096023255bec1a54a4f70cbdbdb192a61bc",
+    "learner.py": "e8b0c9c2bb5349377993454179084840222f3e49",
+    "dev.py": "6a29187b8c46ec43171e9dd2119a9a82319400aa",
+    "test_dev.py": "c3582526c5bc69132d9dc922ca4f13be34017833"
+  },
+  "source_sha256": {
+    "world.py": "3cb571ec3e69fa5252ef68d3f29c9b603bd5ddd38758e2518ebdbf6d834f868b",
+    "learner.py": "bdb82cd5cfec8d43fc6a2d8e245d73b09408edb6a1754dbcb90ca6abb7bf1240",
+    "dev.py": "15ca7855c5fc9f0ea3bf5fddadc1ff691b24abb66f32094a23bed0aa2a8d5463",
+    "test_dev.py": "5684824bb2f0bea94f8353ec7845d5bb95a4844552caa2c4d702f12688031496"
+  },
+  "host": "Temporary isolated x86_64 Linux glibc2.41",
+  "runtime": "CPython 3.13.5",
+  "stdlib_only": true,
+  "scientific_first_use": 0,
+  "official_runner": false,
+  "remote_ci_not_qualified": true,
+  "executions": [
+    {
+      "cmd": "python -m unittest -v test_dev.py",
+      "result": "10/10 PASS",
+      "before_first_source_score": true
+    },
+    {
+      "cmd": "python dev.py --source-dev",
+      "result": "DEV_NO_GO_NO_SCIENCE",
+      "trace_sha256": "37c9dddef17d2cefaab79be67af1d4cf0d6491da74e25eef24f4a27b0b875764"
+    },
+    {
+      "cmd": "python dev.py --source-dev",
+      "result": "DEV_NO_GO_NO_SCIENCE",
+      "trace_sha256": "37c9dddef17d2cefaab79be67af1d4cf0d6491da74e25eef24f4a27b0b875764"
+    },
+    {
+      "cmd": "python -m unittest -q test_dev.py",
+      "result": "10/10 PASS"
+    }
+  ],
+  "notes": "The full experiment was run only after preregistration, source implementation, and local focused tests had been committed and Git blob readback verified byte-for-byte. No after-score source changes occurred. Measured wall durations are environment-specific and not native integrated whole-workflow timings.",
+  "original_science_claim": false
+}
