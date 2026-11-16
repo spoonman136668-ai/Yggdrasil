@@ -37,7 +37,7 @@ class FrozenExperimentContract(unittest.TestCase):
         self.assertEqual(guarded["fkp17_transfer"],"978600..978663")
         rules=self.contract["classification_rules"]
         self.assertIn("No SCIENTIFIC_PASS",rules["supported"])
-        self.assertTrue(any("post-result" in x for x in self.contract["prohibited_after_primary_run"]))
+        self.assertTrue(any("after measured result" in x for x in self.contract["prohibited_after_primary_run"]))
 
     def test_only_permitted_isolated_paths(self):
         self.assertEqual(self.contract["changed_paths"],[
