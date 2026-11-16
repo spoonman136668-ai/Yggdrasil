@@ -224,10 +224,15 @@ def preflight(archive_4096, archive_lower, *, candidate_sha):
         archive_lower, LOWER_ARCHIVE_SHA256,
         expected_members(2048) | expected_members(1024))
     with tempfile.TemporaryDirectory(prefix="f50-source-only-") as directory:
-        _store(directory, upper)
+        # The retained 4096 archive has an exact flat-file inventory. Keep
+        # lower-bank directories outside its audited root; otherwise the
+        # existing 4096 custodian correctly rejects those extra entries.
+        upper_root = Path(directory) / "4096"
+        upper_root.mkdir()
+        _store(upper_root, upper)
         _store(directory, lower)
         models, roles = {}, {}
-        models[4096], roles[4096] = _load_4096(directory)
+        models[4096], roles[4096] = _load_4096(upper_root)
         for size in (2048, 1024):
             models[size], roles[size] = _load_lower(directory, size)
     harness.checkpoint_inventory(roles)
