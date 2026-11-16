@@ -75,3 +75,27 @@ separate owner authorization. The final engineering workflow runs all
 WSP117–124 focused suites and the mandatory root regression on an identical
 Ubuntu/Windows source archive tree with G29 pin check. No accepted weights,
 merge, new controller, scheduled task, private runner, or paid API.
+
+## Engineering-only action-plan and JSON custody correction
+
+The initial development CI exposed (a) a duplicate-query edge case when the
+hidden threshold was already uniquely inferred before the third reserved
+binary-search action, and (b) a JSON digest mismatch caused by serializing
+integer-keyed threshold-bounds maps and then restoring them as string keys.
+Neither failure consumed original-source data. Both are fixed without
+changing cohort membership, hypothesis family, original first-use, or the
+frozen per-domain **23 paid actions**.
+
+For (a), the still-paid third diagnostic action becomes a source-blind,
+previously unqueried **negative witness** at left=1/right=7 (or left=7/
+right=1), which is guaranteed outside every candidate threshold rectangle.
+It is a pre-specified implementation fallback for early identification,
+not evidence from held labels; the registered three diagnostic *slots* are
+still each charged. The initial preregistration's shorthand "three
+binary-search interventions" was overly literal for early convergence;
+this procedural clarification is preserved rather than rewriting that
+frozen record. For (b), the checksum is calculated over stable string-keyed
+bounds both before and after JSON cold restoration.
+
+This is a transparent **development repair before any accepted
+science**, not an amendment to an already consumed scientific source.

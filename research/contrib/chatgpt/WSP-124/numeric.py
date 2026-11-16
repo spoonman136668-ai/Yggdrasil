@@ -57,10 +57,13 @@ class NumericRepair:
             return (7,7)
         if n<19:
             lo,hi=self.bounds[domain]["x"]
-            return ((lo+hi)//2,7)
+            # If threshold is already identified before the third paid
+            # probe, charge a fresh negative witness at left=1 instead of
+            # attempting the previously queried (7,7) positive witness.
+            return (1 if lo==hi else (lo+hi)//2,7)
         if n<22:
             lo,hi=self.bounds[domain]["y"]
-            return (7,(lo+hi)//2)
+            return (7,1 if lo==hi else (lo+hi)//2)
         if n==22:
             w=self.weights[domain]
             if w[16]<2 or w[17]<2:
@@ -175,7 +178,8 @@ class NumericRepair:
     def snapshot(self):
         body={"schema":SCHEMA,"events":self.events,
               "weights":{str(d):list(w) for d,w in self.weights.items()},
-              "counts":self.counts,"bounds":self.bounds}
+              "counts":self.counts,
+              "bounds":{str(d):self.bounds[d] for d in range(DOMAINS)}}
         return canonical({"payload":body,"sha256":digest(body)})
 
     @classmethod
