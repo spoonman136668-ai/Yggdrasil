@@ -47,7 +47,7 @@ provenance={"schema":"yggdrasil.nkr25-27.full-image-repair.provenance.v1",
  "frozen_checkpoint_sha256":linux["NKR25"]["checkpoint_sha256"],
  "repaired_checkpoint_sha256":linux["NKR26"]["descending_stages"][0]["repaired_checkpoint_sha256"],
  "stable_result_sha256":linux["stable_sha256"],
- "bounded_algorithmic_repair_edits_used":0,
+ "bounded_algorithmic_repair_edits_used":0,"development_replays_used":1,
  "qualification":"pending full final-source root/NKR05/G29; terminal PR receipt authoritative"}
 (HERE/"provenance.json").write_text(json.dumps(provenance,indent=2,sort_keys=True)+"\n")
 lines=["# Full-knowledge-image wide-first bounded repair campaign","",

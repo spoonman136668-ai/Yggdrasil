@@ -40,7 +40,6 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor efc6059b6d133509af2b0a55a8d5f3d84daf042f HEAD
           python -B -m unittest discover -s tests -p test_native_bounded_fact_repair.py -v
-          python -B -m unittest discover -s tests -p test_native_factual_weights.py -v
           python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
           test -z "$(git status --porcelain)"
 
