@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.aai12x.sourceonly-provenance.v1",
+  "id": "AAI-12X",
+  "source_lineage": {
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha_at_start": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prereg_before_source": "2526b63668efaf2fc67f46d79d9227009b9059a9",
+    "implementation_and_tests_before_first_measured_screen": "a43cb9b616c8ae04d3b79ec3811c9c358baeb6e2",
+    "reference_authorized_source": "AAI-12W@eb10398f232591e6c9778f303b3a5974e3a9a53c research/contrib/chatgpt/AAI-12W/learner.py",
+    "no_post_score_source_changes": true
+  },
+  "identity": {
+    "code_blobs": {
+      "world.py": "e6d2519106e175852434a0ce60dc87a44b24fed3",
+      "reference_w.py": "e8b0c9c2bb5349377993454179084840222f3e49",
+      "optimized.py": "4fe89d106f621f0599ff5fc6d81960aff54bae05",
+      "dev.py": "ee4fab853bc797abd9ff3699188fb28b356b12a0",
+      "test_dev.py": "c3b150f66abf6fcf26826ec480c5959308dfaa93",
+      "prereg.json": "b53ea9ef29bc037d831c9da5f5724d75d56e8c1b"
+    },
+    "sha256_local": {
+      "world.py": "38d10f3751bd981e3f284824d143560563e8d8517f6c3970b67de29d66ed62b9",
+      "reference_w.py": "bdb82cd5cfec8d43fc6a2d8e245d73b09408edb6a1754dbcb90ca6abb7bf1240",
+      "optimized.py": "882e0a66ba86a0cca9bb2564394d51d2dba51c73840bbb3901fcdceb0c62e874",
+      "dev.py": "c892c3aa35e1e88c85635c7f3b2a7a7c2362f8587562939869213b218647cd2a",
+      "test_dev.py": "425f211919c15484c2d302d25040a99bbd946a40b5a6431e01b5a7f32e65d99a"
+    },
+    "git_blob_verified_against_local_bytes": true
+  },
+  "environment": {
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "interpreter": "CPython 3.13.5",
+    "dependencies": "Python standard library",
+    "host": "Temporary isolated assistant container, not Yggdrasil native project runner",
+    "hardware_scope": "Unqualified CPU wall time only"
+  },
+  "source": {
+    "namespace": "AAI12X",
+    "fixture_ids": [
+      "mechanical:gamma",
+      "mechanical:delta",
+      "mechanical:epsilon"
+    ],
+    "science_cohorts_consumed": 0,
+    "source_public_sha256": "0b03397b16d0f321b39b2bce13fe1e6e30dba2bb0eeeb74c080e9c50784aeace"
+  },
+  "commands": [
+    {
+      "command": "python -m unittest -q test_dev.py",
+      "result": "10/10 PASS before first score and Git source custody checked"
+    },
+    {
+      "command": "cohort,h,dt=dev.load(); for i in range(3): dev.screen(cohort,h,dt)",
+      "result": "3 exact-code source-only screens; predictions, metrics and frozen gate decisions stable across all 3; timings recorded without discarding any run"
+    },
+    {
+      "command": "python dev.py --primary",
+      "result": "MUST deny independent scientific first use, verified in focused test"
+    }
+  ],
+  "determinism": {
+    "source_digest_sha256": "0b03397b16d0f321b39b2bce13fe1e6e30dba2bb0eeeb74c080e9c50784aeace",
+    "all_arms_prediction_trace_sha256": "34ef09b44344e1d5a114a28ddb6bde7739edcbf369e09fa036b995429b32139c",
+    "repeated_source_and_trace_identical": true,
+    "program_match_worlds": 72,
+    "heldout_prediction_match_cases": 4608,
+    "cold_restore_receipts_per_run": 504
+  },
+  "timing_scope": "Primary model comparison includes trained fit + canonical cold JSON restoration + all 3-step predictions for identical 72 worlds. Common source generation was measured separately at 0.591707s. No platform independent native build/CI/owner runner/production whole-workflow cost was measured.",
+  "classification": "DEV_GO_SCIENCE_UNVERIFIED",
+  "authority": {
+    "branch_source_only": true,
+    "main_mutated": false,
+    "science_first_use": false,
+    "native_accepted_model_mutated": false,
+    "controller_scheduler_queue": false,
+    "remote_api_cost": false,
+    "merge": false,
+    "promotion": false
+  },
+  "secondary_derived_sourceonly_time": {
+    "status": "diagnostic, not a frozen acceptance criterion",
+    "formula": "(source materialization + reference model fit/cold/forecast) / (same source materialization + optimized model fit/cold/forecast)",
+    "ratio_by_run": [
+      2.333528,
+      2.261385,
+      2.330093
+    ],
+    "caveat": "Measured only the synthetic source construction and one model's fit/restore/forecast. Excludes source-qualification build, test and all native project work; not production end-to-end speedup."
+  }
+}

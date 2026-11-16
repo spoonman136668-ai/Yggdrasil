@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.aai12x.sourceonly-prereg.v1",
+  "experiment": "AAI-12X",
+  "status": "FROZEN_BEFORE_CODE_AND_RESULT",
+  "source_parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1074,
+    "sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_failed_source": "AAI-12W@1ff913cd297f8f81a03322d66403f13bb03a3efd"
+  },
+  "hypothesis": "An exact-equivalent tokenless 3-input unknown-role causal learner that searches only unordered input triples should preserve AAI-12W fitted programs and three-step forecasts while reducing all-model fit/cold/forecast wall time by at least 2x and meeting a 12x cap versus the fastest fully fitted nontrivial conventional control on newly born mechanical worlds.",
+  "intervention": "Actual one-bit flip do action per source transition, public x0,y0,x1,y1,action. Evaluation receives x0,y0 and three actions but not intermediate y; predicts final y3 from latent update y1=y0 XOR x_k0 XOR f(x_a,x_b,x_c) XOR x_k1, with all roles and relation f hidden.",
+  "source_gen": {
+    "namespace": "AAI12X",
+    "fixtures": [
+      "mechanical:gamma",
+      "mechanical:delta",
+      "mechanical:epsilon"
+    ],
+    "novel_masks": "Sort m=0..255 by SHA256 ASCII 'AAI12X|novel-mask|m'; select first 16 masks for which each of three variables is essential (one input flip changes some truth-table output), excluding W used masks [150,232,210,108,182,60,202,99,113,121,42,173].",
+    "familiar": [
+      "xor",
+      "and",
+      "or",
+      "xnor"
+    ],
+    "negative": [
+      "parity4",
+      "majority4",
+      "exactly_two4",
+      "xor_and_xor4"
+    ],
+    "roles": "For each fixture,phase,world, sort i=0..7 by SHA256('AAI12X|fixture|phase|world|role|i'); novel source uses roles[:3] and observation role[3]; familiar uses roles[:2] and observation role[2]; negative uses roles[:4] and observation role[4].",
+    "fit": "Order n=0..255 by SHA256('AAI12X|fixture|phase|world|x|n'); first 48 distinct x are training predecessors; each training initial y0 from SHA256(...|'train-y'|n) first byte LSB, action SHA256(...|'train-action'|n) first eight bytes as unsigned big-endian mod8, perform actual one-bit do to obtain x1,y1.",
+    "eval": "From remaining x, first 64 for which all 3 predecessor states under actions derived from SHA256(...|'eval-action'|n|step) are absent from training predecessors; initial y0 from SHA256(...|'eval-y'|n) first byte LSB; withhold y1,y2,y3 from model and score final y3. If fewer than 64 admissible cases INVALID.",
+    "counts": {
+      "novel_worlds": 16,
+      "familiar_worlds": 4,
+      "negative_worlds": 4,
+      "fixtures": 3,
+      "training_transitions_per_world": 48,
+      "heldout_three_step_episodes_per_world": 64,
+      "novel_episodes_per_arm": 3072,
+      "familiar_per_arm": 768,
+      "negative_per_arm": 768,
+      "total_per_arm": 4608
+    },
+    "science_first_use_cohorts": 0
+  },
+  "reference": {
+    "exact_W_commit": "eb10398f232591e6c9778f303b3a5974e3a9a53c",
+    "blob": "e8b0c9c2bb5349377993454179084840222f3e49",
+    "method": "Copy unchanged W learner.py to reference_w.py and use exact same fully fitted conventional model training and forecasts.",
+    "all_arms": [
+      "optimized_ternary",
+      "reference_ternary_AAI12W",
+      "fixed_pair_relation_grammar",
+      "fully_fitted_id3_depth7",
+      "logistic_degree2_fullbatch200",
+      "hamming_knn5",
+      "persistence_no_memory"
+    ]
+  },
+  "optimization": {
+    "proof": "Each ordered permutation of a three-input role set is a bijective reindexing of the eight unrestricted truth-table cells; mismatch/coverage are invariant and lex tie always favors sorted triple.",
+    "specific": "Replace 8*P(7,3)=1680 role hypotheses with 8*C(7,3)=280, preserving majority tie rule, mismatch/coverage criterion and lex ordering. Precompute ternary input codes and recurrence residual only from public rows. Keep exact reference program schema, checkpoint/restore and forecasts.",
+    "equivalence": "Require exact k,abc,mask match to original W candidate on all 72 new worlds and all 4608 predictions. No hidden source law/roles in learner."
+  },
+  "controls": {
+    "fitted": [
+      "fully_fitted_id3_depth7",
+      "logistic_degree2_fullbatch200",
+      "hamming_knn5",
+      "fixed_pair_relation_grammar"
+    ],
+    "negatives": [
+      "persistence_no_memory"
+    ],
+    "same_public_exposure": true,
+    "source_generator_import_only_in_evaluator": true,
+    "cold_restore_every_model": true
+  },
+  "gates": {
+    "exact_program_and_predictions_equal_reference": true,
+    "novel_accuracy_min": 0.83,
+    "novel_gain_vs_best_fitted_min": 0.08,
+    "novel_worlds_over_80pct_min": 14,
+    "familiar_max_drop_vs_best_fitted": 0.04,
+    "negative_max_drop_vs_best_fitted": 0.05,
+    "source_model_speedup_vs_reference_min": 2,
+    "source_model_time_ratio_vs_fastest_fitted_max": 12,
+    "benchmark": "Three source-identical local runs, all 3 must satisfy time ratios (include fit+canonical cold restore+all 3-action forecasts; report common source generation separately). Exclude trivial no-learning persistence from fastest fitted denominator.",
+    "all_required": true,
+    "classify": "DEV_GO_SCIENCE_UNVERIFIED if all pass; otherwise DEV_NO_GO_NO_SCIENCE; execution/leakage/equal-observation failures => INVALID_ENGINEERING"
+  },
+  "stop": "One frozen source-only screen and two identical timing/determinism repeats; no after-result tuning, extra cohorts, altered threshold, hidden truth use, native integration, merge or promotion.",
+  "scope": {
+    "only_paths": [
+      "research/contrib/chatgpt/AAI-12X/*"
+    ],
+    "no_main": true,
+    "no_native": true,
+    "no_science_first_use": true,
+    "no_merge": true,
+    "no_paid_api": true,
+    "no_new_runner_controller_scheduler_queue": true,
+    "no_library_evidence": true,
+    "independent_native_win_linux_regression_required_before_acceptance": true
+  }
+}
