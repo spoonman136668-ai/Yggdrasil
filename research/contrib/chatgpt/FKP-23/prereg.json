@@ -1,0 +1,160 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-23-CONTRADICTION-GATED-PRIOR-REPAIR-RETENTION",
+  "contributor": "chatgpt",
+  "prereg_first": true,
+  "exact_parent_sha": "65801e5777c9d399cdd49d919bcd4428d3cad951",
+  "hypothesis": "In a tokenless evidence-based four-action toy causal environment, a learner that retains older confirmed residual signatures while allocating genuinely novel signatures from physically observed contradictory updates will choose three discriminating physical interventions and correctly predict one still-unqueried outcome for both changed and returned familiar relationship families. Frozen-old and recent-only controls will each fail on one family. Independent exact Bayesian all-history entropy control will tie, so no unique native scientific superiority is expected.",
+  "source": {
+    "kind": "original independently implemented but inspectable synthetic TRAIN source, not blind scientific first-use",
+    "support_seeds": "995000..995015",
+    "update_seeds": "995100..995107",
+    "shift_eval_seeds": "995200..995215",
+    "return_eval_seeds": "995300..995315",
+    "protected_dev": "995500..995531",
+    "protected_transfer": "995600..995663",
+    "predecessor_protected_unopened": true,
+    "public_protocol": "context binary; three physically chosen earlier actions; fourth distractor action needed for terminal +/-1; no early reward, private source rule or alternative outcome",
+    "monomials": "constant + 4 unary + 6 pairwise Boolean monomials over 4 public bits; 12 training patterns rank11",
+    "training_input_patterns": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "residual_probe_patterns": [
+      0,
+      1,
+      2,
+      7
+    ],
+    "familiar_signatures": [
+      0,
+      3,
+      12,
+      15
+    ],
+    "shift_signatures": [
+      0,
+      5,
+      10,
+      15
+    ],
+    "support_worlds": 16,
+    "updated_worlds": 8,
+    "eval_shift_worlds": 16,
+    "eval_return_worlds": 16,
+    "support_base_masks": [
+      1105,
+      808,
+      1709,
+      315
+    ],
+    "update_base_masks": [
+      1709,
+      315
+    ],
+    "eval_base_masks": [
+      749,
+      1961,
+      1475,
+      926
+    ],
+    "signature_selection": "each cohort index %4, within support 4 examples per signature, update 2 each, eval 4 each",
+    "note": "source per-world family and coefficient mask never passed to model, but source code inspectable; shifted outcomes all physical chosen consequences"
+  },
+  "primary_design": {
+    "support_stage": "16 physical SUPPORT worlds each with 12 base public action episodes then all 4 residual intervention episodes; freeze after evidence captured",
+    "adaptation_stage": "8 fresh shifted-family worlds, same physical 12+4 episodes each, ordered after prior; only true actually witnessed contradictory signatures may expand sparse relation memory",
+    "candidate": "keep all 16 past support world residual observations, allocate novel constraint-signature 5/10 after actually observed mismatch, retain all original K signatures, use balanced partition of ALL source-public evidence for each of 3 online queries",
+    "exact_bayes": "independent exact all-history Shannon-entropy information-gain over all 24 witnessed signatures, no private cohort indicator, no source query, no hidden class",
+    "frozen_old": "model receives and validates same 24 physical observations but purposely ignores last 8; uses first 16 prior for active three-probe policy",
+    "recent_only": "model receives and validates all 24 physical observations but purposely uses only last 8; tests interference/forgetting of old relationships",
+    "no_memory": "model receives same 24 physical observations but discards relational evidence and chooses fixed public positions [0,1,2], predicts unqueried residual zero",
+    "future_shift_eval": "16 different base-rule worlds with shifted signature family, each method fits same 12 new physical base actions, executes exactly three selected physical residual probes, then predicts and physically applies one still-unqueried residual action",
+    "future_return_eval": "16 distinct base-rule worlds returning to original K signature family; same three query+one score budgets without model regime labels; no explicit family flag",
+    "all_arms": [
+      "SPARSE_CONTRADICTION_REPAIR",
+      "EXACT_BAYES_ALL_HISTORY",
+      "FROZEN_OLD_PRIOR",
+      "RECENT_ONLY_PRIOR",
+      "NO_MEMORY"
+    ],
+    "prereg_expected": {
+      "candidate_shift": 16,
+      "candidate_return": 16,
+      "bayes_shift": 16,
+      "bayes_return": 16,
+      "frozen_shift": 12,
+      "frozen_return": 16,
+      "recent_shift": 16,
+      "recent_return": 12,
+      "no_memory_shift": 8,
+      "no_memory_return": 8
+    },
+    "metrics": [
+      "earned first unqueried predictions per 16 worlds, two disjoint cohorts",
+      "novel signature allocation count from observed source evidence",
+      "old+new learned relation preserved in cold checkpoint",
+      "number of intervention actions/actual outcomes",
+      "posterior distinct law count and support examples after three physical probes",
+      "baseline failures from missing old/new relation evidence",
+      "per-world exact public action/outcome receipts and time/CPU costs",
+      "bootstrap difference over strongest fully fitted independent exact Bayesian"
+    ],
+    "bootstrap": {
+      "draws": 10000,
+      "seed": 2323,
+      "unit": "paired source world cluster separately by cohort",
+      "tail": "2.5% and 97.5% descriptive on TRAIN only"
+    },
+    "limits": {
+      "logical_bytes": 65536,
+      "physical_episode_actions": 4,
+      "full_physical_action_count": 11776,
+      "three_probe_indices_chosen_without_replacement": true,
+      "score_query_updates_disabled": true
+    },
+    "postresult": "No revision of source seeds, metrics, masks, scores, or model after original full evaluation; report mismatches as negatives, preserve failures"
+  },
+  "engineering": {
+    "first_prereg_only_commit": true,
+    "sha_source_pin": true,
+    "guard_previous_files": true,
+    "source_code_isolated": "research/contrib/chatgpt/FKP-23/**",
+    "generated_only_atlas_three_files": true,
+    "focused_source_safe_unit_tests": "support/update only; never eval shift/return first-use in focused tests",
+    "mandatory_full_root_regression": "Ubuntu24.04 Python3.11 + Windows2022 Python3.12",
+    "inherited_fkp18_through_fkp22": true,
+    "proof_archive": "upload full per-world physical source receipt artifact even if downstream independent scoring audit fails, verify artifact exists before audit",
+    "no_new_workflow_file": true,
+    "no_scheduled_tasks": true,
+    "no_paid_api": true
+  },
+  "science": {
+    "classification": "KNOWN_TRAIN_REPAIR_DEVELOPMENT_ONLY",
+    "scientific_pass": false,
+    "hidden_owner_first_use": false,
+    "unrestricted_operator_invention": false,
+    "qualification_limit": "finite prechosen residual patterns and base GF2 basis, known family variants; independent Bayesian tie expected",
+    "negative_to_preserve": "shift-only or old-only policies fail return/shift respectively; if no improvement, report NO-GO, no post-result tuning"
+  },
+  "authority": {
+    "research_only": true,
+    "accepted_main_mutation": false,
+    "merge": false,
+    "protected_first_use": false,
+    "controller_scheduler": false,
+    "private_runner": false,
+    "deploy": false
+  }
+}
