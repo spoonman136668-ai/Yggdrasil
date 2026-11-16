@@ -1,0 +1,115 @@
+name: AAI-12X exact-source dual-OS regression qualification
+on:
+  push:
+    branches:
+      - qualification/aai12x-exact-regression-20261116
+    paths:
+      - .github/workflows/aai12x-exact-source-regression.yml
+permissions:
+  contents: read
+concurrency:
+  group: aai12x-exact-source-dual-os-regression-20261116
+  cancel-in-progress: false
+jobs:
+  full-regression:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'AAI-12X one-shot exact-source dual-OS regression qualification' &&
+      github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      AAI12X_SOURCE_SHA: 8a48c8d04d76c50d47bcad3049eb21e4a8742652
+      AAI12X_ORIGINAL_SHA: 4abebdcceb2c30659c4420a6068a8a76eddfedd4
+    steps:
+      - name: Read-only checkout of frozen generated-only qualified source SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8a48c8d04d76c50d47bcad3049eb21e4a8742652
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Provision pinned Python version
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact custody, unchanged science and generated-only repair
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AAI12X_SOURCE_SHA"
+          test "$(git rev-parse HEAD^)" = "$AAI12X_ORIGINAL_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12X/optimized.py)" = "4fe89d106f621f0599ff5fc6d81960aff54bae05"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12X/reference_w.py)" = "e8b0c9c2bb5349377993454179084840222f3e49"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12X/test_dev.py)" = "c3b150f66abf6fcf26826ec480c5959308dfaa93"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/AAI-12X/prereg.json)" = "b53ea9ef29bc037d831c9da5f5724d75d56e8c1b"
+          files="$(git diff --name-only "$AAI12X_ORIGINAL_SHA" "$AAI12X_SOURCE_SHA" | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$files" = "$expected"
+          test -z "$(git status --porcelain)"
+          echo "AAI12X_EXACT_SOURCE_AND_GENERATED_ONLY_CUSTODY_PASS=$AAI12X_SOURCE_SHA"
+      - name: Verify pinned G29 source atlas and exhaustive atlas-negative tests
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+      - name: Full existing Yggdrasil repository Python regression
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo AAI12X_FULL_EXISTING_REPOSITORY_REGRESSION_PASS
+      - name: Frozen AAI-12X parity, hidden-state, controls and cold-negative tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/AAI-12X -p test_dev.py -v
+          if python -B research/contrib/chatgpt/AAI-12X/dev.py --primary >/dev/null 2>&1; then
+            echo AAI12X_SCIENTIFIC_FIRST_USE_NOT_DISARMED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo AAI12X_FOCUSED_AND_FIRST_USE_FENCE_PASS
+      - name: Reproduce original mechanical source-only results without consuming new science
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/AAI-12X/dev.py --source-dev > "$RUNNER_TEMP/aai12x-screen.json"
+          python -B - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          root = Path("research/contrib/chatgpt/AAI-12X")
+          receipt = json.loads((root / "result.json").read_text(encoding="utf-8"))
+          raw = (Path(os.environ["RUNNER_TEMP"]) / "aai12x-screen.json").read_text(encoding="utf-8").strip()
+          assert raw.startswith("AAI12X_DEV=")
+          scored = json.loads(raw.removeprefix("AAI12X_DEV="))
+          assert scored["source_digest_sha256"] == receipt["source_digest_sha256"]
+          assert scored["trace_sha256"] == receipt["prediction_trace_sha256"]
+          assert scored["program_parity_worlds"] == 72
+          assert scored["prediction_parity_cases"] == 4608
+          assert scored["cold_roundtrips"] == 504
+          assert scored["accuracy"] == receipt["measurements"]["accuracy"]
+          # Replay is cross-platform engineering qualification, not an additional
+          # scientific first use, new source, or re-selection of a winning arm.
+          assert scored["scientific_cohorts_used"] == 0
+          assert scored["native_changed"] is False
+          print("AAI12X_CROSS_PLATFORM_MECHANICAL_REPLAY_CLASSIFICATION=" + scored["classification"])
+          print("AAI12X_REPLAY_MODEL_REFERENCE_SPEEDUP=" + str(scored["reference_speedup"]))
+          print("AAI12X_REPLAY_MODEL_COST_RATIO=" + str(scored["vs_fastest_fitted_cost_ratio"]))
+          print("AAI12X_PINNED_TRACE_AND_SCORES_PASS")
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Verify no source mutation after complete suite
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$AAI12X_SOURCE_SHA"
+          test -z "$(git status --porcelain)"
+          echo AAI12X_NATIVE_REGRESSION_SOURCE_CLEAN
