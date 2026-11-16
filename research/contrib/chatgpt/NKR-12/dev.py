@@ -18,7 +18,7 @@ from yggdrasil.native_intervention_repair import (
 )
 from yggdrasil.public_causal_cells import PublicCausalCells
 
-SCRIPT = (Path(__file__).resolve().parents[3] /
+SCRIPT = (Path(__file__).resolve().parents[4] /
           "research/contrib/chatgpt/NKR-11/experiment.py")
 spec = importlib.util.spec_from_file_location("nkr12_reused_fixture", SCRIPT)
 study = importlib.util.module_from_spec(spec)
@@ -36,7 +36,6 @@ def run():
     reference = {}
     envs = {}
     public_evidence = []
-    source_refs = set()
     for world_id in range(12):
         env = study.ComputationalEnvironment(world_id)
         envs[world_id] = env
@@ -64,7 +63,6 @@ def run():
                 or previous.prior(addr, 0, 1, retained=retained) != 1):
             raise AssertionError("native public intervention mismatch")
         reference[world_id] = ref
-        source_refs.add((warm, repair))
     before = bank.checkpoint()
     bank = NativeCumulativeActionBank.restore(before, bank.checkpoint_sha256)
     if bank.checkpoint() != before:
