@@ -20,7 +20,7 @@ def fixture():
     state=0
     for i in range(31):
         after=(state^(i&1))
-        rows.append(dict(before=state,action=i%2,reward=(i//2)%2,after=after,
+        rows.append(dict(before=state,action=i%2,reward=(i//4)%2,after=after,
                          terminated=False,truncated=i==30))
         state=after
     return {seed:[dict(r) for r in rows] for seed in audit.SEEDS}
