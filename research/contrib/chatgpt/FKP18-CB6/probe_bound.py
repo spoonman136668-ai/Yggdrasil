@@ -6,10 +6,11 @@ calls its generator or uses a hidden sensor label to choose an intervention.
 from __future__ import annotations
 
 from functools import lru_cache
-from hashlib import sha256
+from hashlib import sha1, sha256
 import json
 import math
 from itertools import permutations
+from pathlib import Path
 
 CANDIDATES = 6
 PUBLIC_UPSTREAM_AND_BASELINE_ACTIONS = 5
@@ -105,6 +106,15 @@ def exhaustive_symmetric_worlds():
     return rows
 
 
+def load_pinned_archive(path):
+    """Require the exact CB5 archival Git blob, not a plausible replacement."""
+    raw = Path(path).read_bytes()
+    actual = sha1(b'blob ' + str(len(raw)).encode('ascii') + b'\x00' + raw).hexdigest()
+    if actual != CB5_ARCHIVE_BLOB:
+        raise ValueError('CB6_CB5_EXACT_ARCHIVE_BLOB_MISMATCH')
+    return json.loads(raw)
+
+
 def archived_cb5_cost_reduction(record):
     """Arithmetic on CB5 frozen summary, not a re-execution of CB5 source."""
     if record.get('schema') != 'yggdrasil.cb5.blind-mechanism-result.v1':
@@ -164,5 +174,4 @@ if __name__=='__main__':
     import sys
     if len(sys.argv)!=2:
         raise SystemExit('usage: python probe_bound.py /path/to/FKP18-CB5/result.json')
-    with open(sys.argv[1],encoding='utf-8') as f:
-        print(json.dumps(study(json.load(f)),sort_keys=True,indent=2))
+    print(json.dumps(study(load_pinned_archive(sys.argv[1])),sort_keys=True,indent=2))
