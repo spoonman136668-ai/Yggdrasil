@@ -90,6 +90,46 @@ class ProspectiveSourceDenialAndSixfoldTests(unittest.TestCase):
         self.assertTrue(any(isinstance(n,ast.FunctionDef) and n.name=="off_policy_nonidentifiability"
                             for n in ast.walk(tree)))
 
+    def test_committed_result_preserves_frozen_negative_and_control_tie(self):
+        import statistics
+        committed=json.loads((s.HERE/"result.json").read_text(encoding="utf-8"))
+        actual=s.run_sixfold()
+        m=committed["main_result"]
+        self.assertEqual(actual["result_sha256"],
+                         committed["exact_full_canonical_report_sha256"])
+        self.assertEqual(actual["classification"],committed["classification"])
+        self.assertEqual(committed["classification"],
+                         "RETROSPECTIVE_SIXFOLD_DEVELOPMENT_ROBUSTNESS_NO_GO")
+        self.assertFalse(actual["frozen_robustness_pass"])
+        self.assertFalse(committed["scientific_pass"])
+        self.assertFalse(committed["native_accepted"])
+        self.assertEqual(m["supported"],333)
+        self.assertEqual(m["positive_splits"],3)
+        self.assertEqual(m["negative_splits"],3)
+        self.assertEqual(m["pooled_native_minus_prior_mse_advantage"],-0.013141436667)
+        self.assertEqual(len(committed["frozen_splits"]),6)
+        for stored,real in zip(committed["frozen_splits"],actual["folds"]):
+            self.assertEqual(stored["train"],real["train_seeds"])
+            self.assertEqual(stored["held"],real["historically_consumed_held_seeds"])
+            self.assertEqual(stored["supported"],real["held_supported_n"])
+            self.assertEqual(stored["unsupported"],real["held_unsupported_n"])
+            self.assertEqual(stored["native_mse_supported"],real["native_supported_mse"])
+            self.assertEqual(stored["training_global_mse_supported"],
+                             real["train_global_supported_mse"])
+            self.assertEqual(stored["native_mse_gain"],
+                             real["native_minus_global_mse_advantage"])
+            self.assertEqual(stored["native_with_fallback_all_held_mse"],
+                             real["native_with_global_fallback_all_held_mse"])
+            self.assertEqual(stored["independent_fourcell_all_held_mse"],
+                             real["fitted_fourcell_all_held_mse"])
+        mean_fourcell=statistics.mean(
+            f["fitted_fourcell_all_held_mse"] for f in actual["folds"])
+        self.assertEqual(float(format(mean_fourcell,".12f")),
+                         m["average_across_six_splits_all_row_fitted_independent_fourcell_mse"])
+        self.assertEqual(actual["metrics"]["independent_exact_conventional_disagreements"],0)
+        self.assertFalse(actual["off_policy_identification"]
+                         ["off_policy_action_effect_identifiable_from_this_fixed_policy_log"])
+
     def test_stronger_fourcell_is_fitted_without_held_labels(self):
         worlds=s.cvh04.load_original_public()
         train=(996100,996101)
