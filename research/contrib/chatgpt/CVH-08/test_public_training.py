@@ -148,9 +148,10 @@ class FrozenPublicAdmissionTests(unittest.TestCase):
 
     def test_persisted_exact_result_if_present(self):
         file=p.HERE/"result.json"
-        if not file.exists():
-            self.skipTest("Frozen result not yet committed; exact comparison enforced in final commit")
+        self.assertTrue(file.exists(),"CVH08_REQUIRES_PERSISTENT_EXACT_RESULT")
         self.assertEqual(json.loads(file.read_text()),p.sourcefree_training_receipt())
+        self.assertEqual(p.sourcefree_training_receipt()["receipt_sha256"],
+                         "f4a7769230506d9fde2291b1e1c81376c4dd0c6797c514a70302ef983be2d5e1")
 
 
 if __name__=="__main__":
