@@ -14,7 +14,7 @@ jobs:
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
       github.run_attempt == 1 &&
-      github.event.head_commit.message == 'CVH-03 original source constructor only qualification'
+      github.event.head_commit.message == 'CVH-03 corrected PCH protected class inspection'
     strategy:
       fail-fast: false
       matrix:
@@ -25,7 +25,7 @@ jobs:
       run:
         shell: bash
     env:
-      SOURCE_SHA: e0b1ffb7b50f5bda7fba437a522b6077e6fee8d5
+      SOURCE_SHA: 97833d7624cb905da99afe8dda58f5e292075e48
       UPSTREAM_PIN: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -34,7 +34,7 @@ jobs:
       - name: Frozen CVH-03 code checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: e0b1ffb7b50f5bda7fba437a522b6077e6fee8d5
+          ref: 97833d7624cb905da99afe8dda58f5e292075e48
           fetch-depth: 0
           persist-credentials: false
       - name: Exact Python 3.12
@@ -47,7 +47,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/prereg.json)" = d332023a09f2c1e7f33ac1a9a40b9f2528aa0068
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/source_binding.py)" = 7d38d861044d844f4bd8f59c1e234c4d7f01ee76
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/probe_constructor.py)" = ca5c9f6f07e78acd3ec1be00807298fad3296012
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/probe_constructor.py)" = b5eed6c7defbd76987d98bd119dfef49019f942c
           test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-25/runtime_probe.py)" = 1cfe7fe6cc7b2273cc7232cb38e4d648b25b0236
           test -z "$(git status --porcelain)"
           echo CVH03_SOURCE_SHA_PIN_PASS
