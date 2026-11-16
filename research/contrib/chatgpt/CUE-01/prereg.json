@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.cue01.sourceblind-action-retrieval-prereg.v1",
+  "study": "CUE-01",
+  "freeze": "BEFORE_CODE_AND_OUTCOMES",
+  "source_only": true,
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1148,
+    "sha": "0b250b9fe9048e5cb17f1d2d78b9636f869d71b5",
+    "native_bank_git_blob": "d285a33af70e3348d2d2b284746a08ec07c6ba87",
+    "native_solver_git_blob": "8ed291fb77bb734fbc049c947e7f9c6456b1742c",
+    "main_observed": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "nkr11_fixture_reused": true
+  },
+  "problem": "Native 16-slot memory bank can retain 12 learned relationships, but current call sites must provide the exact memory-slot address. Test whether the bank can select candidate memory from observed action effects without seeing task identity, while refusing to promote unverified guesses.",
+  "hypothesis": "After at most 8 real public action observations on a re-encountered NKR-11 world, a read-only tokenless balanced-partition cue selector will provisionally recover the correct stored relation slot for >=10/12 already-exposed worlds with zero incorrect old-world predictions. It must preserve canonical prior bank bytes and may not certify any unknown-law slot.",
+  "model": {
+    "module": "yggdrasil/native_action_cue_router.py",
+    "interface": "select(bank, public_cues) -> provisional slot or abstain and remaining matches; propose(bank,public_cues) -> next public context/action with deterministic balanced partition; immutable and no hidden task label or source oracle.",
+    "cues": "Each item is exactly three typed binary/integer public fields [context:0..15, action:0|1, observed_consequence:0|1], no hidden world id/slot, no duplicated queried pair, max 8 public cues.",
+    "candidate_filter": "Only stored slots whose explicitly learned NKR11 model public predictions agree with every provided result can remain. An unidentified prediction must not be treated as evidence for a match; retain unknown predictions conservatively. Empty evidence cannot qualify a single slot.",
+    "provisional_requirement": "Exactly one surviving stored model and at least 4 real distinct public interventions, all predictions on observed cues identifiable; returned classification always PROVISIONAL_UNVERIFIED_SLOT_MATCH, never task authenticated, scientific verified, model accepted or automatically admitted.",
+    "action_policy": "From 32 possible (context,action) probes, choose unqueried probe maximizing min(known positive,known negative) across surviving memory models; ties lexicographic context,action. When only one candidate remains, choose unqueried confirmation context/action with greatest disagreement against the full other stored models (to challenge a premature match), then lex. If zero plausible candidates, abstain; no hidden oracle.",
+    "capacity": "Read-only native checkpoint; max 16 slots, 8 distinct public probes per episode, no storage writes. Selector may not choose a hidden 'world identity' as action key."
+  },
+  "source": {
+    "originality": "Reuses NKR11 exposed deterministic engineering source; independent protected science first-use count 0",
+    "law_type": "12 already learned source-specific 10-feature GF2 action/context relations, each already warm-and-repaired in NKR12 native bank; NKR11 deterministic action simulator solely in evaluator.",
+    "training": "Use exactly existing 32 public warm and 16 public postchange repair actions per stored world. No training updates during routing; source-coded identities never in model API.",
+    "retrieval": "12 target episodes; each source world runs publicly chosen real do(context,action) for each policy up to 8 queries; score correct provisional slot or abstention, cost actual action count, confident wrong. No new oracle information outside public result to model.",
+    "negative": "Four nonresident conjunction action-effect worlds with public effects parity((context&1<<(world%4))) XOR (action AND int((context & mask)==mask)) for fixed masks [3,5,6,9]. These are fixtures reused in theme from separately qualified NKR12 out-of-family falsification and cannot be labeled scientific new sources. Count provisional false matches; never treat as verified. Empty, duplicate, adversarial corrupted cue and same-bank no member cases must fail-closed.",
+    "source_cohorts": "No protected first-use, no hidden source / validation outcomes promoted."
+  },
+  "controls": {
+    "strong": "Independent fully informed exact enumeration over the 12 original unmodified NKR11 stored models with the same public feedback and same <=8-action budget, choosing the same min-balanced split and lex tiebreak; should tie native router. No algorithmic superiority claim.",
+    "fixed": "First eight context/action pairs in ascending order. Same budget but no information-seeking.",
+    "random": "SHA256 ASCII 'CUE01|fixed-random-policy|context|action' sorted ascending over all 32 pairs, same order for every world; no world ID in RNG.",
+    "negative": "No cues, wrong/corrupt cue, ambiguous identical predictions, unknown source-law cases; abstentions correct safety response and counted separately.",
+    "cost": "Measure per-policy action count and whole experiment wall, canonical bank checkpoint size. No externally grounded energy/whole model efficiency claims."
+  },
+  "gates": {
+    "known_success_min": 10,
+    "known_wrong_max": 0,
+    "known_budgets_max": 8,
+    "source_custody_and_bank_checkpoint_identical": true,
+    "native_vs_independent_symbolic_all_decisions_equal": true,
+    "negative_never_native_accepted": true,
+    "no_private_identity_in_router": true,
+    "cold_exact": true,
+    "focused_tests_min": 12,
+    "stop": "Single frozen source-only development screen after prereg and implementation/tests are committed. If any required gate fails, DEV_NO_GO_NO_SCIENCE. No postresult threshold/seed/source tuning.",
+    "classifications": {
+      "pass": "ENGINEERING_DEV_PASS_SCIENCE_UNVERIFIED",
+      "fail": "ENGINEERING_DEV_NO_GO_NO_SCIENCE",
+      "invalid": "INVALID_ENGINEERING_IF_LEAKAGE_OR_BAD_SOURCE"
+    }
+  },
+  "scope": {
+    "allowed_paths": [
+      "yggdrasil/native_action_cue_router.py",
+      "tests/test_native_action_cue_router.py",
+      "research/contrib/chatgpt/CUE-01/*",
+      "three existing derived .ice/code-atlas.* after independent qualification"
+    ],
+    "no_modify_parent_models": true,
+    "no_modify_accepted_main": true,
+    "no_science_first_use": true,
+    "no_native_owner_runtime": true,
+    "no_merge": true,
+    "no_new_controller_or_runner": true,
+    "no_scheduled_tasks": true,
+    "no_paid_api": true,
+    "no_library_outputs": true,
+    "no_sibling_projects": true
+  }
+}
