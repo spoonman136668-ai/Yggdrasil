@@ -26,7 +26,7 @@ def probe(checkout):
         second=original_factory()
         if first is second:
             raise AssertionError("CVH03_NOT_FRESH_NATIVE_ORIGINAL_OBJECTS")
-        if first.__class__ is not second.__class__:
+        if type(first) is not type(second):
             raise AssertionError("CVH03_MIXED_ORIGINAL_SOURCE_CLASS")
         if original_factory.constructed != 2:
             raise AssertionError("CVH03_FACTORY_CONSTRUCTION_COUNT")
