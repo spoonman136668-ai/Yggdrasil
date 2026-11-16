@@ -41,6 +41,28 @@ parameters, inference time and full training time must be counted against
 numeric and symbolic whole-process resource budgets. There is no
 permission here for original first-use, native integration, or merge.
 
+## WSP-120 guarded fixture-only evaluation plumbing
+
+The isolated `fixture_evaluation.py` module and `test_fixture_evaluation.py`
+now exercise **only** the independent engineering world 120900. The API takes
+no external world/seed argument and rejects any non-fixture world, so it
+cannot itself open the unconsumed 24-world scientific cohort. It evaluates
+five independently instantiated arms (numeric active, numeric passive,
+numeric fixed3, independent symbolic active and no-update), enforces equal
+verified source-call budgets, preserves source-label receipts, checks cold
+snapshot/restore for every numeric arm, and reports held predictions with
+abstentions and wrong-confident predictions separated. Deterministic
+receipt hashes exclude nondeterministic timing. Wall-clock time is recorded
+diagnostically but does not yet constitute whole-process matched cost.
+
+The conventional GRU can only be invoked through this harness with 32
+observations and gets exactly the numeric passive arm's verified evidence.
+Failure to converge is explicitly an invalid comparison, not a numerical
+win. This source-safe engineering fixture does **not** constitute
+independently qualified scientific first-use, cross-world retention,
+energy measurement, native admission, or evidence of invented operators.
+The preregistered scientific first-use authorization flag remains false.
+
 ## Engineering commands
 
 ```console
