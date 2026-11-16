@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.cvh04.public-benchmark-original-source-static-admission-result.v1",
+  "status": "SOURCE_SUITABILITY_PASS_FULL_ENV_EXECUTION_BLOCKED_SCIENCE_UNVERIFIED",
+  "study": "CVH04-DOORKEY",
+  "upstream": {
+    "repo": "Farama-Foundation/Minigrid",
+    "commit": "d9c0416dec36c43f304693fea9fcdbb9f9d17595",
+    "files_exact_Git_blob_read_only": [
+      [
+        "minigrid/envs/doorkey.py",
+        "df5b29ef063be34e6d83b8b478e092c6e3e01512"
+      ],
+      [
+        "minigrid/minigrid_env.py",
+        "eb29e9a902de0715ab77ec981a2113576d7664fa"
+      ],
+      [
+        "minigrid/core/world_object.py",
+        "ea13f6d452e9762a28354611f36738a1f77c26d9"
+      ],
+      [
+        "pyproject.toml",
+        "61ab88372ca553af255a42564260994be808ac12"
+      ],
+      [
+        "LICENSE",
+        "880057397a1f9f7b3b1f0870eb84fa699ecbf50c"
+      ]
+    ],
+    "exact_SHA_checks": "PASS 5/5",
+    "python_imports": 0,
+    "original_constructors": 0,
+    "original_resets": 0,
+    "original_steps": 0
+  },
+  "source_findings": {
+    "partition": "Vertical wall partitions agent-left and goal-right; one initially locked yellow door blocks path.",
+    "prerequisite": "Original Door.toggle requires carrying matching key, locked door cannot be crossed; key must be picked up before unlocking and traversal.",
+    "reward": "Base env step initializes reward=0, pays reward only when moving forward onto goal.",
+    "original_default_8x8_steps": 640,
+    "partial_observation": "Public image (7x7x3 uint8) plus direction; exclude constant mission text for all tokenless arms.",
+    "actions": 7,
+    "conclusion": "Genuine multi-action prerequisite with goal-only reward; unlike former CausalGym one-step optimal source. This is code-inspection evidence, not sampled evaluation."
+  },
+  "secondary": {
+    "repo": "google-deepmind/bsuite",
+    "commit": "16eef71d0121b5bad5c8bfe6cf111492b4097d68",
+    "path": "bsuite/environments/deep_sea.py",
+    "blob": "8a4e016740d38aa83f32a34645f2f535161cfa59",
+    "suitability": "Exploration-depth supplementary, not primary causal prerequisite, because immediate transition/move-cost cues can reveal useful action direction."
+  },
+  "gates": {
+    "source_pins": "PASS",
+    "delayed_prerequisite_static": "PASS",
+    "license": "NEEDS_RECONCILIATION: checked LICENSE says Apache 2.0; exact pyproject declares MIT",
+    "windows": "UNVERIFIED: project README says Windows not officially supported",
+    "native_binary_interface": "FAIL_INCOMPATIBLE: CVH02 accepts binary state/action, DoorKey is partial numeric observation and 7 actions",
+    "dependency_lock": "NOT_FROZEN_OR_TESTED",
+    "original_source_first_use": "NOT_AUTHORIZED_NOT_RUN",
+    "trained_recurrent_and_symbolic_strong_controls": "NOT_RUN",
+    "held_seed_transfer": "NOT_RUN",
+    "cold_retention_and_total_cost": "NOT_RUN",
+    "scientific_pass": false,
+    "native_promotion": false
+  },
+  "boundary": "No source laws given to the learner; no original environment imports/constructors/reset/step, protected seed or first-use.",
+  "next": "Resolve licensing metadata; qualify pinned dependency/headless imports/constructors on both OS with zero reset/step; separately qualify tokenless 7-action public interface before seeking first-use authority."
+}
