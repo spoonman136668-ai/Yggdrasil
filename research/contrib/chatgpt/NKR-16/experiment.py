@@ -39,8 +39,6 @@ nkr13 = load("nkr16_reference_nkr13", Path(__file__).resolve().parents[1]
 nkr14 = load("nkr16_reference_nkr14", Path(__file__).resolve().parents[1]
              / "NKR-14/experiment.py")
 nkr12 = nkr13.nkr12
-nkr11 = load("nkr16_reference_nkr11", Path(__file__).resolve().parents[1]
-             / "NKR-11/experiment.py")
 
 
 def public_rows(original, *, prefix):
@@ -83,20 +81,20 @@ def independent_consensus(candidates, baseline, x):
 
 def environment(world, mode):
     return (nkr14.HiddenWorld(world) if mode == "unrestricted"
-            else nkr11.ComputationalEnvironment(world))
+            else nkr12.IndependentActionWorld(world))
 
 
 def env_outcome(env, mode, x, a, *, old=False):
     if mode == "unrestricted":
         return env.intervene(x, a, old=old)
-    return env.intervene(x, a, old_mechanism=old)
+    return env.execute(x, a, warm=old)
 
 
 def original_evidence(env, mode):
     warm = (nkr14.warmup(env) if mode == "unrestricted"
-            else nkr11.collect_warmup(env))
+            else nkr12.observations(env, warm=True))
     initial = (nkr14.source_visible_actions(env) if mode == "unrestricted"
-               else nkr11.collect_paired_interventions(env))
+               else nkr12.observations(env))
     return (public_rows(warm, prefix="warm"),
             public_rows(initial, prefix="public"))
 
