@@ -55,6 +55,13 @@ class CausalSemanticBindingTests(TestCase):
             self.assertEqual(cust.budget,0)
             with self.assertRaises(PermissionError):
                 cust.query(view.records[0][0])
+            # Checkpoint *number* is not an intervention on zero-action
+            # transfer views. Do not fabricate 32 paid source calls.
+            held={subject:None for subject,x in view.records}
+            scored=cust.score_once({stage:held for stage in E.STAGES})
+            self.assertEqual(
+                [scored["stages"][stage]["source_calls"] for stage in E.STAGES],
+                [0,0,0,0,0])
 
     def test_exact_cold_replay_and_forged_rebinding_rejected(self):
         law=S._origins()[0]

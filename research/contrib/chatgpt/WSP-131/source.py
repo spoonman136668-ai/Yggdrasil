@@ -169,7 +169,7 @@ class Custodian:
                 else: bad+=1
             result[stage]={"correct":good,"wrong_confident":bad,
                            "abstained":unknown,"held":len(held),
-                           "source_calls":stage}
+                           "source_calls":min(stage,self.budget)}
         self.scored=True
         return {"condition":"transfer" if self.view.cohort=="transfer" else _physical_law(self.view.seed)["mode"],
                 "stages":result}
