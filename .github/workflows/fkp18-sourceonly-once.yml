@@ -1,0 +1,160 @@
+name: FKP18 tokenless temporal source-safe exact-G29 qualification
+on:
+  push:
+    branches: [ci/fkp18-sourceonly-once-20261115]
+    paths: [.github/workflows/fkp18-sourceonly-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: ci/fkp18-sourceonly-once-20261115
+  cancel-in-progress: false
+jobs:
+  source-only-atlas:
+    if: >-
+      github.event.head_commit.message == 'ci(FKP-18): source-safe atlas and full two-OS capacity qualification' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      candidate: ${{ steps.atlas.outputs.candidate }}
+    env:
+      SOURCE: 30d79b3245d9c4d8eddd1845e0ca9cb7fcea64dd
+      TARGET: research/fkp18-temporal-eligibility-traces-20261115
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep byte stable Git
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 30d79b3245d9c4d8eddd1845e0ca9cb7fcea64dd
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify exact original first prereg and bounded source blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 1a53f16231871d2ac6db0b25e0e9a8ab61b03b60 "$SOURCE"
+          test "$(git rev-parse 1a53f16231871d2ac6db0b25e0e9a8ab61b03b60^)" = 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/prereg.json)" = 0c5b3d12f99071d145e65eb85700782370397180
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/temporal_trace.py)" = 68d7eb21792ec2f26950a32018d82c914a659c0c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/source_safe_witness.py)" = 4fdfb3707af2ec82d11ea2dc32dcffdfaa2393f6
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/test_temporal_trace.py)" = 90807b258dda88ad98028a48f1edcf8143df66c9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/run_source_safe_capacity.py)" = c63175c53d0e73d34fd4dd475254314357d2c514
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/test_prereg.py)" = 03e27832e50a4589f53740a7cf1c3ec663827d39
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-18/README.md)" = bc2e9f31a30399df260419fc989feb079c8e0e07
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP18_PREREG_AND_EXACT_SOURCE_PIN=PASS
+      - name: Complete source-safe tests before generated atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-18 -p 'test_*.py' -v
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP18_PUBLIC_NEGATIVE_TESTS=PASS
+      - name: Regenerate exactly three derived G29 files only
+        id: atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git diff --name-only | LC_ALL=C sort > "$RUNNER_TEMP/fkp18-actual"
+          printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json > "$RUNNER_TEMP/fkp18-expected"
+          diff -u "$RUNNER_TEMP/fkp18-expected" "$RUNNER_TEMP/fkp18-actual"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(FKP-18): exact-source G29 atlas only'
+          NEXT="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          diff -u "$RUNNER_TEMP/fkp18-expected" <(git diff --name-only "$SOURCE" "$NEXT" | LC_ALL=C sort)
+          git fetch origin "refs/heads/$TARGET"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE"
+          git push origin "HEAD:refs/heads/$TARGET"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "candidate=$NEXT" >> "$GITHUB_OUTPUT"
+          echo FKP18_GENERATED_G29_ONLY_CANDIDATE="$NEXT"
+  full-two-os-and-capacity-proof:
+    needs: source-only-atlas
+    if: needs.source-only-atlas.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            py: '3.11'
+          - os: windows-2022
+            py: '3.12'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      FKP18_SOURCE_SHA: 30d79b3245d9c4d8eddd1845e0ca9cb7fcea64dd
+    steps:
+      - name: Prevent source line translation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-only-atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.py }}
+      - name: Run all FKP18 focused and original inherited complete tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$FKP18_SOURCE_SHA"
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-18 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo FKP18_FULL_REGRESSION_AND_G29=PASS
+      - name: Reproduce isolated public capacity receipt without protected science
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-18/run_source_safe_capacity.py | tee "$RUNNER_TEMP/fkp18-capacity.log"
+          python - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp18-capacity.log'
+          records=[json.loads(line.split('FKP18_SOURCE_SAFE_CAPACITY_PROOF=',1)[1])
+                   for line in p.read_text('utf-8').splitlines()
+                   if 'FKP18_SOURCE_SAFE_CAPACITY_PROOF=' in line]
+          assert len(records)==1,'exactly one public proof'
+          d=records[0]
+          assert d['classification']=='ENGINEERING_REPRESENTATION_PROBE_ONLY'
+          assert d['source_commit']==os.environ['FKP18_SOURCE_SHA']
+          assert d['prereg_first']=='1a53f16231871d2ac6db0b25e0e9a8ab61b03b60'
+          assert d['conditional_law_A_effect']==1 and d['conditional_law_B_effect']==-1
+          assert all(d[k] is True for k in ('candidate_no_conditional_alias',
+                     'candidate_no_order_alias','matched_ablation_expected_alias',
+                     'cold_restore','capacity_bounded','conditional_context_split_seen'))
+          assert d['original_held_dev_opened'] is False and d['reserved_transfer_opened'] is False
+          assert d['scientific_pass'] is False and d['native_promoted'] is False
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'fkp18-capacity.json').write_text(
+              json.dumps(d,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+          print('FKP18_SOURCE_SAFE_CAPACITY_ONLY=PASS')
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fkp18-public-capacity-${{ matrix.os }}
+          path: ${{ runner.temp }}/fkp18-capacity.json
+          retention-days: 30
+          if-no-files-found: error
