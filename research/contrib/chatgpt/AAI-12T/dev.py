@@ -193,14 +193,44 @@ def fit_arm(arm,rows):
     return (mode,fit(mode,rows))
 
 
-def cold(arm,rows,trained):
-    """Only public state and learned program are serialized; verify cold rebuild."""
+def checkpoint(arm,rows,trained):
+    """Canonical public state includes the explicitly learned ternary primitive."""
     mode,model=trained
-    wire=json.dumps({'schema':'aai12t.public-cold.v1','arm':arm,'rows':rows,'mode':mode},sort_keys=True,separators=(',',':'))
-    data=json.loads(wire)
-    if data['schema']!='aai12t.public-cold.v1' or data['arm']!=arm:return False
-    restored=fit_arm(data['arm'],tuple(tuple(r) for r in data['rows']))
-    return restored==trained and restored[0]==data['mode']
+    if arm not in ARMS or len(rows)!=32 or len(set(x for x,y in rows))!=32:
+        raise ValueError('unregistered or oversized public checkpoint')
+    primitive = ({'triple':list(model[0]),'fourth':model[1],
+                  'truth_table_u8':model[2]} if mode=='ternary' else None)
+    data={'schema':'aai12t.public-cold.v1','arm':arm,
+          'rows':rows,'mode':mode,'learned_primitive':primitive}
+    return json.dumps(data,sort_keys=True,separators=(',',':'))
+
+
+def restore_checkpoint(source):
+    try:
+        data=json.loads(source)
+        if (type(data)!=dict or set(data)!={'schema','arm','rows','mode','learned_primitive'}
+            or data['schema']!='aai12t.public-cold.v1' or data['arm'] not in ARMS
+            or type(data['rows'])!=list or len(data['rows'])!=32
+            or json.dumps(data,sort_keys=True,separators=(',',':'))!=source):
+            raise ValueError('bad serialized cold source')
+        rows=tuple(tuple(r) for r in data['rows'])
+        if (len(set(x for x,y in rows))!=32
+            or any(type(x)!=int or type(y)!=int or not 0<=x<64 or y not in (0,1) for x,y in rows)):
+            raise ValueError('corrupted public rows')
+        trained=fit_arm(data['arm'],rows)
+        mode,model=trained
+        primitive = ({'triple':list(model[0]),'fourth':model[1],
+                      'truth_table_u8':model[2]} if mode=='ternary' else None)
+        if mode!=data['mode'] or primitive!=data['learned_primitive']:
+            raise ValueError('learned primitive corrupted or mode changed')
+        return trained
+    except (TypeError,KeyError,IndexError) as exc:
+        raise ValueError('invalid cold source') from exc
+
+
+def cold(arm,rows,trained):
+    wire=checkpoint(arm,rows,trained)
+    return restore_checkpoint(wire)==trained
 
 
 def score():
