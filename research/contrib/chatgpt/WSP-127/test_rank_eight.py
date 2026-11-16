@@ -84,7 +84,7 @@ class RankEightEvidenceTests(TestCase):
         self.assertEqual(len(tuple(source.held())), 3072)
         with self.assertRaises(PermissionError):
             source.query(next(iter(available)))
-        with self.assertRaises(PermissionError):
+        with self.assertRaisesRegex(ValueError, "WSP127_MISSING_HELD_PREDICTION"):
             source.score_once({})
         for seed in (136000, 136255, 137000, 137063):
             cust = S.Custodian(S.world(seed))
