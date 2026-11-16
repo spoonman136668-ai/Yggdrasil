@@ -26,11 +26,17 @@ import probe_original_child as probe
 HERE=Path(__file__).resolve().parent
 
 
+class RecordingStringIO(io.StringIO):
+    def close(self):
+        self.saved=self.getvalue()
+        super().close()
+
+
 class FakeProcess:
     """Explicit fake handshake, NOT an original CausalGym process."""
     def __init__(self,lines):
         self.pid=os.getpid()+77
-        self.stdin=io.StringIO()
+        self.stdin=RecordingStringIO()
         self.stdout=io.StringIO("".join(lines))
         self.stderr=None
         self.returncode=None
@@ -208,7 +214,7 @@ class CVH05ConstructorBoundaryTests(unittest.TestCase):
                     self.assertFalse(rec["source_seed_first_use"])
                 self.assertTrue(session.closed)
                 self.assertEqual(fake.poll(),0)
-                self.assertEqual(fake.stdin.getvalue(),wire(
+                self.assertEqual(fake.stdin.saved,wire(
                     {"schema":c.SCHEMA,"kind":"close"}))
                 self.assertIn("--constructor-only",spawn.call_args.args[0])
                 self.assertNotIn("--source-action",spawn.call_args.args[0])
