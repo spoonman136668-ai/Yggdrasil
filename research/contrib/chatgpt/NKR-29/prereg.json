@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.nkr29.consumed-feedback-bounded-repair.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOME",
+  "parent": {
+    "pr": 1172,
+    "sha": "c6167963733323c4602037a35793b065f3e3c7fe",
+    "tree": "301abdbccaa57d2e64f206654b9a58d21f23013e",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "On actual already-consumed public action/consequence records, does bounded feedback on confidently wrong predictions improve an existing native forecast more than frozen memory and equally budgeted random feedback? Can normal all-feedback learning outperform selective correction?",
+  "source": {
+    "loader": "unchanged NKR-19/audit.py load_source()",
+    "compiled_transcript_artifact": 14257634107,
+    "zip_sha256": "4c877a6df5685516cc7ba445b2b90c90afb3674537ab741fb67adb5453e5c9ef",
+    "consumed_seeds": [
+      996100,
+      996101,
+      996102,
+      996103
+    ],
+    "events": 124,
+    "original_new_actions": 0,
+    "original_new_seed_reservations": 0,
+    "official_unopened_cohorts": false,
+    "novel_source_first_use": false
+  },
+  "design": {
+    "native": "Unchanged PublicCausalCells128 learned bytes/164 checkpoint bytes, same16 addresses and Beta(1,1) readout. No native runtime modification.",
+    "initial_knowledge": "All previously frozen24 public events/world,96 distinct events total; cloned immutable initial checkpoint, never rewritten.",
+    "feedback_stream": "The remaining7 already-consumed events/world,28 total, ordered round-robin index24..30 then world0..3. Predict both outputs BEFORE revealing current feedback to update. Future row values never used by learners/gates.",
+    "repair_caps_descending": [
+      28,
+      14,
+      7
+    ],
+    "confidence": "Fixed inclusive posterior>=3/4 predicting1 or<=1/4 predicting0; confidently wrong means observed current outcome is the opposite. Observational stochastic misses do NOT prove incorrect world law.",
+    "arms": [
+      "frozen",
+      "all_feedback",
+      "error_only",
+      "random_matched_701",
+      "random_matched_702",
+      "random_matched_703"
+    ],
+    "all_feedback": "Assimilate each newly witnessed event until shared maximum event cap; two outcome updates/event.",
+    "error_only": "After predictions and current feedback, if ANY target was confidently wrong and cap remains, assimilate that entire new event once.",
+    "random_matched": "Update at EXACT SAME times and in same world as error_only, exactlyone event/trigger. Choose an as-yet-unlearned newly witnessed event from that world's prefix by minimumSHA256(canon([seed,cap,world,current_index,candidate_index])). No future rows, no repeat, no using previously trained24 as fresh evidence. These compare subset assignment conditional on error_only's gate; not independent deployed policies.",
+    "strong_control": "Independently fitted exact Beta probabilities using each arm's actual event ledger. Both outputs must match native at every decision. all_feedback uses the same maximum cap and public information but may consume more observations than error_only; disclose realized costs and do not claim equal realized cost there.",
+    "scores": "Brier mean over SAME56 output predictions, wrong-confident counts, exact rational differences vs frozen, paired trace hashes. Score before feedback, never rescore repaired model on the label used to update it.",
+    "retention": "Every update keeps other worlds'24 posterior readouts unchanged; all original192 counter increments remain componentwise, verify independently against event-ledger counts, final cold snapshot byte identity and forecasts.",
+    "negative_controls": "Future event, duplicate event and malformed row rejected before partial update; same initial frozen checkpoint remains unchanged."
+  },
+  "thresholds": {
+    "primary": "At max28 cap error_only pooled Brier at least0.005 lower than frozen AND at least0.005 lower than mean matched-random Brier, otherwise exploratory NO_GO. Strong equally informed exact-Beta comparison must be tie; cannot establish superiority.",
+    "secondary": "Report all-feedback/frozen and descending-cap curves without choosing new settings.",
+    "science": false,
+    "reason": "All labels were consumed historically. Retrospective mechanism falsification only; no independent new-world confirmation."
+  },
+  "resources": {
+    "primary": "one Ubuntu cache replay",
+    "replication": "one Windows stable replay",
+    "max_audit_seconds": 120,
+    "paid_api": 0,
+    "new_runners": 0,
+    "algorithmic_edits_max": 3,
+    "development_replays_max": 3
+  },
+  "qualification": "Focused negatives/chronology/reference/cold mechanics first; mandatory full root and NKR05 regression plus independent G29 on final candidate BOTH OS; preserve all old results and original checkpoint. Existing draft1172 only.",
+  "changed_paths": [
+    "research/contrib/chatgpt/NKR-29/",
+    "tests/test_native_feedback_repair_audit.py",
+    ".github/workflows/nkr29-feedback-repair.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "deployment": "NONE; no merge/owner/accepted model/controller/scheduler mutation"
+}

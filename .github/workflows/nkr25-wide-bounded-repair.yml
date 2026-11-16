@@ -1,0 +1,257 @@
+name: NKR25-27 full-image wide bounded repair
+on:
+  push:
+    branches: [research/nkr25-27-full-image-bounded-repair-20261116]
+permissions:
+  contents: read
+  actions: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  development:
+    if: "github.event.head_commit.message == 'ci(nkr25): run frozen wide bounded-repair campaign'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-free focused and inherited native qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor efc6059b6d133509af2b0a55a8d5f3d84daf042f HEAD
+          python -B -m unittest discover -s tests -p test_native_bounded_fact_repair.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+
+  audit-linux:
+    needs: [development]
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      result: ${{ steps.audit.outputs.result }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Reuse exact previously compiled full historical image
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --max-time 240 \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14220169461/zip \
+            -o "$RUNNER_TEMP/nkr25-compiled.zip"
+      - name: Full-image frozen stages NKR25 then NKR26 then NKR27
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B research/contrib/chatgpt/NKR-25/campaign.py \
+            --compiled-image-zip "$RUNNER_TEMP/nkr25-compiled.zip" \
+            --output-directory "$RUNNER_TEMP/nkr25-linux"
+          test -z "$(git status --porcelain)"
+
+      - name: Preserve original fault and maximum repaired candidate snapshots
+        id: checkpoints
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: NKR25-frozen-and-repaired-checkpoints
+          path: |
+            ${{ runner.temp }}/nkr25-linux/frozen-fault-checkpoint.json
+            ${{ runner.temp }}/nkr25-linux/max-repaired-checkpoint.json
+          if-no-files-found: error
+          retention-days: 30
+
+  audit-windows:
+    needs: [audit-linux]
+    if: github.run_attempt == 1
+    runs-on: windows-2022
+    timeout-minutes: 30
+    outputs:
+      result: ${{ steps.audit.outputs.result }}
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Reuse exact previously compiled full historical image
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --max-time 240 \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14220169461/zip \
+            -o "$RUNNER_TEMP/nkr25-compiled.zip"
+      - name: Independent-platform exact stable result reproduction
+        id: audit
+        env:
+          NKR25_EXPECTED_RESULT: ${{ needs.audit-linux.outputs.result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/NKR-25/campaign.py \
+            --compiled-image-zip "$RUNNER_TEMP/nkr25-compiled.zip" \
+            --output-directory "$RUNNER_TEMP/nkr25-windows" --verify-env
+          test -z "$(git status --porcelain)"
+
+  seal-receipts:
+    needs: [audit-linux, audit-windows]
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Retrieve exact source-run checkpoint bytes
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: NKR25-frozen-and-repaired-checkpoints
+          path: ${{ runner.temp }}/nkr25-sealed-checkpoints
+      - name: Preserve outcomes and generate only derived source index
+        id: seal
+        env:
+          NKR25_LINUX_RESULT: ${{ needs.audit-linux.outputs.result }}
+          NKR25_WINDOWS_RESULT: ${{ needs.audit-windows.outputs.result }}
+          NKR25_PREREG_SHA: efc6059b6d133509af2b0a55a8d5f3d84daf042f
+          NKR25_CHECKPOINT_DIRECTORY: ${{ runner.temp }}/nkr25-sealed-checkpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          python -B research/contrib/chatgpt/NKR-25/seal.py
+          git add -- research/contrib/chatgpt/NKR-25/campaign-result.json \
+            research/contrib/chatgpt/NKR-25/result.json \
+            research/contrib/chatgpt/NKR-26/result.json \
+            research/contrib/chatgpt/NKR-27/result.json \
+            research/contrib/chatgpt/NKR-25/frozen-fault-checkpoint.json \
+            research/contrib/chatgpt/NKR-26/max-repaired-checkpoint.json \
+            research/contrib/chatgpt/NKR-25/replication-windows.json \
+            research/contrib/chatgpt/NKR-25/provenance.json \
+            research/contrib/chatgpt/NKR-25/SESSION_REPORT.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research(nkr25): freeze original fault and separate repaired full-image outcomes'
+          RESULT_SOURCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$RESULT_SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          python -B -c "import subprocess; expected={'.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json'}; actual=set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()); assert actual==expected,(actual,expected)"
+          git commit -m "docs(nkr25): exact wide factual repair source atlas at $RESULT_SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr25-27-full-image-bounded-repair-20261116
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  final-regression:
+    needs: [seal-receipts]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal-receipts.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Mandatory full exact-final-candidate qualification
+        env:
+          EXPECTED_CANDIDATE: ${{ needs.seal-receipts.outputs.candidate }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE"
+          git rev-parse HEAD HEAD^{tree}
+          git merge-base --is-ancestor efc6059b6d133509af2b0a55a8d5f3d84daf042f HEAD
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [seal-receipts]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve exact Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal-receipts.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent final-source atlas and clean checkout
+        env:
+          EXPECTED_CANDIDATE: ${{ needs.seal-receipts.outputs.candidate }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"

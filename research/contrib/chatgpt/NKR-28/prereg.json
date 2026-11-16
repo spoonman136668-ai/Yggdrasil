@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.nkr28.wide-repaired-composition.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOME",
+  "parent_sha": "4793098b0693222dfc4821a0c348b9c8fefc453b",
+  "parent_tree": "072fbcc8ad72fe383fe054af4cf8c9330554cb0f",
+  "parent_pr": 1172,
+  "scope": "Engineering compatibility and application of repaired factual memory through EXISTING bounded two-hop hypothesis operator. Not new learned operator, semantic truth, heldout science or accepted model integration.",
+  "source": {
+    "compiled_image_artifact": 14220169461,
+    "compiled_image_zip_sha": "c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275",
+    "rows": 21343681,
+    "image_sha": "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1",
+    "fault_checkpoint_sha": "c4e6a3c81733e117e9d5c163e28e0e117b2082b21317bb56431f71e8ca792594",
+    "repaired_checkpoint_sha": "779a41789f9ac28f900a082950244e25630fdbaee55fc7c8ec570af9faf1977c"
+  },
+  "design": {
+    "full_base_present": true,
+    "query_selection": "Inspect only indexed row witnesses of the32768 frozen faults. For each true(s,p,m), require m among first16 base objects(s,p), and first indexed outgoing row of m exists. q=that row predicate. Deduplicate(s,p,q). Then choose512 queries evenly over ALL eligible contexts by floor(i*(eligible-1)/(511)),or all if fewer. No source-wide parse or benchmark-answer tuning.",
+    "max_queries": 512,
+    "max_intermediates": 16,
+    "max_candidates": 64,
+    "arms": [
+      "unchanged_full_base",
+      "frozen_injected_fault_candidate",
+      "max_repaired_candidate"
+    ],
+    "controls": "Independent raw-row bounded symbolic join, using its own projection/filter/cursor code with same visited-path budgets and candidate overlay sets. SAME information; expect tie. Direct fact retrieval cannot turn path into verified fact.",
+    "metrics": [
+      "eligible contexts",
+      "query list SHA",
+      "base/bad/repaired reference equality",
+      "bad vs base answer differences",
+      "repaired vs base answer differences",
+      "query hashes",
+      "source/checkpoint unchanged",
+      "timings"
+    ],
+    "threshold": "Every reference output equals corresponding native hypothesis output; repaired matches baseline on all selected queries; at least one faulted output differs (otherwise report engineering insufficient coverage without retuning). All hypotheses remain unverified; ordinary NativeKnowledgeSession.hypothesize API works.",
+    "changes": "Add compatible manifest view and two_hop_candidates wrapper to BoundedFactRepair; delegate the unchanged native operator. Keep source and original failures frozen."
+  },
+  "resources": {
+    "max_audit_seconds": 120,
+    "original_source_actions": 0,
+    "raw_source_downloads": 0,
+    "compiled_cache_reuse_only": true,
+    "new_runners": 0,
+    "paid_calls": 0
+  },
+  "qualification": "Focused compatibility+negative tests before image primary, Windows stable reproduction, mandatory final root/NKR05 and independent G29 both OS. Reuse PR1172; no merge/deployment/scientific_pass."
+}
