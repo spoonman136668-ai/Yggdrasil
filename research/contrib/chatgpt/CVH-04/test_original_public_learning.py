@@ -71,6 +71,18 @@ class AuthenticConsumedCausalMDPTests(unittest.TestCase):
                 with self.subTest(name=name),self.assertRaises(ValueError):
                     x.load_original_public(path)
 
+    def test_report_precision_only_equalizes_platform_float_ulps(self):
+        # Python 3.11/3.12 performed identical model comparisons, but
+        # 55-term sum ordering differed by a final float ULP in CI.
+        self.assertEqual(
+            x.canonicalize_report_precision(0.27832006522743125),
+            x.canonicalize_report_precision(0.2783200652274313))
+        self.assertEqual(
+            x.canonicalize_report_precision(0.014917846866977946),
+            x.canonicalize_report_precision(0.014917846866978057))
+        self.assertEqual(x.canonicalize_report_precision({"n":55,"x":None}),
+                         {"n":55,"x":None})
+
     def test_four_step_return_has_no_future_cross_episode(self):
         rows=x.load_original_public()[996100]
         rewards=[r.reward for r in rows]
