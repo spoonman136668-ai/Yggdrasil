@@ -26,7 +26,7 @@ class FrozenTrainAndSourceAuthorityTests(unittest.TestCase):
         self.assertEqual(p["recurrent"]["train_epochs"],48)
         self.assertEqual(p["recurrent"]["hidden"],8)
         self.assertEqual(p["recurrent"]["weight_seed"],1707)
-        self.assertEqual(p["toy_evaluation"]["total_mock_actions"],512)
+        self.assertEqual(p["toy_evaluation"]["all_mock_actions"],512)
         self.assertFalse(p["thresholds"]["scientific_pass"])
 
     def test_no_original_cohort_firstuse_and_source_only_generator_restricted(self):
@@ -141,7 +141,8 @@ class FrozenTrainAndSourceAuthorityTests(unittest.TestCase):
         self.assertNotIn("ctf_do(",source)
         self.assertNotIn("requests.get(",source)
         self.assertNotIn("subprocess.",source)
-        self.assertIn("PublicConsequence(state,action,reward,new_state",source)
+        self.assertIn("rows.append(PublicConsequence(",source)
+        self.assertIn("state,action,reward,new_state,False,step==7",source)
         self.assertIn("p=sigmoid(",source)
         self.assertIn("future_delta",source)
         self.assertIn("_sgd_full_episode",source)
