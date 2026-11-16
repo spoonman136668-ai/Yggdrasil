@@ -71,12 +71,26 @@ class NativeOutOfFamilyStressTests(unittest.TestCase):
         truth=env.execute(15,1)
         self.assertIsNotNone(native)
         self.assertNotEqual(native,truth)
-        # The independent equally informed conjunction-family control
-        # abstains because multiple masks remain source-consistent.
+        # Multiple surviving masks need not imply uncertainty on EVERY
+        # query. At 15 every candidate conjunction fires, so the broader
+        # equal-information model can correctly identify that consequence.
         fit=study.independent_broader_symbolic_fit(records)
         self.assertGreater(len(fit[2]),1)
-        self.assertIsNone(study.independent_broader_symbolic_predict(fit,15,1))
+        self.assertEqual(study.independent_broader_symbolic_predict(fit,15,1),
+                         truth)
         self.assertEqual(model.predict(15,1)["native_accepted"],False)
+        # At context 6 in world 2, unseen candidates disagree. A model
+        # that abstains here is safer than NKR11's confidently wrong 0.
+        other_env,other_prior,other_records=sample(2)
+        other_raw=study.bundle("nkr12-ambiguous-public-02",other_records)
+        other_model,_=other_prior.stage_public_interventions(
+            other_raw,digest(other_raw))
+        other_native=other_model.predict(6,1)["public_outcome"]
+        self.assertIsNotNone(other_native)
+        self.assertNotEqual(other_native,other_env.execute(6,1))
+        other_fit=study.independent_broader_symbolic_fit(other_records)
+        self.assertIsNone(study.independent_broader_symbolic_predict(
+            other_fit,6,1))
 
     def test_action_pair_custody_and_hidden_probes_never_observed_in_fit(self):
         env,prior,records=sample(8)
