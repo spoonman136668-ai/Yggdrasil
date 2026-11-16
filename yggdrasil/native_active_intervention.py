@@ -214,17 +214,17 @@ class NativeActiveIntervention:
 
     def observe_selected_public_action(self, source_raw, source_sha256):
         ident, rows = _bundle(source_raw, source_sha256, expected=1)
+        if ident == self._doc["source_id"] or any(
+                r["source_id"] == ident for r in self._doc["receipts"]):
+            raise ValueError("NKR16_REPLAYED_SOURCE_ID")
+        if rows[0][0] in {x[0] for x in self._initial + self._acquired}:
+            raise ValueError("NKR16_REPLAYED_PUBLIC_REF")
         choice = self.select_next_action()
         if choice is None:
             raise PermissionError("NKR16_NO_ADDITIONAL_ACTION_AUTHORIZED")
         if (rows[0][1], rows[0][2]) != (
                 choice["context"], choice["action"]):
             raise ValueError("NKR16_FEEDBACK_NOT_SELECTED_ACTION")
-        if ident == self._doc["source_id"] or any(
-                r["source_id"] == ident for r in self._doc["receipts"]):
-            raise ValueError("NKR16_REPLAYED_SOURCE_ID")
-        if rows[0][0] in {x[0] for x in self._initial + self._acquired}:
-            raise ValueError("NKR16_REPLAYED_PUBLIC_REF")
         doc = dict(self._doc)
         doc["receipts"] = self._doc["receipts"] + [{
             "source_id": ident, "source_sha256": source_sha256,
