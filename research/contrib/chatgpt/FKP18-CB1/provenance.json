@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.research-provenance.v1",
+  "experiment": "FKP18-CB1-DYNAMIC-TWO-FEATURE-RELATION-BINDING",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/fkp18-relational-binding-20261115",
+  "accepted_main_at_branch_fork": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "qualified_unmerged_FKP17_parent": "272423baac407d97791409247df05e4e98fcb7da",
+  "chronology": {
+    "prereg_first": "17b2a1503fe087c661afcd4fa478ff160c074120",
+    "source_write": "37dfd83c3ef98226c03f2985e84f3050b1a8ee7d",
+    "test_contract_exact": "ec4d994c27e7aecee99808a10d287ad973ba83da",
+    "strong_control": "ac013ecf7ebc9c35873c34577c944f66a6edfce2",
+    "strong_control_test": "10da069466872e10356c8521cbcdb53a63cc6b1d",
+    "result_write": "f7d1b9eadfc540b9c2961aa36b88e4815aa52dfa",
+    "source_method_tests_modified_after_experiment": false
+  },
+  "files": {
+    "binding.py": {
+      "git_blob": "a2c2c64ada23d78ca1872725c31798a57b4f634a",
+      "sha256": "17e808b06417e55c7a260e83ae23c88ff29c55cdcd6a2be2554fb1ef37c6e9da",
+      "bytes": 7577
+    },
+    "strong_control.py": {
+      "git_blob": "f9feb0491b0d9a67a3daf884ae347d57f222aa41",
+      "sha256": "962c2c3df9176762b695004b1b02d84395641469c5cebaf0b491d33763845c68",
+      "bytes": 2376
+    },
+    "test_contract.py": {
+      "git_blob": "8cb1a0c1b99319544909104b1f4fb1106bbe4b5a",
+      "sha256": "1946682857001ccae9bad765222f7f6620eae0503a6136bb282bc590fcd091b2",
+      "bytes": 5115
+    },
+    "test_strong_control.py": {
+      "git_blob": "c8042e83a4985f7fe29e03fcfd3cdd56377b0c4b",
+      "sha256": "02d41c66cd5ee6892672ab61949920856c5513b406d4c8e5c7711214b0c5b1bc",
+      "bytes": 1580
+    }
+  },
+  "local_execution": {
+    "python": "3.13.5",
+    "os": "Linux x86_64",
+    "environment": "ephemeral isolated model research container",
+    "installation": "Python standard library only",
+    "commands": [
+      "cd research/contrib/chatgpt/FKP18-CB1",
+      "python -m unittest -q test_contract.py test_strong_control.py",
+      "python -m compileall -q binding.py strong_control.py test_contract.py test_strong_control.py"
+    ],
+    "tests": "6/6 PASS on byte-for-byte GitHub-verified source and test files",
+    "additional_tests": "7/7 PASS in unarchived supplemental full prototype tests; not a substitute for qualified root tests",
+    "model_source_exact_git_blob_match": true,
+    "model_control_test_exact_git_blob_match": true,
+    "measured_standalone_fit_and_384_predictions_seconds": 0.108,
+    "whole_process_matched_cpu_cost": "UNVERIFIED",
+    "dual_os_final_full_regression": "UNVERIFIED",
+    "g29_code_atlas": "UNVERIFIED"
+  },
+  "outcome": {
+    "exact_learned_pairs": [
+      [
+        1,
+        6
+      ],
+      [
+        18,
+        32
+      ],
+      [
+        5,
+        35
+      ]
+    ],
+    "exact_truth_masks": [
+      6,
+      6,
+      8
+    ],
+    "credited_examples_each": 128,
+    "cold_source_receipts": [
+      "e146faa4ff0c1c79d7526e114c93ab8d90a78b98c494bbe500296eaaa37d406c",
+      "0d6ea59c9273cd3ba2975b65169abb40670d5d0ec8499b129d85d0446c81f309",
+      "2f60203d6392befbe7fb5858f222529a5d7fd93e15edd23041f4ea2fc587fcc6"
+    ],
+    "candidate_and_conventional_correct": 384,
+    "scored_examples": 384,
+    "fkp17_marginal_alias_source_safe_test": true
+  },
+  "custody": {
+    "source_private_fkp17_dev_unopened": true,
+    "source_private_fkp17_transfer_unopened": true,
+    "no_user_runner_or_scheduled_tasks": true,
+    "no_native_main_merge": true,
+    "no_model_promotion": true,
+    "science": "NOT QUALIFIED",
+    "publication": "Isolated research branch, no new pull request, no deployment"
+  }
+}
