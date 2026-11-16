@@ -1,0 +1,124 @@
+{
+  "schema": "yggdrasil.cvh04.authentic-consumed-public-episode-retrospective-prereg.v1",
+  "status": "FROZEN_BEFORE_CVH04_MODEL_CODE_OR_HELD_SCORE",
+  "project": "Yggdrasil",
+  "id": "CVH-04",
+  "date": "2026-11-16",
+  "parent": {
+    "pr": 1160,
+    "sha": "0975c5d83aa9b0357735139cae3457338ec67027",
+    "tree": "d71539fff8867231753901d5275dd57edadc2ab0",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "why": "Test already-qualified native/tokenless CVH01 earned-return memory against authentic source-observed FKP26 public causal MDP transitions instead of further fabricated worlds. Reuse CVH01, CVH02, CVH03 and independent strong conventional batch; no new learner, hardware, original first use or protected source.",
+  "original_source": {
+    "repo": "CausalAILab/Causal-Gymnasium",
+    "sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "source_kind": "ORIGINAL_PINNED_EXTERNAL_MDP_PUBLIC_ACTIONS_PREVIOUSLY_CONSUMED",
+    "fkp26_pr": 1158,
+    "source_run": 43930489602,
+    "source_candidate_sha": "f99552f29947767eb8764c68ba72518327c3d25c",
+    "original_artifact_id": 14257634107,
+    "artifact_zip_sha256": "4c877a6df5685516cc7ba445b2b90c90afb3674537ab741fb67adb5453e5c9ef",
+    "artifact_summary_canonical_sha256": "bdad1c832fd008746d7eb9ae2bc248e30ffa4be4a3e667209c6bfc33a0a93c22",
+    "source_transitions_sha256": {
+      "996100": "c8c151065c6bdd6f303ae28f995a55b33a910c1985c536b7cf30cdb360d89179",
+      "996101": "53b06c8cbdc22b8da399e75f60aa4d55a3179fba28f5284ddeb9012435f632df",
+      "996102": "9b63fbefe5dcfd98801b058277cac9141574a5bede072cea228a976ac69d7cca",
+      "996103": "34929d6cc2e1145a6a930b9e6e1542dc2733ac0366ea8c5be70fb76223e31676"
+    },
+    "source_episode_actions": {
+      "996100": 31,
+      "996101": 31,
+      "996102": 31,
+      "996103": 31
+    },
+    "total_source_actions": 124,
+    "full_source_data_access": "CONSUMED_PUBLIC_ONLY_FROM_EXISTING_ARTIFACT; NEVER_NEW_RESET_OR_DO"
+  },
+  "known_preprereg_disclosure": "An earlier source admission already reported per-seed reward totals 16/15/18/17 and first 2 transition rows of each seed were viewed while verifying the original artifact. Thus held outcomes are NOT fresh blind and scores may not be labeled independent science.",
+  "frozen_split": {
+    "train_seeds": [
+      996100,
+      996101
+    ],
+    "historical_retro_held_seeds": [
+      996102,
+      996103
+    ],
+    "validation_seeds": [],
+    "new_original_actions": 0,
+    "held_rows_expected": 62,
+    "train_rows_expected": 62,
+    "mechanics": "Original 31-step episodes; strict within-episode ordering, before/after continuity, no cross-episode prefix leakage.",
+    "scientific_first_use": false
+  },
+  "source_data_encoding": {
+    "public_rows": "6 binary fields in order before, action, reward, after, terminated, truncated; one 6-bit unsigned byte per row rendered 2 hex digits, 31 rows per seed",
+    "repository_fixture": "CVH-04/consumed_public_fixture.json",
+    "decoding": "byte=(before<<5)|(action<<4)|(reward<<3)|(after<<2)|(terminated<<1)|truncated",
+    "verify": "Decode all four source episode rows; recompute FKP24 canonical JSON list SHA256 and verify 4 original pinned transition hashes + counts + terminal flags; source fixture is non-private and already consumed.",
+    "provenance": "Preserve original archive digest and source PR/run IDs; NEVER claim fixtures are newly independent"
+  },
+  "candidate": {
+    "model": "EXACT qualified CVH-01 EarnedReturnMemory, unchanged source",
+    "input": "Only six public prior observed fields, no source-private state, action from recorded fixed policy",
+    "train": "Observe exactly 62 TRAIN rows in chronological episodes; no held model update before frozen held predictions; snapshot cold restore then score",
+    "prediction": "four-step discounted genuine reward units: current reward + 0.5 next + 0.25 next2 + 0.125 next3, truncating after episode end",
+    "context": "(previous_public_action,previous_public_reward,current_public_before,current_public_action), episode start sentinels 2/2",
+    "minimum_support": 2,
+    "unsupported": "ABSTAIN, never impute source facts; separately calculate frozen TRAIN global fallback only for all-row utility metric",
+    "capacity": "36 count/weighted return slots, no parameter growth"
+  },
+  "controls": {
+    "strong_exact": "CVH-01/strong_conventional.batch_public_returns() independently fitted on same 62 TRAIN source events, exact context and return horizon; no CVH01 estimator imports, source-oracle access or held labels. This predicts identically if native is correct and is the strongest information-equivalent exact symbolic comparator.",
+    "train_prior": "mean four-step actual TRAIN return on 62 rows, predicts all 62 held rows",
+    "hierarchical_bayes": "one-slot fully fitted conditional posterior mean with a frozen 2.0 pseudo-count toward TRAIN global return; action-context support may be 0; full coverage",
+    "immediate_ablation": "CVH-01 independent immediate_only_public_returns fitted same TRAIN public events, compare only native-supported held rows",
+    "negative_permutation": "train-only rotate each episode public reward bits forward by 7 positions; preserve state/action/next-state/terminal; train CVH01 after rewrite on observed-only source; evaluate exact same held rows on overlap support; not a legal causal replay or strong control"
+  },
+  "outcome": {
+    "primary": "All 62 retrospective held action prefixes scored without accessing held future rewards until candidate/controls frozen for that row; evaluator computes exact 4-step public return offline from already-consumed tape.",
+    "metrics": [
+      "held_coverage_supported_n",
+      "native_supported_mse",
+      "global_prior_mse_on_native_supported",
+      "batch_exact_equal_count",
+      "bayes_all_row_mse",
+      "native_global_fallback_all_row_mse",
+      "train_global_all_row_mse",
+      "immediate_ablation_supported_mse",
+      "permutation_supported_and_overlap_mse",
+      "held_unsupported_n",
+      "native_confident_outside_observed_support_n",
+      "cold_exact_snapshot",
+      "train_counter_preservation_after_offline_held_updates",
+      "source_hash_count",
+      "wall_seconds",
+      "heap_estimate_not_inferred"
+    ],
+    "honest_limits": "Recorded fixed untrained policy confounds action choices, so off-policy causal value and counterfactual outcomes are unidentifiable; this measures prediction of observed policy returns, not policy gains."
+  },
+  "preregistered_decision": {
+    "development_source_learning_signal": "Both held seeds jointly have >=16/62 supported contexts AND candidate 4-step return MSE on the same supported rows beats TRAIN global prior by >=0.01, AND original source hash, byte-stable cold restore, independent exact conventional parity and negative boundaries pass. This is a retrospective predictive-memory signal ONLY, not scientific superiority.",
+    "development_no_go": "Any threshold failure, exact strong-control tie (expected), inability to read authentic public source or overly small coverage must be preserved without changing split or support threshold.",
+    "science_pass": false,
+    "model_promotion": false,
+    "full_qualification": "Full inherited repository regression and inherited CVH01/02/03 plus CVH04 focused+negative tests Ubuntu and Windows, derived atlas update only, exact final candidate SHA/tree, scored same inputs with exact hashes, no new original scientific first use."
+  },
+  "authority": {
+    "user_authorized_original_mechanics_finished": true,
+    "no_new_original_first_use": true,
+    "no_protected_dev": true,
+    "no_protected_transfer": true,
+    "no_new_external_env_import": true,
+    "no_env_reset": true,
+    "no_env_do": true,
+    "no_owner_runner": true,
+    "no_controller_scheduler": true,
+    "no_paid_api": true,
+    "no_merge": true,
+    "no_main_edit": true,
+    "no_native_install": true
+  }
+}
