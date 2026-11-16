@@ -1,0 +1,122 @@
+"""Guarded WSP-120 comparison harness tests; no public first-use."""
+from __future__ import annotations
+
+from unittest import TestCase
+from unittest.mock import patch
+
+import fixture_evaluation as E
+import structural_growth as S
+
+
+class FixtureEvaluationTests(TestCase):
+    def test_equal_budget_provenance_and_cold_restore(self):
+        result = E.run_fixture(tier=384, family=1, exposure=4)
+        self.assertEqual(result["schema"], "wsp120.fixture-evaluation.v1")
+        self.assertFalse(result["scientific"])
+        self.assertEqual(result["seed"], 120900)
+        self.assertEqual(set(result["arms"]), set(E.ARMS))
+        self.assertEqual(len(result["receipt_sha256"]), 64)
+        for name, record in result["arms"].items():
+            with self.subTest(arm=name):
+                self.assertEqual(record["source_calls"], 4)
+                self.assertEqual(len(record["observations"]), 4)
+                self.assertEqual(record["held"], 24)
+                self.assertEqual(
+                    record["correct"] + record["wrong_confident"]
+                    + record["abstained"], 24)
+                self.assertEqual(len(record["source_sha256"]), 64)
+                self.assertEqual(len(record["predictions"]), 24)
+                if name == "SYMBOLIC_ACTIVE":
+                    self.assertIsNone(record["cold_ok"])
+                else:
+                    self.assertTrue(record["cold_ok"])
+        p = result["arms"]["NUMERIC_GROW_PASSIVE"]
+        for name in ("NUMERIC_FIXED3", "NO_UPDATE"):
+            record = result["arms"][name]
+            self.assertEqual(record["observations"], p["observations"])
+            self.assertEqual(record["source_sha256"], p["source_sha256"])
+        self.assertEqual(result["arms"]["NO_UPDATE"]["abstained"], 24)
+
+    def test_preflight_rejects_unfrozen_parameters_and_primary_seed(self):
+        for kwargs in ({"tier": 256}, {"tier": True},
+                       {"family": 3}, {"family": True},
+                       {"exposure": 3}, {"exposure": True},
+                       {"exposure": 4, "include_gru": True},
+                       {"include_gru": 1}):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
+                E.run_fixture(**kwargs)
+        original = S.engineering_fixture_world()
+        protected = S.World(120000, original.edges, original.targets,
+                            original.source_order, original.reveal_order)
+        with patch.object(S, "engineering_fixture_world",
+                          return_value=protected):
+            with self.assertRaisesRegex(PermissionError,
+                                        "PRIMARY_FIRST_USE_DENIED"):
+                E.run_fixture()
+
+    def test_batched_gru_prediction_scoring_contract(self):
+        # Scoring a conventional GRU must pass subjects as one batch.
+        import trained_gru as G
+        not_converged = G.TrainedGRUResult(
+            tuple(), None, False, 0.0, float("nan"), None, {}, 0.0, 0)
+        empty = E._score(not_converged, (1, 2, 3), (4, 5, 6), batched=True)
+        self.assertEqual((empty["correct"], empty["wrong_confident"],
+                          empty["abstained"]), (0, 0, 3))
+
+        class BatchOnly:
+            def infer(self, subjects):
+                if type(subjects) is not tuple:
+                    raise TypeError("WSP120_GRU_REQUIRES_BATCH")
+                return (4, 0, 6)
+
+        scored = E._score(BatchOnly(), (1, 2, 3), (4, 5, 6),
+                          batched=True)
+        self.assertEqual((scored["correct"], scored["wrong_confident"],
+                          scored["abstained"]), (2, 1, 0))
+        self.assertEqual(scored["predictions"], [4, 0, 6])
+
+        class TruncatedBatch:
+            def infer(self, subjects):
+                return (4,)
+
+        with self.assertRaisesRegex(RuntimeError,
+                                    "WSP120_SCORE_SHAPE_MISMATCH"):
+            E._score(TruncatedBatch(), (1, 2), (4, 5), batched=True)
+
+    def test_max_budget_fixture_scores_fully_trained_gru(self):
+        # Highest preregistered observation budget; disjoint world ONLY.
+        # This is an interface/qualification test, NOT an original-world result.
+        with patch.object(S, "source_safe_world",
+                          side_effect=AssertionError("primary cohort opened")):
+            result = E.run_fixture(tier=384, family=0, exposure=32,
+                                   include_gru=True)
+        self.assertFalse(result["scientific"])
+        self.assertEqual(result["seed"], S.ENGINEERING_SEED)
+        self.assertEqual(result["exposure"], S.MAX_QUERIES)
+        self.assertEqual(len(result["arms"]), len(E.ARMS) + 1)
+        for name in E.ARMS:
+            self.assertEqual(result["arms"][name]["source_calls"], 32)
+        comparison = result["arms"]["TRAINED_GRU_PASSIVE"]
+        self.assertTrue(comparison["same_passive_observations"])
+        self.assertEqual(comparison["parameter_count"], 42560)
+        self.assertEqual(len(comparison["epochs_by_seed"]), 3)
+        self.assertTrue(comparison["converged"],
+                        "nonconverged comparator invalidates scientific first-use")
+        self.assertTrue(comparison["scientifically_valid"])
+        self.assertEqual(comparison["training_accuracy"], 1.0)
+        self.assertLessEqual(comparison["training_loss"], 0.01)
+        self.assertEqual(sum(comparison[k] for k in (
+            "correct", "wrong_confident", "abstained")), 24)
+        self.assertEqual(len(comparison["predictions"]), 24)
+        self.assertNotIn("invalid_reason", result)
+
+    def test_zero_feedback_remains_unscored_scientifically(self):
+        with patch.object(S, "source_safe_world",
+                          side_effect=AssertionError("primary opened")):
+            first = E.run_fixture(exposure=0, family=2)
+            second = E.run_fixture(exposure=0, family=2)
+        self.assertFalse(first["scientific"])
+        self.assertEqual(first["receipt_sha256"], second["receipt_sha256"])
+        for record in first["arms"].values():
+            self.assertEqual(record["source_calls"], 0)
+            self.assertEqual(record["abstained"], 24)
