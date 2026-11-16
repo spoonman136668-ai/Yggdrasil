@@ -232,6 +232,18 @@ class DTRSourceFreePublicTests(unittest.TestCase):
         self.assertIn("MECHANICAL_PUBLIC_SEEDS=(996100,996101,996102,996103)",source)
         self.assertIn('raise PermissionError("FKP24_UNAUTHORIZED_OR_PROTECTED_WORLD")',source)
 
+    def test_persistent_exact_sourcefirstuse_denied_result_replays_unmodified(self):
+        file=HERE/"result.json"
+        self.assertTrue(file.exists(),"CVH10_RESULT_NOT_PERSISTED")
+        committed=json.loads(file.read_text(encoding="utf-8"))
+        reproduced=bridge.sourcefree_qualification_receipt()
+        self.assertEqual(committed,reproduced)
+        self.assertEqual(committed["receipt_sha256"],
+                         "42ff70bd0af44334bd7d5011d0e8fbd14cf97a0b56232002976db889706ad891")
+        self.assertEqual(committed["new_original_source_construct_reset_or_do_calls"],0)
+        self.assertFalse(committed["source_owner_firstuse_authority"]["first_use_execution_allowed"])
+        self.assertFalse(committed["scientific_pass"])
+
     def test_no_call_import_to_real_environment_or_source_firstuse_runner(self):
         src=(HERE/"dtr_public_bridge.py").read_text()
         py=ast.parse(src)
