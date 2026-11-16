@@ -88,12 +88,12 @@ class ActiveInterventionQualificationTests(unittest.TestCase):
 
     def test_exact_four_probe_limit_and_source_cold_restore(self):
         env, _, state = initial(4)
-        before = PublicCausalCells().snapshot()
+        native_before = PublicCausalCells().snapshot()
         for k in range(4):
-            before = state.checkpoint()
+            prior_checkpoint = state.checkpoint()
             source, proposal = selected_receipt(env, state, "unrestricted", k)
             next_, _ = state.observe_selected_public_action(source, digest(source))
-            self.assertEqual(state.checkpoint(), before)
+            self.assertEqual(state.checkpoint(), prior_checkpoint)
             state = NativeActiveIntervention(
                 next_.checkpoint(), next_.checkpoint_sha256)
         self.assertEqual(state.candidate_count, 16)
@@ -106,7 +106,7 @@ class ActiveInterventionQualificationTests(unittest.TestCase):
         for x in COLD:
             if state.predict(x, 1)["classification"] != "DIRECTLY_OBSERVED_ACTION_OUTCOME":
                 self.assertIsNone(state.predict(x, 1)["public_outcome"])
-        self.assertEqual(PublicCausalCells().snapshot(), before)
+        self.assertEqual(PublicCausalCells().snapshot(), native_before)
 
     def test_wrong_action_wrong_source_and_duplicate_source_refuse(self):
         env, _, state = initial(1)
