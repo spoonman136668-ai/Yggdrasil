@@ -17,6 +17,10 @@ from recurrent_control import (
     ConventionalPublicRNN,SeededPublicExplorer,PublicConsequence,
     training_tape,canonical,digest,EPOCHS,N_HIDDEN
 )
+from recurrent_control import sys as _public_baseline_sys
+CVH06_IMPORT=Path(__file__).resolve().parent.parent/"CVH-06"
+if str(CVH06_IMPORT) not in _public_baseline_sys.path:
+    _public_baseline_sys.path.insert(0,str(CVH06_IMPORT))
 from fourcell_control import (
     FourCellEarnedPolicy,PublicEarnedPolicy,independent_fourcell_public_batch,
     _canonical
@@ -24,6 +28,10 @@ from fourcell_control import (
 from public_policy import _slot
 
 HERE=Path(__file__).resolve().parent
+import sys
+CVH06=HERE.parent/"CVH-06"
+if str(CVH06) not in sys.path:
+    sys.path.insert(0,str(CVH06))
 PARENT="b4ad72bad038223a722ef7e052407c26484ee0ce"
 FIRST="94b04dfada301786387fd9fcf887d17a89d23f77"
 TRAIN_SEEDS=tuple(range(101,197))
