@@ -97,7 +97,7 @@ class ContractTests(unittest.TestCase):
         learner.seal()
         with self.assertRaises(ValueError):learner.observe_public(data[-1])
 
-    def test_cold_checksum_rejecks_corruption(self):
+    def test_cold_checksum_rejects_corruption(self):
         learner=m.ConditionalTemporalBinder()
         for row in tape(7125,1,6,6):learner.observe_public(row)
         checkpoint=bytearray(learner.seal().snapshot());checkpoint[8]^=1
