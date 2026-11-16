@@ -1,0 +1,100 @@
+{
+  "schema": "wsp121.sourcefree-scientific-reduction-contract.v1",
+  "gate": "pre-first-use source-free scientific scorer, NOT scientific qualification",
+  "source_identity": {
+    "original_fit_seeds": "121000..121023",
+    "original_transfer_seeds": "121024..121047",
+    "families": [
+      0,
+      1,
+      2
+    ],
+    "fit_per_family": 8,
+    "transfer_per_family": 8,
+    "total_rows": 48,
+    "source_budget": 288,
+    "protected_and_reserved": [
+      "121800..121863",
+      "120800..120863"
+    ],
+    "source_open_allowed": false
+  },
+  "reducers": [
+    "reduce_scored_summaries",
+    "compare_platforms"
+  ],
+  "modules": [
+    "scientific_reducer.py",
+    "test_scientific_reducer.py"
+  ],
+  "rows": {
+    "required": [
+      "seed",
+      "family",
+      "phase",
+      "platform",
+      "visible_edges",
+      "legal_subjects",
+      "held_subjects",
+      "fit_lineage_sha256",
+      "held_labels_used_in_training",
+      "arms"
+    ],
+    "arm_required": [
+      "correct",
+      "wrong_confident",
+      "abstained",
+      "held",
+      "source_calls",
+      "source_sha256",
+      "held_predictions_sha256",
+      "environment_sha256",
+      "wall_parts_seconds",
+      "wall_seconds",
+      "peak_rss_bytes",
+      "energy_proxy_joules",
+      "model_bytes"
+    ],
+    "strong_controls": [
+      "NUMERIC_FAST",
+      "NUMERIC_RESET",
+      "SYMBOLIC_TABLE_STRONG",
+      "SYMBOLIC_ENUM",
+      "TRAINED_MLP",
+      "NO_UPDATE"
+    ],
+    "conventional_training": {
+      "pinned_seeds": [
+        121951,
+        121952,
+        121953
+      ],
+      "training_accuracy": 1,
+      "training_cross_entropy_max": 0.005
+    }
+  },
+  "statistics": {
+    "bootstrap_replicates": 10000,
+    "seed": 1210,
+    "unit": "transfer world paired; family stratified",
+    "worlds": 24,
+    "held_per_world": 24,
+    "development_accuracy_min": 0.8,
+    "development_gain_over_reset_min": 0.25,
+    "scientific_accuracy_gain_vs_symbolic_and_mlp_min": 0.05,
+    "scientific_end_to_end_speedup_vs_both_min": 2,
+    "scientific_noninferiority_margin": 0
+  },
+  "custody": {
+    "external_authenticated_results_required": true,
+    "source_hashes_syntax_only": true,
+    "full_cost_instrumentation_independent_required": true,
+    "held_truth_custodian_separate": true,
+    "cross_platform_prediction_parity_required": true,
+    "no_scientific_first_use": true,
+    "no_native_admission": true,
+    "no_accepted_ref_mutation": true,
+    "no_new_schedulers": true
+  },
+  "limitation": "The finite eight-context truth-table basis and two route primitives are supplied. Conditional table discovery is not invention of an arbitrary unsupplied operator. Resource/energy proxy is not calibrated power measurement. Correlated families and only three gate functions limit external validity."
+}

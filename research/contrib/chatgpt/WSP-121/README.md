@@ -6,7 +6,7 @@ WSP-120 original public science is frozen at source SHA 0ecc75cf2e8e1ebdd0d44141
 
 WSP-121 switches to a bounded, persistent, source-verified local numeric operator table (16 signed int32 weights, 64 learned bytes). Its input is a public three-bit causal context and two public two-hop routes; an unnamed hidden gate selects an endpoint. The learner updates numeric counters from externally queried consequences, not gradient descent or an explicit list of 10548 candidate programs. Cold restore recomputes counters from the observed ledger and rejects forged digests. Unknown contexts abstain; contradictory operator updates fail closed.
 
-The source-safe fixture gate is XOR3 and the feature basis and route alternatives are supplied. This is NOT spontaneous invention of an arbitrary computation primitive, an emergent general learner, or proof of native numerical superiority. The optimized independent symbolic table is the principal strong control; the 256-table enumerator is diagnostic only. The engineering fixture can and does produce symbolic ties. The conventionally trained MLP baseline and full scientific economy/retention experiment are not yet implemented or qualified.
+The source-safe fixture gate is XOR3 and the feature basis and route alternatives are supplied. This is NOT spontaneous invention of an arbitrary computation primitive, an emergent general learner, or proof of native numerical superiority. The optimized independent symbolic table is the principal strong control; the 256-table enumerator is diagnostic only. The engineering fixture can and does produce symbolic ties. The conventional MLP baseline has qualified on disjoint engineering fixtures; the sealed original source generator, independent scientific evaluator, complete resource/retention experiment and first-use authorization remain unavailable.
 
 ## Matched gradient-trained conventional comparator — fixture only
 
@@ -34,6 +34,54 @@ It does not establish an unfamiliar operator outside the supplied
 basis, a cost-normalized numeric advantage, future original first-use
 permission or native model admission. The **optimized symbolic table**
 remains the strongest causal-memory comparison even if the MLP underperforms.
+
+## Source-free 48-world scientific scoring preflight
+
+`scientific_reducer.py` is **pure statistical validation**, not an original
+first-use evaluator. It accepts externally and independently scored aggregate
+records only. It does not import the original world generator, call an oracle,
+train a learner, access protected worlds or inspect withheld endpoints.
+`test_scientific_reducer.py` creates only **fabricated record dictionaries**
+that use preregistered world IDs as labels, never actual source worlds.
+
+The frozen source split is 24 FIT world labels `121000..121023` and 24
+TRANSFER world labels `121024..121047`, assigned in contiguous blocks of
+eight to the three gate families. Each row requires 384 visible edges,
+40 legal and 24 withheld subjects, with 8 FIT / 4 TRANSFER verified source
+queries. The six mandatory arms are numerical fast weights, numerical reset,
+optimized exact symbolic table, exhaustive symbolic diagnostic, converged
+fully trained MLP and no-update. Every arm must have identical within-world
+verified source receipts and environment identity, full correct/confident
+wrong/abstained accounting and held-prediction SHA-256. Every numeric arm
+must pass cold integrity; trained MLP must meet its three-seed convergence
+contract. All fit/transfer rows within each family must share the same fit
+lineage digest; all 48 world IDs must be present exactly once.
+
+Statistics resample **24 paired transfer worlds stratified by shared
+family**, 10,000 bootstrap replicates with seed `1210`; do not inflate
+independent sample size by treating the 24 held subjects as independent.
+A development *candidate* requires >=80% transfer accuracy, >=25pp above
+reset and paired 95% lower bound >0 with zero confident numeric errors.
+Numerical unique accuracy *candidate* requires >=5pp over **both**
+optimized symbolic and trained MLP with paired lower bound >0. An
+end-to-end time *candidate* requires >=2x vs **both**, with paired
+bootstrap lower bound >=50% fractional time savings, and no accuracy loss.
+
+Each arm supplies separately timed source, fitting, inference and cold-restore
+phases, reconciled whole-process time, peak process RSS, stored model bytes
+and a declared energy proxy. **A proxy does not establish calibrated energy
+or equivalent machine-level cost**. This reducer checks consistency, not the
+truth of these measurements. `compare_platforms` separately rejects
+mismatched input evidence or held-prediction SHA-256 between Linux and Windows
+without rewriting or replaying a world. A GRU-like cross-platform mismatch
+stays invalid.
+
+Every result **always** has `scientific_status=UNVERIFIED`,
+`scientific_pass=false` and `native_admission=false`, even when synthetic
+inputs trigger a development or scientific *candidate* signal. An independent
+source custodian must authenticate results and costs; the actual original
+generator is still deny-all, and the WSP121 48-world cohort has **never been
+opened**. The frozen WSP120 original cohort must never be replayed.
 
 ## Frozen preregistration
 - Original prereg commit: cb7d848dfb7e0cb47fe924b8ce012c40ae7e7282.
