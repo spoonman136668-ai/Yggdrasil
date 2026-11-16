@@ -150,8 +150,8 @@ def _constructor_in_isolated_import_space(root):
         if getattr(obj.env,"num_step",None)!=0:
             raise ValueError("FKP25_CONSTRUCTOR_PRECONSUMED_SOURCE_STEPS")
         return {
-            "original_core_entrypoint":str(paths[0].relative_to(root)),
-            "original_mdp_entrypoint":str(paths[1].relative_to(root)),
+            "original_core_entrypoint":paths[0].relative_to(root).as_posix(),
+            "original_mdp_entrypoint":paths[1].relative_to(root).as_posix(),
             "original_mdp_class":"causal_gym.envs.mdp.MDPPCH",
             "source_classes_unmodified":True,
             "constructor_created":True,
