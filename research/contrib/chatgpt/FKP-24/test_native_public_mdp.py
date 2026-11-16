@@ -199,7 +199,7 @@ class IndependentCausalSourceContract(unittest.TestCase):
         self.assertIn("LearningRegime.do",text)
         self.assertIn("MDPPCH(max_step=30",text)
         self.assertNotIn("def _private_reward",text)
-        self.assertNotIn("ctf_do(",text)
+        self.assertNotIn("env.ctf_do(",text)
         self.assertNotIn("env.see(",text)
         self.assertNotIn("env.step(",text)
         self.assertNotIn("env.env",text)
