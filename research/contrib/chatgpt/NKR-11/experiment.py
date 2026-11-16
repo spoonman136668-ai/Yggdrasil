@@ -196,7 +196,7 @@ def run_frozen():
         # and train contexts, but may fail to identify causal action effects.
         passive = collect_passive(env)
         random_arm = collect_random(env)
-        if len(passive) != len(random_arm) != len(repair):
+        if not (len(passive) == len(random_arm) == len(repair) == 16):
             raise AssertionError("NKR11_UNEQUAL_INTERVENTION_BUDGET")
         passive_signature = IntegerCausalSignature(passive)
         random_signature = IntegerCausalSignature(random_arm)
