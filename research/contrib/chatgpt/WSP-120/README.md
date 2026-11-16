@@ -63,6 +63,25 @@ independently qualified scientific first-use, cross-world retention,
 energy measurement, native admission, or evidence of invented operators.
 The preregistered scientific first-use authorization flag remains false.
 
+## Maximum-budget fixture and batched GRU scoring — source-safe engineering
+
+At the exact pre-archive candidate `2a660159ce9bc211834a2a52a9106ab6693a236f`,
+[existing dual-OS run #43782619052](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/43782619052)
+completed successfully. It exercised the full `run_fixture(exposure=32, tier=384,
+family=0, include_gru=True)` path on **only** engineering world `120900`,
+checking all five evidence arms and the fully trained three-seed conventional
+GRU. The comparator converged on the fixture and emitted 24 held predictions.
+The scorer now calls the GRU in batched mode and rejects mismatched prediction
+counts; source-safe regression tests cover abstentions, wrong-confident answers
+and batched shape failures. Scalar scoring was a real preflight defect corrected
+before any original scientific first-use.
+
+These are engineering fixture checks, **not** original 24-world scientific
+scores, matched scientific cost, multiworld independent reproduction, invention
+of unfamiliar primitives, accepted native model benefit or promotion. Original
+worlds `120000..120023` and reserved `120800..120863` remain unopened.
+The separately controlled `scientific_first_use=false` boundary is unchanged.
+
 ## Engineering commands
 
 ```console
