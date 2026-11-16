@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.aai12w.delayed-causal-roles-prereg.v1",
+  "id": "AAI-12W",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_OUTCOME",
+  "custody": {
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_negative": "AAI-12V@bfd8c5b12a973be484550565fa4f0d31909d7dcd"
+  },
+  "hypothesis": "A tokenless causal program inferred from public real one-bit interventions, with unknown causal input roles and an unknown 3-input hidden-state update truth table, outperforms fully fitted conventional recurrent learners on three-step open-loop forecasts while preserving familiar and out-of-family accuracy.",
+  "mechanism": "Hidden z update: z_(t+1) = z_t XOR table(x_a,x_b,x_c), public output y_t = z_t XOR x_k,t, with a,b,c,k unknown and pairwise distinct; actual intervention changes one public input bit and results in y_(t+1). Candidate infers an 8-bit truth table and unknown roles from public before/after x,y pairs; 3-step forecast receives y0, x0, exact actual actions but not intermediate outputs.",
+  "source": {
+    "input_bits": 8,
+    "hidden_bits": 1,
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "novel_3input_masks": [
+      150,
+      232,
+      210,
+      108,
+      182,
+      60,
+      202,
+      99,
+      113,
+      121,
+      42,
+      173
+    ],
+    "familiar_2input_operators": [
+      "xor",
+      "and",
+      "or",
+      "xnor"
+    ],
+    "negative_4input_operators": [
+      "parity4",
+      "majority4",
+      "exactly_two4",
+      "xor_and_xor4"
+    ],
+    "roles": "For fixture/phase/world: rank i in 0..7 by SHA256 ASCII 'AAI12W|fixture|phase|world|role|i'; first 3 are 3input roles in that order and 4th is output XOR port k. Familiar uses first 2 roles and k=third; negative uses first 4 roles and k=fifth.",
+    "train": "Rank n in 0..255 by SHA256('AAI12W|fixture|phase|world|x|n') ascending; 48 distinct first x as training predecessor states; train action flip index = SHA256('AAI12W|fixture|phase|world|train-action|n') first eight bytes mod8, train y0 first SHA256('AAI12W|fixture|phase|world|train-y|n') byte LSB. A real one-bit do updates x to xnext, hidden z and public y using hidden recurrent transition.",
+    "evaluation": "From remaining ranked x, admit first 64 where all three predecessor states under deterministic actual do flips are outside 48 training x. Each step flip index = SHA256('AAI12W|fixture|phase|world|eval-action|n|step') first eight bytes mod8. Initial observed y0 = SHA256('AAI12W|fixture|phase|world|eval-y|n') byte LSB. Learner sees x0,y0, 3 actual do actions, predicts final y3 without intermediate outputs.",
+    "public_train_fields": [
+      "x",
+      "y",
+      "xnext",
+      "ynext",
+      "flipped_index"
+    ],
+    "public_test_fields": [
+      "x0",
+      "y0",
+      "actions"
+    ],
+    "counts": {
+      "novel_worlds": 12,
+      "familiar_worlds": 4,
+      "negative_worlds": 4,
+      "fixtures": 2,
+      "train_transitions_per_world": 48,
+      "heldout_open_loop_episodes_per_world": 64,
+      "steps_per_episode": 3,
+      "novel_heldout_per_arm": 1536,
+      "familiar_heldout_per_arm": 512,
+      "negative_heldout_per_arm": 512,
+      "total_heldout_per_arm": 2560
+    },
+    "first_use_disarmed": true
+  },
+  "models": {
+    "candidate": "Enumerate k in 0..7, and ordered triples (a,b,c) chosen from 7 other input dimensions; derive observed update bit y XOR ynext XOR x[k] XOR xnext[k]. Fit a binary table for each of 8 three-input cells using deterministic majority vote (unseen cells 0), rank by train mismatch, descending covered cells, then lexicographic k,a,b,c,mask. Retain only one program with 8-bit table, four input roles, public evidence digest.",
+    "baseline_id3": "Fully fitted ID3 depth7 over 17 binary features = current x eight, next x eight, current y; deterministic entropy/gain, no hidden truth. Recursive three-step prediction.",
+    "baseline_logistic": "Full batch 200-epoch logistic with intercept + 17 binary features + 136 pair products, learning rate .4, L2 .01, zero init; recur predicted y over 3 actions.",
+    "baseline_knn": "k=5 nearest full public 17-bit feature over all 48 fitted rows, tie order by row index; recursive y prediction.",
+    "baseline_pair_grammar": "Fit k and two ordered distinct causal input roles, six fixed 2-input operators XOR AND OR NAND NOR XNOR on same recurrence target; choose min training mismatch and lexicographic tie; recurse.",
+    "baseline_persistence": "Always return last known y, a no-learning negative control.",
+    "capacity": "All models see the same 48 public transitions per world. Candidate retained state is 8-bit relation plus at most four roles, and public source digest. Controls may retain their exact learned trees/weights/rows.",
+    "cold": "Canonical JSON checkpoint/restore for every method before first heldout forecast. No model sees hidden roles, hidden z, source law or oracle. Exact SHA and deterministic repeated source-only screen."
+  },
+  "gates": {
+    "novel_accuracy_gain_vs_best_conventional_min": 0.08,
+    "novel_accuracy_gain_vs_pair_grammar_min": 0.08,
+    "novel_accuracy_min": 0.83,
+    "novel_worlds_ge_80pct_min": 10,
+    "familiar_regression_max": 0.04,
+    "negative_regression_max": 0.05,
+    "whole_model_fit_restore_predict_wall_ratio_to_fastest_conventional_max": 12,
+    "all_required": true,
+    "stop": "Run one frozen source-only screen after code/tests committed. Any miss => DEV_NO_GO_NO_SCIENCE and no post-result tuning/first-use."
+  },
+  "invalid_if": "Any hidden role/mask/oracle exposed to learner, fewer than 64 test contexts, training/test predecessor-state overlap, model-specific data/action budget, corrupt cold serialization or changed source after outcome.",
+  "safety": {
+    "source_only": true,
+    "no_main_native_accepted_refs": true,
+    "no_merge": true,
+    "no_first_use": true,
+    "no_new_owner_runner_scheduler_queue": true,
+    "no_paid_api": true,
+    "no_library_artifacts": true,
+    "only_paths": [
+      "research/contrib/chatgpt/AAI-12W/"
+    ],
+    "windows_linux_full_regression_before_merging": true
+  },
+  "interpretation": "Positive source-only development is not independent science, unrestricted primitive invention, general intelligence, or authorized native integration."
+}
