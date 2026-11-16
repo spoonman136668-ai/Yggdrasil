@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.research.frozen.v1",
+  "id": "SFI-04-STRUCTURE-FREE-INFORMATION-BOUND",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_RESULT",
+  "baseline": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "research_parent": "aad7ac83dc446c30381dd97cbecdb7babde7cb47",
+  "purpose": "Falsify apparent spontaneous relationship discovery from a uniform independent causal law with no transferable regularity, separating true novel-context generalization from direct experience memorization.",
+  "scope": "Synthetic public development only. No independent science or native Yggdrasil changes. Private FKP17 DEV/TRANSFER and all other consumed cohorts untouched.",
+  "worlds": {
+    "seeds": "880400..880431 inclusive",
+    "count": 32,
+    "context_count": 128,
+    "action_count": 8,
+    "hidden_law": "128 i.i.d. uniform target action labels per world; 8^128 possible mappings, no shared family grammar or cross-context causal regularity",
+    "source_seed_domain": "SFI04-RANDOM-LAW-v1",
+    "public_exploration": "public context sequence is 128-permutation repeated every cycle; 2048 actions, fixed action sequence rotating over all 8 choices for each context and independent of model decisions",
+    "feedback": "reward for action at t-2 returned at t. reward +1 for target action, -1 for incorrect. First two warmup rewards 0. Learner sees public earlier context/action in history but never hidden label, counterfactual or future outcomes.",
+    "scored": "after each checkpoint, perform read-only 128-context one-action evaluations per arm against the actual source; never reveal the oracle result to learner",
+    "all_scores_real_interventions": true
+  },
+  "budgets": [
+    24,
+    128,
+    512,
+    1024,
+    2048
+  ],
+  "arms": {
+    "DIRECT": "128 byte writeable action-exclusion/positive mask; locally eliminate action after delayed negative, collapse on delayed positive; no source import",
+    "EXACT_BAYES": "separate independent full 128×8 categorical support counts/validity under uniform prior with deterministic binary feedback, equal data",
+    "SHUFFLED": "apply earned reward to wrong context; negative information-control",
+    "NO_UPDATE": "uniform prior never updated; predicts action 0",
+    "ORACLE": "source-private target-action table for upper bound only; never part of trained learner"
+  },
+  "metrics": {
+    "primary": "mean 128-context earned correctness after each budget, clustered by 32 worlds",
+    "secondary": "unvisited-context accuracy, observed-context accuracy, number of unique contexts with delivered labels, survivor posterior support and cold readback",
+    "learned_capacity_direct_bytes": 128,
+    "learned_capacity_bayes_bytes_limit": 8192,
+    "max_memory_bytes": 1048576,
+    "strong_control_win": "candidate accuracy - equal information Bayes at 2048 must exceed +0.02 and paired 1,000-resample world bootstrap lower 95% >0.01",
+    "high_budget_learning": "candidate ≥0.90 at 2048, ≥0.30 improvement over candidate at 24, demonstrates retention of feedback not novel law",
+    "unseen_context_negative": "at 24 actions there are at least 104 unobserved source contexts; mean accuracy on those should be <=0.20, near chance 0.125",
+    "oracle_goal": "128/128 accurate per world",
+    "random_goal": "expected chance 0.125",
+    "information_bound": "B distinct context probes yield at most B source-context labels; even assuming perfect identification on visited contexts, expected accuracy on uniformly random independent unseen contexts <= visited/128 + (128-visited)/(128*8). Because feedback is delayed, at B=24 at most 22 contexts delivered, giving <= (22+106/8)/128 = 0.275390625.",
+    "classification": "DIRECT=EXACT_BAYES => NO_GO_UNIQUE_SUBSTRATE; unidentified unvisited contexts near chance => NO_FREE_LUNCH_CONFIRMED; scientific_pass always FALSE in public development",
+    "bootstrap_seed": 40415,
+    "bootstrap_replicates": 1000,
+    "stop": "Freeze outcome as is, no tuning based on observed seed results. No protected first-use. Full dual-OS regression on candidate exact SHA only if qualified owner decides it adds value."
+  },
+  "security": {
+    "synthetic_source_public_only": true,
+    "no_private_first_use": true,
+    "no_paid_APIs": true,
+    "no_scheduled_tasks": true,
+    "no_controller": true,
+    "no_native_model_merge": true,
+    "no_sibling_project_edit": true,
+    "no_new_GitHub_workflow": true
+  }
+}
