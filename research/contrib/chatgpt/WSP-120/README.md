@@ -22,6 +22,25 @@ The equal-information symbolic control independently searches the full same gram
 
 Predeclared public diagnostic requires at 384 known primitive edges, 16 source observations, numerical active >=60% held endpoint accuracy and >=15 percentage points above fixed-three-hop, paired lower confidence bound >0, zero confident errors, intact cold state. This can establish only bounded known-grammar extension. Strong scientific acceptance additionally requires independently qualified unseen-law families, strongest exact symbolic and fully converged GRU controls, cold/interference tests, complete whole-process costs and independently witnessed first-use, all under preset thresholds. Do not reclassify an untrained control as a victory.
 
+## WSP-120 conventional comparator qualification (source-safe only)
+
+The predeclared 64-hidden-state GRU is implemented in `trained_gru.py` using
+CPU PyTorch 2.10.0, fixed optimization seeds 120901/120902/120903, Adam
+at learning rate 0.01, at most 2000 epochs per seed and a training-only
+cross-entropy ceiling of 0.01 with 100% training accuracy. The training
+inputs comprise only the visible graph (UNKNOWN edges explicit) and
+the learner's already verified responses; held-out endpoints and source
+laws are never inputs or selectors. All three seeds run and the best
+converged checkpoint is selected by **training loss only**. Nonconvergence
+means an invalid conventional comparison, not numerical superiority.
+
+The additional `test_trained_gru.py` uses only disjoint world 120900;
+the public 120000..120023 and reserved 120800..120863 worlds remain
+unopened. This is **not** a scored scientific result. The GRU's model
+parameters, inference time and full training time must be counted against
+numeric and symbolic whole-process resource budgets. There is no
+permission here for original first-use, native integration, or merge.
+
 ## Engineering commands
 
 ```console

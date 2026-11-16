@@ -34,8 +34,10 @@ jobs:
           test ! -e research/contrib/chatgpt/WSP-120/SCIENTIFIC_PASS.json
           test ! -e research/contrib/chatgpt/WSP-120/PROTECTED_FIRST_USE.json
           test -z "$(git status --porcelain)"
+      - name: Install pinned CPU conventional comparator dependency
+        run: python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu 'torch==2.10.0'
       - name: WSP120 disjoint engineering fixture and source negatives
-        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-120 -p 'test_wsp120.py' -v
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-120 -p 'test_*.py' -v
       - name: Before atlas, only source-safe focused tests are admissible
         shell: bash
         run: |
@@ -108,6 +110,8 @@ jobs:
           python-version: '3.12'
       - name: Install pinned inherited WSP117 dependency
         run: python -m pip install --disable-pip-version-check 'numpy==2.2.6'
+      - name: Install pinned CPU conventional comparator dependency
+        run: python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu 'torch==2.10.0'
       - name: Check exact source atlas and no protected experiment
         shell: bash
         run: |
