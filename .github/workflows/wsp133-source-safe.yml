@@ -30,14 +30,15 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 1e043f26b431ecc2eba7f0115ff658cda977e56a HEAD
-          git diff --exit-code 1e043f26b431ecc2eba7f0115ff658cda977e56a HEAD -- research/contrib/chatgpt/WSP-132/prereg.json
-          test ! -e research/contrib/chatgpt/WSP-132/result.json
-          test ! -e research/contrib/chatgpt/WSP-132/SCIENTIFIC_PASS.json
+          git diff --exit-code 1e043f26b431ecc2eba7f0115ff658cda977e56a HEAD -- research/contrib/chatgpt/WSP-133/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-133/result.json
+          test ! -e research/contrib/chatgpt/WSP-133/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-133/first_use_authorization.json
           test ! -e research/contrib/chatgpt/WSP-132/first_use_authorization.json
           test ! -e research/contrib/chatgpt/WSP-131/first_use_authorization.json
           test -z "$(git status --porcelain)"
       - name: Run original WSP133 bounded repair R2 source-safe trial
-        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-132 -p 'test_*.py' -v
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-133 -p 'test_*.py' -v
       - name: Source remained unchanged
         shell: bash
         run: test -z "$(git status --porcelain)"
@@ -110,8 +111,9 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 1e043f26b431ecc2eba7f0115ff658cda977e56a HEAD
-          git diff --exit-code 1e043f26b431ecc2eba7f0115ff658cda977e56a HEAD -- research/contrib/chatgpt/WSP-132/prereg.json
-          test ! -e research/contrib/chatgpt/WSP-132/result.json
+          git diff --exit-code 1e043f26b431ecc2eba7f0115ff658cda977e56a HEAD -- research/contrib/chatgpt/WSP-133/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-133/result.json
+          test ! -e research/contrib/chatgpt/WSP-133/first_use_authorization.json
           test ! -e research/contrib/chatgpt/WSP-132/first_use_authorization.json
           python -B scripts/build_code_atlas.py --check-if-present
       - name: Mandatory inherited WSP117 through WSP133 focused regression
