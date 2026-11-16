@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.nkr17.exhaustive-random-policy-audit.prereg.v1",
+  "status": "FROZEN_BEFORE_CODE_OR_ADDITIONAL_OUTCOME_ANALYSIS",
+  "experiment": "NKR-17",
+  "parent": {
+    "pr": 1153,
+    "sha": "4562b8b47a2309bec496cd3ad6420d9a0a349e6d",
+    "tree": "122ac8a789c3fb64e4f8517fd7bbaf30916ad83a",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "motivating_result": "NKR16 structured active 56/72 correct, fixed-seed random 38/72 correct, zero errors, identical 2 probe cost and strong exact symbolic information-gain controller tie; actual scientific superiority not established",
+  "scientific_question": "Is +18/72 versus one SHA-seeded random comparator representative of all uniform random two-action schedules on the already-used 12 positive conjunction worlds, or a favorable single control seed? Does greedy native active beat the exact random-policy distribution with evidence-consistent abstention and no hidden counterfactual use?",
+  "source": {
+    "cohorts": "EXACT previously consumed NKR12/NKR13 12 synthetic conjunction worlds; no new scientific cohorts",
+    "world_ids": "0..11",
+    "new_worlds": 0,
+    "external_authentic": false,
+    "existing_simulator": "research/contrib/chatgpt/NKR-12/experiment.py independent IndependentActionWorld",
+    "native_model": "unchanged yggdrasil/native_active_intervention.py at parent",
+    "initial_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      10
+    ],
+    "cold_contexts": [
+      6,
+      7,
+      9,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "initial_public": "16 observed action0/action1 outcomes on each of eight initial contexts in the fixed NKR16 action order",
+    "immutable_warm": "32 original old-context/action outcomes per world, must retain 384/384",
+    "protected": "No official valid/test, no new original MiniGrid first-use, no 21.3M historical image read",
+    "source_identity": "public source IDs only content-addressed observations, no world ID supplied to planner"
+  },
+  "protocol": {
+    "intervention_budget_per_world": 2,
+    "exhaustive_random": "ALL ordered pairs of distinct cold context IDs: 8*7=56 equally likely sequential uniform without-replacement random policies per world, with each probe action=1. The 28 unordered pairs appear exactly twice, and order is retained in the audit for parity with sequential policy.",
+    "selection": "Every random schedule is committed independent of the simulator outcome before each selected action; no hidden mask or cold result can be read for selection.",
+    "native_active": "Execute inherited NKR16 native structured active policy exactly once/world, two selected action=1 probes, no algorithm edits. After any selected public outcome, update only the allowed evidence.",
+    "independent_fitted_control": "Implement independent parity action0 baseline and exhaustive 15 context-positive-conjunction mask filtering directly from 16 initial source observations; no reuse of native policy methods or NKR12 independent fit implementation inside the exhaustive audit. Filter masks using exactly the two executed public action consequences.",
+    "score": "On exactly the six still-UNPROBED cold context action=1 outcomes per schedule, predict ONLY if every surviving operator mask agrees; otherwise abstain. Do NOT credit the two directly observed outcomes or predict on hidden unselected truth until after evidence is fixed.",
+    "actual_source": "Use the already-frozen deterministic NKR12 environment, invoke env.execute on each selected action and on remaining evaluation contexts only after fitting. No hidden truth used for selection or fitting.",
+    "cost": "Native active and every random arm execute exactly 2 additional source-visible action outcomes/world; report 12-world cost of 24 actions/arm and exact number of counterfactual independent arms examined for retrospective audit, not conflate them with an executable online agent.",
+    "random_distribution": "For each world compute 56 matched-budget safe-unprobed-correct scores; convolve 12 world score histograms with integer polynomial DP to obtain exact 56^12 equally likely sequential-random-policy assignments and P(random_score >= native_active_score). No Monte Carlo, no model-dependent seed tuning, no resampling.",
+    "controls": "Recompute previous original NKR16 one-seed active 56/72 and seed random 38/72 as exact-SHA ancestor controls. The independently informed exact entropy policy must match native active choices and correct outcomes. Report oracle best of 56 pairs as evaluator-only upper bound, NEVER an equal-information online policy.",
+    "metrics": [
+      "native active total correct, covered, wrong, choices",
+      "fixed seeded random total correct, covered, wrong",
+      "exact randomized policy expected correct and variance",
+      "exact one-sided random tail probability at or above active",
+      "5th,50th,95th percentiles of random total",
+      "active's per-world rank among all 56 schedules",
+      "oracle offline max across 56 per world",
+      "all predicted errors, abstentions and provenance",
+      "one result SHA, 2-platform source parity, wall-time and per-arm source action counts"
+    ]
+  },
+  "preregistered_verdict": {
+    "engineering_pass": "Retain prior warm memory 384/384, native independent policy parity, all 12*56 randomized schedules sourced from exactly two selected public observations, no confident wrong predictions, exact DP totals equal 56^12, source and stream custody, focused plus full root CI both OS.",
+    "structured_robust_positive": "Active total exceeds full uniform random expected correct by >=4 across 12 worlds AND exact P(random total >= active) <= 0.05 AND zero confident wrong AND native matches independent exact symbolic candidate updates, else classify STRUCTURED_RANDOM_ROBUSTNESS_NOT_ESTABLISHED. Report observed 56/72 regardless.",
+    "no_posthoc": "Never change worlds, cohorts, probe counts, candidate grammar, metric denominator, threshold, or reference random seed after any outcome. Correct harness wiring/assertion defects only and report.",
+    "scientific_pass": false,
+    "science_limit": "All worlds were generated by the research code and their outcomes were consumed in NKR12-16. Exact combinatorial tail probabilities quantify this FIXED SOURCE's random scheduling robustness only; they are NOT external data statistical significance, novel cognition, or independent scientific gain above a fully fitted equivalent symbolic method."
+  },
+  "resources": {
+    "max_worlds": 12,
+    "max_schedules_per_world": 56,
+    "max_additional_public_actions_per_schedule": 2,
+    "expected_total_audited_schedule_sequences": 672,
+    "max_seconds": 120,
+    "paid_api_calls": 0,
+    "new_runner_count": 0,
+    "new_schedules_count": 0,
+    "source_downloads": 0
+  },
+  "security": {
+    "owner_accepted": false,
+    "merge": false,
+    "original_science_first_use": false,
+    "main_write": false,
+    "real_broker": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "new_authentic_source": false
+  },
+  "acceptance": {
+    "development": "GitHub-hosted Ubuntu/Windows focused tests and frozen audit",
+    "final": "mandatory entire inherited root regression + NKR05 focused suite + independent G29 at exact final SHA/tree both OS; preserve original NKR16 and MG19 science negatives"
+  },
+  "next_science": "If robust, new externally sourced unfamiliar causal-action experience and fully trained controls are still required; if not robust, stop claiming +18 as a robust general effect and pivot away from fixed synthetic grammar."
+}
