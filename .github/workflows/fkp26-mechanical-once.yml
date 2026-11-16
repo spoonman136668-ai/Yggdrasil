@@ -1,0 +1,257 @@
+name: FKP26 authorized original CausalGym mechanical first-use once
+on:
+  push:
+    branches:
+      - research/fkp26-causalgym-public-mechanical-20261116
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            python: '3.11'
+          - os: windows-2022
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Prevent checkout source line translation
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Exact previous source and prereg, FKP18-26 source-free tests ONLY
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 7d1902d56bb2303e2a6439ad530669319cd84efc HEAD
+          git merge-base --is-ancestor e72faee9641d594815fe7bc6fcc94ebe5991dbe6 HEAD
+          test ! -e research/contrib/chatgpt/FKP-26/result.json
+          for number in 26 25 24 23 22 21 20 19 18; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/FKP-$number" -p 'test_*.py' -v
+          done
+          test -z "$(git status --porcelain)"
+          echo FKP26_NO_SOURCE_FIRST_USE_DEVELOPMENT=PASS
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(fkp26): pin mechanical source G29' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: fkp26-causalgym-G29-generated-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Regenerate exactly 3 existing G29 files and preserve source-only contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e72faee9641d594815fe7bc6fcc94ebe5991dbe6 HEAD
+          test -z "$(git status --porcelain)"
+          SOURCE="$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(fkp26): pinned original source G29 at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/fkp26-causalgym-public-mechanical-20261116
+
+  final-regression:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(fkp26): exactly-once external mechanical execution' && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            python: '3.11'
+          - os: windows-2022
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - name: Prevent line-ending source drift
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Mandatory complete FKP18-26, root and G29 exact-SHA regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e72faee9641d594815fe7bc6fcc94ebe5991dbe6 HEAD
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 0
+          python -B scripts/build_code_atlas.py --check-if-present
+          for number in 26 25 24 23 22 21 20 19 18; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/FKP-$number" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+          test -z "$(git status --porcelain)"
+          echo FKP26_EXACT_CANDIDATE_FULL_SOURCE_REGRESSION_PASS
+
+  independent-g29:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(fkp26): exactly-once external mechanical execution' && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Prevent line-ending source drift
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent code-atlas generation check; NO original source-world first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+
+  original-causalgym-mechanical-once:
+    needs: [development,final-regression,independent-g29]
+    if: "github.event.head_commit.message == 'ci(fkp26): exactly-once external mechanical execution' && github.event_name == 'push' && github.run_attempt == 1 && needs.development.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    concurrency:
+      group: fkp26-original-source-996100-to-996103-first-use-only
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Check unique exact final candidate and frozen first-use boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l | tr -d ' ')" = 0
+          git merge-base --is-ancestor 7d1902d56bb2303e2a6439ad530669319cd84efc HEAD
+          git merge-base --is-ancestor e72faee9641d594815fe7bc6fcc94ebe5991dbe6 HEAD
+          test -z "$(git status --porcelain)"
+          python -B -m unittest discover -s research/contrib/chatgpt/FKP-26 -p test_*.py -v
+          echo FKP26_ONE_PASS_SCOPE_AND_SOURCE_PREFLIGHT=PASS
+      - name: Install exact prequalified original native target dependencies only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input --only-binary=:all: \
+            numpy==1.26.4 gymnasium==0.29.1 networkx==3.2.1 toposort==1.10 pydash==8.0.5
+          python -B - <<'PY'
+          import importlib.metadata
+          x={"numpy":"1.26.4","gymnasium":"0.29.1","networkx":"3.2.1",
+             "toposort":"1.10","pydash":"8.0.5"}
+          assert all(importlib.metadata.version(k)==v for k,v in x.items())
+          print("FKP26_DEPENDENCIES_EXACT_VERIFIED=PASS")
+          PY
+      - name: Verify unchanged original independent external upstream Git source
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/fkp26-upstream"
+          mkdir -p "$root"
+          git -C "$root" init -q
+          git -C "$root" remote add origin https://github.com/CausalAILab/Causal-Gymnasium.git
+          git -C "$root" fetch -q --depth 1 origin c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          git -C "$root" -c core.autocrlf=false checkout --detach -q c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          test "$(git -C "$root" rev-parse HEAD)" = c94e9a4cd3641588b6b8507e71ccee5c27032bdf
+          test -z "$(git -C "$root" status --porcelain --untracked-files=all)"
+          python -B research/contrib/chatgpt/FKP-25/runtime_probe.py \
+            --checkout "$root" \
+            --output-json "$RUNNER_TEMP/fkp26-constructor-zero-actions.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          x=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"fkp26-constructor-zero-actions.json").read_text())
+          assert x["source_sha"]=="c94e9a4cd3641588b6b8507e71ccee5c27032bdf"
+          assert x["constructor_created"] is True and x["source_first_use"] is False
+          assert x["do_invocations"]==x["reset_invocations"]==x["external_physical_actions"]==0
+          assert len(x["original_source_blobs"])==16
+          print("FKP26_ORIGINAL_DEPENDENCY_SOURCE_AND_ZERO_ACTION_CONSTRUCTOR=PASS")
+          PY
+      - name: ONE ONLY four-seed original external source mechanical do, preserve every partial outcome
+        shell: bash
+        timeout-minutes: 10
+        env:
+          FKP26_APPROVED_ONCE: FKP26-996100-996103-20261116
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/FKP-26/run_once.py \
+            --checkout "$RUNNER_TEMP/fkp26-upstream" \
+            --output-dir "$RUNNER_TEMP/fkp26-receipts" \
+            --candidate-sha "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          echo FKP26_EXTERNAL_MECHANICAL_SOURCE_ONCE=PASS
+      - name: Upload only the bounded original public first-use receipts and partial journal
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fkp26-mechanical-original-public-once-${{ github.sha }}
+          path: ${{ runner.temp }}/fkp26-receipts/**
+          if-no-files-found: warn
+          retention-days: 30
