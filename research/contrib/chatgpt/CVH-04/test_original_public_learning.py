@@ -109,8 +109,10 @@ class AuthenticConsumedCausalMDPTests(unittest.TestCase):
         # The output must never turn this weak retrospective retrospective
         # measurement into an independent novel-causality proof.
         self.assertEqual(n["source_sha"],x.SOURCE_SHA)
-        self.assertEqual(sum(v for v in n["metrics"].values()
-                             if type(v) is int and False),0)
+        self.assertEqual(sum(n["metrics"]["held_worlds"][i]["rows"]
+                             for i in range(2)),62)
+        if n["metrics"]["held_coverage_supported_n"] < 16:
+            self.assertFalse(n["frozen_development_signal"])
 
 
 if __name__=="__main__":
