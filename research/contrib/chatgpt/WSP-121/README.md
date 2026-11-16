@@ -99,3 +99,28 @@ Command: python -B -m unittest discover -s research/contrib/chatgpt/WSP-121 -p '
 Tests cover direct local programming, strong symbolic parity, new-graph transfer, abstention, negative no-update/reset, protected/source budget denial, verified source receipts, cold tamper and even valid-digest forgery rejection, and operator contradiction detection. GitHub push-only CI generates the existing G29 three-file source atlas on this isolated branch, then runs full WSP117–121 focused and inherited root regression on the exact archive source tree on Linux and Windows.
 
 Scientific acceptance requires the separately frozen 48-world original cohort, matched optimally implemented symbolic and fully trained conventional controls, independent new-world transfer, meaningful accuracy or process-cost superiority with preregistered confidence limits, and independent approval. Engineering PASS by itself is not SCIENTIFIC_PASS.
+
+## Independent source/custody interface — engineering-only
+
+`source_custody.py` is a standalone source emulator that does **not** import
+`meta_operator.py`, the statistical reducer, the conventional control, or
+WSP-120. It constructs four disjoint **engineering-only** graph/split views
+(`121900..121903`), keeps the demo selector out of the public view, enforces
+8/8/4/4 legal observation budgets, denies duplicate/held queries, emits
+deterministic graph/source/prediction digests and releases only one aggregate
+24-held score after the budget is exhausted. The demo law is visible in
+repository source; it is **not** a securely hidden oracle and not scientific
+first-use. A newly instantiated development source can be inspected or
+replayed; its one-time scoring fence is an API-level negative control only.
+
+`open_original` unconditionally denies entry; all original `121000..121047`
+and protected `121800..121863`/`120800..120863` IDs are rejected *before*
+graph generation. The five `test_source_custody.py` tests cover these denial
+boundaries, independent graph reproduction, matched-arm source receipt parity,
+held-answer non-disclosure, one-shot full-set scoring and malformed/partial
+negative controls. Real scientific source ownership remains **unimplemented**:
+an independent owner must hold original unseen gate truth tables, authenticate
+source birth and sealed lineage, isolate learner and scoring processes, bind
+the original source/held prediction digests and measured costs to signed
+immutable receipts, and separately authorize first use. These engineering
+hashes alone do not authenticate the source or establish SCIENTIFIC_PASS.
