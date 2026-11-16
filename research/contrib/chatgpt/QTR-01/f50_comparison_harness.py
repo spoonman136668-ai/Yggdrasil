@@ -105,14 +105,7 @@ def _canonical_pool(candidates, count, *, code):
 
 def _probabilities(arm, heldout):
     if hasattr(arm, "probabilities"):
-        # Every public-only bulk-prediction arm is fed <= 64 trajectories per
-        # call, including the fully fitted conventional controls.
-        values = tuple(
-            row
-            for offset in range(0, len(heldout), world.PUBLIC_QUERIES)
-            for row in arm.probabilities(
-                heldout[offset:offset + world.PUBLIC_QUERIES])
-        )
+        values = arm.probabilities(heldout)
     else:
         values = tuple(arm.probability(x) for x in heldout)
     if type(values) not in (list, tuple) or len(values) != HELDOUT:

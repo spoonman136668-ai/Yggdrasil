@@ -49,7 +49,7 @@ class F50RealSourcePreflightTests(unittest.TestCase):
             roles.arm_role("target_oracle")
         self.assertNotIn("PrivateTargetEvaluator", roles.__dict__)
 
-    def test_512_prediction_inputs_are_batched_in_64s(self):
+    def test_all_512_heldout_predictions_are_retained(self):
         class Limited:
             def __init__(self):
                 self.batches = []
@@ -60,7 +60,7 @@ class F50RealSourcePreflightTests(unittest.TestCase):
         arm = Limited()
         pred = harness._probabilities(arm, ((0, 0, 0, 0),) * harness.HELDOUT)
         self.assertEqual(len(pred), 512)
-        self.assertEqual(arm.batches, [64]*8)
+        self.assertEqual(arm.batches, [world.PUBLIC_QUERIES])
 
 
 if __name__ == "__main__":
