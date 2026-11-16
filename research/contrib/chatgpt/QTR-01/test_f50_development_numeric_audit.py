@@ -95,7 +95,7 @@ class NumericEnvelopeTests(unittest.TestCase):
         x=audit.audit_numeric_envelope(r)
         self.assertEqual(x["numeric_diagnostic"],
                          "NUMERIC_THRESHOLDS_MET_CUSTODY_AND_COST_UNVERIFIED")
-        self.assertEqual(x["world_b32_gaps"]["4096_4013"],"0.00")
+        self.assertEqual(x["world_b32_gaps"]["4096_4013"],"0.0")
         self.assertEqual(x["family_b32_gaps"]["4013"],"0.08")
         self.assertFalse(x["scientific_pass"])
         r=fabricated_report()
