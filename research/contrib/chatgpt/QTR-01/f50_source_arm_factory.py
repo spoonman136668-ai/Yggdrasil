@@ -239,12 +239,117 @@ def preflight(archive_4096, archive_lower, *, candidate_sha):
     return SourceArmFactory(models, roles, candidate_sha, token=_TOKEN)
 
 
+def _prove_cold_arm(arm, restore, *, size, seed, kind, source_identity):
+    """Public source-only state custody, without choosing actions or outcomes."""
+    require(callable(restore) and arm.size == size
+            and arm.seed == seed and arm.observed_bits == 0
+            and arm.used == [] and len(arm.pool) == world.PUBLIC_QUERIES
+            and getattr(arm, "target_graph_available", False) is False,
+            "COLD_DIRTY_START")
+    require(getattr(arm, "pending", None) is None
+            and getattr(arm, "awaiting", None) is None,
+            "COLD_PENDING_ACTION")
+    if kind in KINDS:
+        require(type(source_identity) is dict
+                and arm.model_sha == source_identity["checkpoint_sha256"]
+                and arm.source_sha == source_identity["source_sha"]
+                and arm.source_data_sha == source_identity["source_dataset_sha256"],
+                "COLD_REAL_MODEL_IDENTITY")
+    else:
+        require(source_identity is None, "COLD_UNEXPECTED_WEIGHT_IDENTITY")
+    original = arm.cold_checkpoint()
+    require(type(original) is bytes and 0 < len(original) < 1_000_000,
+            "COLD_PACKET_UNBOUNDED")
+    restored = restore(original)
+    require(type(restored) is type(arm)
+            and restored.cold_checkpoint() == original
+            and restored.size == size and restored.seed == seed
+            and restored.used == [] and restored.observed_bits == 0
+            and restored.pool == arm.pool
+            and getattr(restored, "target_graph_available", False) is False,
+            "COLD_BIT_EXACT_RESTORE")
+    # Reject a deliberately damaged checksum rather than merely comparing
+    # pristine object states. Never submit fake target actions or labels.
+    damaged = original[:-1] + (b"0" if original[-1:] != b"0" else b"1")
+    try:
+        restore(damaged)
+    except Exception:
+        pass
+    else:
+        raise SourceAdmissionRejected("F50_SOURCE_ADMISSION_COLD_TAMPER_ACCEPTED")
+    return restored
+
+
+def _prove_public_prediction_pair(arm, restored):
+    """One identical PUBLIC candidate, deterministic zero-feedback parity.
+
+    No evaluator, target AST, target outcome, observed event or new source fit.
+    """
+    import math
+    episode = arm.pool[0]
+    first = arm.probability(episode)
+    again = restored.probability(episode)
+    require(type(first) in (tuple, list) and len(first) == 3
+            and type(again) in (tuple, list) and len(again) == 3
+            and all(type(x) in (int, float) and math.isfinite(x)
+                    and 0 <= x <= 1 for x in first)
+            and tuple(first) == tuple(again)
+            and arm.cold_checkpoint() == restored.cold_checkpoint()
+            and arm.observed_bits == 0 and restored.observed_bits == 0
+            and arm.used == [] and restored.used == [],
+            "PUBLIC_ZERO_FEEDBACK_PREDICTION_PARITY")
+
+
+def cold_source_arms(factory, *, max_cpu_seconds=900):
+    """Actual 9-world x 12-arm cold reconstruction; no target first use.
+
+    One public-only prediction parity per kind/size at first seed. All 108
+    combinations must cold-check; failure/resource stop is never accepted.
+    """
+    from time import process_time
+    require(type(factory) is SourceArmFactory
+            and type(max_cpu_seconds) is int
+            and 1 <= max_cpu_seconds <= 1800,
+            "COLD_SOURCE_SCOPE_INVALID")
+    harness.checkpoint_inventory(factory.source_roles)
+    start = process_time()
+    checked = []
+    predictions = 0
+    for size, seed in harness.frozen_plan():
+        for kind in harness.KINDS:
+            if process_time() - start > max_cpu_seconds:
+                raise SourceAdmissionRejected("F50_SOURCE_ADMISSION_RESOURCE_STOP")
+            arm, restore = factory.make_arm(size, seed, kind)
+            identity = (factory.source_roles[size][kind]
+                        if kind in KINDS else None)
+            clone = _prove_cold_arm(
+                arm, restore, size=size, seed=seed, kind=kind,
+                source_identity=identity)
+            if seed == world.DEV_SEEDS[0]:
+                _prove_public_prediction_pair(arm, clone)
+                predictions += 1
+            checked.append((size, seed, kind))
+            del arm, clone
+        print("F50_COLD_WORLD_COMPLETE_SIZE=" + str(size)
+              + "_SEED=" + str(seed), flush=True)
+    require(len(checked) == 9 * 12 and predictions == 3 * 12
+            and len(set(checked)) == 9 * 12,
+            "COLD_108_WORLD_ARM_COVERAGE")
+    return {"status": "F50_COLD_108_PASS",
+            "worlds": 9, "arm_kinds": 12, "cold_restores": len(checked),
+            "zero_feedback_public_prediction_pairs": predictions,
+            "target_outcomes": 0, "scientific_pass": False,
+            "process_cpu_seconds": round(process_time()-start, 6)}
+
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-only", required=True, action="store_true")
     parser.add_argument("--archive-4096", required=True)
     parser.add_argument("--archive-lower", required=True)
     parser.add_argument("--candidate-sha", required=True)
+    parser.add_argument("--cold-arms", action="store_true")
     args = parser.parse_args()
     ready = preflight(
         args.archive_4096, args.archive_lower, candidate_sha=args.candidate_sha)
@@ -252,6 +357,12 @@ def main():
     print("F50_SOURCE_ONLY_ARM_FACTORIES=12", flush=True)
     print("F50_CANDIDATE_SHA=" + ready.candidate_sha, flush=True)
     print("F50_DEVELOPMENT_FIRST_USE=BLOCKED", flush=True)
+    if args.cold_arms:
+        result = cold_source_arms(ready)
+        print("F50_COLD_ALL_108_SOURCE_ARMS=PASS", flush=True)
+        print("F50_COLD_PUBLIC_ZERO_FEEDBACK_PAIRS="
+              + str(result["zero_feedback_public_prediction_pairs"]), flush=True)
+        print("F50_TARGET_OUTCOMES=0", flush=True)
 
 
 if __name__ == "__main__":

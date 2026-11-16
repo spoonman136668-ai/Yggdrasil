@@ -63,5 +63,50 @@ class F50RealSourcePreflightTests(unittest.TestCase):
         self.assertEqual(arm.batches, [world.PUBLIC_QUERIES])
 
 
+    def test_cold_roundtrip_rejects_corruption_and_wrong_clone(self):
+        class Tiny:
+            size = 1024
+            seed = 4013
+            used = []
+            observed_bits = 0
+            target_graph_available = False
+            pending = None
+            awaiting = None
+            pool = tuple(range(world.PUBLIC_QUERIES))
+
+            def cold_checkpoint(self):
+                return b"frozen.abc"
+
+        arm = Tiny()
+        def valid_restorer(packet):
+            if packet != b"frozen.abc":
+                raise ValueError("tampered")
+            return Tiny()
+        clone = roles._prove_cold_arm(
+            arm, valid_restorer, size=1024, seed=4013,
+            kind="native", source_identity=None)
+        self.assertEqual(clone.cold_checkpoint(), arm.cold_checkpoint())
+        with self.assertRaisesRegex(roles.SourceAdmissionRejected,
+                                    "COLD_TAMPER_ACCEPTED"):
+            roles._prove_cold_arm(
+                arm, lambda packet: Tiny(), size=1024, seed=4013,
+                kind="native", source_identity=None)
+        with self.assertRaisesRegex(roles.SourceAdmissionRejected,
+                                    "COLD_BIT_EXACT_RESTORE"):
+            class Broken(Tiny):
+                def cold_checkpoint(self):
+                    return b"wrong"
+            roles._prove_cold_arm(
+                arm, lambda packet: Broken(), size=1024, seed=4013,
+                kind="native", source_identity=None)
+
+    def test_owner_scope_and_no_private_target_in_source_smoke(self):
+        with self.assertRaisesRegex(roles.SourceAdmissionRejected,
+                                    "COLD_SOURCE_SCOPE_INVALID"):
+            roles.cold_source_arms(object())
+        self.assertNotIn("PrivateTargetEvaluator", roles.__dict__)
+        self.assertNotIn("DevelopmentEvaluatorClient", roles.__dict__)
+
+
 if __name__ == "__main__":
     unittest.main()

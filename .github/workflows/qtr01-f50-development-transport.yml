@@ -8,7 +8,7 @@ jobs:
   atlas:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source archive gate derive G29'
+      github.event.head_commit.message == 'ci(qtr): F50 cold-source G29 derive'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -27,11 +27,13 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_evaluator.py)" = '22137159932ee4bebbf308fb565861eb67b651b3'
-          test "$(git rev-parse HEAD^)" = '69bcc5c6696ab88ce77e8bb39213c20dc8facda9'
-          test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f50-development-transport.yml'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_arm_factory.py)" = 'ea6bf2e2e842b94b023992a4fd0d03c1fc29b9e7'
+          test "$(git rev-parse HEAD^)" = 'a18bc14e1e5ddf6547bc0d983be66cd7f02eaea8'
+          expected="$(printf '%s\n' .github/workflows/qtr01-f50-development-transport.yml research/contrib/chatgpt/QTR-01/f50_source_arm_factory.py research/contrib/chatgpt/QTR-01/test_f50_source_arm_factory.py | LC_ALL=C sort)"
+          actual="$(git diff --name-only HEAD^ HEAD | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_arm_factory.py)" = '4920eec5c03b7bd45f75e4cde7773d19a8ea3f02'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_comparison_harness.py)" = 'ec5d329118ef3e53ef4c2fd7d4382684d2d6e47f'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_source_arm_factory.py)" = '83058526d1d3569d9744473797a86db63f55f9ad'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_source_arm_factory.py)" = '0950e70d66d3a47f5af09d517c8e10936a4179c6'
           test -z "$(git status --porcelain)"
       - name: Derive G29 exact-source atlas
         shell: bash
@@ -45,13 +47,13 @@ jobs:
           git diff --cached --quiet && exit 1
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'ci(qtr): F50 source archive gate G29 companion'
+          git commit -m 'ci(qtr): F50 cold-source G29 atlas'
           python scripts/build_code_atlas.py --check
           git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
   qualify:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source archive gate final trigger'
+      github.event.head_commit.message == 'ci(qtr): F50 cold-source final qualification'
     name: F50 development transport exact-SHA full regression
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -85,15 +87,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 source archive gate final trigger'
-          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): F50 source archive gate G29 companion'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 cold-source final qualification'
+          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): F50 cold-source G29 atlas'
           test -z "$(git diff --name-only HEAD^ HEAD)"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_evaluator.py)" = '22137159932ee4bebbf308fb565861eb67b651b3'
-          git merge-base --is-ancestor 5b879c979a81ab9f7a8657a9e6a8d38542e2b89f HEAD
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_arm_factory.py)" = 'ea6bf2e2e842b94b023992a4fd0d03c1fc29b9e7'
+          git merge-base --is-ancestor a18bc14e1e5ddf6547bc0d983be66cd7f02eaea8 HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_arm_factory.py)" = '4920eec5c03b7bd45f75e4cde7773d19a8ea3f02'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_comparison_harness.py)" = 'ec5d329118ef3e53ef4c2fd7d4382684d2d6e47f'
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_source_arm_factory.py)" = '83058526d1d3569d9744473797a86db63f55f9ad'
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/test_f50_source_arm_factory.py)" = '0950e70d66d3a47f5af09d517c8e10936a4179c6'
           python scripts/build_code_atlas.py --check
       - name: Install pinned CPU toolchain
         shell: bash
@@ -118,7 +120,7 @@ jobs:
     needs: qualify
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source archive gate final trigger'
+      github.event.head_commit.message == 'ci(qtr): F50 cold-source final qualification'
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     permissions:
@@ -167,7 +169,8 @@ jobs:
             --source-only \
             --archive-4096 "$RUNNER_TEMP/f50-source-custody/14185250784.zip" \
             --archive-lower "$RUNNER_TEMP/f50-source-custody/14191256763.zip" \
-            --candidate-sha "$GITHUB_SHA"
+            --candidate-sha "$GITHUB_SHA" \
+            --cold-arms
           git diff --exit-code
           test -z "$(git status --porcelain)"
           echo F50_NO_TARGET_FIRST_USE_NO_ACCEPTED_WEIGHT_MUTATION=PASS
