@@ -86,14 +86,14 @@ def freeze_bundle(name, records):
 
 
 def warmup(env):
-    return [(f"warm-nkr14-{env.world:02d}-{i:02d}",x,a,
+    return [(f"warm-observation-{i:02d}",x,a,
              env.intervene(x,a,old=True))
             for i,(x,a) in enumerate((x,a)
             for x in range(16) for a in (0,1))]
 
 
 def source_visible_actions(env):
-    return [(f"trial-nkr14-{env.world:02d}-{i:02d}",x,a,
+    return [(f"public-observation-{i:02d}",x,a,
              env.intervene(x,a))
             for i,(x,a) in enumerate(ACTION_SEQUENCE)]
 
@@ -176,7 +176,7 @@ def run_frozen():
             metrics["in_family_full_truth_table_matches"]+=1
         env=HiddenWorld(world)
         old=warmup(env)
-        old_raw=freeze_bundle(f"nkr14-warm-{world:02d}",old)
+        old_raw=freeze_bundle("nkr14-warm-source-"+digest(canonical(old))[:16],old)
         prior=NativeOperatorDiscovery.from_warmup(old_raw,digest(old_raw))
         prior_hash=prior.checkpoint_sha256
         visible=source_visible_actions(env)
@@ -184,7 +184,7 @@ def run_frozen():
             raise AssertionError("NKR14_PUBLIC_EVIDENCE_CONTEXT_DRIFT")
         if set(COLD)&set(x for _,x,_,_ in visible):
             metrics["visible_hidden_context_overlaps"]+=1
-        source=freeze_bundle(f"nkr14-public-{world:02d}",visible)
+        source=freeze_bundle("nkr14-public-source-"+digest(canonical(visible))[:16],visible)
         proposed,receipt=prior.stage_public_interventions(source,digest(source))
         if proposed.operator_discovered:
             metrics["native_operator_proposals"]+=1
