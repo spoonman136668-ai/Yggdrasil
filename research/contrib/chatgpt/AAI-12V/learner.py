@@ -106,7 +106,7 @@ def restore(snapshot):
     if type(s)!=dict or set(s)!={"schema","masks","observed","ports","arm"} or s["schema"]!="aai12v.public.v1" or s["arm"] not in ARMS:
         raise ValueError("invalid cold state")
     masks=tuple(s["masks"]);obs=dict(s["observed"]);ports=tuple(s["ports"])
-    if len(s["observed"])!=3 or len(obs)!=3 or sorted(obs.keys())!=sorted(set(obs)) or len(set(ports))!=4:
+    if len(s["observed"])!=(2 if s["arm"]=="sham_probe" else 3) or len(obs)!=len(s["observed"]) or sorted(obs.keys())!=sorted(set(obs)) or len(set(ports))!=4:
         raise ValueError("corrupted public history")
     posterior(masks,obs)
     if cold(masks,obs,ports,s["arm"])!=snapshot:raise ValueError("noncanonical cold state")
