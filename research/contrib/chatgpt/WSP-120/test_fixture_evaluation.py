@@ -54,6 +54,35 @@ class FixtureEvaluationTests(TestCase):
                                         "PRIMARY_FIRST_USE_DENIED"):
                 E.run_fixture()
 
+    def test_batched_gru_prediction_scoring_contract(self):
+        # Scoring a conventional GRU must pass subjects as one batch.
+        import trained_gru as G
+        not_converged = G.TrainedGRUResult(
+            tuple(), None, False, 0.0, float("nan"), None, {}, 0.0, 0)
+        empty = E._score(not_converged, (1, 2, 3), (4, 5, 6), batched=True)
+        self.assertEqual((empty["correct"], empty["wrong_confident"],
+                          empty["abstained"]), (0, 0, 3))
+
+        class BatchOnly:
+            def infer(self, subjects):
+                if type(subjects) is not tuple:
+                    raise TypeError("WSP120_GRU_REQUIRES_BATCH")
+                return (4, 0, 6)
+
+        scored = E._score(BatchOnly(), (1, 2, 3), (4, 5, 6),
+                          batched=True)
+        self.assertEqual((scored["correct"], scored["wrong_confident"],
+                          scored["abstained"]), (2, 1, 0))
+        self.assertEqual(scored["predictions"], [4, 0, 6])
+
+        class TruncatedBatch:
+            def infer(self, subjects):
+                return (4,)
+
+        with self.assertRaisesRegex(RuntimeError,
+                                    "WSP120_SCORE_SHAPE_MISMATCH"):
+            E._score(TruncatedBatch(), (1, 2), (4, 5), batched=True)
+
     def test_zero_feedback_remains_unscored_scientifically(self):
         with patch.object(S, "source_safe_world",
                           side_effect=AssertionError("primary opened")):
