@@ -1,0 +1,167 @@
+name: CVH-05 original-source child final exact G29 and dual-OS regression
+on:
+  push:
+    branches: [qualification/cvh05-full-dual-os-20261116]
+    paths: [.github/workflows/cvh05-full-regression-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: cvh05-exact-original-child-final-once-20261116
+  cancel-in-progress: false
+jobs:
+  generated-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'CVH-05 exact full final original-child source regression once'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      SOURCE_SHA: 0c3cb7617132672ac9b0a9f9c812cbec558b91ac
+      REPAIR_BRANCH: repair/cvh05-generated-atlas-20261116
+      PYTHONDONTWRITEBYTECODE: '1'
+    outputs:
+      qualified_sha: ${{ steps.g29.outputs.qualified_sha }}
+    steps:
+      - name: Preserve original source Git bytes
+        run: git config --global core.autocrlf false
+      - name: Exact source checksum checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 0c3cb7617132672ac9b0a9f9c812cbec558b91ac
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Pinned Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only exact upstream-derived G29 atlas files
+        id: g29
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config core.autocrlf false
+          git config core.eol lf
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/prereg.json)" = 3464c291eb725adcc2233598305aa0f25379705d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/source_child.py)" = 194b96985307390b4c09b68fc0a9767ff294d2f5
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/constructor_ipc.py)" = dc5fcce0acfa5cc8f64c5a9dc6caf8c5fe87d11f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/probe_original_child.py)" = 6c3ac735a10150c4d932594262c016ab93f64ae6
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/test_constructor_ipc.py)" = a9c953ca6d81c7b4b65b4270de6d0159cd7a6a10
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/result.json)" = 3b51f101aa175034ed622d4fb120c1d747257cd7
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin "refs/heads/$REPAIR_BRANCH" | cut -f1)" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE_SHA"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          actual="$(git diff --name-only | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          git config user.name 'cvh05-isolated-g29-bot'
+          git config user.email 'cvh05-isolated-g29-bot@users.noreply.github.com'
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m 'fix(CVH-05): only three derived G29 files at frozen original child source'
+          sha="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/$REPAIR_BRANCH"
+          echo "qualified_sha=$sha" >> "$GITHUB_OUTPUT"
+          echo CVH05_ONLY_DERIVED_G29_PASS="$sha"
+  complete:
+    needs: generated-only
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_SHA: 0c3cb7617132672ac9b0a9f9c812cbec558b91ac
+      FULL_SHA: ${{ needs.generated-only.outputs.qualified_sha }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve LF exact source before checkout
+        run: git config --global core.autocrlf false
+      - name: Checkout qualified-only generated child
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generated-only.outputs.qualified_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Use Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact ancestry, source/test blobs, only derived G29 assets
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FULL_SHA"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          actual="$(git diff --name-only "$SOURCE_SHA" "$FULL_SHA" | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/prereg.json)" = 3464c291eb725adcc2233598305aa0f25379705d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/source_child.py)" = 194b96985307390b4c09b68fc0a9767ff294d2f5
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/constructor_ipc.py)" = dc5fcce0acfa5cc8f64c5a9dc6caf8c5fe87d11f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/probe_original_child.py)" = 6c3ac735a10150c4d932594262c016ab93f64ae6
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/test_constructor_ipc.py)" = a9c953ca6d81c7b4b65b4270de6d0159cd7a6a10
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/result.json)" = 3b51f101aa175034ed622d4fb120c1d747257cd7
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/provenance.json)" = 9b3a76ac648cc92ad03c454a1278277c0eb638c3
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/README.md)" = 0a58809daa173c07f39768ec344808cc60569d84
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/source_binding.py)" = 7d38d861044d844f4bd8f59c1e234c4d7f01ee76
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-04/public_ipc.py)" = 75f85dc2b6305a5089052a473fae113d6254ad9c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/public_policy.py)" = b0efc964312d62930c3a97632ca02d8d17ef84aa
+          test -z "$(git status --porcelain)"
+          echo CVH05_FROZEN_PRE_SCORE_EXACT_SOURCE_IDENTITY_PASS
+      - name: Mandatory full repository Python and code atlas verification
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH05_MANDATORY_FULL_ROOT_AND_G29_PASS
+      - name: Existing CVH01 independent conventional same-tape control
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-01 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH05_INHERITED_CVH01_RETURN_CONTROL_PASS
+      - name: Existing CVH02 public FKP24 adapter and cold memories
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-02 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH05_INHERITED_CVH02_PUBLIC_POLICY_PASS
+      - name: Existing CVH03 unchanged original constructor factory negative tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-03 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH05_INHERITED_CVH03_ORIGINAL_FACTORY_PASS
+      - name: Existing CVH04 actual mock subprocess and no-effect replay
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-04 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH05_INHERITED_CVH04_PUBLIC_PROCESS_PASS
+      - name: New CVH05 real-source child constructor strict protocol negative tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-05 -p 'test_*.py' -v
+          if python -I -B research/contrib/chatgpt/CVH-05/source_child.py --checkout /missing >/dev/null 2>&1; then exit 1; fi
+          if python -B research/contrib/chatgpt/CVH-05/probe_original_child.py --checkout /missing --out /missing/file.json --source-action >/dev/null 2>&1; then exit 1; fi
+          test -z "$(git status --porcelain)"
+          echo CVH05_REAL_ORIGINAL_SOURCE_FIRSTUSE_DISARMED_PASS
+      - name: Final source and protected first-use stayed untouched
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FULL_SHA"
+          test -z "$(git status --porcelain)"
+          echo CVH05_FINAL_DUAL_OS_SOURCE_CLEAN_PASS
