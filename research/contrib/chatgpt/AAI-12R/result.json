@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.aai12r.source-development-local-result.v1",
+  "experiment": "AAI-12R",
+  "classification": "DEV_NO_GO_NO_SCIENCE",
+  "science": "NOT_RUN",
+  "deployment": "NONE",
+  "custody": {
+    "frozen_prereg_commit": "80770626c5b46b08a910525102ddc331782232ef",
+    "frozen_prereg_blob": "e9c06a593d29cc9210b9515c82597ef5eb463e5f",
+    "implementation_commit": "f94c07bfae4f32c905c061a3089ab89bf75665f2",
+    "implementation_blob": "d49ce9c855113ae665e75cbfff28e31cc8b98c09",
+    "test_commit": "6821a091e82b58d3cd0ea5116666c291339563c7",
+    "test_blob": "033495ee7ab924910ba21a649b1a0d727ff42d70",
+    "frozen_parent": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "repo_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "local_exact_git_blobs_verified": true
+  },
+  "environment": "Temporary isolated Linux x86_64 Python 3.13.5 container; not a Yggdrasil official runner; not independent CI qualification",
+  "focused_tests": "10/10 unittest PASS local exact code blob",
+  "episodes_per_arm": 384,
+  "familiar_episodes_per_arm": 64,
+  "scientific_cohorts_used": 0,
+  "scores": {
+    "operator_active_recent16": {
+      "mean_reward": 3.051979167,
+      "late_reward": 3.078472222,
+      "late_reachable_hit_rate": 0.921348315,
+      "goal_hits": 111,
+      "familiar_reward": 2.754375
+    },
+    "posterior_greedy_recent16": {
+      "mean_reward": 3.042916667,
+      "late_reward": 3.071527778,
+      "late_reachable_hit_rate": 0.898876404,
+      "goal_hits": 103,
+      "familiar_reward": 2.754375
+    },
+    "posterior_random_probe_recent16": {
+      "mean_reward": 2.972604167,
+      "late_reward": 3.076111111,
+      "late_reachable_hit_rate": 0.91011236,
+      "goal_hits": 97,
+      "familiar_reward": 2.754375
+    },
+    "fixed_and_or_xor_greedy_recent16": {
+      "mean_reward": 2.261145833,
+      "late_reward": 2.270694444,
+      "late_reachable_hit_rate": 0.292134831,
+      "goal_hits": 39,
+      "familiar_reward": 2.57625
+    }
+  },
+  "frozen_checks": {
+    "mean_reward_gain_min_0_08": false,
+    "late_reward_gain_min_0_10": false,
+    "late_reachable_hit_rate_gain_min_0_05": false,
+    "against_equal_inference_greedy_gain_min_0_05": false,
+    "familiar_retention_noninferiority": true,
+    "scoped_episode_compute_ratio_below_2": true,
+    "total_process_cost_qualification": "UNVERIFIED; recorded source timings exclude setup/training/challenge/oracle"
+  },
+  "measured_effects": {
+    "candidate_minus_best_strong_control_reward": 0.0090625,
+    "candidate_minus_greedy_late_reward": 0.006944444,
+    "candidate_minus_random_probe_late_reward": 0.002361111,
+    "candidate_minus_greedy_reachable_hit_rate": 0.022471911
+  },
+  "trace_sha256": "031465d472f35f2b63f3d7dfc185bcd3f3488fda872b86300dc06654b5682bb1",
+  "cold_checkpoint_digest_sha256": "17b521dd05ade383282f6d7b2596b8bd78ca3cfb3a0f3b073739e6456a283688",
+  "reproducibility": "Two local runs on corrected source retained identical deterministic scores/trace/digests. Timing varies and is diagnostic only.",
+  "diagnostic_before_familiar_protocol_correction": "An initial local diagnostic wrongly permitted unfamiliar-only exploration on familiar test episodes; marked invalid for familiar-retention inference. Corrected only the familiar policy dispatch to match prereg; unfamiliar outcomes/trace unchanged. Final fixed source result is the only protocol-compliant local screen.",
+  "stop": "Mechanism failed predeclared thresholds. No further retuning, full eight-control rerun, negative association stress test, independent scientific first use, merger or promotion.",
+  "qualification": {
+    "ubuntu_native_full_regression": "NOT_RUN",
+    "windows_native_full_regression": "NOT_RUN",
+    "github_actions": "NOT_RUN",
+    "scientific_pass": false,
+    "merge": false
+  }
+}
