@@ -26,7 +26,7 @@ class _Models:
             for p in PERMS for a,b in ((-1,-1),*PAIRS))
         if len(self.transforms)!=22320:
             raise AssertionError("WSP132R2_SYMBOLIC_CAPACITY_DRIFT")
-        self.mapped=tuple(tuple(self._value(x,t) for x in range(256))
+        self.mapped=tuple(bytes(self._value(x,t) for x in range(256))
                           for t in self.transforms)
     def _value(self,x,transform):
         perm,a,b=transform
