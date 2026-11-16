@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "FKP18-CB1-DYNAMIC-TWO-FEATURE-RELATION-BINDING",
+  "status": "FROZEN_BEFORE_METHOD_AND_RESULT",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "research_parent": "272423baac407d97791409247df05e4e98fcb7da",
+  "source_gap": "FKP17 exact source 77052eb... terminal capability proof: identical action×register×delta counts and mean rewards can alias different current-register, predecessor-action and order-conditional consequences.",
+  "mechanism": "Under public-only delayed reward, bind *learned* pairs of binary primitives into one four-entry two-bit truth table. Choose which two binary features and which truth table based solely on actually earned reward outcomes; no causal rule names/operators/source family IDs passed to learner.",
+  "feature_basis": "32 register bits across 8 uint4 public registers, three bits of previous public action, three bits of second-previous public action; 38 input binary features",
+  "allowed_output": "Action 0 or 1 among the full [0..7] public action schema; non-0/1 credited events are explicitly rejected, no reinterpreting 8-action outcomes as binary",
+  "credit": "reward observed at step t belongs to public action at t-2, using eligible.before and action history[-3]/[-4]. Before t>=3, reward 0 and no training. Reward +/-1 after; signed reward on the actually executed eligible action is the only supervision.",
+  "capacity": "At most 128 delayed credited examples, six serialized bytes each (5-bitfield bytes and 1 target-action label). During fit <=768 logical bytes + derived counts. After seal the persistent learned relation is only two feature addresses, one four-bit truth table and sample/custody digest; checkpoint authenticated with SHA256.",
+  "candidate_selection": "Evaluate all unordered pairs of distinct 38 features (703 pairs), each with the empirically majority-voted 4-bin truth table; require all four input combinations observed; select highest correct count, then lexicographic feature IDs. Fail closed when <90% fit accuracy.",
+  "control": "Independent conventional exhaustive lookup over the same 703 feature-pairs, same 4-bin truth functions, identical public examples. Strong control tie is expected; do not claim unique advantage.",
+  "tests": "Fixed public-only synthetic examples covering (a) two register bits XOR, (b) register bit with previous action bit XOR, (c) register bit with older action bit AND; 128 common training events and 128 new-context evaluation events per family; frozen Python local seeds 7125, 7126, 7127; deliberate invalid source/private fields; deterministic cold restore; cap overflow; no source import.",
+  "pre_frozen_gates": {
+    "public_schema_and_atomic_invalid_rejection": "PASS required",
+    "learned_binding_source_feature_recovery": ">=2 of 3 synthetic families recover equivalent 128 new-context truth outcomes",
+    "target_validation_accuracy": ">=0.95 on held synthetic 128 per family",
+    "cold_prediction_replay": "exact byte-for-byte checkpoint and choices across restore",
+    "baselines": "independent conventional exact-pair lookup must have >= same information and scored outcomes; report mean delta without omission",
+    "fkp17_alias_nonrepetition": "verify at least one pair of public source-safe histories with equal marginal (action,register,delta) and action rewards but different bound context/temporal decision; do not execute original held science",
+    "memory": "after-seal persisted learned model <=128 bytes; actual Python heap and whole-process cost separately reported, no unmeasured speed claims",
+    "stop": "No post-outcome retune of pair/threshold/fixture/seed. If candidate ties control, architectural expressivity may pass but SCIENTIFIC_PASS false."
+  },
+  "scope": "Unqualified isolated native-style research candidate only, not accepted Yggdrasil native model, no new workflow, runner, scheduler or owner first use",
+  "protected_original_FKP17_DEV": "978500..978531 not opened",
+  "protected_original_FKP17_TRANSFER": "978600..978663 not opened",
+  "scientific_pass": false,
+  "native_promotion_forbidden_without_independent_science": true
+}
