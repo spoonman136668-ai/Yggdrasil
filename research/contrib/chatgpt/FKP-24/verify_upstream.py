@@ -44,3 +44,14 @@ def inspect_exact_checkout(path,*,runner=subprocess.run):
             "blobs":dict(sorted(REQUIRED.items())),
             "clean":True,
             "actual_env_executed":False}
+
+
+if __name__=="__main__":
+    import argparse
+    import json
+    args=argparse.ArgumentParser(description="Read-only exact upstream source custody")
+    args.add_argument("--checkout",required=True)
+    x=args.parse_args()
+    receipt=inspect_exact_checkout(x.checkout)
+    print("FKP24_READONLY_EXTERNAL_GIT_CUSTODY="+json.dumps(receipt,
+          sort_keys=True,separators=(",",":")))
