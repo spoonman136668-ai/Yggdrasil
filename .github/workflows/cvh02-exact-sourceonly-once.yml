@@ -1,0 +1,101 @@
+# CI-only, no source mutation. Single push event qualifies the exact frozen CVH02 PR head.
+name: CVH02 exact source-only final root and research regression
+run-name: CVH02 final qualification source ae61ecdf535e
+on:
+  push:
+    branches:
+      - ci/cvh02-exact-ci-20261116
+    paths:
+      - .github/workflows/cvh02-exact-sourceonly-once.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cvh02-exact-sourceonly-20261116
+  cancel-in-progress: false
+
+jobs:
+  exact-final-regression:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.ref == 'refs/heads/ci/cvh02-exact-ci-20261116' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'ci(CVH02): run exact 2-OS root and source-only regression once'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            py: '3.12'
+          - os: windows-2022
+            py: '3.12'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PINNED_CVH02_SHA: ae61ecdf535e5c4de35ea48f1223a7afe871a09b
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+    steps:
+      - name: Prevent line-ending conversion
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ae61ecdf535e5c4de35ea48f1223a7afe871a09b
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.py }}
+
+      - name: Verify exact CVH02 and inherited FKP24 source, no unrelated edits
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PINNED_CVH02_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/FKP-24/native_public_mdp.py)" = 4424eadef179996ff491911efadfbe4e07761062
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-01/earned_memory.py)" = 2e82c9bb832e0b7bb725ffd0ded9b486826e844d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-01/strong_conventional.py)" = 345ae8c83648ac4bc8172985bd4685f5db6ba708
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/public_policy.py)" = b0efc964312d62930c3a97632ca02d8d17ef84aa
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/test_exact_fkp24_mock.py)" = 7804a0caaff110e57a73e0a46d7a2c870f40f057
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/test_mock_retention_exploratory.py)" = 04b72bbc0100f3a3f769d42cc649df365fc62512
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          test "$(git rev-parse HEAD^)" = 2fe01310331a88efe2ab99ed5f49fb4e32b67617
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo CVH02_EXACT_SHA_AND_SOURCE_CUSTODY=PASS
+
+      - name: G29 pinned generated atlas and exact full root regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          echo CVH02_EXACT_FINAL_FULL_ROOT_G29=PASS
+
+      - name: Run inherited CVH01 exact-source focused and stress tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-01 -p 'test_*.py' -v
+          echo CVH01_EXACT_FOCUSED_AND_700_STREAM_STRESS=PASS
+
+      - name: Run CVH02 exact FKP24 mock policy, cold and 240-episode tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-02 -p 'test_*.py' -v
+          echo CVH02_EXACT_240_EPISODE_NO_EXTERNAL_ACTION=PASS
+
+      - name: Verify source checkout not mutated and seal qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=all)"
+          test "$(git rev-parse HEAD)" = "$PINNED_CVH02_SHA"
+          echo CVH02_FINAL_SOURCE_EXACT_ROOT_AND_FOCUSED_REGRESSION=PASS
