@@ -1,0 +1,578 @@
+{
+  "schema": "yggdrasil.CB4.public-mediated-intervention-result.v1",
+  "study": "FKP18-CB4-PUBLIC-MEDIATOR-INTERVENTIONS-FOR-ROLE-IDENTIFIABILITY",
+  "classification": "PUBLIC_ROLE_IDENTIFIABLE_BUT_NO_UNIQUE_ADVANTAGE",
+  "experiment_status": "PUBLIC_DEVELOPMENT_NONINDEPENDENT",
+  "method_frozen_before_outcome": true,
+  "first_prereg_commit": "89dd88e57b0ff78e42fd55cba011ab33ff1edfa8",
+  "source_test_pre_score_commit": "e35ab19dcd7b00fe8a3dd2a54d6cb1b4cffb532e",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "private_original_fkp17_dev_transfer_first_use": false,
+  "worlds": 32,
+  "public_world_seed_range": "82400..82431",
+  "source_behavior": {
+    "input_public_features": 38,
+    "hidden_per_world": "2 mediator-parent content bits + 2 selector gate bits",
+    "action_space": "binary 0/1 subset of 8 legal actions",
+    "actual_public_train_actions": 16480,
+    "delayed_credited_action_consequences": 16384,
+    "public_intervention": "paid do-flip of CURRENT public-state feature bit, observable mediator before/after only after real requested probe",
+    "separate_observable_mediator": "M = XOR of 2 source-private content bits; mediator is ABSENT from earlier passive CB3 training observations",
+    "baseline_reinitialization": "same public source state is restored before each paid paired intervention; model observes source-provided paired before/after readouts",
+    "charged_interventions_candidate": 80,
+    "charged_interventions_conventional": 80,
+    "per_world_candidate_and_conventional_probe_counts_equal": true,
+    "mean_paid_interventions_per_world": 2.5,
+    "worlds_requiring_two_probes": 16,
+    "worlds_requiring_three_probes": 16,
+    "public_mediator_readouts_per_arm": 160,
+    "source_owner_read_only_scored_action_choices_per_arm": 4096
+  },
+  "results": {
+    "direct_correct_four_feature_sets": 32,
+    "conventional_correct_four_feature_sets": 32,
+    "direct_correct_content_and_gate_roles": 32,
+    "conventional_correct_content_and_gate_roles": 32,
+    "no_mediator_intervention_original_CB3_roles_correct": 8,
+    "miscredited_probe_negative_roles_correct": 0,
+    "candidate_unseen_action_correct_of_4096": 4096,
+    "conventional_unseen_action_correct_of_4096": 4096,
+    "candidate_minus_conventional_role_accuracy": 0,
+    "paired_bootstrap_worlds": 32,
+    "paired_bootstrap_seed": 82490,
+    "paired_bootstrap_draws": 1000,
+    "paired_role_difference_bootstrap_95": [
+      0,
+      0
+    ],
+    "candidate_role_checkpoint_bytes": 74,
+    "unchanged_CB3_boolean_checkpoint_bytes": 78,
+    "combined_two_separate_checkpoint_bytes": 152,
+    "cold_role_restore_equality": true
+  },
+  "frozen_predicates": {
+    "candidate_four_feature_set_at_least_30": true,
+    "control_four_feature_set_at_least_30": true,
+    "candidate_roles_at_least_30": true,
+    "conventional_roles_at_least_30": true,
+    "role_improvement_over_passive_at_least_0_35": true,
+    "shuffled_roles_at_most_0_70": true,
+    "candidate_held_action_at_least_0_95": true,
+    "conventional_held_action_at_least_0_95": true,
+    "paid_max_3_and_matched": true,
+    "candidate_over_conventional_role_at_least_0_05": false,
+    "paired_bootstrap_lower95_gt_0_01": false
+  },
+  "scientific_pass": false,
+  "native_promotion": false,
+  "source_trained_recurrent_comparison": "NOT_RUN",
+  "whole_process_efficiency_superiority": "NOT_PROVEN",
+  "exact_full_linux_windows_regression": "UNVERIFIED",
+  "G29_atlas": "UNVERIFIED",
+  "original_untimed_public_world_records_sha256": "1736a3df7c1d5bd50bd244b231ed42f15bc0807ea5b1905fb47d2e086ddf035b",
+  "original_local_full_result_json_sha256": "6d0a6111bdad8e0f7ff2a3950eb06b7989226d038963969bbe9f7cc39f50fed8",
+  "deterministic_full_replay_excluding_elapsed_times": "PASS",
+  "per_world_summary_schema": [
+    "public_world_seed",
+    "correct_unordered_four_public_features",
+    "candidate_and_conventional_paid_interventions",
+    "no_probe_exact_source_role_correct_0_or_1",
+    "wrong_target_probe_exact_source_role_correct_0_or_1",
+    "candidate_readonly_unseen_correct_of_128",
+    "conventional_readonly_unseen_correct_of_128",
+    "public_probe_trace_SHA256_prefix16"
+  ],
+  "per_world_summary": [
+    [
+      82400,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      1,
+      0,
+      128,
+      128,
+      "3c2d4b433f847be0"
+    ],
+    [
+      82401,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "0841418f593c9f02"
+    ],
+    [
+      82402,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "ae884fd147826807"
+    ],
+    [
+      82403,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "91ad66aa42257e56"
+    ],
+    [
+      82404,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      1,
+      0,
+      128,
+      128,
+      "0ca3c516a1468139"
+    ],
+    [
+      82405,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "b116fff114ff7b7b"
+    ],
+    [
+      82406,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "4a4b60d49009eddc"
+    ],
+    [
+      82407,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "b9d229ee113f9657"
+    ],
+    [
+      82408,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "230bbb703b4e3709"
+    ],
+    [
+      82409,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "f73cb60308f2efec"
+    ],
+    [
+      82410,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "a502c49b0945757f"
+    ],
+    [
+      82411,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "8d2e6a2ef5adbe11"
+    ],
+    [
+      82412,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "e0acc49f5bef735e"
+    ],
+    [
+      82413,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "ef371ff13d12b25e"
+    ],
+    [
+      82414,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "c3e5461b2ea1f866"
+    ],
+    [
+      82415,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "40792772a5e8836f"
+    ],
+    [
+      82416,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "bd85bf186c215107"
+    ],
+    [
+      82417,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "f226d34de090f864"
+    ],
+    [
+      82418,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "9eb6c152e30e3861"
+    ],
+    [
+      82419,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      1,
+      0,
+      128,
+      128,
+      "9f1b6816618468ec"
+    ],
+    [
+      82420,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "16f52e6fc2ad12be"
+    ],
+    [
+      82421,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      1,
+      0,
+      128,
+      128,
+      "6024fbe37ba636a2"
+    ],
+    [
+      82422,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "6704a31d3beb0573"
+    ],
+    [
+      82423,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "d0b0ffd8fc455386"
+    ],
+    [
+      82424,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      1,
+      0,
+      128,
+      128,
+      "21ce55cfc0caf082"
+    ],
+    [
+      82425,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "9ce0e268ead0ac20"
+    ],
+    [
+      82426,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "78720e5343332b23"
+    ],
+    [
+      82427,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      0,
+      0,
+      128,
+      128,
+      "a34e0b1a9a541403"
+    ],
+    [
+      82428,
+      [
+        1,
+        6,
+        17,
+        22
+      ],
+      2,
+      0,
+      0,
+      128,
+      128,
+      "bd41fb564bb5a7d7"
+    ],
+    [
+      82429,
+      [
+        10,
+        12,
+        15,
+        27
+      ],
+      3,
+      1,
+      0,
+      128,
+      128,
+      "e178dcc3183fb9a7"
+    ],
+    [
+      82430,
+      [
+        4,
+        9,
+        14,
+        24
+      ],
+      2,
+      1,
+      0,
+      128,
+      128,
+      "3a1bc9698339805d"
+    ],
+    [
+      82431,
+      [
+        3,
+        5,
+        21,
+        31
+      ],
+      3,
+      1,
+      0,
+      128,
+      128,
+      "e6bbb858878337c3"
+    ]
+  ],
+  "limitations": [
+    "All 32 worlds are public synthetic and exposed; no independent owner-held original science was accessed",
+    "Active mediator readout is a purpose-built new observable, and the known 2-of-4 content cardinality is given equally to both models. It breaks CB3 observational role symmetry by adding information, not by extracting absent information from the old passive trace.",
+    "Source-private feature locations and law formula are in the evaluator file, not imported by models. Both arm algorithms know the mechanism-probe semantics.",
+    "Paired public readouts are reset to a common baseline and charged as one synthetic probe; physical reset/operation costs of a real world are not independently measured.",
+    "Four-feature set was first learned using original CB3 universal 38-bit basis; source behavior lies within its broad Boolean hypothesis class. No novel operator invention or full eight-way native policy.",
+    "Scored 128 new contexts per world are evaluator-only binary target choices; not an independent multi-step closed-loop world return.",
+    "Source dataset training is a seeded shared action tape, not an exploration policy learned by the candidate.",
+    "Candidate and strongest conventional exact same-information control have identical action/role accuracy and probe count: no algorithmic superiority.",
+    "Per-world short probe SHA prefixes accompany an overall full 256-bit canonical digest; reproducible complete 88KB JSON output is generated by the pinned scorer."
+  ]
+}
