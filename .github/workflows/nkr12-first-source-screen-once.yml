@@ -1,0 +1,85 @@
+name: NKR-12 exact-source first development screen
+on:
+  push:
+    branches: [qualification/nkr12-first-source-screen-20261116]
+    paths: [.github/workflows/nkr12-first-source-screen-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: nkr12-first-source-only-20261116
+  cancel-in-progress: false
+jobs:
+  read-only-dev-screen:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.run_attempt == 1 &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'NKR-12 one-shot frozen source screen'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_SHA: b4c1e7ef3cbd93c78c6772e80ea922b4876e596f
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: b4c1e7ef3cbd93c78c6772e80ea922b4876e596f
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check exact frozen prereg and NKR-11 heritage
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/NKR-12/prereg.json)" = 8f2569412055ff2c0a2c8ec16c0bfa647326687d
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
+          test "$(git rev-parse HEAD:tests/test_native_cumulative_action_bank.py)" = 03ba6f20bfa62feeb8fcf9d2f61c0db7a1f42d5a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/NKR-12/dev.py)" = 049c4948013ab449648b8541e8059400e4d464d9
+          test "$(git rev-parse HEAD:yggdrasil/native_intervention_repair.py)" = 8ed291fb77bb734fbc049c947e7f9c6456b1742c
+          test -z "$(git status --porcelain)"
+          echo NKR12_SOURCE_AND_NATIVE_BASELINE_PINNED_PASS
+      - name: All frozen native cumulative and hostile-negative tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_cumulative_action_bank.py -v
+          test -z "$(git status --porcelain)"
+      - name: One source-only screen on reused NKR11 exposed fixture
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/NKR-12/dev.py --source-dev > "$RUNNER_TEMP/nkr12-result.txt"
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          t=(Path(os.environ["RUNNER_TEMP"])/"nkr12-result.txt").read_text().strip()
+          assert t.startswith("NKR12_DEV="), t[:200]
+          a=json.loads(t.removeprefix("NKR12_DEV="))
+          assert a["classification"]=="ENGINEERING_DEV_PASS_SCIENCE_UNVERIFIED"
+          assert (a["warm_correct"],a["warm_total"])==(384,384)
+          assert (a["cold_correct"],a["cold_total"])==(192,192)
+          assert a["fully_fit_symbolic_correct"]==192
+          assert a["independent_reference_equal_predictions"]==192
+          assert a["scientific_first_use_consumed"]==0
+          assert a["loaded_slots"]==12 and a["engineered_slots"]==16
+          assert a["legacy_ypc1_unchanged"] is True
+          print("NKR12_BOUND_NATIVE_COLD_RETURN_PASS")
+          print("NKR12_PUBLIC_DIGEST="+a["public_evidence_sha256"])
+          print("NKR12_TRACE="+a["prediction_trace_sha256"])
+          print("NKR12_CHECKPOINT_BYTES="+str(a["checkpoint_bytes"]))
+          PY
+      - name: Ensure no protected original experiment or dirty source
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test -z "$(git status --porcelain)"
+          if python -B research/contrib/chatgpt/NKR-12/dev.py --primary > /dev/null 2>&1; then exit 1; fi
+          echo NKR12_NO_FIRSTUSE_AND_CLEAN_SOURCE_PASS
