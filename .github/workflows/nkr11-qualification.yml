@@ -1,0 +1,215 @@
+name: NKR11 source-held-out historical transfer qualification
+on:
+  push:
+    branches: [research/nkr11-cross-subject-rule-transfer-20261116]
+
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prereg-first and exact source custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 53c1a07c9931c0e0e334a517b7a407034028b0bc HEAD
+          git merge-base --is-ancestor 00bca61efe5e3e7418d69b68fad87561003fff84 HEAD
+          test ! -e research/contrib/chatgpt/NKR-11/result.json
+          test -z "$(git status --porcelain)"
+      - name: Independent fixture, source-free negatives and full inherited root
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_cross_subject_rule_transfer.py' -v
+          # Pre-atlas: all existing root suites except G29, which must run only
+          # after the generated source index is pinned on the final candidate.
+          for case in tests/test_*.py; do
+            if [ "$case" = tests/test_code_atlas.py ]; then continue; fi
+            python -B -m unittest discover -s tests -p "$(basename "$case")" -v
+          done
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/NKR-09/experiment.py
+          test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(nkr11): pin subject transfer atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr11-source-index-one-shot
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Publish exactly the three generated G29 files on this research branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          SOURCE="$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr11): generated transfer atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr11-cross-subject-rule-transfer-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'ci(nkr11): exact source regression') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source full regression and immutable source index
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 00bca61efe5e3e7418d69b68fad87561003fff84 HEAD
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/NKR-09/experiment.py
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'ci(nkr11): exact source regression') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independently validate generated G29 source atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+          test -z "$(git status --porcelain)"
+
+  historical-train-diagnostic-once:
+    needs: [development, final-regression, independent-g29]
+    if: "startsWith(github.event.head_commit.message, 'ci(nkr11): exact source regression') && github.run_attempt == 1 && needs.development.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: nkr11-previously-consumed-historical-train-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check existing historical source artifact identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14220169461" > "$RUNNER_TEMP/nkr11-artifact-meta.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          a=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"nkr11-artifact-meta.json").read_bytes())
+          assert a["id"]==14220169461 and a["expired"] is False
+          assert a["name"]=="NKR05-21M-full-historical-TRAIN-native-factual-weights"
+          assert a["workflow_run"]["id"]==43856374741
+          assert a["workflow_run"]["head_sha"]=="c4b4e97726f6541197913ad405a47d4c4019a3cf"
+          assert a["digest"]=="sha256:c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275"
+          print("NKR11_PREVIOUSLY_CONSUMED_IMAGE_CUSTODY_PASS",flush=True)
+          PY
+      - name: Reuse TRAIN image read only, run subject-disjoint heldout transfer
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/nkr11-real-source"
+          gh run download 43856374741 -R "$GITHUB_REPOSITORY" -n NKR05-21M-full-historical-TRAIN-native-factual-weights -D "$RUNNER_TEMP/nkr11-real-source"
+          test "$(stat -c %s "$RUNNER_TEMP/nkr11-real-source/facts.uint32le")" = 256124172
+          python -B -m yggdrasil.native_knowledge_activation --source "$RUNNER_TEMP/nkr11-real-source" --destination-parent "$RUNNER_TEMP" --name nkr11-previously-consumed-train > "$RUNNER_TEMP/nkr11-install-proof.jsonl"
+          python -B research/contrib/chatgpt/NKR-11/heldout_transfer.py --installed-session "$RUNNER_TEMP/nkr11-previously-consumed-train" | tee "$RUNNER_TEMP/nkr11-historical-scan.jsonl"
+          test -z "$(git status --porcelain)"
+      - name: Mandatory post-source full root regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Retain small source-bound receipt only, no historical binary
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: NKR11-cross-subject-historical-TRAIN-transfer
+          path: |
+            ${{ runner.temp }}/nkr11-historical-scan.jsonl
+            ${{ runner.temp }}/nkr11-install-proof.jsonl
+            ${{ runner.temp }}/nkr11-artifact-meta.json
+          retention-days: 30
+          if-no-files-found: error

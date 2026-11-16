@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.nkr11.cross-subject-historical-transfer-prereg.v1",
+  "experiment": "NKR-11",
+  "project": "Yggdrasil",
+  "status": "FROZEN_BEFORE_SOURCE_CODE_AND_HISTORICAL_TRANSFER_SCORE",
+  "parent": {
+    "pr": 1140,
+    "sha": "53c1a07c9931c0e0e334a517b7a407034028b0bc",
+    "tree": "003f2c6a26c3b9a4a8fed5f6b8c2295ff7057e60",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "prior_evidence": {
+    "nkr10_pr1140": "83 templates >=6 unique supporting anchor subjects, 32,768 sampled historical TRAIN anchors; no independent predictions",
+    "sibling_nkr10_pr1141": "Fixed P31/P279 masked historical TRAIN recall@4 106/1270=8.346%, below prereg 10%; exact symbolic tie; no repeat or retune"
+  },
+  "question": "Do source-inducted NKR10 non-token (P1,P2)->P3 rules transfer to subject-disjoint historical TRAIN positives when no query target edge is available to the predictor, and how do they compare with an equal-evidence independently implemented exact symbolic rule learner and frequency prior?",
+  "design": {
+    "source": "previously consumed noncanonical historical Wikidata5M TRAIN only",
+    "source_artifact_id": 14220169461,
+    "source_run_id": 43856374741,
+    "image_sha256": "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1",
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "anchor_sampling": "K=min(65536,rows), row_index=floor(k*(N-1)/(K-1)); no adaptive or randomized resampling",
+    "split": "SHA256 ASCII 'nkr11-subject-v1:'+decimal(subject), first digest byte modulo 4; bucket0=heldout DEV, bucket1,2,3=TRAIN; all source anchors for same subject strictly one partition",
+    "training": "Discover templates only on TRAIN anchor direct target edges X-P3-Z with bounded (X-P1-Y,Y-P2-Z) source witnesses; first 8 *sorted outgoing triples* per subject/intermediate, no P3 equal to P1/P2; unique supporting TRAIN subjects per template; min support 6; rank support descending then key ascending; cap 128 selected template identities; training frequency-only object top10 per target P3 from TRAIN anchor positives.",
+    "evaluation": "Group heldout anchor positives by (subject,p3) with their distinct known-positive objects; every group included without outcome-based filtering; predictor receives only subject and target P3, never observed target objects; for each induced rule retrieve at most 8 objects for each source (s,p1) and at most 8 for each (mid,p2), never request (s,p3); rank proposed object by MAX training support for its witnessed rule templates, tie by object integer ascending, max 256 candidates; no missing edge interpreted as negative; count Hits@1/10 if ANY withheld anchor positive belongs to top K; zero proposals=miss for all-heldout metric",
+    "rule_limits": {
+      "max_anchors": 65536,
+      "max_sorted_outgoing_triples": 8,
+      "max_per_relation_objects": 8,
+      "max_join_witnesses": 4194304,
+      "max_distinct_rule_keys": 4096,
+      "max_selected_rules": 128,
+      "max_proposals_per_query": 256,
+      "min_train_support_unique_subjects": 6,
+      "wall_limit_seconds": 180
+    },
+    "references": [
+      "independent exact symbolic path count reimplementation fitted on same disclosed training anchors, same selected keys/counts, same query source, expected tie",
+      "top-10 observed source training object-frequency-only prior (no relation composition)",
+      "no-rule abstention",
+      "removed training direct target rule witness negative",
+      "heldout target-object substitution and duplicate training anchors negative",
+      "cold deterministic same source replay and no mutation"
+    ],
+    "target_exposure": "The original historical TRAIN image is previously consumed; this is a retrospective split within known data, NOT a prospective first-use. API-level predictor is denied direct heldout P3 objects; raw source loader can see all triples only to form/pin masked holdout evaluator. Do not claim fully blind independent novel-source transfer.",
+    "frozen_dev_rule": "At least 64 heldout (s,p3) groups with a nonempty candidate path, at least 10% Hits@10 over ALL heldout positive groups AND >=5 percentage point absolute Hits@10 improvement over training-object-frequency prior; regardless of this outcome scientific_pass=false. Report conditional covered Hits@10 separately without using it to rescue a failure.",
+    "primary_metrics": [
+      "sampled_anchor_rows",
+      "distinct_train_subjects",
+      "distinct_heldout_subjects",
+      "heldout_positive_groups",
+      "rule_templates_selected",
+      "heldout_covered_groups",
+      "all_heldout_hits1",
+      "all_heldout_hits10",
+      "symbolic_hits10",
+      "frequency_hits10",
+      "candidate_minus_frequency_pp",
+      "query_cost_wall_seconds",
+      "whole_scan_wall_seconds",
+      "source_pins",
+      "source_unchanged"
+    ],
+    "scientific_requirement": "Independent genuinely unconsumed new-source and causal action/outcome first use, fully trained conventional baselines with matched information and actions, cost, controlled interventional value, cold retention and unfamiliar-law transfer; entirely outside this diagnostic.",
+    "stop": "Source SHA/metadata drift; original valid/test or protected data; masked target passed into predictor; result-dependent cohort/model changes; branch contract drift; budget exhaustion; failed Linux/Windows full regression or G29; forbidden accepted-state write"
+  },
+  "authority": {
+    "draft_research_only": true,
+    "main_merge": false,
+    "accepted_native": false,
+    "owner_install": false,
+    "first_use": false,
+    "new_runner": false,
+    "scheduler": false,
+    "controller": false,
+    "paid_api": false,
+    "unattested_real_world_fact": false
+  }
+}
