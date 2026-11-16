@@ -1,0 +1,121 @@
+{
+  "schema": "yggdrasil.external-research-result.v1",
+  "experiment": "FKP18-CB1-DYNAMIC-TWO-FEATURE-RELATION-BINDING",
+  "classification": "CONDITIONAL_TEMPORAL_EXPRESSIVITY_PASS__STRONG_CONTROL_TIE__SCIENTIFIC_NO_GO",
+  "protocol_commit_first": "17b2a1503fe087c661afcd4fa478ff160c074120",
+  "research_parent_FKP17_qualified": "272423baac407d97791409247df05e4e98fcb7da",
+  "synthetic_development_only": true,
+  "source": "Three self-contained public synthetic delayed-reward tapes, no protected source or oracle access in model",
+  "source_fixture_seeds": [
+    7125,
+    7126,
+    7127
+  ],
+  "training": {
+    "public_stream_rows_per_family": 131,
+    "delayed_reward_warmup_rows": 3,
+    "actually_credited_examples_per_family": 128,
+    "raw_transient_credited_bytes_per_family": 768,
+    "all_final_model_rows_discarded": true
+  },
+  "scoring": {
+    "new_public_test_contexts_per_family": 128,
+    "total_new_test_contexts": 384,
+    "families": [
+      {
+        "seed": 7125,
+        "learned_feature_pair": [
+          1,
+          6
+        ],
+        "learned_four_bin_truth_table": 6,
+        "candidate_correct": 128,
+        "conventional_exact_correct": 128,
+        "identical_decisions": 128,
+        "checkpoint_bytes": 75
+      },
+      {
+        "seed": 7126,
+        "learned_feature_pair": [
+          18,
+          32
+        ],
+        "learned_four_bin_truth_table": 6,
+        "candidate_correct": 128,
+        "conventional_exact_correct": 128,
+        "identical_decisions": 128,
+        "checkpoint_bytes": 75
+      },
+      {
+        "seed": 7127,
+        "learned_feature_pair": [
+          5,
+          35
+        ],
+        "learned_four_bin_truth_table": 8,
+        "candidate_correct": 128,
+        "conventional_exact_correct": 128,
+        "identical_decisions": 128,
+        "checkpoint_bytes": 75
+      }
+    ],
+    "candidate_accuracy": 1,
+    "conventional_equal_information_accuracy": 1,
+    "paired_correctness_difference": 0
+  },
+  "tests": {
+    "local_linux_python_3_13_5": {
+      "source_exact_git_blobs": true,
+      "focused_tests": "PASS 6/6",
+      "python_compileall": "PASS",
+      "additional_pre_archive_source_local_tests": "PASS 7/7 (auxiliary original broader suite, not committed in branch)",
+      "test_command": "python -m unittest -v test_contract.py test_strong_control.py"
+    },
+    "fkp17_alias_positive": "Two synthetic public tapes have exact equal (action,register,delta) marginal counts AND equal per-action reward sums, but learned conditional choices differ",
+    "strict_schema_invalid_private_field_atomic": true,
+    "delayed_two_step_credit": true,
+    "no_premature_reward": true,
+    "cap_128_atomic": true,
+    "no_update_after_seal": true,
+    "cold_snapshot_exact_75_bytes": true,
+    "checksummed_corruption_rejected": true,
+    "insufficient_evidence_abstains": true
+  },
+  "strong_control": {
+    "name": "Independent exact two-feature four-bin exhaustive symbolic comparator",
+    "same_training_data": true,
+    "same_38_input_features": true,
+    "same_703_feature_pairs": true,
+    "same_max_128_delayed_credits": true,
+    "all_384_choices_identical": true,
+    "unique_learner_superiority": false,
+    "readout_differences": "none"
+  },
+  "data_capabilities": {
+    "source_public_eight_uint4_registers": true,
+    "source_public_action_field_eight_way": true,
+    "subset_two_legal_scored_actions": [
+      0,
+      1
+    ],
+    "source_public_history_max": 16,
+    "credited_action_delay": 2,
+    "learned_feature_basis": 38,
+    "learned_relation_feature_pair": 2,
+    "persistent_snapshot_bytes": 75
+  },
+  "limits": [
+    "Fixed universal 38 binary feature inputs and all 16 two-feature truth tables: family lies inside algorithmic representation; no out-of-grammar novel operator invention.",
+    "Public synthetic retrospective action/reward streams, not independent held policy return or real closed-loop action selection.",
+    "An independently coded exhaustive four-bin conventional control fits exactly as well; no novel learning superiority.",
+    "Only one relation sealed per world; no sequential interference, repeated online revisions or multi-relationship persistent cognition tested.",
+    "Two legal reward actions (0,1) within eight-action schema; does not qualify full FKP17 eight-action original target.",
+    "75 bytes is serialized persisted model state; Python RAM, training time and total process resource parity not established.",
+    "Exact FKP17 qualified PR source is parent, but no full Linux/Windows root regression or G29 rebuilt for this new branch.",
+    "Original protected FKP17 DEV 978500..978531 and TRANSFER 978600..978663 remain closed."
+  ],
+  "scientific_pass": false,
+  "native_yggdrasil_promotion": false,
+  "original_protected_first_use": false,
+  "post_result_tuning": false
+}
