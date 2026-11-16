@@ -44,7 +44,12 @@ jobs:
         run: |
           set -euo pipefail
           python -B -m unittest discover -s tests -p 'test_historical_rule_miner.py' -v
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          # Pre-atlas: all existing root suites except G29, which must run only
+          # after the generated source index is pinned on the final candidate.
+          for case in tests/test_*.py; do
+            if [ "$case" = tests/test_code_atlas.py ]; then continue; fi
+            python -B -m unittest discover -s tests -p "$(basename "$case")" -v
+          done
           python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
           python -B research/contrib/chatgpt/NKR-09/experiment.py
           test -z "$(git status --porcelain)"
