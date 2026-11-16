@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-25-PINNED-ORIGINAL-MDP-TARGETED-CONSTRUCTOR",
+  "prereg_first": true,
+  "exact_parent_sha": "a9f7a64f34275c62f507987b3d52657ec9c78f21",
+  "purpose": "Original unchanged third-party MDPSCM/MDPPCH runtime constructor qualification in an ephemeral hosted Python environment. Avoid importing unrelated MDP package eager environment modules without altering original causal source modules. NO reset/do, no seed, no physical action, no held source first use, no model training or science.",
+  "upstream": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "license": "Apache-2.0",
+    "root_entrypoint": "causal_gym/__init__.py imports all optional environments eagerly; selected MDP import must NOT be advertised as official whole-package import",
+    "unchanged_original_files": {
+      "LICENSE": "993e3a4922f003dced0fd061735697c850ea7205",
+      "causal_gym/__init__.py": "6f8129d2caa303ee9fe87ff18fdbdfa153d8a53f",
+      "causal_gym/envs/__init__.py": "a36a43e2ccbca2c924db6b2852c70b5635bca181",
+      "causal_gym/envs/mdp.py": "6264ec5450754c009e98c3e85f6d5927ece0a9ab",
+      "causal_gym/core/__init__.py": "7affd0694b0f31dcc05e3d6b47a5eaf3d311e327",
+      "causal_gym/core/pch.py": "ff37780c6b791877c70583b8d5f699be7fcd8817",
+      "causal_gym/core/scm.py": "f66f2638c797cfeaf0e96d4e13c06d4fabc2c8d5",
+      "causal_gym/core/task.py": "668262f3f5c88fa2865b08ef10bbf96b09a3b73e",
+      "causal_gym/core/policy_scope.py": "284b4a1ae031ef401d106fde603ba016e0d8136d",
+      "causal_gym/core/types.py": "4a591d6ec18c0c8807885b698e7fe8086a35279e",
+      "causal_gym/core/graph.py": "6be7da2fbd8a6d6df45d273d34c40b44f0fe6af6",
+      "causal_gym/core/graph_utils.py": "1f51ddc8d739cf41ec2ef5931cb2668e6f7d811b",
+      "causal_gym/core/graph_defs.py": "5ec4cfd96ed0be5e8334ebb856941cf39dd1974d",
+      "causal_gym/core/set_utils.py": "ed914a581fa22152d6086b2e4d642045c954908e",
+      "causal_gym/core/object_utils.py": "477a83eaef8605d222dab5ebfeeb5e33edd9f3e4",
+      "setup.py": "31097c35f908e393bfd4763a298c1d5f4ab60600"
+    }
+  },
+  "runtime": {
+    "method": "targeted exact-file import with in-memory package namespace ONLY; execute original unmodified upstream causal_gym/core/__init__.py and causal_gym/envs/mdp.py, bypass unrelated eager env package initializers, no vendoring, no modifying checkout",
+    "loader_limit": "NOT the official package-wide import path; NOT proof all upstream dependencies or other environments work",
+    "source_byte_validation": "before Python import, exact read-only Git checkout SHA, clean status and 16 original Git blob hashes at HEAD:path",
+    "dependencies_pinned_top_level": {
+      "numpy": "1.26.4",
+      "gymnasium": "0.29.1",
+      "networkx": "3.2.1",
+      "toposort": "1.10",
+      "pydash": "8.0.5"
+    },
+    "dependencies_scope": "no torch/torchvision, ogbench, MuJoCo, ale-py, minigrid, Atari, Box2D, pygame, opencv; no official setup.py installation",
+    "constructor": "MDPPCH(max_step=30,task=Task(learning_regime=LearningRegime.do))",
+    "success_proof": "original MDPSCM and MDPPCH class source files unmodified pinned, MDPPCH object constructed and do callable, correct task regime, no env.reset and no env.do or other first use",
+    "safety": "original third party code executing in GitHub-hosted isolated ephemeral runner, no secrets and no private user workstation; no downstream read/write/producer/controller",
+    "no_first_use": true,
+    "no_reset": true,
+    "no_do": true,
+    "no_held_source": true,
+    "no_model_science": true,
+    "package_import_tests": "Static check that package-level initializer eagerly imports unrelated sources; report targeted-only as targeted, not official",
+    "direct_negative_controls": [
+      "unknown or dirty SHA abort before import",
+      "missing or unexpected upstream Git blob abort",
+      "constructor or dependency exception INFRA_UNVERIFIED",
+      "no private source info or future action",
+      "Python package import manipulation confined to short-lived probe process, not native acceptance"
+    ]
+  },
+  "qualification": {
+    "platforms": [
+      "ubuntu-24.04 python3.11",
+      "windows-2022 python3.12"
+    ],
+    "required_focused": "FKP25 plus inherited FKP18-FKP24 sources and negative controls",
+    "generated_only_source_child": true,
+    "root_full_regression": "54/54 each OS",
+    "outside_real_source_actions": 0,
+    "protected_dev": "996500..996531",
+    "protected_transfer": "996600..996663",
+    "prior_FKP24_public_mechanical": "996100..996103 still unopened",
+    "ci_rule": "Reuse existing fkp18 source-only workflow; no new workflow; per-OS read-only native constructor and evidence receipt after full source-safe regression",
+    "failure_classifications": [
+      "SOURCE_DEPENDENCY_INFRA_FAIL",
+      "TARGETED_ORIGINAL_IMPORT_FAIL",
+      "NATIVE_CONSTRUCTOR_FAIL",
+      "SOURCE_CUSTODY_FAIL"
+    ]
+  },
+  "science": {
+    "scientific_pass": false,
+    "training_return": false,
+    "unfamiliar_transfer": false,
+    "native_accepted": false,
+    "next": "Only separately approved original public action first use and fully trained independent controls after source dependency and constructor proof; do not overclaim mechanism invention"
+  },
+  "authority": {
+    "research_only": true,
+    "main_ref_mutation": false,
+    "protected_first_use": false,
+    "real_source_action": false,
+    "merge": false,
+    "deploy": false,
+    "private_runner": false,
+    "scheduler_controller": false,
+    "paid_API": false
+  },
+  "no_post_result_tuning": true,
+  "no_new_workflow_file": true
+}
