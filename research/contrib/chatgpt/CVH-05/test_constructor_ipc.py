@@ -248,7 +248,7 @@ class CVH05ConstructorBoundaryTests(unittest.TestCase):
                          capture_output=True,text=True,timeout=5)
         self.assertNotEqual(p.returncode,0)
         self.assertIn("SOURCE_ACTIONS_AND_WORLD_FIRSTUSE_DISARMED",p.stdout)
-        q=subprocess.run([sys.executable,"-I","-B",str(HERE/"probe_original_child.py"),
+        q=subprocess.run([sys.executable,"-B",str(HERE/"probe_original_child.py"),
                           "--checkout","/missing/not-approved","--out",
                           "/unwritable/never.json","--source-action"],
                          capture_output=True,text=True,timeout=5)
