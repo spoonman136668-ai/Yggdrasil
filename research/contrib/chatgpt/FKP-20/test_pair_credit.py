@@ -140,10 +140,9 @@ class MultiParentPublicTests(unittest.TestCase):
             self.assertEqual(arm.choose_plan(1),(0,0,0))
         self.assertNotEqual(arms["SPARSE_CONTRADICTION_PAIRS"].choose_plan(0),
                             arms["SPARSE_CONTRADICTION_PAIRS"].choose_plan(1))
-        self.assertNotEqual(arms["SPARSE_CONTRADICTION_PAIRS"].inferred_pair()[0],
-                            arms["TIME_PERMUTED_CREDIT"].inferred_pair()[0]
-                            if False else tuple(sorted(
-                                (i+1)%3 for i in arms["TIME_PERMUTED_CREDIT"].inferred_pair()[0])))
+        correct=arms["SPARSE_CONTRADICTION_PAIRS"].inferred_pair()[0]
+        reassigned=tuple(sorted((i+1)%3 for i in correct))
+        self.assertNotEqual(correct,reassigned)
 
     def test_cold_copy_restores_exact_conditional_actions_and_frozen_state(self):
         model=_fit_one()["SPARSE_CONTRADICTION_PAIRS"]
