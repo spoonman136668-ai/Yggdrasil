@@ -8,7 +8,7 @@ jobs:
   atlas:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 development transport repair derive atlas'
+      github.event.head_commit.message == 'ci(qtr): F50 transport qualification derive atlas'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -46,7 +46,7 @@ jobs:
   qualify:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 development transport G29 companion'
+      github.event.head_commit.message == 'ci(qtr): F50 transport final regression trigger'
     name: F50 development transport exact-SHA full regression
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -80,7 +80,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 development transport G29 companion'
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 transport final regression trigger'
           test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): F50 development transport repair derive atlas'
           test -z "$(git diff --name-only HEAD^ HEAD)"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
