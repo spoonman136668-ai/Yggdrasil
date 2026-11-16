@@ -150,10 +150,13 @@ class OriginalSourceMathAndOwnerSafetyTests(unittest.TestCase):
 
     def test_persisted_result_must_match_entire_exact_preflight(self):
         file=HERE/"result.json"
-        if file.exists():
-            self.assertEqual(json.loads(file.read_text()),a.preflight())
-        else:
-            self.skipTest("result not committed yet; no firstuse admitted")
+        self.assertTrue(file.exists(),"CVH09_SOURCE_FREE_PRIMARY_RESULT_MUST_BE_PERSISTED")
+        result=json.loads(file.read_text(encoding="utf-8"))
+        self.assertEqual(result,a.preflight())
+        self.assertEqual(result["digest_sha256"],
+                         "5e7dbc2637930c84d2f87670b643e2ea2ed0838c553ebfdc3569a5d469557f11")
+        self.assertEqual(result["headroom"]["digest_sha256"],
+                         "3dc0e4d6daabf73558200c5ae790923231203fce48a7ffc61af5cd0307678cb0")
 
 
 if __name__=="__main__":
