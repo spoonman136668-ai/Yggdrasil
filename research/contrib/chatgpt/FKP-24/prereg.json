@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "FKP-24-EXTERNAL-CONFOUNDED-MDP-SOURCE-ADMISSION",
+  "project": "Yggdrasil",
+  "prereg_first": true,
+  "exact_parent_sha": "6a9d908c270bb209f13eb87db407bfd463f16446",
+  "research_aim": "Change from homegrown finite Boolean source families to a pinned independent licensed sequential causal MDP. First verify source provenance, behaviorally honest action-before-outcome interface and absence of counterfactual/oracle state in model input; NO scientific training or protected first-use in this source admission gate.",
+  "external_source": {
+    "repo": "CausalAILab/Causal-Gymnasium",
+    "sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "license": "Apache-2.0",
+    "license_blob": "993e3a4922f003dced0fd061735697c850ea7205",
+    "api_module": "causal_gym.envs.mdp",
+    "class": "MDPPCH",
+    "source_blobs": {
+      "causal_gym/envs/mdp.py": "6264ec5450754c009e98c3e85f6d5927ece0a9ab",
+      "causal_gym/core/pch.py": "ff37780c6b791877c70583b8d5f699be7fcd8817",
+      "causal_gym/core/task.py": "668262f3f5c88fa2865b08ef10bbf96b09a3b73e",
+      "causal_gym/core/scm.py": "f66f2638c797cfeaf0e96d4e13c06d4fabc2c8d5",
+      "causal_gym/envs/__init__.py": "a36a43e2ccbca2c924db6b2852c70b5635bca181",
+      "causal_gym/__init__.py": "6f8129d2caa303ee9fe87ff18fdbdfa153d8a53f",
+      "setup.py": "31097c35f908e393bfd4763a298c1d5f4ab60600"
+    },
+    "init": "MDPPCH(max_step=30, task=Task(learning_regime=LearningRegime.do))",
+    "native_step": "env.do(lambda state: sealed_action) after action selected from last public observation; returned next_state, reward, terminated, truncated, info; discard info",
+    "public_observation_schema": "source-public binary prior_state and next_state, binary chosen action, binary earned reward, terminated and truncated bits, no exogenous values, source-private graph, natural_action, task policy state or source internals",
+    "not_a_security_sandbox": "Python policy isolation is interface/contract-based, not a Python interpreter sandbox; run controls in separate process for real blind acceptance",
+    "risk": "Upstream Python package eagerly imports broad envs and setup.py installs gymnasium[all], box2d, MuJoCo-related packages; source import/installer may be unavailable on runners. A failure is SOURCE_INFRA_UNVERIFIED rather than AI science failure."
+  },
+  "frozen_stages": {
+    "engineering_now": "Source-safe interface and negative controls use injected fake MDPPCH (NO real source world seed). Verify frozen upstream commit/blob strings, chosen-action-before-outcome, public only, no counterfactual, no leaked info, action budgets, source model cold-safe data, full root and inherited regression BOTH OS, G29-generated-only candidate.",
+    "source_mechanical_future": "Only after exact-source two-OS preflight and verified native dependencies, run original source no-trained-model fixed-policy 4 public TRAIN seeds 996100..996103, <=32 physical do actions each, record public receipts, no hidden graph/info/counterfactual; needs native source dependency-qualified runner and separate limited first-use approval.",
+    "science_future": "Separately preregister equal-information TRAIN/VAL/DEV cohorts and identity/prefix/action budgets, strongest fully-trained recurrent, MLP, exact Bayesian and causal controls, cold retention and intervention value; require independent source-owner blind acceptance before held DEV/TRANSFER first-use. No such outcome is currently asserted.",
+    "protected_dev": "996500..996531",
+    "protected_transfer": "996600..996663",
+    "no_original_first_use": true,
+    "max_public_actions_for_mechanical": 128,
+    "mechanical_seed_count": 4,
+    "source_actions_in_current_gate": 0,
+    "qualification": "Exact Git blobs and provenance, 2 OS focused negative tests plus G29 and full root regression, without installing external packages or opening any real source world."
+  },
+  "classification": {
+    "engineering_pass": "contract/source-byte pins and dual-OS tests only",
+    "original_mechanical_source_unverified": "external installed package/real do actions not yet exercised",
+    "scientific_pass": false,
+    "training_or_transfer_result": false,
+    "unique_native_gain_unverified": true,
+    "do_not_claim": "Causal-Gym external source admission or learning success from mock tests, synthetic law performance from FKP23 as real transfer, or general intelligence"
+  },
+  "authority": {
+    "research_only": true,
+    "protected_first_use": false,
+    "accepted_main_mutation": false,
+    "native_admission": false,
+    "merge": false,
+    "runner_scheduler_or_controller_change": false,
+    "paid_api": false
+  },
+  "no_new_workflow_file": true,
+  "no_scheduled_tasks": true,
+  "no_postresult_tuning": true,
+  "source_overlap": "Different actual independent environment than FKP10/FKP15/FKP16 third-party Endless Memory Gym, different research owner from WSP120; FKP23 unchanged and frozen."
+}
