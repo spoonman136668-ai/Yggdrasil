@@ -254,12 +254,16 @@ def run_admitted_development_nine_worlds(make_arm, make_oracle, source_roles,
                 rows.append(run_development_arm(
                     size, seed, kind, arm, oracle, restore,
                     expected_candidate_sha=candidate_sha))
-    return {"schema": SCHEMA, "classification": "DEV_F50_UNCLASSIFIED",
+    report = {"schema": SCHEMA, "classification": "DEV_F50_UNCLASSIFIED",
             "world_count": 9, "arms_per_world": len(KINDS),
             "worlds": [list(x) for x in frozen_plan()], "arm_runs": rows,
             "development_outcomes_consumed": 64 * 3 * len(rows),
             "protected_cohorts_consumed": 0, "scientific_pass": False,
             "independent_classification_required": True}
+    # Only a numeric diagnostic. This never grants scientific acceptance.
+    from f50_development_numeric_audit import audit_numeric_envelope
+    report["numeric_envelope"] = audit_numeric_envelope(report)
+    return report
 
 
 def run_fixture_nine_worlds(make_arm, make_oracle):
