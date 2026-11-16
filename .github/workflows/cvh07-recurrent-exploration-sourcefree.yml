@@ -46,12 +46,12 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor b4ad72bad038223a722ef7e052407c26484ee0ce HEAD
           git merge-base --is-ancestor 94b04dfada301786387fd9fcf887d17a89d23f77 HEAD
-          test "$(git diff b4ad72bad038223a722ef7e052407c26484ee0ce 94b04dfada301786387fd9fcf887d17a89d23f77 --name-only)" = "research/contrib/chatgpt/CVH-06/prereg.json"
+          test "$(git diff b4ad72bad038223a722ef7e052407c26484ee0ce 94b04dfada301786387fd9fcf887d17a89d23f77 --name-only)" = "research/contrib/chatgpt/CVH-07/prereg.json"
           test -z "$(git status --porcelain)"
           for n in 01 02 03 04 05 06 07; do
             python -B -m unittest discover -s "research/contrib/chatgpt/CVH-$n" -p 'test_*.py' -v
           done
-          python -B research/contrib/chatgpt/CVH-06/qualify_sourcefree.py --output-json "$RUNNER_TEMP/cvh07-source-only-result.json"
+          python -B research/contrib/chatgpt/CVH-07/qualify_sourcefree.py --output-json "$RUNNER_TEMP/cvh07-source-only-result.json"
           test -s "$RUNNER_TEMP/cvh07-source-only-result.json"
           test -z "$(git status --porcelain)"
           echo CVH07_SOURCEFREE_RECURRENT_TRAINED_DEV=PASS
@@ -139,7 +139,7 @@ jobs:
           done
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
-          python -B research/contrib/chatgpt/CVH-06/qualify_sourcefree.py --output-json "$RUNNER_TEMP/cvh07-final-result.json"
+          python -B research/contrib/chatgpt/CVH-07/qualify_sourcefree.py --output-json "$RUNNER_TEMP/cvh07-final-result.json"
           test -s "$RUNNER_TEMP/cvh07-final-result.json"
           test -z "$(git status --porcelain)"
           echo CVH07_FULL_ROOT_AND_G29_RECURRENT_SOURCEFREE_PASS=PASS
