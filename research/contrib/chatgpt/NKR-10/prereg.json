@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.nkr10.historical-relation-template-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment": "NKR-10",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_NEW_HISTORICAL_RULE_SCAN",
+  "parent": {
+    "pr": 1137,
+    "sha": "5c9c9c93c63d3705383f9bd3d5d088f983030b3d",
+    "tree": "2d6bf9811015035b88896ae504c10826adda7ec8",
+    "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Determine whether bounded, source-witnessed (P1,P2)->P3 relation templates can be induced from the previously consumed full historical TRAIN image, as opposed to NKR-09 synthetic overlay-only template mining. Never interpret correlations as causality.",
+  "scope": {
+    "previous_work": "WSP-105/116 already assessed real-graph two-hop retrieval/knowledge coverage; WSP-110/111 synthetic operator induction; FKP-18 conditional temporal representation. This is only historical original-triple rule-support mining, no duplicate heldout score, no further model changes.",
+    "input": "NKR05 previously consumed 21,343,681 TRAIN triples; source noncanonical historical Wikidata5M variant, archive CC0-structured data; read only",
+    "original_image_sha256": "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1",
+    "source_train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "source_manifest_sha256": "aa2d56e72284a042aee72587028642110327307b483de667586f105f018ebe8f",
+    "official_valid_test": "FORBIDDEN",
+    "protected_first_use": false,
+    "entire_image_new_copy": false
+  },
+  "frozen_selection": {
+    "anchor_count": 32768,
+    "anchor_formula": "for k in [0,K), row_index=floor(k*(N-1)/(K-1)), K=min(32768,N); N=1 index0",
+    "sampling_bias": "lexicographic-strided source rows, not unbiased representative sampling; top eight outgoing source edges per subject can censor context",
+    "max_subject_edges": 8,
+    "max_second_hop_edges": 8,
+    "max_join_witnesses": 2097152,
+    "min_unique_subject_support": 6,
+    "max_reported_rule_templates": 128,
+    "no_negative_from_absence": true,
+    "require_actual_witnessed_direct_anchor": true,
+    "forbid_same_target_as_leg_predicate": true,
+    "deterministic": "row-index iteration and sorted triple order; count distinct subjects; rank descending count then ascending relation ID triple"
+  },
+  "controls": [
+    "fixture independently enumerated exhaustive reference on an in-memory sorted graph",
+    "same fixture with one target leg removed; zero unsupported candidates",
+    "duplicate edges and anchor subjects must not increase support",
+    "tampered source receipt denied; no historical read in tests",
+    "no stable source IDs treated as semantic truth"
+  ],
+  "metrics": [
+    "sampled_anchor_rows",
+    "distinct_anchor_subjects",
+    "enumerated_join_witnesses",
+    "number_of_templates_support_ge_6",
+    "top_128_P3_P1_P2_support",
+    "wall_seconds",
+    "historical_source_sha256",
+    "source_side_effects"
+  ],
+  "classify": {
+    "engineering_pass": "exact specified sample, fixed budgets, sorted deterministic positive witness lists, no source or accepted-state mutation, fixture/exact root/G29 dual OS PASS",
+    "bounded_positive": "at least one template has >=6 distinct supporting historical TRAIN subjects; engineering evidence only",
+    "bounded_negative": "zero templates at support >=6; stop; do not tune sampling after inspecting scan results",
+    "invalid": "source pin mismatch, overflow, noncanonical facts, unbounded scan, duplicate inflation, failed regression, unauthorized read",
+    "scientific_pass": "always false for this experiment; no action/consequence, independent withheld new causal laws or fully trained matched conventional model"
+  },
+  "resource": {
+    "python": "3.12",
+    "max_wall_seconds": 180,
+    "max_python_rss_bytes": 1200000000,
+    "max_new_data_downloads": 0,
+    "cpu_only": true,
+    "run_on_previous_consumed_train_after_engineering": true
+  },
+  "boundaries": {
+    "original_scientific_first_use": false,
+    "main_merge": false,
+    "model_admission": false,
+    "owner_install": false,
+    "schedule": false,
+    "new_controller": false,
+    "private_runner": false,
+    "paid_api": false,
+    "real_world_fact_validation": false
+  },
+  "stop": [
+    "source digest or manifest mismatch",
+    "initial read-only engineering regression failed",
+    "join/sampling limits exceeded",
+    "historical data unavailable or missing previous image custody",
+    "any valid/test or protected source request"
+  ]
+}
