@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.cvh03.readonly-exact-source-provenance.v1",
+  "branch": "research/cvh03-native-mdp-reward-ceiling-audit-20261116",
+  "parent": "ae61ecdf535e5c4de35ea48f1223a7afe871a09b",
+  "parent_tree": "785d283b9097ffb88e0c0aab09ca00678b83fc98",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "original_upstream": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "path": "causal_gym/envs/mdp.py",
+    "read_only_git_blob_verified": "6264ec5450754c009e98c3e85f6d5927ece0a9ab"
+  },
+  "chronology": {
+    "after_original_source_inspection": true,
+    "protocol_before_code_commit": "b7e9dc1dfa922040acec38de0e185c1d0c5ddb25",
+    "source_code_commit": "a462534c52d3ef64e80cd88571407931ffc84f64",
+    "test_commit": "f6f01d678e35e184793a59679b76a1f38f49d221",
+    "results_commit": "83221dfdf304808d3e16391eaa8ca53d64bf0dd3",
+    "README_commit": "ec772334d5288341729cd7f5b5b11ad39ab68a21"
+  },
+  "exact_tested_code_git_blobs": {
+    "source_law.py": "380f0459154286e57897bd582741a412ea7d840b",
+    "test_source_law.py": "98f7fcbbb1c8004a8a9f8211a107cee7683e8e47"
+  },
+  "original_local_execution": {
+    "host": "isolated local Linux Python 3.13 stdlib fractions/unittest",
+    "focused": "10/10 PASS",
+    "compileall": "PASS",
+    "independent_full_repeat": "EXACT_MATCH",
+    "original_output_bytes": 1647,
+    "original_stdout_sha256": "2a97eaca455e7a86878ffe54b6f6add7916b510081cd29e7741ea83aa7fb8808",
+    "joint_distributions": 4,
+    "exogenous_combinations_per_distribution": 8,
+    "distinct_finite_horizons_checked": 31,
+    "actual_upstream_code_imported": false,
+    "actual_upstream_environment_constructed": false,
+    "actual_native_reset": false,
+    "actual_native_do": false,
+    "original_native_step_calls": 0,
+    "protected_science_seeds_used": 0
+  },
+  "result": {
+    "exact_expected_match_state_reward": "41/50",
+    "exact_expected_opposite_state_reward": "9/50",
+    "exact_full_31_step_optimal_return": "1271/50",
+    "uniqueness": "state-match strictly best in both states for every horizon 1..31",
+    "exact_Bellman_gap": "16/25",
+    "classification": "POSTINSPECTION_STATIC_LIMIT_NOT_SCIENTIFIC_PASS"
+  },
+  "qualification": {
+    "local_analytic_focused": "PASS",
+    "independent_upstream_actuation": "NOT_RUN",
+    "full_exact_SHA_linux_root": "UNVERIFIED",
+    "full_exact_SHA_windows_root": "UNVERIFIED",
+    "G29_generated_candidate_atlas": "UNVERIFIED",
+    "scientific_pass": false,
+    "native_promotion": false
+  },
+  "isolation": {
+    "qualified_CVH02_PR1130": "UNCHANGED",
+    "FKP25_PR1122": "UNCHANGED",
+    "WSP123_PR1132": "UNCHANGED",
+    "accepted_main": "UNCHANGED",
+    "workflow_added": 0,
+    "controller_added": 0,
+    "scheduler_added": 0,
+    "runner_added": 0,
+    "paid_API": 0,
+    "new_pull_request": 0,
+    "merge": 0,
+    "deploy": 0
+  },
+  "caveats": [
+    "No prospective hidden hypothesis; original reward law known before protocol commit",
+    "Exact source-equation transcription, not execution of original native MDPPCH",
+    "Theoretical optimization on pinned source only; cannot prove absence of cognition generally",
+    "This MDP can still validate action-consequence learning but not superior long-horizon planning over fully informed state-match"
+  ]
+}
