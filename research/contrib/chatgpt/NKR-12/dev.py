@@ -11,6 +11,12 @@ import importlib.util
 import json
 from pathlib import Path
 import time
+import sys
+
+# Keep the evaluator directly runnable from any cwd without modifying the native learner.
+_ROOT = Path(__file__).resolve().parents[4]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
 from yggdrasil.native_cumulative_action_bank import NativeCumulativeActionBank
 from yggdrasil.native_intervention_repair import (
