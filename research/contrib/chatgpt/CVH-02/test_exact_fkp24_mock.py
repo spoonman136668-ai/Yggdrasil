@@ -19,8 +19,8 @@ def _git_blob(data):
 
 class TestInheritedExactAdapter(unittest.TestCase):
     def test_exact_fkp24_real_adapter_mock_source_only(self):
-        if not FKP.exists() or _git_blob(FKP.read_bytes())!=BLOB:
-            self.skipTest('Exact parent adapter absent from ephemeral local mirror; full GitHub checkout required')
+        self.assertTrue(FKP.is_file(), 'Exact inherited FKP24 adapter is required; do not skip')
+        self.assertEqual(_git_blob(FKP.read_bytes()), BLOB, 'Exact inherited FKP24 adapter Git blob drift')
         spec=importlib.util.spec_from_file_location('cvh02_exact_original_fkp24_adapter',FKP)
         adapter=importlib.util.module_from_spec(spec)
         sys.modules[spec.name]=adapter
