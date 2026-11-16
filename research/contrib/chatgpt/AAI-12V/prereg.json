@@ -1,0 +1,229 @@
+{
+  "schema": "yggdrasil.aai12v.prereg-sourceonly.v1",
+  "id": "AAI-12V",
+  "status": "FROZEN_BEFORE_CODE_AND_OUTCOME",
+  "scope": "new independent source-only mechanical intervention-choice comparison; no native model",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_negative_pr": 1127,
+    "prior_negative_sha": "3320d873a88fde2204c46a6920e132f58c7f06d8"
+  },
+  "hypothesis": "Choosing a one-bit do intervention by expected information gain about retained operator identity improves cold transfer and incompatible-memory rejection over an identically informed two-slot Bayesian model that chooses actions by predictive entropy, under an identical action budget and update/prediction rule. This tests a new action-selection mechanism, not a post-hoc adjustment of AAI-12U confidence.",
+  "world": {
+    "input_bits": 8,
+    "output_bits": 1,
+    "primitive": "A hidden 8-bit table mask applied to three public port bits, XOR fourth public port input; ports fixed by phase and public",
+    "ports": {
+      "donor": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "interference": [
+        2,
+        4,
+        5,
+        1
+      ],
+      "receiver": [
+        1,
+        3,
+        6,
+        0
+      ]
+    },
+    "groups": [
+      [
+        "reuse",
+        232,
+        150,
+        232
+      ],
+      [
+        "reuse",
+        104,
+        95,
+        104
+      ],
+      [
+        "reuse",
+        202,
+        41,
+        202
+      ],
+      [
+        "reuse",
+        41,
+        212,
+        41
+      ],
+      [
+        "reuse",
+        23,
+        75,
+        23
+      ],
+      [
+        "reuse",
+        113,
+        166,
+        113
+      ],
+      [
+        "reuse",
+        107,
+        194,
+        107
+      ],
+      [
+        "reuse",
+        75,
+        23,
+        75
+      ],
+      [
+        "changed",
+        23,
+        150,
+        212
+      ],
+      [
+        "changed",
+        113,
+        95,
+        75
+      ],
+      [
+        "changed",
+        104,
+        41,
+        202
+      ],
+      [
+        "changed",
+        232,
+        23,
+        107
+      ],
+      [
+        "novel",
+        232,
+        150,
+        53
+      ],
+      [
+        "novel",
+        104,
+        95,
+        194
+      ],
+      [
+        "novel",
+        202,
+        41,
+        166
+      ],
+      [
+        "novel",
+        41,
+        212,
+        107
+      ],
+      [
+        "familiar",
+        150,
+        232,
+        150
+      ],
+      [
+        "familiar",
+        95,
+        104,
+        95
+      ],
+      [
+        "familiar",
+        212,
+        41,
+        212
+      ],
+      [
+        "familiar",
+        194,
+        107,
+        194
+      ]
+    ],
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "source_sampling": "Public donor and interference phase expose one paired fourth-port do for each ternary code 0..7, using 4 nuisance dimensions with a SHA256('AAI12V|fixture|group|phase|code') modulo 8 nuisance context. Receiver initially exposes two distinct codes chosen by ascending SHA256('AAI12V|fixture|group|receiver_code|code') digest; then ONE additional pair for an unobserved code 0..7 selected by each arm's frozen policy. All training/probe nuisance contexts are 0..7. For evaluation all 8 codes x nuisance contexts 8..15 x fourth port 0 and 1 =128 heldout inputs per group fixture. Heldout context range excludes every source training/probe input for every arm.",
+    "outputs": "Always public x[8], y bit, public phase port tuple and witnessed actual one-bit-do transition marker, never private mask/group class/heldout labels.",
+    "budgets": {
+      "groups": 20,
+      "fixtures": 2,
+      "donor_pairs": 8,
+      "interference_pairs": 8,
+      "receiver_initial_pairs": 2,
+      "receiver_probe_pairs": 1,
+      "all_final_predictions_per_arm": 5120,
+      "heldout_per_group_fixture": 128,
+      "class_groups": {
+        "reuse": 8,
+        "changed": 4,
+        "novel": 4,
+        "familiar": 4
+      }
+    },
+    "source_only": true,
+    "scientific_first_use_consumed": 0
+  },
+  "model": {
+    "shared_prior": "Three latent models: donor memory, interference memory, unconstrained unknown primitive. Prior weights [0.45,0.45,0.10]; likelihood of each receiver public code outcome is 0.95 for a matching remembered mask bit, 0.05 for mismatch, and 0.5 for unknown. Duplicate fourth-port public observations form one independent ternary-code evidence item. All arms use exact same update rule and posterior predictive mixture after action; observed code outputs override with public truth. Unknown predictions are 0.5.",
+    "candidate": "For each unobserved ternary code select one whose true prospective do outcome maximizes the expected reduction in Shannon entropy of the 3-latent-hypothesis posterior (expectation over predicted bit); tie-break smallest code. Model cannot see actual outcome before selecting.",
+    "matched_best_control": "For each unobserved ternary code select the one with maximum predictive binary outcome entropy under exactly the same posterior and candidate likelihood; tie-break smallest code. Full equal-data, equal-memory, equal-actions Bayesian entropy-greedy control.",
+    "other_controls": {
+      "random_probe": "Hash SHA256('AAI12V|fixture|group|RANDOM') modulo six remaining codes, sorted",
+      "fixed_probe": "smallest unobserved code",
+      "sham_probe": "a real do intervention on already observed first code, no additional ternary code coverage; identical number of do actions but intentionally less information"
+    },
+    "memory": "Exactly two learned 8-bit primitive tables plus public observed ternary codes, no cross-group oracle; canonical cold checkpoint after probe, restored before predicting heldout source. The model sees input port mapping but not target hidden mask; no pretrained donor or next-token training."
+  },
+  "gates": {
+    "candidate_over_matched_entropy_accuracy_gain_min": 0.02,
+    "candidate_over_matched_entropy_changed_accuracy_gain_min": 0.06,
+    "candidate_over_matched_entropy_novel_accuracy_gain_min": 0.04,
+    "candidate_reuse_accuracy_min": 0.95,
+    "candidate_familiar_accuracy_min": 0.9,
+    "candidate_vs_random_all_gain_min": 0.03,
+    "candidate_vs_fixed_all_gain_min": 0.03,
+    "candidate_changed_regression_vs_best_nonoracle_max": 0.02,
+    "candidate_novel_regression_vs_best_nonoracle_max": 0.02,
+    "candidate_time_ratio_to_entropy_control_max": 2,
+    "all_required": true,
+    "stop": "Single source-only screen. On any miss => DEV_NO_GO_NO_SCIENCE; no tuner, no new masks/seeds, no after-outcome policy edits, no science first-use or full control rerun.",
+    "invalid": "Any hidden-field exposure, mismatched action budget, test/train nuisance overlap, data selection based on measured results, source SHA mismatch, or impl errors invalidates score rather than counting as scientific negative."
+  },
+  "qualification": {
+    "focused_local_tests_before_primary": true,
+    "source_and_tests_git_pinned_before_first_source_screen": true,
+    "independent_science_first_use": false,
+    "full_native_windows_linux_only_if_future_merge_approved": true
+  },
+  "authority": {
+    "only_paths": [
+      "research/contrib/chatgpt/AAI-12V/"
+    ],
+    "draft_not_native": true,
+    "no_main": true,
+    "no_merge": true,
+    "no_controller_runner_scheduler_queue_actions": true,
+    "no_paid_api": true,
+    "no_library_file_outputs": true
+  }
+}
