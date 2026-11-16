@@ -1,0 +1,131 @@
+{
+  "schema": "wsp127.active-rank8-causal-discovery.prereg.v1",
+  "id": "WSP-127",
+  "project": "Yggdrasil",
+  "status": "FROZEN_PROTOCOL_ONLY_BEFORE_SOURCE_IMPLEMENTATION_OR_OUTCOMES",
+  "contribution_class": "successor-proposal",
+  "lineage": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "exact_parent_sha": "8f6c6508daec4f99bb9318b464cdfd473ddef973",
+    "parent_pr": 1142,
+    "parent_tree": "ff7bc9b04ce18d48037f4bd1c56554bcbf6e45a6",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "predecessor_frozen_fit": {
+      "native_correct": 11328,
+      "held": 12288,
+      "abstain": 960,
+      "wrong_confident": 0,
+      "pass": false
+    },
+    "parent_science": "UNVERIFIED",
+    "parent_engineering": "PASS"
+  },
+  "question": "Can a causally updated numerical rank8 relation bank use feedback-dependent interventions to identify previously hidden directions and increase safe withheld consequence coverage under a fixed 1024-action budget, versus the strongest equal-budget fixed intervention policy, while tying a fair optimized symbolic solver on identical actions?",
+  "hypotheses": {
+    "primary_policy": "The preregistered adaptive complete-row-then-pivot intervention policy improves withheld FIT correct coverage over fixed nine-full-row-plus-pivots policy by at least 8.0 percentage points at identical 1024 source actions per law, with zero confident wrong predictions and cold retention.",
+    "secondary_transfer": "Adaptive numerical and adaptive optimized symbolic inference agree for every decision on equal transcripts; zero-source new opaque-ID relabeling preserves acquired law predictions.",
+    "scientific_limitation": "If an optimized symbolic method with the same policy ties numerical, policy improvement is NOT evidence that numerical weight programming beats symbolic learning; rank8 GF(2) is supplied, not invented. Unknown rank9 law is a mandatory off-family falsification, not an opportunity for post-run repair."
+  },
+  "source_frozen": {
+    "type": "public inspectable deterministic engineering-only synthetic source; NO independent scientific first-use",
+    "law_family": "128 independent 64x64 GF(2)-rank8 binary intervention-effect matrices, each made from XOR of 8 independent hidden outer products. Generator uses Python random.Random seeded with big-endian integer SHA256('WSP127|SRC8|'+decimal law_id); draw eight nonzero 64-bit left masks and right masks; reject and regenerate all factors until all 64 resulting rows have GF2 rank exactly8. Source factors/whole true matrix remain evaluator-only.",
+    "public_actions": "typed left/right indices 0..63 and 4096 opaque unique action IDs per world; IDs deterministically shuffled by random.Random(seed), sampled without replacement in nonoverlapping seed*10000..seed*10000+9999 identifier windows.",
+    "fit_seed_range_inclusive": [
+      135000,
+      135127
+    ],
+    "fit_law_id": "seed-135000",
+    "transfer_seed_range_inclusive": [
+      136000,
+      136255
+    ],
+    "transfer_law_id": "floor((seed-136000)/2)",
+    "negative_seed_range_inclusive": [
+      137000,
+      137063
+    ],
+    "negative_law_id": "seed-137000",
+    "negative_family": "For each of first64 learned laws, source-only independent rank-one modification chosen via separately seeded SHA256('WSP127|NEG9|'+decimal law_id), rejecting until new row matrix rank exactly9; learner receives no new consequences or factor disclosures.",
+    "disallowed_before_generation": [
+      "WSP126 original 131000..131063",
+      "WSP126 reserved 131800..131863",
+      "all WSP120-125 original/reserved cohorts",
+      "WSP127 original 135800..135863",
+      "WSP127 reserved 138800..138863",
+      "any otherwise-unregistered seed"
+    ],
+    "forbidden": "All protected/original seeds denied BEFORE RNG/source creation; no inference from source-only factors or scoring labels; no scientific held-out first use.",
+    "identities": "128 fit laws + 256 relabel views of same fit laws + 64 changed-law negative worlds; relabels are NOT novel physical laws.",
+    "budget": {
+      "fit_actions_per_law_per_arm": 1024,
+      "fit_total_per_arm": 131072,
+      "held_fit_predictions_per_arm": 393216,
+      "transfer_source_actions": 0,
+      "transfer_predictions_per_arm": 1048576,
+      "negative_source_actions": 0,
+      "negative_predictions_per_arm": 262144
+    }
+  },
+  "intervention_policies": {
+    "adaptive": "Start with zero learned basis. Fully query each left row 0,1,... (64 right indices ascending) until 8 independent GF2 row factors found or no further full row fits in remaining budget. Upon rank8, query exactly the eight pivot columns of the learned row basis for each yet-unqueried left row in ascending order, stopping before any duplicate/budget overflow. Spend all leftover calls deterministically by traversing remaining unqueried public (left,right) pairs lexicographically. If the bank never reaches eight witnessed independent factors, make no unobserved confident extrapolation. Never use withheld outcomes to choose interventions.",
+    "fixed": "Fully query left rows 0..8 (576 actions), then query eight basis-pivot columns (or, with rank<8, the available pivots completed with smallest nonpivot indices) in each remaining left row 9..63 (440 actions). Spend final 8 calls on smallest unqueried (left,right) pairs lexicographically. All 1024 actions counted. Rank8 not witnessed => conservative abstention on unqueried pairs.",
+    "same_transcript": "ADAPTIVE_NUMERIC and ADAPTIVE_OPTIMIZED_GF2 receive exactly identical action order/effects. FIXED_NUMERIC and FIXED_OPTIMIZED_GF2 receive the separate fixed-policy identical action order/effects. Cross-policy equal count but not necessarily identical queried coordinates is the intended policy intervention.",
+    "inference": "Basis row masks are allocated one at a time on observed independent complete rows, no pretrained task factors. Once rank8 witnessed, project a partially observed row only if its measured pivot outcomes uniquely determine its rank8 coefficient and all known effects are consistent; otherwise abstain. For rank<8, only directly measured effects may be returned confidently. On transfer preserve typed pair semantics but use new action IDs."
+  },
+  "arms": [
+    "ADAPTIVE_NUMERIC: source-blind online numerical GF2 rank8 factor bank (max eight 64-bit basis masks + 64 row coefficient bytes/slots; account separately for action ledger/replay)",
+    "ADAPTIVE_OPTIMIZED_GF2: separately implemented exact GF2 row-space control, same adaptive decisions/transcript",
+    "FIXED_NUMERIC: identical numerical update rule, frozen fixed policy and own 1024 interventions",
+    "FIXED_OPTIMIZED_GF2: independently implemented exact solver, fixed transcript",
+    "NO_UPDATE: no learned consequence generalization",
+    "FULLY_TRAINED_CONVENTIONAL: source-blind full-capacity reference trained from the exact adaptive observations, fixed architecture/seed/optimizer to be separately frozen and implemented BEFORE any comparison; failure to converge makes science unqualified, not a native win"
+  ],
+  "primary_metrics": [
+    "FIT correct/held coverage and confident wrong and abstain, each arm",
+    "adaptive-vs-fixed per-world paired gain and 128-law bootstrap 95% interval",
+    "adaptive numerical/optimized symbolic identical transcript and predictions",
+    "zero-source relabel transfer and rank9 off-family confident errors/abstention",
+    "per-arm total action count, inference/updates/probes/replay/solver operations, CPU/wall/RSS, numerical/evidence/scratch-state bytes",
+    "cold retention of all 128 laws, post-late-law interference and digest-repaired forged state rejection"
+  ],
+  "frozen_scoring": {
+    "fit": "One score after 1024 distinct actions/law. Each of 128 laws has exactly 3072 withheld source action effects. Only exact binary matches are correct; unsupported is ABSTAIN; wrong confident never silently relabeled uncertain.",
+    "transfer": "All 4096 pairs in 256 opaque-ID relabel views scored with no source action; same underlying 128 laws, compare no extra training; every learned state retained.",
+    "negative": "All 4096 pairs in 64 rank9 modifications scored with zero source calls, disclose every wrong confident prediction; mandatory robustness failure if out-family confident errors breach bound.",
+    "paired": "Report both aggregate and per-law differences; 10,000 paired bootstrap resamples over law IDs with RNG seed 127, no post-outcome split/threshold changes.",
+    "windows_linux": "Engineering source-safe final mandatory focused+inherited full regression and G29 for exact candidate SHA on Windows and Linux; check all prior WSP tests unchanged."
+  },
+  "frozen_decision_rules": {
+    "development_policy_supported": "At least 95.0% FIT correct coverage, zero FIT confident wrong, at least +8.0 percentage points over strongest FIXED optimized symbolic control with equal1024 action budget; same-source optimized adaptive control must match numerical output, all source/retention/negative tests and final full regression pass.",
+    "development_negative": "Any primary threshold fails with valid source/controls; preserve exact failure, including tied/negative benefits, without threshold adjustment.",
+    "development_mixed": "Primary thresholds met but numerical ties stronger optimized symbolic, or rank9 off-family wrong-confident rate exceeds 1%; report policy-only possible development result, not unique numerical/unknown-law science.",
+    "invalid": "Protected first-use or source leakage, mismatched budgets, wrong cohort identity, duplicate actions, data/algorithm changed after primary result, missing strong exact control, prereg-order violation, score replay, retention corruption or incomplete final regression.",
+    "scientific_pass": "NONE in this engineering-only proposal. Requires separately authorized independent sealed source/first-use, trained conventional reference whose precise architecture and convergence check are pre-frozen before testing, independent owner qualification, matched whole-process CPU/RSS/cost and reproducible gain over the strongest fair control, unfamiliar-law safety and retained earlier capabilities.",
+    "out_family_safety": "Confident-wrong fraction greater than1.0% on rank9 negative => robust unfamiliar-law NO_GO regardless of fit gains."
+  },
+  "qualification_and_custody": {
+    "exact_parent_sha": "8f6c6508daec4f99bb9318b464cdfd473ddef973",
+    "prereg_first": "This prereg.json must be committed as the only WSP127 file in an initial commit before source, algorithm code, tests, outputs, benchmark or source labels. Later code commits must preserve immutable prereg file.",
+    "no_results_here": true,
+    "first_use_authorized": false,
+    "protected_source_opened": false,
+    "owner": "independent science owner not designated",
+    "admission": false,
+    "changed_paths_only": [
+      "research/contrib/chatgpt/WSP-127/**",
+      ".github/workflows/wsp127-source-safe.yml",
+      "generated G29 .ice/code-atlas.html,.ice/code-atlas.ice,.ice/code-atlas.json after source pin only"
+    ],
+    "prohibited": [
+      "official main edits",
+      "merge/admission/promotion",
+      "unknown-world scientific first-use",
+      "controller/runner/task installation",
+      "scheduled jobs",
+      "new queue/bridge",
+      "paid model APIs",
+      "interference with Wingless/Hybrid/FORGE"
+    ],
+    "research_reference": "CONTRIBUTING_RESEARCH.md; issue #910; PR #1142 frozen negative"
+  }
+}
