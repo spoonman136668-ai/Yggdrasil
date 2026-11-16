@@ -1,0 +1,177 @@
+{
+  "schema": "yggdrasil.aai12r.operator-discovery.source-prereg.v1",
+  "id": "AAI-12R",
+  "status": "FROZEN_SOURCE_ONLY_BEFORE_IMPLEMENTATION_OR_OUTCOME",
+  "source_custody": {
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "predecessor_no_go_pr": 1076,
+    "predecessor_no_go_sha": "4ed9ef07b0d4b7ade73751d1b4e07e280c4acdcb"
+  },
+  "hypothesis": "Compared with identical-information, identical-capacity posterior greedy and randomly directed controls, a bounded tokenless learner that actively chooses true do-interventions to reduce uncertainty about initially unknown causal operators will obtain higher later unfamiliar-world goal reward while preserving familiar cold retention. Unlike AAI-12Q, intervention choice changes the observed information rather than reweighting redundant pointwise errors.",
+  "interpretation": "The operator family is a deliberately bounded 16-function binary Boolean space: induction of previously unseen truth tables inside this space is NOT proof of invention of an unrestricted relationship type or general intelligence.",
+  "fixed_world": {
+    "source_only": true,
+    "input_bits": 8,
+    "mediator_bits": 4,
+    "action": "set one x bit to 0 or 1",
+    "actions_per_episode_max": 2,
+    "public_fields": [
+      "x",
+      "mediators",
+      "goal",
+      "reward",
+      "actions_taken"
+    ],
+    "hidden_causal_scaffold": "m0=op0(x0,x1); m1=op1(x2,x3); m2=op2(m0,x4); m3=op3(m1,m2). Four operator truth tables unknown to every learner.",
+    "operator_definition": "Binary four-bit truth table (bit at index 2*a+b), masks integer 0..15. No named-operator semantic labels supplied to learner.",
+    "fit_operator_worlds": [
+      [
+        8,
+        14,
+        6,
+        8
+      ],
+      [
+        14,
+        6,
+        8,
+        14
+      ],
+      [
+        6,
+        8,
+        14,
+        6
+      ],
+      [
+        8,
+        6,
+        14,
+        8
+      ]
+    ],
+    "unfamiliar_operator_worlds": [
+      [
+        7,
+        1,
+        9,
+        11
+      ],
+      [
+        11,
+        13,
+        2,
+        4
+      ],
+      [
+        3,
+        5,
+        10,
+        12
+      ],
+      [
+        1,
+        7,
+        11,
+        9
+      ],
+      [
+        5,
+        10,
+        12,
+        3
+      ],
+      [
+        9,
+        2,
+        4,
+        13
+      ],
+      [
+        13,
+        3,
+        7,
+        1
+      ],
+      [
+        2,
+        11,
+        5,
+        10
+      ],
+      [
+        4,
+        9,
+        3,
+        7
+      ],
+      [
+        12,
+        5,
+        1,
+        2
+      ],
+      [
+        10,
+        4,
+        13,
+        11
+      ],
+      [
+        7,
+        12,
+        9,
+        5
+      ]
+    ],
+    "fixture_ids": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "deterministic_context": "SHA256 first 8 bytes of ASCII 'AAI12R-v1|fixture|world-phase|world-index|event-index|field'; x = digest byte modulo 256; goal = next digest byte modulo 16; public do action = digest byte modulo 16, sorted action index (input index, setting 0 then 1). No model sees world-index or operator tuple.",
+    "fit_budget": "4 fit worlds x 8 actual paired do records (64 total public rows) per fixture",
+    "challenge_budget": "4 actual paired do records (8 rows) per unfamiliar world; all arms receive exactly same initial public observations; memory is last 16 public rows",
+    "evaluation_budget": "16 sequential cold-start-context real-action episodes per unfamiliar world per fixture per arm, with persistent within-world learning; first 4 episodes exploration-eligible, remaining 12 exploitation. 2*12*16=384 total unfamiliar episodes per arm. Independent fit-only familiar evaluation after restoring pre-transfer fit checkpoint.",
+    "goal_score": "Count 4 mediator-goal bit matches minus 0.08 per actual do action. Report mean reward, exact goal hits, reachable conditional recovery and oracle regret with oracle used only by scoring, not learners.",
+    "cold_restore": "Serialize only last 16 public x,m,goal,reward,actions_taken rows and fixed arm type; independently deserialize after each group of four episodes; verify unchanged checkpoint SHA256 and deterministic outcomes.",
+    "first_use": "Only these named mechanical worlds. No withheld independent scientific cohorts, first-use seeds, external donor outputs or actual native Yggdrasil state."
+  },
+  "model": {
+    "common_inference": "All matched 16-function arms infer four factorized operator truth-table posteriors solely from their last 16 public x/m observations; uniform prior and exact deterministic likelihood with Laplace one-count smoothing per Boolean table input; same posterior prediction and exploitative two-action expected-reward planner; tie break lexicographic action index.",
+    "active": "Only on first action of first four unfamiliar-world episodes, choose among actual do actions with positive predicted mediator variance reduction, maximizing summed projected Bernoulli variance at the successor observation, subject to predicted immediate reward at least best exploit action minus 0.30. Second action and all later episodes use identical greedy exploitation.",
+    "controls": [
+      "posterior_greedy_recent16",
+      "posterior_random_probe_recent16",
+      "fixed_and_or_xor_greedy_recent16"
+    ],
+    "random_control": "Random probe arm selects one of 16 actions during the same first four episodes using an immutable SHA256 digest of fixture, law index, episode index and literal RANDOM_PROBE, then uses greedy for all later actions.",
+    "operator_baseline": "Fixed AND/OR/XOR comparator has identical 16-public-record memory and greedy planner, but hypotheses limited to masks (6,8,14); use to measure bounded operator novelty only, not as strongest comparator.",
+    "no_hidden_access": "No learner may import the world operator tuple, world function, source phase/ID, evaluator oracle, unchosen outcomes, or exact heldout goal solution."
+  },
+  "gates": {
+    "strong_baseline": "max(posterior_greedy_recent16,posterior_random_probe_recent16) on paired 384 unfamiliar episodes",
+    "candidate_mean_reward_gain_min": 0.08,
+    "candidate_late12_mean_reward_gain_min": 0.1,
+    "candidate_late12_conditional_reachable_hit_rate_gain_min": 0.05,
+    "familiar_cold_mean_reward_drop_max": 0.03,
+    "candidate_vs_identical_inference_greedy_mean_reward_gain_min": 0.05,
+    "max_candidate_whole_process_wall_ratio_to_fastest_full16_control": 2,
+    "negative": "Replace each challenge do-response with a deterministic different-law paired mediator outcome without changing public x/goal/action counts; candidate must not improve against intact data. Negative runs only if all first screening gates pass.",
+    "stop": "If any gate fails, preserve DEV_NO_GO_NO_SCIENCE; no retuning thresholds, source worlds, masks, action policy or classifier, no additional source search or science first-use.",
+    "science": "Independent fresh worlds, unknown-operator-beyond-hypothesis-class test, cold retention under interference, unrelated task transfer, strongest matched conventional model, matched all-process compute and independent Windows/Linux exact-SHA full regression required before scientific qualification."
+  },
+  "safety": {
+    "source_only": true,
+    "no_primary_first_use": true,
+    "scientific_cohorts_used": 0,
+    "no_native_model_edit": true,
+    "no_main_merge": true,
+    "no_accepted_ref_mutation": true,
+    "no_controller_runner_scheduler_queue_changes": true,
+    "no_paid_api": true,
+    "no_chatgpt_library_files": true,
+    "linux_windows_final_full_regression_required": true
+  }
+}
