@@ -1,0 +1,137 @@
+{
+  "schema": "yggdrasil.aai12v.source-dev-result.v1",
+  "id": "AAI-12V",
+  "classification": "DEV_NO_GO_NO_SCIENCE",
+  "predeclared_hypothesis": "Expected three-hypothesis posterior entropy reduction from one real diagnostic do intervention yields >0.02 overall accuracy gain against same-state predictive-entropy Bayesian policy on unseen postinterference causal situations.",
+  "source_custody": {
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "original_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prereg_first_commit": "ddd0b9de703bb20346c02d6d91b5327a796dfb90",
+    "prereg_blob": "0bdbd50e01dd3bd7851901d1d3b887a79c30eab0",
+    "pre_outcome_source_test_head": "dc645bf65f0728baf877c7c87076ccbf17ba0f10",
+    "exact_git_blobs": {
+      "world.py": "c50bb7118e6632c74a123ec6c37bbeddfe9a3ca9",
+      "learner.py": "c1b0272564a3def80902fd83d4b9701d90eb6a00",
+      "dev.py": "8276271c17ab701b1671a0ab942ce1b649d07f03",
+      "test_dev.py": "c6281214af8e0e3716c76296142b42d03e756c0a"
+    },
+    "exact_local_sha256": {
+      "world.py": "dca7927ecb70c667c72cc292ef959c6e2e8473155280d951572608dfabc9a7d1",
+      "learner.py": "1fc9ece64c2fd84e8704415f33ada996f34ad3421263a5d15c447c36a84c33b0",
+      "dev.py": "592529755d2b920f50c55bdc56da0a1a3abc89278eff605f63f42f0acb930249",
+      "test_dev.py": "4ca2c40b353f537f3cf177580c672fddf5c5230f7d23d39cde1c4bc94d9870dd"
+    }
+  },
+  "environment": {
+    "execution": "isolated container Python 3.11+ (verify local version separately)",
+    "official_yggdrasil_runner": false,
+    "independent_science": false
+  },
+  "sources": {
+    "classes": {
+      "reuse": 8,
+      "changed": 4,
+      "novel": 4,
+      "familiar": 4
+    },
+    "fixtures": 2,
+    "source_groups": 20,
+    "group_fixture_cases": 40,
+    "real_do_probes_per_case_per_arm": 1,
+    "donor_public_rows_per_case": 16,
+    "interference_public_rows_per_case": 16,
+    "initial_receiver_public_rows_per_case": 4,
+    "extra_probe_public_rows_per_case": 2,
+    "heldout_inputs_per_case": 128,
+    "heldout_inputs_per_arm": 5120,
+    "matched_arms": 5,
+    "cold_roundtrips": 200,
+    "scientific_first_use_cohorts_consumed": 0
+  },
+  "accuracies": {
+    "information_gain": {
+      "all": 0.875,
+      "changed": 0.734375,
+      "familiar": 1,
+      "novel": 0.640625,
+      "reuse": 1
+    },
+    "predictive_entropy": {
+      "all": 0.878125,
+      "changed": 0.734375,
+      "familiar": 1,
+      "novel": 0.65625,
+      "reuse": 1
+    },
+    "random_probe": {
+      "all": 0.871875,
+      "changed": 0.734375,
+      "familiar": 1,
+      "novel": 0.671875,
+      "reuse": 0.9765625
+    },
+    "fixed_probe": {
+      "all": 0.871875,
+      "changed": 0.734375,
+      "familiar": 1,
+      "novel": 0.65625,
+      "reuse": 0.984375
+    },
+    "sham_probe": {
+      "all": 0.796875,
+      "changed": 0.640625,
+      "familiar": 0.875,
+      "novel": 0.5625,
+      "reuse": 0.953125
+    }
+  },
+  "frozen_gate_checks": {
+    "all_gain_vs_entropy_ge_0_02": false,
+    "changed_gain_vs_entropy_ge_0_06": false,
+    "novel_gain_vs_entropy_ge_0_04": false,
+    "reuse_accuracy_ge_0_95": true,
+    "familiar_accuracy_ge_0_90": true,
+    "all_gain_vs_random_ge_0_03": false,
+    "all_gain_vs_fixed_ge_0_03": false,
+    "changed_noninferior_best_ge_minus_0_02": true,
+    "novel_noninferior_best_ge_minus_0_02": false,
+    "cost_ratio_to_entropy_le_2": true
+  },
+  "measured": {
+    "candidate_minus_entropy_overall_accuracy": -0.003125,
+    "candidate_minus_entropy_novel_accuracy": -0.015625,
+    "candidate_minus_entropy_changed_accuracy": 0,
+    "candidate_minus_random_all_accuracy": 0.003125,
+    "candidate_minus_sham_all_accuracy": 0.078125,
+    "same_actions_as_entropy": 37,
+    "total_source_group_fixture_cases": 40,
+    "first_run_candidate_model_seconds": 0.021577,
+    "first_run_entropy_model_seconds": 0.01997,
+    "second_run_cost_ratio_to_entropy": 1.1105641025641027,
+    "trace_sha256": "a45838d1b1e2434e9b3eed565113938d7b1755daa372882304fe462e850d2c5a",
+    "two_exact_source_screens_identical_trace_and_metrics": true
+  },
+  "engineering": {
+    "pre_first_screen_unit_tests": "11/11 PASS",
+    "post_screen_exact_same_source_unit_tests": "11/11 PASS",
+    "cold_checksum_tamper_test": "PASS",
+    "primary_first_use_cli_denial": "PASS",
+    "source_readback_identical_git_blobs": "PASS",
+    "changed_after_measured_result": false,
+    "pre_screen_correction": "Hash-protected checkpoint and corresponding test corrected before first measured evaluation; first unit test failed before screen and re-ran clean; no result-based tuning."
+  },
+  "qualification": {
+    "ubuntu_native_full_regression": "NOT_RUN",
+    "windows_native_full_regression": "NOT_RUN",
+    "github_ci": "NOT_RUN / NOT_QUALIFIED",
+    "g29_atlas": "NOT_REGENERATED",
+    "independent_science": "NOT_RUN",
+    "promotion": "NONE",
+    "merge": "NONE",
+    "deployment": "NONE",
+    "native_yggdrasil_modified": false
+  },
+  "interpretation": "Actual one-bit-do probing outperforms the sham control by 0.078125 on frozen mechanical evaluation, but the candidate objective does not outperform a fully matched Bayesian predictive-entropy action policy. With 37/40 probe choices identical, this experiment does not demonstrate a distinct beneficial information-gain mechanism. Same full public observations and same posterior update/prediction were used; only action selection differed. This is neither primitive invention nor independent scientific learning evidence.",
+  "stop": "Preserve DEV_NO_GO_NO_SCIENCE with exact evidence. No post-outcome changes, new seeds, scientific first use, native integration, additional runner/controller or PR needed."
+}
