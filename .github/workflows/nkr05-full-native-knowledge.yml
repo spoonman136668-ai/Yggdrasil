@@ -1,0 +1,214 @@
+name: NKR05 full historical native factual weights
+on:
+  push:
+    branches: [research/nkr05-full-native-knowledge-foundation-20261116]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original source and NKR05 prereg-first ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e0ed191cc8dc2b4dd62dd1d6836fa7fb0309500c HEAD
+          git merge-base --is-ancestor 90be3e856b72b5ac1ac43e3bcffce0eb3d9432e4 HEAD
+          test ! -e research/contrib/chatgpt/NKR-05/result.json
+          test -z "$(git status --porcelain)"
+      - name: Factual memory, source custody and negative fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p test_native_evidence_compiler.py -v
+          python -B -m unittest discover -s tests -p test_native_relation_supported.py -v
+          python -B -m unittest discover -s tests -p test_native_relation_memory.py -v
+          test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(nkr05): pin full image G29 atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr05-full-image-G29-source-pin-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exactly three derived G29 index files and no source mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 90be3e856b72b5ac1ac43e3bcffce0eb3d9432e4 HEAD
+          test -z "$(git status --porcelain)"
+          S="$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$S"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr05): pin full image G29 source at $S"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr05-full-native-knowledge-foundation-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr05): pin full image G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Whole accepted baseline and new factual memory tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 90be3e856b72b5ac1ac43e3bcffce0eb3d9432e4 HEAD
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr05): pin full image G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent code atlas exact identity and tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+
+  historical-full-train-once:
+    needs: [development, final-regression, independent-g29]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr05): pin full image G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    permissions:
+      contents: read
+    concurrency:
+      group: nkr05-single-full-historical-train-image
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Confirm source-only engineering authority and historical consumed TRAIN
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 90be3e856b72b5ac1ac43e3bcffce0eb3d9432e4 HEAD
+          test ! -e research/contrib/chatgpt/NKR-05/result.json
+          test -z "$(git status --porcelain)"
+      - name: Fully materialize all 21,343,681 historical TRAIN Q/P/Q facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/NKR-05/build_full_image.py --historical-train-only-full-image --output "$RUNNER_TEMP/nkr05-full-train"
+          test "$(stat -c %s "$RUNNER_TEMP/nkr05-full-train/facts.uint32le")" = 256124172
+          python -B - <<'PY'
+          import json, os, pathlib
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/"nkr05-full-train"
+          manifest=json.loads((root/"manifest.json").read_text("ascii"))
+          receipt=json.loads((root/"receipt.json").read_text("ascii"))
+          assert manifest['records']==21343681
+          assert manifest['numeric_bytes']==256124172
+          assert manifest['distinct_relation_types']==828
+          assert manifest['original_valid_test_read'] is False
+          assert receipt['full_source_cold_restore'] is True
+          assert receipt['official_valid_test_opened'] is False
+          assert receipt['scientific_pass'] is False
+          assert receipt['native_accepted'] is False
+          print("NKR05_STAGED_FULL_TRAIN_MANIFEST="+json.dumps(
+              {"records":manifest["records"],"byte_count":manifest["numeric_bytes"],
+               "predicate_count":manifest["distinct_relation_types"],
+               "sha256":receipt["packed_sha256"],
+               "manifest_sha256":receipt["manifest_sha256"]},
+               sort_keys=True),flush=True)
+          PY
+      - name: Mandatory regression after original historical source materialization
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Attach source-qualified full research image to exact CI run (expires in 30 days)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: NKR05-21M-full-historical-TRAIN-native-factual-weights
+          path: |
+            ${{ runner.temp }}/nkr05-full-train/facts.uint32le
+            ${{ runner.temp }}/nkr05-full-train/manifest.json
+            ${{ runner.temp }}/nkr05-full-train/receipt.json
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 0
