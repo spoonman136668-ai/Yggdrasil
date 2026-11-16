@@ -14,7 +14,7 @@ jobs:
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
       github.run_attempt == 1 &&
-      github.event.head_commit.message == 'CUE-02 frozen first high-to-low source screen'
+      github.event.head_commit.message == 'CUE-02 frozen harness-only assertion correction verification'
     strategy:
       fail-fast: false
       matrix:
@@ -25,13 +25,13 @@ jobs:
       run:
         shell: bash
     env:
-      SOURCE_SHA: d86c76b24f784cad69592be0e89c07858a64d35a
+      SOURCE_SHA: c95eed2f50011e4a9ab1a3a12d29f872e3459688
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Check out frozen code/read-only evidence
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: d86c76b24f784cad69592be0e89c07858a64d35a
+          ref: c95eed2f50011e4a9ab1a3a12d29f872e3459688
           fetch-depth: 0
           persist-credentials: false
       - name: Pin Python 3.12
@@ -45,7 +45,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/prereg.json)" = 34db1b055e2918955a0e281d370c62fd81dd90a9
           test "$(git rev-parse HEAD:yggdrasil/native_finite_cue_audit.py)" = 089fe536650404c645dc07cf2ec9ffb86758153e
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/dev.py)" = 9919facd671cde30c6bdddd6c78920c8780ff0dc
-          test "$(git rev-parse HEAD:tests/test_native_finite_cue_audit.py)" = 7da1c57d37a9ca3f81dfe79da6106142158c38f6
+          test "$(git rev-parse HEAD:tests/test_native_finite_cue_audit.py)" = 4065290aaa93307a153d1cb581352a7df6ffc647
           test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
           test "$(git rev-parse HEAD:yggdrasil/native_action_cue_router.py)" = 0be7452fce87cace6a9348a39120053b5427ceb1
           test -z "$(git status --porcelain)"
