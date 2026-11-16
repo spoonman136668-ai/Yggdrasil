@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.research-prereg.v1",
+  "experiment": "FKP18-CB4-PUBLIC-MEDIATOR-INTERVENTIONS-FOR-ROLE-IDENTIFIABILITY",
+  "scope": "PUBLIC_SYNTHETIC_DEV_ONLY",
+  "status": "FROZEN_BEFORE_NEW_SOURCE_CODE_OUTCOME_AND_MODEL_FIT",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "research_parent": "df2bb0f1c986505c72992e6b38ca607c6cc1b027",
+  "prior": "CB3 has 16/16 four-relevant-feature-set recovery and 5/16 exact content-vs-gate roles with unrestricted four-feature 16-bin Boolean rules, because passive role partition is not identifiable under arbitrary input permutation.",
+  "research_question": "Does an independently observed mechanism-state response under actively selected feature interventions distinguish feature role, when passive action/reward observations cannot?",
+  "source": {
+    "worlds": "new PUBLIC seeds 82400..82431 inclusive, 32 worlds, each of 4 structures repeated 8x. No original FKP17, DG1, MD35 or other owner-held cohort.",
+    "parent_feature_basis": "8 uint4 public state registers + prior and older 3-bit action features, 38 total; all 4 source-relevant features in state-register bits 0..31 to allow physically meaningful present-state feature toggles.",
+    "private_structures": [
+      {
+        "content": [
+          1,
+          6
+        ],
+        "gate": [
+          17,
+          22
+        ]
+      },
+      {
+        "content": [
+          10,
+          15
+        ],
+        "gate": [
+          12,
+          27
+        ]
+      },
+      {
+        "content": [
+          14,
+          24
+        ],
+        "gate": [
+          4,
+          9
+        ]
+      },
+      {
+        "content": [
+          5,
+          31
+        ],
+        "gate": [
+          3,
+          21
+        ]
+      }
+    ],
+    "behavioral_rule": "Binary rewarded action = x XOR y XOR indicator(2*x+y == 2*g0+g1) for source-private content bits x,y and gate bits g0,g1; evaluator-only rule. Gate/content labels never passed to either learner.",
+    "earned_feedback": "515 source-public state/action/after/reward/history steps per world, reward at t belongs to action t-2 (three warmup zero), 512 genuinely credited examples, 0/1 action within eight-action public schema. Shared seeded random exploratory actions, never oracle-labeled counterfactuals.",
+    "intervention": "After each source-blind learner fits four relevant feature indices, it may select a physical public CURRENT-state bit j in 0..31 and issue an intervention toggling bit j on a resettable public baseline state. The source returns only (public state before, addressed bit j, public state after, public mediator bit before and after, physically charged cost=1); mediator M=x XOR y, so do-flipping a content parent changes M and a gate parent does not. M is a separate observable mechanism readout, absent from earlier CB3 passive stream. Actual source-private feature IDs/roles/alternative target rewards remain hidden.",
+    "probe_seed": "random.Random(seed+3000) public baseline state for each intervention, evaluator computes mediator only after requested action. Source closes at max3 probes per world per arm. Both arms share same baseline and action opportunities; models get only their own real public probe reports.",
+    "evaluation": "After paid probes, each arm commits to two content and two gate indices. Source-owner compares role assignments on all 32 worlds and scores 128 independently seeded unseen public action contexts/world, without passing labels to learners. Full transparency that mediator adds distinguishing information not in CB3."
+  },
+  "arms": {
+    "candidate": "Reuse unchanged CB3 DiscoveredGateBinder to identify unordered four-feature set via 512 earned delayed outcomes, then an explicit source-blind constrained diagnostic: probe the two smallest learned indices; if both observed mediator changes agree, stop with known 2-content cardinality; otherwise probe the third and infer the fourth. No source-private indices or mediator function in learner.",
+    "conventional": "Reuse unchanged CB3 separately implemented exhaustive ConventionalExhaustiveFour to identify unordered four-feature set, then independently maintain six candidate 2-content partitions, update likelihood by each real paid mediator response; same chosen feature order/budget and information/actions.",
+    "no_intervention": "Use CB3 direct learner's old (base_pair,gate_pair) grouping with no new evidence; diagnostic only, not comparable-paid arm.",
+    "shuffled_feedback": "Correct four-feature set, but attribute each observed mediator change to the next feature rather than the actually intervened feature; negative control with same opportunities.",
+    "oracle": "Evaluator-only private role labels to establish 100% possible goal, never train."
+  },
+  "budgets": {
+    "worlds": 32,
+    "public_exploration_source_actions_per_world": 515,
+    "actual_credited_delayed_observations_per_world": 512,
+    "paid_mechanism_probe_max_per_arm_world": 3,
+    "minimum_information_theoretic_worst_case_probes": 3,
+    "unseen_source_scoring_contexts_per_world": 128,
+    "candidate_checkpoint_bytes": "existing CB3 checkpoint 78 bytes plus <=128-byte role assignment proof, no cache or opaque driver used for native model",
+    "random_seeds": "source seeds fixed; 1000 world-cluster paired bootstrap seed 82490"
+  },
+  "prespecified_outcomes": {
+    "four_relevant_features": "candidate and independent conventional exact source set at least 30/32 worlds, otherwise FAIL_NO_IDENTIFIABLE_GATE_SEARCH",
+    "source_role_assignment": "candidate exactly 2 content and 2 gate feature IDs at least 30/32 and conventional at least 30/32, each no more than 3 paid interventions, after source-private owner audit only",
+    "improvement_over_passive": "candidate exact role success - no-intervention exact role success >= 0.35 absolute",
+    "negative_control": "shuffled feedback exact role accuracy <=0.70; if fails, report but no postscore fixture change",
+    "unseen_behavior": "both learner models at least 0.95 mean action correctness on 32×128 truly unseen contexts; this is due prior CB3 fitted Boolean rule, not causal-role identification proof",
+    "matched_strong_control_superiority": "candidate minus conventional role accuracy >=0.05 AND paired bootstrap 95% lower bound >0.01. Otherwise unique scientific benefit NO-GO regardless of intervention-role gate PASS.",
+    "engineering": "focused exact-source tests verify delayed feedback/custody, no false positive role, actual before/after state bit flip only, no hidden private fields, probe charging, budget refusal, cold checksum identity and no learner imports from source, deterministic same world outcomes",
+    "novelty_limit": "Identifiability only in this purpose-built mediator-generating family with explicit two-of-four content constraint; extra paid mediator observable breaks former permutation symmetry. Does NOT prove autonomous creation of operators, natural-world causal discovery, return-optimal active exploration, native Yggdrasil intelligence or RSI.",
+    "stop": "Freeze original public score; preserve all null/negative controls without tuning on the now-consumed 32 worlds. No merging or native promotion absent independent disjoint private first use, fully trained conventional controls and exact cross-platform full qualification."
+  },
+  "authority": {
+    "no_main_edit": true,
+    "no_existing_pr_edit": true,
+    "no_first_use": true,
+    "no_new_workflow": true,
+    "no_runner_scheduler_controller": true,
+    "no_paid_api": true,
+    "no_sibling_model_modification": true,
+    "no_merge_or_deployment": true
+  }
+}
