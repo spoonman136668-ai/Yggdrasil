@@ -1,4 +1,4 @@
-name: QTR-01 F50 evaluator-only target admission qualification
+name: QTR-01 F50 nine-world comparison pre-first-use engineering
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ jobs:
   derive-atlas:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'feat(qtr): F50 sealed evaluator admission source-only'
+      github.event.head_commit.message == 'feat(qtr): F50 comparison preuse fixture harness'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
@@ -29,17 +29,17 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          expected="$(printf '%s\n' .github/workflows/qtr01-f50-bayesian-qualification.yml research/contrib/chatgpt/QTR-01/f50_target_evaluator.py research/contrib/chatgpt/QTR-01/test_f50_target_evaluator.py | LC_ALL=C sort)"
-          actual="$(git diff --name-only e6aaeb36c236436fa92e73b74f13a16076ac1ef7 HEAD | LC_ALL=C sort)"
+          expected="$(printf '%s\n' .github/workflows/qtr01-f50-bayesian-qualification.yml research/contrib/chatgpt/QTR-01/f50_comparison_harness.py research/contrib/chatgpt/QTR-01/test_f50_comparison_harness.py | LC_ALL=C sort)"
+          actual="$(git diff --name-only HEAD^ HEAD | LC_ALL=C sort)"
           test "$actual" = "$expected"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           python - <<'PY'
           import ast
           from pathlib import Path
           root = Path('research/contrib/chatgpt/QTR-01')
-          for name in ('f50_target_evaluator.py', 'test_f50_target_evaluator.py'):
+          for name in ('f50_comparison_harness.py', 'test_f50_comparison_harness.py'):
               ast.parse((root/name).read_text())
-          print('F50_PRIVATE_EVALUATOR_SYNTAX_AND_FROZEN_CUSTODY=PASS')
+          print('F50_NINE_WORLD_PREUSE_SYNTAX_AND_FROZEN_CUSTODY=PASS')
           PY
           test -z "$(git status --porcelain)"
       - name: Generate source-derived G29 atlas companion
@@ -55,7 +55,7 @@ jobs:
           git diff --cached --quiet && exit 1
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'ci(qtr): derive F50 evaluator source G29 atlas companion'
+          git commit -m 'ci(qtr): derive F50 comparison harness G29 atlas companion'
           python scripts/build_code_atlas.py --check
           test -z "$(git status --porcelain)"
           git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
@@ -63,7 +63,7 @@ jobs:
   full-final-regression:
     needs: derive-atlas
     if: needs.derive-atlas.result == 'success'
-    name: F50 evaluator admission exact-SHA regression (${{ matrix.os }})
+    name: F50 nine-world harness exact-SHA regression (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 70
     strategy:
@@ -107,7 +107,7 @@ jobs:
           set -euo pipefail
           python -m pip install --disable-pip-version-check numpy==2.1.3 scipy==1.14.1 gymnasium==1.1.1 pygame-ce==2.5.3 psutil==6.1.1 pyarrow==18.1.0
           python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu torch==2.10.0
-      - name: F50 source-only, Bayesian and private evaluator fixture tests
+      - name: F50 source-only nine-world comparison harness and negative fixture tests
         run: python -B -m unittest discover -s research/contrib/chatgpt/QTR-01 -p 'test_f50_*.py' -v
       - name: Mandatory native Yggdrasil full regression
         run: python -B -m unittest discover -s tests -p 'test_*.py' -v
@@ -117,7 +117,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -B research/contrib/chatgpt/QTR-01/f50_target_evaluator.py
+          python -B research/contrib/chatgpt/QTR-01/f50_comparison_harness.py
           git diff --exit-code
           test -z "$(git status --porcelain)"
-          echo F50_EVALUATOR_ADMISSION_NO_DEV_FIRST_USE=PASS
+          echo F50_NINE_WORLD_HARNESS_NO_DEV_FIRST_USE=PASS
