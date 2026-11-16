@@ -222,6 +222,16 @@ class NativeRelationMemory:
         return len({self._weights[i] for i in range(self.ADDRESSES)
                     if self._events[i]})
 
+    def compact_inference(self):
+        """Read-only research view, without observation or answer records.
+
+        Retains affine coefficients and outcome-free input support. The full
+        training checkpoint remains the provenance source. Verified exceptions
+        cannot be represented, so export rejects rather than dropping them.
+        This method does not activate any accepted-model capability.
+        """
+        return NativeRelationReadout.from_memory(self)
+
     def checkpoint(self):
         """Self-validating separate bounded checkpoint; legacy YPC1 untouched."""
         events = [[slot, context, action, value, source]
@@ -321,3 +331,128 @@ class NativeRelationMemory:
         except (TypeError, KeyError, AttributeError, IndexError, ValueError, UnicodeError,
                 json.JSONDecodeError) as exc:
             raise ValueError("NATIVE_RELATION_CHECKPOINT_REJECTED") from exc
+
+
+class NativeRelationReadout:
+    """NKR-18 compact read-only view of the SAME native affine coefficients.
+
+    Contains no training events, source text, outcome lookup table or external
+    data dependency. Input-support row spaces prevent unsupported extrapolation
+    *within the declared affine family*. They do not prove that family true.
+    A pinned digest proves byte identity, never source truth or admission.
+    """
+    __slots__ = ("_raw", "_support", "_weights", "_training_sha256")
+    SCHEMA = "yggdrasil.native-relations.compact-inference.v1"
+    MAX_BYTES = 16384
+
+    @staticmethod
+    def _canonical(doc):
+        return json.dumps(doc, sort_keys=True, separators=(",", ":"),
+                          ensure_ascii=True, allow_nan=False).encode("ascii")
+
+    @staticmethod
+    def _reduced(vectors):
+        # Unique reduced row-space representation; these rows contain INPUT
+        # features only, not right-hand sides/observed outcomes.
+        pivots = {}
+        for value in vectors:
+            row = value
+            for pivot in sorted(pivots, reverse=True):
+                if row & (1 << pivot):
+                    row ^= pivots[pivot]
+            if row:
+                pivots[row.bit_length() - 1] = row
+        for low in sorted(pivots):
+            for high in sorted(pivots):
+                if high > low and pivots[high] & (1 << low):
+                    pivots[high] ^= pivots[low]
+        return tuple(pivots[p] for p in sorted(pivots, reverse=True))
+
+    def __init__(self, raw, expected_sha256):
+        try:
+            if (type(raw) is not bytes or len(raw) > self.MAX_BYTES
+                    or type(expected_sha256) is not str
+                    or len(expected_sha256) != 64
+                    or hashlib.sha256(raw).hexdigest() != expected_sha256):
+                raise ValueError("pin or size")
+            doc = json.loads(raw.decode("ascii"))
+            if (type(doc) is not dict or set(doc) != {
+                    "schema", "training_checkpoint_sha256", "support_rows",
+                    "weights_float32_le", "accepted_native", "scientific_pass"}
+                    or doc["schema"] != self.SCHEMA
+                    or doc["accepted_native"] is not False
+                    or doc["scientific_pass"] is not False
+                    or raw != self._canonical(doc)):
+                raise ValueError("schema or canonical form")
+            pin = doc["training_checkpoint_sha256"]
+            if (type(pin) is not str or len(pin) != 64
+                    or any(c not in "0123456789abcdef" for c in pin)):
+                raise ValueError("training provenance pin")
+            groups, profiles = doc["support_rows"], doc["weights_float32_le"]
+            if (type(groups) is not list or len(groups) != 16
+                    or type(profiles) is not list or len(profiles) != 16):
+                raise ValueError("address capacity")
+            support, weights = [], []
+            for rows, packed in zip(groups, profiles):
+                if (type(rows) is not list or len(rows) > 10
+                        or any(type(r) is not int or not 0 < r < 1024 for r in rows)
+                        or tuple(rows) != self._reduced(rows)):
+                    raise ValueError("support row space")
+                if (type(packed) is not str or len(packed) != 80
+                        or any(c not in "0123456789abcdef" for c in packed)):
+                    raise ValueError("coefficient bytes")
+                values = struct.unpack("<10f", bytes.fromhex(packed))
+                if (any(v not in (0.0, 1.0) for v in values)
+                        or struct.pack("<10f", *(float(int(v)) for v in values)).hex()
+                        != packed or (not rows and any(values))):
+                    raise ValueError("non-binary or unsupported coefficients")
+                support.append(tuple(rows))
+                weights.append(tuple(int(v) for v in values))
+            self._raw = raw
+            self._support, self._weights = tuple(support), tuple(weights)
+            self._training_sha256 = pin
+        except (ValueError, TypeError, KeyError, UnicodeError, struct.error) as exc:
+            raise ValueError("NATIVE_COMPACT_CHECKPOINT_REJECTED") from exc
+
+    @classmethod
+    def from_memory(cls, memory):
+        if not isinstance(memory, NativeRelationMemory):
+            raise ValueError("NATIVE_COMPACT_TRAINER_INVALID")
+        if memory.verified_exception_count:
+            raise ValueError("NATIVE_COMPACT_CANNOT_DROP_VERIFIED_EXCEPTIONS")
+        doc = {
+            "schema": cls.SCHEMA,
+            "training_checkpoint_sha256": hashlib.sha256(memory.checkpoint()).hexdigest(),
+            "support_rows": [list(cls._reduced(v for v, _ in group.values()))
+                             for group in memory._basis],
+            "weights_float32_le": [struct.pack("<10f", *w).hex()
+                                   for w in memory._weights],
+            "accepted_native": False, "scientific_pass": False,
+        }
+        raw = cls._canonical(doc)
+        return cls(raw, hashlib.sha256(raw).hexdigest())
+
+    def checkpoint(self):
+        return self._raw
+
+    @property
+    def checkpoint_sha256(self):
+        return hashlib.sha256(self._raw).hexdigest()
+
+    @property
+    def training_checkpoint_sha256(self):
+        return self._training_sha256
+
+    def predict(self, address, context, action, *, retained=False):
+        slot = PublicCausalCells._address(address, retained)
+        context = NativeRelationMemory._context(context)
+        action = PublicCausalCells._bit(action, "ACTION")
+        row = NativeRelationMemory._row(context, action)
+        remaining = row
+        for vector in self._support[slot]:
+            if remaining & (1 << (vector.bit_length() - 1)):
+                remaining ^= vector
+        if remaining:
+            return None
+        return sum(w for bit, w in enumerate(self._weights[slot])
+                   if row & (1 << bit)) & 1
