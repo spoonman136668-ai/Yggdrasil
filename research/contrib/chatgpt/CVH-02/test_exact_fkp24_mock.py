@@ -59,4 +59,59 @@ class TestInheritedExactAdapter(unittest.TestCase):
         self.assertEqual(policy.memory.seen,10)
         self.assertEqual(policy.episode_history,[])
 
+
+    def test_exact_adapter_budget_exhaustion_does_not_replay_actions(self):
+        self.assertTrue(FKP.is_file())
+        self.assertEqual(_git_blob(FKP.read_bytes()), BLOB)
+        spec=importlib.util.spec_from_file_location('cvh02_exact_budget_adapter',FKP)
+        adapter=importlib.util.module_from_spec(spec)
+        sys.modules[spec.name]=adapter
+        spec.loader.exec_module(adapter)
+        from public_policy import PublicEarnedPolicy
+        class Mock:
+            def __init__(self):
+                self.state=0
+                self.calls=0
+                self.closed=False
+            def reset(self,*,seed):
+                self.state=0
+                return 0,object()
+            def do(self,callback):
+                selected=callback(self.state)
+                self.calls+=1
+                self.state=(self.state+int(selected)+1)%2
+                return self.state,int(selected==1),False,False,object()
+            def close(self):self.closed=True
+        policy=PublicEarnedPolicy()
+        original=Mock()
+        receipt=adapter.public_mechanical_episode(lambda:original,policy,
+                                                  seed=996100,max_actions=2)
+        self.assertEqual(receipt['physical_do_actions'],2)
+        self.assertTrue(receipt['budget_exhausted'])
+        self.assertFalse(receipt['ended_by_source'])
+        self.assertEqual(original.calls,2)
+        self.assertTrue(original.closed)
+        continued_as_if_reset=Mock()
+        with self.assertRaisesRegex(ValueError,'HISTORY_DRIFT_OR_UNCLOSED_EPISODE'):
+            adapter.public_mechanical_episode(lambda:continued_as_if_reset,policy,
+                                              seed=996101,max_actions=2)
+        self.assertEqual(continued_as_if_reset.calls,0)
+        self.assertTrue(continued_as_if_reset.closed)
+        self.assertEqual(policy.memory.seen,2)
+
+    def test_exact_adapter_rejects_protected_seed_before_source_factory(self):
+        self.assertEqual(_git_blob(FKP.read_bytes()),BLOB)
+        spec=importlib.util.spec_from_file_location('cvh02_exact_seed_adapter',FKP)
+        adapter=importlib.util.module_from_spec(spec)
+        sys.modules[spec.name]=adapter
+        spec.loader.exec_module(adapter)
+        from public_policy import PublicEarnedPolicy
+        invoked=[]
+        def forbidden_factory():
+            invoked.append(True)
+            raise AssertionError('UNAUTHORIZED_SOURCE_FACTORY_CALLED')
+        with self.assertRaises(PermissionError):
+            adapter.public_mechanical_episode(forbidden_factory,PublicEarnedPolicy(),seed=996500)
+        self.assertEqual(invoked,[])
+
 if __name__=='__main__':unittest.main()
