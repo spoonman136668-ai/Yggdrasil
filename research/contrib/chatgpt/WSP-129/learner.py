@@ -134,7 +134,7 @@ class _Law:
 
     def coefficient_weights(self):
         if self.weights.bit_count()==1:
-            return _bank()[0][self.weights.bit_length()-1]
+            return list(_bank()[0][self.weights.bit_length()-1])
         return None
 
     def payload(self):
