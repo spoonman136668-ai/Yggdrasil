@@ -1,0 +1,250 @@
+{
+  "schema": "yggdrasil.aai12s.compositional-structure-source-prereg.v1",
+  "experiment_id": "AAI-12S",
+  "class": "source-only developmental successor; not independent first-use science",
+  "status": "FROZEN_BEFORE_SOURCE_IMPLEMENTATION_AND_OUTCOMES",
+  "provenance": {
+    "base_pr": 1074,
+    "base_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "source_only_negative_12q": "4ed9ef07b0d4b7ade73751d1b4e07e280c4acdcb",
+    "source_only_negative_12r": "d659907261b00dbbf0b0af48bbc81f7253f7208d"
+  },
+  "question": "Can a tokenless learner synthesize new multi-stage input-variable relationships from primitive Boolean gates, from witnessed real one-bit interventions, and predict unseen input combinations better than fully fitted generic learners and a same-input single-relation ablation?",
+  "important_limit": "Synthesizing graph structures from a known, finite grammar is not inventing primitives outside the grammar, autonomous intelligence, persistent reasoning or independent science.",
+  "hypothesis": "Unenumerated two-level compositions of XOR/AND/OR with learned four-variable bindings, optional output inversion, fitted solely to 16 real public do observations, have >=0.05 higher heldout accuracy than the strongest same-data fully-trained generic learner; they do not lose >0.02 accuracy to that learner on disjoint non-grammar functions.",
+  "world": {
+    "input_bits": 6,
+    "output_bits": 1,
+    "truth_generator": "y = optional NOT( root( left(x_a,x_b), right(x_c,x_d) ) ) with (a,b,c,d) all distinct and left/right/root each XOR/AND/OR. Privileged world objects available only inside fixture generator/evaluator, never model input.",
+    "op_bits": {
+      "XOR": "a ^ b",
+      "AND": "a & b",
+      "OR": "a | b"
+    },
+    "fit_worlds": [
+      [
+        0,
+        1,
+        2,
+        3,
+        "XOR",
+        "AND",
+        "OR",
+        0
+      ],
+      [
+        2,
+        4,
+        1,
+        5,
+        "AND",
+        "OR",
+        "XOR",
+        1
+      ],
+      [
+        3,
+        5,
+        0,
+        2,
+        "OR",
+        "XOR",
+        "AND",
+        0
+      ],
+      [
+        1,
+        4,
+        0,
+        5,
+        "AND",
+        "XOR",
+        "OR",
+        1
+      ]
+    ],
+    "transfer_worlds": [
+      [
+        0,
+        2,
+        1,
+        3,
+        "XOR",
+        "OR",
+        "AND",
+        0
+      ],
+      [
+        1,
+        3,
+        2,
+        5,
+        "AND",
+        "XOR",
+        "OR",
+        0
+      ],
+      [
+        5,
+        3,
+        0,
+        4,
+        "OR",
+        "AND",
+        "XOR",
+        1
+      ],
+      [
+        2,
+        0,
+        3,
+        1,
+        "XOR",
+        "AND",
+        "AND",
+        1
+      ],
+      [
+        3,
+        4,
+        1,
+        5,
+        "OR",
+        "XOR",
+        "XOR",
+        0
+      ],
+      [
+        4,
+        0,
+        5,
+        2,
+        "AND",
+        "OR",
+        "OR",
+        1
+      ],
+      [
+        1,
+        5,
+        0,
+        3,
+        "XOR",
+        "XOR",
+        "AND",
+        0
+      ],
+      [
+        0,
+        4,
+        2,
+        5,
+        "AND",
+        "AND",
+        "OR",
+        1
+      ],
+      [
+        5,
+        1,
+        4,
+        2,
+        "OR",
+        "OR",
+        "XOR",
+        0
+      ],
+      [
+        3,
+        0,
+        5,
+        4,
+        "XOR",
+        "AND",
+        "XOR",
+        1
+      ],
+      [
+        4,
+        2,
+        1,
+        0,
+        "AND",
+        "OR",
+        "XOR",
+        0
+      ],
+      [
+        2,
+        5,
+        3,
+        4,
+        "OR",
+        "XOR",
+        "OR",
+        1
+      ]
+    ],
+    "negative_worlds": [
+      "parity6",
+      "majority6",
+      "exactly_two",
+      "parity5_and_last"
+    ],
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "intervention_protocol": "For each fixture/world, order 64 input assignments by SHA256 ASCII 'AAI12S|<fixture>|<worldindex>|<x>', then greedily select first 8 disjoint pairs (x, x xor (1<<bit)) using bit directions 0..5. These are 8 actually executed one-bit do interventions and 16 unique public x/y observations per arm. No model-specific action selection.",
+    "test_protocol": "All 48 input assignments absent from the public 16 are evaluation-only; 2 fixtures x 12 unfamiliar worlds x 48 cases =1152 transfer cases per arm. Also 384 familiar (4x2x48) and 384 disjoint out-of-grammar negative (4x2x48), scored separately.",
+    "model_observations": "Only public x (6 bits), y (1 bit) and witnessed one-bit do edges between paired examples. No world ID, true graph, gate label, hidden state, source family or evaluator truth.",
+    "no_primary_first_use": true,
+    "science_cohorts_used": 0
+  },
+  "learner": {
+    "synth": "Search all ordered four-distinct-variable bindings over x[0:6], 3 primitive ops for each of 3 graph nodes, and optional output complement; this is a compositional program grammar, NOT an enumerated ground-truth graph list. Train by minimizing 16-sample exact classification errors, break ties by short description then lexicographic expression; compute full 64-bit Boolean truth table for each program once using only permitted primitive operations, never privileged target structure. No post-result grammar expansion.",
+    "conventional_controls": [
+      "depth6_fully_fitted_id3",
+      "degree3_fully_trained_logistic_500",
+      "hamming_knn5",
+      "recent_public_table"
+    ],
+    "same_data_ablation": "single_gate_only (two arbitrary input variables, XOR/AND/OR and optional output inversion), identical 16 public x/y observations and disjoint-test budget.",
+    "fitting": "ID3 trains to entropy/purity or depth6 on all 16 public observations; logistic uses all 42 squarefree monomials up to degree3, full-batch gradient descent 500 epochs, learning rate=0.5 and L2=0.01, deterministic zero-init, no post-result tuning; kNN uses 5 nearest Hamming with deterministic order tie; recent table uses observed exact x else global empirical majority.",
+    "metrics": [
+      "exact unseen y accuracy",
+      "mean heldout 0/1 error",
+      "per-world accuracy",
+      "source training/predict wall time",
+      "out-of-grammar accuracy"
+    ],
+    "cold": "All models trained afresh per independently restored world/fixture; no reuse of target truth. Grammar truth table optimization is fixed-capacity source-free and shared across worlds."
+  },
+  "frozen_gates": {
+    "transfer_accuracy_gain_vs_best_conventional_min": 0.05,
+    "transfer_accuracy_gain_vs_single_gate_min": 0.1,
+    "minimum_transfer_worlds_with_pooled_accuracy_at_least_0_85": 10,
+    "negative_out_of_grammar_accuracy_max_drop_vs_best_conventional": 0.02,
+    "familiar_accuracy_max_drop_vs_best_conventional": 0.02,
+    "max_whole_model_fit_and_predict_seconds_ratio_to_fastest_conventional": 10,
+    "all_required": true,
+    "classify": "DEV_ADMITTED_SCIENCE_UNVERIFIED only if all frozen gates pass and exact paired source+negative controls are reproducible; else DEV_NO_GO_NO_SCIENCE. If provenance, state, leakage, parity or training assertions fail, classify INVALID_ENGINEERING instead of scientific negative.",
+    "negative_control": "Out-of-grammar functions must be tested for honest scope; no relabeling these as ordinary transfer.",
+    "stop": "One source-only mechanical screen at frozen SHA; no post-result tuning, reshuffling, scaling, multiple hypotheses on same results, fresh science cohorts or automatic promotion."
+  },
+  "safety": {
+    "no_native_edit": true,
+    "no_main_edit": true,
+    "no_merge": true,
+    "no_science_first_use": true,
+    "no_owner_runner": true,
+    "no_controller_scheduler_queue": true,
+    "no_paid_api": true,
+    "only_changes": [
+      "research/contrib/chatgpt/AAI-12S/*"
+    ],
+    "external_git_ci": "nonqualification workflows may fire; native final regression required only before any merge",
+    "external_first_use_not_authorized": true
+  }
+}
