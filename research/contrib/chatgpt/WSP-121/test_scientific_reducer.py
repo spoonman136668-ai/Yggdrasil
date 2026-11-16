@@ -163,6 +163,33 @@ class WSP121SourceFreeReducerTests(TestCase):
         self.assertTrue(any(x["kind"] == "SOURCE_MISMATCH"
                             for x in broken["differences"]))
 
+    def test_platform_fit_lineage_divergence_invalid_even_with_hash_parity(self):
+        linux = synthetic_rows("ubuntu-latest")
+        windows = synthetic_rows("windows-2022")
+        # Mutate all family-0 rows so both datasets are internally valid;
+        # matching source and prediction hashes cannot establish fit lineage.
+        for row in windows:
+            if row["family"] == 0:
+                row["fit_lineage_sha256"] = _digest("different-synthetic-fit")
+        comparison = R.compare_platforms(linux, windows)
+        self.assertEqual(comparison["status"], "INVALID")
+        self.assertIn({"seed": 121000, "kind": "FIT_LINEAGE_MISMATCH"},
+                      comparison["differences"])
+        self.assertFalse(comparison["scientific_pass"])
+
+    def test_platform_score_divergence_invalid_even_with_prediction_hash_parity(self):
+        linux = synthetic_rows("ubuntu-latest")
+        windows = synthetic_rows("windows-2022")
+        # Fabricated metadata discrepancy, never actual first-use labels.
+        target = windows[25]["arms"]["NUMERIC_FAST"]
+        target["correct"] -= 1
+        target["abstained"] += 1
+        comparison = R.compare_platforms(linux, windows)
+        self.assertEqual(comparison["status"], "INVALID")
+        self.assertIn({"seed": 121025, "arm": "NUMERIC_FAST",
+                       "kind": "SCORE_MISMATCH"}, comparison["differences"])
+        self.assertFalse(comparison["scientific_pass"])
+
     def test_positive_synthetic_science_candidate_still_not_acceptance(self):
         # Artificially favorable data cannot produce SCIENTIFIC_PASS.
         scores = {

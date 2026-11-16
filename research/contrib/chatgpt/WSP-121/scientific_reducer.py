@@ -254,6 +254,8 @@ def compare_platforms(ubuntu_rows, windows_rows):
         _deny("PLATFORM_PAIR")
     differences = []
     for seed in ORIGINAL_FIT_SEEDS + ORIGINAL_TRANSFER_SEEDS:
+        if linux[seed]["fit_lineage_sha256"] != windows[seed]["fit_lineage_sha256"]:
+            differences.append({"seed": seed, "kind": "FIT_LINEAGE_MISMATCH"})
         for name in ARMS:
             a, b = linux[seed]["arms"][name], windows[seed]["arms"][name]
             if a["source_sha256"] != b["source_sha256"]:
@@ -262,6 +264,10 @@ def compare_platforms(ubuntu_rows, windows_rows):
             if a["held_predictions_sha256"] != b["held_predictions_sha256"]:
                 differences.append({"seed": seed, "arm": name,
                                     "kind": "PREDICTION_MISMATCH"})
+            if any(a[k] != b[k] for k in
+                   ("correct", "wrong_confident", "abstained")):
+                differences.append({"seed": seed, "arm": name,
+                                    "kind": "SCORE_MISMATCH"})
     return {"schema": SCHEMA, "comparison": "SOURCE_FREE_PLATFORM_PARITY",
             "status": "INVALID" if differences else "DIAGNOSTIC_PARITY",
             "differences": differences, "scientific_pass": False,

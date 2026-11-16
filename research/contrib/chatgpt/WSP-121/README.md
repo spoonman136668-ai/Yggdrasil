@@ -72,8 +72,10 @@ phases, reconciled whole-process time, peak process RSS, stored model bytes
 and a declared energy proxy. **A proxy does not establish calibrated energy
 or equivalent machine-level cost**. This reducer checks consistency, not the
 truth of these measurements. `compare_platforms` separately rejects
-mismatched input evidence or held-prediction SHA-256 between Linux and Windows
-without rewriting or replaying a world. A GRU-like cross-platform mismatch
+mismatched input evidence, held-prediction SHA-256, fit-family lineage and
+correct/wrong/abstained accounting between Linux and Windows without rewriting
+or replaying a world. These are source-free summary-integrity checks; they
+cannot authenticate external source or measurement custody. A GRU-like cross-platform mismatch
 stays invalid.
 
 Every result **always** has `scientific_status=UNVERIFIED`,
