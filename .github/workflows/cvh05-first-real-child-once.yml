@@ -14,7 +14,7 @@ jobs:
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
       github.event_name == 'push' &&
       github.run_attempt == 1 &&
-      github.event.head_commit.message == 'CVH-05 first frozen source-process constructor qualification'
+      github.event.head_commit.message == 'CVH-05 frozen test launcher correction and authentic source constructor'
     strategy:
       fail-fast: false
       matrix:
@@ -25,7 +25,7 @@ jobs:
       run:
         shell: bash
     env:
-      SOURCE_SHA: 182002ea4ba86e227056a2e370f8160d71633c5c
+      SOURCE_SHA: bf7aad5f6c2eb0b14bad7c5e32f8f95cb3cd825e
       UPSTREAM_PIN: c94e9a4cd3641588b6b8507e71ccee5c27032bdf
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
@@ -34,7 +34,7 @@ jobs:
       - name: Verify frozen source with read-only checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 182002ea4ba86e227056a2e370f8160d71633c5c
+          ref: bf7aad5f6c2eb0b14bad7c5e32f8f95cb3cd825e
           fetch-depth: 0
           persist-credentials: false
       - name: Pinned Python 3.12
@@ -49,7 +49,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/source_child.py)" = 194b96985307390b4c09b68fc0a9767ff294d2f5
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/constructor_ipc.py)" = dc5fcce0acfa5cc8f64c5a9dc6caf8c5fe87d11f
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/probe_original_child.py)" = 6c3ac735a10150c4d932594262c016ab93f64ae6
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/test_constructor_ipc.py)" = 54856b9c93f792870a11b248194a7d3a93fd38bd
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-05/test_constructor_ipc.py)" = a9c953ca6d81c7b4b65b4270de6d0159cd7a6a10
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-03/source_binding.py)" = 7d38d861044d844f4bd8f59c1e234c4d7f01ee76
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-04/public_ipc.py)" = 75f85dc2b6305a5089052a473fae113d6254ad9c
           test -z "$(git status --porcelain)"
