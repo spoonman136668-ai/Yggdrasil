@@ -1,0 +1,93 @@
+{
+  "schema": "fkp17.public-train-matrix-lock.v1",
+  "classification": "KNOWN_TRAIN_FAMILY_DIAGNOSTIC_NO_SCIENTIFIC_FIRST_USE",
+  "preregistered_science_unchanged": true,
+  "entrypoint": "research/contrib/chatgpt/FKP-17/run_train_matrix.py",
+  "original_fkp17_prereg_blob": "17d676c9374060515c7ebee2e2fdc262a884343c",
+  "prior_training": "load existing full 2x24 epoch GRU checkpoint from GitHub Actions run 43771744616 artifact 14184452515; DO NOT refit or retune",
+  "prior_public_sha256": "c8400f67e8d26147de702c0c9bdba1f05581ee6f70635b3e9c90d73d6af81ecf",
+  "checkpoint_file_sha256": "4cb2ad52ffe9cf5e89c61fadc6751260e5ce8f1d89772d9ffbd17a76cae6e2c3",
+  "seed_schedule": {
+    "cohort": "TRAIN_ONLY",
+    "start": 978100,
+    "end": 978163,
+    "count": 64,
+    "all_worlds_accounted_for": true
+  },
+  "actions": {
+    "identical_source_public_exploration_per_arm": 24,
+    "real_onpolicy_scored_per_arm": 16,
+    "action_count": 8,
+    "public_state_registers": 8
+  },
+  "arms": [
+    "STRUCTURED",
+    "FLAT",
+    "SHUFFLED",
+    "MINIMAL",
+    "NO_UPDATE",
+    "BAYES_SYMBOLIC",
+    "COUNT_RETRIEVAL",
+    "RECURRENT"
+  ],
+  "primary_known_family_diagnostic": {
+    "candidate": "STRUCTURED",
+    "matched_information_controls": [
+      "FLAT",
+      "SHUFFLED",
+      "NO_UPDATE",
+      "BAYES_SYMBOLIC",
+      "COUNT_RETRIEVAL",
+      "RECURRENT"
+    ],
+    "additional_ablation": "MINIMAL",
+    "metric": "paired world average actual 16-step cumulative source-public reward; candidate minus highest mean control, reselect control within each bootstrap replicate",
+    "bootstrap_seed": 1515,
+    "bootstrap_draws": 10000,
+    "lower_quantile": 0.025,
+    "upper_quantile": 0.975,
+    "allow_scientific_pass": false
+  },
+  "cost_receipts": [
+    "foundation_facts_count",
+    "foundation_fit_wall_seconds_per_arm",
+    "per_world_wall_seconds_per_arm",
+    "per_arm_inference_wall_seconds",
+    "per_arm_update_wall_seconds",
+    "per_arm_inference_cpu_seconds",
+    "per_arm_update_cpu_seconds",
+    "stored_model_bytes_per_arm",
+    "source_actions_exact_per_arm",
+    "total_elapsed_wall_seconds"
+  ],
+  "stop_on": [
+    "source or checkpoint SHA mismatch",
+    "missing or different exploration action tape",
+    "missing arm",
+    "protected or unknown seed",
+    "extra/early/missing physical action outcomes",
+    "unexpected short scored episode",
+    "nonfinite reward or timing",
+    "missing model custody",
+    "capacity exceed",
+    "calculation or bootstrap error"
+  ],
+  "negative_controls": [
+    "shuffled edges",
+    "minimal prior",
+    "no update",
+    "flat source-memory",
+    "independent symbolic",
+    "count retrieval",
+    "full trained recurrent"
+  ],
+  "held_source_rules": {
+    "no_dev": true,
+    "no_reserved_transfer": true,
+    "no_owner_first_use": true,
+    "original_dev_start": 978500,
+    "original_transfer_start": 978600
+  },
+  "interpretation": "TRAIN is known-law development and analysis only. No original fresh DEV, transfer, cold-interference gain or independent science. Never tune frozen FKP17 result using this diagnostic.",
+  "next_scientific_gate": "Independent owner-controlled hidden-law source birth, intervention identifiability and headroom verification before original held DEV."
+}
