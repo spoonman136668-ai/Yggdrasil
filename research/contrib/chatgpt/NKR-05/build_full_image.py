@@ -19,15 +19,110 @@ import time
 
 ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "research/contrib/chatgpt/WSP-102"))
-sys.path.insert(0, str(ROOT / "research/contrib/chatgpt/WSP-103"))
+# Frozen WSP102/103 historical source contract. Those experimental modules
+# reside on separate *unmerged* research branches, so importing them as native
+# runtime dependencies would be unsound. Retain their exact frozen constants
+# and enforce the already-published checks here without any other dependency.
+from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-from source_custody import _download_once, inspect_members
-from real_graph_weights import (
-    ARCHIVE_SHA, ARCHIVE_BYTES, TRAIN_SHA, TRAIN_BYTES, TRAIN_ROWS,
-    TRAIN_RELATIONS,
-)
-from train_headroom_audit import parse_triple
+ARCHIVE_SHA = "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878"
+ARCHIVE_BYTES = 174515774
+TRAIN_SHA = "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a"
+TRAIN_BYTES = 436189882
+TRAIN_ROWS = 21343681
+TRAIN_RELATIONS = 828
+SOURCE_URL = "https://web.informatik.uni-mannheim.de/pi1/kge-datasets/wikidata5m.tar.gz"
+SOURCE_HOST = "web.informatik.uni-mannheim.de"
+MAX_ARCHIVE_BYTES = 268435456
+MAX_ARCHIVE_DOWNLOAD_SECONDS = 600
+
+
+def _positive_id(value, prefix):
+    if (not value.startswith(prefix) or len(value) < 2
+            or not value[1:].isdigit() or value[1:2] == b"0"):
+        raise ValueError("NKR05_INVALID_QP_IDENTIFIER")
+    result = int(value[1:])
+    if not (0 < result <= 0xFFFFFFFF):
+        raise ValueError("NKR05_INVALID_QP_UINT32_RANGE")
+    return result
+
+
+def parse_triple(row):
+    if not row.endswith(b"\\n") or len(row) > 10000 or b"\\x00" in row:
+        raise ValueError("NKR05_INVALID_TRIPLE_LINE")
+    pieces = row.rstrip(b"\\r\\n").split(b"\\t")
+    if len(pieces) != 3:
+        raise ValueError("NKR05_INVALID_TRIPLE_COLUMNS")
+    return (_positive_id(pieces[0], b"Q"), _positive_id(pieces[1], b"P"),
+            _positive_id(pieces[2], b"Q"))
+
+
+def _allowed_url(url):
+    p = urlsplit(url)
+    if (p.scheme != "https" or p.hostname != SOURCE_HOST
+            or p.username is not None or p.password is not None
+            or p.query or p.fragment or p.port not in (None, 443)
+            or p.path != "/pi1/kge-datasets/wikidata5m.tar.gz"):
+        raise ValueError("NKR05_HISTORICAL_HOST_DISALLOWED")
+    return url
+
+
+class _OnlyFrozenRedirects(HTTPRedirectHandler):
+    def redirect_request(self, request, fp, code, msg, headers, newurl):
+        _allowed_url(newurl)
+        return super().redirect_request(request, fp, code, msg, headers, newurl)
+
+
+def _download_once(destination):
+    _allowed_url(SOURCE_URL)
+    opener = build_opener(_OnlyFrozenRedirects())
+    request = Request(SOURCE_URL, headers={
+        "User-Agent": "NKR05-Historical-Train/1.0 (Yggdrasil research)",
+        "Accept": "application/gzip,application/octet-stream",
+    })
+    started = time.monotonic()
+    downloaded, checksum = 0, sha256()
+    with opener.open(request, timeout=35) as response:
+        _allowed_url(response.geturl())
+        if response.status != 200 or "text/html" in response.headers.get(
+                "Content-Type", "").lower():
+            raise ValueError("NKR05_SOURCE_NOT_GZIP")
+        with open(destination, "xb") as sink:
+            while True:
+                if time.monotonic() - started > MAX_ARCHIVE_DOWNLOAD_SECONDS:
+                    raise TimeoutError("NKR05_DOWNLOAD_TIME_BUDGET")
+                chunk = response.read(1 << 20)
+                if not chunk:
+                    break
+                downloaded += len(chunk)
+                if downloaded > MAX_ARCHIVE_BYTES:
+                    raise MemoryError("NKR05_ARCHIVE_DOWNLOAD_TOO_LARGE")
+                sink.write(chunk)
+                checksum.update(chunk)
+    return {"compressed_sha256": checksum.hexdigest(),
+            "compressed_bytes": downloaded}
+
+
+def inspect_members(path):
+    members, seen = [], set()
+    with tarfile.open(path, "r:gz") as archive:
+        for member in archive:
+            name = member.name
+            if (len(members) >= 16 or not name or name in seen
+                    or len(name) > 256 or name.startswith("/")
+                    or "\\\\" in name or "\\x00" in name
+                    or any(part in ("", ".", "..") for part in name.split("/"))
+                    or not (member.isdir() or member.isfile())):
+                raise ValueError("NKR05_UNSAFE_ARCHIVE_MEMBER")
+            seen.add(name)
+            if member.size < 0 or member.size > TRAIN_BYTES:
+                raise ValueError("NKR05_ARCHIVE_MEMBER_SIZE_INVALID")
+            members.append({"path": name,
+                            "type": "directory" if member.isdir() else "file",
+                            "uncompressed_bytes": member.size})
+    return {"members": members}
+
 from yggdrasil.native_factual_weights import (
     PACK, SCHEMA, NativeFactualWeights, canonical, digest,
 )
