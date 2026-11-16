@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.research-prereg.v1",
+  "experiment": "FKP18-CB5-BLIND-SENSOR-MEDIATOR-DO-OUTCOME-DISCOVERY",
+  "phase": "FROZEN_BEFORE_SOURCE_IMPLEMENTATION_OR_OUTCOMES",
+  "main_baseline": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "cb4_parent": "b6e7cff565d82c0f69e4cc2819bd9414d82371b2",
+  "hypothesis": "After learning a source-blind four-feature action law, a source-blind agent can distinguish WHICH of eight unlabeled observable sensor channels has a causal effect on the earned action outcome by choosing real paid upstream bit toggles and downstream sensor interventions, without being told the mediator identity or role.",
+  "source": {
+    "worlds": "32 new public synthetic development worlds 82500..82531; 4 fixed source parent structures ×8 permuted sensor assignments",
+    "source_private_structures": [
+      {
+        "content": [
+          1,
+          6
+        ],
+        "gate": [
+          17,
+          22
+        ]
+      },
+      {
+        "content": [
+          10,
+          15
+        ],
+        "gate": [
+          12,
+          27
+        ]
+      },
+      {
+        "content": [
+          14,
+          24
+        ],
+        "gate": [
+          4,
+          9
+        ]
+      },
+      {
+        "content": [
+          5,
+          31
+        ],
+        "gate": [
+          3,
+          21
+        ]
+      }
+    ],
+    "earned_reward": "515 fixed shared actual public state/action transitions per world, delayed earned ±1 feedback from action taken 2 steps earlier (512 credited); binary action 0 or 1",
+    "sensors": "Eight public binary channels with per-world secret permutation: six channels each respond to exactly one distinct unordered pair of the four causally relevant state bit features, two distractor channels depend on other public state bits; NONE is declared as mediator to learners.",
+    "true_mediator": "Among the six pairwise-reactive sensors, the source-private channel tracking XOR of the two content features is the only channel whose do-value intervention changes the earned binary target action. Other five pairwise-reactive channels respond to real upstream feature toggles but do not causally influence downstream earned target.",
+    "public_probes": "Four real current-state bit-flip interventions at common resettable baseline, revealing before/after eight sensor bits; then a real chosen binary action at baseline (paid) and each requested do(channel=1-current) intervention with an actual earned ±1 action outcome, resetting the same baseline per request. No private sensor labels, feature-role indices, future outcomes or counterfactual alternatives passed to learners.",
+    "seed_domain": "synthetic public fixed seed; random.Random(seed+4000) for baseline, random.Random(seed+2000) permuted channel order, random.Random(seed+1000) novel public action score contexts",
+    "source_private_scoring": "After all model choices, evaluator-only owner audit compares chosen mediator channel and inferred two content bits; 128 held public action contexts per world scored without training feedback."
+  },
+  "arms": {
+    "direct": "Use unchanged source-blind CB3 DiscoveredGateBinder to identify four unordered relevant features, then a new direct-written public channel-effect matrix. Probe each four learned state bits in ascending order, shortlist sensor channels whose before/after pattern changes for exactly two of the four features; make real baseline binary action outcome observation; intervene shortlisted channels ascending until earned action reward reverses. Retain chosen channel, parent pair and public receipt; no hidden channel identity given.",
+    "conventional": "Use unchanged independent CB3 ConventionalExhaustiveFour to identify same relevant feature set, then independently maintain conventional hypothesis set of six two-parent sensor channels with likelihood elimination from exactly same paid public physical interventions and earned action consequences. Use identical public action budget, channel order and observations.",
+    "negatives": [
+      "NO_DOWNSTREAM_INTERVENTION: same four upstream bit-probes, then select lexicographically first two-parent sensor, no downstream outcome evidence",
+      "WRONG_OUTCOME_ASSIGNMENT: same physical probe opportunities but assign first evidence of earned reward reversal to next channel rather than intervened channel; record false positive",
+      "FIXED_ACTION0: source-blind action0/no-update accuracy on 128 unseen new contexts",
+      "CB3_ACTION_PREDICTION: compare both fully trained/fit public four-feature action prediction controls, not source-private oracle"
+    ]
+  },
+  "budgets": {
+    "worlds": 32,
+    "shared_public_training_actions_per_world": 515,
+    "shared_actual_credited_delayed": 512,
+    "upstream_feature_bit_interventions_per_arm": 4,
+    "baseline_action_reward_probe": 1,
+    "max_downstream_sensor_channel_interventions_per_arm": 6,
+    "max_total_paid_interventions_per_arm_world": 11,
+    "unseen_context_action_queries_per_arm_world": 128,
+    "no_second_original_primary_run_after_frozen_exposure": true,
+    "bootstrap_worlds": 1000,
+    "bootstrap_seed": 82560,
+    "no_first_use_protected": true
+  },
+  "frozen_primary": {
+    "four_relevant_bit_set": "candidate and conventional each >=30/32 correct full four-feature set",
+    "mediator_channel_discovery": "both candidate and conventional identify real downstream-causal sensor channel >=30/32",
+    "causal_content_pair": "each infer 2 content parent bits >=30/32 by public upstream sensor effects",
+    "source_mechanism_identifiability": "no-downstream-intervention exact channel guess <=12/32 while active >=30/32",
+    "negative_outcome_misattribution": "wrong-channel attribution <=12/32",
+    "public_earned_action_after_fit": "both >=95% correct on 32×128 new contexts",
+    "fairness": "same paid physical source opportunities and identical probe logs per world and arm, <=11 total (4+1+6)",
+    "algorithm_superiority": "direct minus equally informed conventional mediator-identification accuracy >=.05 AND paired 95% bootstrap lower> .01; tie=> NO_GO unique substrate",
+    "memory": "Bounded direct learned sensor mask + channel,parent addresses under 128 bytes role metadata; report raw logical bytes separately from process RAM and whole-process cost",
+    "engineered_negative": "sensor-private truth/ID never imported by either learner module and source private original FKP-17 cohorts untouched",
+    "stop": "Freeze original classification regardless of positive or negative. No threshold adjustment, new law examples or postscore retuning. No native model integration based on public synthetic development."
+  },
+  "scientific_limits": [
+    "No source-owner hidden evaluation or novel operator discovery; generic four-feature Boolean grammar and measurable sensor channel actions are explicitly supplied",
+    "Information is obtained by an extra source intervention, not hallucinated from unidentifiable passive observations",
+    "No GPU/paid API/runner/scheduler/controller/CI workflow edits; no source first-use or scientific promotion",
+    "DG1 physical-context investigations remain separate and unmodified."
+  ]
+}
