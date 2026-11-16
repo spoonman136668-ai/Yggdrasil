@@ -1,0 +1,164 @@
+name: CUE-02 derived G29 and complete exact-source dual-OS regression
+on:
+  push:
+    branches: [qualification/cue02-exact-dual-os-20261116]
+    paths: [.github/workflows/cue02-full-qualification-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: cue02-exact-source-final-once-20261116
+  cancel-in-progress: false
+jobs:
+  generated-only:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'CUE-02 source-pinned final dual-OS qualification once'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    outputs:
+      exact_sha: ${{ steps.generate.outputs.exact_sha }}
+    env:
+      SOURCE_SHA: 9e11acbe27d9f65174f57a81cf5c411be5e84de0
+      REPAIR_BRANCH: repair/cue02-generated-atlas-20261116
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Frozen original source and isolated generated branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 9e11acbe27d9f65174f57a81cf5c411be5e84de0
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Pinned Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only pinned G29 assets and fail closed on any source change
+        id: generate
+        run: |
+          set -euo pipefail
+          git config core.autocrlf false
+          git config core.eol lf
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/prereg.json)" = 34db1b055e2918955a0e281d370c62fd81dd90a9
+          test "$(git rev-parse HEAD:yggdrasil/native_finite_cue_audit.py)" = 089fe536650404c645dc07cf2ec9ffb86758153e
+          test "$(git rev-parse HEAD:tests/test_native_finite_cue_audit.py)" = 4065290aaa93307a153d1cb581352a7df6ffc647
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/dev.py)" = 9919facd671cde30c6bdddd6c78920c8780ff0dc
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/result.json)" = d9652982116fa4c3045aec235751635693c0ac43
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_action_bank.py)" = d285a33af70e3348d2d2b284746a08ec07c6ba87
+          test -z "$(git status --porcelain)"
+          remote="$(git ls-remote origin "refs/heads/$REPAIR_BRANCH" | cut -f1)"
+          test "$remote" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE_SHA"
+          actual="$(git diff --name-only | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$actual" = "$expected"
+          test -z "$(git ls-files --others --exclude-standard)"
+          git config user.name 'cue02-isolated-atlas-bot'
+          git config user.email 'cue02-isolated-atlas-bot@users.noreply.github.com'
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m 'fix(CUE-02): generated-only atlas pinned to exact source'
+          sha="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/$REPAIR_BRANCH"
+          echo "exact_sha=$sha" >> "$GITHUB_OUTPUT"
+          echo CUE02_PINNED_GENERATED_ONLY_ATLAS_PASS="$sha"
+  full:
+    needs: generated-only
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_SHA: 9e11acbe27d9f65174f57a81cf5c411be5e84de0
+      FULL_SHA: ${{ needs.generated-only.outputs.exact_sha }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Read-only checkout exact generated-only qualification SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.generated-only.outputs.exact_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pin Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact source, prereg, and only three derived atlas files
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$FULL_SHA"
+          test "$(git rev-parse HEAD^)" = "$SOURCE_SHA"
+          changed="$(git diff --name-only "$SOURCE_SHA" "$FULL_SHA" | LC_ALL=C sort)"
+          expected="$(printf '%s\n' '.ice/code-atlas.html' '.ice/code-atlas.ice' '.ice/code-atlas.json' | LC_ALL=C sort)"
+          test "$changed" = "$expected"
+          test "$(git rev-parse HEAD:yggdrasil/native_finite_cue_audit.py)" = 089fe536650404c645dc07cf2ec9ffb86758153e
+          test "$(git rev-parse HEAD:yggdrasil/native_action_cue_router.py)" = 0be7452fce87cace6a9348a39120053b5427ceb1
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/prereg.json)" = 34db1b055e2918955a0e281d370c62fd81dd90a9
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CUE-02/result.json)" = d9652982116fa4c3045aec235751635693c0ac43
+          test -z "$(git status --porcelain)"
+          echo CUE02_EXACT_SOURCE_CUSTODY_PASS
+      - name: Independent source-pinned G29 generated atlas regression
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+          echo CUE02_G29_QUALIFICATION_PASS
+      - name: Complete mandatory existing repository Python regression
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CUE02_FULL_REPOSITORY_REGRESSION_PASS
+      - name: Frozen evidence/negative/first-use suite on candidate SHA
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_finite_cue_audit.py -v
+          test -z "$(git status --porcelain)"
+          echo CUE02_FOCUSED_AND_IMPOSSIBILITY_TESTS_PASS
+      - name: Replay original source-only evidence exactly and validate strong control
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CUE-02/dev.py --source-dev > "$RUNNER_TEMP/cue02-final.txt"
+          python -B - <<'PY'
+          from pathlib import Path
+          import json,os
+          root=Path("research/contrib/chatgpt/CUE-02")
+          expected=json.loads((root/"result.json").read_text())
+          raw=(Path(os.environ["RUNNER_TEMP"])/"cue02-final.txt").read_text().strip()
+          assert raw.startswith("CUE02_DEV=")
+          result=json.loads(raw.removeprefix("CUE02_DEV="))
+          frozen=expected["measurements"]
+          assert result["per_policy"]==frozen["per_policy"]
+          assert result["trace_sha256"]==frozen["observed_trace_sha256"]
+          assert result["full_native_bank_checkpoint_sha256"]==frozen["source_bank_sha256"]
+          assert result["original_source_public_sha256"]==expected["cohort"]["source_sha256"]
+          assert result["classification"]==expected["classification"]
+          assert result["complete_31_of_32_indistinguishable_witnesses"]==12
+          assert all(result["frozen_gates"].values())
+          assert result["independent_scientific_first_use"]==0
+          assert result["accepted_main_changed"] is False
+          print("CUE02_BUDGET_SWEEP="+json.dumps(result["budget_sweep_high_first"]))
+          print("CUE02_DENSE_8="+json.dumps(result["per_policy"]["dense"]["8"],sort_keys=True))
+          print("CUE02_HASH_8="+json.dumps(result["per_policy"]["hash"]["8"],sort_keys=True))
+          print("CUE02_LEX_8="+json.dumps(result["per_policy"]["lex"]["8"],sort_keys=True))
+          print("CUE02_TRACE_SHA256="+result["trace_sha256"])
+          print("CUE02_PINNED_SOURCE_SCREEN_REPLAY_PASS")
+          PY
+          if python -B research/contrib/chatgpt/CUE-02/dev.py --primary >/dev/null 2>&1; then
+            echo CUE02_PROTECTED_FIRST_USE_NOT_DISARMED >&2
+            exit 1
+          fi
+          test -z "$(git status --porcelain)"
+          echo CUE02_FIRST_USE_DENIED_AND_CLEAN_FINAL_PASS
