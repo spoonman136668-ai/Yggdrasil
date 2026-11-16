@@ -167,6 +167,13 @@ class NativeInterventionRepair:
                 or not re.fullmatch(r"[0-9a-f]{64}", doc["warm_sha256"])):
             raise ValueError("NKR11_WARM_ID_OR_SHA_INVALID")
         old_records = _records(doc["warm_records"], expected=32)
+        warm_bundle = canonical({
+            "schema": BUNDLE_SCHEMA, "source_id": doc["warm_id"],
+            "source_kind": SOURCE_KIND, "source_mode": SOURCE_MODE,
+            "records": [list(x) for x in old_records],
+        })
+        if digest(warm_bundle) != doc["warm_sha256"]:
+            raise ValueError("NKR11_WARM_SOURCE_SHA_DRIFT")
         if {(x, a) for _, x, a, _ in old_records} != {
                 (x, a) for x in range(16) for a in (0, 1)}:
             raise ValueError("NKR11_WARM_COVERAGE_INCOMPLETE")
@@ -181,6 +188,13 @@ class NativeInterventionRepair:
                     or not re.fullmatch(r"[0-9a-f]{64}", doc["repair_sha256"])):
                 raise ValueError("NKR11_REPAIR_ID_OR_SHA_INVALID")
             records = _records(repair)
+            repair_bundle = canonical({
+                "schema": BUNDLE_SCHEMA, "source_id": doc["repair_id"],
+                "source_kind": SOURCE_KIND, "source_mode": SOURCE_MODE,
+                "records": [list(x) for x in records],
+            })
+            if digest(repair_bundle) != doc["repair_sha256"]:
+                raise ValueError("NKR11_REPAIR_SOURCE_SHA_DRIFT")
             if (records[0][0] != doc["contradiction_ref"]
                     or old.predict(records[0][1], records[0][2])
                     == records[0][3]):
