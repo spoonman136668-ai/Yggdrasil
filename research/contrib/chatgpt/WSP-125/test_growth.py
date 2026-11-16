@@ -142,6 +142,21 @@ class DynamicFeatureGrowthTests(TestCase):
         with self.assertRaisesRegex(ValueError,"WSP125_COLD_FORGED_RELATION_WEIGHTS"):
             N.DirectFeatureGrowth.restore(S.canonical(tampered))
 
+    def test_all_448_engineering_worlds_have_distinct_opaque_action_ids(self):
+        # This is PUBLIC metadata only: no hidden source law or held effect.
+        seen={}
+        for seed in (list(range(125900,126028))+
+                     list(range(126200,126456))+
+                     list(range(126500,126564))):
+            view=S.world(seed)
+            self.assertEqual(len(view.records),64)
+            for action,_,_ in view.records:
+                self.assertNotIn(action,seen,
+                    "Opaque action identity reused across worlds: %s, %s" %
+                    (seen.get(action),seed))
+                seen[action]=seed
+        self.assertEqual(len(seen),448*64)
+
     def test_new_opaque_entities_do_not_replay_fit_action_identity(self):
         w=S.world(125903)
         transfer_a=S.world(126200+2*3)

@@ -81,3 +81,26 @@ recurring task or paid API is authorized by engineering PASS.
 Exact final qualification is Ubuntu+Windows WSP117–125 focused and full
 54-test root regression, independent G29 atlas validation, clean source
 and source-identical final commit, with no weakening of inherited tests.
+
+## Cross-world identity collision fix (engineering source only)
+
+Before final qualification, an exhaustive independent public-ID scan of
+the first source candidate found **92 of 448 engineering worlds** with at
+least one opaque action ID already present in an earlier engineering world.
+The first source used an 8,000-ID random sampling window at a 4,000-ID
+stride; adjacent world windows therefore overlapped. The causal
+consequences were based on typed left/right pairs rather than opaque IDs
+and the source never leaked protected outcomes, but this violated the
+preregistered identity-isolation requirement.
+
+The source sampling window is corrected to a **10,000-ID stride for an
+8,000-ID window**, leaving a 2,000-ID gap between adjacent seed windows.
+Sampling width, per-world RNG seed, typed-pair shuffle, hidden support law,
+delta, paid action budget, candidate/control updates, thresholds and
+original-source exclusions are **unchanged**. A focused regression now
+exhaustively verifies **28,672 mutually distinct public action IDs
+across all 448 engineering worlds**, not just sampled fit/transfer
+pairs. This is protocol-preserving source identity remediation, NOT
+post-result tuning. The earlier exact-source CI candidate is invalidated
+for the fresh-ID guarantee and the repaired candidate must repeat all
+mandatory development, full-regression and G29 checks.

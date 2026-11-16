@@ -86,7 +86,7 @@ def world(seed):
         law_id=seed-126500
         cohort="negative"
     rng=random.Random(seed)
-    subjects=rng.sample(range(seed*4000,seed*4000+8000),64)
+    subjects=rng.sample(range(seed*10000,seed*10000+8000),64)
     records=[(subjects[a*8+b],a,b) for a in range(8) for b in range(8)]
     rng.shuffle(records)
     legal=tuple(subject for subject,_,_ in records) if cohort=="fit" else ()
