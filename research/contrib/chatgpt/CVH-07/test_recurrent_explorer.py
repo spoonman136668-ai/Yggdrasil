@@ -176,6 +176,17 @@ class FrozenTrainAndSourceAuthorityTests(unittest.TestCase):
         self.assertEqual(controls["native"].memory.seen,768)
         self.assertEqual(controls["fourcell"].seen,768)
 
+    def test_repository_persisted_result_exact_regression(self):
+        result=q.qualify_sourcefree()
+        stored=json.loads((HERE/"result.json").read_text(encoding="utf-8"))
+        self.assertEqual(stored,result)
+        self.assertEqual(result["receipt_sha256"],
+                         "b87278164c5d836bd9611ed5e3d3566fd67ae19361ccbf068a71c7144d97e9b9")
+        self.assertEqual(result["actual_original_source_do_actions"],0)
+        self.assertEqual(result["recurrent"]["optimizer_update_count"],4608)
+        self.assertEqual(result["recurrent"]["toy_validation_brier"],0.01328128)
+        self.assertFalse(result["scientific_pass"])
+
     def test_training_does_not_read_original_external_source(self):
         qx=q.qualify_sourcefree()
         self.assertEqual(qx["training_source"],"EXPERIMENTER_SYNTHETIC_FIXTURE_ONLY")
