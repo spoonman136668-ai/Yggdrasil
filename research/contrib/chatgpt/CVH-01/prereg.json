@@ -1,0 +1,43 @@
+{
+  "schema": "yggdrasil.cvh01.public-successor-memory-prereg.v1",
+  "experiment": "CVH-01-PUBLIC-DELAYED-RETURN-SUCCESSOR-MEMORY",
+  "state": "FROZEN_BEFORE_IMPLEMENTATION_TESTS_OR_RESULTS",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "qualified_parent": "7d1902d56bb2303e2a6439ad530669319cd84efc",
+  "original_public_interface": "research/contrib/chatgpt/FKP-24/native_public_mdp.py",
+  "original_interface_blob": "4424eadef179996ff491911efadfbe4e07761062",
+  "source_fence": "No CausalGym import/construct/reset/do, physical source actions, protected/cohort seed, private info, native model admission or first-use. Tests feed only fabricated PublicConsequence records.",
+  "hypothesis": "A bounded source-independent tokenless temporal memory can propagate actual delayed reward to earlier public actions, preserve context distinctions at identical current states, and cold-restore mid-episode without lookahead.",
+  "model": {
+    "horizon": 4,
+    "discount": "exact integer fixed point; gamma=1/2; future offsets 0..3",
+    "public_features": "previous observed action and reward (2 = no preceding event), current public binary before and chosen action; 36 supported contexts",
+    "representation": "36 fixed-point sum/count pairs, max4 unfinished public event traces and last predecessor; online accumulation with no future labels at action time; zero gradients and no language tokens",
+    "cold": "hash-verified canonical serialized state including pending trace and complete observed-event digest; this proves corruption detection, not external authenticity",
+    "context_capacity": "36 event-context keys; exact logical size and serialized bytes reported, no whole-process efficiency claim"
+  },
+  "controls": {
+    "strong": "independent batch conventional return-to-go tabular estimator on identical public tape and same contexts, expected to tie exactly",
+    "weak": [
+      "immediate-only reward table",
+      "wrong-order/no-context ablation",
+      "no-update and unsupported-context abstention"
+    ],
+    "no_unique_superiority": "An exact match with independent conventional is explicitly SCIENTIFIC_NO_GO."
+  },
+  "frozen_tests": [
+    "strict FKP24-shaped six-field binary public event schema, no extra private fields, atomic invalid rejection",
+    "t+2 reward contributes exact 1/4 to event t despite zero immediate reward",
+    "same present-state differing predecessor-conditioned contexts remain distinct",
+    "terminal/truncated episode stops cross-episode reward propagation",
+    "exact interrupted cold-restored stream matches uninterrupted data",
+    "tampered hash and semantic-invalid canonical snapshot fail closed",
+    "incremental trained mean delayed return exactly equals independent offline batch conventional in all supported keys",
+    "model abstains on unsupported public contexts rather than claiming skill",
+    "no source imports or upstream first-use actions performed"
+  ],
+  "evidence": "Run all focused tests in local isolated Python and compare exact GitHub blob receipts. Record test failures and nulls, never retune claim thresholds post outcome.",
+  "scientific_pass": false,
+  "full_dual_OS_G29": "UNVERIFIED_UNTIL_CANDIDATE_EXACT_SOURCE_QUALIFICATION",
+  "restrictions": "Only new CVH01 research-only files; do not change accepted main, existing FKP25/WSP121 owner branches, native model, first-use, workflow, runner, scheduler, controller, PR, merge, deployment or paid APIs."
+}

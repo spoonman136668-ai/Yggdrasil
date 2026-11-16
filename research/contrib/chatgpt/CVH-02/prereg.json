@@ -1,0 +1,26 @@
+{
+  "schema": "yggdrasil.cvh02.public-policy-interface-prereg.v1",
+  "experiment": "CVH02-COMPOSE-CVH01-PUBLIC-MEMORY-WITH-FKP24-POLICY-API",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_SCORES",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "cvh01_parent": "140ea46403cb506c9e6b75d1da65c5f9676cc850",
+  "FKP24_adapter_blob": "4424eadef179996ff491911efadfbe4e07761062",
+  "FKP25_qualified_reference": "7d1902d56bb2303e2a6439ad530669319cd84efc",
+  "objective": "Integrate tokenless four-step earned-return memory with exact FKP24 public choose(state,history), observe(public_record) policy contract without opening source-private causal environments.",
+  "source_boundary": "Deterministic source-free mocks ONLY. CausalGym constructs/resets/do and source first-use ZERO. Legal seed labels in mocks are not actual MDP use.",
+  "hypothesis": "A source-blind policy can use public-only action-observation interface with delayed rewards, conservative exploration, retained completed outcomes, failure-closed uncertain actions/reset.",
+  "requirements": [
+    "accept only exact six-field PublicConsequence and binary state/action; forbid hidden info",
+    "choose must not consume future reward or execute source calls",
+    "observe must match pending chosen action/state and public history",
+    "duplicate choose or unexpected observe rejects without mutation",
+    "terminal or truncation closes episode; next episode can retain consequences without leakage",
+    "unclosed budget-exhausted episode refuses ambiguous new reset, no forged final reward or replay",
+    "cold after witnessed observation restores exact model; cold during unobserved action refuses",
+    "candidate online sums match independently computed conventional batch on same records",
+    "full FKP24 public_mechanical_episode mock-only integration against inherited source when available; no external CausalGym imports",
+    "fixed negative tests and deterministic receipts frozen before scored outcomes"
+  ],
+  "limits": "Source-safe integration engineering only. No scientific learning, native acceptance, resource advantage or real CausalGym first-use; dual-OS/G29 UNVERIFIED.",
+  "authority": "Research-only branch. No main/owner PR/workflow/runner/controller/scheduler/paid API/merge/deployment/original source first-use."
+}
