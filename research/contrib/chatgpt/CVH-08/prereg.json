@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.cvh08.public-training-firstuse-disarmed-prereg.v1",
+  "status": "FROZEN_BEFORE_CODE_AND_TRAINING",
+  "date": "2026-11-16",
+  "parent": {
+    "pr": 1170,
+    "sha": "94550530cb8ebce3f7d878932973d70b8dc8f114",
+    "tree": "7ae265814f48e872ce0634db43ca30b5a621eab3"
+  },
+  "problem": "CVH07.ConventionalPublicRNN.fit requires exact 96 toy training tapes, cannot train on fresh public source episodes. FKP24 source action adapter whitelists only consumed 996100..996103. Source first-use not authorized.",
+  "scope": "Add a source-independent strict 64-completed-episode six-field public training adapter for the frozen CVH07 recurrent control, and reuse unchanged CVH02 native and CVH06 fourcell public TRAIN state. No actual source import/reset/do, no original actions, no whitelist edits, no new runner.",
+  "train_count": 64,
+  "max_public_actions_per_episode": 32,
+  "synthetic_fixture_lengths": [
+    1,
+    4,
+    8,
+    31,
+    32
+  ],
+  "frozen_recurrent": {
+    "architecture": "unchanged 8x6 tanh Elman BPTT",
+    "epoch_count": 48,
+    "learning_rate": 0.06,
+    "weights_seed": 1707,
+    "optimizer": "unchanged SGD full-episode from CVH07",
+    "training_only_observed_six_fields": true
+  },
+  "validation": "Source-free only: synthetic public TRAIN input is deliberately not CVH07 exact 96 toy fixture. Verify cold, exact 64-episode train-only state hashes, public grammar, no unexpected action replay, no private fields, no held labels, identical native and fourcell episode exposure and exact conventional batch counts. No inference from toy reward.",
+  "negative_controls": [
+    "reject malformed/extra/private fields",
+    "reject incomplete or >32 actions",
+    "reject state continuity mismatch",
+    "reject refit on already trained RNN",
+    "reject replay of uncertain source action",
+    "verify exact committed result on both operating systems",
+    "preserve original CVH07 fixed-toy training/old result",
+    "do not open FKP26 consumed original seeds or DEV/TRANSFER",
+    "zero original environment imports/constructor/reset/do"
+  ],
+  "science": {
+    "original_source_first_use_authorized": false,
+    "source_cohort_reserved": false,
+    "owner_signed_seed_lease": false,
+    "recurrent_real_source_fit_executed": false,
+    "scientific_pass": false,
+    "native_accepted": false,
+    "accepted_main_write": false
+  },
+  "qualification": "Full final root, focused inherited CVH01..08 and independent G29 on Ubuntu/Windows exact candidate SHA/tree, persistent result with same cross-OS checksum.",
+  "future": "Separately require explicit user original-science first-use authorization, verified original owner rights and untouched seed cohort, actual environment train/held/transfer, matched fully trained controls and original reward outcomes. No original protected source or source runner here.",
+  "source": "CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+  "fkp26_consumed_seeds": [
+    996100,
+    996101,
+    996102,
+    996103
+  ],
+  "protected_dev": "996500..996531",
+  "protected_transfer": "996600..996663"
+}
