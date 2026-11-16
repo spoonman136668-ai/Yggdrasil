@@ -1,0 +1,65 @@
+name: CVH-04 frozen mock-only OS subprocess first test
+on:
+  push:
+    branches: [qualification/cvh04-first-sourcefree-ipc-20261116]
+    paths: [.github/workflows/cvh04-sourcefree-ipc-once.yml]
+permissions:
+  contents: read
+concurrency:
+  group: cvh04-first-public-ipc-once-20261116
+  cancel-in-progress: false
+jobs:
+  source-free:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'CVH-04 frozen first source-free IPC test'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_SHA: 1692304819ff237a33fae5a617884f1861043556
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Keep original Git source bytes unchanged
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 1692304819ff237a33fae5a617884f1861043556
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify prereg and new source bytes before testing
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-04/prereg.json)" = 0ac429cef3ea3305fb318fe6adfea4ad101f5f12
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-04/public_ipc.py)" = 75f85dc2b6305a5089052a473fae113d6254ad9c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-04/toy_source_child.py)" = cb56138556366f565192f2881ae3649f43280f4c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-04/test_public_ipc.py)" = a1bd4c8d9b1252d37a0fd6f16ca3a82fefb50f4f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CVH-02/public_policy.py)" = b0efc964312d62930c3a97632ca02d8d17ef84aa
+          test -z "$(git status --porcelain)"
+          echo CVH04_EXACT_SOURCE_PREREG_AND_PARENT_PASS
+      - name: Run frozen process isolation, negative controls and learned-memory tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CVH-04 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo CVH04_FIRST_SOURCEFREE_PUBLIC_IPC_FOCUSED_PASS
+      - name: Verify original source first use denied and clean
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          if python -B research/contrib/chatgpt/CVH-04/toy_source_child.py --mock-only --toy-seed 996100 > "$RUNNER_TEMP/cvh04-forbidden.log" 2>&1; then exit 1; fi
+          test -z "$(git status --porcelain)"
+          echo CVH04_ORIGINAL_CAUSAL_SOURCE_ACTIONS_ZERO_PASS
