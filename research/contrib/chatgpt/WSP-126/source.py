@@ -53,23 +53,21 @@ class PublicWorld:
     cohort: str
     records: tuple[tuple[int,int,int], ...]
     legal: tuple[int, ...]
+    by_subject: dict[int,tuple[int,int]]
+    by_pair: dict[tuple[int,int],int]
 
     def pair(self, subject):
         if type(subject) is not int:
             raise ValueError("WSP126_ACTION_TYPE")
-        for identifier,a,b in self.records:
-            if identifier == subject:
-                return (a,b)
-        raise ValueError("WSP126_UNKNOWN_ACTION")
+        if subject not in self.by_subject:
+            raise ValueError("WSP126_UNKNOWN_ACTION")
+        return self.by_subject[subject]
 
     def subject(self,a,b):
         if (type(a) is not int or type(b) is not int or
                 not 0<=a<16 or not 0<=b<16):
             raise ValueError("WSP126_PUBLIC_PAIR")
-        for identifier,x,y in self.records:
-            if (x,y)==(a,b):
-                return identifier
-        raise ValueError("WSP126_PUBLIC_PAIR_NOT_FOUND")
+        return self.by_pair[a,b]
 
     def fingerprint(self):
         return digest([self.seed,self.law_id,self.cohort,self.records,self.legal])
@@ -96,12 +94,14 @@ def world(seed):
     else:
         law_id,cohort=seed-134000,"negative"
     rng=random.Random(seed)
-    # 10000 slots with >=9000 spacing; all seeds are distinct.
+    # Disjoint 10000-ID strides, 9000-ID sample windows; all seeds distinct.
     ids=rng.sample(range(seed*10000,seed*10000+9000),256)
     records=[(ids[a*16+b],a,b) for a in range(16) for b in range(16)]
     rng.shuffle(records)
     legal=tuple(s for s,_,_ in records) if cohort=="fit" else ()
-    return PublicWorld(seed,law_id,cohort,tuple(records),legal)
+    return PublicWorld(seed,law_id,cohort,tuple(records),legal,
+                       {s:(a,b) for s,a,b in records},
+                       {(a,b):s for s,a,b in records})
 
 
 def open_original(seed):
