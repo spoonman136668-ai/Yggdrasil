@@ -156,7 +156,7 @@ def audit_frozen_public_arms(structured, independent_symbolic):
         "true_next_action3_rewards_for_two_laws":
             [a[0].reward, b[0].reward],
         "safe_action4_reward_both_laws": 0.0,
-        "distinct_optimal_action_under_two_laws": [3, 4],
+        "best_of_two_tested_actions_by_law": [3, 4],
         "proof_scope": "CONSTRUCTIVE_PUBLIC_TOY_COUNTEREXAMPLE_NOT_PROTECTED_DATA",
         "held_dev_opened": False,
         "reserved_transfer_opened": False,
