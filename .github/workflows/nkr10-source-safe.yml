@@ -1,0 +1,212 @@
+name: NKR10 real historical masked relationship transfer qualification
+on:
+  push:
+    branches: [research/nkr10-historical-masked-relation-transfer-20261116]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact parent and prereg-first source custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 5c9c9c93c63d3705383f9bd3d5d088f983030b3d HEAD
+          git merge-base --is-ancestor 2874e4e048ec95bc14a68c9eb8621d97f5d9e6df HEAD
+          test ! -e research/contrib/chatgpt/NKR-10/result.json
+          test -z "$(git status --porcelain)"
+      - name: Frozen synthetic microfeedback, symbolic control and negative cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_historical_transfer.py -v
+          python -B -m unittest discover -s tests -p test_native_historical_transfer.py -v
+          python -B -m unittest discover -s tests -p test_native_cumulative_facts.py -v
+          test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(nkr10): pin historical-mask G29 atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr10-historical-mask-G29-source-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exactly three derived source atlas files, no source mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 2874e4e048ec95bc14a68c9eb8621d97f5d9e6df HEAD
+          test -z "$(git status --porcelain)"
+          SOURCE="$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr10): pinned historical-mask G29 source at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr10-historical-masked-relation-transfer-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr10): pinned historical-mask G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Mandatory full root regression and frozen source-safe experiment
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 2874e4e048ec95bc14a68c9eb8621d97f5d9e6df HEAD
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p test_native_historical_transfer.py -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr10): pinned historical-mask G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent source atlas verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+
+  original-full-image-mask-probe-once:
+    needs: [development, final-regression, independent-g29]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr10): pinned historical-mask G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: nkr10-once-original-full-image-mask-proof
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original image ID source SHA digest and unexpired state
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 2874e4e048ec95bc14a68c9eb8621d97f5d9e6df HEAD
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14220169461" > "$RUNNER_TEMP/nkr10-real-artifact-meta.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          j=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"nkr10-real-artifact-meta.json").read_bytes())
+          assert j["id"]==14220169461 and j["expired"] is False
+          assert j["name"]=="NKR05-21M-full-historical-TRAIN-native-factual-weights"
+          assert j["workflow_run"]["id"]==43856374741
+          assert j["workflow_run"]["head_sha"]=="c4b4e97726f6541197913ad405a47d4c4019a3cf"
+          assert j["digest"]=="sha256:c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275"
+          print("NKR10_ORIGINAL_HISTORICAL_IMAGE_IDENTITY_PASS",flush=True)
+          PY
+      - name: Real historical P31/P279 heldout mask transfer, no source rescan
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/nkr10-real-source"
+          gh run download 43856374741 -R "$GITHUB_REPOSITORY" -n NKR05-21M-full-historical-TRAIN-native-factual-weights -D "$RUNNER_TEMP/nkr10-real-source"
+          test "$(find "$RUNNER_TEMP/nkr10-real-source" -maxdepth 1 -type f | wc -l | tr -d ' ')" = 3
+          test "$(stat -c %s "$RUNNER_TEMP/nkr10-real-source/facts.uint32le")" = 256124172
+          python -B -m yggdrasil.native_knowledge_activation --source "$RUNNER_TEMP/nkr10-real-source" --destination-parent "$RUNNER_TEMP" --name nkr10-original-full-image-ephemeral > "$RUNNER_TEMP/nkr10-temporary-install.jsonl"
+          python -B research/contrib/chatgpt/NKR-10/run_historical_mask.py --installed-session "$RUNNER_TEMP/nkr10-original-full-image-ephemeral" | tee "$RUNNER_TEMP/nkr10-historical-mask-proof.jsonl"
+          test -z "$(git status --porcelain)"
+      - name: Mandatory full post-source proof regression on same candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Upload minimal source-bound proof only, no duplicate historical binary
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: NKR10-21M-historical-masked-transfer-proof
+          path: |
+            ${{ runner.temp }}/nkr10-historical-mask-proof.jsonl
+            ${{ runner.temp }}/nkr10-temporary-install.jsonl
+            ${{ runner.temp }}/nkr10-real-artifact-meta.json
+          retention-days: 30
+          if-no-files-found: error
