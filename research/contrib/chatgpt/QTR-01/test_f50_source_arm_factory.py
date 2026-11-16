@@ -110,11 +110,15 @@ class F50RealSourcePreflightTests(unittest.TestCase):
 
     def test_synthetic_public_labels_are_fixed_and_causal(self):
         fn = roles.synthetic_public_bits
-        self.assertEqual(fn((0, 0, 0, 0)), (0, 0, 0))
-        self.assertEqual(fn((1, 0, 0, 0)), (1, 0, 0))
-        self.assertEqual(fn((4, 0, 0, 0)), (0, 1, 0))
-        self.assertEqual(fn((0, 0, 4, 0)), (0, 0, 1))
-        self.assertEqual(fn((0, 0, 0, 1)), (0, 0, 1))
+        # Every action must be nonzero, distinct and carry 3-7 set bits.
+        # These are actual admissible public interventions, not shortcuts.
+        self.assertEqual(fn((7, 28, 56, 0)), (1, 1, 1))
+        self.assertEqual(fn((14, 28, 56, 0)), (0, 1, 1))
+        self.assertEqual(fn((11, 28, 56, 0)), (1, 0, 1))
+        self.assertEqual(fn((7, 28, 44, 0)), (1, 1, 0))
+        self.assertEqual(fn((7, 28, 56, 1)), (1, 1, 0))
+        with self.assertRaises(world.F50Rejected):
+            fn((0, 0, 0, 0))
         self.assertNotIn("PrivateTargetEvaluator", roles.__dict__)
 
     def test_synthetic_only_accepts_qualified_factory(self):
