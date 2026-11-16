@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """F50 nine-world public-only comparison harness: pre-first-use engineering.
 
-Only synthetic-fixture evaluators are accepted here. There is NO development
+Fixtures are default; separately owner-admitted development is optional. No
 target construction, source-law oracle, hidden law import, release shortcut,
 remote-execution authority or live scientific entrypoint. The future first-use
 runner must bind isolated evaluator transport and authentic source checkpoints
@@ -120,7 +120,7 @@ def _probabilities(arm, heldout):
     return rows
 
 
-def run_fixture_arm(size, seed, kind, arm, oracle, cold_restore):
+def _run_arm(size, seed, kind, arm, oracle, cold_restore, *, fixture_only):
     """Drive exactly 64 public action-consequence queries, with 3 cold scores.
 
     Evaluator object is read only through four public methods; its target-law
@@ -132,7 +132,7 @@ def run_fixture_arm(size, seed, kind, arm, oracle, cold_restore):
     if not callable(cold_restore):
         raise ComparisonRejected("F50_HARNESS_COLD_RESTORE_REQUIRED")
     receipt = oracle.public_receipt()
-    if (type(receipt) is not dict or receipt.get("fixture_only") is not True
+    if (type(receipt) is not dict or receipt.get("fixture_only") is not fixture_only
         or receipt.get("public_events_used") != 0
         or receipt.get("protected_cohorts_consumed") != 0):
         raise ComparisonRejected("F50_HARNESS_DEV_FIRST_USE_NOT_AUTHORIZED")
@@ -178,7 +178,7 @@ def run_fixture_arm(size, seed, kind, arm, oracle, cold_restore):
         probabilities = _probabilities(arm, heldout)
         score = oracle.score_once(probabilities)
         if (type(score) is not dict
-            or score.get("fixture_only") is not True
+            or score.get("fixture_only") is not fixture_only
             or score.get("query_budget") != count
             or score.get("scored_clean_bits") != 3 * HELDOUT
             or score.get("target_law_disclosed") is not False
@@ -187,7 +187,7 @@ def run_fixture_arm(size, seed, kind, arm, oracle, cold_restore):
             or not 0 <= score["clean_heldout_accuracy"] <= 1):
             raise ComparisonRejected("F50_HARNESS_SEALED_SCORE_INVALID")
         reported.append({"budget": count,
-                         "fixture_accuracy": score["clean_heldout_accuracy"],
+                         ("fixture_accuracy" if fixture_only else "clean_heldout_accuracy"): score["clean_heldout_accuracy"],
                          "cold_sha256": sha256(packet).hexdigest()})
     receipt = oracle.public_receipt()
     if (receipt.get("public_events_used") != 64
@@ -211,9 +211,55 @@ def run_fixture_arm(size, seed, kind, arm, oracle, cold_restore):
             "prediction_accesses": getattr(arm, "prediction_accesses", None),
             "target_cpu_seconds": round(process_time() - start, 6),
             "cold_restores": len(CHECKPOINTS),
-            "fixture_only": True,
+            "fixture_only": fixture_only,
             "scientific_pass": False,
-            "classification": FIXTURE_CLASSIFICATION}
+            "classification": (FIXTURE_CLASSIFICATION if fixture_only
+                               else "DEV_F50_UNCLASSIFIED")}
+
+
+def run_fixture_arm(size, seed, kind, arm, oracle, cold_restore):
+    """Original fixture-only contract; never first-uses F50 development laws."""
+    return _run_arm(size, seed, kind, arm, oracle, cold_restore,
+                    fixture_only=True)
+
+
+def run_development_arm(size, seed, kind, arm, oracle, cold_restore, *,
+                        expected_candidate_sha):
+    """One admitted real evaluator; independent owner approval required."""
+    from f50_development_rpc import DevelopmentEvaluatorClient
+    if (type(oracle) is not DevelopmentEvaluatorClient
+        or type(expected_candidate_sha) is not str
+        or oracle.candidate_sha != expected_candidate_sha):
+        raise ComparisonRejected("F50_HARNESS_DEV_OWNER_ADMISSION_REQUIRED")
+    return _run_arm(size, seed, kind, arm, oracle, cold_restore,
+                    fixture_only=False)
+
+
+def run_admitted_development_nine_worlds(make_arm, make_oracle, source_roles,
+                                         *, candidate_sha):
+    """108 runs; factories must first verify actual model bytes and authority.
+
+    Opening an oracle first-uses one development law. No CI/CLI entrypoint.
+    """
+    checkpoint_inventory(source_roles)
+    if (type(candidate_sha) is not str or len(candidate_sha) != 40
+        or any(c not in "0123456789abcdef" for c in candidate_sha)
+        or not callable(make_arm) or not callable(make_oracle)):
+        raise ComparisonRejected("F50_HARNESS_DEV_SOURCE_OR_FACTORY_UNVERIFIED")
+    rows = []
+    for size, seed in frozen_plan():
+        for kind in KINDS:
+            arm, restore = make_arm(size, seed, kind)
+            with make_oracle(size, seed, kind) as oracle:
+                rows.append(run_development_arm(
+                    size, seed, kind, arm, oracle, restore,
+                    expected_candidate_sha=candidate_sha))
+    return {"schema": SCHEMA, "classification": "DEV_F50_UNCLASSIFIED",
+            "world_count": 9, "arms_per_world": len(KINDS),
+            "worlds": [list(x) for x in frozen_plan()], "arm_runs": rows,
+            "development_outcomes_consumed": 64 * 3 * len(rows),
+            "protected_cohorts_consumed": 0, "scientific_pass": False,
+            "independent_classification_required": True}
 
 
 def run_fixture_nine_worlds(make_arm, make_oracle):
