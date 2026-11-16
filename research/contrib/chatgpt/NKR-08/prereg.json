@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.nkr08.cumulative-typed-memory-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "NKR-08",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION",
+  "parent": {
+    "sha": "efd0059f93b30072757c796eb905ec4d6e7609b3",
+    "pr": 1133,
+    "tree": "406e4ffb54e3e7b32005ac19d6061f41be43e8d8",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Implement non-destructive, source-pinned incremental factual knowledge updates and cold persistence alongside NKR06's read-only 21.3M Q/P/Q historical base, while rejecting untrusted/inferred facts, repeats and conflicting source receipts. Avoid modifying original base, DG-1 accepted state, NKR04 causal observations, owner scheduler or model.",
+  "hypothesis": "Two sequential fixture evidence bundles can add 256 independently asserted development Q/P/Q observations to a 128-base-fixture, preserve prior 128 and all phase-one 128 after second, refuse unverified hypotheses/contradictory provenance, and exactly match an independent symbolic set on all supported and unsupported membership queries. This demonstrates engineering retention and compositional path ability, not generalization beyond evidence.",
+  "source_mode": "engineering_fixture_only",
+  "external_real_source_admission": false,
+  "source_authentication": "SHA256 verifies exact bytes, not provenance truth; real-world evidence not accepted here",
+  "fixture": {
+    "base_facts": 128,
+    "phase1_new": 128,
+    "phase2_new": 128,
+    "phase2_repeated_phase1": 32,
+    "phase2_preexisting_base": 32,
+    "distinct_relation_types": 8,
+    "two_hop_compositions": 16,
+    "each_source_ref_one_triple": true,
+    "protected_original_source": false,
+    "hidden_independent_science": false
+  },
+  "controls": {
+    "strongest_symbolic": "exact independently constructed Python tuple set and path walk, same 128+128+128 source facts; tie is expected, not superiority",
+    "negative": [
+      "infer-candidate mislabel",
+      "graph-composition auto-accept",
+      "forged source pin",
+      "colliding source ref",
+      "malformed source record",
+      "wrong pinned base manifest",
+      "truncated checkpoint",
+      "tampered checkpoint",
+      "source IDs noncanonical",
+      "source duplicate effect",
+      "unsupported unknown abstention",
+      "no writer to accepted YPC1"
+    ]
+  },
+  "state": {
+    "format": "yggdrasil.nkr08.cumulative-fact-checkpoint.v1",
+    "full_base_immutable": true,
+    "source_ref_bijection": true,
+    "append_only": true,
+    "checkpoints_are_unaccepted_candidate_research_data": true,
+    "at_most_4096_evidence_refs": true,
+    "no_floating_point": true,
+    "activation": "explicit wrapper around existing NKR06 NativeKnowledgeSession; does not write its source image or launch owner"
+  },
+  "gates": {
+    "dev": "source-free fixture-focused tests on Ubuntu+Windows",
+    "full": "mandatory all-root full regression+NKR05 fixture on exact tree Ubuntu+Windows, G29 regenerated-only and independent both",
+    "original_data": "NO repeat 21M source or original science; inherited NKR06 already proved full cold retrieval",
+    "scientific": "SCIENTIFIC_PASS=false unless separate genuinely unseen source with strong trained and symbolic controls under matching information/action budgets, retention/interference and independent authority",
+    "acceptance": "no merged main, no model state mutation, no owner persistent install"
+  },
+  "authority": {
+    "research_development": true,
+    "accepted_ref_mutation": false,
+    "owner_runtime_activation": false,
+    "official_scientific_first_use": false,
+    "deployment": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false
+  }
+}
