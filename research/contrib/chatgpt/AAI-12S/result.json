@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.aai12s.source-dev-result.v1",
+  "id": "AAI-12S",
+  "source_only": true,
+  "classification": "DEV_NO_GO_NO_SCIENCE",
+  "source_custody": {
+    "parent": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "prereg_before_code_commit": "edc51091e55d1f55a3b6007f10f1c5662ce7aa94",
+    "prereg_blob": "d9a434c40278fad3942eec80981e13b0e66ad1a1",
+    "source_commit": "b6f418a7862333f0a4fa668c5e67a7cbb2b24d2d",
+    "source_blob": "049fcfb46c084c0b4f8a7b460a17644a55ca31ff",
+    "source_sha256": "d9179898ef038becb83e7225dd946d701df25ffe781d45ff938218b851156cf9",
+    "focused_test_commit": "a20b46ad92781642d235a6637480c2731683d3df",
+    "focused_test_blob": "ce20ba13174c946c3b7014e94790931dd87c3a5f"
+  },
+  "local_environment": "Isolated sandbox Linux x86-64 CPython 3.13.5, not Yggdrasil owner or accepted runner",
+  "local_focused_tests": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "command": "python -m unittest -v test_dev.py",
+    "scope": "local-only"
+  },
+  "source_mechanical_fixture": {
+    "fixtures": 2,
+    "fit_worlds": 4,
+    "unfamiliar_worlds": 12,
+    "out_of_grammar_negative_worlds": 4,
+    "public_real_one_bit_pairs_per_world": 8,
+    "public_training_rows_per_world": 16,
+    "unseen_test_rows_per_world": 48,
+    "unfamiliar_eval_cases_per_arm": 1152,
+    "familiar_eval_cases_per_arm": 384,
+    "negative_eval_cases_per_arm": 384,
+    "scientific_cohorts_used": 0
+  },
+  "accuracy": {
+    "fit": {
+      "degree3_fully_trained_logistic_500": 0.723958333,
+      "depth6_fully_fitted_id3": 0.770833333,
+      "hamming_knn5": 0.622395833,
+      "recent_public_table": 0.625,
+      "single_gate_only": 0.8046875,
+      "synth_composed": 0.895833333
+    },
+    "negative": {
+      "degree3_fully_trained_logistic_500": 0.6484375,
+      "depth6_fully_fitted_id3": 0.578125,
+      "hamming_knn5": 0.778645833,
+      "recent_public_table": 0.658854167,
+      "single_gate_only": 0.596354167,
+      "synth_composed": 0.5546875
+    },
+    "transfer": {
+      "degree3_fully_trained_logistic_500": 0.680555556,
+      "depth6_fully_fitted_id3": 0.689236111,
+      "hamming_knn5": 0.638888889,
+      "recent_public_table": 0.644097222,
+      "single_gate_only": 0.6796875,
+      "synth_composed": 0.916666667
+    }
+  },
+  "strongest_transfer_conventional": "depth6_fully_fitted_id3",
+  "transfer_gain_over_strongest_conventional": 0.227430556,
+  "transfer_worlds_at_least_85_percent": 8,
+  "frozen_gate_outcomes": {
+    "transfer_gain_at_least_0_05": "PASS",
+    "gain_vs_same_data_single_gate_at_least_0_10": "PASS",
+    "at_least_10_of_12_worlds_above_0_85": "FAIL",
+    "out_of_grammar_drop_vs_strong_control_no_more_than_0_02": "FAIL",
+    "fit_familiar_drop_at_most_0_02": "PASS",
+    "qualified_whole_process_cost_10x": "UNVERIFIED (implementation excludes source-free grammar precompilation from fit/predict stopwatch)"
+  },
+  "raw_source_timing_seconds_run1": {
+    "degree3_fully_trained_logistic_500": 1.552626,
+    "depth6_fully_fitted_id3": 0.00364,
+    "hamming_knn5": 0.006029,
+    "recent_public_table": 0.001843,
+    "single_gate_only": 0.001382,
+    "synth_composed": 0.011628
+  },
+  "timing_disposition": "UNQUALIFIED: precomputed grammar construction at module import is outside measured fit/predict scope. The script's apparent time-ratio boolean is diagnostic, not full-process cost PASS. This cannot rescue predeclared failures.",
+  "reproducibility": "Second locally isolated exact-source execution produced bit-identical aggregate accuracy, per-gate booleans, action/prediction trace SHA256, and classification. Wall time varied, as expected.",
+  "trace_sha256": "1979a4dee547685c87208194d3fc1c0d87f886428b52dc737f6a9eababd52cce",
+  "true_out_of_grammar_check": "10/10 source tests include explicit proof that all four negative truth tables are absent from composed grammar",
+  "identified_limit": "Candidate has explicit closure over finite 3-gate compositions and is not discovering primitive operations outside that grammar; significant in-grammar lift is consistent with strong inductive bias rather than unrestricted relationship invention.",
+  "qualification": {
+    "python_local_focused": "PASS",
+    "prereg_before_implementation": "PASS",
+    "exact_source_blob_readback": "PASS",
+    "independent_windows_full_regression": "NOT_RUN",
+    "independent_ubuntu_full_regression": "NOT_RUN",
+    "official_github_ci": "NOT_QUALIFIED",
+    "scientific_first_use": "NOT_RUN",
+    "accepted_native_integration": "NONE",
+    "merge": "NONE"
+  },
+  "stop_rule": "At least two mandatory frozen developmental gates fail; preserve negative result. No outcome-driven grammar/threshold/data/world changes, no science seeds, no native model merge."
+}
