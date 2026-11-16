@@ -14,6 +14,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+import f50_worlds as world
+
 SCHEMA = "yggdrasil.qtr01.f50.development-process-transport.v1"
 ALLOWED = frozenset((
     "hello", "public_candidates", "heldout_inputs_for_prediction",
