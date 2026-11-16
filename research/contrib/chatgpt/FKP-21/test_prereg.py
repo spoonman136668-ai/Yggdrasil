@@ -42,7 +42,7 @@ class PreregisteredBoundaryTests(unittest.TestCase):
         for key in ("protected_first_use","production_mutation","main_ref_update",
                     "private_runner_dispatch","scheduler_changes","merge_authority"):
             self.assertFalse(a[key])
-        self.assertFalse(p["design"]["no_new_workflow_files"])
+        self.assertTrue(p["design"]["no_new_workflow_files"])
 
     def test_research_implementation_only_and_no_scientific_claim(self):
         for name in ("prereg.json","public_rule_source.py","rule_learning.py",
