@@ -128,7 +128,8 @@ class NativeBinder:
             # Chronology, not a hidden-source mode or seed-classification:
             # first learned binding for this law is immutable across later worlds.
             self.first_binding_by_law.setdefault(view.law_id,st)
-        elif st is not None and st.view is not view:
+        elif (st is not None and st.view is not view and
+              st.view.fingerprint()!=view.fingerprint()):
             raise ValueError("WSP131_CHANGED_PUBLIC_VIEW")
         return st
     def choose(self,view,available):

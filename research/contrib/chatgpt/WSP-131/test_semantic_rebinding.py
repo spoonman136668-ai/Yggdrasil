@@ -87,6 +87,20 @@ class CausalSemanticBindingTests(TestCase):
         self.assertEqual(cold.snapshot(),frozen)
         for s,x in v.records:
             self.assertEqual(cold.infer(v,s),m.infer(v,s))
+        # LRU re-materialization preserves the same public source evidence
+        # even though Python has returned a different View instance.
+        for seed in range(160001,160019):
+            S.world(seed)
+        fresh=S.world(160000)
+        self.assertIsNot(fresh,v)
+        self.assertEqual(fresh.fingerprint(),v.fingerprint())
+        self.assertEqual(m.infer(fresh,fresh.subject(17)),
+                         m.infer(v,v.subject(17)))
+        forged=S.View(v.seed,v.law_id,v.cohort,
+                      tuple(reversed(v.records)),v.legal,
+                      v.by_subject,v.by_x)
+        with self.assertRaisesRegex(ValueError,"WSP131_CHANGED_PUBLIC_VIEW"):
+            m.infer(forged,forged.subject(17))
         bad=json.loads(frozen)
         rec=next(iter(bad["payload"]["states"].values()))
         rec["candidate_weight_hex"]=hex(int(rec["candidate_weight_hex"],16)^1)

@@ -82,7 +82,8 @@ class ExactPermutationSymbolic:
             self.states[view.seed]=st
             self.old_bindings.setdefault(view.law_id,st)
         st=self.states.get(view.seed)
-        if st is not None and st.view is not view:
+        if (st is not None and st.view is not view and
+            st.view.fingerprint()!=view.fingerprint()):
             raise ValueError("WSP131_SYMBOLIC_VIEW_DRIFT")
         return st
     def observe(self,view,evidence):
