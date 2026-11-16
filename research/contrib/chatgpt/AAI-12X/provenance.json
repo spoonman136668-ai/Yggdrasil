@@ -51,7 +51,7 @@
       "result": "10/10 PASS before first score and Git source custody checked"
     },
     {
-      "command": "for i in range(3): dev.screen(*dev.load())",
+      "command": "cohort,h,dt=dev.load(); for i in range(3): dev.screen(cohort,h,dt)",
       "result": "3 exact-code source-only screens; predictions, metrics and frozen gate decisions stable across all 3; timings recorded without discarding any run"
     },
     {
@@ -78,5 +78,15 @@
     "remote_api_cost": false,
     "merge": false,
     "promotion": false
+  },
+  "secondary_derived_sourceonly_time": {
+    "status": "diagnostic, not a frozen acceptance criterion",
+    "formula": "(source materialization + reference model fit/cold/forecast) / (same source materialization + optimized model fit/cold/forecast)",
+    "ratio_by_run": [
+      2.333528,
+      2.261385,
+      2.330093
+    ],
+    "caveat": "Measured only the synthetic source construction and one model's fit/restore/forecast. Excludes source-qualification build, test and all native project work; not production end-to-end speedup."
   }
 }
