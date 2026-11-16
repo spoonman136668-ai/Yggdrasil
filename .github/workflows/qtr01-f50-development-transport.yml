@@ -8,7 +8,7 @@ jobs:
   atlas:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source-role preflight derive G29'
+      github.event.head_commit.message == 'ci(qtr): F50 source archive gate derive G29'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -27,7 +27,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_evaluator.py)" = '22137159932ee4bebbf308fb565861eb67b651b3'
-          test "$(git rev-parse HEAD^)" = '5b879c979a81ab9f7a8657a9e6a8d38542e2b89f'
+          test "$(git rev-parse HEAD^)" = '0daef997e423b0dc4a3f4ec340f111da0bd6043b'
           test "$(git diff --name-only HEAD^ HEAD)" = '.github/workflows/qtr01-f50-development-transport.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_source_arm_factory.py)" = '29f6bc43733c7740cd180b32c4960d8eaa8276b7'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_comparison_harness.py)" = 'dbed746e97ed09403e9c5844e5222d0b13fa904b'
@@ -45,13 +45,13 @@ jobs:
           git diff --cached --quiet && exit 1
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'ci(qtr): F50 source-role preflight G29 companion'
+          git commit -m 'ci(qtr): F50 source archive gate G29 companion'
           python scripts/build_code_atlas.py --check
           git push origin HEAD:refs/heads/research/qtr01-qwen38-donor-intake-20261114
   qualify:
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source-role preflight G29 companion'
+      github.event.head_commit.message == 'ci(qtr): F50 source archive gate final trigger'
     name: F50 development transport exact-SHA full regression
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -85,11 +85,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 source-role preflight G29 companion'
-          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): F50 source-role preflight derive G29'
-          expected="$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
-          actual="$(git diff --name-only HEAD^ HEAD | LC_ALL=C sort)"
-          test "$actual" = "$expected"
+          test "$(git log -1 --format=%s)" = 'ci(qtr): F50 source archive gate final trigger'
+          test "$(git log -1 --format=%s HEAD^)" = 'ci(qtr): F50 source archive gate G29 companion'
+          test -z "$(git diff --name-only HEAD^ HEAD)"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_target_evaluator.py)" = '22137159932ee4bebbf308fb565861eb67b651b3'
           git merge-base --is-ancestor 5b879c979a81ab9f7a8657a9e6a8d38542e2b89f HEAD
@@ -120,7 +118,7 @@ jobs:
     needs: qualify
     if: >-
       github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.head_commit.message == 'ci(qtr): F50 source-role preflight G29 companion'
+      github.event.head_commit.message == 'ci(qtr): F50 source archive gate final trigger'
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     permissions:
