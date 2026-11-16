@@ -343,6 +343,97 @@ def cold_source_arms(factory, *, max_cpu_seconds=900):
 
 
 
+def synthetic_public_bits(episode):
+    """Explicit public-only delayed-action/context fixture; never a DEV law."""
+    a,b,c,context = world.validate_trajectory(episode)
+    return ((a >> 0) & 1,
+            ((b >> 1) ^ (a >> 2)) & 1,
+            ((c >> 2) ^ (b >> 3) ^ (context >> 0)) & 1)
+
+
+def synthetic_single_event_arms(factory, *, max_cpu_seconds=900):
+    """12 high-bank source-backed arms, one fake public event each.
+
+    This is a post-feedback custody smoke check, NOT scientific evaluation.
+    No private target evaluator, withheld outcome or weight optimization.
+    """
+    from time import process_time
+    import math
+
+    require(type(factory) is SourceArmFactory
+            and type(max_cpu_seconds) is int
+            and 1 <= max_cpu_seconds <= 1800, "SYNTHETIC_SCOPE_INVALID")
+    harness.checkpoint_inventory(factory.source_roles)
+    size, seed = world.BANK_SIZES[0], world.DEV_SEEDS[0]
+    start = process_time()
+    completed = []
+    for kind in harness.KINDS:
+        require(process_time() - start <= max_cpu_seconds,
+                "SYNTHETIC_RESOURCE_STOP")
+        arm, restore = factory.make_arm(size, seed, kind)
+        require(arm.used == [] and arm.observed_bits == 0
+                and getattr(arm, "target_graph_available", False) is False,
+                "SYNTHETIC_DIRTY_INITIAL_STATE")
+        index, episode = arm.select()
+        require(type(index) is int and 0 <= index < world.PUBLIC_QUERIES
+                and episode == arm.pool[index],
+                "SYNTHETIC_ACTION_MISMATCH")
+        bits = synthetic_public_bits(episode)
+        arm.observe(index, bits)
+        require(arm.used == [index] and arm.observed_bits == 3
+                and getattr(arm, "pending", None) is None
+                and getattr(arm, "awaiting", None) is None
+                and getattr(arm, "optimizer_steps", 0) == 0
+                and getattr(arm, "target_graph_available", False) is False,
+                "SYNTHETIC_FEEDBACK_STATE_INVALID")
+        expected_proposals = 2048 if (arm_role(kind) == "native"
+                                     or kind == "compositional_grammar_bayes") else 0
+        require(getattr(arm, "proposals", 0) == expected_proposals,
+                "SYNTHETIC_PROPOSAL_COUNT_INVALID")
+        packet = arm.cold_checkpoint()
+        clone = restore(packet)
+        require(type(clone) is type(arm)
+                and clone.cold_checkpoint() == packet
+                and clone.used == [index] and clone.observed_bits == 3
+                and clone.pool == arm.pool
+                and getattr(clone, "optimizer_steps", 0) == 0
+                and getattr(clone, "target_graph_available", False) is False,
+                "SYNTHETIC_COLD_MISMATCH")
+        # Compare PUBLIC predictions only, never held-out scientific scores.
+        first, second = arm.probability(episode), clone.probability(episode)
+        require(type(first) in (tuple, list) and len(first) == 3
+                and tuple(first) == tuple(second)
+                and all(type(x) in (float, int)
+                        and math.isfinite(x) and 0 <= x <= 1 for x in first)
+                and arm.cold_checkpoint() == clone.cold_checkpoint(),
+                "SYNTHETIC_PREDICTION_PARITY_FAILED")
+        before = arm.cold_checkpoint()
+        try:
+            arm.observe(index, bits)
+        except Exception:
+            pass
+        else:
+            raise SourceAdmissionRejected("F50_SOURCE_ADMISSION_SYNTHETIC_REPLAY")
+        require(arm.cold_checkpoint() == before, "SYNTHETIC_REPLAY_MUTATION")
+        damaged = packet[:-1] + (b"0" if packet[-1:] != b"0" else b"1")
+        try:
+            restore(damaged)
+        except Exception:
+            pass
+        else:
+            raise SourceAdmissionRejected("F50_SOURCE_ADMISSION_SYNTHETIC_TAMPER")
+        completed.append(kind)
+        print("F50_SYNTHETIC_PUBLIC_EVENT_ARM=" + kind, flush=True)
+        del arm, clone
+    require(completed == list(harness.KINDS),
+            "SYNTHETIC_TWELVE_ARM_INCOMPLETE")
+    return {"synthetic_events": len(completed), "cold_restores": len(completed),
+            "size": size, "seed": seed, "target_outcomes": 0,
+            "scientific_pass": False,
+            "process_cpu_seconds": round(process_time()-start, 6)}
+
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-only", required=True, action="store_true")
@@ -350,6 +441,7 @@ def main():
     parser.add_argument("--archive-lower", required=True)
     parser.add_argument("--candidate-sha", required=True)
     parser.add_argument("--cold-arms", action="store_true")
+    parser.add_argument("--synthetic-one-event", action="store_true")
     args = parser.parse_args()
     ready = preflight(
         args.archive_4096, args.archive_lower, candidate_sha=args.candidate_sha)
@@ -363,6 +455,11 @@ def main():
         print("F50_COLD_PUBLIC_ZERO_FEEDBACK_PAIRS="
               + str(result["zero_feedback_public_prediction_pairs"]), flush=True)
         print("F50_TARGET_OUTCOMES=0", flush=True)
+    if args.synthetic_one_event:
+        result = synthetic_single_event_arms(ready)
+        print("F50_SYNTHETIC_POST_FEEDBACK_ALL_12_ARMS=PASS", flush=True)
+        print("F50_SYNTHETIC_PUBLIC_EVENTS=" + str(result["synthetic_events"]), flush=True)
+        print("F50_SYNTHETIC_DEV_TARGET_OUTCOMES=0", flush=True)
 
 
 if __name__ == "__main__":

@@ -108,5 +108,23 @@ class F50RealSourcePreflightTests(unittest.TestCase):
         self.assertNotIn("DevelopmentEvaluatorClient", roles.__dict__)
 
 
+    def test_synthetic_public_labels_are_fixed_and_causal(self):
+        fn = roles.synthetic_public_bits
+        self.assertEqual(fn((0, 0, 0, 0)), (0, 0, 0))
+        self.assertEqual(fn((1, 0, 0, 0)), (1, 0, 0))
+        self.assertEqual(fn((4, 0, 0, 0)), (0, 1, 0))
+        self.assertEqual(fn((0, 0, 4, 0)), (0, 0, 1))
+        self.assertEqual(fn((0, 0, 0, 1)), (0, 0, 1))
+        self.assertNotIn("PrivateTargetEvaluator", roles.__dict__)
+
+    def test_synthetic_only_accepts_qualified_factory(self):
+        with self.assertRaisesRegex(roles.SourceAdmissionRejected,
+                                    "SYNTHETIC_SCOPE_INVALID"):
+            roles.synthetic_single_event_arms(object())
+        with self.assertRaisesRegex(roles.SourceAdmissionRejected,
+                                    "SYNTHETIC_SCOPE_INVALID"):
+            roles.synthetic_single_event_arms(object(), max_cpu_seconds=0)
+
+
 if __name__ == "__main__":
     unittest.main()
