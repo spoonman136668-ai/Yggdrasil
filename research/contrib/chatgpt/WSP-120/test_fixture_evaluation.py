@@ -83,6 +83,33 @@ class FixtureEvaluationTests(TestCase):
                                     "WSP120_SCORE_SHAPE_MISMATCH"):
             E._score(TruncatedBatch(), (1, 2), (4, 5), batched=True)
 
+    def test_max_budget_fixture_scores_fully_trained_gru(self):
+        # Highest preregistered observation budget; disjoint world ONLY.
+        # This is an interface/qualification test, NOT an original-world result.
+        with patch.object(S, "source_safe_world",
+                          side_effect=AssertionError("primary cohort opened")):
+            result = E.run_fixture(tier=384, family=0, exposure=32,
+                                   include_gru=True)
+        self.assertFalse(result["scientific"])
+        self.assertEqual(result["seed"], S.ENGINEERING_SEED)
+        self.assertEqual(result["exposure"], S.MAX_QUERIES)
+        self.assertEqual(len(result["arms"]), len(E.ARMS) + 1)
+        for name in E.ARMS:
+            self.assertEqual(result["arms"][name]["source_calls"], 32)
+        comparison = result["arms"]["TRAINED_GRU_PASSIVE"]
+        self.assertTrue(comparison["same_passive_observations"])
+        self.assertEqual(comparison["parameter_count"], 42560)
+        self.assertEqual(len(comparison["epochs_by_seed"]), 3)
+        self.assertTrue(comparison["converged"],
+                        "nonconverged comparator invalidates scientific first-use")
+        self.assertTrue(comparison["scientifically_valid"])
+        self.assertEqual(comparison["training_accuracy"], 1.0)
+        self.assertLessEqual(comparison["training_loss"], 0.01)
+        self.assertEqual(sum(comparison[k] for k in (
+            "correct", "wrong_confident", "abstained")), 24)
+        self.assertEqual(len(comparison["predictions"]), 24)
+        self.assertNotIn("invalid_reason", result)
+
     def test_zero_feedback_remains_unscored_scientifically(self):
         with patch.object(S, "source_safe_world",
                           side_effect=AssertionError("primary opened")):
