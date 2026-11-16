@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.nkr20-22.history-knowledge-campaign.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_CAMPAIGN_SCORES",
+  "parent": {
+    "pr": 1161,
+    "sha": "1b3518e395005947015e151f7aafac0d92e5c5dd",
+    "tree": "51ef5c5d70133937589255d2f2eaf277c2a13978",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "purpose": "Execute three distinct prespecified studies consecutively without stopping at a report gate or tuning to earlier outcomes.",
+  "source": {
+    "kind": "previously consumed FKP26 public action transcripts",
+    "canonical_fixture_repo": "spoonman136668-ai/Yggdrasil",
+    "canonical_fixture_sha": "5836c5dcdb74a8a1a7c5c32097d02ee955a4b2c3",
+    "canonical_fixture_path": "research/contrib/chatgpt/CVH-04/consumed_public_fixture.json",
+    "upstream_sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "original_artifact_zip_sha256": "4c877a6df5685516cc7ba445b2b90c90afb3674537ab741fb67adb5453e5c9ef",
+    "seeds": [
+      996100,
+      996101,
+      996102,
+      996103
+    ],
+    "rows_each": 31,
+    "new_original_source_actions": 0,
+    "protected_source_access": false,
+    "source_private_information": false,
+    "previous_summary_known": "124 actions,66 rewards,NKR19 table and conflicts; no prospective or blind science claim"
+  },
+  "shared_design": {
+    "train_rows": "indices0..23 per world, features at index>=1",
+    "test_rows": "indices24..30 per world",
+    "targets": [
+      "reward",
+      "after"
+    ],
+    "test_outputs": 56,
+    "public_feature_timing": "current before/action and previous PUBLIC row only; no current reward/after, future row or source metadata supplied to predictor. In frozen evaluation, prior held outcomes may supply history features after they were actually observed, but NEVER update trained counts.",
+    "native_capacity": "two existing PublicCausalCells banks per arm: one per output target, each16addresses and164byte snapshot,328bytes total. Native max capacity is identical for baseline,history andsham; source worlds4 x context4 fit16 slots per target. This is twice NKR19's combined allowance, explicitly fixed for ALL campaign arms before scores.",
+    "arm_features": {
+      "state": "context=before,unused high context bit0",
+      "history": "context=before+2*previous_reward",
+      "sham": "context=before+2*SHA256('nkr20-sham:'+world+':'+event_index)[0]%2"
+    },
+    "training_information": "all arms receive the exact same23 prior-history-bearing public training rows/world; no replay inflation. Source seed is not a learned feature.",
+    "strong_control": "independent batch Beta(1,1) saturated conditional Bernoulli reference fitted from same rows and context map; all native probabilities must match. Fully fitted conventional MLE additionally recorded. No neural or policy reward superiority.",
+    "retention": "same-bank incremental world additions; prior probability ratios remain bit-identical after later separate-address learning and cold restoration; no overlapping shared-weight or drift learning claim.",
+    "predictions": "exact fractions/Brier score and fixed input/output trace hashes, both targets separately, all negatives preserved",
+    "source_first_use": false
+  },
+  "experiments": [
+    {
+      "id": "NKR-20",
+      "question": "Does previous observed reward help explain aliased visible state/action outcomes?",
+      "hypothesis": "history reduces pooled frozen Brier by>=0.01 relative to BOTH same-capacity state-only and independent sham, neither target regresses by>0.01 relative to state-only; otherwise HISTORY_VALUE_NOT_ESTABLISHED.",
+      "no_selection": "state/history/sham are fixed before scores. No best-feature or threshold search."
+    },
+    {
+      "id": "NKR-21",
+      "question": "Does training-only hierarchical backoff make accumulated conditional knowledge more useful without overfitting sparse history bins?",
+      "mechanism": "use the same trained history bank; for a bin with n observations, prediction=(successes+4*p_parent)/(n+4), where p_parent is Beta(1,1) state/action pooled posterior from SAME TRAIN rows. Pseudocount4 is frozen now, not chosen from NKR20 outcomes.",
+      "controls": "state Beta,history Beta,sham hierarchical with same strength4, fully fitted same-information independent conventional hierarchical estimate; expected exact tie.",
+      "hypothesis": "hierarchical history improves pooled Brier by>=0.01 relative to BOTH state and unshrunk history, no target regression>0.01 vs state; else HIERARCHICAL_VALUE_NOT_ESTABLISHED.",
+      "adaptive_tuning": false
+    },
+    {
+      "id": "NKR-22",
+      "question": "Are these cached actions sufficient to identify the reward of a different learned policy?",
+      "method": "audit the original FixedPublicPolicy action=(before+event_index)%2. Conditioning on the full available public decision information, observed action has propensity1 and other action0. Verify this policy on all124rows. Compute exact no-assumption finite-data value bounds for frozen always0,always1,state-matched empirical greedy from TRAIN only and original behavior; unknown counterfactual binary rewards remain[0,1]. Observed rewards fixed only where target chose the actual action; no source-private counterfactual or model-imputed label is credited.",
+      "hypothesis": "at least one action-changing target retains nonzero identification interval; then conclude POLICY_VALUE_UNIDENTIFIED rather than invent an off-policy reward win.",
+      "bounds": "over all124 consumed rows for retrospective support audit; also test-only28 rows independently. This is a mathematical identifiability audit, not prospective policy execution."
+    }
+  ],
+  "campaign_execution": {
+    "order": [
+      "NKR-20",
+      "NKR-21",
+      "NKR-22"
+    ],
+    "all_stages_execute_even_if_earlier_hypothesis_fails": true,
+    "primary": "one Ubuntu campaign",
+    "replication": "one Windows stable-output reproduction",
+    "no_after_outcome_changes_to_models_features_splits_thresholds_or_source": true,
+    "max_seconds": 120,
+    "negative_results_first_class": true,
+    "stop_if_source_integrity_or_leakage_fails": true,
+    "post_campaign": "preserve all3 outcomes, full final regression and independent G29 both OS; next scientifically meaningful action-value trial still requires separately approved unconsumed source protocol"
+  },
+  "authority": {
+    "isolated_retrospective_contribution": true,
+    "merge": false,
+    "accepted_main_or_owner_model_mutation": false,
+    "original_scientific_first_use": false,
+    "controller": false,
+    "new_scheduler": false,
+    "new_runner_registration": false,
+    "paid_api": false,
+    "other_track_mutation": false
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/NKR-20/",
+    "research/contrib/chatgpt/NKR-21/",
+    "research/contrib/chatgpt/NKR-22/",
+    "tests/test_native_history_campaign.py",
+    ".github/workflows/nkr20-history-campaign.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ]
+}
