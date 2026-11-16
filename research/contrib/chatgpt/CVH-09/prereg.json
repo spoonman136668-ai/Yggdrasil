@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.cvh09.prospective-owner-source-13k-prereg.v1",
+  "status": "FROZEN_BEFORE_PROSPECTIVE_SOURCE_FIRST_USE_AND_BEFORE_CVH09_SCORER",
+  "date": "2026-11-16",
+  "parent": {
+    "pr": 1173,
+    "sha": "8f815801295a57e2b65471ccf048108405316a40",
+    "tree": "24e60723d0672bcf10b9aaa14613aa8e26baaaf0",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "source": {
+    "repo": "CausalAILab/Causal-Gymnasium",
+    "sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "license": "Apache-2.0",
+    "original_MDP": "MDPPCH with Task(learning_regime=do); original public-only adapter and upstream unmodified",
+    "original_action_limit": 32,
+    "source_truncation_observed_at": 31
+  },
+  "user_authorization": {
+    "scope_approved": true,
+    "source": "Operator confirmed proposed prospective test on 2026-11-16 in this conversation",
+    "maximum_original_physical_do": 13312,
+    "only_owner_verified_virgin_cohorts": true,
+    "matched_fully_trained_controls": true,
+    "no_uncertain_effect_replay": true,
+    "scope_not_lease": true,
+    "scope_does_not_reserve_seeds": true,
+    "scope_does_not_authorize_original_source_owner_runtime": true
+  },
+  "cohorts": {
+    "train_episodes": 64,
+    "held_episodes_per_arm": 64,
+    "transfer_episodes_per_arm": 24,
+    "arms": [
+      "native",
+      "fourcell",
+      "recurrent",
+      "explorer"
+    ],
+    "total_episode_slots": 416,
+    "maximum_original_do_per_episode": 32,
+    "maximum_original_interventions": 13312,
+    "train_policy": "fixed public-only behavior/control policy selected before current reward, 64 original virgin episodes; shared same public TRAIN outcomes across all fitted candidate/controls",
+    "held_policy": "each arm separately receives 64 distinct virgin original episodes; selected public action and real reward visible only after action, one source first-use per seed",
+    "transfer_policy": "each arm 24 distinct virgin episodes from an independently attested mechanism FAMILY different from TRAIN and HELD; seed-only novelty is NOT family-transfer",
+    "duplicate_seed_reuse": false,
+    "allow_consume_protected_seed_ranges": false,
+    "known_consumed": [
+      996100,
+      996101,
+      996102,
+      996103
+    ],
+    "protected_ranges": [
+      {
+        "lo": 996500,
+        "hi": 996531
+      },
+      {
+        "lo": 996600,
+        "hi": 996663
+      }
+    ]
+  },
+  "required_source_custody": {
+    "original_owner_lease_ref": null,
+    "owner_signed_provenance": null,
+    "owner_actor_qualified": false,
+    "independent_seed_ledger_sha": null,
+    "disjoint_family_attestation": null,
+    "source_runtime_firstuse_job": null,
+    "verified_virgin_seed_ids": [],
+    "source_second_arm_same_world_seed_reuse_forbidden": true,
+    "persist_actual_firstuse_journal": true,
+    "forbid_any_ambiguous_effect_retry": true,
+    "source_public_output_only": true,
+    "all_firstuse_status": "BLOCKED_NO_VERIFIED_OWNER_SOURCE_LEASE",
+    "require_all_fields_before_physical_env_call": true
+  },
+  "learners": {
+    "native": "unchanged CVH02 36-slot tokenless 4-step earned memory, public-only",
+    "fourcell": "unchanged CVH06 4-cell fit from exact public rewards, public-only",
+    "recurrent": "CVH08 SourceIndependentPublicTrainRNN exact 8 unit Elman 48 epoch BPTT on 64 virgin TRAIN public episodes, no held training",
+    "explorer": "unchanged CVH07 SeededPublicExplorer(1777), no training",
+    "selection_order": "TRAIN all 64 first once, fit all learned arms and seal cold source and train hashes BEFORE any held or transfer outcome; each separate arm has independent policy state, fixed original action budget, record all actual do and rewards",
+    "held_return_updates": "within episode previous public reward can update online policy; learning between held episodes must be frozen/standardized and separately reported. No held outcomes included in pre-test fit or model-selection thresholds."
+  },
+  "metrics": {
+    "primary": "Mean earned public binary reward per actually executed original do in held corpus; native must exceed highest score among fully trained real-source matched controls",
+    "primary_effect_threshold": 0.05,
+    "CI": "fixed-seed 10000 resamples of independent episode clusters by arm; compute native minus maximum control in each replicate, empirical 2.5th percentile >0.0; no post-result retuning",
+    "bootstrap_seed": 572401,
+    "minimum_held_per_arm": 64,
+    "training_exposure_equal": true,
+    "baseline_fully_trained_before_held": true,
+    "full_source_process_cost_required": true,
+    "secondary": "24 virgin transfer episodes per arm from independently verified distinct causal mechanism family, earned-reward and cold-retention interference, reproducibility. No source-family proof => transfer UNVERIFIED and scientific_pass false.",
+    "pass_all": "native held gain >0.05 and lower CI>0 against strongest qualified control, real novel causal family transfer independently passed and reproducible, exact source first-use/owner custody, all platform full regression and security controls pass",
+    "no_promote_on_null": true
+  },
+  "current_gate": {
+    "purpose": "Implement source-only owner seed lease validation, first-use denial, source-independent prospective outcome scorer and negative test controls; do not consume original actions",
+    "science_action_run": false,
+    "first_use_permitted_now": false,
+    "do_not_alter_FKP24_or_CVH08": true,
+    "do_not_create_source_runtime_job_without_owner_lease": true,
+    "do_not_use_historical_FKP26_public_tape_as_test": true,
+    "source_safe_dual_platform_final_full_root_G29": true
+  },
+  "boundaries": {
+    "merge": false,
+    "main_write": false,
+    "deployment": false,
+    "paid_api": false,
+    "controller_scheduler": false,
+    "private_runner": false,
+    "other_research_owners": false,
+    "live_original_action_attempt": false
+  }
+}
