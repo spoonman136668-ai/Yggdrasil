@@ -99,10 +99,18 @@ def predict(masks,obs,ports,x):
 def cold(masks,obs,ports,arm):
     state={"schema":"aai12v.public.v1","masks":list(masks),
            "observed":sorted([list(z) for z in obs.items()]),"ports":list(ports),"arm":arm}
-    return json.dumps(state,sort_keys=True,separators=(",",":"))
+    raw=json.dumps(state,sort_keys=True,separators=(",",":"))
+    return json.dumps({"state":state,"sha256":hashlib.sha256(raw.encode("ascii")).hexdigest()},
+                      sort_keys=True,separators=(",",":"))
 
 def restore(snapshot):
-    s=json.loads(snapshot)
+    outer=json.loads(snapshot)
+    if type(outer)!=dict or set(outer)!={"state","sha256"}:
+        raise ValueError("invalid checkpoint envelope")
+    s=outer["state"]
+    raw=json.dumps(s,sort_keys=True,separators=(",",":"))
+    if hashlib.sha256(raw.encode("ascii")).hexdigest()!=outer["sha256"]:
+        raise ValueError("checkpoint integrity mismatch")
     if type(s)!=dict or set(s)!={"schema","masks","observed","ports","arm"} or s["schema"]!="aai12v.public.v1" or s["arm"] not in ARMS:
         raise ValueError("invalid cold state")
     masks=tuple(s["masks"]);obs=dict(s["observed"]);ports=tuple(s["ports"])
