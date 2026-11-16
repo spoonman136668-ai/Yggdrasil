@@ -1,0 +1,244 @@
+{
+  "schema": "yggdrasil.aai12t.novelty-gated-primitive-induction-prereg.v1",
+  "id": "AAI-12T",
+  "classification": "SOURCE_ONLY_PROSPECTIVE_DEVELOPMENT",
+  "frozen_before_implementation_or_outcome": true,
+  "custody": {
+    "base_pr": 1074,
+    "base_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_negative_prs": [
+      1076,
+      1123,
+      1124
+    ],
+    "prior_negative_sha": "b469d189f3546fefef1b8afd4f87ca3b8887dc04"
+  },
+  "hypothesis": "A tokenless novelty detector using only witnessed public action-outcome observations can identify inadequate primitive vocabularies and induce a reusable bounded three-input Boolean relation; a validation-gated extension should improve unseen novel-primitive predictions over fixed-grammar, same-capacity always-expanded and fully trained conventional controls, without degrading familiar or unrelated out-of-grammar functions.",
+  "interpretation": "Novel here means absent from the prior three-XOR/AND/OR-gate four-distinct-variable grammar. Every invented truth-table is still a bounded 3-input Boolean function drawn from a fully specified 256-function hypothesis space. 32-state cold generalization is not evidence of inventing unconstrained relational concepts or cross-world retained knowledge.",
+  "world": {
+    "fixed_public_input_bits": 6,
+    "public_output_bits": 1,
+    "public_action": "set exactly one x-bit using genuine source do, 16 nonoverlapping source pairs",
+    "public_fields": [
+      "x",
+      "y",
+      "one_bit_do_edge"
+    ],
+    "hidden_fields_prohibited": [
+      "world_index",
+      "true_gate_graph",
+      "true_three_input_truth_table",
+      "family_id",
+      "test_outputs"
+    ],
+    "novel_definition": "A hidden 3-input truth table with bit index 4*a+2*b+c, composed XOR a fourth distinct input bit; raw truth-table bits never shown to model.",
+    "novel_specs": [
+      [
+        0,
+        1,
+        2,
+        3,
+        232
+      ],
+      [
+        1,
+        2,
+        4,
+        5,
+        104
+      ],
+      [
+        2,
+        4,
+        5,
+        0,
+        202
+      ],
+      [
+        0,
+        3,
+        5,
+        1,
+        41
+      ],
+      [
+        1,
+        3,
+        4,
+        2,
+        23
+      ],
+      [
+        0,
+        2,
+        5,
+        4,
+        113
+      ],
+      [
+        1,
+        4,
+        5,
+        3,
+        212
+      ],
+      [
+        0,
+        1,
+        4,
+        5,
+        75
+      ],
+      [
+        2,
+        3,
+        5,
+        1,
+        53
+      ],
+      [
+        0,
+        3,
+        4,
+        2,
+        194
+      ],
+      [
+        1,
+        2,
+        5,
+        0,
+        166
+      ],
+      [
+        0,
+        2,
+        3,
+        5,
+        107
+      ]
+    ],
+    "familiar_specs": [
+      [
+        0,
+        1,
+        2,
+        3,
+        "XOR",
+        "AND",
+        "OR",
+        0
+      ],
+      [
+        2,
+        4,
+        1,
+        5,
+        "AND",
+        "OR",
+        "XOR",
+        1
+      ],
+      [
+        3,
+        5,
+        0,
+        2,
+        "OR",
+        "XOR",
+        "AND",
+        0
+      ],
+      [
+        1,
+        4,
+        0,
+        5,
+        "AND",
+        "XOR",
+        "OR",
+        1
+      ]
+    ],
+    "negative_specs": [
+      "parity6",
+      "majority6",
+      "exactly_two6",
+      "sha256_truth6"
+    ],
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "sampling": "For each fixture/phase/world, sort 64 distinct x by SHA256('AAI12T|fixture|phase|world-index|x'), ascending digest then x. Greedily choose first 16 pairs x,x XOR (1<<bit) with bit loop 0..5, neither member seen. Each chosen edge is a real one-bit source intervention. 32 unique public x/y observations; remaining 32 inputs held out and never used for inference/selection.",
+    "partition": "The first 12 pairs (24 observations) are model-selection/fitting subset; last 4 pairs (8 observations) are validation for candidate/adaptive controls; after selecting a mode refit all 32 rows. Other full-fit controls receive the same 32 rows.",
+    "test_counts": {
+      "novel": 768,
+      "familiar": 256,
+      "out_of_grammar": 256,
+      "observations_per_world": 32,
+      "heldout_per_world": 32,
+      "pairs_per_world": 16
+    },
+    "first_use": "all worlds are publicly named mechanical source-only worlds; independent scientific first-use cohorts/seeds and any native tasks disarmed"
+  },
+  "models": {
+    "fixed_grammar": "Enumerate all distinct 4-variable, 3-stage XOR/AND/OR compositions with output optional invert, collapse duplicate truth tables, choose minimum 32-sample error, ties by short lexicographic description. Never enumerate the true world specification directly.",
+    "augmented": "Enumerate sorted triples of three public input indices and fourth distinct input index. Infer a separate 8-bit ternary truth table from seen y XOR public fourth bit by majority per ternary input cell, tie value 0; choose minimum full public classification error, ties by table popcount then lexicographic (triple,fourth,mask). No hidden target tables or lookahead.",
+    "candidate": "On first 24 public observations fit fixed/augmented/5NN; validate predictions on last 8. Select augmented only if it makes >=2 fewer validation errors than both fixed and 5NN. Else select lower-error fixed or 5NN (ties fixed). Refit selected approach on all 32 publicly seen rows. Serialize chosen mode, learnt ternary 8-bit mask and 32 public rows, restore cleanly; no per-world hidden identity. Choice is made before exposure to any heldout results.",
+    "no_growth_ablation": "Same 24/8 selector between only fixed and 5NN, refit chosen mode on all 32; never permits ternary induction.",
+    "conventional_controls": [
+      "fixed_program_3gate",
+      "always_ternary_256",
+      "knn5",
+      "fully_fitted_id3",
+      "adaptive_no_growth"
+    ],
+    "capacity": "At most 32 public x/y events per method; candidate and always ternary have exactly identical 256 possible 3-input Boolean primitives and 60 bindings. ID3 fully fitted to all 32, deterministic; knn5 five nearest Hamming, stable lexical tie.",
+    "no_privilege": "Models cannot call world generator/oracle, inspect hidden source tables, use test labels, requery unseen source x, or adapt after the frozen 32 observations."
+  },
+  "metrics": [
+    "accuracy on 768 unseen novel-primitive contexts per arm",
+    "per-world novel accuracy",
+    "accuracy on 256 familiar contexts per arm",
+    "accuracy on 256 six-input negative contexts per arm",
+    "novelty-trigger frequency per 12 novel and 4 familiar worlds",
+    "exact cold restore",
+    "whole-process source catalog build/fit/selection/predict time per arm"
+  ],
+  "go_no_go": {
+    "candidate_novel_vs_best_any_control_gain_min": 0.03,
+    "candidate_novel_vs_no_growth_gain_min": 0.06,
+    "candidate_novel_worlds_at_least_0_80_accuracy_min": 9,
+    "candidate_augmentation_novel_world_count_min": 8,
+    "candidate_augmentation_familiar_world_count_max": 1,
+    "candidate_familiar_regression_vs_best_conventional_max": 0.03,
+    "candidate_unrelated_out_of_grammar_regression_vs_best_conventional_max": 0.03,
+    "max_whole_process_cost_ratio_to_fastest_generic": 50,
+    "all_required": true,
+    "invalid_if": "source novelty outside original grammar not proved, any training/test overlap, unequal public information or undisclosed hidden metadata, mismatched original protocol/sha, source-runtime exception",
+    "stop": "One prespecified source-only fixture screen. Any gate fails => DEV_NO_GO_NO_SCIENCE. No after-outcome world substitution, threshold/policy tuning, running other seeds, cost-criterion relaxation or primary science."
+  },
+  "safety": {
+    "no_native_integration": true,
+    "no_main_edit": true,
+    "no_merge": true,
+    "no_first_use": true,
+    "no_wetware": true,
+    "no_project_owner_or_runner_change": true,
+    "no_scheduler_or_queue": true,
+    "no_paid_API": true,
+    "no_library_artifacts": true,
+    "only_changed_paths": [
+      "research/contrib/chatgpt/AAI-12T/*"
+    ],
+    "science_cohorts_used": 0
+  },
+  "reproducibility": {
+    "two_local_repeats_only_for_exact_determinism": true,
+    "windows_linux_full_regression_separate_before_any_acceptance": true,
+    "score_only_after_source_and_test_commit": true,
+    "canonical_sha_receipts": true
+  }
+}
