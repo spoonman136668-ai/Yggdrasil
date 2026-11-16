@@ -114,10 +114,10 @@ def archived_cb5_cost_reduction(record):
         raise ValueError('CB6_ARCHIVE_WORLD_COUNT')
     total, removed, restored = 0, 0, []
     for idx, row in enumerate(data):
-        if (type(row) is not list or len(row) != 7 or type(row[0]) is not int or
+        if (type(row) is not list or len(row) != 6 or type(row[0]) is not int or
             row[0] != 82500+idx or type(row[1]) is not int or not 0 <= row[1] <= 7 or
             type(row[2]) is not int or not 6 <= row[2] <= 11 or
-            type(row[6]) is not str or len(row[6]) != 64):
+            type(row[5]) is not str or len(row[5]) != 64):
             raise ValueError('CB6_ARCHIVE_WORLD_INTEGRITY')
         original_paid = row[2]
         sensor_probe_rank = original_paid - PUBLIC_UPSTREAM_AND_BASELINE_ACTIONS
