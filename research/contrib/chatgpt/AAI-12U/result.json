@@ -1,0 +1,139 @@
+{
+  "schema": "yggdrasil.aai12u.source-development-result.v1",
+  "id": "AAI-12U",
+  "status": "DEV_NO_GO_NO_SCIENCE",
+  "source_only": true,
+  "scope": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "base_pr": 1074,
+    "exact_base_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha_at_work": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "scientific_first_use_cohorts_consumed": 0,
+    "native_model_changed": false,
+    "merge": false,
+    "deployment": false
+  },
+  "custody": {
+    "prereg_committed_before_code_or_outcome": "993d9057e8eed2e04eaf10037c83de49e35a48ff",
+    "prereg_blob": "b8fbdd75d1a1a136f57b2306f8c6064a3e1b261b",
+    "source_world_blob": "91244e8f07e258cc9e7a814a739dbce9acbb58fe",
+    "learners_blob": "6b77fb394fa68c592018a4a23dcb6b11979af4f1",
+    "evaluator_blob": "3dbd670a0041130778c8457c24cab01f3c1f8fbe",
+    "post_screen_tests_blob": "ec551c0397fe5729202f4cecea7da8a98a27bdb6",
+    "exact_source_local_sha256s": {
+      "source_world.py": "83107e6ae2c26e58b9c659edbe4118a8bc7bad508b7fd6db495e9ed0c71602e2",
+      "learners.py": "aac56b59b8d67f57477875aacf3f97beae43265d6d9a79a98676974071923886",
+      "dev.py": "d23e38263412525472351257506159743ca9f6ca4eed443a62464c78c63be6c8",
+      "test_dev.py": "99f1b1ae8a2c69995bf66ca0eb5ee40fc06de512cec977893b4958679fd0015b"
+    },
+    "readback": "Four Git blob hashes checked equal to locally tested source in this turn. Original local screen preceded Git source commit, while prereg commit preceded local implementation/outcome; the post-screen tests and score repetition are diagnostic and not pre-registered confirmation."
+  },
+  "environment": {
+    "local": "isolated Linux x86_64 CPython 3.13.5",
+    "official_yggdrasil_runner": false,
+    "platform_qualification": "NOT_RUN"
+  },
+  "protocol": {
+    "source_fixtures": 2,
+    "world_groups": 8,
+    "arms": 5,
+    "donor_public_rows_per_group": 16,
+    "interference_public_rows_per_group": 16,
+    "recipient_public_rows_per_group": 4,
+    "real_one_bit_do_edges_per_donor_world": 8,
+    "real_one_bit_do_edges_per_interference_world": 8,
+    "real_one_bit_do_edges_per_recipient_world": 2,
+    "heldout_cases_per_group_fixture": 60,
+    "total_heldout_per_arm": 960,
+    "reuse_cases": 480,
+    "changed_cases": 240,
+    "familiar_cases": 240,
+    "cold_checkpoint_roundtrips": 80,
+    "donor_slots_per_arm": 2
+  },
+  "exact_source_scores": {
+    "uncertainty_gated": {
+      "overall_accuracy": 0.925,
+      "reuse": 1,
+      "changed": 0.7,
+      "familiar": 1
+    },
+    "two_slot_bayes": {
+      "overall_accuracy": 0.91875,
+      "reuse": 1,
+      "changed": 0.675,
+      "familiar": 1
+    },
+    "donor_only_fixed": {
+      "overall_accuracy": 0.875,
+      "reuse": 1,
+      "changed": 0.5,
+      "familiar": 1
+    },
+    "local_only_beta": {
+      "overall_accuracy": 0.608333333,
+      "reuse": 0.6,
+      "changed": 0.633333333,
+      "familiar": 0.6
+    },
+    "last_slot_reuse": {
+      "overall_accuracy": 0.402083333,
+      "reuse": 0.283333333,
+      "changed": 0.741666667,
+      "familiar": 0.3
+    }
+  },
+  "measured": {
+    "candidate_minus_strongest_matched_control_accuracy": 0.00625,
+    "required_accuracy_gain": 0.02,
+    "candidate_minus_local_only_reuse_accuracy": 0.4,
+    "reuse_detection_count": 8,
+    "changed_world_false_accept_count": 3,
+    "allowed_changed_world_false_accept_count": 1
+  },
+  "frozen_gate_checks": {
+    "overall_gain_vs_strongest_nonoracle_0_02": false,
+    "reuse_gain_vs_local_0_15": true,
+    "reuse_accuracy_min_0_85": true,
+    "changed_nondegradation_0_03": true,
+    "familiar_nondegradation_0_03": true,
+    "reuse_detected_6_of_8": true,
+    "false_accept_changed_at_most_one": false,
+    "all_process_wall_ratio_at_most_10": true
+  },
+  "deterministic_hashes": {
+    "witnessed_source_public_sha256": "0ae952f00ffe98df05a92318ed5f6c5312ca5a9b26a4dcfa1028d7eed32d381d",
+    "prediction_trace_sha256": "298318975016c134a5a431b7ffed4316a43557d30895ac458f13a54a1cd7c5b3"
+  },
+  "tests": {
+    "local_focused_passed": 11,
+    "total": 11,
+    "full_final_native_regression": "NOT_RUN",
+    "ubuntu_ci": "NOT_RUN",
+    "windows_ci": "NOT_RUN",
+    "no_first_use_denial": "PASS",
+    "after_first_outcome_tests_note": "tests added after first measured source-only run; these are mechanical checks, not blinded original scientific confirmation"
+  },
+  "repeatability": {
+    "same_scores": true,
+    "same_gate_bools": true,
+    "same_prediction_trace_hash": true,
+    "runtime_times_variable": true,
+    "first_run_model_seconds": {
+      "uncertainty_gated": 0.008053,
+      "two_slot_bayes": 0.017086,
+      "donor_only_fixed": 0.003805,
+      "last_slot_reuse": 0.003933,
+      "local_only_beta": 0.009568
+    },
+    "second_run_model_seconds": {
+      "uncertainty_gated": 0.012636,
+      "two_slot_bayes": 0.024425,
+      "donor_only_fixed": 0.005472,
+      "last_slot_reuse": 0.006212,
+      "local_only_beta": 0.01321
+    }
+  },
+  "scientific_interpretation": "Observed capacity-limited primitive transfer survives interference and port reassignment on fixed mechanical reuse worlds; equally informed two-slot Bayesian memory gets the same 100% reuse and familiar accuracy. The proposed uncertainty accept/reject adds only 0.625 percentage points overall and falsely reuses old masks in 3/4 changed cases. This does not establish independently useful new relational intelligence, open-world novelty detection, or science pass.",
+  "stop": "DEV_NO_GO_NO_SCIENCE; retain negative and do not post-result tune this selector, change sources, consume first-use scientific worlds, alter native owner/runners/controllers/queues, or merge."
+}

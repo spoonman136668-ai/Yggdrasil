@@ -1,0 +1,164 @@
+{
+  "schema": "yggdrasil.aai12u.persistent-primitive-transfer-prereg.v1",
+  "experiment_id": "AAI-12U",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_RESULTS",
+  "source": {
+    "base_pr": 1074,
+    "base_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "prior_no_go_prs": [
+      1124,
+      1125
+    ],
+    "first_use": "NONE; source-only fixed mechanical fixtures"
+  },
+  "hypothesis": "A tokenless uncertainty-gated two-slot primitive memory will reuse a learned 3-input causal operation under changed public bindings after interference, while rejecting incompatible memories. It must outperform fully-trained equal-information/equal-capacity Bayesian cache and local-only controls, not merely a memoryless baseline.",
+  "scientific_limits": "An eight-bit Boolean truth table is one of 256 explicitly bounded primitives, and the causal port map is publicly supplied. Reuse is not unrestricted relationship discovery, autonomous reasoning, unseen-context science or native Yggdrasil learning.",
+  "world": {
+    "input_bits": 6,
+    "output_bits": 1,
+    "action": "one actual do flips the public fourth-port input bit; pre and post public x,y observed",
+    "primitive": "A 3-input Boolean table mask in [0,255]; y = table[4*a+2*b+c] XOR x[fourth]; ports=(a,b,c,fourth) are PUBLIC with all four distinct. No hidden mask or world family metadata to learners.",
+    "fixtures": [
+      "mechanical:alpha",
+      "mechanical:beta"
+    ],
+    "groups": [
+      {
+        "class": "reuse",
+        "donor": 232,
+        "interference": 150,
+        "receiver": 232
+      },
+      {
+        "class": "reuse",
+        "donor": 104,
+        "interference": 95,
+        "receiver": 104
+      },
+      {
+        "class": "reuse",
+        "donor": 202,
+        "interference": 41,
+        "receiver": 202
+      },
+      {
+        "class": "reuse",
+        "donor": 41,
+        "interference": 212,
+        "receiver": 41
+      },
+      {
+        "class": "changed",
+        "donor": 23,
+        "interference": 150,
+        "receiver": 212
+      },
+      {
+        "class": "changed",
+        "donor": 113,
+        "interference": 95,
+        "receiver": 75
+      },
+      {
+        "class": "familiar",
+        "donor": 150,
+        "interference": 232,
+        "receiver": 150
+      },
+      {
+        "class": "familiar",
+        "donor": 95,
+        "interference": 104,
+        "receiver": 95
+      }
+    ],
+    "public_ports": {
+      "donor": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "interference": [
+        2,
+        4,
+        5,
+        1
+      ],
+      "recipient": [
+        1,
+        3,
+        5,
+        0
+      ]
+    },
+    "sampling": "For each fixed fixture/group/phase, donor and interference expose one one-bit-do pair for each 3-bit input code (8 pairs, 16 public rows); receiver exposes exactly 2 pairs for two distinct codes selected by ascending SHA256('AAI12U|fixture|group|code'), then evaluates all 60 inputs not seen in receiver. The three unrelated remaining x-bits and fourth-port baseline are deterministic SHA256 values, chosen before results. All arms observe identical public rows and available action consequences.",
+    "capacity": "Every arm may retain at most two 8-bit table slots plus eight confidence counts per slot; all see the same donor, interference, and recipient examples, but only the candidate's learner may decide which previous table to reuse. Matched two-slot Bayesian cache has identical state and information.",
+    "budget": {
+      "donor_public_rows": 16,
+      "interference_public_rows": 16,
+      "recipient_public_rows": 4,
+      "recipient_heldout_rows": 60,
+      "fixture_groups": 16,
+      "heldout_per_arm": 960,
+      "classes": {
+        "reuse": 8,
+        "changed": 4,
+        "familiar": 4
+      }
+    },
+    "no_oracle_model_access": true
+  },
+  "methods": {
+    "candidate": "Retain donor and interference ternary-operator masks and support counts keyed by canonical port-role input codes (not original absolute input positions). On receiver four public rows, choose whichever cached primitive minimizes public mismatch if its observed mismatches are zero AND its unseen-code confidence is >=0.75. Otherwise fall back to local 256-table posterior with Beta(1,1) votes. Never inspect recipient hidden mask or withheld outcomes.",
+    "equal_capacity_bayesian": "Two-slot Bayesian cache: using exactly same donor/interference counts, calculate smoothed public likelihood over receiver examples and choose posterior mixture/maximum-likelihood cached table without candidate's structural uncertainty accept/reject threshold. Deterministic tie break donor slot.",
+    "controls": [
+      "two_slot_bayes",
+      "last_slot_reuse",
+      "local_only_beta",
+      "donor_only_fixed",
+      "oracle_upper_bound_scoring_only"
+    ],
+    "local_only": "Recipient 4 rows only; per-input-code Beta(1,1) posterior; tied prediction 0.",
+    "last_slot_reuse": "Use most recent interference table independent of receiver evidence; same two-slot memory available but does not choose based on evidence.",
+    "donor_only_fixed": "Use donor slot regardless of evidence; negative shortcut control.",
+    "prior": "Uniform across 256 ternary masks, no pretrained weights, hidden truth, transformer, token labels or imported dataset.",
+    "cold": "Serializable canonical JSON public port/observations, two tables+counts; restore before receiver evaluation and verify predicted outputs and SHA unchanged; memory cannot see private group class."
+  },
+  "metrics": [
+    "all-case 960 heldout-bit accuracy",
+    "reuse-only 480 heldout-bit accuracy",
+    "changed-only 240 heldout-bit accuracy",
+    "familiar-only 240 heldout-bit accuracy",
+    "exact predicted mask transfer",
+    "cache rejection false-negative/false-positive",
+    "cold checkpoint integrity",
+    "measured complete donor+interference+recipient training/prediction wall time by arm"
+  ],
+  "gates": {
+    "mean_all_gain_vs_best_non_oracle_control_min": 0.02,
+    "reuse_gain_vs_local_only_min": 0.15,
+    "reuse_accuracy_min": 0.85,
+    "changed_nonregression_vs_local_only_max": 0.03,
+    "familiar_nonregression_vs_local_only_max": 0.03,
+    "true_reuse_slots_detected_min": 6,
+    "false_accept_changed_max": 1,
+    "full_process_ratio_vs_fastest_conventional_max": 10,
+    "all_required": true,
+    "classify": "Only if all frozen gates pass => DEV_ADMITTED_SCIENCE_UNVERIFIED. Any miss => DEV_NO_GO_NO_SCIENCE. Invalid if hidden source fields, mismatched intervention events, disjointness breach, privileged oracle in model, or model-specific data.",
+    "stop": "One frozen mechanical screen. No changes to thresholds, world tables, action budgets, public ports, codes, or selection policies following measured results. No primary science, CI/merge authority, or production integration."
+  },
+  "scope": {
+    "only_new_paths": [
+      "research/contrib/chatgpt/AAI-12U/*"
+    ],
+    "no_native_yggdrasil": true,
+    "no_main_ref": true,
+    "no_merge": true,
+    "no_first_use": true,
+    "no_owners_runners_controllers_scheduler_queues": true,
+    "no_paid_apis": true,
+    "no_library_artifacts": true
+  }
+}
