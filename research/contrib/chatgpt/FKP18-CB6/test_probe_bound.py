@@ -1,7 +1,7 @@
 """CB6 deterministic decision-theoretic scope checks; no CB5 source generation."""
 import unittest
 from itertools import permutations
-from probe_bound import DirectExclusion, exhaustive_symmetric_worlds, exact_bayes_optimal_cost, archived_cb5_cost_reduction
+from probe_bound import DirectExclusion, exhaustive_symmetric_worlds, exact_bayes_optimal_cost, archived_cb5_cost_reduction, load_pinned_archive
 
 class BoundTests(unittest.TestCase):
     def test_all_six_actual_identity_labels(self):
@@ -61,6 +61,14 @@ class BoundTests(unittest.TestCase):
         self.assertEqual(result['reduced_total_paid'],276)
         fixture['per_world_receipts']['world_summary'][0].append('fake extra field')
         with self.assertRaises(ValueError):archived_cb5_cost_reduction(fixture)
+
+    def test_exact_archive_git_blob_pin_rejects_unsealed_fixture(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'result.json'
+            p.write_text('{"schema":"yggdrasil.cb5.blind-mechanism-result.v1"}')
+            with self.assertRaises(ValueError):load_pinned_archive(p)
 
     def test_no_original_scientific_first_use_or_generator(self):
         import inspect,probe_bound
