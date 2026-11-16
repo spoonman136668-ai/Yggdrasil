@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.aai12w.source-only-dev-evidence.v1",
+  "experiment_id": "AAI-12W",
+  "classification": "DEV_NO_GO_NO_SCIENCE",
+  "score_first_use": "MECHANICAL_SOURCE_ONLY",
+  "custody": {
+    "parent_pr": 1074,
+    "parent_sha": "abd374e7dc433981df991e103d8ebdff0b5eb093",
+    "prereg_commit": "5a929c491142d7b06ec4fa68278af0edb217c334",
+    "frozen_source_test_commit_before_scoring": "eb10398f232591e6c9778f303b3a5974e3a9a53c",
+    "verified_source_blobs": {
+      "world.py": "9c1c6096023255bec1a54a4f70cbdbdb192a61bc",
+      "learner.py": "e8b0c9c2bb5349377993454179084840222f3e49",
+      "dev.py": "6a29187b8c46ec43171e9dd2119a9a82319400aa",
+      "test_dev.py": "c3582526c5bc69132d9dc922ca4f13be34017833"
+    },
+    "sha256_local": {
+      "world.py": "3cb571ec3e69fa5252ef68d3f29c9b603bd5ddd38758e2518ebdbf6d834f868b",
+      "learner.py": "bdb82cd5cfec8d43fc6a2d8e245d73b09408edb6a1754dbcb90ca6abb7bf1240",
+      "dev.py": "15ca7855c5fc9f0ea3bf5fddadc1ff691b24abb66f32094a23bed0aa2a8d5463",
+      "test_dev.py": "5684824bb2f0bea94f8353ec7845d5bb95a4844552caa2c4d702f12688031496"
+    },
+    "no_post_outcome_code_or_test_changes": true
+  },
+  "environment": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "python": "CPython 3.13.5",
+    "official_yggdrasil_runner": false,
+    "local_only": true,
+    "dependency": "stdlib",
+    "cost_scope": "Per-method model fitting plus cold JSON restore and 3-step forecast across all source worlds, measured time.perf_counter. Excludes common source-fixture generation, build and native runtime."
+  },
+  "source_count": {
+    "novel_worlds": 12,
+    "familiar_worlds": 4,
+    "negative_worlds": 4,
+    "fixtures": 2,
+    "training_actual_do_pairs_per_world": 48,
+    "heldout_three_step_episodes_per_world": 64,
+    "novel_episodes_per_arm": 1536,
+    "familiar_episodes_per_arm": 512,
+    "negative_episodes_per_arm": 512,
+    "cold_roundtrip_count": 240,
+    "science_cohorts_used": 0
+  },
+  "accuracy": {
+    "novel": {
+      "ternary_causal": 1,
+      "fixed_pair_relation_grammar": 0.69140625,
+      "fully_fitted_id3_depth7": 0.52734375,
+      "hamming_knn5": 0.487630208,
+      "logistic_degree2_fullbatch200": 0.49609375,
+      "persistence_no_memory": 0.505208333
+    },
+    "familiar": {
+      "ternary_causal": 1,
+      "fixed_pair_relation_grammar": 1,
+      "fully_fitted_id3_depth7": 0.501953125,
+      "hamming_knn5": 0.484375,
+      "logistic_degree2_fullbatch200": 0.509765625,
+      "persistence_no_memory": 0.505859375
+    },
+    "negative": {
+      "ternary_causal": 0.6015625,
+      "fixed_pair_relation_grammar": 0.626953125,
+      "fully_fitted_id3_depth7": 0.5,
+      "hamming_knn5": 0.46875,
+      "logistic_degree2_fullbatch200": 0.49609375,
+      "persistence_no_memory": 0.51171875
+    }
+  },
+  "strongest_novel_conventional": "fixed_pair_relation_grammar",
+  "novel_accuracy_gain_vs_strongest": 0.30859375,
+  "novel_worlds_at_least_0_80": 12,
+  "frozen_gates": {
+    "novel_gain_strongest_ge_0_08": true,
+    "novel_gain_pair_grammar_ge_0_08": true,
+    "novel_accuracy_ge_0_83": true,
+    "novel_worlds_ge_0_80_at_least_10": true,
+    "familiar_drop_vs_strongest_le_0_04": true,
+    "negative_drop_vs_strongest_le_0_05": true,
+    "whole_model_cost_ratio_le_12": false
+  },
+  "timing_runs_seconds": {
+    "run1": {
+      "ternary_causal": 0.635093,
+      "fixed_pair_relation_grammar": 0.548434,
+      "fully_fitted_id3_depth7": 0.0434,
+      "logistic_degree2_fullbatch200": 1.217833,
+      "hamming_knn5": 0.436487,
+      "persistence_no_memory": 0.016194
+    },
+    "run2": {
+      "ternary_causal": 0.664696,
+      "fixed_pair_relation_grammar": 0.552266,
+      "fully_fitted_id3_depth7": 0.042709,
+      "logistic_degree2_fullbatch200": 1.205925,
+      "hamming_knn5": 0.425493,
+      "persistence_no_memory": 0.014749
+    }
+  },
+  "cost_ratio_vs_fastest_conventional_run1": 14.633479263,
+  "cost_ratio_vs_fastest_conventional_run2": 15.563370718,
+  "allowed_cost_ratio": 12,
+  "deterministic_trace_sha256": "37c9dddef17d2cefaab79be67af1d4cf0d6491da74e25eef24f4a27b0b875764",
+  "public_training_sha256": "549f63f4e08f499c0be55130df4f31184301eaae7d4e0d895d7011e98ce961ae",
+  "repeat_tests": {
+    "focused_pre_screen_passed": 10,
+    "focused_post_screen_passed": 10,
+    "zero_errors": true,
+    "two_screen_accuracy_equal": true,
+    "two_screen_gates_equal": true,
+    "two_screen_trace_equal": true
+  },
+  "interpretation": "Strong source-only positive in heldout three-step forecasts from a hidden-state recurrence with unknown causal roles, but the candidate uses a built-in 3-input truth-table representation exactly matching the novel source family. Thus perfect in-grammar performance is not unrestricted primitive invention. The preregistered efficiency criterion fails against a fully fitted ID3; source-only science NO-GO with preserved negative out-of-family results.",
+  "qualifications": {
+    "native_ubuntu_final": "NOT_RUN",
+    "native_windows_final": "NOT_RUN",
+    "github_ci": "NOT_QUALIFIED",
+    "independent_scientific_first_use": "NOT_RUN",
+    "deployment": "NONE",
+    "native_source_change": false,
+    "merge": false
+  },
+  "stop": "No after-result tuning of AAI-12W, no scientific first use or threshold alteration, no native integration or merge; preserve source-only result and consider separate preregistered efficiency mechanism on new disjoint source worlds."
+}
