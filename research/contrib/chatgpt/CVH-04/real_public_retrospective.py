@@ -160,6 +160,22 @@ def mean_square(predictions, actuals):
     return sum((x-y)**2 for x,y in zip(predictions,actuals)) / len(actuals)
 
 
+def canonicalize_report_precision(value):
+    """Report-only 12-decimal normalization across CPU/Python float order.
+
+    No model predictions, training, held labels, losses, or thresholds change.
+    Applied strictly AFTER all frozen raw metric comparisons have finished.
+    """
+    if type(value) is float:
+        return float(format(value, ".12f"))
+    if type(value) is list:
+        return [canonicalize_report_precision(x) for x in value]
+    if type(value) is dict:
+        return {k: canonicalize_report_precision(v)
+                for k, v in value.items()}
+    return value
+
+
 def run_retrospective(fixture=None):
     """Source-open count ZERO. Exact frozen TRAIN then retrospective HELD."""
     worlds = load_original_public(fixture)
@@ -305,6 +321,9 @@ def run_retrospective(fixture=None):
     }
     if not preservation:
         raise AssertionError("CVH04_REAL_PUBLIC_CUMULATIVE_RETENTION_FAIL")
+    # Frozen raw development comparison above is unchanged. Serialize
+    # identical 12-decimal scientific reporting across Python 3.11/3.12.
+    metrics = canonicalize_report_precision(metrics)
     result = {
         "schema":"yggdrasil.cvh04.real-source-consumed-public-return-development.v1",
         "parent_cvh03_sha":"0975c5d83aa9b0357735139cae3457338ec67027",
