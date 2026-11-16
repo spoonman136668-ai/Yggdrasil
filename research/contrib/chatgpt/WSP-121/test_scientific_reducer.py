@@ -190,6 +190,19 @@ class WSP121SourceFreeReducerTests(TestCase):
                        "kind": "SCORE_MISMATCH"}, comparison["differences"])
         self.assertFalse(comparison["scientific_pass"])
 
+    def test_platform_confident_wrong_mismatch_invalid_with_hash_parity(self):
+        linux = synthetic_rows("ubuntu-latest")
+        windows = synthetic_rows("windows-2022")
+        # Independently fabricated counts, unchanged held-prediction digest.
+        arm = windows[27]["arms"]["SYMBOLIC_TABLE_STRONG"]
+        arm["wrong_confident"] += 1
+        arm["abstained"] -= 1
+        comparison = R.compare_platforms(linux, windows)
+        self.assertEqual(comparison["status"], "INVALID")
+        self.assertIn({"seed": 121027, "arm": "SYMBOLIC_TABLE_STRONG",
+                       "kind": "SCORE_MISMATCH"}, comparison["differences"])
+        self.assertFalse(comparison["scientific_pass"])
+
     def test_positive_synthetic_science_candidate_still_not_acceptance(self):
         # Artificially favorable data cannot produce SCIENTIFIC_PASS.
         scores = {
