@@ -49,6 +49,20 @@ class PublicCausalCells:
         old = self._counts[cell][arm][result]
         self._counts[cell][arm][result] = min(65535, old + 1)
 
+    def outcome_probability(self, address: int, action: int, *,
+                            retained: bool = False) -> tuple[int, int]:
+        """Exact Beta(1,1) posterior predictive probability of outcome one.
+
+        Returns a numerator/denominator over the EXISTING public counters.
+        The two prior pseudocounts are assumptions, not observed knowledge.
+        This readout neither changes learned bytes nor asserts determinism,
+        source identity, counterfactual validity or accepted-model admission.
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        failures, successes = self._counts[cell][arm]
+        return successes + 1, failures + successes + 2
+
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
