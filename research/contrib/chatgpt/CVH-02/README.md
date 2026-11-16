@@ -1,5 +1,16 @@
 # CVH-02 — Public-policy interface for tokenless earned-return memory
 
+## Follow-up exact-source local qualification — 2026-11-16
+
+**Latest scoped result: 12/12 CVH-02 local tests PASS (zero skips), plus inherited CVH-01 11/11 local tests PASS; combined 23/23.** The original FKP-24 `native_public_mdp.py` was fetched from the inherited private GitHub repository and **matched byte-for-byte** to original Git blob `4424eadef179996ff491911efadfbe4e07761062` (6,920 bytes, SHA-256 `ea086f70c17e203c29a8ed6183841f2c0fcfa7e735768d57793b5ba9b2a975af`). The exact **original adapter function** `public_mechanical_episode` ran against deliberately fabricated mock environments twice, completing 5 observed actions per episode. The policy received no private info, retained all 10 witnessed consequences, and the inherited 700-stream/21,231-record CVH-01 offline stress also passed locally.
+
+The original `test_exact_fkp24_mock.py` has been changed to **fail rather than skip** when that original adapter is missing or its Git blob has drifted. Two extra source-safe negative tests pass: (1) exhaustion after two real *mock* actions cannot silently start a new episode or replay an unknown outcome—the next mock source receives **zero** `do` calls; and (2) protected seed 996500 is refused by the exact adapter **before** invoking any factory. No original CausalGym source factory, reset, or `do` was executed. The source-boundary remains mock-only.
+
+The chronology is preserved: the existing `result.json` below records the **earlier** 9-pass/1-skip evidence without retroactive rewriting. The **newer** `qualification_exact_adapter.json` records this successful exact-adapter requalification and exact source custody. The qualified test revision is `b2a95956613401daf8539f1d0a2fcf78db3eaae3`; source policy itself remains unchanged. Mandatory exact-final-source **full Ubuntu/Windows repository regression and G29 remain UNVERIFIED**. Independent native scientific first-use, trained controls, and native admission **NOT RUN**; no merge, scheduler, controller, workflow or deployment.
+
+---
+
+
 **Local SOURCE-FREE engineering: 9 tests PASS, 1 exact original FKP-24 adapter test SKIPPED; engineering acceptance UNVERIFIED. Scientific transfer/learning NOT RUN.**
 
 CVH-01 learned finite four-step future **observed** reward returns, but had no complete policy that an action/consequence source could drive. CVH-02 provides a narrow `choose(binary_public_state, tuple_of_public_events)` and `observe(six_field_public_event)` wrapper compatible in shape with the qualified FKP-24 [source-safe public-only interface](https://github.com/spoonman136668-ai/Yggdrasil/pull/1120). It does not import CausalGym, instantiate a source, invoke `do`, call a private oracle, or consume any original-source seed.
