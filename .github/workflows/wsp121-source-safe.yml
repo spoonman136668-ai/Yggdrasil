@@ -130,3 +130,9 @@ jobs:
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
+      - name: WSP121 engineering-only matched full-path cost feasibility (diagnostic)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/WSP-121/engineering_cost_probe.py --repeats 7
+          test -z "$(git status --porcelain)"

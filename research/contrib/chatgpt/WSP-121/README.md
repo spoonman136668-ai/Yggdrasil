@@ -170,3 +170,35 @@ WSP-121 is discontinued, the next mechanism must have genuine inference
 capacity beyond an eight-context memorized route table, with an equally
 strong symbolic causal-composition baseline. Do not claim new primitive
 invention from pre-supplied features.
+
+
+## Source-safe whole-process cost feasibility — informational only
+
+`engineering_cost_probe.py` measures the necessary numerical-versus-strong-
+symbolic comparison using **only** the independent engineering custodian and
+its four disjoint development world IDs `121900..121903`. Each arm is
+separately given the exact same source birth, public graph, 8/8/4/4 disclosed
+outcomes, cumulative learning, one full 24-held aggregate score per world,
+and a cold restore after each world. Numerical restore uses its genuine
+ledger-recomputed snapshot; optimized symbolic restore directly serializes
+its context-to-route table. The independent source/prediction/score receipts
+must agree exactly, with a hard failure on mismatch.
+
+The existing push-only CI runs seven alternately ordered paired trials
+**only on the exact-source final-regression commit**, after its full regression
+tests. It emits a compact `WSP121_ENGINEERING_COST_JSON` line for each
+platform with source, training, held inference/scoring, cold-restoration and
+whole-path median times, plus seven per-pair speed ratios. No timing outcome
+can mark CI scientific PASS/FAIL: the source is a published development demo,
+world repeats are not independent scientific samples, hardware/JIT/process
+effects and cross-OS timing differ, energy and per-arm RSS are not measured,
+and a 95% original-world confidence interval cannot be inferred.
+
+The optimized symbolic comparator is **necessary** for the frozen cost
+criterion, which requires the numerical approach to be >=2x faster than
+*both* it and the fully trained conventional model at non-inferior accuracy.
+A median speedup below 2x here is a **development feasibility warning**,
+not an original-science scientific NO_GO. This preliminary probe deliberately
+does not consume protected worlds or run expensive independent original-world
+first-use. Neither the preregistered decision threshold nor first-use
+authority is modified.
