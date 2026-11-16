@@ -160,8 +160,8 @@ def run_engineering():
         t["correct"]>=15565 and t["wrong_confident"]==0 and
         direct.learned_laws>=1 and direct.feature_slots>=17
     )
-    if f["held"]!=4096 or t["held"]!=16384 or
-            fit["STRONG_SYMBOLIC_MATCHED"]["correct"]<f["correct"]:
+    if (f["held"]!=4096 or t["held"]!=16384 or
+            fit["STRONG_SYMBOLIC_MATCHED"]["correct"]<f["correct"]):
         raise AssertionError("WSP125_EVAL_RECEIPT_OR_STRONG_CONTROL_INVALID")
     return {
       "schema":"wsp125.dynamic-residual-feature-growth.engineering.v1",
