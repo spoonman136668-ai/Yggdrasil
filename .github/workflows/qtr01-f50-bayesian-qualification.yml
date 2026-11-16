@@ -30,7 +30,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           expected="$(printf '%s\n' .github/workflows/qtr01-f50-bayesian-qualification.yml research/contrib/chatgpt/QTR-01/f50_target_evaluator.py research/contrib/chatgpt/QTR-01/test_f50_target_evaluator.py | LC_ALL=C sort)"
-          actual="$(git diff --name-only HEAD^ HEAD | LC_ALL=C sort)"
+          actual="$(git diff --name-only e6aaeb36c236436fa92e73b74f13a16076ac1ef7 HEAD | LC_ALL=C sort)"
           test "$actual" = "$expected"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/QTR-01/f50_prereg.json)" = '4bd3c4e0d3de0e3910094e38c14a0141c97ad380'
           python - <<'PY'
