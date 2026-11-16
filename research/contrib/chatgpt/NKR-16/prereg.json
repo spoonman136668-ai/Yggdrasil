@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.nkr16.active-information-gain.prereg.v1",
+  "experiment": "NKR-16",
+  "state": "FROZEN_BEFORE_CODE_OR_OUTCOMES",
+  "parent": {
+    "pr": 1152,
+    "sha": "c9bd612427d5b7cb5a46b0d5d30703015fb73fd7",
+    "tree": "c5a86337beb1b7cba26481a6150f24a29b4e1c5b",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Does choosing high-information interventions produce measurable gain over a matched seeded-random policy, and what is provably non-identifiable when each unseen action-effect bit is independent?",
+  "source": {
+    "kind": "engineering_fixture_only",
+    "reuse": "NKR14 already examined 12 unfamiliar Boolean worlds and NKR13 already examined 12 positive-conjunction worlds, deterministic source-safe regression only",
+    "initial_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      10
+    ],
+    "cold_contexts": [
+      6,
+      7,
+      9,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "initial_actions": "both 0 and 1 at all 8 initial contexts; exactly 16 events",
+    "new_actions": "only action=1 at a selected cold context; reveal source outcome only after selection",
+    "source_refs": "source labels and refs content-addressed to public records; NEVER contain world id or hidden operator label",
+    "authentic_external": false,
+    "real_historical_dataset_read": false,
+    "official_valid_test_read": false
+  },
+  "unrestricted_track": {
+    "worlds": 12,
+    "prior": "all arbitrary 16-bit Boolean action-effect truth tables plus a separately stated action-zero parity assumption",
+    "initial_consistent_functions": 256,
+    "action_budget_per_world": 4,
+    "policy": "all unseen action-effect bits contribute exactly 1 bit of information; deterministic active policy chooses smallest remaining context",
+    "random": "SHA256 of canonical initial source bytes, policy name and probe round to select one of sorted remaining contexts; seed fixed in code and prereg",
+    "expected_final_consistent_functions": 16,
+    "remaining_unknown_action_effect_bits": 4,
+    "conclusion": "Expected TIE with random for number of new known effect bits; neither policy may infer the other 4 unseen effect values without structural prior. Each selected outcome is DIRECTLY OBSERVED, never counted as transfer prediction."
+  },
+  "structured_track": {
+    "worlds": 12,
+    "source": "existing NKR13 conjunction operator worlds",
+    "prior": "all fifteen 4-bit positive conjunction masks consistent with initial observed paired interventions",
+    "action_budget_per_world": 2,
+    "active": "maximize exact binary entropy of observed action effect across current candidate masks; tie lowest context; even if zero entropy, preserve two-action budget",
+    "random": "same SHA256 deterministic seeded random policy under same two-action budget",
+    "strong_control": "independently implemented exact symbolic entropy policy using same public evidence; its choices and candidate updates must match native active on all worlds",
+    "metric": "after two actions, score exact consensus predictions on the remaining SIX unprobed action=1 cold contexts, not on actions already queried; report correct/covered/wrong/abstained for both policies"
+  },
+  "experimental_threshold": {
+    "structured_positive": ">=4 additional correct safe UNPROBED predictions across 12 worlds for active vs seeded random, zero confident errors, exact fully fitted independent symbolic parity; if less, preserve null NO_ACTIVE_ADVANTAGE",
+    "unrestricted": "both policies source-exact 256->16 full Boolean functions, 4 public outcomes per world, 4 effect bits unknown per world, zero invented cold outcomes",
+    "retention": "original previously learned warm source unchanged 32/32 per world (384/384 each track)",
+    "state": "all SHA-pinned public intervention receipts cold-restorable, reject replay/wrong target/outcome source kind and no causal owner writes",
+    "scientific_pass": false
+  },
+  "resource_budget": {
+    "total_worlds": 24,
+    "max_additional_actions_per_world": 4,
+    "max_initial_source_records": 16,
+    "max_candidate_masks": 15,
+    "max_experiment_seconds": 180,
+    "new_runners": 0,
+    "paid_api_calls": 0,
+    "scheduler_tasks": 0,
+    "original_21m_artifact_downloads": 0
+  },
+  "fences": {
+    "first_use": false,
+    "only_fixture_source": true,
+    "source_integrity_not_authenticity": true,
+    "main_mutation": false,
+    "merge": false,
+    "owner_activation": false,
+    "new_controller": false,
+    "no_noise_reclassification": true,
+    "no_posthoc_threshold_changes": true
+  },
+  "acceptance": {
+    "dev": "focused NKR16 + NKR15 tests Ubuntu/Windows",
+    "final": "mandatory entire root regression and inherited NKR05 six tests, independent G29 both OS exact final SHA/tree",
+    "science": "no scientific promotion from reused synthetic cohorts or control tie"
+  }
+}
