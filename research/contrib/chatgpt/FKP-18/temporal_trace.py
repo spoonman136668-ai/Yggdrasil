@@ -221,7 +221,8 @@ class SparseTemporalTrace:
             "schema": MAGIC,
             "flags": [self.context_forks, self.temporal_order],
             "marginals": sorted((*k, v) for k, v in self._marginal.items()),
-            "first": sorted((*k, *v) for k, v in self._first.items()),
+            "first": (sorted((*k, *v) for k, v in self._first.items())
+                      if self.context_forks else []),
             "forks": sorted((*k, v) for k, v in self._forks.items()),
             "splits": sorted(self._splits),
             "ordered": self.observed_order_trace() if self.temporal_order else [],
@@ -235,7 +236,8 @@ class SparseTemporalTrace:
             "magic": MAGIC, "context": self.context_forks, "temporal": self.temporal_order,
             "limit": self.slot_budget, "count": self._count,
             "marginals": sorted((*k, n) for k, n in self._marginal.items()),
-            "first": sorted((*k, *v) for k, v in self._first.items()),
+            "first": (sorted((*k, *v) for k, v in self._first.items())
+                      if self.context_forks else []),
             "forks": sorted((*k, n) for k, n in self._forks.items()),
             "splits": sorted(self._splits), "order": list(self.observed_order_trace()),
             "last": (list(self._last) if self._last else None),
@@ -271,14 +273,14 @@ class SparseTemporalTrace:
         if any(type(v) is not list for k in (
                 "marginals","first","forks","splits","order") for v in body[k]):
             raise ValueError("FKP18_CHECKPOINT_BAD_ENTRY")
-        obj._marginal = {_integer_key(v[:3], (8,8,16)): _positive(v[3])
+        obj._marginal = {_signed_delta_key(v[:3], (8,8)): _positive(v[3])
                          for v in body["marginals"]}
         obj._first = {_integer_key(v[:2], (8,8)): tuple(v[2:])
                       for v in body["first"]}
-        obj._forks = {_integer_key(v[:4], (8,8,16,16)): _positive(v[4])
+        obj._forks = {_signed_delta_key(v[:4], (8,8,16)): _positive(v[4])
                       for v in body["forks"]}
         obj._splits = {_integer_key(v, (8,8)) for v in body["splits"]}
-        obj._order = {_integer_key(v[:4], (8,8,8,16)): _positive(v[4])
+        obj._order = {_signed_delta_key(v[:4], (8,8,8)): _positive(v[4])
                       for v in body["order"]}
         if body["last"] is not None:
             data = body["last"]
@@ -321,3 +323,12 @@ def _integer_key(values, sizes):
            for x, size in zip(values, sizes)):
         raise ValueError("FKP18_CHECKPOINT_KEY")
     return tuple(values)
+
+def _signed_delta_key(values, prefix_sizes):
+    if len(values) != len(prefix_sizes) + 1:
+        raise ValueError("FKP18_CHECKPOINT_DELTA_KEY_LENGTH")
+    prefix = _integer_key(values[:-1], prefix_sizes)
+    delta = values[-1]
+    if type(delta) is not int or not -8 <= delta <= 7:
+        raise ValueError("FKP18_CHECKPOINT_DELTA_KEY")
+    return prefix + (delta,)
