@@ -254,7 +254,7 @@ if __name__=="__main__":
     out=sourcefree_qualification_receipt()
     destination=Path(args.output_json)
     destination.parent.mkdir(parents=True,exist_ok=True)
-    destination.write_text(json.dumps(out,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+    destination.write_text(json.dumps(out,sort_keys=True,indent=2)+chr(10),encoding="utf-8")
     print("CVH10_DTR_SOURCEFREE_PUBLIC_QUALIFICATION="+json.dumps({
         "status":out["classification"],
         "source_actions":0,
