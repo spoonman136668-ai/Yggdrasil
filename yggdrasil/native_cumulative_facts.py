@@ -144,7 +144,10 @@ class CumulativeNativeFacts:
         self.base = base
         self._checkpoint = raw
         self._index = {ref: tuple(triple) for ref, triple in obj["evidence"]}
-        self._facts = frozenset(self._index.values())
+        # Retain provenance for base-covered evidence without duplicating facts.
+        self._facts = frozenset(
+            fact for fact in self._index.values()
+            if not self.base.fact(*fact)["witnessed"])
         self._bundle_index = {key: sha for key, sha in obj["bundles"]}
 
     def checkpoint(self):
@@ -212,7 +215,7 @@ class CumulativeNativeFacts:
                 prior += 1
             else:
                 added += 1
-            facts.add(fact)
+                facts.add(fact)
         updated = _parse_checkpoint(self._checkpoint, self.checkpoint_sha256)
         updated["evidence"] = [[ref, list(fact)]
                                for ref, fact in sorted(state.items())]
