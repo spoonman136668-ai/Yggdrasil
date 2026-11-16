@@ -1,0 +1,163 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "FKP-18-TOKENLESS-TEMPORAL-ELIGIBILITY-TRACES",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a bounded, sparse, tokenless causal trace, which only allocates conditional/ordered relations after physical outcome contradictions, represent two causal histories that the frozen FKP-17 unconditioned counters provably alias, without retaining a source oracle or copying a dense symbolic program enumeration?",
+  "hypothesis": "Contradiction-triggered allocation of observed state-conditioned action effects and ordered predecessor-action traces will preserve physically consequential causal distinctions after two observed interventions, while the same-evidence unconditioned/no-temporal ablations collapse.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1109,
+      "final_sha": "272423baac407d97791409247df05e4e98fcb7da",
+      "workflow": 43778140134,
+      "classification": "familiar TRAIN-only 64-world benefit, conditional & order alias NO_GO; original DEV unopened"
+    },
+    {
+      "pr": 1113,
+      "classification": "WSP120 separately explores bounded graph-program growth from contradictions; do not duplicate its graph grammar or source"
+    },
+    {
+      "pr": 1096,
+      "classification": "NKR03 independent native relation memory; do not replace accepted engine"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/FKP-18/**",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "source-safe public toy counterexamples",
+      "source": "independently specified explicit public before/action/after/historical sequences; no held generator; research-only",
+      "sha256": "NOT_FROZEN_INPUT_BINARY_BEFORE_IMPLEMENTATION; reconstruct mathematically under below fixed cases"
+    },
+    {
+      "name": "FKP17 frozen public counterexample",
+      "source": "FKP17 PR1109 code at SHA 272423baac407d97791409247df05e4e98fcb7da; context only, no source import",
+      "sha256": "NOT_REUSED_AS_DATA; PROTOCOL_AND_NEGATIVE_BENCHMARK_ONLY"
+    }
+  ],
+  "frozen_design": {
+    "representation": "sparse active context forks for action×target×prevalue observed deltas, activated on conflicting real outcomes; bounded last-action predecessor→current action→target event traces; absolutely no natural-language tokenization, learned transformer, unseen oracle labels, or private source imports",
+    "max_public_states": 8,
+    "max_uint4_register_value": 15,
+    "actions": 8,
+    "max_recent_eligibility_lag": 1,
+    "slot_budget": 512,
+    "max_raw_learned_bytes": 65536,
+    "source_safe_public_records_per_case": 2,
+    "conditional_pairs": [
+      {
+        "name": "A",
+        "initial_target_value": 1,
+        "action_sequence": [
+          3,
+          3
+        ],
+        "next_target_values": [
+          2,
+          1
+        ],
+        "initial_final_state_equal": true,
+        "action3_future_reward_at_target1": 0.125
+      },
+      {
+        "name": "B",
+        "initial_target_value": 1,
+        "action_sequence": [
+          3,
+          3
+        ],
+        "next_target_values": [
+          0,
+          1
+        ],
+        "initial_final_state_equal": true,
+        "action3_future_reward_at_target1": -0.125
+      }
+    ],
+    "temporal_pairs": [
+      {
+        "name": "AB",
+        "public_state_unchanged": true,
+        "action_sequence": [
+          2,
+          5
+        ]
+      },
+      {
+        "name": "BA",
+        "public_state_unchanged": true,
+        "action_sequence": [
+          5,
+          2
+        ]
+      }
+    ],
+    "negative_cases": [
+      "no public outcome before chosen action",
+      "conflicting or reordered public history",
+      "private future labels",
+      "duplicate same observation id",
+      "uint4 register overflow",
+      "bounded allocation overflow",
+      "checkpoint SHA tamper",
+      "unknown or held source seed denial"
+    ],
+    "controls": [
+      "UNCONDITIONED_MARGINALS",
+      "NO_CONTEXT_FORK",
+      "NO_TEMPORAL_ORDER",
+      "EXACT_PUBLIC_CONDITIONAL_RETRIEVAL_REF"
+    ],
+    "training": "SOURCE_SAFE_CONSTRUCTIVE_CAPABILITY_PROBE_ONLY",
+    "source_safe_only": true,
+    "protected_source_first_use": false,
+    "evaluation": "two distinct witnessed conditional cases must retain distinguishable cold state and opposite empirically grounded predictions for same public state+action; temporal ordered traces must be distinguishable; compare with separately coded exact public conditional retrieval; prove zero private labels",
+    "deterministic_expected": true,
+    "compute_budget": "stdlib Python 3.11 and 3.12, <5s per source-safe fixture; no GPU, paid APIs or new scheduler",
+    "seed_schedule": "none: deterministic four frozen public two-step witnessed trajectories, NOT any original DEV",
+    "science": "Original DEV/transfer first use absent, real generalization untested. All original FKP17 source and prereg unchanged."
+  },
+  "metrics": [
+    "cold state representation collision count of two conditional and temporal pairs (target 0 for candidate)",
+    "correct signed action3 conditioned return for A/B",
+    "explicit predecessor-action order difference",
+    "candidate bounded learned bytes",
+    "source-safe exact replay with no leakage",
+    "unconditioned/no context/no time collision controls"
+  ],
+  "classification_rules": {
+    "supported": "ENGINEERING_REPRESENTATION_PROBE_ONLY when both conditional and temporal pairs remain distinguishable and signed action effects match public evidence, negative controls alias, and cold hash replay passes under 65536 bytes. No SCIENTIFIC_PASS.",
+    "mixed": "One pair distinguishable but the other aliases, even if tests pass.",
+    "negative": "Both pairs alias or conditioned predictions unavailable after two physical observations.",
+    "invalid": "Prereg drift; private-source access; outcome-before-action; bogus reward; capacity exceeded; incomplete tests; unqualified source SHA/CI; checkpoint integrity failure."
+  },
+  "protected_original_worlds": {
+    "fkp17_dev": "978500..978531",
+    "fkp17_transfer": "978600..978663",
+    "fkp16_consumed": "976500..976531",
+    "may_open": false
+  },
+  "prohibited_after_primary_run": [
+    "source, threshold, split, learner, control or capacity retuning after measured result",
+    "scientific first-use absent independent owner",
+    "auto merge/promotion",
+    "copy WSP120 grammar as native Yggdrasil",
+    "new controller/scheduler",
+    "unmatched extra factual information",
+    "paid APIs"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Committed as sole first experiment commit before implementation, source-safe probes, training or any new outcome. No original held source is opened."
+}
