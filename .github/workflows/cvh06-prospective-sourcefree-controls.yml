@@ -58,7 +58,7 @@ jobs:
       - name: Upload bounded 124-original-public-action retrospective metrics, never source-private
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: cvh06-original-consumed-public-${{ matrix.os }}-${{ github.sha }}
+          name: cvh06-sourcefree-policy-readiness-${{ matrix.os }}-${{ github.sha }}
           path: ${{ runner.temp }}/cvh06-source-only-result.json
           if-no-files-found: error
           retention-days: 30
@@ -145,7 +145,7 @@ jobs:
           echo CVH06_EXACT_FULL_QUALIFICATION_NO_ORIGINAL_FIRST_USE=PASS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: cvh06-final-retrospective-${{ matrix.os }}-${{ github.sha }}
+          name: cvh06-final-sourcefree-policy-${{ matrix.os }}-${{ github.sha }}
           path: ${{ runner.temp }}/cvh06-final-result.json
           if-no-files-found: error
           retention-days: 30
