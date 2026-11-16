@@ -1,4 +1,4 @@
-"""NKR-13 bounded native operator proposal from public interventions.
+"""NKR-13/NKR-15: source-pinned operator proposals and partial baseline.
 
 This is a separate research overlay, never a change to accepted DG-1 or YPC1.
 Input-derived conjunction candidates extend NKR-11's fixed parity family,
@@ -66,7 +66,14 @@ def _fit_candidate(old, rows):
             for x in TRAIN_CONTEXTS)
     ]
     if not possible:
-        return None, "NO_SUPPORTED_NEW_OPERATOR_ABSTAIN"
+        # Public a=0 observations may identify the baseline even when
+        # a-dependent effects fall outside the entire candidate grammar.
+        # Retain that *partial* evidence in an immutable repair checkpoint,
+        # but do not pretend an unsupported operator was discovered.
+        return {
+            "intercept": intercept, "base_mask": base_mask,
+            "candidate_masks": [], "contradictions": disagreements,
+        }, "SOURCE_SUPPORTED_BASELINE_ONLY_EFFECT_UNKNOWN"
     return {
         "intercept": intercept, "base_mask": base_mask,
         "candidate_masks": possible, "contradictions": disagreements,
@@ -151,6 +158,53 @@ class NativeOperatorDiscovery:
     def operator_masks(self):
         return () if not self.operator_discovered else tuple(
             self._doc["repair"]["proposal"]["candidate_masks"])
+
+    @property
+    def operator_supported(self):
+        # Unlike the legacy operator_discovered flag (which indicates that
+        # repair evidence was staged), this confirms a NEW action operator
+        # is actually identified within the prespecified grammar.
+        return bool(self.operator_masks)
+
+    def predict_unrestricted(self, x, action):
+        """Safe, family-agnostic action-effect readout, opt-in.
+
+        It makes a *limited* parity-baseline assumption for action=0 only,
+        verified against the eight source-visible a=0 outcomes. No learned
+        Boolean action-1 generalization is warranted at unseen contexts
+        from just eight independent observed effect bits.
+        """
+        self._old.prior(x, action)  # strict native input validation
+        if not self.operator_discovered:
+            status, value = "UNKNOWN_NO_NEW_SOURCE_QUALIFICATION", None
+        else:
+            repair = self._doc["repair"]
+            source_observed = {
+                (context, chosen_action): outcome
+                for _, context, chosen_action, outcome in repair["records"]
+            }
+            if (x, action) in source_observed:
+                status = "DIRECTLY_OBSERVED_PUBLIC_OUTCOME_NOT_COLD_PREDICTION"
+                value = source_observed[(x, action)]
+            elif action == 0:
+                proposal = repair["proposal"]
+                status = "UNVERIFIED_ACTION_ZERO_PARITY_BASELINE"
+                value = proposal["intercept"] ^ (
+                    (x & proposal["base_mask"]).bit_count() & 1)
+            else:
+                status, value = "UNKNOWN_UNRESTRICTED_ACTION_EFFECT", None
+        return {
+            "classification": status,
+            "public_outcome": value,
+            "baseline_hypothesis_family": "FOUR_BIT_PARITY_ACTION_ZERO_ONLY",
+            "action_effect_hypothesis_family": "UNRESTRICTED_BINARY_UNIDENTIFIED",
+            "assumption_bound": True,
+            "verified_new_world_fact": False,
+            "can_write_causal_owner": False,
+            "can_write_historical_facts": False,
+            "native_accepted": False,
+            "scientific_pass": False,
+        }
 
     def prior(self, x, action):
         return self._old.prior(x, action)
