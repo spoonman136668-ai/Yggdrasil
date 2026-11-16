@@ -102,7 +102,7 @@ class StrongSymbolic:
             raise ValueError("WSP124_SYMBOLIC_BAD_PUBLIC_PAIR")
         if domain not in self._cache:
             self._compile(domain)
-        return self._cache[domain][left*8+right]
+        return self._cache[domain][0][left*8+right]
 
     def infer(self,view,subject):
         return self.infer_pair(view.domain,*view.pair(subject))
