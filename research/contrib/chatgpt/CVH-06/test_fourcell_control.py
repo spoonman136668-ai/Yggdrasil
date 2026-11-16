@@ -220,6 +220,19 @@ class FourCellPublicControlTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"HISTORY_DRIFT"):
             p.choose(1,())
 
+    def test_preserved_qualification_result_unchanged_and_not_science(self):
+        import qualify_sourcefree as smoke
+        verified=json.loads((HERE/"result.json").read_text())
+        self.assertEqual(smoke.qualify(),verified)
+        self.assertEqual(verified["original_env_do_calls"],0)
+        self.assertFalse(verified["original_first_use_authorized"])
+        self.assertFalse(verified["scientific_pass"])
+        self.assertFalse(verified["fully_trained_recurrent_science_control_ready"])
+        self.assertEqual(verified["arms"]["native"]["mock_action_count"],36)
+        self.assertEqual(verified["arms"]["conventional"]["mock_action_count"],36)
+        self.assertNotEqual(verified["arms"]["native"]["model_checkpoint_sha256"],
+                            verified["arms"]["conventional"]["model_checkpoint_sha256"])
+
     def test_same_episode_toy_actions_cannot_replay_real_source_firstuse(self):
         original_approved=set([996100,996101,996102,996103])
         self.assertTrue(original_approved.isdisjoint(set(range(1,7))))
