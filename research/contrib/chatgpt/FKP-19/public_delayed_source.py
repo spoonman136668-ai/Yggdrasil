@@ -11,7 +11,7 @@ from pathlib import Path
 import sys
 
 # Reuse the EXACT FKP18 public-only observation schema, not the hidden source.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "FKP-18"))
+sys.path.append(str(Path(__file__).resolve().parents[1] / "FKP-18"))
 from temporal_trace import PublicStep, PublicTransition
 
 TRAIN = tuple(range(991100, 991116))
