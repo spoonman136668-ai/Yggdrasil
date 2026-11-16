@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.cb7.posthoc-regret-audit-summary.v1",
+  "classification": "READ_ONLY_POST_RESULT_PLANNING_REGRET_DIAGNOSIS__NO_SCIENTIFIC_PASS",
+  "source": {
+    "frozen_CB7_commit": "06cb5f2b32d13edcd21404801accc52e84287244",
+    "original_full_scored_SHA256": "77feea318515f636ddc1f76fe02666ffba509268716957f7f922b951ddad0a40",
+    "canonical_worlds_SHA256": "2a296ecd8c48cdb1b05c2b42801d82bc6b9c85d9c8f126e1ddf8bb401bbf37d2",
+    "world_net_excerpt_SHA256": "3386643d415cc27f4eb3a74e4cf7bfc502c6be2a7bba355ebe89595b0f8ec728",
+    "cohort": "Public synthetic 82600..82631; already consumed; no new source calls"
+  },
+  "original_expected_net": {
+    "direct_one_step": 0.5305532930309593,
+    "exact_full_horizon_bayes": 0.5738303377697626,
+    "direct_minus_bayes": -0.043277044738803214,
+    "original_paired_bootstrap_95": [
+      -0.0681837728426315,
+      -0.02148247422671381
+    ]
+  },
+  "regret_attribution": {
+    "stops_early": {
+      "worlds": 9,
+      "mean_regret_contribution": 0.042653069537791626,
+      "seeds": [
+        82600,
+        82604,
+        82608,
+        82611,
+        82612,
+        82616,
+        82620,
+        82624,
+        82628
+      ]
+    },
+    "different_first_probe": {
+      "worlds": 1,
+      "mean_regret_contribution": 0.0002088434979463892,
+      "seeds": [
+        82618
+      ]
+    },
+    "same_first_later_diverges": {
+      "worlds": 3,
+      "mean_regret_contribution": 0.00041513170306520415,
+      "seeds": [
+        82614,
+        82615,
+        82619
+      ]
+    },
+    "equal_expected_return": {
+      "worlds": 19,
+      "mean_regret_contribution": 0
+    },
+    "premature_stop_fraction_of_total": 0.9855818435667786
+  },
+  "engineering": {
+    "local_python": "3.13.5 Linux",
+    "focused_tests": "8/8 PASS",
+    "identical_local_GitHub_code_git_blobs": true,
+    "read_only_pinned_source_check": "PASS",
+    "full_exact_ubuntu_windows_G29": "UNVERIFIED"
+  },
+  "scientific": {
+    "new_original_scoring": false,
+    "new_source_actions": 0,
+    "model_training": 0,
+    "improved_policy_test": false,
+    "unique_native_gain": false,
+    "scientific_pass": false
+  },
+  "next_decision": "Stop fixed six-sensor expansions; assess learned long-horizon successor-value memory on independently controlled unfamiliar sources, with equal-information exact Bayesian and fully trained conventional controls."
+}
