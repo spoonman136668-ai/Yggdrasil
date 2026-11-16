@@ -49,4 +49,3 @@ def withheld(fixture,group):
     ports=PORTS['recipient'];truth=GROUPS[group][3]
     return tuple((tuple((n>>i)&1 for i in range(6)), function(truth,ports,tuple((n>>i)&1 for i in range(6))))
                  for n in range(64) if tuple((n>>i)&1 for i in range(6)) not in seen)
-
