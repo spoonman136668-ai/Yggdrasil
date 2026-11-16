@@ -14,7 +14,7 @@ env:
   MKL_NUM_THREADS: '1'
 jobs:
   development:
-    if: github.event.head_commit.message == 'ci(nkr19): run frozen cached external audit'
+    if: "github.event.head_commit.message == 'ci(nkr19): run frozen cached external audit'"
     strategy:
       fail-fast: false
       matrix:
