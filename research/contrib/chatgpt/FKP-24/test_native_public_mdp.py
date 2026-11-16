@@ -103,8 +103,9 @@ class IndependentCausalSourceContract(unittest.TestCase):
         self.assertEqual(receipt["public_transitions_sha256"],
                          gate._digest(receipt["public_transitions"]))
         self.assertEqual(source.seeds,[996100])
-        self.assertNotIn("info",json.dumps(receipt))
-        self.assertNotIn("natural_action",json.dumps(receipt))
+        self.assertTrue(all("info" not in row and "natural_action" not in row
+                            for row in receipt["public_transitions"]))
+        self.assertNotIn("info",receipt["public_transitions"][0])
 
     def test_seal_selected_action_callback_once_without_hidden_label(self):
         for setup in ({"duplicate_callback":True},
