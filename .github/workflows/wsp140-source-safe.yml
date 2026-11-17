@@ -1,7 +1,7 @@
 name: WSP140 frozen bitparallel causal selector same-action cost gate
 on:
   push:
-    branches: [research/wsp140-lazy-exact-causal-selector-20261117]
+    branches: [research/wsp140-bitparallel-exact-selector-20261117]
 permissions:
   contents: read
 jobs:
@@ -76,7 +76,7 @@ jobs:
           git commit -m "docs(wsp140): pin G29 source atlas at $SOURCE"
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/wsp140-lazy-exact-causal-selector-20261117
+          git push origin HEAD:refs/heads/research/wsp140-bitparallel-exact-selector-20261117
 
   final-regression:
     needs: [development]
