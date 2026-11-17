@@ -1,0 +1,3 @@
+# WSP-147 — Direct numerical weights on unfamiliar causal grammar
+
+Sole-file frozen prereg `0ac72dea78f4b91e1aabd350b3d07d20c288aa39` preceded any novel source. Source-free weight edit and independent GF(2) polynomial controls qualified on both Linux/Windows in run #44103521396 at `3bdc6a948eda96d0a96c390f93fc458e7a2a8d73`. Three policies consume 32 real effects per world; new public synthetic sources are 8 familiar, 8 composed, 32 held-out five-input majority, 8 conditional-mux and 8 random-negative worlds (6,144 paid effects/platform), plus eight old-law cold zero-call relabels. No native scientific first-use, true cross-world learned adaptation or production weight changes. Results must preserve negative outcomes and matched controls.
