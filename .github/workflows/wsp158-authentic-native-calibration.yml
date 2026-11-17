@@ -1,0 +1,166 @@
+name: WSP158 original-source native two-weight stage calibration
+on:
+  push:
+    branches: [research/wsp158-native-target-calibration-20261117]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve exact Git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen pre-code source and no original source execution authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 49282e892e5ba1cdd99008fd2f6f32e211f97ebc^)" = "75e8b1da111319cbccf25e76e3153ccba508ce9f"
+          test "$(git diff-tree --no-commit-id --name-only -r 49282e892e5ba1cdd99008fd2f6f32e211f97ebc)" = "research/contrib/chatgpt/WSP-158/prereg.json"
+          git merge-base --is-ancestor 49282e892e5ba1cdd99008fd2f6f32e211f97ebc HEAD
+          git diff --exit-code 49282e892e5ba1cdd99008fd2f6f32e211f97ebc HEAD -- research/contrib/chatgpt/WSP-158/prereg.json
+          git diff --exit-code 75e8b1da111319cbccf25e76e3153ccba508ce9f HEAD -- yggdrasil/public_causal_cells.py research/contrib/chatgpt/WSP-157 yggdrasil/native_relation_memory.py research/contrib/chatgpt/NKR-19
+          git diff --exit-code fbf6126e9c5c5f89a772742a28bd39cc5cb819bb HEAD -- yggdrasil/native_stage_calibration.py research/contrib/chatgpt/WSP-158/development.py tests/test_native_stage_calibration.py
+          test ! -e research/contrib/chatgpt/WSP-158/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-158/original_first_use_authorization.json
+          test -z "$(git status --porcelain)"
+      - name: Qualify new native readout, original FIT-only selection and inherited memory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_stage_calibration.py -v
+          python -B -m unittest discover -s tests -p test_original_dtr_native_retrospective.py -v
+          python -B -m unittest discover -s tests -p test_native_probability_knowledge.py -v
+          python -B -m unittest discover -s tests -p test_native_cells.py -v
+          python -B -m unittest discover -s tests -p test_native_cells_wilson.py -v
+          test -z "$(git status --porcelain)"
+
+  first-stage-calibration:
+    needs: [preflight]
+    if: "github.event.head_commit.message == 'ci(wsp158): run first FIT stage calibration' && github.run_attempt == 1 && needs.preflight.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve exact Git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Score source-pinned historical FIT validation on same DTR public data
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code fbf6126e9c5c5f89a772742a28bd39cc5cb819bb HEAD -- yggdrasil/native_stage_calibration.py research/contrib/chatgpt/WSP-158/development.py tests/test_native_stage_calibration.py
+          python -B research/contrib/chatgpt/WSP-158/development.py --out "$RUNNER_TEMP/wsp158-${{ matrix.os }}.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: wsp158-historical-calibration-${{ matrix.os }}
+          path: ${{ runner.temp }}/wsp158-${{ matrix.os }}.json
+          retention-days: 7
+
+  source-atlas-once:
+    needs: [preflight]
+    if: "github.event.head_commit.message == 'ci(wsp158): source-pin G29 atlas' && github.run_attempt == 1 && needs.preflight.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp158-sole-source-atlas
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly three derived G29 source-atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          git diff --exit-code fbf6126e9c5c5f89a772742a28bd39cc5cb819bb HEAD -- yggdrasil/native_stage_calibration.py research/contrib/chatgpt/WSP-158/development.py tests/test_native_stage_calibration.py
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp158): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp158-native-target-calibration-20261117
+
+  final-regression:
+    needs: [preflight]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp158): pin G29 source atlas at ') && github.run_attempt == 1 && needs.preflight.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    steps:
+      - name: Preserve exact Git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Mandatory full root, source-custody and exact G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 49282e892e5ba1cdd99008fd2f6f32e211f97ebc HEAD -- research/contrib/chatgpt/WSP-158/prereg.json
+          git diff --exit-code fbf6126e9c5c5f89a772742a28bd39cc5cb819bb HEAD -- yggdrasil/native_stage_calibration.py research/contrib/chatgpt/WSP-158/development.py tests/test_native_stage_calibration.py
+          git diff --exit-code 75e8b1da111319cbccf25e76e3153ccba508ce9f HEAD -- yggdrasil/public_causal_cells.py research/contrib/chatgpt/WSP-157 research/contrib/chatgpt/NKR-19
+          test ! -e research/contrib/chatgpt/WSP-158/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-158/original_first_use_authorization.json
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
