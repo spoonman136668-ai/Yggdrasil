@@ -35,3 +35,14 @@ Passing tests would establish **bounded evidence acquisition and native readout 
 Focused Linux and Windows: current module+source-free 24-world cohort, inherited WSP-155, NKR-04, NKR-01/03 and native-cell tests. One-shot three-file exact G29 generation, mandatory complete repository root suite Linux/Windows on final source-identical candidate and independent G29 per OS. All results must be pinned in PR description after completion, without CI/test replay or post-outcome tuning.
 
 **No accepted main/weights, merge, new controller, scheduled task, private runner, paid API, deployment, scientific first-use, or owner-scoped source mutation is authorized.** Draft PR only, separate scientific admission would require independent true source custodianship.
+
+
+## Original source-free development outcome (frozen after first run, NOT native science)
+
+On the exact initial implementation SHA `b9aab841ba433cdf70293fe4ed9e636477ff4c0e`, the first [GitHub Actions #44189720494](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44189720494) passed every source-free focused and inherited test on Ubuntu and Windows, with an identical nonresource result SHA256 `ce3452a5d066c36d2339d424f8eaf5cbd9ee449703cb8eca4a7fed92a10a69b1` and action/receipt digest `1889941dea91133418f369451023ef34c2f0d4e9362119c18a5325c3ef9de7a5`.
+
+At 32 charged do-style observations in each of 12 compatible new artificial worlds, the paired selector verified **96 action-context choices**, fixed balanced also verified **96** (exact tie), while SHA-random verified **10**. Mean paired-minus-random gain **7.166667** verified contexts per world, exceeding frozen >=4 diagnostic requirement. This is an **intervention schedule advantage against random** under known roles, NOT native learning superiority over a competent policy or symbolic learning.
+
+For 12 OFF artificial worlds with one nuisance-dependent context, the paired source caught **3/12** contradictions and did not observe the mismatch in **9/12**. Fixed-balanced caught 6/12; random caught 8/12. Unobserved mismatches prove that no *global* out-of-family safety claim is warranted. All locally verified native readouts matched independently calculated dictionaries given identical charged evidence; source-free `SOURCEFREE_PARTIAL_NATIVE_OBSERVATION_SUPPORTED` only. No protected science was opened or read. Linux fixture CPU/wall 0.156973/0.156985 seconds; Windows 0.1875/0.201616 seconds, not matched end-to-end efficiency evidence.
+
+The original result, scientific negative boundary and exact compiler/test/source implementation are preserved in `result.json` and `provenance.json`. No post-score algorithm, budget, threshold or split edits. Final G29 and full dual-OS exact-source regression are separate mandatory ENGINEERING qualification and are not implied by the focused result.
