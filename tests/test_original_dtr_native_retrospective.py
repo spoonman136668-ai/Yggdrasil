@@ -139,7 +139,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as d:
                 p=Path(d)/"source.json"
                 p.write_text(json.dumps(x,indent=2,sort_keys=True)+"\n")
-                if field=="original_fit_json_sha256":
+                with self.subTest(field=field):
                     with self.assertRaises(ValueError):A.read_original_fit(p)
 
 if __name__=="__main__":
