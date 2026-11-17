@@ -71,7 +71,7 @@ def run():
     # Explicitly prewarm source-independent immutable banks before clocks start.
     if len(SEL.N.templates())!=17640 or len(C.BASE.codebooks())!=17640:
         raise AssertionError('WSP140_PINNED_FEATURE_CLASS_DRIFT')
-    if len(SEL.original_ranked())!=17640:raise AssertionError('WSP140_PINNED_ORDER_DRIFT')
+    if len(SEL.BASE.candidate_preference())!=17640:raise AssertionError('WSP140_PINNED_ORDER_DRIFT')
     # Warm source-independent original candidate ranking for both arms.
     # Bit-parallel mask creation remains COLD and is included in optimized first choose.
     SEL.BASE.candidate_preference()
@@ -233,7 +233,7 @@ def run():
        'model_state_sha256':SEL.BASE.digest(snapshots['original']),
        'source_receipts_sha256':S.digest(receipts),
        'per_world_profile_receipts_sha256':S.digest(per_world),
-       'policy_immutable_rank_sha256':S.digest(SEL.original_ranked()),
+       'policy_immutable_rank_sha256':S.digest(SEL.BASE.candidate_preference()),
        'same_info_symbolic_prediction_parity':True,
        'eligible_public_actions':len(POOL),'public_paired_held_queries':len(COMMON),
        'cost':{

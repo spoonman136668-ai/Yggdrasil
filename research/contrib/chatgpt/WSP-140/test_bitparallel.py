@@ -22,7 +22,7 @@ class BitParallelCostGate(unittest.TestCase):
                     with self.assertRaises(PermissionError):S.open_original(seed)
         self.assertNotIn('source',L.__dict__)
         self.assertEqual(len(L.N.templates()),17640)
-        self.assertEqual(len(L.original_ranked()),17640)
+        self.assertEqual(len(L.BASE.candidate_preference()),17640)
     def test_existing_original_contract_unmodified(self):
         self.assertEqual(len(L.available_pool()),48)
         self.assertEqual(len(L.common_held()),16)
