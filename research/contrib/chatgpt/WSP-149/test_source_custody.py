@@ -32,7 +32,17 @@ class PublicCustodyPreflight(TestCase):
         self.assertNotIn('import source',code)
         self.assertNotIn('from source import',code)
         self.assertNotIn('_truth(',code)
-        self.assertFalse(Path(__file__).with_name('result.json').exists())
+        archive=Path(__file__).with_name('result.json')
+        # First-use source file was absent before study. Once frozen original
+        # exists, validate status/provenance without rerunning source truth.
+        if archive.exists():
+            import json
+            evidence=json.loads(archive.read_text(encoding='utf8'))
+            self.assertEqual(evidence['frozen_outcome'],
+                             'DEVELOPMENT_EXACT_WEIGHT_MEMORY_TRANSFER_NO_GO')
+            self.assertEqual(evidence['original_run'],44137575798)
+            self.assertEqual(evidence['original_first_positive_study_sha'],
+                             'f0f3069dd36c10127214b677f02d66b7a22f7661')
         # NEVER make allowed Custodian.query() or _truth() here.
 
     def test_03_study_import_stages_histories_without_source_effect(self):
