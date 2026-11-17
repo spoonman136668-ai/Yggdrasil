@@ -112,7 +112,9 @@ def train_cart(rows):
         base=Fraction(2*n0*n1,len(items))
         majority=1 if n1>n0 else 0
         if not n0 or not n1 or not features:return ("leaf",majority)
-        chosen=None;score=base
+        # Continue through zero-gain splits to allow full supervised
+        # fitting of XOR-like interactions, not a weak stump control.
+        chosen=None;score=None
         for feature in features:
             left=tuple(v for v in items if not (v[0]&(1<<feature)))
             right=tuple(v for v in items if v not in left)
@@ -122,7 +124,7 @@ def train_cart(rows):
                 b=len(vals)-a
                 return Fraction(2*a*b,len(vals))
             proposed=impurity(left)+impurity(right)
-            if proposed<score:
+            if score is None or proposed<score:
                 chosen=(feature,left,right)
                 score=proposed
         if chosen is None:return ("leaf",majority)
