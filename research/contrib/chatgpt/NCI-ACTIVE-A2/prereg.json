@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.nci-active-a2.sourcefree-prereg.v1",
+  "frozen_before_implementation": true,
+  "date": "2026-11-17",
+  "parent_sha": "c02168ad3865fb488e576ea3fdae54489585421d",
+  "parent_tree": "72d81cbb81b21c82780fd05ba8ca882fc170fd63",
+  "owner_pr": 1182,
+  "hypothesis": "An input-rank maximizing active policy produces >5 percentage points more correct held responses than budget-matched random do queries in a small tokenless GF(2) causal consequence family, without wrong confidently identified answers or additional effects.",
+  "source_authority": "New independently authored synthetic fixed Boolean consequences only; no imports of CKAD public source generators, no original fixtures or protected source first-use, no owner original do/reset. This is fabricated development evidence NOT original-world scientific validation.",
+  "worlds": {
+    "seeds": "100..131 inclusive",
+    "shift_seeds": "200..215 inclusive",
+    "world_count": 48,
+    "model_input": "Six binary observed properties and a separate action bit; one128-input consequence world per seed",
+    "feature_grammar": "Supplied degree<=2 binary subset polynomial terms for IN_FAMILY, 3 for SHIFT. Coefficients independently generated from SHA256 seeded term IDs, with deterministic action-interaction, at least five active terms. Each observed do(ctx,action) returns one binary parity consequence generated from world's private truth.",
+    "truth_visibility": "Only evaluator/generator sees truth coefficients; policies and learner only receive chosen public input masks and their witnessed outcome. Never give hidden coefficients, family label, held labels, action0 counterfactuals, or truth-degree info to candidate."
+  },
+  "protocol": {
+    "initial": 8,
+    "additional_effect_budget": 24,
+    "held_queries": 64,
+    "action_pool": 64,
+    "global_split": "SHA256('nci-active-a2:held:<mask>') to choose64 held input masks; complement remaining64 is intervention/observational pool; initial 8 by SHA256 input-only fixed order; held labels not queried before model/predictions sealed",
+    "active": "Rank-increasing degree<=2 input-only monomial support selection; deterministic hash tie order, no outcome consulted for selection, fallback when no rank-gaining pool input",
+    "random": "Uniform input-mask ordering from SHA256(world seed, mask, 'random'), without replacement, access to same do(action) pool and effects",
+    "passive": "Repeated input contexts from unmodified behavior policy action=(context & 1); draw deterministically with replacement from allowed input pool; no ability to force action, same24 observed-effect calls",
+    "outputs": "NativeContextBasis fixed supplied degree2 for all arms and both conditions; independent GF(2) exact-symbolic parity check; fully fitted sklearn CART same rows; original native cold checkpoint readout parity; same 32 observed effects per world and arm; policy observation/input traces committed",
+    "cost": "Per-world/arm effect calls, unique observations, learned rank, model CPU fit and wall seconds, action budget, held correct/wrong/abstained, intervention input selection CPU cost; full process elapsed and matching inference costs",
+    "negative_controls": "SHIFT degree3 worlds must be reported separately, never used to tune native class. SHUFFLED labels from per-world SHA frozen permutation on chosen inputs, before training but after selection, scored against original world; diagnostic only. No hidden held outcome accesses by chooser."
+  },
+  "controls": {
+    "independent": "Fresh separately coded GF(2) row-echelon support solver with training outcomes, compare all128 predictions including NONE; no native code reuse in independent solver",
+    "conventional": "Fully fitted DecisionTreeClassifier(random_state=seed, criterion='gini', max_depth=None,min_samples_leaf=1) on identical32 witnessed rows, full 7 binary inputs, no additional effects",
+    "training": "Native GF(2) exact model may reject inconsistent evidence; report REJECTED and abstain rather than fabricate answers. Native symbolic equivalence tie is not unique native superiority."
+  },
+  "thresholds": {
+    "primary": "Mean paired active-random correct held coverage gain>=5 percentage points over 32 IN_FAMILY worlds, paired world bootstrap95pct lower bound>0 with deterministic 1000 resamples; zero wrong among native identified responses and across all native held predictions",
+    "additional": "No worse effects than random. Active/passive contrast reported but not part of primary win, because passive actions cannot be forced.",
+    "held_minimum": "Active >=60% correct held coverage on average; cold exact across all worlds, checkpoint unchanged",
+    "negative": "SHIFT and SHUFFLED false-confidence and rejection rates explicitly reported; no acceptance claim if material wrong under shift, even if in-family passes",
+    "science": "Always false: invented supplied grammar, no truly unfamiliar original mechanism, and same-prior independent symbolic baseline."
+  },
+  "stopping": "One primary and one exact Windows replication; no retuning or seed/threshold/source changes after results; keep null/negative. No original owner source first-use.",
+  "acceptance": "Source-free exploratory development only. Mandatory source-free focused negative tests plus full exact final root+NKR05 and independent G29 Linux/Windows before engineering PASS. No merges/promotions.",
+  "paths": [
+    "research/contrib/chatgpt/NCI-ACTIVE-A2/",
+    "tests/test_nci_active_a2.py",
+    ".github/workflows/nci-active-a2.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "authority": {
+    "CKAD_accepted_model": false,
+    "owner_PR_modification": false,
+    "original_source_actions": false,
+    "original_custody": false,
+    "paid_api": false,
+    "new_controller": false,
+    "scheduled_tasks": false,
+    "merge": false
+  }
+}
