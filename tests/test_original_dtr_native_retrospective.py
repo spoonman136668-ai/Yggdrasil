@@ -51,7 +51,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
             wrong[field]=new
             with tempfile.TemporaryDirectory() as d:
                 p=Path(d)/"bad.json"
-                p.write_text(json.dumps(wrong,indent=2,sort_keys=True)+"\n")
+                p.write_text(json.dumps(wrong,indent=2,sort_keys=False)+"\n")
                 with self.subTest(field=field):
                     with self.assertRaises(ValueError):A.read_original_fit(p)
 
@@ -138,7 +138,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
             # No real source I/O possible: neither import nor reset/do occurs.
             with tempfile.TemporaryDirectory() as d:
                 p=Path(d)/"source.json"
-                p.write_text(json.dumps(x,indent=2,sort_keys=True)+"\n")
+                p.write_text(json.dumps(x,indent=2,sort_keys=False)+"\n")
                 with self.subTest(field=field):
                     with self.assertRaises(ValueError):A.read_original_fit(p)
 
