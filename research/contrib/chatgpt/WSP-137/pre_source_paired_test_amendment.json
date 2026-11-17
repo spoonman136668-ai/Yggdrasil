@@ -1,0 +1,34 @@
+{
+  "schema": "wsp137.pre-source-paired-test-set-clarification.v1",
+  "created_before_any_WSP137_source_generator_execution": true,
+  "original_first_prereg_sha": "e0bebfc7cc0b243363f1d0729f0432b06f344103",
+  "reason": "Adaptive/fixed policies query different inputs; comparing separate arm-specific withheld 32-bit sets would confound policy performance with evaluation set difficulty. Freeze a common matched question set before implementing source or observing consequences.",
+  "questions": "The same 16 x values per world never appear in either policy arm's observed interventions, enabling paired input/world comparisons, while each arm still gets 32 distinct paid actions.",
+  "construction": {
+    "baseline_fixed32": "exact WSP135 N.schedule() 32 distinct x",
+    "remaining32": "all x=0..63 absent from baseline fixed32",
+    "common_held16": "first16 x sorted by (SHA256('WSP137|COMMONHELD|'+str(x)), x) among remaining32",
+    "legal_training_pool48": "all other 48 x. Both numeric arms have identical 48 eligible actions. Fixed policy still uses exactly original 32 actions.",
+    "active_first_four": "first four original fixed32 x, then 28 source-blind adaptive picks from unqueried training_pool48",
+    "common_held_public": "The 16 excluded x are inferable from the public eligible-action pool. Task-query positions are known; do not claim task-blind unfamiliar query transfer.",
+    "secondary_held": "remaining 16 unobserved within pool per arm, score and report separately; arm-specific full32 withheld scores cannot be compared as a paired item-level test"
+  },
+  "primary_decision_denominators": {
+    "known_common_held": "12 worlds x16 =192",
+    "unfamiliar_common_held": "12 worlds x16=192",
+    "off_common_held": "8 worlds x16=128",
+    "unfamiliar_active_minus_fixed_coverage_gain_min_pp": 5,
+    "unfamiliar_active_wrong_confident_max_pct": 1,
+    "known_active_noninferiority_tolerance_pp": 5,
+    "off_active_wrong_confident_max_pct": 10,
+    "paired_test_set": "same per-world x and hidden truth, predictions frozen after all 32 observations, no feedback after score",
+    "strong_comparisons": "same-information symbolic on exactly same actions for each policy, conventional fully trained CART, source-class-informed oracle as informational reference only"
+  },
+  "governance": {
+    "no_change_to_original_e0beb_prereg": true,
+    "no_source_or_evaluator_has_been_built_or_queried": true,
+    "no_post_result_tuning": true,
+    "no_new_scientific_firstuse": true,
+    "immutable_study_protocol": "Both original prereg and this append-only pre-source clarification govern WSP137. Later code/outcome may not change either."
+  }
+}
