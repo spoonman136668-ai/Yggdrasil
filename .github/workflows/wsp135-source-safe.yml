@@ -1,0 +1,41 @@
+name: WSP135 causal identifiability public source-safe preflight
+on:
+  push:
+    branches: [research/wsp135-identifiability-preflight-20261116]
+permissions:
+  contents: read
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify sole prereg was committed before development
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD
+          test "$(git diff-tree --no-commit-id --name-only -r ca91de4d0b52e91f380c1850c1133b5da7dae1e9)" = "research/contrib/chatgpt/WSP-135/prereg.json"
+          git diff --exit-code ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD -- research/contrib/chatgpt/WSP-135/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-135/result.json
+          test -z "$(git status --porcelain)"
+      - name: Execute 32-query source-safe causal identifiability and controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-135 -p 'test_*.py' -v
+      - name: Verify source and checkout unchanged after score
+        shell: bash
+        run: test -z "$(git status --porcelain)"
