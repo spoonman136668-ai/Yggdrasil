@@ -1,0 +1,112 @@
+{
+  "schema": "wsp145.queryblind-outcome-adaptive-causal-disambiguation.prereg.v1",
+  "date_utc": "2026-11-17",
+  "stage": "PRE_SOURCE_SOLE_FILE_FROZEN",
+  "lineage": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "parent_pr": 1191,
+    "parent_sha": "2bd86348494877eb634615e52106a256474a3f1d",
+    "parent_tree": "84673391d247538c9700a6ab70780f6d790b56ad",
+    "parent_original_result": "research/contrib/chatgpt/WSP-144/result.json",
+    "parent_original_outcome": "DEVELOPMENT_DIAGNOSTIC_HIGHORDER_ACQUISITION_NO_GO",
+    "parent_final_regression_run": 44078464046,
+    "parent_independent_g29_run": 44078473576,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "preserve_prior_frozen_experiments": true
+  },
+  "hypothesis": "Outcome-adaptive sparse-program disagreement plus observable-feature separation improves correctly answered query-blind rare five-factor causal questions over exact fixed32 and independent seeded random32 schedules, using the same unchanged four-term tokenless WSP143 learner, same 32 actual charged consequences and shared held queries selected only AFTER all actions and all 64 predictions are frozen.",
+  "experiment_scope": "NEW PUBLIC SYNTHETIC DEVELOPMENT ONLY; not original DTR/CausalGym/MDP source first-use, not native Yggdrasil scientific admission or real-world causal discovery.",
+  "source": {
+    "namespace": "WSP145|SOURCE|FAMILY|SEED distinct from all WSP144 260xxx and prior cohorts",
+    "known": "270000..270007 (8)",
+    "three": "271000..271007 (8)",
+    "five": "272000..272031 (32)",
+    "cross": "273000..273007 (8)",
+    "off": "274000..274007 (8)",
+    "cold": "275000..275007 (8 zero-effect identity relabels of KNOWN)",
+    "forbidden": [
+      "all historical WSP-135..144 source namespaces and scored cohorts",
+      "unused 270800..275863 protected ranges",
+      "original DTR, MDP, CausalGym or native scientific first-use"
+    ],
+    "law": "Independent source-private generator with six Boolean factors, hidden fresh SHA256 role permutation, same public AND/XOR family definitions as WSP144; no truth imported in policy/learner.",
+    "worlds": 64,
+    "arms": 3,
+    "charged_effects_per_arm_world": 32,
+    "charged_effects_total": 6144,
+    "protected_original_effects": 0,
+    "public_to_policy": "64 legal typed inputs x=0..63, stable opaque public law_id, own earlier real queried x/effects only; NO future held query coordinates, family, hidden source law, seed-derived role identity, other-arm outcomes or oracle.",
+    "source_owner_private": "truth, final per-world query-blind 8-point held set, scoring, and per-arm charge ledger"
+  },
+  "design": {
+    "shared_warmstart": "First 20 inputs of unchanged WSP135 exact fixed32 schedule for all 3 arms, same source consequences charged independently per arm.",
+    "fixed": "Complete unchanged WSP135 fixed32 sequence (20 shared plus remaining 12).",
+    "random": "After shared 20, choose 12 remaining x ranked by SHA256('WSP145|RANDOM|law_id|x'); no private source or reward access beyond shared 20.",
+    "adaptive": "After shared 20, for each next action t=21..32 recompute source-blind exact sparse-program candidates from own t-1 observations, with supplied generic AND/XOR six-factor concept lattice; for depths 2..5 call same mathematical minimum-term/minimum-degree <=4-term exact solver as unchanged WSP143, but partial-row interface authored only under WSP-145. Preserve all equal-best programs up to 10000 per depth. At each unqueried x, compute equal-stage-weight vote probability p for outcome=1 across retained exact-fit programs; choose greatest p*(1-p), then greatest number of currently indistinguishable feature-signature pairs split by x, then public deterministic SHA256('WSP145|TIE|law_id|x') order. If no candidates or overflow at all depths, structural split-only fallback. No scored holdout information or true law prior.",
+    "structural_split": "For all generic degree<=5 AND masks m in 0..63, partition by their signatures over previously observed input x; score x as sum over each signature class (#m activated by x)*(#m not activated by x). Computes distinguishability of observationally aliased features, not hidden ground truth.",
+    "adaptive_ablations": "Source-blind structural-split-only schedule from same warm 20 may be evaluated as a fourth separately charged arm only with its own prospective dedicated source budget and new prereg; NOT silently add to this three-arm primary. Offline non-source signature diagnostics allowed.",
+    "held_selection": "Only AFTER all 3 arms freeze 32 action coordinates AND all 64 output predictions, owner computes intersection of all three never-paid x. At least 8 remain because 20 shared warm plus <=12 unique tail x per arm implies union <=56. Pick EXACT 8 by SHA256('WSP145|HELD|law_id|x') ranking from intersection. Learners and selectors never receive these x before their 64 prediction vectors are sealed. The held selection depends on action locations, NEVER on hidden labels; disclose this post-selection limitation.",
+    "paired_unit": "World/seed, not eight correlated questions, is the independent unit. Same eight held x per world for every arm/control. 32 FIVE worlds x8 =256 paired FIVE questions. Other each 8 x8 =64.",
+    "query_blind": "Future x not revealed during acquisition, training or prediction, and not paid by any arm; this is within-law query-blind interpolation/extrapolation over public six-bit input universe, not unfamiliar new world/domain transfer.",
+    "budgets": "Exactly 32 observed public intervention effects per arm/world; 3 arms x64 worlds x32 =6144, plus ZERO original protected effects and ZERO cold-relabeled source calls."
+  },
+  "learner_and_controls": {
+    "primary": "EXACT WSP143 concepts.fit(rows) and predict on final 32 rows, no changes to WSP143 model or source; source-blind data only.",
+    "independent_equal_prior_symbolic": "EXACT WSP143 flat_control symbolic_fit/predict, same arm inputs, must tie every x at all worlds/arms, proving no unique hierarchical vs exact symbolic benefit if tied.",
+    "conventional": "Unchanged fully-fitted WSP135 CART trained to its existing convergence contract independently on each arm's same 32 actual effects.",
+    "original_direct": "Unchanged WSP142 direct three-term fit/predict on same inputs.",
+    "other": "Unchanged WSP135 latent and no-update all-abstain; source-private truth never enters fits. Cold restore of original state after later worlds, 8 relabeled old laws, 8x64=512 identity predictions per arm, no source queries.",
+    "negative_controls": "OFF structureless laws must not generate confident false causal claims; wrong-confident, abstentions, total correct separately reported."
+  },
+  "frozen_metrics": {
+    "five_primary": "FIVE correct /256, wrong_confident /256, abstained /256 on same hidden-after-commit 8x32 selected x.",
+    "gain_vs_best_fixed_or_random_min_pp": 3,
+    "adaptive_five_confident_wrong_max_pct": 1,
+    "adaptive_five_correct_at_least_fully_fitted_CART_on_adaptive_rows": true,
+    "noninferiority_correct_loss_known_three_cross_max_pp": 5,
+    "noninferiority_wrong_confident_known_three_cross_max_pct": 1,
+    "off_wrong_confident_max_pct": 2,
+    "source_receipts_exact": 6144,
+    "equal_prior_symbolic_mismatches_max": 0,
+    "cold_identity_each_arm": "512/512 original restored outputs across 8 relabels",
+    "whole_process_cost": "Return per-arm acquisition+fit+64-readout CPU/wall, peak traced memory, source calls, total charged effects, algorithmic timing, and original unchanged conventional fit costs; do not claim energy/FLOP superiority without measurement.",
+    "classification_if_all": "DEVELOPMENT_QUERYBLIND_ACTIVE_DISAMBIGUATION_SUPPORTED",
+    "classification_if_any_fail": "DEVELOPMENT_QUERYBLIND_ACTIVE_DISAMBIGUATION_NO_GO",
+    "native_scientific_pass": false
+  },
+  "safety_and_custody": {
+    "freeze_first": "Prereg in sole-file initial commit BEFORE any WSP145 source, candidate code, scoring, or new output/seed first use; do not modify after.",
+    "source_first_use": "Public fresh synthetic ONLY after prereg+source-independent qualification; original protected source first use DENIED.",
+    "immutables": [
+      "research/contrib/chatgpt/WSP-144/result.json",
+      "research/contrib/chatgpt/WSP-144/prereg.json",
+      "research/contrib/chatgpt/WSP-143/result.json",
+      "all inherited learner/conventional/source code"
+    ],
+    "no_postresult_tuning": true,
+    "zero_promotion": true,
+    "zero_merge": true,
+    "zero_native_weight_edit": true,
+    "zero_paid_api": true,
+    "no_new_runner_controller_scheduler": true,
+    "accepted_main_untouched": true,
+    "source_isolation": "new WSP-145 source custodian file is independent from policy and learner modules; owner scores only after frozen prediction vectors; guards reject protected/replayed/over-budget calls"
+  },
+  "qualification": {
+    "phase1": "Pre-source prereg commit only; verify parent exact SHA/tree, no other source changed.",
+    "phase2": "New isolated source-safe WSP145 implementation with negative tests for query-blind held, policy and truth separation, budget, disjoint seeds, receipts, cold restore, equal symbolic and full original scores. First prospective public synthetic run only after source+algorithm frozen.",
+    "phase3": "Ubuntu/Windows source-safe study with identical non-resource results and original result immutable archive.",
+    "phase4": "Source-pin G29 derived-only atlas update; mandatory exact FINAL SHA Ubuntu/Windows focused inherited WSP135-137,139,141-145 tests PLUS original complete root regression and separately independent G29 acceptance.",
+    "allowed_new_paths": [
+      "research/contrib/chatgpt/WSP-145/**",
+      ".github/workflows/wsp145-source-safe.yml"
+    ],
+    "derived_only_atlas": [
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice",
+      ".ice/code-atlas.json"
+    ],
+    "no_native_scientific_first_use": true,
+    "no_merge_without_independent_scientific_acceptance": true
+  }
+}
