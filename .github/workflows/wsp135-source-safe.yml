@@ -1,4 +1,4 @@
-name: WSP135 causal identifiability public source-safe preflight
+name: WSP135 source-safe identifiability and exact-source final regression
 on:
   push:
     branches: [research/wsp135-identifiability-preflight-20261116]
@@ -11,7 +11,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-2022]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONHASHSEED: '0'
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
-      - name: Verify sole prereg was committed before development
+      - name: Verify first-only prereg, frozen source and archived outcome
         shell: bash
         run: |
           set -euo pipefail
@@ -32,10 +32,102 @@ jobs:
           git merge-base --is-ancestor ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD
           test "$(git diff-tree --no-commit-id --name-only -r ca91de4d0b52e91f380c1850c1133b5da7dae1e9)" = "research/contrib/chatgpt/WSP-135/prereg.json"
           git diff --exit-code ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD -- research/contrib/chatgpt/WSP-135/prereg.json
-          test ! -e research/contrib/chatgpt/WSP-135/result.json
+          git diff --exit-code 272157bb9cfd1368ae2faad7eb395dfa12ce6306 HEAD -- research/contrib/chatgpt/WSP-135/source.py research/contrib/chatgpt/WSP-135/oracle.py research/contrib/chatgpt/WSP-135/controls.py research/contrib/chatgpt/WSP-135/experiment.py research/contrib/chatgpt/WSP-135/test_identifiability.py
+          git diff --exit-code 17f53b684d3483160a20893721b7dc7bb453aeb2 HEAD -- research/contrib/chatgpt/WSP-135/result.json research/contrib/chatgpt/WSP-135/provenance.json
+          test ! -e research/contrib/chatgpt/WSP-135/first_use_authorization.json
+          test ! -e research/contrib/chatgpt/WSP-134/first_use_authorization.json
+          python -c "import json; z=json.load(open('research/contrib/chatgpt/WSP-135/result.json')); assert z['source_commit']=='272157bb9cfd1368ae2faad7eb395dfa12ce6306' and z['identifiability_status']=='IDENTIFIABLE_WITH_GIVEN_GRAMMAR' and z['active_policy_gain_pass'] is False"
           test -z "$(git status --porcelain)"
-      - name: Execute 32-query source-safe causal identifiability and controls
+      - name: Reproduce public WSP135 source-safe experiment and negatives
         run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-135 -p 'test_*.py' -v
-      - name: Verify source and checkout unchanged after score
+      - name: Clean source after repeatability checks
         shell: bash
         run: test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(wsp135): source-pin G29 atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp135-source-atlas-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate ONLY three derived G29 source-pinned artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp135): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp135-identifiability-preflight-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp135): pin G29 source atlas at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install inherited pinned reference dependencies
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy==2.2.6'
+          python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu 'torch==2.10.0'
+      - name: Verify frozen result, exact source and derived G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD
+          git diff --exit-code ca91de4d0b52e91f380c1850c1133b5da7dae1e9 HEAD -- research/contrib/chatgpt/WSP-135/prereg.json
+          git diff --exit-code 272157bb9cfd1368ae2faad7eb395dfa12ce6306 HEAD -- research/contrib/chatgpt/WSP-135/source.py research/contrib/chatgpt/WSP-135/oracle.py research/contrib/chatgpt/WSP-135/controls.py research/contrib/chatgpt/WSP-135/experiment.py research/contrib/chatgpt/WSP-135/test_identifiability.py
+          git diff --exit-code 17f53b684d3483160a20893721b7dc7bb453aeb2 HEAD -- research/contrib/chatgpt/WSP-135/result.json research/contrib/chatgpt/WSP-135/provenance.json
+          test ! -e research/contrib/chatgpt/WSP-135/first_use_authorization.json
+          python -B scripts/build_code_atlas.py --check-if-present
+      - name: Mandatory inherited WSP117-133 and WSP135 focused regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 135; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/WSP-$n" -p 'test_*.py' -v
+          done
+      - name: Mandatory root regression and exact G29 clean source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
