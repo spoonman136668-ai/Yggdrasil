@@ -1,0 +1,89 @@
+name: WSP149 prospective transfer and exact-source qualification
+on:
+  push:
+    branches: [research/wsp149-exact-gf2-memory-transfer-20261117]
+permissions:
+  contents: read
+jobs:
+  preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze prereg and no original protected first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git diff-tree --no-commit-id --name-only -r b74f205d7ed02fe6d29a714e91a378e9152beb0d)" = "research/contrib/chatgpt/WSP-149/prereg.json"
+          git merge-base --is-ancestor b74f205d7ed02fe6d29a714e91a378e9152beb0d HEAD
+          git diff --exit-code b74f205d7ed02fe6d29a714e91a378e9152beb0d HEAD -- research/contrib/chatgpt/WSP-149/prereg.json
+          git diff --exit-code 233e7e3cc6714d698172824969fbb1f8c674c150 HEAD -- research/contrib/chatgpt/WSP-148 research/contrib/chatgpt/WSP-147
+          test ! -e research/contrib/chatgpt/WSP-149/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-149/first_use_authorization.json
+          test -z "$(git status --porcelain)"
+      - name: Source-free exact coefficient and owner negative controls
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-149 -p 'test_exact_weights.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-149 -p 'test_source_custody.py' -v
+      - name: AST syntax of frozen source and independent study; no source calls
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          for name in ('source.py','experiment.py','test_source_study.py','exact_weights.py'):
+              p=Path('research/contrib/chatgpt/WSP-149')/name
+              ast.parse(p.read_text(encoding='utf8'),filename=str(p))
+          print('WSP149_SOURCE_FREE_AST_PASS')
+          PY
+          test -z "$(git status --porcelain)"
+  first-public-source:
+    needs: [preflight]
+    if: "github.event.head_commit.message == 'ci(wsp149): first public synthetic source once' && github.run_attempt == 1 && needs.preflight.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Original synthetic once and no old data change
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git show -s --format=%s HEAD)" = "ci(wsp149): first public synthetic source once"
+          git diff --exit-code b74f205d7ed02fe6d29a714e91a378e9152beb0d HEAD -- research/contrib/chatgpt/WSP-149/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-149/result.json
+          test ! -e research/contrib/chatgpt/WSP-149/first_use_authorization.json
+          test ! -e research/contrib/chatgpt/WSP-149/SCIENTIFIC_PASS.json
+      - name: First fresh public FIT worlds and independent TRANSFER controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-149 -p 'test_source_study.py' -v
+      - name: No source output file mutations
+        shell: bash
+        run: test -z "$(git status --porcelain)"
