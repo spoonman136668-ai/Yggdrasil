@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.ckad06.cumulative-sufficient-statistics.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_PRIMARY",
+  "parent_sha": "28948ec34d8f5727daa10578a34c96825e3c1a54",
+  "parent_tree": "2ffbec8945a9579608d7423a360a55f578ca03ef",
+  "existing_pr": 1182,
+  "question": "Can one native relation accumulate evidence over repeated same-address batches, retain earlier identified answers through cold restoration, and match complete batch retraining without raw outcome-row replay?",
+  "distinction": "CKAD03/05 retained separate addresses. CKAD06 tests repeated SAME address, derived sufficient statistics, broad full basis first; does not duplicate WSP sparse/active/operator proposals. This is engineering research on already consumed source fixtures, not protected original scientific first-use.",
+  "inputs": {
+    "qualified_generator": "research/contrib/chatgpt/CKAD-02/campaign.py:dataset",
+    "source": "exact existing 48 CKAD02 datasets, source hashes must match CKAD02/result.json",
+    "seeds": [
+      101,
+      202,
+      303
+    ],
+    "slots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "exposures": [
+      64,
+      128,
+      256,
+      512
+    ],
+    "ordering": "existing sorted training rows; incremental disjoint chunks 64/64/128/256",
+    "declared_degrees": [
+      11,
+      3
+    ],
+    "heldout": "same 1536 never-trained input/action combinations per dataset; 2048-domain retention check",
+    "source_mode": "engineering_fixture_only",
+    "original_source_actions": 0,
+    "new_source_worlds": 0
+  },
+  "implementation": {
+    "new_module": "yggdrasil/native_context_accumulator.py",
+    "method": "Optional immutable wrapper over NativeContextBasis, existing native GF2 eliminator/support. Earlier support vectors with RHS derived from old learned coefficients are sufficient constraints. Merge new PUBLIC rows into those constraints; solve once. Store coefficients, input-only support, observed-input bitset and bounded batch hash/count ledger, NEVER raw consequence rows. Existing checkpoint schemas and stage_fit replacement behavior unchanged.",
+    "invariants": [
+      "same address and declared degree after first update; changing model class requires a distinct candidate",
+      "atomic rejection of conflicting evidence, model inadequacy, source mismatch, invalid capacity; old checkpoint unchanged",
+      "exact batch replay idempotent; replays with different hashes can add exposures but not unique evidence",
+      "full count cap4096 rows/address,64 batches/address,16 native slots,10 context bits; engineering-only",
+      "cold restore validates mask/support equality, ledger hash/count, canonical bytes; v1 native checkpoints unchanged"
+    ],
+    "repairs": "At most3 implementation-only bounded fixes with unchanged protocol. Scientific failures remain frozen; no tuning to held answers."
+  },
+  "controls": {
+    "batch_native": "Same prefix observations, original stage_fit from scratch, SAME model class. Must match every incremental query for consistent prefixes. Repeated full-batch solve cost explicitly recorded; not an independent conventional control.",
+    "replacement": "Unchanged stage_fit sees only newest chunk; records forgetting and any held errors.",
+    "symbolic": "Existing independent lowest-pivot set-XOR ExactSymbolic on same all-seen prefix. If model class becomes inconsistent, report contradiction and preserve old cumulative state, do NOT claim stale state matches invalid new class.",
+    "conventional": "Fully trained unpruned sklearn CART, same all-seen inputs and outcomes; training accuracy must be1; no privileged polynomial degree/source coefficients. Fit once per dataset/exposure, reuse across degree arms.",
+    "retrieval_only": "Exact observed-input lookup, all never-trained held queries abstain; seen retention reported separately.",
+    "budgets": "Same512 total unique consequences/data and10+action numeric input dimensions; common600second campaign ceiling/OS,1 CPU thread. Different capacities and operation counts disclosed, no matched-compute superiority claim."
+  },
+  "thresholds": {
+    "engineering_pass": "all valid cumulative profiles match prefix batch native and independent symbolic on all2048 inputs, zero lost formerly identified answers under consistent stationary evidence, source-pinned cold checkpoints match all2048 outputs; degree11 must abstain on every1536 unseen inputs at every scale; final degree3 rank232 for compatible36 datasets. Incompatible12 degree5 datasets are recorded as model inadequacy without retuning.",
+    "knowledge_gain": "Record correct/wrong/abstain at all4 exposures, retained/changed/abstain earlier known queries, native and control timings/checkpoint bytes/rank. An engineering development gain requires held correct coverage at512 >64 on degree3 compatible cohort with zero introduced errors.",
+    "science_pass": false,
+    "interpretation": "No externally grounded causal knowledge, unrestricted family discovery, shared-weight forgetting resistance beyond stationary same-relation constraints, or general intelligence claim. Exact symbolic tie expected; CART may outperform broad coverage."
+  },
+  "qualification": {
+    "focus": "new incremental, provenance, cold, contradiction, idempotence, old-format compatibility tests",
+    "full_final": "all root unittest tests + NKR05 suite and independent G29 on exact final candidate Ubuntu and Windows",
+    "primary": "Ubuntu only once after focused tests, Windows deterministic replication; reuse source fixtures, archive every negative",
+    "existing_workflow": "extend own CKAD05 push workflow with new exact commit trigger for CKAD06; no controller, new runner, scheduler or unrelated workflow changes"
+  },
+  "changed_paths": [
+    "yggdrasil/native_context_accumulator.py",
+    "tests/test_native_context_accumulator.py",
+    "research/contrib/chatgpt/CKAD-06/",
+    ".github/workflows/ckad05-native-property-join.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "current_sources": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "mind_palace_sha": "56e264a21022df3c9c8d93472a4fefc8a02c0824",
+    "records_sha256": "e120d34bc6aa5da0499e9ad6e4a64b9c64eea1033657b6db08c162319e1bd3ac",
+    "CVH10_first_use": "still disarmed, no independent virgin source lease/ledger actor",
+    "WSP149": "55dd1e9e9f79a8a944a841330bb0ddcd93143a22; negative exact GF2 frequency-prior transfer; no duplication"
+  },
+  "deployment": "NONE; draft unmerged; accepted owner state untouched"
+}
