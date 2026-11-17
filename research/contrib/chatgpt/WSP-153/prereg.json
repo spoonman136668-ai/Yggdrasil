@@ -1,0 +1,95 @@
+{
+  "schema": "wsp153.sparse-gf2-causal-operator-sourcefree.prereg.v2",
+  "date_utc": "2026-11-17",
+  "phase": "SOLE_FILE_FINAL_PRE_IMPLEMENTATION_FROZEN",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/wsp153-sparse-causal-operator-induction-20261117",
+  "parent_sha": "86595cd728c2978502f877e2cd6b61a9802e00d9",
+  "parent_tree": "8a39159776c23aed558f164b9729b73b03896ccb",
+  "parent_pr": 1200,
+  "preserved_negatives": [
+    {
+      "pr": 1197,
+      "classification": "WSP149_EXACT_GF2_TRANSFER_NO_GO",
+      "sha": "55dd1e9e9f79a8a944a841330bb0ddcd93143a22"
+    },
+    {
+      "pr": 1202,
+      "classification": "WSP152_SOURCEFREE_CONFIDENCE_POLICY_NO_GO",
+      "sha": "47f760aef4a9b88881cdb7649a2aef42c7b9823f"
+    }
+  ],
+  "question": "Can an intervention-conditioned, sparse algebraic version-space mechanism infer compositional causal operators not named in the WSP151 OR/AND grammar, abstain when predictions remain nonidentifiable, and outperform a fully fitted same-action CART on unseen contexts without confident errors? Does it merely tie an independent exact symbolic implementation?",
+  "exact_model": {
+    "context": "Six-bit raw intervention mask, no language tokens, model inputs are 0..63 binary states with certified do labels. No native Yggdrasil weights are altered.",
+    "basis": "22 GF(2) algebraic normal-form monomials: constant, six first-order and 15 pairwise interactions; no named OR/AND/XOR templates, exactly <=3 nonzero coefficients.",
+    "candidate_count": 1794,
+    "induction": "Enumerate coefficients with 0,1,2,3 active monomial terms; retain every candidate consistent with all charged (x,effect) rows. No fit truth outside paid history.",
+    "readout": "Predict 0 or 1 if and only if ALL nonempty surviving candidate algebraic rules agree at that context. Otherwise abstain. An empty version space must abstain globally, not fall back to a guessed winner.",
+    "policy": "Four common warm do observations in x=[1,2,4,8], four additional sequential intervention choices. Active policy chooses uncharged x maximizing min(count predicts0,count predicts1) among remaining hypotheses; ties smallest x. Fixed policy uses SHA256 of WSP153|FAKE|FIXED|x ascending to select uncharged contexts.",
+    "boundary": "Prediction certainty is conditional on the declared sparse algebraic class and noiseless actions, never general-world confidence; structure outside grammar is OFF and must be reported. No learner access to kind, input generator, held targets or world identity."
+  },
+  "sources": {
+    "status": "FABRICATED-ONLY engineering diagnostics; NO original source first-use",
+    "tag": "WSP153|FAKE|",
+    "on_worlds": 16,
+    "off_worlds": 4,
+    "on_kinds": [
+      "AND2",
+      "OR2",
+      "XOR2",
+      "COMPOSE3"
+    ],
+    "off_kinds": [
+      "CUBIC3",
+      "CUBIC_XOR",
+      "ODD4",
+      "EXACT2OF4"
+    ],
+    "worlds_per_kind": 4,
+    "off_per_kind": 1,
+    "independent_world_indices": "0..19",
+    "actions_per_policy": 8,
+    "common_warm": 4,
+    "held": "Common unobserved contexts after both policies seal actions and all model outputs; >=48 held contexts per world. Never select or score against unseen labels during acquisition.",
+    "sample_unit": "independent fabricated world",
+    "no_scored_WSP151_or_WSP152_replay": true
+  },
+  "controls": [
+    "Exact independent symbolic GF2 monomial enumerator with independently constructed output mask, must match version-space readout on every context",
+    "Fully fitted deterministic 6-feature CART-equivalent binary decision tree using precisely the active version-space policy's eight observed do effects",
+    "Frozen WSP151 Bayesian OR/AND/UNKNOWN learner using the identical eight active interventions",
+    "Sparse exact version space under same four warm plus four fixed interventions"
+  ],
+  "frozen_dev_gates": {
+    "on_count": 16,
+    "off_count": 4,
+    "require_exact_symbolic_parity_all_worlds": true,
+    "require_no_wrong_confident_on_inclass": true,
+    "min_on_confident_coverage_percent": 30,
+    "min_on_confident_correct_gain_pp_vs_strongest_same_action_conventional": 5,
+    "max_off_wrong_confident_rate_percent": 2,
+    "min_shared_unseen_per_world": 48,
+    "require_cross_platform_identical_nonresource_digest": true,
+    "min_tests": 5,
+    "no_postresult_tuning": true,
+    "success": "SOURCEFREE_SPARSE_OPERATOR_DEVELOPMENT_SUPPORTED",
+    "failure": "SOURCEFREE_SPARSE_OPERATOR_DEVELOPMENT_NO_GO",
+    "scientific_pass": false
+  },
+  "future_science": {
+    "required": "Fresh source-owner-authorized prospective worlds and independent exact native representation; matched actions and compute, strong fully fitted conventional and symbolic controls, independent qualification, cold retention, unfamiliar transfer. Source-free exercise never counts as science PASS.",
+    "denied": "No original WSP151 first-use, protected data, native weight acceptance, main changes, schedulers, paid APIs, deployment, merge or controller modification."
+  },
+  "authority": {
+    "research_branch_only": true,
+    "source_owner_original_first_use": false,
+    "native_model_weights": false,
+    "accepted_main": false,
+    "merge": false,
+    "scheduler": false,
+    "paid_api": false
+  },
+  "prior_draft_prereg_sha": "304fee3e1829536d02973ac425fb214498cee09d",
+  "prior_draft_correction": "Replace MAJ3 as an out-of-class negative: 3-variable majority equals three pairwise GF2 terms and is IN-class. Use CUBIC_XOR instead; correction done with zero code and zero data scored."
+}
