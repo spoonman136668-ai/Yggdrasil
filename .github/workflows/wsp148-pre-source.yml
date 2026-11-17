@@ -1,0 +1,50 @@
+name: WSP148 source-free coordinated weight repair
+on:
+  push:
+    branches: [research/wsp148-coordinated-weight-repair-20261117]
+permissions:
+  contents: read
+jobs:
+  pure-source-free:
+    if: "github.sha == '09865ca674fe56e1308ba6b83aef51e11b80c1cb'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact parent, sole-file prospective freeze and zero-source custody
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 59db1b66b3a23f6b5498cd8d59d03be8605dfcbe^)" = "bba01cb5d1232727c0f800f66055014b1d17e07b"
+          test "$(git diff-tree --no-commit-id --name-only -r 59db1b66b3a23f6b5498cd8d59d03be8605dfcbe)" = "research/contrib/chatgpt/WSP-148/prereg.json"
+          git merge-base --is-ancestor 59db1b66b3a23f6b5498cd8d59d03be8605dfcbe HEAD
+          git diff --exit-code 59db1b66b3a23f6b5498cd8d59d03be8605dfcbe HEAD -- research/contrib/chatgpt/WSP-148/prereg.json
+          git diff --exit-code bba01cb5d1232727c0f800f66055014b1d17e07b HEAD -- research/contrib/chatgpt/WSP-147 research/contrib/chatgpt/WSP-146
+          test -f research/contrib/chatgpt/WSP-148/repair.py
+          test -f research/contrib/chatgpt/WSP-148/test_repair.py
+          test ! -e research/contrib/chatgpt/WSP-148/source.py
+          test ! -e research/contrib/chatgpt/WSP-148/experiment.py
+          test ! -e research/contrib/chatgpt/WSP-148/result.json
+          test ! -e research/contrib/chatgpt/WSP-148/first_use_authorization.json
+          test ! -e research/contrib/chatgpt/WSP-148/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Negative, capacity-match and cold source-free unit tests only
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-148 -p 'test_*.py' -v
+      - name: No generated state, no source effects
+        shell: bash
+        run: test -z "$(git status --porcelain)"
