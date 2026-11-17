@@ -32,3 +32,28 @@ Each original episode contributes **two** actual public observed labels to the n
 ## Engineering and custody
 
 Initial Linux/Windows focused: reconstruct and verify original source signatures before any FIT; negative custody tests, exact counts, cold checkpoint and lineage. ONE first original-consumed FIT development score on both OS, frozen outcomes. G29 generated-only three atlas files once; mandatory full root regression and independent G29 both OS on source-identical final SHA. All code/fixtures/hypotheses frozen after first scored run; no retuning of learning rates or source seeds. No source owner signed virgin cohort, new original intervention, protected VALID/DEV first-use, controller, scheduler, private runner, paid API, accepted main/weights, merge or deployment. Keep draft.
+
+
+## Frozen development outcome: authentic previously consumed FIT source, NO scientific win
+
+The first historical-source-native comparative run was [#44197015375](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44197015375), on source-identical trigger SHA `05920167c94ad7a1f3f3894b1b34f5bb8f302621`. Ubuntu and Windows **both PASS** all first-score jobs; **identical semantic receipt SHA256 `59589932668b2442d31543634a50a43b3ab8ef150008f96864c38120a0e167ef`**, original public fit recovered and source-verified without original `reset` or `do`. The original models, source, frozen controls, budget, data split and scores were not edited after this run. Full original source tree baseline remains draft, unmerged.
+
+The main pooled held Brier comparison, **1,536 scored binary outcomes per method** (3 original FIT source replicas × four nested training sizes × 64 historic held FIT-suffix episodes × two public targets), is:
+
+| Frozen arm | Transition S2 Brier | Terminal Y Brier | Pooled Brier |
+|---|---:|---:|---:|
+| Native NKR-19 Beta(1,1) exact 164-byte learned counter checkpoint | **0.262829638403** | 0.035875636303 | **0.149352637353** |
+| Independently fitted equal-evidence exact Beta | 0.262829638403 | 0.035875636303 | **0.149352637353 (TIE)** |
+| Fully fitted empirical MLE + fixed 0.5 empty-context fallback | 0.268509848303 | 0.008138020833 | **0.138323934568 (BETTER)** |
+| Fixed-budget conventional logistic, 3,000 maximal iterations | 0.267524280439 | **0.003898707606** | **0.135711494022 (BETTER but not reliably converged)** |
+| Chance prior 0.5 | 0.250000000000 | 0.250000000000 | 0.250000000000 |
+
+**Lower Brier is better.** Native reward inference is much better than untrained chance on these previously consumed outcomes, and its saved 164-byte state is portable and exactly cold-restorable. But the stronger **fully fitted discrete MLE** has a **0.011028702785 pooled Brier advantage** over native; equal-info independent Beta ties it exactly. Native intermediate transition S2 Brier is **worse than chance** (`0.26283 > 0.25`). Negative finding stays frozen, no post-score adjustment to pseudocounts, features, source split or weights.
+
+A critical control qualification: logistic used the pre-score budget and improved the measured loss, but it did **not reach its frozen stopping tolerance on 0/12 reward fits**; 3/12 transition fits did converge. Thus it is a transparent *trained diagnostic*, **not** a certified fully converged strongest conventional neural control. The fitted closed-form MLE alone is already sufficient to falsify native predictive dominance on this source.
+
+Across nested 32→64→128→192 source FIT episodes, native aggregate loss generally declined, and incremental continued native updates exactly matched fresh prefix fits in every replica. This is evidence of bounded cumulative learned public probabilities from genuine past experience, not general intelligence, causal operator invention or robust changed-rule transfer. Each nested exposure reuses a subset of prior training, not new independent experimental seeds. No new learner-selected source actions were executed.
+
+Exact current frozen result in `result.json`; original Linux artifact `14378973000` SHA256 `a05ff9fdf4ce81d95b538cc904237a10af8acaeb3f2060ba9fed26fac1fdc3c0`, Windows `14379342161` SHA256 `64a60370552c0f884a2933f0f22708b31a4ea164068ba4ba596067e71ccc6b79`. Original historical FIT ZIP `12492506361` SHA256 `ada547777ba2ba49070fe2606ac99c8d9248532f1cb16c8a0f8eab0f4001508c`. A compact losslessly authenticated copy of ALL 768 source FIT public observations was committed to preserve data even after the GitHub artifact expires **2026-11-22**. Original DTR02 VALID/DEV source transcripts remain unopened.
+
+**Frozen classification: engineering focused PASS; retrospective source-native learning SUPPORTED; native stronger-control dominance NO-GO; scientific first-use NOT PERFORMED; accepted native model/production NONE.** Mandatory complete Linux/Windows root + independent G29 at final candidate must be separately verified. Do not relabel the source-only result as first-use SCIENTIFIC_PASS.
