@@ -1,0 +1,97 @@
+{
+  "schema": "wsp146.shallow-hypothesis-challenge-confidence.prereg.v1",
+  "date_utc": "2026-11-17",
+  "stage": "PRE_SOURCE_SOLE_FILE_FROZEN",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1192,
+    "exact_sha": "e1d1129fda0dd78487f4d1299048d4588bb59d9c",
+    "exact_tree": "1ee935121cdcd18f0f7f5de61b7e5ac8081b65d8",
+    "engineering_full_run": 44093904983,
+    "independent_g29_run": 44093914051,
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "original_result": "research/contrib/chatgpt/WSP-145/result.json",
+    "original_outcome": "DEVELOPMENT_QUERYBLIND_ACTIVE_DISAMBIGUATION_NO_GO",
+    "preserve_priors": true
+  },
+  "question": "Can a source-blind sparse high-order counterhypothesis challenge reduce confident errors from premature degree3/4 conclusions without sacrificing useful correct predictions, on fresh query-blind causal worlds under identical acquired information, compared with the unchanged WSP145 candidate, depth-only abstention and independently fitted controls?",
+  "development_only": true,
+  "hypothesis": "A shallow exact-fit (depth3/4) might be an alias for a causal law containing a rare depth5 conjunction. Before claiming confident predictions, test whether any exact-fit depth5 alternative with <=4 terms can disagree on that query. Abstain selectively on such structural conflicts. Never use hidden truth or future question coordinates.",
+  "fresh_public_source": {
+    "namespace": "WSP146|SOURCE| (independent from all WSP135-WSP145 scored worlds)",
+    "cohorts": {
+      "known": "280000..280007 (8)",
+      "three": "281000..281007 (8)",
+      "five": "282000..282031 (32)",
+      "cross": "283000..283007 (8)",
+      "off": "284000..284007 (8)",
+      "cold": "285000..285007 (8 zero-effect known-law relabels)"
+    },
+    "denied": [
+      "all historical scored WSP cohorts",
+      "unused 280800..285863 reserved ranges",
+      "original DTR/CausalGym/MDP protected first use"
+    ],
+    "worlds": 64,
+    "queryable_binary_factors": 6,
+    "action_budget_per_world_arm": 32,
+    "arms": 3,
+    "charged_public_effects_total": 6144,
+    "protected_original_first_use": 0,
+    "source_private": "Law generator, hidden roles, true effect outcomes and post-seal scoring remain owner-only. Identical generic synthetic AND/XOR causal family as WSP145 with fresh SHA256 source namespace, not a novel physical causal source."
+  },
+  "acquisition": {
+    "fixed": "EXACT WSP145 fixed20+12",
+    "random": "EXACT WSP145 source-blind random20+12 keyed by new public law_id",
+    "adaptive": "EXACT WSP145 frozen outcome-adaptive20+12 algorithm, unmodified, new public law IDs only",
+    "all_arms": "20 common original WSP135 ordered inputs, then 12 policy-specific actual-effect observations. 32 per arm/world; no extra acquisition for confidence method.",
+    "score_locations": "Only after all three policies have sealed 64 outputs for all models, owner picks 8 shared never-paid x ranked by SHA256('WSP146|HELD|public_law_id|x') from 3-arm never-paid intersection. Hidden labels held privately; score world as independent unit. Action union max56, at least 8 common unseen."
+  },
+  "candidate": {
+    "name": "shallow_hypothesis_challenge",
+    "base": "EXACT unchanged WSP143 four-term source-blind hierarchical fit and readout on each policy's own 32 observed effects.",
+    "behavior": "For each world and every x in 0..63, keep original prediction if no shallow structural challenge. If base prediction is None or base state's fitted depth is <=2 or exactly5, return it unchanged. Only when base fitted level is 3 or4 AND prediction is confident, test high-order competing explanations as follows; output None (abstain) if any candidate provably disagrees, else original prediction.",
+    "challenge": "For each of the six possible six-factor degree5 conjunction masks m=(31,47,55,59,61,62), let target be observed XOR effect bits, and residual target XOR mask's 32-bit activation signature. Run unchanged WSP143 exact _solve only over the 57 features of degree<=4 to find a zero-to-three-term explanation of the residual. If any returned minimum-ranked solution uses <=3 terms, yields an exact-fit four-or-fewer-term explanation including m, and predicts a different output at x than the base prediction, with conflict there, abstain on x. If solver overflows >10000 equally ranked fits, conservatively abstain on all x for that mask when an alternative cannot be enumerated. Never silently select one of conflicting programs. Do not consult future x locations: produce complete 64-vector before withheld selection.",
+    "source_blind_inputs": "Only charged own rows and generic public feature masks. No source module, law family, ground truth, post-seal questions, scoring, or other arms.",
+    "comparison_ablations": {
+      "unchanged_baseline": "Exactly original WSP145 H.predict, with same rows and same actions.",
+      "depth_only": "Simple predeclared control abstains on every non-None prediction if fitted depth is3 or4; otherwise unchanged.",
+      "random_equal_coverage": "After all full64 prediction vectors sealed, source-private evaluator computes descriptive count-matched deterministic random abstention over the 8 held x for each policy/world using 'WSP146|RANDOMABSTAIN|law_id|x' (diagnostic only, explicitly label-aware count matching; not causal selection or primary mechanism).",
+      "flat_symbolic": "Independent WSP143 same-information flat exact symbolic predictions must tie original hierarchical baseline; any structural challenge must be numerically and symbolically reproducible.",
+      "conventional": "Unchanged fully fitted WSP135 CART, original WSP142 direct3 and WSP135 latent, source-blind, fitted to identical 32 per-arm effects; no-update control."
+    }
+  },
+  "frozen_metrics": {
+    "primary_family": "FIVE: 32 independent worlds x8 shared post-seal held x =256 paired predictions per arm. World-level win/loss/tie and uncertainty reported (don't treat 256 within-world answers as independent).",
+    "candidate_confident_wrong_max_pct": 1,
+    "candidate_correct_loss_vs_unchanged_adaptive_max_pp": 2.5,
+    "candidate_correct_loss_vs_best_fixed_or_random_baseline_max_pp": 5,
+    "candidate_correct_vs_depth_only_must_be_strictly_greater": true,
+    "candidate_confident_wrong_vs_original_adaptive_must_be_strictly_lower": true,
+    "candidate_no_increase_in_confident_wrong": true,
+    "known_three_cross_correct_loss_max_pp": 5,
+    "known_three_cross_confident_wrong_max_pct": 1,
+    "off_confident_wrong_max_pct": 2,
+    "symbolic_exact_full_prediction_mismatches_max": 0,
+    "cold_exact_identity_each_arm": "512/512 restored previous-law full readouts",
+    "source_receipts": "6144 charged events; 0 protected original events; 32 per policy per world",
+    "whole_process_cost": "Measure separate candidate challenge CPU wall peak memory and whole 3-arm source+fit+readout. Must not assert efficiency advantage absent matched workload. Candidate challenge overhead >=0, target <=3x baseline fit/readout CPU in identical study; exceeding this is development NO-GO.",
+    "outcome_if_all": "DEVELOPMENT_SHALLOW_CHALLENGE_CONFIDENCE_SUPPORTED",
+    "outcome_if_any": "DEVELOPMENT_SHALLOW_CHALLENGE_CONFIDENCE_NO_GO",
+    "scientific_pass": false,
+    "native_admission": false,
+    "no_postresult_tuning": true,
+    "cannot_reuse": [
+      "WSP145 scored 272018 and 272026",
+      "any previously scored synthetic seed",
+      "protected first-use candidate world"
+    ]
+  },
+  "qualification": {
+    "phase1": "Sole-file prereg at exact parent. Source-first-use forbidden before independent source-free code/negative tests.",
+    "phase2": "Source-blind challenge module + unit tests on fabricated mechanical rows only. Linux+Windows verify no source effects charged; preserve WSP145 frozen files exactly.",
+    "phase3": "Fresh source-safe custodian, owner-held prediction sealing, three-arm new public causal trial with original frozen controls. Linux+Windows authentic first result; archive original irrespective of negative.",
+    "phase4": "Source-pin G29 derived-only atlas, full final exact SHA inherited WSP135-137,139,141-146 and original complete root regression on Linux+Windows, independent G29 acceptance.",
+    "boundary": "Draft-only, no merge, original protected first-use, native model change, controller/scheduler/runner, paid APIs, acceptance promotion or deployment."
+  }
+}
