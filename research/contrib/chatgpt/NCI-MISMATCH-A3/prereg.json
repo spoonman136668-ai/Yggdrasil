@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.nci-mismatch-a3.prereg.v1",
+  "status": "FROZEN_SOURCEFREE_BEFORE_IMPLEMENTATION_OR_PRIMARY",
+  "parent_sha": "7078e6cd1ecda6a49b9fcdd1754d89ed47417f25",
+  "parent_tree": "14729aedb7ac1f083846533dcf55ab9639c87d1a",
+  "owner_pr": 1182,
+  "date_utc": "2026-11-17",
+  "question": "Can contradiction-triggered source-observation auditing reduce false confident held-out predictions under causal-family shift and corrupted labels while retaining in-family coverage, under the same 32 fabricated action-consequence observations?",
+  "scope": "New source-free simulated worlds only. No CKAD09/12 original replay or A2 score-based tuning. No original-source effects or original first-use, native acceptance, controller, runner, scheduler, PR or merge. Reuse unchanged A2 generator and native 7-bit degree2 readout.",
+  "worlds": {
+    "in_family": "Synthetic seed300..331, 32 independently generated degree2 private Boolean worlds",
+    "shift": "Synthetic seed400..431, 32 private degree3 Boolean worlds; learner NOT told world class",
+    "corrupt": "Same seed300..331 but labels of first24 observations SHA-permuted only, eight audit effects genuine; separate negative experiment, NOT independent worlds",
+    "input": "Seven binary coordinates, six properties and action; A2 supplied monomial truth construction, policy receives only witnessed public effects",
+    "held": "Same A2 SHA256-frozen 64 of 128 possible input masks; withheld from policy, immutable; no truth until predictions sealed",
+    "budget": "Per scenario and audit arm 8 initial +16 FIT +8 fresh AUDIT effects; target audit and full32 baseline reuse exactly same32 effects, random audit gets own matching8 effects; 64 simulated source effects per scenario total"
+  },
+  "rules": {
+    "shared_fit": "A2 active input-only order: first8 common initial and first16 selected =24. Train degree2; lock checkpoint before selecting audit. Same24 observed outcomes for targeted and random audits.",
+    "target_probe": "Choose eight unobserved masks from remaining40. Favor masks predicted IDENTIFIED by frozen24fit model; then degree3 generic input-only feature rank gain, balanced action novelty and SHA tie. No hidden truth or source outcomes to choose. Degree3 monitor is supplied bias, NOT a family label.",
+    "random_probe": "Eight distinct remaining masks sorted by SHA256('nci-mismatch-a3:random:'+seed+':'+mask), no outcome dependence.",
+    "gate": "Candidate24 must exist. Require at least four audit probes with identified prediction and zero wrong outcomes; otherwise deny all held readouts. After gate refit ordinary native degree2 on all32 witnessed effects; refusal/inconsistency denies.",
+    "baseline": "On same targeted32 effects train unvalidated native degree2; report all held predictions including wrong.",
+    "random_audit": "Identical24 fit, eight random audit effects, same four-confirmations-and-zero-contradiction gate and refit on its32 effects.",
+    "controls": "Independent existing A2 symbolic solver exactly matches native on all128 masks for full32 baseline and enabled target/random outputs. Fully trained CART on targeted32; report separate compute costs.",
+    "negative": "SHIFT and CORRUPT evaluated separately. Held truth, original source and true family never pass to detector."
+  },
+  "frozen_thresholds": {
+    "primary": "SHIFT target wrong/confident reduces >=90% vs unvalidated baseline AND wrong among targeted answered <=1% AND wrong among all targeted held <=1%",
+    "retention": "IN_FAMILY targeted >=75% correct held coverage with zero wrong, and no >10pp loss of correct coverage vs unvalidated baseline",
+    "comparison": "Target <= random-audit wrong answers; ties reported.",
+    "negative": "CORRUPT targeted wrong among confident <=1% and explicit false admissions; negative failure => DEVELOPMENT_NO_GO",
+    "engineering": "Exact32-effect budget per audit arm, all held outcomes sealed until predictions ready, cold checkpoint equality, symbolic parity, source-seed pins and negatives, Linux/Windows stable replication, full final root+NKR05/G29",
+    "science": "scientific_pass=false regardless, synthetic supplied degree2/3 grammar and equivalent symbolic"
+  },
+  "sampling": "One frozen 32+32 paired seed collection, no post-result changes, null/negative retained",
+  "no_original_source_actions": true,
+  "accepted_native": false,
+  "main_unchanged": true,
+  "paths": [
+    "research/contrib/chatgpt/NCI-MISMATCH-A3/",
+    "tests/test_nci_mismatch_a3.py",
+    ".github/workflows/nci-mismatch-a3.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ]
+}
