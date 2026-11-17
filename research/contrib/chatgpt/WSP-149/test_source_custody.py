@@ -34,3 +34,17 @@ class PublicCustodyPreflight(TestCase):
         self.assertNotIn('_truth(',code)
         self.assertFalse(Path(__file__).with_name('result.json').exists())
         # NEVER make allowed Custodian.query() or _truth() here.
+
+    def test_03_study_import_stages_histories_without_source_effect(self):
+        # Imports source owner *definition* but performs ZERO charged queries.
+        import experiment as E
+        self.assertEqual(tuple(len(seeds) for family,seeds in E.FAMILIES),
+                         (16,32,8,8))
+        self.assertEqual(E.POLICIES,('fixed','random','adaptive'))
+        self.assertIn('learned_prior',E.METHODS)
+        self.assertIn('fully_fitted_cart',E.METHODS)
+        self.assertIn('full_poly_symbolic',E.METHODS)
+        self.assertEqual(E.W.empty_memory()['worlds'],0)
+        for protected in (E.W,E.P,E.Z,E.C,E.R,E.H,E.F,E.D,E.N):
+            self.assertNotIn('source',protected.__dict__)
+        # No transfer-scoring or private truth method is called.
