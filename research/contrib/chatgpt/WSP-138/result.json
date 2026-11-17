@@ -1,0 +1,427 @@
+{
+  "schema": "wsp138.original-dual-platform-cost-no-go-archive.v1",
+  "created_utc": "2026-11-17",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "pr": 1185,
+  "prereg_first_sha": "27d5a7b694e996a98c5d2a3f7e5b6cc69f846f9b",
+  "original_code_sha": "45419e1392516e23a04f8bb5f2658e445e4d8df5",
+  "original_code_tree": "b91c29e74070ca654d341d300285fb03071754c9",
+  "original_source_safe_run_id": 44050275032,
+  "linux_job_id": 133926047537,
+  "windows_job_id": 133926047213,
+  "source_safe_qualified": "COMPLETED_SUCCESS_BOTH",
+  "scientific_pass": false,
+  "native_admission": false,
+  "original_external_source_actions": 0,
+  "frozen_cost_classification": "DEVELOPMENT_COST_OPTIMIZATION_NO_GO",
+  "score_and_provenance_results_match_both_platforms": true,
+  "interpretation": "Original and lazy select same actual action and same 64 predictions each world; exactly 1024 distinct public synthetic actions shared. Lazy reduced policy mutable state by 7.7448x and reduced selector time ~1.61x Linux /1.66x Windows, whole model time ~1.22x/1.24x, both BELOW frozen >=2.0x selector and >=1.25x whole phase thresholds. An additional 7/128 out-family confident errors persist identically in both original and optimized. No post-result threshold adjustment. Original source-safe development negative is retained independently of mandatory full final regression status.",
+  "raw_results": {
+    "ubuntu": {
+      "cold_restore_byte_identical": true,
+      "cost": {
+        "energy": "NOT_MEASURED",
+        "lazy_mutable_structural_bytes": 14119200,
+        "mutable_structure_ratio_old_over_new": 7.744822,
+        "original_mutable_structural_bytes": 109350688,
+        "original_over_lazy_speedups": {
+          "full_model_cpu_seconds": 1.224936,
+          "full_model_wall_seconds": 1.224985,
+          "selector_cpu_seconds": 1.609529,
+          "selector_wall_seconds": 1.610309
+        },
+        "per_platform_gate_pass": false,
+        "profiles": {
+          "lazy": {
+            "full_model_cpu_seconds": 67.8813212,
+            "full_model_wall_seconds": 67.8849757,
+            "profile_parts_seconds": {
+              "choose_cpu_ns": 12.4893532,
+              "choose_wall_ns": 12.4861095,
+              "chooser_observe_cpu_ns": 0.0124753,
+              "chooser_observe_wall_ns": 0.0100309,
+              "observe_cpu_ns": 2.3354949,
+              "observe_wall_ns": 2.3332073,
+              "readout_cpu_ns": 0.8128027,
+              "readout_wall_ns": 0.8128025,
+              "restore_cpu_ns": 52.1950044,
+              "restore_wall_ns": 52.2041966,
+              "snapshot_cpu_ns": 0.0486661,
+              "snapshot_wall_ns": 0.0486598
+            },
+            "selector_cpu_seconds": 12.5018286,
+            "selector_wall_seconds": 12.4961404
+          },
+          "original": {
+            "full_model_cpu_seconds": 83.1502929,
+            "full_model_wall_seconds": 83.1580668,
+            "profile_parts_seconds": {
+              "choose_cpu_ns": 6.7733363,
+              "choose_wall_ns": 6.7771306,
+              "chooser_observe_cpu_ns": 13.3487171,
+              "chooser_observe_wall_ns": 13.3455139,
+              "observe_cpu_ns": 15.6512459,
+              "observe_wall_ns": 15.6496081,
+              "readout_cpu_ns": 0.8117,
+              "readout_wall_ns": 0.8115971,
+              "restore_cpu_ns": 59.8656339,
+              "restore_wall_ns": 59.8713565,
+              "snapshot_cpu_ns": 0.0483769,
+              "snapshot_wall_ns": 0.0483744
+            },
+            "selector_cpu_seconds": 20.1220534,
+            "selector_wall_seconds": 20.1226445
+          }
+        },
+        "total_platform_charge": "UNQUALIFIED",
+        "whole_trial_cpu_seconds": 157.862,
+        "whole_trial_peak_tracemalloc_bytes": 302930164,
+        "whole_trial_wall_seconds": 157.887
+      },
+      "eligible_public_actions": 48,
+      "exact_full64_action_and_prediction_parity": true,
+      "family_worlds": {
+        "known": 12,
+        "off": 8,
+        "transfer": 6,
+        "unfamiliar": 12
+      },
+      "frozen_known_laws_preserved": true,
+      "learner_algo_changed": false,
+      "limitations": [
+        "source-safe synthetic only; source oracle is reference with stronger prior",
+        "no new primitive invention, no original CausalGym first-use or independent science",
+        "public action availability reveals which 16 questions are excluded",
+        "Python structural container estimate does not equal peak RSS or GPU/energy",
+        "CPU and wall ratio values are same-process separated policy phases with a shared source, not external end-user throughput"
+      ],
+      "matched_controls": {
+        "known": {
+          "cart": {
+            "abstained": 0,
+            "correct": 123,
+            "held": 192,
+            "wrong_confident": 69
+          },
+          "oracle": {
+            "abstained": 0,
+            "correct": 192,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "symbolic": {
+            "abstained": 30,
+            "correct": 162,
+            "held": 192,
+            "wrong_confident": 0
+          }
+        },
+        "off": {
+          "cart": {
+            "abstained": 0,
+            "correct": 69,
+            "held": 128,
+            "wrong_confident": 59
+          },
+          "oracle": {
+            "abstained": 128,
+            "correct": 0,
+            "held": 128,
+            "wrong_confident": 0
+          },
+          "symbolic": {
+            "abstained": 112,
+            "correct": 9,
+            "held": 128,
+            "wrong_confident": 7
+          }
+        },
+        "unfamiliar": {
+          "cart": {
+            "abstained": 0,
+            "correct": 87,
+            "held": 192,
+            "wrong_confident": 105
+          },
+          "oracle": {
+            "abstained": 0,
+            "correct": 192,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "symbolic": {
+            "abstained": 5,
+            "correct": 187,
+            "held": 192,
+            "wrong_confident": 0
+          }
+        }
+      },
+      "model_state_sha256": "465368cb482c2ac9a2e1b0187dba37261f6408d69f0f9ac38c7f0a9e9c22f71b",
+      "native_admission": false,
+      "original_external_source_calls": 0,
+      "original_source_firstuse": false,
+      "paired_scores": {
+        "known": {
+          "common": {
+            "abstained": 30,
+            "correct": 162,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "full_held": {
+            "abstained": 37,
+            "correct": 347,
+            "held": 384,
+            "wrong_confident": 0
+          }
+        },
+        "off": {
+          "common": {
+            "abstained": 112,
+            "correct": 9,
+            "held": 128,
+            "wrong_confident": 7
+          },
+          "full_held": {
+            "abstained": 224,
+            "correct": 17,
+            "held": 256,
+            "wrong_confident": 15
+          }
+        },
+        "unfamiliar": {
+          "common": {
+            "abstained": 5,
+            "correct": 187,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "full_held": {
+            "abstained": 5,
+            "correct": 379,
+            "held": 384,
+            "wrong_confident": 0
+          }
+        }
+      },
+      "per_world_profile_receipts_sha256": "40ae82bcb6e4fd0d631041effffedd3212383627d4db528123a3a42383b40c42",
+      "policy_immutable_rank_sha256": "be557e195c69c794cb07af39aeb6a3200f2fe4b49fdd425d5eea1562312c04cc",
+      "prior_knowledge_unchanged": true,
+      "public_paired_held_queries": 16,
+      "same_info_symbolic_prediction_parity": true,
+      "schema": "wsp138.prospective-lazy-sourceblind-cost-equality-result.v1",
+      "scientific_pass": false,
+      "source_receipts_sha256": "dcc47342c9dfd062a471afd71cb07ccb7fee44cb9ea7a8b3bc4f167e0d1dccc7",
+      "source_safe_calls": 1024,
+      "status": "DEVELOPMENT_COST_OPTIMIZATION_NO_GO_PLATFORM",
+      "zero_action_transfer_abstained": 26,
+      "zero_action_transfer_correct": 358,
+      "zero_action_transfer_same": 384,
+      "zero_action_transfer_wrong": 0
+    },
+    "windows": {
+      "cold_restore_byte_identical": true,
+      "cost": {
+        "energy": "NOT_MEASURED",
+        "lazy_mutable_structural_bytes": 14119200,
+        "mutable_structure_ratio_old_over_new": 7.744822,
+        "original_mutable_structural_bytes": 109350688,
+        "original_over_lazy_speedups": {
+          "full_model_cpu_seconds": 1.239304,
+          "full_model_wall_seconds": 1.239182,
+          "selector_cpu_seconds": 1.677551,
+          "selector_wall_seconds": 1.660983
+        },
+        "per_platform_gate_pass": false,
+        "profiles": {
+          "lazy": {
+            "full_model_cpu_seconds": 64.640625,
+            "full_model_wall_seconds": 64.5749909,
+            "profile_parts_seconds": {
+              "choose_cpu_ns": 11.453125,
+              "choose_wall_ns": 11.4680222,
+              "chooser_observe_cpu_ns": 0.03125,
+              "chooser_observe_wall_ns": 0.0087018,
+              "observe_cpu_ns": 2.296875,
+              "observe_wall_ns": 2.2208464,
+              "readout_cpu_ns": 0.734375,
+              "readout_wall_ns": 0.7257005,
+              "restore_cpu_ns": 50.125,
+              "restore_wall_ns": 50.1165462,
+              "snapshot_cpu_ns": 0.03125,
+              "snapshot_wall_ns": 0.0438756
+            },
+            "selector_cpu_seconds": 11.484375,
+            "selector_wall_seconds": 11.476724
+          },
+          "original": {
+            "full_model_cpu_seconds": 80.109375,
+            "full_model_wall_seconds": 80.0201522,
+            "profile_parts_seconds": {
+              "choose_cpu_ns": 6.25,
+              "choose_wall_ns": 6.3174856,
+              "chooser_observe_cpu_ns": 13.015625,
+              "chooser_observe_wall_ns": 12.7451603,
+              "observe_cpu_ns": 15.109375,
+              "observe_wall_ns": 14.9454415,
+              "readout_cpu_ns": 0.71875,
+              "readout_wall_ns": 0.7256859,
+              "restore_cpu_ns": 57.984375,
+              "restore_wall_ns": 57.9876763,
+              "snapshot_cpu_ns": 0.046875,
+              "snapshot_wall_ns": 0.0438629
+            },
+            "selector_cpu_seconds": 19.265625,
+            "selector_wall_seconds": 19.0626459
+          }
+        },
+        "total_platform_charge": "UNQUALIFIED",
+        "whole_trial_cpu_seconds": 151.234,
+        "whole_trial_peak_tracemalloc_bytes": 302930164,
+        "whole_trial_wall_seconds": 151.288
+      },
+      "eligible_public_actions": 48,
+      "exact_full64_action_and_prediction_parity": true,
+      "family_worlds": {
+        "known": 12,
+        "off": 8,
+        "transfer": 6,
+        "unfamiliar": 12
+      },
+      "frozen_known_laws_preserved": true,
+      "learner_algo_changed": false,
+      "limitations": [
+        "source-safe synthetic only; source oracle is reference with stronger prior",
+        "no new primitive invention, no original CausalGym first-use or independent science",
+        "public action availability reveals which 16 questions are excluded",
+        "Python structural container estimate does not equal peak RSS or GPU/energy",
+        "CPU and wall ratio values are same-process separated policy phases with a shared source, not external end-user throughput"
+      ],
+      "matched_controls": {
+        "known": {
+          "cart": {
+            "abstained": 0,
+            "correct": 123,
+            "held": 192,
+            "wrong_confident": 69
+          },
+          "oracle": {
+            "abstained": 0,
+            "correct": 192,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "symbolic": {
+            "abstained": 30,
+            "correct": 162,
+            "held": 192,
+            "wrong_confident": 0
+          }
+        },
+        "off": {
+          "cart": {
+            "abstained": 0,
+            "correct": 69,
+            "held": 128,
+            "wrong_confident": 59
+          },
+          "oracle": {
+            "abstained": 128,
+            "correct": 0,
+            "held": 128,
+            "wrong_confident": 0
+          },
+          "symbolic": {
+            "abstained": 112,
+            "correct": 9,
+            "held": 128,
+            "wrong_confident": 7
+          }
+        },
+        "unfamiliar": {
+          "cart": {
+            "abstained": 0,
+            "correct": 87,
+            "held": 192,
+            "wrong_confident": 105
+          },
+          "oracle": {
+            "abstained": 0,
+            "correct": 192,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "symbolic": {
+            "abstained": 5,
+            "correct": 187,
+            "held": 192,
+            "wrong_confident": 0
+          }
+        }
+      },
+      "model_state_sha256": "465368cb482c2ac9a2e1b0187dba37261f6408d69f0f9ac38c7f0a9e9c22f71b",
+      "native_admission": false,
+      "original_external_source_calls": 0,
+      "original_source_firstuse": false,
+      "paired_scores": {
+        "known": {
+          "common": {
+            "abstained": 30,
+            "correct": 162,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "full_held": {
+            "abstained": 37,
+            "correct": 347,
+            "held": 384,
+            "wrong_confident": 0
+          }
+        },
+        "off": {
+          "common": {
+            "abstained": 112,
+            "correct": 9,
+            "held": 128,
+            "wrong_confident": 7
+          },
+          "full_held": {
+            "abstained": 224,
+            "correct": 17,
+            "held": 256,
+            "wrong_confident": 15
+          }
+        },
+        "unfamiliar": {
+          "common": {
+            "abstained": 5,
+            "correct": 187,
+            "held": 192,
+            "wrong_confident": 0
+          },
+          "full_held": {
+            "abstained": 5,
+            "correct": 379,
+            "held": 384,
+            "wrong_confident": 0
+          }
+        }
+      },
+      "per_world_profile_receipts_sha256": "40ae82bcb6e4fd0d631041effffedd3212383627d4db528123a3a42383b40c42",
+      "policy_immutable_rank_sha256": "be557e195c69c794cb07af39aeb6a3200f2fe4b49fdd425d5eea1562312c04cc",
+      "prior_knowledge_unchanged": true,
+      "public_paired_held_queries": 16,
+      "same_info_symbolic_prediction_parity": true,
+      "schema": "wsp138.prospective-lazy-sourceblind-cost-equality-result.v1",
+      "scientific_pass": false,
+      "source_receipts_sha256": "dcc47342c9dfd062a471afd71cb07ccb7fee44cb9ea7a8b3bc4f167e0d1dccc7",
+      "source_safe_calls": 1024,
+      "status": "DEVELOPMENT_COST_OPTIMIZATION_NO_GO_PLATFORM",
+      "zero_action_transfer_abstained": 26,
+      "zero_action_transfer_correct": 358,
+      "zero_action_transfer_same": 384,
+      "zero_action_transfer_wrong": 0
+    }
+  }
+}
