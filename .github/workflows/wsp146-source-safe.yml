@@ -1,7 +1,7 @@
-name: WSP146 prospective queryblind feedback-conditioned active causal acquisition
+name: WSP146 prospective shallow causal confidence challenge
 on:
   push:
-    branches: [research/wsp146-queryblind-active-disambiguation-20261117]
+    branches: [research/wsp146-shallow-hypothesis-challenge-20261117]
 permissions:
   contents: read
 jobs:
@@ -35,7 +35,7 @@ jobs:
           git merge-base --is-ancestor e1d1129fda0dd78487f4d1299048d4588bb59d9c HEAD
           git diff --exit-code e1d1129fda0dd78487f4d1299048d4588bb59d9c HEAD -- research/contrib/chatgpt/WSP-145 research/contrib/chatgpt/WSP-144 research/contrib/chatgpt/WSP-143
           git merge-base --is-ancestor c3ebf7fa24090f3cbdf3a8160473ae3b7232d875 HEAD
-          git diff --exit-code c3ebf7fa24090f3cbdf3a8160473ae3b7232d875 HEAD -- research/contrib/chatgpt/WSP-146/selector.py research/contrib/chatgpt/WSP-146/test_selector.py
+          git diff --exit-code c3ebf7fa24090f3cbdf3a8160473ae3b7232d875 HEAD -- research/contrib/chatgpt/WSP-146/challenge.py research/contrib/chatgpt/WSP-146/test_challenge.py
           test -f research/contrib/chatgpt/WSP-146/source.py
           test -f research/contrib/chatgpt/WSP-146/experiment.py
           git diff --exit-code e1d1129fda0dd78487f4d1299048d4588bb59d9c HEAD -- research/contrib/chatgpt/WSP-135/learner.py research/contrib/chatgpt/WSP-135/controls.py research/contrib/chatgpt/WSP-142/direct_weights.py research/contrib/chatgpt/WSP-143/result.json research/contrib/chatgpt/WSP-143/concepts.py research/contrib/chatgpt/WSP-144/source.py research/contrib/chatgpt/WSP-144/result.json
@@ -82,7 +82,7 @@ jobs:
           git commit -m "docs(wsp146): pin G29 source atlas at $SOURCE"
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/wsp146-queryblind-active-disambiguation-20261117
+          git push origin HEAD:refs/heads/research/wsp146-shallow-hypothesis-challenge-20261117
   final-regression:
     needs: [development]
     if: "startsWith(github.event.head_commit.message, 'docs(wsp146): pin G29 source atlas at ') && github.run_attempt == 1 && needs.development.result == 'success'"
@@ -113,7 +113,7 @@ jobs:
           git diff --exit-code e1d1129fda0dd78487f4d1299048d4588bb59d9c HEAD -- research/contrib/chatgpt/WSP-135/learner.py research/contrib/chatgpt/WSP-135/controls.py research/contrib/chatgpt/WSP-142/direct_weights.py research/contrib/chatgpt/WSP-143/result.json research/contrib/chatgpt/WSP-143/concepts.py research/contrib/chatgpt/WSP-144/source.py research/contrib/chatgpt/WSP-144/result.json
           test ! -e research/contrib/chatgpt/WSP-146/first_use_authorization.json
           python -B scripts/build_code_atlas.py --check-if-present
-      - name: Mandatory inherited WSP135-137,139,141-145 and complete root regression
+      - name: Mandatory inherited WSP135-137,139,141-146 and complete root regression
         shell: bash
         run: |
           set -euo pipefail
