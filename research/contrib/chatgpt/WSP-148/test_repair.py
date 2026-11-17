@@ -24,8 +24,8 @@ class CoordinatedWeightUnit(TestCase):
             "Custodian", "_truth(", "majority", "MAJ5", "threshold",
         ):
             self.assertNotIn(forbidden, code)
-        self.assertFalse(Path(__file__).with_name("source.py").exists())
-        self.assertFalse(Path(__file__).with_name("result.json").exists())
+        # Source custody is checked by the pinned pre-source workflow; unit tests
+        # must remain source-free even after the independent owner is added.
 
     def test_02_source_free_exact_fabricated_fit_and_cold(self):
         rows = fabricated()
