@@ -1,0 +1,19 @@
+# WSP-143 — Four-term causal composition and rare-event evidence gate
+
+**Scope:** Isolated, prospective public-synthetic development experiment. No native Yggdrasil model admission, protected first-use, merge, or scientific PASS.
+
+**Origin:** WSP-142 [PR #1188](https://github.com/spoonman136668-ai/Yggdrasil/pull/1188) produced a frozen NO-GO. Eight of sixteen three-way worlds contained a fourth XOR constant and the <=3-term learner abstained on all such worlds. Five-way worlds produced 11/256 confident errors. Its source cohorts and negative result remain frozen. WSP138/140 cost studies and WSP141 intervention-selection studies are unrelated.
+
+**Sole-file FIRST prospective prereg:** `8a1e4d8f5e84b6fabeae190c43f7167b1c7ecbb0` on exact final WSP142 `7908d0cf18fa46c17aafa24d49c7480c21d8f814`, tree `d661bc5e7ae2842ccd0b164445fc8e0fd24e4089`. All source, learner, evaluator, tests, workflow and results follow the prereg only.
+
+**New source:** SHA256-separate WSP143 cohorts: 8 known 250000–250007, 16 three-way 251000–251015, 16 five-way 252000–252015, 8 random off-family 253000–253007, and four source-free same-law cold relabels 254000–254003. All other seeds and historical protected DTR/MDP/CausalGym first-use disarmed before RNG. Every model receives the **same 32 actually paid fixed WSP135 action/effect pairs** on each of 48 worlds (1,536 effects total); 16 of 32 genuinely unqueried typed contexts are selected by source-private SHA256 **after readouts are frozen**. Also score all 32 held.
+
+**Candidate:** Directly program up to FOUR binary XOR weights over a source-independent generic dictionary of 63 AND-of-raw-bit features (constant + raw conjunctions through degree5). Minimize nonzero count then summed feature degree and retain ALL tied best exact models, no top-K truncation. Emit prediction only if all best models agree. Separately, refuse inference on an x activating any five-bit conjunction mask that has **never activated in the 32 observed contexts**. This witness rule is uniform across all six possible degree5 masks and uses no source grammar, seed or target label.
+
+**Controls:** Frozen original WSP142 <=3-term weight fit (tests repair), original WSP135 17,640-codebook fit, fully fitted original CART depth6 and no-update abstainer; all see identical paid effects and no oracle action guidance. Independently coded equal-information symbolic four-term exact minimum-rank search and independently coded same generic witness check MUST match every output. A tie invalidates any unique numerical-weight advantage.
+
+**Frozen advance criterion:** Three-way correct-coverage improvement >=10pp against BEST of original three-term/WSP135/CART; confident wrong <=1%, coverage >=85%. Five-way no worse than best original by >5pp, <=1% confident wrong, >=85% coverage. Known loss <=5pp; off-family confident wrong <=1%; exact source budget, cold restored 256/256 relabel predictions per method, no knowledge interference and numerical/symbolic parity. Failure in **any** gate is `DEVELOPMENT_FOUR_TERM_WITNESS_NO_GO` (do not retune or repeat source cohort). Source/score/per-world/witness/compute/receipt digests must be recorded.
+
+**Limitations:** AND/XOR, mask support, six-bit input space, max4 sparsity and the witness guard are *supplied*, not invented primitives. Synthetic 16 independent worlds per unknown family are not independent real-world causal data. No original source first-use, separately fully trained deep baseline or matched energy. Even a result-supported engineering PASS is not SCIENTIFIC_PASS, native intelligence, autonomy, or deployment.
+
+**Qualification:** Original GitHub Ubuntu+Windows source-safe trial; freeze original positive or negative and SHA digests; source-pin G29 derived-only html/ice/json; mandatory original final inherited WSP135–137,139,141–143 and root dual-platform regression. Draft/unmerged, accepted main untouched.
