@@ -1,4 +1,4 @@
-name: CKAD05 native persistent property knowledge
+name: CKAD06 native cumulative relation evidence
 on:
   push:
     branches: [research/ckad02-04-native-context-basis-20261116]
@@ -14,7 +14,7 @@ env:
   MKL_NUM_THREADS: '1'
 jobs:
   development:
-    if: "github.event.head_commit.message == 'ci(ckad05): run frozen native property knowledge campaign'"
+    if: "github.event.head_commit.message == 'ci(ckad06): run frozen same-address cumulative evidence campaign'"
     strategy:
       fail-fast: false
       matrix:
@@ -38,8 +38,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          git merge-base --is-ancestor 31ccca7906ef39324a3ee7f9e45e6f1962aa75bf HEAD
-          python -B -m unittest discover -s tests -p test_native_property_knowledge.py -v
+          git merge-base --is-ancestor 663ade8d8cf10489e3d56d835d7a3733d489dd85 HEAD
+          python -B -m unittest discover -s tests -p test_native_context_accumulator.py -v
           python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
           test -z "$(git status --porcelain)"
   primary:
@@ -67,13 +67,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -B research/contrib/chatgpt/CKAD-05/campaign.py \
-            --output-directory "$RUNNER_TEMP/ckad05-linux"
+          python -B research/contrib/chatgpt/CKAD-06/campaign.py \
+            --output-directory "$RUNNER_TEMP/ckad06-linux"
           test -z "$(git status --porcelain)"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: CKAD05-linux-proof
-          path: ${{ runner.temp }}/ckad05-linux/
+          name: CKAD06-linux-proof
+          path: ${{ runner.temp }}/ckad06-linux/
           if-no-files-found: error
           retention-days: 30
   replication:
@@ -99,17 +99,17 @@ jobs:
           python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Independent Windows stable reproduction
         env:
-          CKAD05_EXPECTED_RESULT: ${{ needs.primary.outputs.result }}
+          CKAD06_EXPECTED_RESULT: ${{ needs.primary.outputs.result }}
         shell: bash
         run: |
           set -euo pipefail
-          python -B research/contrib/chatgpt/CKAD-05/campaign.py \
-            --output-directory "$RUNNER_TEMP/ckad05-windows" --verify-env
+          python -B research/contrib/chatgpt/CKAD-06/campaign.py \
+            --output-directory "$RUNNER_TEMP/ckad06-windows" --verify-env
           test -z "$(git status --porcelain)"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: CKAD05-windows-proof
-          path: ${{ runner.temp }}/ckad05-windows/campaign-result.json
+          name: CKAD06-windows-proof
+          path: ${{ runner.temp }}/ckad06-windows/campaign-result.json
           if-no-files-found: error
           retention-days: 30
   seal:
@@ -133,32 +133,32 @@ jobs:
           python-version: '3.12'
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: CKAD05-linux-proof
+          name: CKAD06-linux-proof
           path: ${{ runner.temp }}/ckad-linux
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: CKAD05-windows-proof
+          name: CKAD06-windows-proof
           path: ${{ runner.temp }}/ckad-windows
       - name: Seal full native knowledge checkpoints, then derive source atlas
         id: seal
         env:
-          CKAD05_LINUX_DIRECTORY: ${{ runner.temp }}/ckad-linux
-          CKAD05_WINDOWS_DIRECTORY: ${{ runner.temp }}/ckad-windows
-          CKAD05_PREREG_SHA: 31ccca7906ef39324a3ee7f9e45e6f1962aa75bf
+          CKAD06_LINUX_DIRECTORY: ${{ runner.temp }}/ckad-linux
+          CKAD06_WINDOWS_DIRECTORY: ${{ runner.temp }}/ckad-windows
+          CKAD06_PREREG_SHA: 663ade8d8cf10489e3d56d835d7a3733d489dd85
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          python -B research/contrib/chatgpt/CKAD-05/seal.py
-          git add -- research/contrib/chatgpt/CKAD-05
+          python -B research/contrib/chatgpt/CKAD-06/seal.py
+          git add -- research/contrib/chatgpt/CKAD-06
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'research(ckad05): preserve full native property state and learned relation evidence'
+          git commit -m 'research(ckad06): preserve full same-address evidence and frozen negative outcomes'
           RESULT_SOURCE="$(git rev-parse HEAD)"
           python -B scripts/build_code_atlas.py --write --source-commit "$RESULT_SOURCE"
           git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
           python -B -c "import subprocess; assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())=={'.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json'}"
-          git commit -m "docs(ckad05): native property knowledge source atlas at $RESULT_SOURCE"
+          git commit -m "docs(ckad06): native property knowledge cumulative source atlas at $RESULT_SOURCE"
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
           git push origin HEAD:refs/heads/research/ckad02-04-native-context-basis-20261116
@@ -191,7 +191,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE"
           git rev-parse HEAD HEAD^{tree}
-          git merge-base --is-ancestor 31ccca7906ef39324a3ee7f9e45e6f1962aa75bf HEAD
+          git merge-base --is-ancestor 663ade8d8cf10489e3d56d835d7a3733d489dd85 HEAD
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
