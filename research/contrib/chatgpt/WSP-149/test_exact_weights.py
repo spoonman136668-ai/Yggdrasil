@@ -64,7 +64,17 @@ class SourceFreeGF2(TestCase):
             W.restore_model({**model,'weights':model['weights']^1},r,m)
         for x in (True,64,-1,'0'):
             with self.assertRaises(ValueError):W.predict(model,x)
-    def test_05_generic_prior_changes_order_not_source(self):
+    def test_05_distinct_opaque_world_ids_can_share_32_observed_rows(self):
+        rows=fabricated(0)
+        state=W.empty_memory()
+        state,_=W.remember(state,rows,world_id=101)
+        with self.assertRaises(ValueError):W.remember(state,rows,world_id=101)
+        updated,_=W.remember(state,rows,world_id=102)
+        self.assertEqual(updated['worlds'],2)
+        self.assertEqual(len(set(updated['row_receipts'])),2)
+        with self.assertRaises(ValueError):W.remember(updated,rows,world_id=True)
+
+    def test_06_generic_prior_changes_order_not_source(self):
         p=W.empty_memory()
         self.assertEqual(W.coefficient_order(p),tuple(sorted(range(64),
             key=lambda m:(m.bit_count(),m))))

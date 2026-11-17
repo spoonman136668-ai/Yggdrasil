@@ -225,7 +225,7 @@ def run():
             if fam=='fit':
                 # Only earlier fully paid FIT histories update causal prior.
                 for p in POLICIES:
-                    updated,check=W.remember(memory[p],history[p])
+                    updated,check=W.remember(memory[p],history[p],world_id=view.law_id)
                     if check['weights']!=state[p]['weights']:
                         raise AssertionError('WSP149_PRIOR_UPDATER_DRIFT')
                     memory[p]=updated

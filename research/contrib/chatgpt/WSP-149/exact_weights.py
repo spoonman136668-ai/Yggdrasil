@@ -127,11 +127,16 @@ def predict(model,x):
 def predictions(model):
     return tuple(predict(model,x) for x in FEATURES)
 
-def remember(memory,rows):
+def remember(memory,rows,world_id=None):
     value=_check_memory(memory)
     if value['frozen'] or value['worlds']>=16:
         raise ValueError('WSP149_TRANSFER_MEMORY_MUST_REMAIN_FROZEN')
-    rows=validate(rows);receipt=digest(rows)
+    rows=validate(rows)
+    if world_id is not None and (type(world_id) is not int or world_id<0):
+        raise ValueError('WSP149_BAD_OPAQUE_FIT_WORLD_ID')
+    # Independent worlds may legitimately yield identical observed rows.
+    # When a public opaque world ID is supplied, do not collapse them.
+    receipt=digest(rows) if world_id is None else digest([world_id,rows])
     if receipt in value['row_receipts']:
         raise ValueError('WSP149_DUPLICATE_FIT_WORLD')
     current=fit(rows,memory)
