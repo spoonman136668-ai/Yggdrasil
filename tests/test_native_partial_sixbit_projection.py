@@ -168,7 +168,7 @@ class PartialNativeWitnessTests(unittest.TestCase):
             bank=NativeRelationMemory.restore(out.checkpoint)
             local=slot if slot<7 else slot-7
             for ctx in range(16):
-                want=None if ctx>=8 else (1 if ctx%2==0 else 0)
+                want=None if ctx>=8 else (1 if ((ctx&1)^(slot&1))==0 else 0)
                 self.assertEqual(out.choose_certified(ctx),want)
                 if ctx<8:
                     pair=bank.observed_action_pair(local,ctx,retained=slot>=7)
