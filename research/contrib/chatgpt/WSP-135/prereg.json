@@ -1,0 +1,61 @@
+{
+  "schema": "wsp135.identifiability-preflight.prereg.v1",
+  "id": "WSP-135",
+  "source_parent_sha": "c33f8dc10f9b2bfe809d6e2f75d0dbb770fb1d7d",
+  "source_parent_tree": "265647d27463cce563a99c5075d00f96e1208f0d",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "phase": "PREREGISTRATION_FIRST_BEFORE_SOURCE_AND_RESULT",
+  "question": "Can 32 paid interventions identify unseen effects in a declared causal composition class, as measured by a complete source-grammar oracle? Separate information limits from learned-representation failure.",
+  "context": "WSP134 source-safe unfamiliar 400/1024 confidently wrong, WSP133 within-supplied grammar correct; WSP80 and NKR15 already research contradiction repair and abstention. No duplicate direct-learner implementation.",
+  "public_source": {
+    "known_seeds": "178000..178063",
+    "unfamiliar_seeds": "179000..179031",
+    "denied_seeds": "all other seeds including 178800..178863,179800..179831,180000..180063 and existing WSP original/protected cohorts; deny before RNG",
+    "n_known": 64,
+    "n_unfamiliar": 32,
+    "binary_input_domain": "0..63",
+    "paid_effects_per_world": 32,
+    "withheld_per_world": 32,
+    "source_namespace": "WSP135|KNOWN|seed or WSP135|UNFAMILIAR|seed hashed with SHA256 for source-only deterministic hidden wiring",
+    "known_law": "Random permutation of six inputs; hidden gate1 AND/OR/XOR/XNOR of p0,p1; gate2 same of p2,p3; hidden third AND/OR/XOR/XNOR of gate1,gate2; XOR either p4 or p4 AND p5 (source-only parity condition).",
+    "unfamiliar_law": "Random permutation; hidden gate1 and gate2 as above; source-only MAJORITY(gate1,gate2,p4) XOR p5.",
+    "visibility": "All candidate public action x in 0..63 and its opaque ID are known to policy BEFORE choice; effect returned only AFTER one source-charged action. Hidden true circuit/condition/truth never provided to policy, except oracle's general class grammar.",
+    "class": "PUBLIC_SYNTHETIC_DEVELOPMENT_DIAGNOSTIC_ONLY"
+  },
+  "arms": {
+    "adaptive": "Fully class-informed exact version-space oracle maximizes minority/majority split of candidate predicted effects over unqueried actions; tie lowest x.",
+    "fixed": "Same full grammar oracle, deterministic fixed x=0..31 at 32 queries.",
+    "random": "Same full grammar oracle, deterministic independent SHA256-seeded sample of 32 unique public x.",
+    "no_update": "Abstains always.",
+    "source_membership": "Source-only check true law occurs in oracle truth-table universe. Oracle must not get hidden per-world parameters."
+  },
+  "decisions": {
+    "information_sufficiency": "Adaptive oracle uniquely predicts >=95% held effects in BOTH cohorts, zero confidently wrong; otherwise UNDERIDENTIFIED_WITH_GIVEN_GRAMMAR.",
+    "active_policy_gain": "Adaptive oracle held correct minus max(fixed,random) held correct >=5 percentage points in unfamiliar cohort; report independently PASS/FAIL.",
+    "classification": "This is identifiability upper bound WITH SOURCE GRAMMAR SUPPLIED to oracle, NOT native learning, unsupplied operators, or SCIENTIFIC_PASS.",
+    "report": [
+      "held correct/wrong/abstain by arm and cohort",
+      "source calls and version-space survivors",
+      "exact source-membership",
+      "independent candidate-bank reconstruction",
+      "action and score digest",
+      "cross-OS reproducibility",
+      "CPU/wall/tracemalloc"
+    ]
+  },
+  "governance": {
+    "prereg_first_commit_only": true,
+    "first_use": false,
+    "scientific_pass": false,
+    "native_admission": false,
+    "no_merge": true,
+    "source_safe_only": true,
+    "no_paid_apis": true,
+    "no_new_runner_controller_or_scheduler": true,
+    "no_edit_prior_negative": true,
+    "allowed_paths": [
+      "research/contrib/chatgpt/WSP-135/**",
+      ".github/workflows/wsp135-source-safe.yml"
+    ]
+  }
+}
