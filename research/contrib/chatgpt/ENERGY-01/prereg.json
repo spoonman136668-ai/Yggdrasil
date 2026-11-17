@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.research-contrib.prereg.v1",
+  "experiment_id": "ENERGY-01",
+  "phase": "source-free synthetic DEVELOPMENT; no scientific first-use",
+  "project": "Yggdrasil",
+  "parent_commit": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "branch": "research/energy01-classical-causal-chains-20261117",
+  "citation": "Hoover, Blayney, Whittington, Classical Energies Learn to Reason 1,000x Faster than Looped Models, arXiv:2611.17309 (2026-11-12)",
+  "independent_implementation": "CRAM-inspired pairwise binary energy; NOT a CRAM reproduction",
+  "questions": [
+    "Can pairwise energies learned from observed intervention consequences solve new length-12 and length-20 causal chains?",
+    "At matched accuracy do they beat a matched learned looped propagation baseline and exact signed-graph propagation on whole-process CPU cost?"
+  ],
+  "task": "Source-free binary intervention worlds: two edge relation types (identity/inversion), 512 independent parent->child intervention examples per type; new test trees with random topology, a randomized root intervention, a known edge-type label, 12 and 20 nodes; no observed nonroot test states",
+  "seeds": [
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "fit_examples_per_relation": 512,
+  "test_graphs_per_size_per_seed": 100,
+  "size": [
+    12,
+    20
+  ],
+  "independent_training_and_test": "Deterministic PRNG streams keyed by phase, seed, graph index; no example or label reuse across train/test.",
+  "arms": [
+    "Learned signed pairwise energy; monotone single-bit coordinate descent; 8 seeded random restarts, <=64 sweeps; choose lowest-energy assignment",
+    "Learned recurrent wavefront update using the same fitted edge signs; <=64 synchronous rounds, stop on convergence",
+    "Exact signed-graph propagation using the same fitted edge signs and graph inputs; no access to test labels",
+    "Shuffled-sign energy negative control, identical search budget"
+  ],
+  "costs": [
+    "CPU wall process elapsed time via perf_counter_ns (fit + inference)",
+    "CPU process time_ns (fit + inference)",
+    "work units: pair-factor evaluations for energy, edge scans for looped and exact",
+    "peak memory via tracemalloc"
+  ],
+  "primary_metric": "fraction of test graphs with all node states correct, requiring 100% completion; also mean per-node accuracy",
+  "pass_rule": "Energy is a scientific-development candidate only if it reaches >=99% exact graph accuracy for BOTH sizes and all five seeds, ties or beats recurrent on accuracy, and median whole-process wall time <=0.5x BOTH recurrent and exact, with no worse per-node accuracy. Otherwise DEVELOPMENT_NO_GO. No integration on either outcome.",
+  "negative_controls": [
+    "Shuffle edge sign after fitting; target cannot be passed on unseen graphs at the same rate",
+    "Observe only a single root, no test nonroot truth permitted",
+    "No causal identification claims for empirical real-world data",
+    "No learned new relation family, only two known edge-class priors"
+  ],
+  "analysis": "All seeds and both sizes reported; no threshold/budget, hyperparameter, workload or seed retuning after test",
+  "changes_allowed": [
+    "research/contrib/chatgpt/ENERGY-01/**"
+  ],
+  "barred": [
+    "original external-source first-use",
+    "accepted state/refs",
+    "scheduler/runner/controller or autonomous FORGE integration",
+    "merging",
+    "paid APIs",
+    "production deployment"
+  ],
+  "control_note": "Recurrent wavefront is a learned-weights iterative propagation proxy, not a retrained TRM/HRM; exact signed graph is the strongest specified control. Hence speed claims cannot be generalized to paper baselines."
+}
