@@ -1,0 +1,46 @@
+name: WSP149 source owner schema and reproducible source-free preflight
+on:
+  push:
+    branches: [research/wsp149-exact-gf2-memory-transfer-20261117]
+permissions:
+  contents: read
+jobs:
+  custody:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prereg/lineage invariant and zero effect-scoring artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse b74f205d7ed02fe6d29a714e91a378e9152beb0d^)" = "233e7e3cc6714d698172824969fbb1f8c674c150"
+          test "$(git diff-tree --no-commit-id --name-only -r b74f205d7ed02fe6d29a714e91a378e9152beb0d)" = "research/contrib/chatgpt/WSP-149/prereg.json"
+          git diff --exit-code b74f205d7ed02fe6d29a714e91a378e9152beb0d HEAD -- research/contrib/chatgpt/WSP-149/prereg.json
+          git diff --exit-code 233e7e3cc6714d698172824969fbb1f8c674c150 HEAD -- research/contrib/chatgpt/WSP-148 research/contrib/chatgpt/WSP-147
+          test ! -e research/contrib/chatgpt/WSP-149/experiment.py
+          test ! -e research/contrib/chatgpt/WSP-149/result.json
+          test ! -e research/contrib/chatgpt/WSP-149/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: No real source queries and exact-model fabricated controls
+        run: |
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-149 -p 'test_exact_weights.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-149 -p 'test_source_custody.py' -v
+      - name: Confirm unmodified checkout
+        shell: bash
+        run: test -z "$(git status --porcelain)"
