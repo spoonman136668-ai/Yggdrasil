@@ -1,0 +1,54 @@
+{
+  "schema": "wsp150.certified-transfer-identifiability.prereg.v1",
+  "date_utc": "2026-11-17",
+  "phase": "SOLE_FILE_PRE_SOURCE",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/wsp150-certifiable-unknown-transfer-20261117",
+  "parent_commit": "55dd1e9e9f79a8a944a841330bb0ddcd93143a22",
+  "parent_tree": "3fd3f523614fbd2944b9c4fa0d96bef410708fb6",
+  "parent_pr": 1197,
+  "base_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prior_outcome": {
+    "engineering": "PASS",
+    "scientific": "DEVELOPMENT_EXACT_WEIGHT_MEMORY_TRANSFER_NO_GO",
+    "numeric": 158,
+    "control_cart": 170,
+    "held": 256,
+    "confident_errors": 98
+  },
+  "question": "Can a source-blind GF(2) coefficient program prove that its unseen predictions are or are not identified by own charged observations, and decline unjustified certitude without changing prior scientific data?",
+  "hypothesis": "For the unrestricted 64-coefficient ANF of six public binary inputs, any 32 distinct charged contexts leave exactly 32 independent binary degrees of freedom. Each uncharged context has both 0 and 1 consistent completions. A source-free linear-algebra certificate must show both completions, never assert unique unseen answers.",
+  "numerical_contract": {
+    "features": "64 ANF monomials over six typed binary input positions; same WSP149 feature order and evaluation",
+    "data": "ONLY a provided sequence of 32 distinct fabricated (x,y) observations and WSP149-fitted weights, no owner or source",
+    "model": "Provide a second coefficient vector w2 with A*w2=A*w (mod 2), but prediction at requested unobserved context x differs; observed contexts always checked and returned as observed only",
+    "method": "Deterministic GF(2) elimination of 33x64 homogeneous equations A*delta=0 plus one new held-row constraint phi(x)*delta=1; w2=w XOR delta. Verify both on all 32 observations and opposite at x",
+    "status": "OBSERVED or UNIDENTIFIABLE; neither a causal posterior nor a source truth label",
+    "negative_controls": "Reject non-distinct rows, bad label/type, invalid x, wrong weights, fabricated tampering and mis-certified observed context; independent checker recomputes both constraints"
+  },
+  "frozen_source_free_metrics": {
+    "contexts_per_world": 64,
+    "charged": 32,
+    "unseen": 32,
+    "independent_fabricated_schedules_min": 8,
+    "unseen_counterexamples_per_world": 32,
+    "unseen_certificates_target_pct": 100,
+    "observed_misclassifications_max": 0,
+    "training_residuals_max": 0,
+    "new_original_source_calls": 0,
+    "protected_source_calls": 0,
+    "cold_deterministic_identity": true,
+    "byte_identical_cross_os_required": true
+  },
+  "boundary": "DEVELOPMENT ONLY; mathematical identifiability proof does NOT demonstrate learned operator structure, causality, novelty, intelligence, improved predictive accuracy or native Yggdrasil gains. Never score/replay WSP149 originals or overwrite negative results.",
+  "advancement": "After source-free test/qualification, separately preregister a new FIRST-USE independent operator-learning experiment with frozen strong fully trained CART and symbolic controls, same action/info/capacity/compute budgets, cold retention, negative/off-family, unseen role binding and intervention tests, per-world CI. No experiment first-use under this WSP150 prereg.",
+  "integration": {
+    "native_weight_write": false,
+    "merge": false,
+    "accepted_main_write": false,
+    "original_science_first_use": false,
+    "controller_change": false,
+    "scheduler_change": false,
+    "paid_api": false
+  }
+}
