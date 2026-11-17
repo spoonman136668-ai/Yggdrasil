@@ -35,7 +35,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
         content["packed_hex"]=("00" if prefix[:2]!="00" else "01")+prefix[2:]
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/"corrupted.json"
-            p.write_text(json.dumps(content,indent=2,sort_keys=True)+"\n")
+            p.write_text(json.dumps(content,indent=2,sort_keys=False)+"\n")
             with self.assertRaisesRegex(ValueError,"WSP157_PACKED_SOURCE_BYTES"):
                 A.read_original_fit(p)
         self.assertEqual(A.read_original_fit(),self.source)
