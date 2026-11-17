@@ -1,0 +1,63 @@
+{
+  "schema": "wsp135.latent-factor-source-safe.prereg.v1",
+  "created_utc": "2026-11-17",
+  "phase": "FROZEN_BEFORE_IMPLEMENTATION_OR_NEW_SOURCE_OUTCOMES",
+  "id": "WSP-135",
+  "parent": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "wsp133_qualified_sha": "c33f8dc10f9b2bfe809d6e2f75d0dbb770fb1d7d",
+    "wsp133_pr": 1174,
+    "wsp134_failed_pr": 1178,
+    "wsp134_head": "25a3a52c53aa25432e12e0c3fd8140861b724451"
+  },
+  "question": "Can generic source-blind two-pair latent feature allocation and directly learned output lookup weights predict new typed causal compositions under the same 32 paid interventions, with useful off-family abstention and exact symbolic parity, better calibrated than WSP134 generic split trees?",
+  "source": {
+    "kind": "PUBLIC_SYNTHETIC_EXPLORATORY_ONLY",
+    "original_science_first_use": false,
+    "source_family_key": "WSP135|<FAMILY>|<SEED>",
+    "train_known": "190000..190011",
+    "train_unfamiliar": "191000..191011",
+    "off_family": "193000..193007",
+    "zero_call_relabels": "192000..192007 (first eight known)",
+    "protected": "other seeds, 190800..190863, 191800..191863, 192800..192863, 193800..193863, and all WSP133/WSP134 source bands",
+    "typed_feature_count": 6,
+    "actions_per_world": 32,
+    "held_per_world": 32,
+    "zero_relabel_effects": 0,
+    "views": "All 64 public typed action options x=0..63 are available before action; opaque IDs are relabelings and are not themselves features. Public stage reveals chosen x, effect and receipt only; no generator/hidden gate/seed labels passed to learner.",
+    "known": "source-only RNG seeded SHA256('WSP135|KNOWN|'+seed), shuffled six inputs; two private independent binary gates each chosen from AND OR XOR XNOR; terminal gate chosen from AND OR XOR XNOR and result XOR (p4 AND p5) for even seeds else result XOR p4",
+    "unfamiliar": "source-only RNG seeded SHA256('WSP135|UNFAMILIAR|'+seed), shuffled six inputs; two private gates selected AND OR XOR XNOR; output majority(g1,g2,p4) XOR p5. Majority name not passed to learner.",
+    "off": "source-only RNG seeded SHA256('WSP135|OFF|'+seed), shuffle six input indices; output XOR of cross-products (p0 AND p2), (p1 AND p3), (p0 AND p4), (p1 AND p5) plus p4 XOR p5. This is deliberately not necessarily representable by two disjoint 2bit latent factors and two singleton features; report any representable coincidences transparently.",
+    "views_relabel": "Use seed SHA256-derived opaque IDs disjoint across worlds, reassigning original x to new IDs on transfer; no new observed effect."
+  },
+  "arms": {
+    "latent": "Enumerate all 90 unordered disjoint two-pair partitions with ordered remaining singleton bits, and 14 nonconstant 2bit Boolean truth tables each pair (17,640 latent-code templates). No input labels or output programs are pre-enumerated. After 32 actual source observations, reject templates with conflicting outputs for any 4bit latent code. Rank surviving templates ascending number of occupied latent codes, then lexicographic template ID; retain up to 64 minimum-rank templates. For each unqueried input, emit binary only if at least 80% of selected templates provide observed-code votes, and at least 90% of those votes agree; otherwise abstain. Store selected templates, learned 16entry outputs and receipt-bound samples; no gradient training.",
+    "symbolic": "Independently reimplement template generation, consistency filtering, top-k ranking and inference without importing numerical learner/source. Exact matched-action predictions must agree.",
+    "cart": "Fully fitted greedy depth-6 CART trained on identical action/effect records, 32 per world, no abstention.",
+    "no_update": "32 charged identical source effects, always abstains.",
+    "actions": "For each 64-option public typed action list, select 32 via first32 of a deterministic, source-blind SHA256 permutation of x labels under string WSP135|ACTIONS; same action schedule for all worlds and arms. No effect-driven retuning.",
+    "retention": "After later worlds, all learned states and predictions for first 12 known worlds stay identical. Source receipt chain, full cold serialization and restore required."
+  },
+  "thresholds": {
+    "known_correct_min_percent": 70,
+    "known_confident_wrong_max_percent": 10,
+    "unfamiliar_correct_min_percent": 55,
+    "unfamiliar_confident_wrong_max_percent": 10,
+    "off_confident_wrong_max_percent": 15,
+    "original_saved_readout_drift": 0,
+    "symbolic_action_prediction_mismatches": 0,
+    "zero_call_relabel_identical_predictions": 512,
+    "source_call_overrun": 0
+  },
+  "controls": [
+    "Same 32 paid public action/effect events for every arm",
+    "no evaluator import by learner or symbolic control",
+    "frozen known/unfamiliar/off generator",
+    "conventional CART genuinely fit",
+    "independent controls for exact functional tie",
+    "report wall cpu memory, model footprint and source receipts",
+    "no SCIENTIFIC_PASS regardless of synthetic outcome",
+    "new native integration, protected original action, source lease, owner controller, scheduler, paid API, merge all forbidden"
+  ],
+  "classification": "DEVELOPMENT_LATENT_FACTOR_SUPPORTED only if ALL preset numerical gates, exact symbolic parity, custody and cold transfer pass. Else DEVELOPMENT_LATENT_FACTOR_NO_GO. Both remain exploratory, not new computational primitive, independently grounded causal discovery or native qualification."
+}
