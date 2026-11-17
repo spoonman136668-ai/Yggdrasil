@@ -1,0 +1,118 @@
+name: WSP135 source-safe latent-factor relationship acquisition
+on:
+  push:
+    branches: [research/wsp135-latent-factor-composition-20261116]
+permissions:
+  contents: read
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen original prereg first, source-free exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 3d2f1a33f66c50473a63b2fefb5895f3e1e0545e HEAD
+          git diff --exit-code 3d2f1a33f66c50473a63b2fefb5895f3e1e0545e HEAD -- research/contrib/chatgpt/WSP-135/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-135/first_use_authorization.json
+          test ! -e research/contrib/chatgpt/WSP-135/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Run actual WSP135 source-safe study and negative controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-135 -p 'test_*.py' -v
+      - name: Checkout unchanged
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(wsp135): source-pin G29 atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp135-source-atlas-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Commit only derived pinned G29 atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          git merge-base --is-ancestor 3d2f1a33f66c50473a63b2fefb5895f3e1e0545e HEAD
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp135): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp135-latent-factor-composition-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp135): pin G29 source atlas at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Frozen source, pinned atlas, exact SHA and clean checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 3d2f1a33f66c50473a63b2fefb5895f3e1e0545e HEAD
+          git diff --exit-code 3d2f1a33f66c50473a63b2fefb5895f3e1e0545e HEAD -- research/contrib/chatgpt/WSP-135/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-135/first_use_authorization.json
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Full source-safe development and complete original root regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-135 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
