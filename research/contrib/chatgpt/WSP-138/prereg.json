@@ -1,0 +1,78 @@
+{
+  "schema": "wsp138.lazy-equivalent-causal-selection.prereg.v1",
+  "id": "WSP-138",
+  "created_utc": "2026-11-17",
+  "stage": "FROZEN_BEFORE_WSP138_SOURCE_OR_OPTIMIZED_ALGORITHM_OR_EXPERIMENT_OUTCOMES",
+  "parent": {
+    "owner_repo": "spoonman136668-ai/Yggdrasil",
+    "qualified_pr": 1183,
+    "head_sha": "b8dea2ec81df71bbca17d5668785dcf09b8cf142",
+    "tree": "7f42e4887fd6c524b37967906a2437d0534fafac",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "baseline_algo": "research/contrib/chatgpt/WSP-137/policy.py",
+    "baseline_qual_ci": 44047653220,
+    "negative_science_frozen": true
+  },
+  "question": "Can the WSP137 source-blind 17,640-template active action policy be made materially faster while exactly preserving all intervention choices, learned relationships, confident errors, abstentions and cold retention? Test on new synthetic causal worlds with *one* shared source outcome per matched action, not an overlapping old first-use cohort.",
+  "algorithm": {
+    "original": "Load source-free WSP137 ActivePolicy and DirectArm at pinned parent SHA, no changes. Exactly first 4 original fixed x, next 28 from sorted first256 survivors' (min(vote0,vote1),unseen,-x) score; after32 observations original WSP135 final 17,640-template fit, top64, 80% participation,90% agree.",
+    "candidate": "New LazyActivePolicy lazily checks consistency of candidate i's 16-entry output table against each newly observed actual public consequence only when that candidate could enter the first 256 surviving hypotheses. Cache per-candidate seen/ones 16bit bitsets, processed_obs count and permanence of rejection, without changing WSP137's exact SHA-ranked hypothesis order or action-choice tie breaks. First4, fallback, final WSP135 numeric fit/readout, all confidence decisions UNCHANGED.",
+    "no_new_grammar": true,
+    "source_class_blind": true,
+    "fidelity": "Independent original WSP137 arm and fast arm each independently choose x from exactly same public previous x/effect transcript. Require same x before effect. One source custodian queried ONCE per x, single signed receipt supplied to both. Fail and charge no additional action if chooser disagreement. Compare both full 64-surface predicted answers per world, not just held. Require byte-identical snapshot states, canonical learner effect receipts, and exactly same cold-restored outputs.",
+    "reference": "Same-information independent WSP135 symbolic codebook control receives 32 shared effects per world, exact prediction parity with both numerical arms. Source-grammar oracle from WSP136 used only as separate evaluator reference with explicit privileged prior, not to guide actions."
+  },
+  "source": {
+    "kind": "PUBLIC_SYNTHETIC_EXPLORATORY_ONLY",
+    "name_prefix": "WSP138",
+    "known_seeds": "202000..202011",
+    "unfamiliar_seeds": "203000..203011",
+    "off_seeds": "205000..205007",
+    "zero_action_same_law_relabels": "204000..204005",
+    "forbidden": "all other source seeds (202800..202863, 203800..203863, 204800..204863, 205800..205863), all prior WSP137 198xxx/199xxx/201xxx and actual original DTR/CausalGym cohorts",
+    "source_generators": "Exact code shape of earlier WSP137 source, SHA256 WSP138|KNOWN|seed or WSP138|UNFAMILIAR|seed or WSP138|OFF|seed; source-only shuffled six role inputs and 4-gate pair compositions; unknown uses majority(g1,g2,p4) XOR p5, off uses preexisting cross-interaction negative. No source truth or seed to chooser, equal 32 actual paid actions/world; 32 held each.",
+    "public_action": "64 typed x inputs and opaque ID mapping public before probe; training pool exact WSP137 available_pool() 48, common held x16 never queried; public query-location information, not query-blind generalization.",
+    "max_new_source_actions": 1024,
+    "original_scientific_firstuse_actions": 0,
+    "firstuse_authority": "public deterministic source-safe engineering only; denied original DTR/MDP protected original/virgin source."
+  },
+  "controls": {
+    "known_worlds": 12,
+    "unfamiliar_worlds": 12,
+    "off_worlds": 8,
+    "transfer_views": 6,
+    "per_world_paid_actions": 32,
+    "held_surface": "score common16, arm-unique held16, full64 output parity, no feedback after scoring",
+    "distinct_arms": "WSP137 ORIGINAL + WSP138 LAZY, identical source data; independent symbolic and fully trained original conventional CART reference on exactly same effects, no-update",
+    "cold": "old-law prediction preservation after later worlds, byte-identical baseline/optimized cold snapshots and predictions, 6 source-free relabeled known laws 384/384 identical prior readouts, 0 source effects",
+    "numeric_baseline": "Original WSP135 fit/predict is unchanged shared across both arms; no other representation improvements allowed."
+  },
+  "measurement": {
+    "profiling": "Warm immutable candidate bank and codebooks before per-arm time measurement. Alternate whether original or lazy chooses/observes first each world to mitigate ordering; use separate monotonic wall and process_cpu counters around original and optimized choose+observe, and both full fit+full64 readout+snapshot phases. Preserve per-world timings in committed original result with platform details; include peak tracemalloc and structural allocations. No paid energy API.",
+    "acceptance_frozen": [
+      "original action choice equals fast choice at every one of 1024 paid actions; all final 64 predictions per world identical; same source receipts and learned-state snapshots/cold readouts; no source first-use breach",
+      "at least 2.0x aggregate original-to-lazy choose+observe CPU-time ratio on EACH of Ubuntu and Windows, with at least 2.0x wall-time ratio per platform",
+      "at least 1.25x aggregate original-to-lazy source-free model computation full phase (choose/observe + original unchanged fit/readout/snapshot), on EACH OS, with no increase in source calls or outcome error/abstention",
+      "optimized per-model persistent learning state at most 25% of original total per-template extra mutable storage, measured by structure counts or sys.getsizeof with assumptions disclosed",
+      "same-information symbolic prediction parity, no old-world interference, cold restore and source-protection negative checks PASS"
+    ],
+    "failure_policy": "If any predeclared condition fails classify DEVELOPMENT_COST_OPTIMIZATION_NO_GO even if engineering tests pass. Preserve both speed and negative; no threshold changes post-outcome. Engineering PASS only after two-platform full exact candidate CI and G29."
+  },
+  "governance": {
+    "authority": "isolated public source-safe draft research only; user standing scientific implementation does not grant merge/native admission/first-use",
+    "no_merge": true,
+    "no_accepted_main_change": true,
+    "no_new_controller_or_scheduler_or_runner": true,
+    "no_paid_api": true,
+    "no_native_or_original_source_admission": true,
+    "no_scientific_pass_even_on_success": true,
+    "no_reuse_of_exposed_WSP137_seed_results": true,
+    "allowed_paths": [
+      "research/contrib/chatgpt/WSP-138/**",
+      ".github/workflows/wsp138-source-safe.yml",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice",
+      ".ice/code-atlas.json"
+    ]
+  }
+}
