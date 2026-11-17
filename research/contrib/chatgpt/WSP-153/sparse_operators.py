@@ -4,6 +4,7 @@ Pure fabricated development, no protected first use, no token model, no native
 Yggdrasil weight mutation. Certainty is CONDITIONAL on the exact sparse class.
 """
 from fractions import Fraction
+from functools import reduce
 from hashlib import sha256
 from itertools import combinations
 from json import dumps
@@ -20,10 +21,8 @@ TERM_BITS=tuple(sum((1<<x) for x in range(64) if (x&m)==m)
                 for m in MONOMIALS)
 COEFFS=tuple(combo for k in range(4)
              for combo in combinations(range(len(MONOMIALS)),k))
-CANDIDATES=tuple(_xor for _xor in
-    (sum([],[]) if False else ()) ) if False else tuple(
-        __import__("functools").reduce(int.__xor__,(TERM_BITS[i] for i in combo),0)
-        for combo in COEFFS)
+CANDIDATES=tuple(reduce(int.__xor__,(TERM_BITS[i] for i in combo),0)
+                 for combo in COEFFS)
 assert len(CANDIDATES)==1794
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -66,9 +65,10 @@ def choose_next(rows):
     if len(r)>=8:raise ValueError("WSP153_CHARGED_BUDGET_EXHAUSTED")
     c=survivors(r)
     taken={x for x,_,_ in r}
-    # If all hypotheses are excluded, no informative action is justified.
+    # If all hypotheses are excluded, complete the fixed action budget
+    # with deterministic uncharged actions; never guess a prediction.
     if not c:
-        raise ValueError("WSP153_OUTSIDE_SPARSE_CLASS")
+        return min(x for x in range(64) if x not in taken)
     best=-1
     xbest=None
     for x in range(64):
