@@ -154,7 +154,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git diff --exit-code b74f205d7ed02fe6d29a714e91a378e9152beb0d HEAD -- research/contrib/chatgpt/WSP-149/prereg.json
-          git diff --exit-code 916f7eca01553c5db6454662cd36b75988673942 HEAD -- research/contrib/chatgpt/WSP-149
+          git diff --exit-code 916f7eca01553c5db6454662cd36b75988673942 HEAD -- research/contrib/chatgpt/WSP-149/prereg.json research/contrib/chatgpt/WSP-149/source.py research/contrib/chatgpt/WSP-149/exact_weights.py research/contrib/chatgpt/WSP-149/experiment.py research/contrib/chatgpt/WSP-149/test_source_study.py research/contrib/chatgpt/WSP-149/result.json
           git diff --exit-code 233e7e3cc6714d698172824969fbb1f8c674c150 HEAD -- research/contrib/chatgpt/WSP-148 research/contrib/chatgpt/WSP-147
           test ! -e research/contrib/chatgpt/WSP-149/first_use_authorization.json
           test ! -e research/contrib/chatgpt/WSP-149/SCIENTIFIC_PASS.json
