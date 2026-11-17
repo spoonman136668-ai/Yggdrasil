@@ -66,6 +66,9 @@ def read_original_fit(data_path=DATA):
             and d["original_fit_replica_sha256"]==list(ORIGINAL_REP_SHA)
             and d["packed_hex_sha256"]==PACKED_SHA
             and d["replica_count"]==3 and d["fit_per_replica"]==256
+            and d["source_seed_rule"]=="1100000 + replica*10000 + row_idx"
+            and d["artifact_id"]==12492506361
+            and d["original_run_id"]==39932201242
             and d["new_original_actions"]==0
             and d["protected_val_dev_contents_included"] is False
             and d["field_order"]==["s1","x1","s2","x2","y"],
