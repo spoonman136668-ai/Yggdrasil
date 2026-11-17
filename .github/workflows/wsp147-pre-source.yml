@@ -1,0 +1,45 @@
+name: WSP147 source-free direct GF2 weight programming
+on:
+  push:
+    branches: [research/wsp147-unseen-grammar-direct-weights-20261117]
+permissions:
+  contents: read
+jobs:
+  source-free:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prereg-only first commit and immutable historical source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 0ac72dea78f4b91e1aabd350b3d07d20c288aa39^)" = "c80c7f5ddb9470e3d8cc66064bbbd50a4a91615b"
+          test "$(git diff-tree --no-commit-id --name-only -r 0ac72dea78f4b91e1aabd350b3d07d20c288aa39)" = "research/contrib/chatgpt/WSP-147/prereg.json"
+          git merge-base --is-ancestor 0ac72dea78f4b91e1aabd350b3d07d20c288aa39 HEAD
+          git diff --exit-code 0ac72dea78f4b91e1aabd350b3d07d20c288aa39 HEAD -- research/contrib/chatgpt/WSP-147/prereg.json
+          git diff --exit-code c80c7f5ddb9470e3d8cc66064bbbd50a4a91615b HEAD -- research/contrib/chatgpt/WSP-146 research/contrib/chatgpt/WSP-145 research/contrib/chatgpt/WSP-144 research/contrib/chatgpt/WSP-143
+          test ! -e research/contrib/chatgpt/WSP-147/source.py
+          test ! -e research/contrib/chatgpt/WSP-147/experiment.py
+          test ! -e research/contrib/chatgpt/WSP-147/result.json
+          test -z "$(git status --porcelain)"
+      - name: Source-free numerical and independent symbolic mechanical controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-147 -p 'test_*.py' -v
+      - name: Confirm checkout has no generated outputs or source
+        shell: bash
+        run: test -z "$(git status --porcelain)"
