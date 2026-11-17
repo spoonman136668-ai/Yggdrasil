@@ -1,0 +1,122 @@
+name: WSP146 source-free selector and qualified public causal first-use
+on:
+  push:
+    branches: [research/wsp146-shallow-fit-falsification-20261117]
+permissions:
+  contents: read
+jobs:
+  source-free:
+    if: "github.event.head_commit.message == 'ci(wsp146): source-free selector proof'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Assert exact sole-file prereg and no new source has opened
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4^)" = "e1d1129fda0dd78487f4d1299048d4588bb59d9c"
+          test "$(git diff-tree --no-commit-id --name-only -r a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4)" = "research/contrib/chatgpt/WSP-146/prereg.json"
+          git diff --exit-code a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4 HEAD -- research/contrib/chatgpt/WSP-146/prereg.json
+          test ! -e research/contrib/chatgpt/WSP-146/source.py
+          test ! -e research/contrib/chatgpt/WSP-146/experiment.py
+          test ! -e research/contrib/chatgpt/WSP-146/result.json
+      - name: Source-free selector and negative controls
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-146 -p 'test_selector.py' -v
+      - name: Clean checkout
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+  development:
+    if: "github.event.head_commit.message == 'ci(wsp146): original synthetic first-use' && github.run_attempt == 1"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze and custody preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4 HEAD
+          git diff --exit-code a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4 HEAD -- research/contrib/chatgpt/WSP-146/prereg.json
+          git diff --exit-code e1d1129fda0dd78487f4d1299048d4588bb59d9c HEAD -- research/contrib/chatgpt/WSP-145 research/contrib/chatgpt/WSP-143 research/contrib/chatgpt/WSP-135
+          test ! -e research/contrib/chatgpt/WSP-146/result.json
+          test ! -e research/contrib/chatgpt/WSP-146/SCIENTIFIC_PASS.json
+      - name: Source-free selector controls first
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-146 -p 'test_selector.py' -v
+      - name: One prospective charged public synthetic study
+        run: python -B -m unittest discover -s research/contrib/chatgpt/WSP-146 -p 'test_source_safe.py' -v
+      - name: Original source checkout clean
+        shell: bash
+        run: test -z "$(git status --porcelain)"
+  final-regression:
+    if: "github.event.head_commit.message == 'ci(wsp146): final exact-sha regression'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 150
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify final exact commit, frozen prereg and original scored result
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4 HEAD
+          git diff --exit-code a0a8bc6bf5eb2b3c0bdf3457bf8415955bd849f4 HEAD -- research/contrib/chatgpt/WSP-146/prereg.json
+          test -s research/contrib/chatgpt/WSP-146/result.json
+      - name: All affected source-free research regression, no first-use replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in 135 136 137 139 141 142 143 144 145 146; do
+            p="research/contrib/chatgpt/WSP-$i"
+            test -d "$p"
+            python -B -m unittest discover -s "$p" -p 'test_selector.py' -v
+          done
+      - name: Full original repository root regression
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Source checkout clean
+        shell: bash
+        run: test -z "$(git status --porcelain)"
