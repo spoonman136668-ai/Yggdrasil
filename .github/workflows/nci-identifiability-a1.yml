@@ -1,0 +1,155 @@
+name: NCI-ID-A1 cached native identifiability
+on:
+  push:
+    branches: [research/nci-identifiability-a1-20261117]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+jobs:
+  qualify:
+    if: "github.event.head_commit.message == 'ci(nci-id-a1): run frozen cached-witness probe'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-free focused negative controls and witness diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 7ebbb81ab037f8742211f049183bb606c37b1d33 HEAD
+          python -B -m unittest discover -s tests -p test_nci_identifiability.py -v
+          python -B research/contrib/chatgpt/NCI-ID-A1/diagnostic.py --out "$RUNNER_TEMP/nci-id-a1/result.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nci-id-a1-${{ matrix.os }}
+          path: ${{ runner.temp }}/nci-id-a1/result.json
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [qualify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.record.outputs.final_sha }}
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nci-id-a1-*
+          path: ${{ runner.temp }}/nci-id-a1-evidence
+          merge-multiple: false
+      - name: Verify OS parity; seal evidence and G29 generated files
+        id: record
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch origin research/nci-identifiability-a1-20261117
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from yggdrasil.native_context_basis import canonical,digest
+          base=Path(os.environ['RUNNER_TEMP'])/'nci-id-a1-evidence'
+          a=json.loads((base/'nci-id-a1-ubuntu-latest/result.json').read_bytes())
+          b=json.loads((base/'nci-id-a1-windows-2022/result.json').read_bytes())
+          assert a==b,'LINUX_WINDOWS_DIAGNOSTIC_DRIFT'
+          r=a['result'];s=a['stable_sha256']
+          assert digest(canonical(r))==s and r['case_count']==24 and r['fit_count']==96
+          assert r['new_original_source_actions']==r['original_source_generators_called']==r['held_outcome_reads']==0
+          root=Path('research/contrib/chatgpt/NCI-ID-A1')
+          (root/'result.json').write_bytes(canonical(a))
+          lines=['# NCI-ID-A1 — cached-witness structural identifiability','',
+                 'ENGINEERING DIAGNOSTIC ONLY; SCIENTIFIC_PASS=false.',
+                 'Source effects=0, held outcomes read=0, real-world interventions=0.','',
+                 '| Witness budget | Degree | Consistent cases /24 | Identified previously-unwitnessed masks /36,864 | Generic basis rank deficit (sum) |',
+                 '|---:|---:|---:|---:|---:|']
+          for m in r['models']:
+              lines.append(f"| {m['budget']} | {m['degree']} | {m['consistent_cases']} | {m['unseen_identified']} | {m['rank_deficit_sum']} |")
+          lines.extend(['',f"Proposed unexecuted input masks: {r['proposal_count']}",
+                        f"Potential rank gain without effects: {r['potential_rank_gain_sum']}",
+                        f"Stable SHA256: {s}",
+                        f"Source candidate: {os.environ['GITHUB_SHA']}",
+                        'No original source action or accepted/native owner mutation.',
+                        'Generic polynomial identifiability is NOT sparse causal learner performance.',''])
+          (root/'SESSION_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+          print('NCI_ID_A1_CROSS_PLATFORM=PASS',s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- research/contrib/chatgpt/NCI-ID-A1/result.json research/contrib/chatgpt/NCI-ID-A1/SESSION_REPORT.md
+          git commit -m "research(nci-id-a1): seal source-free diagnostic"
+          SOURCE="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --quiet && exit 1
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = 3
+          git commit -m "docs(nci-id-a1): pin G29 atlas at $SOURCE"
+          FINAL="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nci-identifiability-a1-20261117
+          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
+          echo "NCI_ID_A1_FINAL_SHA=$FINAL"
+  final:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full root/NKR05 and independent G29 exact-final qualification
+        shell: bash
+        env:
+          EXPECTED: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py'
+          python scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py
+          test -z "$(git status --porcelain)"
