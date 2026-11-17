@@ -8,7 +8,7 @@ jobs:
   unit:
     # Original one-shot prerequisite already passed Ubuntu/Windows at 11267193.
     # The following no-source assertion must not rerun after WSP145 source opens.
-    if: github.event.head_commit.message == 'test(wsp145): source-free query-blind active selector and dual-OS checks'
+    if: "github.event.head_commit.message == 'test(wsp145): source-free query-blind active selector and dual-OS checks'"
     strategy:
       fail-fast: false
       matrix:
