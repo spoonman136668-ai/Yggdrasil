@@ -41,7 +41,21 @@ jobs:
           git diff --exit-code 188a57a1af3e392096c0690590f5c4e4e58a3fbd HEAD -- yggdrasil/native_evidence_compiler.py yggdrasil/native_relation_memory.py yggdrasil/public_causal_cells.py research/contrib/chatgpt/NKR-04 yggdrasil/native_sixbit_projection.py tests/test_native_sixbit_projection.py research/contrib/chatgpt/WSP-155
           test ! -e research/contrib/chatgpt/WSP-156/source.py
           test ! -e research/contrib/chatgpt/WSP-156/experiment.py
-          test ! -e research/contrib/chatgpt/WSP-156/result.json
+          test -f research/contrib/chatgpt/WSP-156/result.json
+          test -f research/contrib/chatgpt/WSP-156/provenance.json
+          git diff --exit-code b9aab841ba433cdf70293fe4ed9e636477ff4c0e HEAD -- yggdrasil/native_partial_sixbit_projection.py tests/test_native_partial_sixbit_projection.py research/contrib/chatgpt/WSP-156/development.py
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('research/contrib/chatgpt/WSP-156/result.json').read_text('utf8'))
+          p=json.loads(Path('research/contrib/chatgpt/WSP-156/provenance.json').read_text('utf8'))
+          assert r['classification']=='SOURCEFREE_PARTIAL_NATIVE_OBSERVATION_SUPPORTED'
+          assert r['receipts']['nonresource_sha256']=='ce3452a5d066c36d2339d424f8eaf5cbd9ee449703cb8eca4a7fed92a10a69b1'
+          assert p['first_development']['head']=='b9aab841ba433cdf70293fe4ed9e636477ff4c0e'
+          assert r['science_pass'] is False and r['native_admission'] is False
+          assert r['source_first_use'] is False and p['source']['actual_external_source'] is False
+          print('WSP156_FROZEN_SOURCEFREE_CUSTODY_PASS')
+          PY
           test ! -e research/contrib/chatgpt/WSP-156/SCIENTIFIC_PASS.json
           test ! -e research/contrib/chatgpt/WSP-156/first_use_authorization.json
           test -z "$(git status --porcelain)"
@@ -123,7 +137,21 @@ jobs:
           test "$(git rev-parse a4635cf282689edeb97a3d88249cdfba5b8deed9^)" = "188a57a1af3e392096c0690590f5c4e4e58a3fbd"
           git diff --exit-code a4635cf282689edeb97a3d88249cdfba5b8deed9 HEAD -- research/contrib/chatgpt/WSP-156/prereg.json
           git diff --exit-code 188a57a1af3e392096c0690590f5c4e4e58a3fbd HEAD -- yggdrasil/native_evidence_compiler.py yggdrasil/native_relation_memory.py yggdrasil/public_causal_cells.py research/contrib/chatgpt/NKR-04 yggdrasil/native_sixbit_projection.py tests/test_native_sixbit_projection.py research/contrib/chatgpt/WSP-155
-          test ! -e research/contrib/chatgpt/WSP-156/result.json
+          test -f research/contrib/chatgpt/WSP-156/result.json
+          test -f research/contrib/chatgpt/WSP-156/provenance.json
+          git diff --exit-code b9aab841ba433cdf70293fe4ed9e636477ff4c0e HEAD -- yggdrasil/native_partial_sixbit_projection.py tests/test_native_partial_sixbit_projection.py research/contrib/chatgpt/WSP-156/development.py
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('research/contrib/chatgpt/WSP-156/result.json').read_text('utf8'))
+          p=json.loads(Path('research/contrib/chatgpt/WSP-156/provenance.json').read_text('utf8'))
+          assert r['classification']=='SOURCEFREE_PARTIAL_NATIVE_OBSERVATION_SUPPORTED'
+          assert r['receipts']['nonresource_sha256']=='ce3452a5d066c36d2339d424f8eaf5cbd9ee449703cb8eca4a7fed92a10a69b1'
+          assert p['first_development']['head']=='b9aab841ba433cdf70293fe4ed9e636477ff4c0e'
+          assert r['science_pass'] is False and r['native_admission'] is False
+          assert r['source_first_use'] is False and p['source']['actual_external_source'] is False
+          print('WSP156_FROZEN_SOURCEFREE_CUSTODY_PASS')
+          PY
           test ! -e research/contrib/chatgpt/WSP-156/first_use_authorization.json
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
