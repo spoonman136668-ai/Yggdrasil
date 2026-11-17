@@ -42,7 +42,7 @@ jobs:
           git merge-base --is-ancestor 91649df6e8517eddfad880ef19340eb3a07fb825 HEAD
           git diff --exit-code 91649df6e8517eddfad880ef19340eb3a07fb825 HEAD -- research/contrib/chatgpt/WSP-157/prereg.json
           git diff --exit-code 1b3518e395005947015e151f7aafac0d92e5c5dd HEAD -- yggdrasil/public_causal_cells.py research/contrib/chatgpt/NKR-19 research/contrib/chatgpt/NKR-20 research/contrib/chatgpt/CVH-10
-          git diff --exit-code 566bdf03624a162b900665ef65e9cd078dc6f104 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
+          git diff --exit-code e0526581d53af611a1bd9ed40b003a9f2d6eccd4 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
           test ! -e research/contrib/chatgpt/WSP-157/SCIENTIFIC_PASS.json
           test ! -e research/contrib/chatgpt/WSP-157/original_first_use_authorization.json
           test -z "$(git status --porcelain)"
@@ -82,7 +82,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          git diff --exit-code 566bdf03624a162b900665ef65e9cd078dc6f104 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
+          git diff --exit-code e0526581d53af611a1bd9ed40b003a9f2d6eccd4 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
           python -B research/contrib/chatgpt/WSP-157/audit.py --out "$RUNNER_TEMP/wsp157-${{ matrix.os }}.json"
           test -z "$(git status --porcelain)"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -116,7 +116,7 @@ jobs:
           set -euo pipefail
           SOURCE="$GITHUB_SHA"
           test "$(git rev-parse HEAD)" = "$SOURCE"
-          git diff --exit-code 566bdf03624a162b900665ef65e9cd078dc6f104 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
+          git diff --exit-code e0526581d53af611a1bd9ed40b003a9f2d6eccd4 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
           git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
@@ -155,7 +155,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git diff --exit-code 91649df6e8517eddfad880ef19340eb3a07fb825 HEAD -- research/contrib/chatgpt/WSP-157/prereg.json
-          git diff --exit-code 566bdf03624a162b900665ef65e9cd078dc6f104 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
+          git diff --exit-code e0526581d53af611a1bd9ed40b003a9f2d6eccd4 HEAD -- research/contrib/chatgpt/WSP-157/audit.py research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json tests/test_original_dtr_native_retrospective.py
           git diff --exit-code 1b3518e395005947015e151f7aafac0d92e5c5dd HEAD -- yggdrasil/public_causal_cells.py research/contrib/chatgpt/NKR-19
           test ! -e research/contrib/chatgpt/WSP-157/SCIENTIFIC_PASS.json
           test ! -e research/contrib/chatgpt/WSP-157/original_first_use_authorization.json
