@@ -72,7 +72,10 @@ def run():
     if len(SEL.N.templates())!=17640 or len(C.BASE.codebooks())!=17640:
         raise AssertionError('WSP140_PINNED_FEATURE_CLASS_DRIFT')
     if len(SEL.original_ranked())!=17640:raise AssertionError('WSP140_PINNED_ORDER_DRIFT')
-    # Warm source-independent original candidate ranking for both arms.\n    # Bit-parallel mask creation remains COLD and is included in optimized first choose.\n    SEL.BASE.candidate_preference()\n    oracle_bank=O.candidate_bank()
+    # Warm source-independent original candidate ranking for both arms.
+    # Bit-parallel mask creation remains COLD and is included in optimized first choose.
+    SEL.BASE.candidate_preference()
+    oracle_bank=O.candidate_bank()
     if len(oracle_bank)!=7062:raise AssertionError('WSP140_PRIVILEGED_REFERENCE_DRIFT')
     oracle=O.ExactOracle(oracle_bank)
     model={'original':SEL.BASE.DirectArm('active'),'lazy':SEL.FastArm('active')}
@@ -192,7 +195,8 @@ def run():
         cust.score_once(transfer_outputs)
     if transfer_same!=384 or original_source_actions!=1024:
         raise AssertionError('WSP140_SOURCE_ACTIONS_OR_TRANSFER_BUDGET')
-    global_bytes=SEL.global_cache_bytes()\n    slowdown=material_bytes['original']/max(1,material_bytes['lazy']+global_bytes)
+    global_bytes=SEL.global_cache_bytes()
+    slowdown=material_bytes['original']/max(1,material_bytes['lazy']+global_bytes)
     stats={}
     for p in ARMS:
         t=durations[p]
@@ -236,7 +240,9 @@ def run():
            'per_platform_gate_pass':cost_supported,
            'profiles':stats,
            'original_mutable_structural_bytes':material_bytes['original'],
-           'lazy_mutable_structural_bytes':material_bytes['lazy'],\n           'global_mask_and_pair_cache_bytes':global_bytes,\n           'lazy_total_structural_with_global_cache_bytes':material_bytes['lazy']+global_bytes,
+           'lazy_mutable_structural_bytes':material_bytes['lazy'],
+           'global_mask_and_pair_cache_bytes':global_bytes,
+           'lazy_total_structural_with_global_cache_bytes':material_bytes['lazy']+global_bytes,
            'mutable_structure_ratio_old_over_new_including_global_masks':round(slowdown,6),
            'original_over_lazy_speedups':{k:round(v,6) for k,v in ratios.items()},
            'whole_trial_cpu_seconds':round(time.process_time()-cpu_start,3),
