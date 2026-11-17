@@ -1,0 +1,185 @@
+name: NCI-ACTIVE-A2 matched causal interventions
+on:
+  push:
+    branches: [research/nci-active-a2-20261117]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  qualification:
+    if: "github.event.head_commit.message == 'ci(nci-active-a2): execute frozen source-free intervention comparison'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Byte-identical checkout configuration
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze identity and source-free negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor ea1be206520250f204c894647259c152b2a52e42 HEAD
+          python -B -m unittest discover -s tests -p test_nci_active_a2.py -v
+          test -z "$(git status --porcelain)"
+      - name: Install frozen fully trained CART control dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Complete source-free matched-policy comparison with cold-native proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/NCI-ACTIVE-A2/experiment.py --out "$RUNNER_TEMP/nci-active-a2"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nci-active-a2-${{ matrix.os }}
+          path: ${{ runner.temp }}/nci-active-a2/
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [qualification]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nci-active-a2-*
+          path: ${{ runner.temp }}/nci-active-a2-evidence
+          merge-multiple: false
+      - name: Verify independent platform stable evidence and immutable native bundles
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch origin research/nci-active-a2-20261117
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          from yggdrasil.native_context_basis import canonical,digest
+          base=Path(os.environ['RUNNER_TEMP'])/'nci-active-a2-evidence'
+          parts=[base/('nci-active-a2-'+os_name) for os_name in ('ubuntu-latest','windows-2022')]
+          a,b=[json.loads((p/'result.json').read_bytes()) for p in parts]
+          c,d=[json.loads((p/'native-bundle.json').read_bytes()) for p in parts]
+          module_path=Path('research/contrib/chatgpt/NCI-ACTIVE-A2/experiment.py')
+          spec=importlib.util.spec_from_file_location('nci_active_a2_seal',module_path)
+          m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          assert a['stable_sha256']==b['stable_sha256'],'CROSS_OS_STABLE_MISMATCH'
+          assert m.strip_timing(a)==m.strip_timing(b),'CROSS_OS_SCORE_DRIFT'
+          assert digest(canonical(m.strip_timing(a)))==a['stable_sha256']
+          assert c==d,'CROSS_OS_NATIVE_MEMORY_DRIFT'
+          assert a['classification'] in ('ACTIVE_SOURCEFREE_DEVELOPMENT_SUPPORTED','ACTIVE_SOURCEFREE_DEVELOPMENT_NO_GO')
+          assert len(a['cases'])==80 and a['cold_models']==len(c['models'])
+          assert a['original_source_effects']==a['new_original_source_actions']==0
+          assert a['original_source_factories']==a['held_label_access_before_prediction']==0
+          root=Path('research/contrib/chatgpt/NCI-ACTIVE-A2')
+          (root/'result.json').write_bytes(canonical(a))
+          (root/'native-bundle.json').write_bytes(canonical(c))
+          lines=['# NCI-ACTIVE-A2 — matched synthetic source-free actions','',
+                 'Classification: '+a['classification'],
+                 'Scientific_pass=false; accepted_native=false.',
+                 'Original source actions=0. No protected first-use, no environment actions.','',
+                 '| Condition | Arm | Correct | Wrong | Abstained | Synthetic effects |',
+                 '|---|---|---:|---:|---:|---:|']
+          for name,block in a['summary'].items():
+              for policy,info in block['arms'].items():
+                  q=info['native']
+                  lines.append(f"| {name} | {policy} | {q['correct']} | {q['wrong']} | {q['abstained']} | {info['effects']} |")
+          lines.extend(['',
+              'Active-random paired mean correct coverage gain: '+str(a['paired_gain']),
+              'Paired bootstrap 95% lower bound: '+str(a['bootstrap_lower_95']),
+              'Frozen gates: '+str(a['gates']),
+              'Independent symbolic parity across all128 predictions per case: PASS',
+              f"Byte-exact cold native checkpoints: {a['cold_models']}",
+              'Stable SHA256: '+a['stable_sha256'],
+              'Exact source candidate: '+os.environ['GITHUB_SHA'],
+              'Supplied polynomial grammar does NOT prove novel world discovery.',
+              'All null/negative SHIFT/SHUFFLED outcomes are preserved.',''])
+          (root/'SESSION_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+          print('NCI_ACTIVE_A2_CROSS_PLATFORM=PASS',a['stable_sha256'])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- research/contrib/chatgpt/NCI-ACTIVE-A2/result.json research/contrib/chatgpt/NCI-ACTIVE-A2/native-bundle.json research/contrib/chatgpt/NCI-ACTIVE-A2/SESSION_REPORT.md
+          git commit -m "research(nci-active-a2): seal matched causal intervention negatives and controls"
+          SOURCE="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --quiet && exit 1
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = 3
+          git commit -m "docs(nci-active-a2): source-pin G29 at $SOURCE"
+          FINAL="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nci-active-a2-20261117
+          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
+          echo "NCI_ACTIVE_A2_FINAL_SHA=$FINAL"
+  final:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact final complete root/NKR05 and source-index G29
+        env:
+          EXPECTED: ${{ needs.seal.outputs.final_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py'
+          python scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py
+          test -z "$(git status --porcelain)"

@@ -1,0 +1,11 @@
+# NCI-ACTIVE-A2 — bounded intervention-vs-random simulated source experiment
+
+Source-free **development** comparison on independently authored deterministic Boolean causal worlds (not protected original CausalGym, DTR, MDP or CKAD fixtures). Frozen before implementation at `prereg.json`. The representation is intentionally supplied: a seven-bit input (six observed binary properties and one action), degree-2 GF(2) feature monomials for learning, and a model-class-shift negative set with degree-3 truth. It is a small model-class test, not unrestricted relationship discovery.
+
+For 32 IN_FAMILY and 16 SHIFT fabricated worlds, input-only policies make 8 common initial observations and 24 additional observations each. The active arm chooses rank-increasing input/action combinations, random has the same intervention rights, and passive samples an observational behavior policy (it cannot force action). All arms use the identical unlabeled held-input split and matched *public-outcome call* budget. The experiment scores after predictions are sealed and evaluates a separately coded exact symbolic GF(2) control, fully trained scikit-learn CART, cold-restored native knowledge, SHIFT and SHUFFLED controls.
+
+Primary frozen bar: active beats matched random by >=5 percentage points average correct held coverage, paired world-bootstrap 95% lower >0, active >=60% correct held coverage, zero wrong native identified answers, equal effect budgets and independent symbolic parity. Failure is retained; passive comparisons cannot replace matched random. Synthetic effect calls are **not** original environment interventions and never create original-world first-use rights.
+
+Reproduce with `python -B research/contrib/chatgpt/NCI-ACTIVE-A2/experiment.py --out OUTPUT`. CI pins Python 3.12, NumPy 2.3.5, SciPy 1.16.3, scikit-learn 1.8.0, joblib 1.5.2, threadpoolctl 3.6.0. Exactly one Ubuntu primary and Windows replica are run, stable receipts and byte-identical cold models are sealed. Final source-index G29 and complete inherited regression are mandatory both OS. Source owner PR #1182 and accepted main remain untouched.
+
+**Research disposition always SCIENTIFIC_PASS=false and accepted_native=false**, regardless of synthetic performance; no original-source action, live integration, controller/scheduler modification, merge, or paid API.
