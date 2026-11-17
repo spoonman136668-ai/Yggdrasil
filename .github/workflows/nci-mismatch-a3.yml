@@ -1,0 +1,183 @@
+name: NCI-MISMATCH-A3 native contradiction audit
+on:
+  push:
+    branches: [research/nci-mismatch-a3-20261117]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  qualification:
+    if: "github.event.head_commit.message == 'ci(nci-mismatch-a3): execute frozen contradiction audit'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve byte-identical source
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned source-free and negative unit controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 812ba5647c4353369cff9a8e88725c8b02ca7325 HEAD
+          python -B -m unittest discover -s tests -p test_nci_mismatch_a3.py -v
+          test -z "$(git status --porcelain)"
+      - name: Pin fully trained conventional comparator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Execute frozen source-free contrast audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/NCI-MISMATCH-A3/experiment.py --out "$RUNNER_TEMP/nci-mismatch-a3"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nci-mismatch-a3-${{ matrix.os }}
+          path: ${{ runner.temp }}/nci-mismatch-a3/
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [qualification]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nci-mismatch-a3-*
+          path: ${{ runner.temp }}/nci-mismatch-a3-evidence
+          merge-multiple: false
+      - name: Verify exact cross-platform results, seal failures and source-pin G29
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch origin research/nci-mismatch-a3-20261117
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          from yggdrasil.native_context_basis import canonical,digest
+          base=Path(os.environ['RUNNER_TEMP'])/'nci-mismatch-a3-evidence'
+          p=[base/('nci-mismatch-a3-'+os_name) for os_name in ('ubuntu-latest','windows-2022')]
+          u,v=[json.loads((i/'result.json').read_bytes()) for i in p]
+          b,c=[json.loads((i/'native-bundle.json').read_bytes()) for i in p]
+          spec=importlib.util.spec_from_file_location('nci_mismatch_a3_seal',Path('research/contrib/chatgpt/NCI-MISMATCH-A3/experiment.py'))
+          m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          assert u['stable_sha256']==v['stable_sha256'],'CROSS_OS_STABLE_DRIFT'
+          assert m.stable_view(u)==m.stable_view(v),'CROSS_OS_SCORES_DRIFT'
+          assert digest(canonical(m.stable_view(u)))==u['stable_sha256']
+          assert b==c,'CROSS_OS_COLD_STATE_DRIFT'
+          assert u['case_count']==96 and len(u['cases'])==96
+          assert u['cold_models']==len(b['models'])
+          assert u['simulated_effect_calls']==6144
+          assert u['original_source_actions']==0 and not u['source_first_use']
+          assert u['classification'] in ('CONTRADICTION_AUDIT_SOURCEFREE_DEVELOPMENT_SUPPORTED','CONTRADICTION_AUDIT_SOURCEFREE_DEVELOPMENT_NO_GO')
+          root=Path('research/contrib/chatgpt/NCI-MISMATCH-A3')
+          (root/'result.json').write_bytes(canonical(u))
+          (root/'native-bundle.json').write_bytes(canonical(b))
+          lines=['# NCI-MISMATCH-A3 — contradiction audit','',
+                 'Classification: '+u['classification'],
+                 'Always scientific_pass=false and accepted_native=false.',
+                 'No original source actions, no protected first-use.','',
+                 '| Condition | Method | Admitted worlds | Correct | Wrong | Abstained | Contradiction events |',
+                 '|---|---|---:|---:|---:|---:|---:|']
+          for label,data in u['summary'].items():
+              for policy,arm in data['arms'].items():
+                  for method in ('unvalidated','gated'):
+                      z=arm[method]
+                      lines.append(f"| {label} | {policy}/{method} | {arm['admitted_worlds']} | {z['correct']} | {z['wrong']} | {z['abstained']} | {arm['contradictions']} |")
+          lines.extend(['',
+             'Frozen gates: '+str(u['gates']),
+             f"Source-free simulated effect calls: {u['simulated_effect_calls']}",
+             f"Distinct cold native checkpoints: {u['cold_models']}",
+             'Stable SHA256: '+u['stable_sha256'],
+             'Source candidate: '+os.environ['GITHUB_SHA'],
+             'No original-world causality or safety superiority established.',''])
+          (root/'SESSION_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+          print('NCI_MISMATCH_A3_CROSS_PLATFORM=PASS',u['stable_sha256'])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- research/contrib/chatgpt/NCI-MISMATCH-A3/result.json research/contrib/chatgpt/NCI-MISMATCH-A3/native-bundle.json research/contrib/chatgpt/NCI-MISMATCH-A3/SESSION_REPORT.md
+          git commit -m "research(nci-mismatch-a3): seal contradiction-gate results including failures"
+          SOURCE="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --quiet && exit 1
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = 3
+          git commit -m "docs(nci-mismatch-a3): pin G29 source atlas at $SOURCE"
+          FINAL="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nci-mismatch-a3-20261117
+          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
+          echo "NCI_MISMATCH_A3_FINAL_SHA=$FINAL"
+  final:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact final complete root, NKR05 and source-index G29
+        env:
+          EXPECTED: ${{ needs.seal.outputs.final_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py'
+          python scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py
+          test -z "$(git status --porcelain)"
