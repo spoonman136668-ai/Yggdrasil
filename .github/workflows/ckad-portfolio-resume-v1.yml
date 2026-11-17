@@ -1,0 +1,224 @@
+name: CKAD portfolio V1 receipt recovery (no Linux scored replay)
+on:
+  push:
+    branches: [research/ckad-portfolio-v1-20261117]
+permissions:
+  contents: read
+  actions: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  FROZEN_SOURCE: '9b4a389d4fd4a7c4b901ebc3460f31723b7e330d'
+  LINUX_RECEIPT: 'f837951dc301bfba1e17481b7c9952d16db779b12f69c0bc6bbbad34bb8452d1'
+jobs:
+  windows_replica:
+    if: "github.event.head_commit.message == 'ci(ckad-portfolio): recover Windows receipt without primary replay'"
+    runs-on: windows-2022
+    timeout-minutes: 35
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source and preregistration unchanged from qualified Linux primary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor "$FROZEN_SOURCE" HEAD
+          git diff --quiet "$FROZEN_SOURCE" HEAD -- yggdrasil/native_hypothesis_portfolio.py research/contrib/chatgpt/CKAD-PORTFOLIO-V1/campaign.py research/contrib/chatgpt/CKAD-PORTFOLIO-V1/prereg.json tests/test_native_hypothesis_portfolio.py
+          test -z "$(git status --porcelain)"
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ckad-portfolio-primary-linux
+          path: ${{ runner.temp }}/frozen-primary
+          run-id: 44195946580
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+      - name: Validate source-bound frozen primary receipt without a second Linux run
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          from yggdrasil.native_hypothesis_portfolio import canonical,digest
+          spec=importlib.util.spec_from_file_location("portfolio_receipt",Path("research/contrib/chatgpt/CKAD-PORTFOLIO-V1/campaign.py"))
+          campaign=importlib.util.module_from_spec(spec);spec.loader.exec_module(campaign)
+          root=Path(os.environ["RUNNER_TEMP"])/"frozen-primary"
+          data=json.loads((root/"result.json").read_bytes())
+          assert data["stable_sha256"]==os.environ["LINUX_RECEIPT"]
+          assert digest(canonical(campaign.stable(data)))==os.environ["LINUX_RECEIPT"]
+          assert len(data["cases"])==64 and data["worlds"]==64
+          assert data["new_original_source_actions"]==data["original_source_generators_called"]==0
+          assert data["classification"]=="CUMULATIVE_NATIVE_STRUCTURE_DEVELOPMENT_NO_GO"
+          assert (root/"native-checkpoints.json").is_file()
+          print("CKAD_PORTFOLIO_ORIGINAL_PRIMARY_CUSTODY=PASS")
+          PY
+      - name: Pinned conventional comparator dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Execute Windows-only deterministic replica of frozen Linux result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-PORTFOLIO-V1/campaign.py --out "$RUNNER_TEMP/ckad-portfolio-windows-replica" --verify-stable "$LINUX_RECEIPT"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad-portfolio-v1-recovered-windows
+          path: ${{ runner.temp }}/ckad-portfolio-windows-replica/
+          retention-days: 30
+          if-no-files-found: error
+  seal:
+    needs: [windows_replica]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ckad-portfolio-primary-linux
+          path: ${{ runner.temp }}/ckad-portfolio-primary-proof
+          run-id: 44195946580
+          github-token: ${{ github.token }}
+          repository: spoonman136668-ai/Yggdrasil
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ckad-portfolio-v1-recovered-windows
+          path: ${{ runner.temp }}/ckad-portfolio-windows-proof
+      - name: Seal exactly matched evidence and source-pin independent G29
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git merge-base --is-ancestor "$FROZEN_SOURCE" HEAD
+          git fetch origin research/ckad-portfolio-v1-20261117
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          from yggdrasil.native_hypothesis_portfolio import canonical,digest,NativeHypothesisPortfolio
+          base=Path(os.environ['RUNNER_TEMP'])
+          u=json.loads((base/'ckad-portfolio-primary-proof/result.json').read_bytes())
+          v=json.loads((base/'ckad-portfolio-windows-proof/result.json').read_bytes())
+          a=json.loads((base/'ckad-portfolio-primary-proof/native-checkpoints.json').read_bytes())
+          b=json.loads((base/'ckad-portfolio-windows-proof/native-checkpoints.json').read_bytes())
+          spec=importlib.util.spec_from_file_location('ckad_portfolio_seal',Path('research/contrib/chatgpt/CKAD-PORTFOLIO-V1/campaign.py'))
+          m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          assert u['stable_sha256']==v['stable_sha256']==os.environ['LINUX_RECEIPT']
+          assert m.stable(u)==m.stable(v) and digest(canonical(m.stable(u)))==u['stable_sha256']
+          assert a==b,'COLD_CROSS_OS_DRIFT'
+          assert u['worlds']==64 and len(u['cases'])==64 and u['cold_retained_world_models']==256
+          assert u['new_original_source_actions']==u['original_source_generators_called']==0
+          assert u['simulated_action_effects']==64*5*16
+          for name,s in a['states'].items():
+              raw=s['checkpoint_ascii'].encode('ascii')
+              assert digest(raw)==s['sha256']
+              restored=NativeHypothesisPortfolio.restore(raw,s['sha256'])
+              vec=[restored.vector(slot) for slot in range(64)]
+              assert digest(canonical(vec))==s['expected_vectors_sha256']
+          root=Path('research/contrib/chatgpt/CKAD-PORTFOLIO-V1')
+          (root/'result.json').write_bytes(canonical(u))
+          (root/'native-checkpoints.json').write_bytes(canonical(a))
+          lines=['# CKAD-PORTFOLIO-V1 — native cumulative causal program learning','',
+              'Classification: '+u['classification'],
+              'ENGINEERING development only; SCIENTIFIC_PASS=false; accepted_native=false.',
+              'Original source actions=0, original first-use=0; known grammar is supplied.','',
+              '| World condition | Arm | Correct | Wrong | Abstained | Synthetic effect calls |',
+              '|---|---|---:|---:|---:|---:|']
+          for condition,block in u['summary'].items():
+              for policy,arm in block['arms'].items():
+                  q=arm['native']
+                  lines.append(f"| {condition} | {policy} | {q['correct']} | {q['wrong']} | {q['abstained']} | {arm['effects']} |")
+          lines.extend(['',f"Paired active vs rank2 correct coverage gain: {u['paired_gain_rank']}",
+              f"Paired rank bootstrap lower: {u['bootstrap_lower_rank']}",
+              f"Paired active vs random correct coverage gain: {u['paired_gain_random']}",
+              f"Paired random bootstrap lower: {u['bootstrap_lower_random']}",
+              'Frozen gates: '+str(u['gates']),
+              f"Cold cumulative world models: {u['cold_retained_world_models']}",
+              f"Synthetic action effects: {u['simulated_action_effects']}",
+              'Linux arm timing (seconds): '+str(u['arm_wall_seconds']),
+              'Linux whole-process elapsed (seconds): '+str(u['whole_wall_seconds']),
+              'Stable SHA256: '+u['stable_sha256'],
+              'Original Linux source candidate: '+os.environ['FROZEN_SOURCE'],
+              'A tie with independent symbolic structure search is NOT native superiority.',
+              'All shift/corrupt nulls are preserved. No merge, accepted model, scientific promotion or deployment.',''])
+          (root/'SESSION_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+          print('CKAD_PORTFOLIO_CROSS_PLATFORM=PASS',u['stable_sha256'])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- research/contrib/chatgpt/CKAD-PORTFOLIO-V1/result.json research/contrib/chatgpt/CKAD-PORTFOLIO-V1/native-checkpoints.json research/contrib/chatgpt/CKAD-PORTFOLIO-V1/SESSION_REPORT.md
+          git commit -m "research(ckad-portfolio): seal original source-free results and Windows replica"
+          SOURCE="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --quiet && exit 1
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = 3
+          git commit -m "docs(ckad-portfolio): pin exact G29 atlas at $SOURCE"
+          FINAL="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ckad-portfolio-v1-20261117
+          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
+          echo "CKAD_PORTFOLIO_FINAL_SHA=$FINAL"
+  final:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Mandatory full root and NKR-05 regression and independent G29 exact-final
+        shell: bash
+        env:
+          EXPECTED: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py'
+          python scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py
+          test -z "$(git status --porcelain)"
