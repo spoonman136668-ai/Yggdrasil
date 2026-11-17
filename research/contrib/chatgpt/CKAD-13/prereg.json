@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.ckad13.integrated-development.prereg.v1",
+  "experiment_id": "CKAD-13",
+  "exact_parent_sha": "5df8dbf506027b914f66e19441376d1347a3e09d",
+  "parent_tree": "52e54277d155f8ab683ef34e02e4a0d599e54037",
+  "hypothesis": "One native state can accumulate witnessed constraints, select provisional representations without family labels, quarantine conflicting updates, retain facts and unaffected slots, cold restart and continue learning through A-F without fresh initialization.",
+  "evidence_class": "SOURCE_FREE_DEVELOPMENT_ONLY",
+  "source": "Previously consumed CKAD08 native witness checkpoints and CKAD05 stored fact planes, authenticated by original result.json checkpoint pins; CKAD02 evaluator used only for already consumed held-query scoring. No original source episode, virgin seed or factual resource rescan.",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "stages": {
+    "A": "Import exact CKAD05 stored facts; no relation-family label supplied.",
+    "B": "128 witnessed rows each in slots0,1; correlation-only packet rejection negative.",
+    "C": "128 witnessed rows each in slots2,3, with evidence-selected degree.",
+    "D": "128 witnessed rows each in slots4,5; conflicting same-input update to slot5 quarantines it; facts and unaffected prior readouts must survive; preserve rejected outcomes.",
+    "E": "Score unseen slots6,7 BEFORE adaptation, then acquire128 witnesses each and score unfamiliar inputs. This is bounded family adaptation, not zero-shot success.",
+    "F": "Resume cold D/E state, add384 unseen witnesses to slots0-4,6,7 to reach512, using deterministic information-seeking choice among cached witnessed inputs; slot5 stays quarantined."
+  },
+  "ordering": "CKAD12 SHA input_order initial128 per slot. Continued queries prefer provisional-unknown inputs then unseen action alternatives to known contexts then SHA order; outcomes unavailable to selector until selected.",
+  "baselines": [
+    "Independent set-XOR lowest-consistent-degree learner with identical fit/calibration split",
+    "Fully grown CART on all identical acquired rows, deterministic random_state",
+    "Exact complete-basis witnessed lookup",
+    "Zero-update abstention",
+    "Replacement-only last-chunk fit"
+  ],
+  "ablations": [
+    "retained cumulative constraints versus replacement-only",
+    "no representation selection complete-basis lookup",
+    "before versus after additional evidence"
+  ],
+  "metrics": [
+    "correct/wrong/abstained unfamiliar queries",
+    "retained facts and prior readout differences",
+    "quarantine and invalid source packet rejection",
+    "checkpoint lineage and cold byte identity",
+    "action count and source hashes",
+    "native/control fit time, whole wall/CPU, peak process RSS, checkpoint bytes"
+  ],
+  "engineering_success": "All3 seeds finish A-F from prior checkpoint, all100000 imported properties retained per seed, no wrong witnessed readout outside quarantined slot, no mutation on malformed packets, cold bytes match, all unaffected pre-D readouts unchanged at D; final regression Linux AND Windows and independent raw-state qualification required for ENGINEERING_PASS.",
+  "development_gain": "F unfamiliar correct count exceeds corresponding128-row retained state, zero wrong on supported family queries; any miss preserved and reported, no post-score tuning.",
+  "scientific_success": "false by construction: consumed synthetic source, no independent original causal first-use; superiority requires new separately authorized preregistration and independent source qualification.",
+  "budgets": {
+    "wall_seconds": 600,
+    "per_seed_slots": 8,
+    "unique_max_observations_per_slot": 512,
+    "new_original_actions": 0,
+    "paid_apis": 0,
+    "threads": 1,
+    "checkpoint_bytes_max": 16777216
+  },
+  "stop": "Abort on pin mismatch, unexpected checkpoint drift, leakage of labels into selector, malformed input mutation, budget exhaustion. Never silently advance invalid engineering state.",
+  "allowed_paths": [
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-13/**",
+    ".github/workflows/ckad13-integrated-cumulative.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "authority": "Isolated draft contribution. Existing project owner unchanged. No accepted ref, merge, promotion, deployment, controller, scheduler or protected first-use."
+}
