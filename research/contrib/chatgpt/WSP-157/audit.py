@@ -55,7 +55,7 @@ def read_original_fit(data_path=DATA):
             d[k]=v
         return d
     d=json.loads(raw.decode("ascii"),object_pairs_hook=unique)
-    require(raw==json.dumps(d,indent=2,sort_keys=True).encode("ascii")+b"\n",
+    require(raw==json.dumps(d,indent=2,sort_keys=False).encode("ascii")+b"\n",
             "PACKED_FILE_NONCANONICAL")
     require(type(d) is dict and d["schema"]==SCHEMA
             and d["history"]=="PREVIOUSLY_CONSUMED_PUBLIC_DEVELOPMENT_ONLY"
