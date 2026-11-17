@@ -23,6 +23,17 @@ def program_pair_weights(rows, binary_inputs):
     residual = sum(y << i for i, (_, y) in enumerate(rows))
     columns = tuple(sum(int((x & m) == m) << i for i, x in enumerate(xs))
                     for m in range(1 << binary_inputs))
+    # A zero column cannot improve a stalled single or paired flip. For
+    # identical nonzero columns, only the lowest (popcount, index) member
+    # can win a paired tie; the two members of one class cancel entirely.
+    # Source and labels are unchanged. This is a lossless search reduction.
+    equivalence_classes = {}
+    for m, col in enumerate(columns):
+        if col:
+            prev = equivalence_classes.get(col)
+            if prev is None or (m.bit_count(), m) < (prev.bit_count(), prev):
+                equivalence_classes[col] = m
+    representatives = sorted(equivalence_classes.values())
     weights, writes = 0, []
     while residual and len(writes) < MAX_EDITS:
         best, key_best = None, None
@@ -35,9 +46,9 @@ def program_pair_weights(rows, binary_inputs):
                 best, key_best = (m,), key
         if best is None and len(writes) + 2 <= MAX_EDITS:
             old_errors = residual.bit_count()
-            for m, col in enumerate(columns):
-                once = residual ^ col
-                for n in range(m + 1, len(columns)):
+            for idx, m in enumerate(representatives):
+                once = residual ^ columns[m]
+                for n in representatives[idx + 1:]:
                     gain = old_errors - (once ^ columns[n]).bit_count()
                     if gain <= 0:
                         continue

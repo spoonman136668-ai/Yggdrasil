@@ -77,6 +77,121 @@ class PairNativeTests(unittest.TestCase):
             with self.subTest(field=k), self.assertRaises(ValueError):
                 NativePairHypothesis.restore(forged, digest(forged))
 
+
+    def test_exhaustive_pair_equivalence_to_full_frozen_search(self):
+        # Independent complete pair enumeration: no equivalence compression.
+        # All three-bit truth tables, plus four- and five-bit fabricated cases.
+        def original_reference(rows, binary_inputs):
+            xs = [x for x, _ in rows]
+            columns = [
+                sum(int((x & m) == m) << i for i, x in enumerate(xs))
+                for m in range(1 << binary_inputs)
+            ]
+            residual = sum(y << i for i, (_, y) in enumerate(rows))
+            weights, writes = 0, []
+            while residual and len(writes) < 16:
+                singles = [
+                    (-gain, m.bit_count(), m)
+                    for m, col in enumerate(columns)
+                    for gain in [2 * (residual & col).bit_count() - col.bit_count()]
+                    if gain > 0
+                ]
+                if singles:
+                    m = min(singles)[-1]
+                    chosen = (m,)
+                elif len(writes) + 2 <= 16:
+                    old_error = residual.bit_count()
+                    pairs = [
+                        (-gain, m.bit_count() + n.bit_count(), m, n)
+                        for m in range(len(columns))
+                        for n in range(m + 1, len(columns))
+                        for gain in [old_error - (residual ^ columns[m] ^ columns[n]).bit_count()]
+                        if gain > 0
+                    ]
+                    chosen = min(pairs)[-2:] if pairs else ()
+                else:
+                    chosen = ()
+                if not chosen:
+                    break
+                for m in chosen:
+                    residual ^= columns[m]
+                    weights ^= 1 << m
+                    writes.append(m)
+            return weights, tuple(writes), residual.bit_count()
+
+        for bits in (2, 3):
+            for labels_mask in range(1 << (1 << bits)):
+                rows = [(x, (labels_mask >> x) & 1) for x in range(1 << bits)]
+                with self.subTest(bits=bits, labels=labels_mask):
+                    self.assertEqual(program_pair_weights(rows, bits),
+                                     original_reference(rows, bits))
+        for bits in (4, 5, 6):
+            for seed in range(24):
+                samples = [x for x in range(1 << bits) if (x * 17 + seed) % 7 != 0]
+                rows = [(x, ((x * (seed + 3) + (x >> 1)) ^ (seed * x >> 2)) & 1)
+                        for x in samples]
+                with self.subTest(bits=bits, seed=seed):
+                    self.assertEqual(program_pair_weights(rows, bits),
+                                     original_reference(rows, bits))
+
+    def test_full_width_diagnostic_exact_reference(self):
+        # No protected source input: deterministic invented masks and labels.
+        import hashlib
+        from time import perf_counter
+        bits = 11
+        xs = sorted(range(1 << bits), key=lambda x:
+                    hashlib.sha256(str(x).encode("ascii")).digest())[:384]
+        rows = [(x, int((x & 11) == 11) ^ int((x & 960) == 960)
+                 ^ int((x & 17) == 17)) for x in xs]
+        # Two independent code paths must return exactly the same weights,
+        # edit trace, and residual errors at the full declared input width.
+        def dense_reference(rows, bits):
+            residual = sum(y << i for i, (_, y) in enumerate(rows))
+            cols = tuple(sum(int((x & m) == m) << i
+                             for i, (x, _) in enumerate(rows))
+                         for m in range(1 << bits))
+            weights, writes = 0, []
+            while residual and len(writes) < 16:
+                singles = []
+                for m, col in enumerate(cols):
+                    gain = 2 * (residual & col).bit_count() - col.bit_count()
+                    if gain > 0:
+                        singles.append((-gain, m.bit_count(), m))
+                if singles:
+                    chosen = (min(singles)[-1],)
+                elif len(writes) + 1 < 16:
+                    old = residual.bit_count()
+                    best = None
+                    for m, col in enumerate(cols):
+                        once = residual ^ col
+                        for n in range(m + 1, len(cols)):
+                            gain = old - (once ^ cols[n]).bit_count()
+                            if gain > 0:
+                                key = (-gain, m.bit_count() + n.bit_count(), m, n)
+                                if best is None or key < best:
+                                    best = key
+                    chosen = best[-2:] if best else ()
+                else:
+                    chosen = ()
+                if not chosen:
+                    break
+                for m in chosen:
+                    residual ^= cols[m]
+                    weights ^= 1 << m
+                    writes.append(m)
+            return weights, tuple(writes), residual.bit_count()
+        start = perf_counter()
+        baseline = dense_reference(rows, bits)
+        base_seconds = perf_counter() - start
+        start = perf_counter()
+        candidate = program_pair_weights(rows, bits)
+        candidate_seconds = perf_counter() - start
+        self.assertEqual(candidate, baseline)
+        print("CKAD10_PAIR_EQUIVALENCE_REFERENCE_SECONDS="
+              + format(base_seconds, ".6f")
+              + " CANDIDATE_SECONDS=" + format(candidate_seconds, ".6f"),
+              flush=True)
+
     def test_invalid_inputs(self):
         for rows, bits in (([(0, 0), (0, 1)], 4),
                            ([(True, 1)], 4), ([(0, 1)], 12)):
