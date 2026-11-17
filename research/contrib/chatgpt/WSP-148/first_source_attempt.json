@@ -1,0 +1,62 @@
+{
+  "schema": "wsp148.first-source-attempt-post-score-reporting-defect.v1",
+  "date_utc": "2026-11-17",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "pr": 1196,
+  "prereg_commit": "59db1b66b3a23f6b5498cd8d59d03be8605dfcbe",
+  "first_source_candidate": "9a9492a44cb1ad9a59eea2558458f9630c78235d",
+  "first_source_run": 44111102222,
+  "linux_job": 134136826672,
+  "windows_job": 134136827194,
+  "first_use_scope": "fresh public synthetic WSP148 only; 64 new worlds and 6144 source effects per platform; original CausalGym/DTR/MDP protected source untouched",
+  "source_effects_per_platform": 6144,
+  "protected_original_source_events": 0,
+  "first_source_result_status": "DEVELOPMENT_COORDINATED_WEIGHT_REPAIR_NO_GO",
+  "original_full_linux_result_file": "research/contrib/chatgpt/WSP-148/result.json",
+  "original_full_linux_result_archival_commit": "7641d651f821817af7dd41b7143f503cc15ead21",
+  "windows_same_nonresource_scores": true,
+  "source_owner_receipts_sha256": "37d38ecdff84e8989ceaf0895d469f254b3f3927ad5db053c416cb96106274db",
+  "private_future_selection_sha256": "babb769384931cb9cde6b41b87bfb426fa4a7db3e6e94dbe9a3b8f00a3ac4ffe",
+  "primary": {
+    "block": {
+      "correct": 4,
+      "wrong_confident": 4,
+      "abstained": 248,
+      "held": 256
+    },
+    "single24": {
+      "correct": 0,
+      "wrong_confident": 0,
+      "abstained": 256,
+      "held": 256
+    },
+    "full_poly": {
+      "correct": 147,
+      "wrong_confident": 109,
+      "abstained": 0,
+      "held": 256
+    },
+    "fully_fitted_cart": {
+      "correct": 184,
+      "wrong_confident": 72,
+      "abstained": 0,
+      "held": 256
+    },
+    "exact_training_worlds_block": 1,
+    "exact_training_worlds_single24": 0,
+    "exact_training_world_gain": 1
+  },
+  "engineering_failure": "The frozen result computation and 6144-event study completed on both platforms and printed full authentic NO-GO results. The unittest wrapper then failed an assertion because experiment.run omitted preregistered reporting keys nested_block_minus_single_exact_fit_worlds, nested_block_exact_fit_worlds, nested_single_exact_fit_worlds. The underlying computed values exist in per_world and the eligibility decision already used them.",
+  "classification": "ENGINEERING_REPORTING_ASSERTION_FAIL_AFTER_FULL_SCIENTIFIC_NO_GO",
+  "allowed_repair": "Add exactly the missing descriptive keys to experiment.run return; retain original output, cohorts, source, learner, control weights, acquisition, thresholds, seeds, hidden selection and scoring unchanged; no first-use replay claimed.",
+  "not_allowed": [
+    "Post-result scientific threshold tuning",
+    "Source regeneration or seed changes",
+    "Additional protected original effects",
+    "Reclassifying scientific NO-GO as CI failure",
+    "Merging or native promotion"
+  ],
+  "repeat_policy": "Any later run on the same WSP148 public synthetic seeds is a transparent deterministic reproducibility replay, not virgin first-use. Preserve first-run source identities.",
+  "scientific_pass": false,
+  "native_admission": false
+}
