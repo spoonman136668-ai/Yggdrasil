@@ -157,7 +157,7 @@ def run():
             owner=S.OwnerPostCommit(view,seed,paid)
             decision=owner.score_once(predictions)
             held=decision['held_queries_after_all_output_seals']
-            corroborate=P.hidden_future_questions(view.law_id,
+            corroborate=Q.hidden_future_questions(view.law_id,
                 {p:tuple(x for x,y in rows_by[p]) for p in POLICIES},
                 {p:{x:predictions[p]['hierarchical'][x] for x in range(64)}
                  for p in POLICIES})

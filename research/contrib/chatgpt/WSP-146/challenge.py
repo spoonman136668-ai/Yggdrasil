@@ -8,6 +8,7 @@ from importlib.util import module_from_spec,spec_from_file_location
 from pathlib import Path
 from time import process_time_ns,perf_counter_ns
 import sys
+from hashlib import sha256
 
 def _pin_h():
     spec=spec_from_file_location('_wsp146_h',Path(__file__).resolve().parents[1]/'WSP-143'/'concepts.py')
@@ -89,3 +90,35 @@ def measured_challenge(rows):
     value['cpu_s']=round((process_time_ns()-c)/1e9,6)
     value['wall_s']=round((perf_counter_ns()-w)/1e9,6)
     return value
+
+def hidden_future_questions(law_id,actions_by_policy,predictions_by_policy):
+    """Source-blind independent held-coordinate audit after full prediction seals.
+
+    Same WSP146 namespace as source owner, not legacy WSP145. This function
+    is NOT callable by the acquisition policy and consumes zero source effects.
+    """
+    if type(law_id) is not int or law_id<0:
+        raise ValueError('WSP146_BAD_PUBLIC_LAW_ID')
+    names={'fixed','random','adaptive'}
+    if (type(actions_by_policy) is not dict or set(actions_by_policy)!=names
+        or type(predictions_by_policy) is not dict or set(predictions_by_policy)!=names):
+        raise ValueError('WSP146_OWNER_SEALS_MISSING')
+    observed=set()
+    warm=None
+    for name in ('fixed','random','adaptive'):
+        inputs=tuple(actions_by_policy[name])
+        preds=predictions_by_policy[name]
+        if (len(inputs)!=32 or len(set(inputs))!=32
+            or any(type(x) is not int or not 0<=x<64 for x in inputs)
+            or type(preds) is not dict or set(preds)!=set(range(64))
+            or any(v is not None and (type(v) is not int or v not in (0,1))
+                   for v in preds.values())):
+            raise ValueError('WSP146_UNSEALED_FULL_PREDICTIONS_OR_ACTIONS')
+        prefix=inputs[:20]
+        if warm is None:warm=prefix
+        elif prefix!=warm:raise ValueError('WSP146_UNMATCHED_WARM_OBSERVATIONS')
+        observed.update(inputs)
+    unseen=set(range(64))-observed
+    if len(unseen)<8:raise AssertionError('WSP146_HELD_UNION_TOO_LARGE')
+    return tuple(sorted(unseen,key=lambda x:(
+        sha256(('WSP146|HELD|'+str(law_id)+'|'+str(x)).encode()).digest(),x))[:8])

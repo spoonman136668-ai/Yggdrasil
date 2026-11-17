@@ -50,3 +50,20 @@ class SourceFree(TestCase):
                 out=Q.challenge(rows,fake)
                 self.assertTrue(all(v is None for v in out['challenged']))
                 self.assertTrue(all(v is None for v in out['depth_only']))
+
+    def test_05_wsp146_owner_namespace_independent_postseal(self):
+        xs=tuple(x for x,y in fixture())
+        warm=xs[:20]
+        fixed=xs
+        random=warm+tuple(x for x in range(64) if x not in warm)[:12]
+        adaptive=warm+tuple(x for x in range(63,-1,-1) if x not in warm)[:12]
+        arms={'fixed':fixed,'random':random,'adaptive':adaptive}
+        sealed={p:{x:None for x in range(64)} for p in arms}
+        a=Q.hidden_future_questions(12345,arms,sealed)
+        b=Q.hidden_future_questions(12345,arms,sealed)
+        self.assertEqual(a,b)
+        self.assertEqual(len(a),8)
+        self.assertFalse(set(a)&set().union(*(set(v) for v in arms.values())))
+        with self.assertRaises(ValueError):Q.hidden_future_questions(True,arms,sealed)
+        with self.assertRaises(ValueError):Q.hidden_future_questions(12345,{'fixed':fixed},sealed)
+        with self.assertRaises(ValueError):Q.hidden_future_questions(12345,arms,{p:{} for p in arms})
