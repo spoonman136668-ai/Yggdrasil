@@ -1,7 +1,7 @@
 name: WSP143 source-blind hierarchical non-token causal concept study
 on:
   push:
-    branches: [research/wsp143-sparse-anf-causal-composition-20261117]
+    branches: [research/wsp143-hierarchical-causal-concepts-20261117]
 permissions:
   contents: read
 jobs:
@@ -77,7 +77,7 @@ jobs:
           git commit -m "docs(wsp143): pin G29 source atlas at $SOURCE"
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/wsp143-sparse-anf-causal-composition-20261117
+          git push origin HEAD:refs/heads/research/wsp143-hierarchical-causal-concepts-20261117
   final-regression:
     needs: [development]
     if: "startsWith(github.event.head_commit.message, 'docs(wsp143): pin G29 source atlas at ') && github.run_attempt == 1 && needs.development.result == 'success'"
