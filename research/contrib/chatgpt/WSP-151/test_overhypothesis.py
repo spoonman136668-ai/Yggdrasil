@@ -35,6 +35,13 @@ class SyntheticFabricatedOnly(unittest.TestCase):
         m=M.empty_memory();rows=self.rows("OR",5)
         m=M.remember(m,rows,0)
         with self.assertRaises(ValueError):M.remember(m,rows,0)
+        # A different observation set from the same world is NOT a new world.
+        with self.assertRaisesRegex(ValueError,"WSP151_DUPLICATE_WORLD"):
+            M.remember(m,self.rows("OR",6),0)
+        with self.assertRaises(ValueError):
+            M.restore({**m,"world_ids":(0,0)})
+        with self.assertRaises(ValueError):
+            M.restore({**m,"world_ids":(True,)})
         with self.assertRaises(ValueError):M.remember(m,rows,-1)
         with self.assertRaises(ValueError):M.remember(m,rows[:7],1)
         with self.assertRaises(ValueError):

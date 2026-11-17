@@ -8,7 +8,7 @@ from hashlib import sha256
 from json import dumps
 from math import factorial, log2
 
-SCHEMA="wsp151.causal.hypermemory.v1"
+SCHEMA="wsp151.causal.hypermemory.v2"
 MODEL="wsp151.causal.hierarchical.v1"
 FORMS=("OR","AND")
 SUBSETS=range(1,64)
@@ -44,14 +44,16 @@ def _marginals(rows):
                      for s in SUBSETS) for g in FORMS)
 
 def empty_memory():
-    state={"schema":SCHEMA,"worlds":(),"receipts":(),"frozen":False}
+    state={"schema":SCHEMA,"worlds":(),"world_ids":(),"receipts":(),"frozen":False}
     return {**state,"digest":digest(state)}
 
 def _check_memory(mem):
     if (type(mem) is not dict or set(mem)!=
-        {"schema","worlds","receipts","frozen","digest"} or
+        {"schema","worlds","world_ids","receipts","frozen","digest"} or
         mem["schema"]!=SCHEMA or type(mem["frozen"]) is not bool or
         type(mem["worlds"]) not in (list,tuple) or len(mem["worlds"])>16 or
+        type(mem["world_ids"]) not in (list,tuple) or
+        len(mem["world_ids"])!=len(mem["worlds"]) or
         type(mem["receipts"]) not in (list,tuple) or
         len(mem["receipts"])!=len(mem["worlds"])):
         raise ValueError("WSP151_BAD_HYPERMEMORY")
@@ -59,11 +61,15 @@ def _check_memory(mem):
         if (type(pair) not in (tuple,list) or len(pair)!=2 or
             any(type(v) is not int or v<=0 for v in pair)):
             raise ValueError("WSP151_INVALID_WORLD_EVIDENCE")
+    if (any(type(i) is not int or i<0 for i in mem["world_ids"]) or
+        len(set(mem["world_ids"]))!=len(mem["world_ids"])):
+        raise ValueError("WSP151_DUPLICATE_OR_INVALID_WORLD_ID")
     if (len(set(mem["receipts"]))!=len(mem["receipts"]) or
         any(type(x) is not str or len(x)!=64 or
             any(c not in "0123456789abcdef" for c in x) for x in mem["receipts"])):
         raise ValueError("WSP151_INVALID_RECEIPTS")
     plain={"schema":SCHEMA,"worlds":tuple(tuple(p) for p in mem["worlds"]),
+           "world_ids":tuple(mem["world_ids"]),
            "receipts":tuple(mem["receipts"]),"frozen":mem["frozen"]}
     if mem["digest"]!=digest(plain):
         raise ValueError("WSP151_HYPERMEMORY_HASH_MISMATCH")
@@ -75,12 +81,15 @@ def remember(mem,rows,world_id):
         raise ValueError("WSP151_MEMORY_CLOSED")
     if type(world_id) is not int or world_id<0:
         raise ValueError("WSP151_BAD_WORLD_ID")
+    if world_id in m["world_ids"]:
+        raise ValueError("WSP151_DUPLICATE_WORLD")
     r=validate_rows(rows)
     pair=_marginals(r)
     receipt=digest((world_id,r))
     if receipt in m["receipts"]:
         raise ValueError("WSP151_DUPLICATE_WORLD")
     update={**m,"worlds":m["worlds"]+(pair,),
+            "world_ids":m["world_ids"]+(world_id,),
             "receipts":m["receipts"]+(receipt,)}
     return {**update,"digest":digest(update)}
 
