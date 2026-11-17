@@ -35,7 +35,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
         content["packed_hex"]=("00" if prefix[:2]!="00" else "01")+prefix[2:]
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/"corrupted.json"
-            p.write_text(json.dumps(content,indent=2,sort_keys=False)+"\n")
+            p.write_bytes((json.dumps(content,indent=2,sort_keys=False)+"\n").encode("ascii"))
             with self.assertRaisesRegex(ValueError,"WSP157_PACKED_SOURCE_BYTES"):
                 A.read_original_fit(p)
         self.assertEqual(A.read_original_fit(),self.source)
@@ -51,7 +51,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
             wrong[field]=new
             with tempfile.TemporaryDirectory() as d:
                 p=Path(d)/"bad.json"
-                p.write_text(json.dumps(wrong,indent=2,sort_keys=False)+"\n")
+                p.write_bytes((json.dumps(wrong,indent=2,sort_keys=False)+"\n").encode("ascii"))
                 with self.subTest(field=field):
                     with self.assertRaises(ValueError):A.read_original_fit(p)
 
@@ -138,7 +138,7 @@ class OriginalDTRRetrospectiveTests(unittest.TestCase):
             # No real source I/O possible: neither import nor reset/do occurs.
             with tempfile.TemporaryDirectory() as d:
                 p=Path(d)/"source.json"
-                p.write_text(json.dumps(x,indent=2,sort_keys=False)+"\n")
+                p.write_bytes((json.dumps(x,indent=2,sort_keys=False)+"\n").encode("ascii"))
                 with self.subTest(field=field):
                     with self.assertRaises(ValueError):A.read_original_fit(p)
 
