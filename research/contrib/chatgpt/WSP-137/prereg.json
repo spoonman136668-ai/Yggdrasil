@@ -1,0 +1,75 @@
+{
+  "schema": "wsp137.active-source-blind-causal-selection.prereg.v1",
+  "id": "WSP-137",
+  "date_utc": "2026-11-17",
+  "phase": "PREREG_FIRST_ALONE_BEFORE_SOURCE_ALGORITHM_OR_OUTCOME",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/wsp136-matched-oracle-gap-20261116",
+    "qualified_sha": "337fe0ba190a271df2ee538078dd91932bd36ee6",
+    "qualified_tree": "0563454ad7b6e4cd18e0063719e1e0b6a066e474",
+    "pr": 1181,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "frozen_negative": "WSP136 identical-source held unfamiliar DIRECT_LATENT 322/384, 12 confidently wrong; SOURCE_GRAMMAR_ORACLE 384/384, 0 wrong; same-prior symbolic TIE, new test must NOT reopen WSP136 cohort"
+  },
+  "hypothesis": "A deterministic source-blind active action selection policy that chooses contradictions among internally formed two-pair latent hypotheses from actual paid effects will improve unfamiliar structure discrimination and calibrate confident errors versus the already qualified fixed WSP135 action schedule, with exactly equal intervention budgets. Equal-information independent symbolic must be tested; no numerical superiority when tied.",
+  "source": {
+    "class": "PUBLIC_SYNTHETIC_DEVELOPMENT_ONLY",
+    "namespace": "WSP137|<KNOWN|UNFAMILIAR|OFF>|seed",
+    "known_seeds": "198000..198011",
+    "unfamiliar_seeds": "199000..199011",
+    "zero_action_transfer_seeds": "200000..200005",
+    "negative_off_family_seeds": "201000..201007",
+    "forbidden": "all other seeds including 198800..198863, 199800..199863, 200800..200863, 201800..201863 and all other WSP117-136 protected or consumed source cohorts",
+    "typed_action_input": "6 binary bits, 64 public typed actions x=0..63 with fresh opaque IDs known to chooser before query; source effect and signed receipt revealed AFTER query",
+    "budgets": "exactly32 actions per world PER native-policy arm, distinct actions per arm, held 32 effects per world per arm, max64 charged synthetic source actions per non-transfer world overall; zero transfer actions",
+    "known_law": "source-only random.Random(int.from_bytes(SHA256('WSP137|KNOWN|seed'),'big')) shuffles six bits, chooses gate1, gate2 and terminal from AND/OR/XOR/XNOR, returns terminal(gate1(p0,p1),gate2(p2,p3)) XOR (p4 AND p5 when even seed else p4)",
+    "unfamiliar_law": "source-only random.Random(SHA256('WSP137|UNFAMILIAR|seed')) shuffles six bits, gates1/2 chosen AND/OR/XOR/XNOR, returns majority(g1,g2,p4) XOR p5",
+    "off_law": "source-only random.Random(SHA256('WSP137|OFF|seed')) shuffles six bits, output XOR(p0 AND p2,p1 AND p3,p0 AND p4,p1 AND p5,p4,p5)",
+    "original_external_source_calls": 0,
+    "no_scientific_first_use": true
+  },
+  "learners": {
+    "fixed": "Reuse EXACT pinned WSP135 direct numerical template fit/predict from qualified WSP136 parent, on original fixed N.schedule 32 public interventions, no source label, seed or oracle input.",
+    "active": "Exactly FOUR fixed prefix source-blind N.schedule actions, then 28 deterministic adaptive actions. Maintain all 17,640 generic two-pair feature templates' 16-cell output lookup constraints from paid public x,y. On contradiction remove candidate. For selection only (not final prediction), use 256 SHA256('WSP137|PROBE|'+template_index)-ordered surviving candidates (or all if <256). For each unqueried x compute candidate known-code 0/1 votes and still-unseen-code count; maximize lexicographic (min(vote0,vote1), unseen_code_count, -x). If no candidates survive, choose smallest unused fixed schedule action, then lowest unused x. No true hidden operator, oracle family or future held labels in chooser. After32 effects, run UNCHANGED pinned WSP135 numeric fit and predict (top64,min occupied codes,80% participation,90% agreement); no new model family supplied.",
+    "same_prior_symbolic": "Independently compute candidate constraint fit/prediction from WSP135 independent symbolic codebooks on exact active or fixed public x,effect records. Exact prediction parity required for both arms; do not import N.fit or N.predict in independent control.",
+    "cart": "Separately fully fit original depth<=6 CART from identical action/effect transcript for active and fixed. No information shortcuts.",
+    "oracle": "Use EXACT unchanged copied WSP135 PR1179 grammar 7,062 whole-function bank as PRIVILEGED diagnostic on each arm's own matched 32-source-effect transcript, no hidden law identity or extra paid actions. Oracle never guides active actions. Do not call oracle equally informed.",
+    "no_update": "Baseline abstains all held labels.",
+    "retention": "Save/cold restore both active and fixed learned world state (observed rows, public view fingerprints, source receipts, candidate prediction state), verify all 12 previous known laws unchanged after 12 unfamiliar and 8 OFF learning; six zero-call same-law transfer relabels 64 each; no new law claim."
+  },
+  "metrics": {
+    "frozen_unfamiliar_gain_min_pp": 5,
+    "frozen_unfamiliar_confident_wrong_max_pct": 1,
+    "known_noninferiority_tolerance_pp": 5,
+    "off_confident_wrong_max_pct": 10,
+    "active_minus_fixed_measured_on_same_worlds": true,
+    "source_calls_equal_and_exact": true,
+    "source_grammar_membership_checked_only_after_train_and_before_scoring": true,
+    "independent_equal_info_symbolic_prediction_mismatch_max": 0,
+    "zero_call_transfer_exact_readouts_required": 384,
+    "negative_results_immutable": true,
+    "status": "DEVELOPMENT_ACTIVE_SELECTION_SUPPORTED only if unfamiliar correct coverage gain >=5pp vs fixed with active confident errors <=1%, known correct no more than 5pp behind fixed, off wrong<=10%, both symbolic parity, zero-call retention, no budget/custody/first-use breach. Otherwise DEVELOPMENT_ACTIVE_SELECTION_NO_GO. NO SCIENTIFIC_PASS regardless."
+  },
+  "safety": {
+    "allowed_paths": [
+      "research/contrib/chatgpt/WSP-137/**",
+      ".github/workflows/wsp137-source-safe.yml",
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.html",
+      ".ice/code-atlas.ice"
+    ],
+    "forbid": [
+      "replay of WSP136 original scored seeds",
+      "source first-use of original CausalGym DTR or MDP without signed virgin custody and qualified source actor",
+      "accepted main edit",
+      "native model weights integration",
+      "merge or promotion",
+      "new controller/scheduler/runner",
+      "paid API",
+      "scope expansion",
+      "post-result algorithm or threshold retuning"
+    ],
+    "dependencies": "Python 3.12 standard library only, GitHub existing Ubuntu/Windows qualification matrix and G29 source-pin workflow; no new runners"
+  }
+}
