@@ -271,6 +271,82 @@ class NativeCumulativeLearner:
         require(probability is not None, 'INTEGRATED_RECALL_EMPTY_PREDICTION')
         return (probability[0], probability[1], selected)
 
+    def propose_causal_discriminator(self, slots, diagnostics, public_candidates):
+        """Choose one public do-action by disagreement of retained native causality.
+
+        This is an opt-in source-only, exact-rational Gini-information proxy.
+        No model/owner state is changed, no target outcomes are generated, and
+        the unknown-class p=0.5 prior is a supplied conventional assumption.
+        """
+        from fractions import Fraction
+
+        require(type(slots) in (tuple, list) and len(slots) == 2
+                and all(type(i) is int and 0 <= i < 16 for i in slots)
+                and slots[0] != slots[1], 'INTEGRATED_DISCRIMINATOR_SLOTS')
+        require(type(diagnostics) is list and 0 <= len(diagnostics) < 4,
+                'INTEGRATED_DISCRIMINATOR_DIAGNOSTICS')
+        require(type(public_candidates) is list and 1 <= len(public_candidates) <= 16,
+                'INTEGRATED_DISCRIMINATOR_PUBLIC_CANDIDATES')
+        require(all(self._compiled[s] is not None and not self._quarantined[s]
+                    for s in slots), 'INTEGRATED_DISCRIMINATOR_MISSING_NATIVE_MEMORY')
+
+        observed = set()
+        for item in diagnostics:
+            require(type(item) is list and len(item) == 3,
+                    'INTEGRATED_DISCRIMINATOR_DIAGNOSTIC_RECORD')
+            c, a, y = item
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            PublicCausalCells._bit(y, 'PUBLIC_OUTCOME')
+            require((c, a) not in observed,
+                    'INTEGRATED_DISCRIMINATOR_DUPLICATE_DIAGNOSTIC')
+            observed.add((c, a))
+        candidates = []
+        for item in public_candidates:
+            require(type(item) is list and len(item) == 2,
+                    'INTEGRATED_DISCRIMINATOR_CANDIDATE_SHAPE')
+            c, a = item
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            require((c, a) not in observed and (c, a) not in candidates,
+                    'INTEGRATED_DISCRIMINATOR_CANDIDATE_OVERLAP')
+            candidates.append((c, a))
+
+        likelihood = {}
+        for slot in slots:
+            weight = Fraction(1, 1)
+            for c, a, y in diagnostics:
+                got = self.causal_relation_probability(slot, c, a)
+                require(got is not None, 'INTEGRATED_DISCRIMINATOR_MISSING_POSTERIOR')
+                ones, total = got
+                require(type(ones) is int and type(total) is int
+                        and 0 <= ones <= total and total > 0,
+                        'INTEGRATED_DISCRIMINATOR_BAD_POSTERIOR')
+                weight *= Fraction(ones if y else total - ones, total)
+            likelihood[slot] = weight
+        likelihood_unknown = Fraction(1, 2) ** len(diagnostics)
+        evidence = sum(likelihood.values(), likelihood_unknown)
+        require(evidence > 0, 'INTEGRATED_DISCRIMINATOR_ZERO_MASS')
+        prior = {slot: likelihood[slot] / evidence for slot in slots}
+        prior_unknown = likelihood_unknown / evidence
+
+        best = None
+        best_score = None
+        for c, a in sorted(candidates):
+            predictions = {}
+            for slot in slots:
+                ones, total = self.causal_relation_probability(slot, c, a)
+                predictions[slot] = Fraction(ones, total)
+            mean = (sum(prior[slot] * predictions[slot] for slot in slots)
+                    + prior_unknown * Fraction(1, 2))
+            score = (sum(prior[slot] * (predictions[slot] - mean) ** 2
+                         for slot in slots)
+                     + prior_unknown * (Fraction(1, 2) - mean) ** 2)
+            if best_score is None or score > best_score:
+                best_score = score
+                best = [c, a]
+        return best
+
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
         require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_HISTORY_SCOPE')
