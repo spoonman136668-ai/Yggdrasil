@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "LR-92AE",
+  "contributor": "spoonman136668-ai",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "research_question": "Is low accepted-mechanism identification caused by too few contextual observations, or by miscalibrated causal posterior probabilities?",
+  "hypothesis": "Increasing independent context-1 interventions from 16 to 64 at unchanged historical training and fixed context-0 evidence will raise exact accepted familiar mechanisms by >=20, and learned contextual relationships will outperform equal-budget controls without excessive false acceptance or miscalibration.",
+  "source_sha256": "4f92fe04640e9c0a2f4b856274e6e49d760f4659629a4caf6a9a3c51434c664b",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_pr": 1267,
+  "predecessor_source_sha256": "32171291d945f7aedca941890b4137caef648a455bbb34a9c2478e3e36087b47",
+  "predecessor_raw_sha256": "a2e8144f48595168b4c741157e08dfb3584069c7822f0ec33c31fff209f7f035",
+  "historical_train_sha256": "c5f5fcbe1a6e3d7f5b666a98c2d3f6dfd112399f0b8cbe3c1da58c3bcc6e0df2",
+  "trained_weights_sha256": "de4a4369ad31c2000f28871e84361dbbdfc22c559854f3fe32fc1da826fec132",
+  "pre_primary_tests": "7/7 PASS on small structural fixtures, without prospective primary seeds",
+  "training_seed": 929200401,
+  "evaluation_seeds": [
+    929200511,
+    929200512,
+    929200513
+  ],
+  "q_per_seed": [
+    32,
+    32,
+    16
+  ],
+  "base_function_train_ids": "0..7",
+  "base_function_test_ids": "8..15",
+  "train_context_modes": [
+    0,
+    1
+  ],
+  "unseen_mode": 2,
+  "contexts": 2,
+  "actions_per_context": 4,
+  "outcome_flip_probability": 0.35,
+  "context0_fixed_budget": 112,
+  "context1_budgets": [
+    16,
+    32,
+    64,
+    128,
+    256
+  ],
+  "validation_per_world": 256,
+  "ordering": "New independent random worlds per seed; for fit context-1, randomized 4-action blocks reused as nested prefixes for all budgets; fit context-0 112 balanced observations fixed; validation 256 balanced held-out context-action pairs; validation never used for fitting or acceptance",
+  "capacity": "Fixed 256 contextual two-cause 8-bit truth-table hypotheses. No capacity growth, uniform exact Bayes noise model and learned q-specific context-difference prior from the LR-92AD training episodes.",
+  "training_design": "Regenerate original LR-92AD 128 history episodes via exact pinned source and training seed; verify original training history and weights hashes; no additional meta-training or tuning.",
+  "candidate": "LR-92AD learned q-conditioned contextual prior; exact 256-state posterior for each fit budget; unseen q=2 uses uniform independence prior.",
+  "controls": [
+    "equal-budget independent-uniform Bayesian inference",
+    "equal-budget pooled global learned relationship",
+    "equal-budget shuffled-label relationship",
+    "equal-budget fully trained CART",
+    "equal-budget fully trained RF16",
+    "equal-budget fully trained logistic regression"
+  ],
+  "acceptance_rule": "Accepted iff maximum posterior >=0.90 and fit-only binomial misfit survival p >0.01. Keep unchanged across all budgets and arms; evaluation labels never determine acceptance.",
+  "calibration": "Five fixed posterior-max-confidence bins [0,.2), [.2,.4), [.4,.6), [.6,.8), [.8,1] with weighted ECE against exact MAP mechanism correctness; mean Brier and false acceptances also reported. Confidence cutoff never modified.",
+  "metrics": [
+    "accepted exact familiar/192, unseen/48 at each budget",
+    "false accepted mechanisms familiar and unseen at each budget",
+    "MAP exact regardless of acceptance",
+    "held-out 61,440-label accuracy at each budget",
+    "ECE and Brier of MAP confidence at each budget",
+    "full input/outcome receipts, learned-weight cold restore and cost per budget"
+  ],
+  "primary_go_rule": "All ten frozen checks implemented in source must pass, including >=20 extra accepted exact familiar at budget64 vs16, >=8 vs uniform, >=5 vs global, >=5 vs shuffled, false familiar <=uniform+3, unseen false <=uniform, calibration ECE<=0.10, accuracy >= best conventional+0.005, budget128 >=64+10, bit-exact weight cold restore. An external DEVELOPMENT_GO is not native Yggdrasil scientific qualification.",
+  "negative_rule": "If one or more frozen checks fail with valid execution, classify DEVELOPMENT_NO_GO; preserve mixed predictive/calibration signals and the original threshold. No retuning or second scored cohort.",
+  "invalid_rule": "Wrong prereg/source/predecessor/training hashes; source drift; primary result preexisting; score contamination, failed independent audit, omitted controls, changed seeds/budgets/acceptance or rerun.",
+  "budget": {
+    "historical_training_episodes": 128,
+    "prospective_worlds": 240,
+    "fit_observations_max_per_world": 368,
+    "validation_observations_per_world": 256,
+    "primary_trials": 1,
+    "postscore_tuning_passes": 0,
+    "paid_api_calls": 0
+  },
+  "environment": {
+    "python": "3.13.5",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "scikit_learn": "1.8.0",
+    "host": "isolated Linux CPU",
+    "cross_platform": "UNVERIFIED"
+  },
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92ae-evidence-calibration/"
+  ],
+  "prohibited_after_primary_run": [
+    "no new score seeds",
+    "no threshold adjustment",
+    "no revising budgets",
+    "no new model controls",
+    "no postscore policy selection",
+    "no native data/runner/first-use",
+    "no promotion"
+  ],
+  "authority": {
+    "research_only": true,
+    "native_yggdrasil_training": false,
+    "scheduler_or_queue_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "protected_first_use": false
+  },
+  "note": "Commit this prereg and source before first scoring. Synthetic known-hypothesis grammar only, not native model evidence."
+}
