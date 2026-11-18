@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-02",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a source-free, tokenless, sparse native confidence memory detect when all causal experts make the same wrong edge prediction under shift, beyond strong supervised comparators?",
+  "hypothesis": "A context-conditioned failure-risk memory trained on synthetic causal worlds reduces the 80%-coverage all-experts-wrong risk by >=15% relative to the strongest nonprivileged global, confidence-only, and fully trained ridge-logistic baselines, with paired 95% bootstrap gain lower bound >0.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1215",
+      "note": "YNCA-01 negative, heldout already consumed; new disjoint source-free cohort"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-02/prereg.json",
+    "research/contrib/chatgpt/YNCA-02/experiment.py",
+    "research/contrib/chatgpt/YNCA-02/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-02/result.json",
+    "research/contrib/chatgpt/YNCA-02/provenance.json",
+    "research/contrib/chatgpt/YNCA-02/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "Procedural latent-confounded binary X to Y SCM; 4 regimes; noisy observed proxy; observational and randomized do samples",
+      "sha256": "pending-frozen-source-identity-logged-in-source-commit",
+      "source": "Self-generated source-free toy environments, no protected/original scientific datasets, no external knowledge or proprietary models"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "train": "100001 through 104096 inclusive",
+      "exploratory_dev": "110001 through 111024 inclusive",
+      "heldout": "120001 through 122048 inclusive"
+    },
+    "split": "4096 train worlds from training distribution, 1024 shifted exploratory dev worlds, 2048 separately seeded shifted heldout worlds used exactly once after source freeze; YNCA-01 seeds and outputs not reused.",
+    "ordering": "Fit each risk predictor on train only; fit no hyperparameters to heldout. Development results may guide a separately labeled future attempt but not retune this one. Each causal expert shares observations and do samples; referee sees expert probabilities and observable metadata only.",
+    "data_budget": "Each world 90-140 observational tuples and 20-48 randomized intervention outcomes, 3 fixed experts, 4 confounding regimes, no additional data calls or active interventions.",
+    "compute_budget": "CPU Python 3 stdlib only, 250 deterministic batch logistic steps, 1000 paired bootstrap resamples, <120 seconds development runtime per complete run, no external paid APIs.",
+    "capacity": "Three fixed contrast experts; native 48-cell context risk memory with 50 pseudo-count global shrinkage; confidence baseline 3 bins; fully trained 6-coefficient logistic baseline ridge lambda 0.05; 80% retained coverage.",
+    "evaluator": "Fixed evaluator in experiment.py; lower all-experts-wrong selective risk at 80% retention, Brier failure probability, AUROC failure detection, paired bootstrap delta; unknown all-expert failures identified by hidden law only for training labels/scoring.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Global learned failure base rate",
+    "Confidence-binned calibrated failure detector",
+    "Fully trained equal-information ridge logistic failure detector",
+    "Disagreement-only heuristic (negative-control diagnostic)",
+    "Random failure-risk ranking",
+    "Privileged label oracle for diagnostic ceiling only"
+  ],
+  "metrics": [
+    "All-experts-wrong prevalence",
+    "80%-coverage failure risk",
+    "Brier failure probability",
+    "AUROC",
+    "Abstentions and retained coverage",
+    "Paired bootstrap 95% interval",
+    "Wall-clock process budget",
+    "Full source/results SHA-256"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SUPPORTED only if native 80% coverage failure risk <=0.85 times strongest nonprivileged train-fitted comparator AND paired 95% bootstrap interval vs strongest comparator excludes zero in native favor; all leak/provenance and deterministic audits pass. This does not imply scientific qualification.",
+    "mixed": "Native beats at least one strong comparator on primary metric but not strongest or CI includes zero. DEVELOPMENT_MIXED; no promotion.",
+    "negative": "Native cannot outperform strongest nonprivileged comparator or violates 15% effect margin: DEVELOPMENT_NO_GO. Preserve unfavorable result without retuning.",
+    "invalid": "Invalid heldout separation, all-expert label entering inference, missing control or source/provenance discrepancy: INVALID. Infrastructure failures separately classified."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "negative-result erasure"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Preregistration must precede source execution on heldout. Synthetic contributor DEV testing only; do not regard as native model training or scientific first-use qualification."
+}
