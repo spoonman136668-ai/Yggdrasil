@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "CKAD25-U",
+  "type": "source-free prospective development",
+  "question": "Does the existing native NativeCumulativeLearner.propose() action selector acquire more informative do/outcome observations than equal-budget random, fixed, or conventional exact sparse Bayesian information-gain selection?",
+  "base_sha": "93c66467427b7d5e3827eb9a27a6c0195e296c52",
+  "base_tree": "810d82b3dfd7fd7d9dac7721a9902f74a48a7e60",
+  "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "ckad25_checkpoint_sha256": "c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+  "rationale": "CKAD25-S #1241 and CKAD25-T #1244: auto sparse repair and evidence certificate failed prospective benefit thresholds. CKAD30 #1243 and CKAD31 #1245 independently tested sparse-repair guards; avoid duplicate repair testing. This successor tests existing native action acquisition rather than new guard.",
+  "hypothesis": "Native propose produces >=0.03 lower held Brier than equal-action random and fixed choice, is within 0.03 of exact EIG acquisition, answers >=18/72 correct with bounded error, maintains intact old native state and stays within 0.02 of strong conventional exact sparse Bayes readout.",
+  "seeds": [
+    7129,
+    8137,
+    9143
+  ],
+  "families": {
+    "affine_bias": "1 XOR c0 XOR c2 XOR action",
+    "negated_gate": "1 XOR (c0 AND action)",
+    "two_conjunctions": "(c0 AND c1) XOR (c2 AND action)",
+    "selector": "c1 if c0 else action",
+    "threshold2": "sum(c0,c1,c2,action) >= 2",
+    "composed_parity": "(c0 XOR c1) AND (c2 XOR action)"
+  },
+  "frozen_protocol": {
+    "states": "For each seed and policy arm restore same exact CKAD25 cold native checkpoint, and train all six new laws sequentially in existing slots 1..6, preserving original slot0; no native code edits. Experimental arms are independent copies of SAME native architecture, not six learners.",
+    "split": "Per seed/law SHA-derived permutation of all 16 unique 3-bit context+binary action addresses. First 4 reserved as TEST across all arms, next 4 revealed common initialization, remaining 8 pool for selecting 4 interventions. Test addresses never eligible for acquisition.",
+    "budget": "3 seeds×6 laws×4 arms, exactly 8 observed interventions/slot/arm (4 initial +4 adaptive) and 4 identical held actions per law/seed, total 72 held outcomes per arm. 576 total synthetic do/outcome observations across four arms. Zero protected-source first-use.",
+    "policies": "candidate native.propose(slot,list-of-public-input-pairs,1), fixed deterministic SHA input order, deterministic uniform random over available inputs, and conventional exact Bayesian myopic balanced-split EIG over all <=3-term 4-input ANF hypotheses consistent with revealed intervention outcomes; fallback fixed hash when class unsupported.",
+    "matched_readouts": "All arms scored on same reserved 72 held addresses with the original native degree (None -> p=0.5) and separately optional sparse repair diagnostics. Fully fitted CART max_depth4, RF64, logistic ANF C=1, smoothed frequency, exact 697-hypothesis posterior each trained on exact same eight revealed rows as its own arm.",
+    "learning": "One native.observe of four initial rows, four one-row native.observe updates selected sequentially, native representation fit at eight, cold restore of full six-slot state after all families. Action selector only receives permitted public inputs and previously revealed outcomes, not hidden outcomes, generator families, or held input addresses.",
+    "frozen_source": "Freeze experimental source and Git blob before running any original primary score; run same input on Linux and Windows for deterministic parity. No post-result tuning or reinterpretation."
+  },
+  "gates": {
+    "retention": "All original source/properties/slot0 hypotheses, original predictions, original events preserved exactly; no quarantines; 8 observed inputs in each new slot after cold restore.",
+    "gain_random": "candidate native degree Brier <= random native degree Brier -0.03.",
+    "gain_fixed": "candidate native degree Brier <= fixed native degree Brier -0.03.",
+    "near_eig": "candidate native degree Brier <= conventional Bayes-EIG-action native degree Brier +0.03.",
+    "coverage": "candidate native degree correctly answers >=18 of 72 held; confidently incorrect count <= random policy incorrect count+2.",
+    "strong_control": "candidate native degree Brier <= exact sparse Bayesian posterior fitted on same candidate revealed observations +0.02."
+  },
+  "decision": "All gates => DEVELOPMENT_SIGNAL only, otherwise DEVELOPMENT_NO_GO if valid. Protocol violations, source drift, hidden leak, broken exact control or failed deterministic parity => INVALID. SCIENTIFIC_PASS=false always.",
+  "stop": "Single primary synthetic cohort, one byte replay per OS, no reusing consumed prior cohorts as novel B, no tuning after result, no first-use original source. No merge/promotion/deployment/owner/FORGE/controller/scheduler/paid API.",
+  "bounds": {
+    "original_environment_actions": 0,
+    "scientific_pass": false,
+    "native_source_changed": false,
+    "accepted_main_changed": false,
+    "forge_dispatch": false,
+    "first_use": false,
+    "merge": false
+  }
+}
