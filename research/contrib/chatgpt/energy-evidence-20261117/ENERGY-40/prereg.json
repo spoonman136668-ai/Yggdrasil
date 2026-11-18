@@ -1,0 +1,122 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-40",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "On unfamiliar 32-, 64- and 96-variable frustrated XOR2 constraint graphs, can fixed-budget classical Metropolis energy annealing outperform strong conventional search and a time-bounded exact MILP reference in solution quality and measured policy computation cost?",
+  "hypothesis": "Under the same 12-start, 48-sweep single-bit-proposal schedule, temperature-annealed energy search will match the best feasible result on at least 80% of fresh graphs, beat conventional multi-start greedy and iterated local search by positive preset net margins, retain low normalized energy excess, and meet its runtime ceiling.",
+  "exact_parent_sha": "3624e7ee850d6abde7430d35f110a832dafefd73",
+  "predecessor_evidence": [
+    "ENERGY-39 DEVELOPMENT_NO_GO; anneal reached true optimal 36/36 small XOR2 n14/n18 graphs but underperformed optimized exact vectorized enumeration in runtime and failed 3 of 8 gates. Frozen result PR#1210 SHA 3624e7ee850d6abde7430d35f110a832dafefd73."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-40/**"
+  ],
+  "inputs": [
+    {
+      "name": "Original deterministic frustrated XOR2 graph generator",
+      "sha256": "0b0f432189d0bd41008bfe3bc90a97ccc5f3a4931d512bdbd600f53c071b4f49",
+      "source": "Self-authored synthetic code fully deposited. No protected native checkpoint or third-party dataset."
+    }
+  ],
+  "source_freeze": {
+    "source_commit_sha": "6bf5845dab5d338936dda66da4290438eaf44a0c",
+    "experiment_file": "experiment.py.bz2",
+    "experiment_blob": "9e7255354ae45cd103a634dd3b3e684781ce2e97",
+    "experiment_compressed_sha256": "bc941f29ec35103727d8d1c3aed70942bbf087179e24b7ac7f1d5be8612ae8df",
+    "experiment_original_bytes": 10695,
+    "experiment_original_sha256": "0b0f432189d0bd41008bfe3bc90a97ccc5f3a4931d512bdbd600f53c071b4f49",
+    "independent_auditor_file": "audit.py.bz2",
+    "auditor_blob": "aa93fc03007d865e9b6c8ed02f8faf995d1bee71",
+    "auditor_compressed_sha256": "f500629d84f503fed22787ae471f268fcd6ace9be6900b6a0a49475270192146",
+    "auditor_original_bytes": 8982,
+    "auditor_original_sha256": "9c2d2bb0e779d2b3e70e1e6cd8aca5413b8027a1c203d93a62589c081c1ae780"
+  },
+  "frozen_design": {
+    "primary_seeds": [
+      8303,
+      8311,
+      8329
+    ],
+    "excluded_smoke_seed": 99703,
+    "families": [
+      "erdos",
+      "modular",
+      "lattice"
+    ],
+    "variable_sizes": [
+      32,
+      64,
+      96
+    ],
+    "world_id": 0,
+    "worlds": 27,
+    "source_graph": "Connected ring backbone + 2n ranked previously unused edges (total 3n). Edge parity derived from hidden SHA256-placed bits then independently frustrated with deterministic 22% probability; public edge penalty integer weight 1..4. No planted assignment or clean optimum given to any solver.",
+    "topology_ranks": "erdos: all non-ring pairs hash-ranked; modular: same groups of eight prioritized; lattice: circular distance <=4 prioritized. Each graph pair count exactly 3n.",
+    "methods": [
+      "anneal",
+      "ils",
+      "greedy",
+      "random",
+      "highs"
+    ],
+    "anneal": "12 random initial spin assignments, 48 full sweeps, seeded variable permutations and Metropolis accept e^{-max(ΔE,0)/T}; geometric T=3.0 -> 0.04. Track lowest encountered objective, including during sweep.",
+    "greedy": "12 same seeded initial assignments, 48 full sweeps and downhill-only updates; no Metropolis uphill, same 12*48*n single-bit proposals. RNG proposal trajectories may differ after anneal consumes random Metropolis draws.",
+    "iterated_local_search": "12 same seeded initial assignments, 48 sweeps downhill-only, fixed 10% spin perturbations every 8 sweeps except final; 12*48*n proposal checks plus measured perturbations.",
+    "random_baseline": "12*(48+1)=588 independently sampled complete assignments per graph, tracked best; this is not equivalent bit-flip workload to anneal/greedy/ILS and must be disclosed.",
+    "exact_reference": "SciPy 1.17 HiGHS binary MILP with exact parity constraints, 0.35 second time limit per graph, zero mixed-integer gap when solved. Certified optimal only if status=0, success and primal objective equals MILP dual bound; otherwise best feasible incumbent only, never falsely declared exact. No exponential enumeration at n>=32.",
+    "ground_truth": "Exact violated integer-weight sum for each public constraint, independently recomputed from the emitted bits. Best observed feasible cost is min feasible cost across five methods, NOT an exact optimum unless HiGHS certifies it. Certified subset explicitly separately scored.",
+    "compute_budget": "27 primary graphs; 12*48*n attempted spin flips per local-search method per graph; 588 independently sampled random assignments; ≤0.35s MILP solver target per graph. One primary pass, one unchanged-source semantic replay and one independent 27-world audit allowed. No hyperparameter search on primary.",
+    "timing": "Local time.perf_counter elapsed graph generation + measured solver wall per policy; component timing excludes process import/startup, GitHub/CI, and audit. Report full cohort wall separately. This is not strict equal elapsed time, CPU cycles or energy across solvers; do not claim compute-matched MILP or random baseline.",
+    "runtime": "Linux CPU Python 3.13.5, NumPy 2.3.5, SciPy 1.17.0, BLAS threads 1, no GPU, no paid API.",
+    "deterministic_expected": "Graph topology/edge signs, annealing/ILS/greedy/random assignments and costs deterministic; MILP feasible/certificate/time status may vary under time budget; timing fields vary.",
+    "evaluator": "Integer violated weight; 27 world best-known hits/excess, win/loss counts against greedy and ILS, 9 n96 cases, 9 cases per family, certified HiGHS subset. No learning, causal consequence prediction, persistence or transfer in this test."
+  },
+  "controls": [
+    "Strong conventional multistart greedy search with equal initial states and sweeps",
+    "Fixed 10%-perturbation iterated local search with equal starts/sweeps",
+    "588 independent random complete-state samples, actual wall measured",
+    "HiGHS exact binary MILP with 0.35s per-instance limit and independently verified feasible assignments and certificate dual bounds"
+  ],
+  "metrics": [
+    "Best-observed feasible hit counts across 27 graphs; do not call uncertified graphs globally optimal",
+    "Total integer violated weight excess over best observed",
+    "Anneal-vs-greedy and anneal-vs-ILS strict win-minus-loss margins",
+    "Anneal best-observed hit by family and n96 size",
+    "Policy graph-generation-plus-solver wall time vs ILS",
+    "HiGHS certified graph count and annealer matches certified optimum subset"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_GO iff all eight frozen gates PASS and independent audit PASS. Even DEVELOPMENT_GO does NOT constitute SCIENTIFIC_PASS or native model training/acceptance.",
+    "mixed": "Report all eight gate results and frozen classification; do not choose favorable subsets after scoring.",
+    "negative": "DEVELOPMENT_NO_GO if any gate FAIL with valid source/controls/score data. Do not tune consumed seeds or promote.",
+    "invalid": "INVALID if prereg not preceding primary scoring, hidden optimum provided to a solver, corrupted bits/constraints, missing solver receipts, independent audit FAIL or invalid bounds; report CI/code-atlas infrastructure independently."
+  },
+  "gates": {
+    "best_observed_at_least_80pct": "Anneal cost equals best feasible among all five methods on >=80% of 27 cases.",
+    "net_win_over_greedy_at_least_20pct": "(anneal strictly beats greedy - greedy strictly beats anneal) / 27 >= 0.20.",
+    "net_win_over_ils_at_least_10pct": "(anneal strictly beats ILS - ILS strictly beats anneal) / 27 >= 0.10.",
+    "sum_weight_normalized_gap_at_most_1pct": "Total anneal violated-weight excess over best feasible across all graphs / sum of all input positive edge weights <=0.01.",
+    "n96_best_observed_at_least_two_thirds": "On 9 n96 graphs anneal reaches best feasible in at least 6 of 9.",
+    "each_family_best_observed_at_least_two_thirds": "Across each of three families (9 graphs each), anneal reaches best feasible in at least 6 of 9.",
+    "elapsed_at_most_1_5x_ils": "Cumulative anneal graph-generation+solve measured wall time <=1.5 x corresponding ILS time over 27 cases.",
+    "certified_subset_quality": "At least 3 HiGHS exact MILP certificates and anneal equals certified global optimum in EVERY certified case; noncertified cases not counted as exact."
+  },
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "prohibited_after_primary_run": [
+    "no seed/family substitutions",
+    "no postscore parameters or gate tuning",
+    "no extra primary evaluations except unmodified deterministic replay",
+    "no native training/first-use",
+    "no accepted-ref/main/model/controller/runner/queue changes",
+    "no deployment/merge"
+  ],
+  "preregistration_note": "Frozen scorer+auditor source committed at 6bf5845dab5d338936dda66da4290438eaf44a0c. Only excluded smoke seed 99703 run locally (3 cases; independent audit PASS 1,617 checks). Primary seeds [8303,8311,8329] NOT executed at time of freeze."
+}
