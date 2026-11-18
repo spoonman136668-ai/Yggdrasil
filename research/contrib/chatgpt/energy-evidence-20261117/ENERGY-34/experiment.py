@@ -50,9 +50,9 @@ def make_case(seed, world, family, scenario):
              [BY_DEGREE[4],BY_DEGREE[3],IDX['and']])
     selected = []
     for j,pool in enumerate(pools):
-        index=pool[pick('factor',seed,world,family,j,limit=len(pool))]
-        if index in selected: raise AssertionError('duplicate feature')
-        selected.append(index)
+        position=pick('factor',seed,world,family,j,limit=len(pool))
+        while pool[position] in selected: position=(position+1)%len(pool)
+        selected.append(pool[position])
     signs=[1 if pick('sign',seed,world,family,j,limit=2) else -1 for j in range(3)]
     truth=np.where(sum(sign*PHI[:,f] for sign,f in zip(signs,selected))>0,1,-1)
     if scenario=='shift_x0':
