@@ -279,7 +279,7 @@ class ReliabilityGateTests(unittest.TestCase):
             fit_public_threshold(program,fit[:1])
         with self.assertRaisesRegex(ValueError,"FIT_EPISODE_SHAPE"):
             fit_public_threshold(program,[tuple(x[:2]) for x in fit])
-        with self.assertRaisesRegex(ValueError,"PROGRAM_TYPE"):
+        with self.assertRaisesRegex(ValueError,"LEARNER_REQUIRED"):
             fit_public_threshold("not a model",fit)
         with self.assertRaisesRegex(ValueError,"THRESHOLD_INVALID"):
             ReliablePublicHistory(program,1.)
