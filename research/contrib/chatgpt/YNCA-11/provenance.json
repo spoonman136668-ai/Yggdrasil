@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.ynca11.provenance.v1",
+  "experiment": "YNCA-11-MULTI-OPERATOR",
+  "contributor": "chatgpt",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/ynca11-multioperator-interference-20261118",
+  "classification": {
+    "analytic_source_free_development": "DEVELOPMENT_NO_GO_GATED_CORRECTION",
+    "ungated_memory_diagnostic": "PROMISING_NONCONFIRMATORY_MECHANISM",
+    "engineer_focused": "PASS_DUAL_OS",
+    "engineer_final_regression": "PENDING",
+    "scientific_pass": false,
+    "native_yggdrasil_training": false,
+    "deployed": false
+  },
+  "accepted_main_parent": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_PR": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1233",
+  "prereg_initial_before_B": "7b6e26fd7231fbcd4eca0aec5947bfa92bb2aa83",
+  "frozen_source_commit_before_B": "b6443a349a4c2838efa47ef5a31d5c467fa8efc4",
+  "frozen_source_sha256": "70d38215a4cba3419c3d706d9c5078a3de56e28f2bf895c3de9c0be847de874a",
+  "frozen_source_git_blob": "16dba7efb1b5f6d1c637b9c1b3f49a0b9ebb0dc4",
+  "test_source_commit_before_B": "dcd3ec008383e86a3f6321cb95f45933810949c7",
+  "test_source_sha256": "d9b1c8a6f5522b740674fcce12e59b952a0a93be67c572f45737c1d71dbc9180",
+  "pre_B_source_lock_commit": "38d9d3b4274d5e11f8e16cc05a9d6c18236e6fea",
+  "A": {
+    "type": "exploratory consumed before prereg; initial unguarded followed by observation-evidence gate on SAME exploratory A worlds",
+    "operator_seed": 91000,
+    "training_seed_base": 92000,
+    "test_seed_base": 93000,
+    "worlds": 64,
+    "selected_metrics": {
+      "return_A_two_slot": 0.19517037,
+      "return_A_last_B_overwrite": 0.31895454,
+      "composition_two_slot": 0.21402614,
+      "composition_gated": 0.19425172,
+      "composition_no_memory": 0.18865013
+    },
+    "local_source_sha256": "00bd7d8e3090d535ec7c60442c9b7d3c3de7c4c60e6afe94dea4bac84749427a",
+    "A_result_commit": "c457d800b887f25f47aee741f1a8939f96175082"
+  },
+  "B": {
+    "type": "source-locked independent development, one first-use 64 worlds/task",
+    "operator_seed": 101000,
+    "training_seed_base": 102000,
+    "test_seed_base": 103000,
+    "original_workflow_commit": "96ba0f340526541082423e5f9ba7066ce6afbcfb",
+    "run_id": 44319945553,
+    "jobs": {
+      "windows": {
+        "id": 134855913968,
+        "conclusion": "success",
+        "focused_tests": 9
+      },
+      "linux": {
+        "id": 134855914259,
+        "conclusion": "success",
+        "focused_tests": 9
+      }
+    },
+    "original_result_sha256": "7077e47ca08684ec71861f124e8c44b8445a795678c03e3aef06c63f550053d7",
+    "original_result_bytes": 1661,
+    "original_result_commit": "b96e1aedf531e0de04820939068c6e7ce63caaa6",
+    "byte_identical_cross_OS": true,
+    "memory_json_sha256": "c956d24c7367e012928f157b0d51fd7bba3cbf9586dab54806125bc6695a3e9b",
+    "top3_entries_per_context": 3,
+    "context_training_schedule": "AAAA-BBBB-AAAA-BBBB",
+    "metrics": {
+      "return_A": {
+        "GATED_TOP3": 0.07807697,
+        "LAST_B_OVERWRITE": 0.13323888,
+        "FULL_CONTEXT_BAYES": 0.07846513,
+        "NO_MEMORY": 0.22421778
+      },
+      "immediate_B": {
+        "GATED_TOP3": 0.1180038,
+        "FULL_CONTEXT_BAYES": 0.12740946,
+        "NO_MEMORY": 0.2382631
+      },
+      "novel_composition": {
+        "TWO_SLOT_TOP3": 0.16618257,
+        "GATED_TOP3": 0.19051315,
+        "NO_MEMORY": 0.23401509,
+        "FULL_CONTEXT_BAYES": 0.18291118,
+        "GATED_FULL_BAYES": 0.20030368,
+        "ORACLE_TABLE": 0.07972578
+      }
+    },
+    "gate_checks": {
+      "composition_gate_relative_improve_at_least_10_percent": false,
+      "composition_Brier_within_10_percent_of_best_control": true,
+      "return_A_at_least_25_percent_improve_over_overwrite": true,
+      "return_A_within_10_percent_full_Bayes": true,
+      "B_within_10_percent_full_Bayes": true,
+      "memory_entries_and_same_process_JSON": true
+    },
+    "frozen_gate_result": "DEVELOPMENT_NO_GO: gating worsened B composition Brier by 14.64 percent vs ungated",
+    "ungated_retention_gain_vs_overwrite": 0.4140076079894998,
+    "ungated_composition_gain_vs_no_memory": 0.28986387159904947,
+    "gated_vs_ungated_composition_regression": 0.14640873588607994
+  },
+  "scientific_limits": [
+    "All operators drawn from a fixed 24-truth-table permutation-orbit grammar; no novel primitives outside represented Boolean family.",
+    "Training context A/B identifiers are supplied directly, not learned from hidden inputs; the only novelty is correct retrieval and reuse of finite separate memories.",
+    "Novel composition B(A(x),x1,x2) is defined in code and given to every model, not invented by learner.",
+    "The two operators persist through 16 small interleaved training episodes and cold return, not lifelong memory through large uncontrolled interference.",
+    "Exact Bayesian control retains all 24 candidates per context, while candidate retains 3; apparent single-cohort advantage has no paired significance analysis or independent science.",
+    "Untrained and trained frequency controls are included, but training is synthetic source-free, no physical environment, native Yggdrasil weights, owner model, or general transfer.",
+    "Gate correction selected by already-inspected exploratory A; frozen before independent B and failed B; no further tuning or B reuse permitted.",
+    "Identical original B evaluation outputs and qualified 9 focused tests per OS do not qualify accepted native model or scientific intelligence improvement.",
+    "Model-storage savings are real entry counts (6 vs 48) but no whole-process measured speedup/energy gain reported."
+  ],
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "merge": false,
+    "promotion": false,
+    "owner_changes": false,
+    "controller": false,
+    "scheduler": false,
+    "deployment": false,
+    "paid_api": false
+  },
+  "evidence_links": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44319945553"
+  ]
+}
