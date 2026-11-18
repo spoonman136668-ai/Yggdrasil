@@ -14,11 +14,13 @@ SCHEMA = "yggdrasil.ckad.native-episode-experience.v1"
 CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v2"
 NOVEL_CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v3"
 STREAM_SCHEMA = "yggdrasil.ckad.native-episode-experience.v4"
+REFRESH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v5"
 MAX_EPISODES = 1024
 MAX_CHECKPOINT_BYTES = 160 * 1024
 PROJECTION_WITNESSES = 8
 CONTEXT_BLOCK = 32
 NOVEL_PRIOR = Fraction(1, 8)
+REFRESH_RATE = Fraction(1, 32)
 MIN_LOCAL_WITNESSES = 12
 CONTRADICTION_STREAK = 3
 ROW_FIELDS = ("s1", "x1", "s2", "x2", "y")
@@ -62,6 +64,7 @@ class NativeEpisodeExperience:
         "_streaks", "_repairs",
         "_context_start", "_context_models", "_context_weights", "_context_novel",
         "_stream_start", "_stream_score", "_stream_detections",
+        "_refresh_start",
     )
 
     def __init__(self, *, repair=True):
@@ -84,6 +87,7 @@ class NativeEpisodeExperience:
         self._stream_start = None
         self._stream_score = Fraction(1)
         self._stream_detections = ()
+        self._refresh_start = None
 
     @staticmethod
     def _selected(loss):
@@ -116,6 +120,7 @@ class NativeEpisodeExperience:
         candidate._stream_start = self._stream_start
         candidate._stream_score = self._stream_score
         candidate._stream_detections = self._stream_detections
+        candidate._refresh_start = self._refresh_start
         return candidate
 
     def observe(self, identifier, views, row):
@@ -275,6 +280,24 @@ class NativeEpisodeExperience:
         candidate._stream_start = len(candidate._ledger)
         return candidate
 
+    def enable_context_refresh(self):
+        """Opt into fixed-share context weights from this evidence count onward.
+
+        Activation preserves the accumulated posterior and the running detector.
+        It changes only subsequent updates of this same retained mixture.
+        """
+        require(self._stream_start is not None and self._refresh_start is None,
+                "EPISODE_REFRESH_BEGIN")
+        candidate = self._clone()
+        candidate._refresh_start = len(candidate._ledger)
+        return candidate
+
+    def _context_prior(self):
+        count = len(self._context_models)
+        if self._context_novel:
+            return ((1 - NOVEL_PRIOR) / (count - 1),) * (count - 1) + (NOVEL_PRIOR,)
+        return (Fraction(1, count),) * count
+
     def _load_context(self, context_start, *, novel=False):
         require(type(context_start) is int
                 and PROJECTION_WITNESSES <= context_start <= len(self._ledger),
@@ -313,6 +336,11 @@ class NativeEpisodeExperience:
             products.append(weight * transition_likelihood * terminal_likelihood)
         total = sum(products, Fraction(0))
         self._context_weights = tuple(product / total for product in products)
+        if self._refresh_start is not None:
+            self._context_weights = tuple(
+                (1 - REFRESH_RATE) * posterior + REFRESH_RATE * prior
+                for posterior, prior in zip(self._context_weights, self._context_prior())
+            )
         if self._context_novel:
             # The likelihood above uses predictions from before this episode.
             # Only the new member revises its counts after scoring.
@@ -402,8 +430,12 @@ class NativeEpisodeExperience:
             for event in self._ledger[:self._stream_start]:
                 rebuilt._append(event)
             rebuilt = rebuilt.begin_stream()
-            for event in self._ledger[self._stream_start:]:
+            for index, event in enumerate(self._ledger[self._stream_start:], self._stream_start):
+                if index == self._refresh_start:
+                    rebuilt = rebuilt.enable_context_refresh()
                 rebuilt._accept(event)
+            if self._refresh_start == len(self._ledger):
+                rebuilt = rebuilt.enable_context_refresh()
         require(rebuilt._state_digest() == self._state_digest(), "EPISODE_REPLAY_DRIFT")
         return rebuilt
 
@@ -463,6 +495,8 @@ class NativeEpisodeExperience:
             state["context"] = self._context_info(hex_weights=True)
         if self._stream_start is not None:
             state["stream"] = self._stream_info(hexadecimal=True)
+        if self._refresh_start is not None:
+            state["refresh"] = {"refresh_start": self._refresh_start, "rate": _ratio(REFRESH_RATE)}
         return digest(canonical(state))
 
     def info(self):
@@ -479,6 +513,8 @@ class NativeEpisodeExperience:
             info["context"] = self._context_info()
         if self._stream_start is not None:
             info["stream"] = self._stream_info()
+        if self._refresh_start is not None:
+            info["refresh"] = {"refresh_start": self._refresh_start, "rate": _ratio(REFRESH_RATE)}
         return info
 
     def checkpoint(self):
@@ -495,6 +531,10 @@ class NativeEpisodeExperience:
         if self._stream_start is not None:
             data["schema"] = STREAM_SCHEMA
             data["stream_start"] = self._stream_start
+        if self._refresh_start is not None:
+            data["schema"] = REFRESH_SCHEMA
+            data["refresh_start"] = self._refresh_start
+            data["refresh_rate"] = _ratio(REFRESH_RATE)
         raw = canonical(data)
         require(len(raw) <= MAX_CHECKPOINT_BYTES, "EPISODE_CHECKPOINT_CAPACITY")
         return raw
@@ -507,12 +547,13 @@ class NativeEpisodeExperience:
             data = json.loads(raw.decode("ascii"))
             require(type(data) is dict
                     and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA, NOVEL_CONTEXT_SCHEMA,
-                                               STREAM_SCHEMA),
+                                               STREAM_SCHEMA, REFRESH_SCHEMA),
                     "EPISODE_CHECKPOINT_SCHEMA")
             keys = {"schema", "repair", "episodes", "state_sha256"}
             context = data["schema"] != SCHEMA
-            novel = data["schema"] in (NOVEL_CONTEXT_SCHEMA, STREAM_SCHEMA)
-            stream = data["schema"] == STREAM_SCHEMA
+            novel = data["schema"] in (NOVEL_CONTEXT_SCHEMA, STREAM_SCHEMA, REFRESH_SCHEMA)
+            stream = data["schema"] in (STREAM_SCHEMA, REFRESH_SCHEMA)
+            refresh = data["schema"] == REFRESH_SCHEMA
             if context:
                 keys.add("context_start")
             if novel:
@@ -520,6 +561,8 @@ class NativeEpisodeExperience:
                 require(data.get("novel") is True, "EPISODE_NOVEL_CHECKPOINT_FLAG")
             if stream:
                 keys.add("stream_start")
+            if refresh:
+                keys.update(("refresh_start", "refresh_rate"))
             require(set(data) == keys and canonical(data) == raw, "EPISODE_CHECKPOINT_CONTRACT")
             episodes = data["episodes"]
             require(type(episodes) is list and len(episodes) <= MAX_EPISODES, "EPISODE_CHECKPOINT_COUNT")
@@ -528,6 +571,13 @@ class NativeEpisodeExperience:
             if stream:
                 require(type(start) is int and PROJECTION_WITNESSES <= start <= len(episodes),
                         "EPISODE_STREAM_START_INVALID")
+            refresh_start = data.get("refresh_start")
+            if refresh:
+                require(type(refresh_start) is int and start <= refresh_start <= len(episodes)
+                        and type(data["refresh_rate"]) is list
+                        and all(type(value) is int for value in data["refresh_rate"])
+                        and data["refresh_rate"] == _ratio(REFRESH_RATE),
+                        "EPISODE_REFRESH_INVALID")
             for index, event in enumerate(episodes):
                 require(type(event) is list and len(event) == 6, "EPISODE_CHECKPOINT_ROW")
                 identifier, views, *row = event
@@ -538,6 +588,8 @@ class NativeEpisodeExperience:
                 bits = [PublicCausalCells._bit(bit, name.upper()) for name, bit in zip(ROW_FIELDS[1:], row)]
                 if stream and index == start:
                     candidate = candidate.begin_stream()
+                if refresh and index == refresh_start:
+                    candidate = candidate.enable_context_refresh()
                 if stream and index >= start:
                     candidate._accept((identifier, pair, *bits))
                 else:
@@ -545,6 +597,8 @@ class NativeEpisodeExperience:
             if stream:
                 if start == len(episodes):
                     candidate = candidate.begin_stream()
+                if refresh and refresh_start == len(episodes):
+                    candidate = candidate.enable_context_refresh()
                 require(candidate._context_start == data["context_start"],
                         "EPISODE_STREAM_REPLAY_CONTEXT")
             elif context:

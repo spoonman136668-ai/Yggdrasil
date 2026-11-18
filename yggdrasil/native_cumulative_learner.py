@@ -276,6 +276,13 @@ class NativeCumulativeLearner:
         candidate._experience = self._experience.begin_stream()
         return candidate
 
+    def enable_experience_refresh(self):
+        """Refresh subsequent context weights inside the existing native stream."""
+        require(self._experience is not None, 'REFRESH_REQUIRES_EXPERIENCE')
+        candidate = self._copy()
+        candidate._experience = self._experience.enable_context_refresh()
+        return candidate
+
     def experience_context_forecast(self, view, first, next_state=None, second=None):
         require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
         return self._experience.context_forecast(view, first, next_state, second)
