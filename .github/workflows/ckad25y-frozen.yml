@@ -37,7 +37,8 @@ jobs:
           python-version: "3.12"
       - name: Install pinned conventional exact and fitted controls
         shell: bash
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Verify frozen source fingerprint, all native negative tests, disjoint dev seed
         shell: bash
         run: |
@@ -91,7 +92,8 @@ jobs:
           python-version: "3.12"
       - name: Install same pinned conventional control dependencies
         shell: bash
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Lock preregistered genuine native-source experiment
         shell: bash
         run: |
