@@ -53,3 +53,7 @@ The ENERGY experiments explored classical-energy consistency, inference and lear
 ## Follow-on standalone mathematical gate
 
 [ENERGY-19: counterexample to single-witness energy action choice](./ENERGY-19/REPORT.md) is a separate exact-rational safety test, **not included** in the frozen ENERGY-04–18 original bundle. It concludes that choosing a single optimistic low-energy future can lose expected reward versus correct state marginalization. No training, scientific promotion or original Yggdrasil first-use.
+
+## Follow-on sourced synthetic development
+
+[ENERGY-20 — trained causal-energy factors against conventional policy-forecast controls](./ENERGY-20/README.md) is a separately frozen, source-authenticated synthetic development experiment. The energy arm **failed** the stronger conventional controls on shifted causal outcomes. Its complete original source, scores, and independent audit are included in the linked ZIP. This does not update native Yggdrasil.
