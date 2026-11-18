@@ -1,7 +1,7 @@
 name: CKAD27 reward-directed causal intervention acquisition
 on:
   push:
-    branches: [research/ckad27-causal-bayes-change-20261118]
+    branches: [research/ckad27-reward-intervention-20261118]
 permissions:
   contents: read
   actions: read
@@ -140,7 +140,7 @@ jobs:
           git commit -m "docs(ckad27): qualify frozen surprise source atlas at $SOURCE_COMMIT"
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
-          git push origin HEAD:refs/heads/research/ckad27-causal-bayes-change-20261118
+          git push origin HEAD:refs/heads/research/ckad27-reward-intervention-20261118
           echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   final-regression:
     needs: [seal]
