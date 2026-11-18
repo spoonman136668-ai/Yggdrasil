@@ -1,7 +1,7 @@
 # ENERGY research evidence — archival custody (2026-11-17)
 
 ## Scope and status
-This isolated GitHub branch records the original available report texts (ENERGY-04, 05, 08–18), preserved failed-attempt narratives, and SHA-256 custody for 15 locally verified ZIP archives (ENERGY-04–18). ENERGY-01 remains in existing unmerged [PR #1201](https://github.com/spoonman136668-ai/Yggdrasil/pull/1201). ENERGY-02/03 raw source artifacts were not present in this session and cannot be reconstructed as originals.
+This isolated GitHub branch records the original available report texts (ENERGY-04–18), preserved failed-attempt narratives, and SHA-256 custody for 15 locally verified ZIP archives (ENERGY-04–18). ENERGY-01 remains in existing unmerged [PR #1201](https://github.com/spoonman136668-ai/Yggdrasil/pull/1201). ENERGY-02/03 raw source artifacts were not present in this session and cannot be reconstructed as originals.
 
 **IMPORTANT — incomplete raw archive:** Original ZIPs, all Python scripts, per-case scored results, and other binary data are not yet stored in GitHub. The hashes are custody markers, not replacements for those bytes. Reports transferred as text have not been proven byte-identical to the original ZIP members. Do not represent this branch as independent scientific qualification, CI acceptance, native Yggdrasil execution, or a completed reproduction.
 
