@@ -240,7 +240,7 @@ def classify(cases):
 def verify_lock():
     locked=json.loads((HERE/"source_lock.json").read_text())
     raw=Path(__file__).read_bytes()
-    h=hashlib.sha1(b"blob "+str(len(raw)).encode()+b"\\0"+raw).hexdigest()
+    h=hashlib.sha1(b"blob "+str(len(raw)).encode()+b"\0"+raw).hexdigest()
     if h!=locked["campaign_blob_sha1"]:
         raise AssertionError("Pre-first-use committed source lock mismatch")
     if locked["prereg_commit"]!="022d7477de56bb2793b52d2ae3a02e86bbf73bdd":
