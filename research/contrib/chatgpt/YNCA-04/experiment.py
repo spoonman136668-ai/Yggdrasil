@@ -137,7 +137,7 @@ def exact_gain(weights, candidates, action, kind):
                 next_weights = updated(weights,action,outcomes)
                 next_value = value(next_weights,candidates) if kind=="bayes_value" else entropy(next_weights)
                 after += p*next_value
-    return before-after
+    return (after-before) if kind=="bayes_value" else (before-after)
 
 
 def context(weights,candidates,step):
