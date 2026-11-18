@@ -5,6 +5,7 @@ real-world do outcomes. No controller, source actor, or accepted-model authority
 The property image and every old constraint survive updates. Degree selection
 remains provisional; inconsistent deterministic outcomes quarantine the slot.
 """
+from fractions import Fraction
 import json
 
 from yggdrasil.native_context_basis import canonical, digest, pin, require, SOURCE_MODE, SOURCE_KIND
@@ -176,6 +177,40 @@ class NativeCumulativeLearner:
     def dtr_terminal_forecast(self,s1,x1,s2,x2):
         NativeDTRHistory.validate(s1,x1,s2,x2)
         return (1,2) if self._dtr is None else self._dtr.terminal(s1,x1,s2,x2)
+
+    def dtr_plan(self, initial_state):
+        """Compare first actions using the fitted public two-stage DTR model.
+
+        Values are model forecasts. The plan carries a second action for each
+        possible pair of first action and observed next state.
+        """
+        NativeDTRHistory.validate(initial_state)
+        if self._dtr is None:
+            return None
+
+        first_values = []
+        second_actions = []
+        for first_action in (0, 1):
+            transition = Fraction(*self.dtr_transition_forecast(initial_state, first_action))
+            best_rewards = []
+            contingent_actions = []
+            for next_state in (0, 1):
+                rewards = [
+                    Fraction(*self.dtr_terminal_forecast(initial_state, first_action, next_state, action))
+                    for action in (0, 1)
+                ]
+                best_action = int(rewards[1] > rewards[0])
+                best_rewards.append(rewards[best_action])
+                contingent_actions.append(best_action)
+            value = (1 - transition) * best_rewards[0] + transition * best_rewards[1]
+            first_values.append(value)
+            second_actions.append(tuple(contingent_actions))
+
+        return {
+            "first_values": tuple((value.numerator, value.denominator) for value in first_values),
+            "first_action": int(first_values[1] > first_values[0]),
+            "second_actions": tuple(second_actions),
+        }
 
     def predict(self, slot, context, action, *, provisional=True):
         a, r = coordinates(slot)
