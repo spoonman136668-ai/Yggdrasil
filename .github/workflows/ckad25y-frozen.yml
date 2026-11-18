@@ -18,7 +18,6 @@ env:
 
 jobs:
   source-native-dev-preflight:
-    if: github.run_attempt == 1
     strategy:
       fail-fast: false
       matrix:
@@ -73,7 +72,6 @@ jobs:
 
   original-first-source-score:
     needs: [source-native-dev-preflight]
-    if: github.run_attempt == 1
     strategy:
       fail-fast: false
       matrix:
