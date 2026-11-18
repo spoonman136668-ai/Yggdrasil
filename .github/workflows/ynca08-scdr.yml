@@ -1,0 +1,80 @@
+name: YNCA08 SCDR independent B development
+on:
+  push:
+    branches:
+      - research/ynca08-scdr-sheaf-bounded-20261118
+    paths:
+      - .github/workflows/ynca08-scdr.yml
+permissions:
+  contents: read
+jobs:
+  frozen-b:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Preserve byte-stable checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check prereg source identity and run six focused controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('research/contrib/chatgpt/YNCA-08-SCDR')
+          d=json.loads((root/'prereg.json').read_bytes())
+          h=hashlib.sha256((root/'experiment.py').read_bytes()).hexdigest()
+          t=hashlib.sha256((root/'test_experiment.py').read_bytes()).hexdigest()
+          assert h=='bec99d3b9f4123582de66cf823ca4dae286e18f0619b46457128aae7b20eebde',h
+          assert h==d['frozen_design']['source_sha256']
+          assert d['frozen_design']['source_commit_sha']=='749ff6e3d7ee1719bbbc11e62bbc942d8ebe7d3e'
+          assert t==d['frozen_design']['test_file_sha256'],t
+          print('YNCA08_SCDR_SOURCE_LOCK_PASS',h)
+          PY
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-08-SCDR -p 'test_*.py' -v
+      - name: Evaluate one untouched B development cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-08-SCDR/experiment.py --split B > "$RUNNER_TEMP/ynca08-B.json"
+          python - "$RUNNER_TEMP/ynca08-B.json" <<'PY'
+          import sys,pathlib,json,hashlib,base64
+          p=pathlib.Path(sys.argv[1])
+          raw=p.read_bytes().replace(b'\r\n',b'\n')
+          p.write_bytes(raw)
+          d=json.loads(raw)
+          assert d['results']['split']=='B' and d['results']['worlds']==96
+          assert d['results']['frames']==2304
+          assert d['cohomology']['H1_dimension']==1
+          assert d['results']['model']['defect_noise']==.244
+          assert set(d['results']['metrics'])=={'SCDR_A','SCDR_B','HMM_SUPERVISED','BAYES_ORACLE','CLOSING_ONLY'}
+          assert not any(d['claims'].values())
+          print('YNCA08_B_SHA256',hashlib.sha256(raw).hexdigest())
+          print('YNCA08_B_METRICS',json.dumps(d['results'],sort_keys=True,separators=(',',':')))
+          print('YNCA08_B_B64',base64.b64encode(raw).decode('ascii'))
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve original B evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca08-B-development-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca08-B.json
+          if-no-files-found: warn
+          retention-days: 30
