@@ -1,0 +1,60 @@
+name: YNCA04 source-locked G29 companion export
+on:
+  push:
+    branches:
+      - research/ynca04-information-cost-probing-20261118
+    paths:
+      - .github/workflows/ynca04-atlas-export.yml
+permissions:
+  contents: read
+jobs:
+  generated-atlas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Preserve source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate source-pinned G29 companion only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python - <<'PY'
+          import subprocess
+          files = subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
+          assert sorted(files) == ['.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json'],files
+          print('YNCA04_G29_GENERATED_FILES_ONLY',files)
+          PY
+      - name: Export deterministic generated sidecars in bounded log chunks
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, hashlib, pathlib
+          for name in ('.ice/code-atlas.json','.ice/code-atlas.html','.ice/code-atlas.ice'):
+              data=pathlib.Path(name).read_bytes()
+              print('YNCA04_ATLAS_BEGIN',name,len(data),hashlib.sha256(data).hexdigest())
+              encoded=base64.b64encode(data).decode('ascii')
+              for i in range(0,len(encoded),2048):
+                  print('YNCA04_ATLAS_CHUNK',name,i//2048,encoded[i:i+2048])
+              print('YNCA04_ATLAS_END',name,len(encoded))
+          PY
+      - name: Preserve original artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca04-g29-source-locked-companion
+          path: |
+            .ice/code-atlas.json
+            .ice/code-atlas.html
+            .ice/code-atlas.ice
+          if-no-files-found: error
+          retention-days: 30
