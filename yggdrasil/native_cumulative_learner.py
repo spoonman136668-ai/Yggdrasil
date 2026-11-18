@@ -441,7 +441,7 @@ class NativeCumulativeLearner:
         from yggdrasil.native_context_basis import feature_row
         require(self._schema == RELATION_SCHEMA and
                 type(slot) is int and 1 <= slot <= 9 and
-                type(evidence_slot) is int and 12 <= evidence_slot <= 14
+                type(evidence_slot) is int and 12 <= evidence_slot <= 15
                 and self._compiled[slot] is not None and
                 self._compiled[slot].model_count > 0 and
                 not self._quarantined[slot] and
@@ -502,6 +502,77 @@ class NativeCumulativeLearner:
                 and updated._source._seen[slot] == known,
                 'INTEGRATED_CAUSAL_WITNESS_MEMORY_CUSTODY')
         return updated, version, status
+
+    def propose_source_change_witnesses(
+            self, relation_slot, historical_evidence_slots,
+            public_candidates, *, count=2):
+        """Use real retained cross-world contradiction witnesses to choose do actions.
+
+        Source-backed beta(1,1) empirical causal-failure risk is a STANDARD
+        conventional baseline, not evidence of a newly invented mechanism.
+        Only previously witnessed input/action/outcome records persisted inside
+        this exact native learner are consulted. No labels, future outcomes,
+        source generator, paid API or owner execution is available here.
+        """
+        from fractions import Fraction
+
+        require(self._schema == RELATION_SCHEMA
+                and type(relation_slot) is int
+                and 1 <= relation_slot <= 9
+                and self._compiled[relation_slot] is not None
+                and self._compiled[relation_slot].model_count > 0
+                and not self._quarantined[relation_slot]
+                and self._history is None and self._experience is None
+                and self._dtr is None and not self._repairs,
+                'INTEGRATED_CAUSAL_ACTIVE_SOURCE_SCOPE')
+        require(type(historical_evidence_slots) in (tuple, list)
+                and len(historical_evidence_slots) == 3
+                and list(historical_evidence_slots) == [12, 13, 14],
+                'INTEGRATED_CAUSAL_ACTIVE_HISTORY_SLOTS')
+        require(type(public_candidates) is list
+                and len(public_candidates) == 4
+                and type(count) is int and count == 2,
+                'INTEGRATED_CAUSAL_ACTIVE_BUDGET')
+        candidates = {}
+        source_seen = self._source._seen[relation_slot]
+        for row in public_candidates:
+            require(type(row) is list and len(row) == 2,
+                    'INTEGRATED_CAUSAL_ACTIVE_CANDIDATE_SHAPE')
+            c, a = row
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            mask = c | (a << self._source._model.context_bits)
+            require(mask not in candidates and not source_seen & (1 << mask),
+                    'INTEGRATED_CAUSAL_ACTIVE_SOURCE_LEAK')
+            candidates[mask] = [c, a]
+        counts = {key: 0 for key in candidates}
+        faults = {key: Fraction(0, 1) for key in candidates}
+        for history_slot in historical_evidence_slots:
+            require(self._source._seen[history_slot].bit_count() == 2
+                    and not self._quarantined[history_slot]
+                    and self._compiled[history_slot] is None
+                    and len([e for e in self._events
+                             if e['slot'] == history_slot
+                             and e['status'] == 'ACQUIRED']) == 1,
+                    'INTEGRATED_CAUSAL_ACTIVE_HISTORY_CUSTODY')
+            rows = self._rows(history_slot)
+            require(len(rows) == 2,
+                    'INTEGRATED_CAUSAL_ACTIVE_HISTORY_CARDINALITY')
+            for c, a, y in rows:
+                mask = c | (a << self._source._model.context_bits)
+                require(mask in candidates,
+                        'INTEGRATED_CAUSAL_ACTIVE_HISTORY_PUBLIC_ONLY')
+                p = self.causal_relation_probability(relation_slot, c, a)
+                require(p is not None and type(p[0]) is int
+                        and type(p[1]) is int and p[1] > 0
+                        and 0 <= p[0] <= p[1],
+                        'INTEGRATED_CAUSAL_ACTIVE_SOURCE_PROBABILITY')
+                counts[mask] += 1
+                faults[mask] += Fraction(p[0] if y == 0 else p[1] - p[0],p[1])
+        scores = {mask: (Fraction(1,1)+faults[mask])/(2+counts[mask])
+                  for mask in candidates}
+        selected = sorted(candidates,key=lambda k: (-scores[k], k))[:count]
+        return [candidates[x] for x in selected]
 
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
