@@ -94,6 +94,15 @@ class NativeTemporalTest(unittest.TestCase):
             NativeTemporalMultiLearner.restore(bad,digest(bad))
         self.assertEqual(model.checkpoint(),raw)
 
+    def test_rehashed_previous_expert_forgery_is_rejected_by_source_refit(self):
+        old=json.loads(self.raw)
+        old["transition"]["encoder"][0][0]+=0.00001
+        forged=canonical(old)
+        with self.assertRaises(ValueError):
+            NativeTemporalMultiLearner.bootstrap(forged,digest(forged))
+        # The archived prior checkpoint remains exactly intact.
+        self.assertEqual(self.bootstrap().base.checkpoint(),self.raw)
+
     def test_history_is_witness_bound_and_gradients_finite(self):
         model=self.bootstrap()
         p=model.predict(((1,0),(1,1)),0,1,1)
