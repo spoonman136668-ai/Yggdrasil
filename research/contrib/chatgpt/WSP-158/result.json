@@ -1,0 +1,202 @@
+{
+  "schema": "wsp158.original-consumed-public-DTR-stage-calibration-develop-result.v1",
+  "date": "2026-11-17",
+  "classification": "DEVELOPMENT_NATIVE_CALIBRATION_NO_GO",
+  "source": {
+    "original_origin": "CausalAILab/Causal-Gymnasium original DTR source already consumed 2026-10-23",
+    "original_source_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "original_dtr02_run": 39932201242,
+    "public_fit_sha256": "016bf254ade33b936386ab7829ff90d765da71105e2beebcb130c95febe7d1d",
+    "episodes": 768,
+    "replicas": 3,
+    "virgin": false,
+    "new_original_do": 0,
+    "original_valid_dev_transcripts_unopened": true
+  },
+  "provenance": {
+    "parent_pr": 1208,
+    "parent_sha": "75e8b1da111319cbccf25e76e3153ccba508ce9f",
+    "parent_tree": "bbc8deee2a422da39b72f87d24ec110ec88bd887",
+    "sole_file_prereg": "49282e892e5ba1cdd99008fd2f6f32e211f97ebc",
+    "pre_first_score_source_and_test_frozen": "fbf6126e9c5c5f89a772742a28bd39cc5cb819bb",
+    "first_score_ci_trigger": "5f5aa1dba4ac4a778b85ac2666b64a5cc524cc81",
+    "first_score_run": 44203651656,
+    "linux_job": 134464078233,
+    "windows_job": 134464078253,
+    "first_semantic_sha256": "336f93c5629e9cb9e3ed75a2f2abcafe8b6e3a891671fcefa4e8f73624121d8e",
+    "held_predictions_sha256": "53bdf3946cce6c9bb24381103b2a0a1cc5b7ddaaeb6096f121a1d852e5504cec",
+    "programs_and_snapshots_sha256": "1743ff4135c91415e1a327aa2ecd918d084612e2c48ec62f4d7b09fa45c27671",
+    "linux_artifact": {
+      "id": 14382887032,
+      "sha256": "260ba5d952a69187740d975db5508fe4025d9d138cdd818fa62704b48778cfc9"
+    },
+    "windows_artifact": {
+      "id": 14381938471,
+      "sha256": "99c3011e4d5958b598e61e9d773437c6c9dde001bf62fc3655df86d4d1028b12"
+    }
+  },
+  "protocol": {
+    "source_was_previously_exposed_in_WSP157": true,
+    "source_replicas": 3,
+    "per_replica_train_selection": [
+      0,
+      63
+    ],
+    "per_replica_selection_valid": [
+      64,
+      127
+    ],
+    "per_replica_final_fit": [
+      0,
+      191
+    ],
+    "per_replica_historical_held": [
+      192,
+      255
+    ],
+    "score_binary_target_per_arm": 384,
+    "original_native_checkpoint_bytes": 164,
+    "opt_in_composite_bytes": 202,
+    "pseudocount_candidates": [
+      "0",
+      "1/4",
+      "1/2",
+      "1",
+      "2"
+    ],
+    "freeze_before_held": true,
+    "matched_original_source_fit": true,
+    "independent_fitted_exact_calibrator": true,
+    "stages": [
+      "transition S2",
+      "terminal reward Y"
+    ],
+    "original_valid_dev_h1h2": false
+  },
+  "result": {
+    "chosen_lambda_per_replica": [
+      [
+        "2",
+        "0"
+      ],
+      [
+        "2",
+        "0"
+      ],
+      [
+        "2",
+        "0"
+      ]
+    ],
+    "pooled_Brier": {
+      "original_native_beta": {
+        "transition": 0.249212655546,
+        "reward": 0.005396013832,
+        "pooled": 0.127304334689
+      },
+      "native_programmed": {
+        "transition": 0.249139183072,
+        "reward": 0,
+        "pooled": 0.124569591536
+      },
+      "independent_fitted_same_calibration": {
+        "transition": 0.249139183072,
+        "reward": 0,
+        "pooled": 0.124569591536
+      },
+      "fully_fitted_saturated_MLE": {
+        "transition": 0.249302802605,
+        "reward": 0,
+        "pooled": 0.124651401303
+      },
+      "fixed_3000_iteration_logistic": {
+        "transition": 0.2490161906,
+        "reward": 0.002604278257,
+        "pooled": 0.125810234429
+      },
+      "chance": {
+        "transition": 0.25,
+        "reward": 0.25,
+        "pooled": 0.25
+      }
+    },
+    "lower_Brier_is_better": true,
+    "gain_over_MLE_absolute": 0.000081809767,
+    "gain_over_original_native_absolute": 0.002734743153,
+    "frozen_minimum_gain_vs_MLE": 0.005,
+    "frozen_max_transition_degradation_vs_MLE": 0.002,
+    "transition_degradation_vs_MLE": -0.000163619533,
+    "lambda_match_all_replicas": true,
+    "per_replica": [
+      {
+        "replica": 0,
+        "lambda_transition": "2",
+        "lambda_reward": "0",
+        "validation_Brier": [
+          0.24786875,
+          0
+        ],
+        "native_held_pooled_Brier": 0.1233625272,
+        "MLE_held_pooled_Brier": 0.123474219662
+      },
+      {
+        "replica": 1,
+        "lambda_transition": "2",
+        "lambda_reward": "0",
+        "validation_Brier": [
+          0.249667376096,
+          0
+        ],
+        "native_held_pooled_Brier": 0.127463657965,
+        "MLE_held_pooled_Brier": 0.127716443975
+      },
+      {
+        "replica": 2,
+        "lambda_transition": "2",
+        "lambda_reward": "0",
+        "validation_Brier": [
+          0.284662849751,
+          0
+        ],
+        "native_held_pooled_Brier": 0.122882589443,
+        "MLE_held_pooled_Brier": 0.122763540272
+      }
+    ],
+    "logistic_convergence": {
+      "reward_fits_converged": 0,
+      "total_reward": 3,
+      "transition_fits_converged": 1,
+      "total_transition": 3,
+      "diagnostic_not_fully_converged": true
+    }
+  },
+  "engineering": {
+    "focused_first_source_custody": "PASS both OS",
+    "authentic_history_scores": "PASS both OS, identical semantic digest",
+    "final_dual_OS_root": "PENDING",
+    "independent_G29": "PENDING"
+  },
+  "scientific": {
+    "advantage_over_equally_fitted_independent_model": false,
+    "advantage_over_strong_MLE_above_threshold": false,
+    "unfamiliar_world_transfer": false,
+    "new_model_selected_source_actions": 0,
+    "scientific_pass": false,
+    "source_first_use": false,
+    "model_promotion": false
+  },
+  "limits": [
+    "This same historical suffix was already scored in WSP157, so there is NO virgin prospectively held-out science.",
+    "Fixed alpha=2,0 was selected on separate historical VALID, and the candidate tied an independently fitted identical control exactly.",
+    "Gain over strong MLE is only 0.000081809767 absolute Brier, ~61x below frozen 0.005 gate; do not turn it into a scientific positive.",
+    "The conventional logistic diagnostic did not converge in 2 of 3 transition and all 3 terminal fits; no converged logistic claim.",
+    "No actual learned policy was tested by fresh do actions; no action value, native autonomous control or general intelligence claims.",
+    "Historical simulator source action cost is excluded from short audit CPU figures.",
+    "Native 164-byte counter source untouched; 202-byte calibrated checkpoint is isolated opt-in development sidecar and not an accepted implementation."
+  ],
+  "source_changes_after_first_score": false,
+  "original_yggdrasil_native_edited": false,
+  "accepted_main_edited": false,
+  "merge": false,
+  "deployment": false
+}

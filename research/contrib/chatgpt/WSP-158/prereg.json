@@ -1,0 +1,91 @@
+{
+  "schema": "wsp158.authentic-consumed-DTR-stage-conditioned-calibration.prereg.v1",
+  "date": "2026-11-17",
+  "question": "Can two trained stage-specific source-only pseudocount scalars correct the WSP157 native probabilistic forecast gap against fully fitted MLE without editing NKR19 native learned counters?",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1208,
+    "head": "75e8b1da111319cbccf25e76e3153ccba508ce9f",
+    "tree": "bbc8deee2a422da39b72f87d24ec110ec88bd887",
+    "full_regression": 44197902033,
+    "independent_G29": 44197909214
+  },
+  "frozen_before_first_scoring": true,
+  "source": {
+    "original_repo": "CausalAILab/Causal-Gymnasium",
+    "source_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "original_DTR02_run": 39932201242,
+    "original_artifact": 12492506361,
+    "source_digest": "016bf254ade33b936386ab7829ff90d765da71105e2beebcb130c95febe7d1d",
+    "historical_original_public_fit_replicas": 3,
+    "rows_per_replica": 256,
+    "source_file": "research/contrib/chatgpt/WSP-157/consumed-original-public-fit.json",
+    "previously_consumed": true,
+    "new_original_actions": 0,
+    "protected_original_VALID_DEV": false
+  },
+  "frozen_model": {
+    "unchanged_base": "NKR19 PublicCausalCells 16 slots, 164 byte original public evidence checkpoint",
+    "opt_in_readout": "2 stage-specific learned grid index bytes plus SHA integrity, no modification to original memory, original native 164-byte format or accepted main",
+    "formula": "For target stage t, observed s successes and f failures, n=s+f. If n>0, predict (s+alpha_t)/(n+2*alpha_t). If n=0, predict 0.5.",
+    "alpha_grid": [
+      "0",
+      "1/4",
+      "1/2",
+      "1",
+      "2"
+    ],
+    "stage_roles": "transition S2 at slot S1, action X1; terminal Y at slot 2+4*S1+2*X1+S2, action X2",
+    "selection": "For each replica use indices 0..63 as FIT to estimate stage counts. Hold 64..127 as independent VALID, select per stage alpha minimizing validation Brier. Exactly rational score sums; ties smallest |alpha-1| then smallest grid index. No held outcomes viewed.",
+    "refit": "Freeze learned stage alpha indices; train untouched native memory again on indices 0..191. Cold program composite checkpoint before scoring 192..255.",
+    "scored": "Test historical original FIT 192..255 (64/replica), 3 replicas, both S2 and Y, total 384 forecasts per arm. This suffix was already scored by WSP157; historical, NOT virgin first-use.",
+    "controls": [
+      "source-equal original native Beta(1,1)",
+      "fully fitted empirical MLE with 0.5 on missing context",
+      "independently implemented exact same-data stagewise alpha selection (must tie native programmed readout)",
+      "frozen WSP157 logistic fixed 3000 iteration diagnostic; report lack of convergence honestly",
+      "chance prior 0.5"
+    ],
+    "metrics": [
+      "per-stage and pooled Brier, including exact MLE gap",
+      "chosen alpha per target and replica and VALID scores",
+      "cold-restored composite and 164-byte native checkpoint and serial bytes",
+      "no support and zero prior behavior",
+      "per-run process CPU excludes all original historical source collection",
+      "source FIT hash and selected FIT_VALID source witness digests"
+    ],
+    "gate": "Engineering supported only if exact independent counterpart parity, cold, no leaks, full final dual OS regression and G29. Development gain candidate only if pooled Brier at least 0.005 lower than strongest fitted conventional MLE and transition worsens no more than 0.002; otherwise DEVELOPMENT_NO_GO. SCIENTIFIC_PASS always FALSE."
+  },
+  "negative_controls": [
+    "reject altered original digest or seed/action provenance before training",
+    "reject invalid / altered fitted alpha indices, native checkpoint, composite bytes and missing support",
+    "poisoning test indices 192..255 cannot change FIT/VALID stage indices nor 192-index frozen fitted checkpoint",
+    "original NKR19 learned counters and public YPC1 bytes unmodified",
+    "independent exact batch table must match all calibrated and control predictions",
+    "never inspect private simulator state, unchosen action outcome or reserved original VALID/DEV files",
+    "no post-score grid/threshold tuning or changing historical source"
+  ],
+  "limits": [
+    "Two calibrated readout scalars are not architecture learning or causal discovery; independently fitted exact counterpart should tie.",
+    "Same original FIT held suffix already scored in WSP157; no virgin held experiment or unfamiliar-world transfer.",
+    "No prospective model-selected source actions or earned policy value",
+    "Source collection and historical runner cost excluded from new measured fitting time"
+  ],
+  "authority": {
+    "original_source_first_use": false,
+    "protected_science": false,
+    "merge": false,
+    "native_acceptance": false,
+    "deployment": false,
+    "scheduler": false,
+    "controller": false,
+    "paid_api": false,
+    "private_runner": false
+  },
+  "ci": {
+    "focused_linux_windows": true,
+    "full_root_regression_linux_windows": true,
+    "derived_G29_source_once": true,
+    "independent_G29_both_os": true
+  }
+}
