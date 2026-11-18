@@ -46,3 +46,15 @@ WSP169 branch-only workflow runs frozen inherited WSP159–168 tests, these new 
 **ENGINEERING:** pending new audit qualification.
 **SCIENCE:** historical first-use DENIED (expected stop rule); authentic future owner source evidence unavailable; no new training.
 **DEPLOYMENT:** NONE. Keep draft/unmerged; accepted main unchanged.
+
+
+## First completed audit evidence (after code repair, before final acceptance)
+
+- Source-only preregistration \`0be3763dcf0d991fb52700a9da8e53ea1a27ea02\` was committed before implementation or scoring.
+- The **first development run [#44288457404](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44288457404)** failed with \`NameError: PINN\` (undefined local audit constant). This was a **technical failure prior to the first complete audit result**, not a source scientific result. One-symbol source repair \`0c4efef31f2f3763f0d2c948596e5aedbfcd3cfd\`, then matching workflow-pin fix \`a6c7b36e5f0df0a8be622102af3cc9e003f6a709\`, preserve that failed run and original prereg unchanged.
+- **First complete frozen primary source-record audit [#44288750235](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44288750235): 5/5 new tests plus inherited focused suites PASS on both Linux and Windows; result JSON exactly identical across both OS.**
+- The measured historic original first-use decision is \`FIRST_USE_DENIED_HISTORICAL_READONLY\`, and no original source action was taken. The 768 already-consumed DTR episodes cannot be made virgin. The native readout's .000081809767 Brier gain over a fully fitted MLE is only 1.636% of its frozen .005 threshold, an approximately 61.1× shortfall, and it exactly ties the independently calibrated equivalent.
+- The five original-source evidence blobs were checked by exact SHA, not blindly trusted text or modified references. The result and separate provenance are sealed in \`result.json\` and \`provenance.json\`, not merely in chat or a PR comment. This audit is READ-ONLY and cannot grant execution authority.
+- **At this first score checkpoint:** engineering focused PASS, mandatory final root/NKR05/G29 still pending. No scientific first-use, no model training or promotion. Final exact-source qualification is recorded separately in PR body.
+
+**Meaning:** WSP169 identifies the real source-owner and evidentiary prerequisites instead of fabricating another source-free improvement. It does not create an owner-approved virgin data roster or itself unblock protected first use.
