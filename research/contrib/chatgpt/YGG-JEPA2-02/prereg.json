@@ -1,0 +1,114 @@
+{
+  "schema": "yggdrasil.jepa2.native-shift-specialists.prereg.v1",
+  "experiment_id": "YGG-JEPA2-02",
+  "project": "Yggdrasil",
+  "research_status": "development-research-only",
+  "question": "Does a single Yggdrasil model with two independent, actually trainable tokenless action-conditioned predictive representation learners and its original NativeEpisodeExperience improve adaptation to hidden causal shifts while retaining original evidence and cold continuation?",
+  "parent_sha": "60634ab8c46b13039e021f28f8fa70bb6b69db96",
+  "parent_tree": "63f2c3b7a75c6e6f4aabb70ed00a182ae0968329",
+  "predecessor_negative": {
+    "pr": 1259,
+    "source_sha": "7561765569c360f6b20bdb54e2e8c09aa64b573d",
+    "result": "pooled chronological Brier lagged conditional-count controls on all three CKAD24 seeds; no tuning or rerun with them"
+  },
+  "source": {
+    "family": "previously consumed, authentic native CKAD37 source-locked synthetic intervention receipts",
+    "pilot_seed_world_pairs": [
+      [
+        14071,
+        0
+      ],
+      [
+        14071,
+        1
+      ],
+      [
+        14072,
+        0
+      ],
+      [
+        14072,
+        1
+      ]
+    ],
+    "input_paths": [
+      "research/contrib/chatgpt/CKAD-37/pilot-14071.json",
+      "research/contrib/chatgpt/CKAD-37/pilot-14072.json"
+    ],
+    "git_blobs": [
+      "7f57794658a305e061d236ff15efca6cba1c4950",
+      "4ea587d99ea3852f396f9d79dfcafab64c3ab4f8"
+    ],
+    "native_cold_source_sha": "pilot case.worlds[*].final_state_sha256; recomputed by replay from public rows before any new weights are trained",
+    "expected_authentic_episodes": [
+      467,
+      452
+    ],
+    "prior_source": "CKAD37 PR #1260 qualified at source SHA 60634ab8c46b13039e021f28f8fa70bb6b69db96; pilot receipt first-use previously consumed",
+    "allowed_features": "public_views and actual revealed public_row x1/s2/x2/y only. No phase, world label within learner, private simulator boundary, future event, held answer, oracle selector, or hindsight"
+  },
+  "architecture": {
+    "model": "One opt-in bundled NativeMultiLearner checkpoint, retaining original NativeEpisodeExperience as authority-free native causal experience subsystem; separate independently learned transition and terminal JEPA-style latent specialists",
+    "teacher": "stop-gradient, fixed non-collapsed two-coordinate target: binary 0->[-1,1], 1->[1,-1]. Each specialist predicts latent outcome from public views + relevant actions, not next text token; no pretrained V-JEPA2 weights or video objective.",
+    "input": "two projections of paired public views; first action for transition, first and actually revealed s2 and second action for terminal. Separate 8-wide tanh encoders, 2-wide latent predictors, trained online only after observed consequence. Both projections contribute gradient; no privileged stable-coordinate index.",
+    "checkpoint": "source-native checkpoint bytes+SHA and both separate trainable weights/step counters, strict validation and cold restore; source replay idempotency and conflicting evidence rejection with no specialist update",
+    "decisions": "fixed preregistered blend 75% native stream prediction +25% corresponding JEPA prediction; specialized-only readout measured as secondary",
+    "context": "each source world independently has one native stream; begin_stream once after initial 48 receipts, never on hidden A/B/A shifts; latent models never receive phase labels"
+  },
+  "frozen_training": {
+    "seeds": [
+      14071,
+      14072
+    ],
+    "worlds": [
+      0,
+      1
+    ],
+    "hidden_width": 8,
+    "latent_width": 2,
+    "initial_weight": "sin/cos formula based solely on dimensional index and fixed specialist salt",
+    "initial_scalar": 0.075,
+    "initial_bias": 0,
+    "learning_rate": 0.045,
+    "per_event_sgd_updates": 3,
+    "loss": "MSE to fixed teacher embedding, both public observations equally; sigmoid(2*(latent0-latent1)) for calibrated probability",
+    "regularization": "no weight decay, no teacher updates, no reference hidden state",
+    "gradient_clip": 5,
+    "blend_native": 0.75,
+    "blend_jepa": 0.25,
+    "training_order": "prequential each actual CKAD37 receipt: predict before source outcome update, observe native once, then train separate encoders only after revealed outcome",
+    "cold_checkpoints": [
+      48,
+      "final"
+    ],
+    "episodes_from_original_custody": "full 919 across 4 streams, two observed outcomes per episode",
+    "cost_bounds": {
+      "steps_per_specialist_per_episode": 3,
+      "max_full_episode_count": 1000,
+      "max_cpu_seconds": 180,
+      "max_checkpoint_bytes": 1048576,
+      "paid_api_calls": 0
+    }
+  },
+  "controls": [
+    "Original NativeEpisodeExperience context stream (same authentic source receipts, original CKAD37 recorded forecasts)",
+    "Independent fully fitted Beta(1,1) full history; sliding window24; window48; exponential-discount .95; sham .5 (prequential recorded CKAD37 receipts)",
+    "Same pair of JEPA specialists trained on intentionally mismatched past-outcome labels, with equal updates, as mechanism-negative control",
+    "Native unchanged exact byte state, native-global baseline (recorded), and fixed 0.75/0.25 mixed action-state predictor"
+  ],
+  "evaluation": {
+    "primary": "pooled Brier on late_B + late_return_A episodes, both source worlds per pilot seed; same public source chronological outcomes and phase masks as original CKAD37 (masks evaluator-only)",
+    "secondary": "stable_A, early_B, late_B, early_return_A, late_return_A prequential Brier for blended, JEPA-only, controls; frozen old-world A return; pairing negative; native rederived source bytes SHA and source IDs; final native and specialist cold checkpoint replay; per-phase learner update counts; parent source hash and runtime costs",
+    "criterion": "For each seed, blended pooled late Brier must beat original native_stream by >=0.005 and lowest Brier of conventional 24/48/full/discount by >=0.010; blended early_B and late_return_A must not worsen original native_stream by >0.010. Paired JEPA alone must beat mismatched control by >=0.010 pooled on both seeds. Native state reproduction, source custody, memory cold and duplicate/conflict tests must all PASS.",
+    "decisions": "All predicates must pass DEVELOPMENT_GO. Otherwise DEVELOPMENT_NO_GO; preserve negative. If exact-source/source-ID/checkpoint/guard verification fails, INVALID/engineering failure, not science negative.",
+    "science": "Always SCIENTIFIC_PASS=false: data already used by CKAD37 synthetic pilot and model choice follows previous JEPA negative; no fresh source-world first-use or independent physical-world test."
+  },
+  "scope": [
+    "research/contrib/chatgpt/YGG-JEPA2-02/**",
+    "yggdrasil/native_jepa2_multilearner.py",
+    "tests/test_native_jepa2_multilearner.py",
+    ".github/workflows/ygg-jepa2-02.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated Yggdrasil draft development branch, no accepted main, no original source first-use, no model/controller/scheduler replacement, no merge, no pay-per-call API, no deployment, no execution against external models."
+}
