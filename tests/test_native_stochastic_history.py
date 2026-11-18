@@ -13,6 +13,29 @@ def fixture():return (ROOT/'research/contrib/chatgpt/NKR-20/source_fixture.json'
 
 
 class StochasticHistoryTests(unittest.TestCase):
+    def test_existing_backoff_formula_matches_exact_raw_tables_without_mutation(self):
+        from fractions import Fraction
+        raw=fixture();m=NativeStochasticHistory().stage_prefix(raw,SOURCE_PIN,23);before=m.checkpoint()
+        data=json.loads(raw);table={}
+        for world,e in enumerate(data['episodes']):
+            rows=bytes.fromhex(e['rows_hex'])
+            for i in range(1,24):
+                v=rows[i];key=(world,v>>5,(v>>4)&1,(rows[i-1]>>3)&1)
+                for t,y in enumerate(((v>>3)&1,(v>>2)&1)):table.setdefault((key,t),[]).append(y)
+        for w in range(4):
+            for c in range(2):
+                for a in range(2):
+                    for prev in range(2):
+                        expected=[]
+                        for t in range(2):
+                            child=table.get(((w,c,a,prev),t),[])
+                            pooled=table.get(((w,c,a,0),t),[])+table.get(((w,c,a,1),t),[])
+                            parent=Fraction(sum(pooled)+1,len(pooled)+2)
+                            p=(sum(child)+4*parent)/(len(child)+4)
+                            expected.append((p.numerator,p.denominator))
+                        self.assertEqual(m.predict_backoff(w,c,a,prev),tuple(expected))
+        self.assertEqual(m.checkpoint(),before)
+
     def test_cumulative_source_counts_match_qualified_parent_and_are_replay_safe(self):
         raw=fixture();m=NativeStochasticHistory()
         for stop in (8,16,23):

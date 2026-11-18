@@ -6,6 +6,7 @@ probabilities; it does not identify unobserved causal policy effects.
 """
 import json
 import struct
+from fractions import Fraction
 from yggdrasil.native_context_basis import canonical, digest, pin, require
 from yggdrasil.public_causal_cells import PublicCausalCells
 
@@ -63,6 +64,19 @@ class NativeStochasticHistory:
     def predict(self,world,before,action,previous_reward):
         address,retained=self.address(world,before,action,previous_reward)
         return tuple(b.outcome_probability(address,action,retained=retained) for b in self._banks)
+
+    def predict_backoff(self,world,before,action,previous_reward):
+        """Opt-in NKR21 fixed-strength4 readout, not learned hyperparameters."""
+        self.address(world,before,action,previous_reward)
+        children=(self.predict(world,before,action,0),self.predict(world,before,action,1))
+        output=[]
+        for target in range(2):
+            (n0,d0),(n1,d1)=(children[0][target],children[1][target])
+            parent=Fraction(n0+n1-1,d0+d1-2)
+            n,d=children[previous_reward][target]
+            probability=(n-1+4*parent)/(d-2+4)
+            output.append((probability.numerator,probability.denominator))
+        return tuple(output)
 
     def counters(self):return b''.join(b.snapshot() for b in self._banks)
 

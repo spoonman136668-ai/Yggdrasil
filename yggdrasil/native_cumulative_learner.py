@@ -157,6 +157,11 @@ class NativeCumulativeLearner:
         return (((1,2),(1,2)) if self._history is None else
                 self._history.predict(world,before,action,previous_reward))
 
+    def history_forecast_backoff(self,world,before,action,previous_reward):
+        NativeStochasticHistory.address(world,before,action,previous_reward)
+        return (((1,2),(1,2)) if self._history is None else
+                self._history.predict_backoff(world,before,action,previous_reward))
+
     def observe_cached_dtr(self,raw,expected_sha256,stop):
         require(self._history is not None,'INTEGRATED_DTR_REQUIRES_HISTORY_PARENT')
         old=self._dtr if self._dtr is not None else NativeDTRHistory()

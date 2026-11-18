@@ -24,6 +24,16 @@ def train(m, slot, r, **kwargs):
 
 
 class IntegratedLearningTests(unittest.TestCase):
+    def test_optional_backoff_untrained_types_and_legacy_readout_preserved(self):
+        from pathlib import Path
+        from yggdrasil.native_stochastic_history import SOURCE_PIN
+        m=fixture();self.assertEqual(m.history_forecast_backoff(0,0,0,0),((1,2),(1,2)))
+        with self.assertRaises(ValueError):m.history_forecast_backoff(0,0,0,True)
+        source=(Path(__file__).resolve().parents[1]/'research/contrib/chatgpt/NKR-20/source_fixture.json').read_bytes()
+        m=m.observe_cached_history(source,SOURCE_PIN,23);raw=m.checkpoint();old=m.history_forecast(0,0,0,0)
+        m.history_forecast_backoff(0,0,0,0)
+        self.assertEqual(m.checkpoint(),raw);self.assertEqual(m.history_forecast(0,0,0,0),old)
+
     def test_second_source_preserves_deterministic_and_first_source_state(self):
         from pathlib import Path
         from yggdrasil.native_stochastic_history import SOURCE_PIN as MDP_PIN
