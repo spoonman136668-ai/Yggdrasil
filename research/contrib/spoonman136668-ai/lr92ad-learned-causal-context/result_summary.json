@@ -1,0 +1,151 @@
+{
+  "schema": "lr92ad.external-synthetic-development-summary.v1",
+  "experiment_id": "LR-92AD",
+  "preregistration_commit": "ebf528a7454d2a60b9c08a4002402462c7cb8e80",
+  "source_commit": "a6f9361526cd9cb11f5e8d462dea17e7d865bb30",
+  "prereg_sha256": "7626377a32af6d84f80d3c9edad5b7d08f08d3084473b33f5fb9e413bafd2afd",
+  "source_sha256": "32171291d945f7aedca941890b4137caef648a455bbb34a9c2478e3e36087b47",
+  "primary_raw_result_sha256": "a2e8144f48595168b4c741157e08dfb3584069c7822f0ec33c31fff209f7f035",
+  "primary_raw_result_bytes": 6260761,
+  "train_episode_history_sha256": "c5f5fcbe1a6e3d7f5b666a98c2d3f6dfd112399f0b8cbe3c1da58c3bcc6e0df2",
+  "trained_relation_weights_sha256": "de4a4369ad31c2000f28871e84361dbbdfc22c559854f3fe32fc1da826fec132",
+  "trained_relation_weights": {
+    "delta_global": [
+      0.4880278315613134,
+      0.4970212767424121,
+      0.46996949095245444,
+      0.30556901336937387
+    ],
+    "delta_q": [
+      [
+        0.34980575829798577,
+        0.6971548075437095,
+        0.619757346226096,
+        0.29496525851367783
+      ],
+      [
+        0.6266126978076312,
+        0.2969780102822538,
+        0.3210916511044965,
+        0.3220646163047858
+      ]
+    ],
+    "delta_shuffled": [
+      [
+        0.4481620392861946,
+        0.4972713026182634,
+        0.4368998959602325,
+        0.3444926692146729
+      ],
+      [
+        0.5282564168194223,
+        0.49686151520769944,
+        0.5039491013703596,
+        0.2725372056037907
+      ]
+    ]
+  },
+  "training_seconds": 0.050853778,
+  "total_wall_seconds": 1.276994861,
+  "worlds": {
+    "n": 240,
+    "seen_modes": 192,
+    "unseen_modes": 48,
+    "trained_episodes": 128,
+    "trained_action_outcomes": 12288,
+    "fit_outcomes": 30720,
+    "validation_outcomes": 61440,
+    "base_functions_train": "0..7",
+    "base_functions_test": "8..15",
+    "seeds": [
+      929200411,
+      929200412,
+      929200413
+    ]
+  },
+  "scores": {
+    "CART": {
+      "accepted_total": 2,
+      "accuracy": 0.5905924479166667,
+      "correct_validation": 36286,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 2,
+      "false_unseen": 0
+    },
+    "RF16": {
+      "accepted_total": 8,
+      "accuracy": 0.5981770833333333,
+      "correct_validation": 36752,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 8,
+      "false_unseen": 0
+    },
+    "global_relation": {
+      "accepted_total": 0,
+      "accuracy": 0.60830078125,
+      "correct_validation": 37374,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 0,
+      "false_unseen": 0
+    },
+    "independent": {
+      "accepted_total": 0,
+      "accuracy": 0.5993489583333333,
+      "correct_validation": 36824,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 0,
+      "false_unseen": 0
+    },
+    "logistic": {
+      "accepted_total": 0,
+      "accuracy": 0.5868815104166667,
+      "correct_validation": 36058,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 0,
+      "false_unseen": 0
+    },
+    "relational": {
+      "accepted_total": 0,
+      "accuracy": 0.6231770833333333,
+      "correct_validation": 38288,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 0,
+      "false_unseen": 0
+    },
+    "shuffled_relation": {
+      "accepted_total": 0,
+      "accuracy": 0.60908203125,
+      "correct_validation": 37422,
+      "exact_familiar": 0,
+      "exact_unseen": 0,
+      "false_familiar": 0,
+      "false_unseen": 0
+    }
+  },
+  "frozen_checks": {
+    "accuracy_at_least_point005_above_strongest_conventional": true,
+    "cold_restore_exact": true,
+    "false_familiar_no_more_than_independent_plus_2": true,
+    "familiar_exact_gain_at_least_10_vs_independent": false,
+    "familiar_exact_gain_at_least_5_vs_global": false,
+    "familiar_exact_gain_at_least_5_vs_shuffled": false,
+    "unseen_false_no_more_than_independent": true
+  },
+  "classification": "DEVELOPMENT_NO_GO",
+  "prohibited_postscore_tuning_attempts": 0,
+  "notes": [
+    "Predictive accuracy improvement over uniform inference +2.3828 percentage points; not sufficient to accept full causal mechanisms.",
+    "All Bayesian arms accepted zero exact mechanisms; CART/RF16 accepted only false mechanisms under preset posterior+fit-misfit test.",
+    "Original raw observation/decision record remains in isolated local custody and is not uploaded in this summary.",
+    "Source/prereg committed before scored cohort, but official Yggdrasil native learner and science remain untested."
+  ],
+  "official_science": "NOT_QUALIFIED",
+  "native_training": false,
+  "promotion": "HOLD"
+}
