@@ -1,0 +1,141 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-11-MULTI-OPERATOR",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a bounded memory hold two operator rules across alternating interference, cold-recall the first, and reuse both in a novel two-stage composition with only two new observed consequences, relative to destructive aliasing, no memory, fitted frequency and exact full Bayesian inference?",
+  "hypothesis": "A context-indexed top-three per-operator memory with one fixed observation-likelihood-gated composition recall improves B composition Brier >=10% relative to ungated two-slot memory; return-A Brier at least 25% better than last-B overwrite; both A and B Brier within 10% of fully retained exact Bayesian per-context posterior; composition Brier <=110% of strongest same-information no-memory or gated-full-Bayes control. The measured combination must pass all conditions to justify further research, not promotion.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1233",
+      "note": "YNCA10 finite operator-table memory tied exact Bayes on 128 new single-operator worlds; no multioperator retention, interference or composition tested, remains draft."
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1207",
+      "note": "CKAD native integrated cumulative learner independent, not touched"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-11/prereg.json",
+    "research/contrib/chatgpt/YNCA-11/experiment.py",
+    "research/contrib/chatgpt/YNCA-11/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-11/result_A.json",
+    "research/contrib/chatgpt/YNCA-11/result_B.json",
+    "research/contrib/chatgpt/YNCA-11/provenance.json",
+    "research/contrib/chatgpt/YNCA-11/README.md",
+    ".github/workflows/ynca11-evaluate.yml",
+    ".github/workflows/ynca11-full-regression.yml",
+    ".github/workflows/ynca11-atlas-export.yml"
+  ],
+  "inputs": [
+    {
+      "name": "Synthetic 3-bit Boolean operators, 24 fixed orbit-representative candidate tables sampled once from all 256; two distinct hidden operators per cohort, world-specific input permutations, 12% independent observation flips",
+      "source": "Self-contained Python 3.12 stdlib generator in experiment.py; source SHA and original Git commit to be locked before B first use",
+      "sha256": "SOURCE_HASH_TO_PIN_BEFORE_FIRST_B"
+    }
+  ],
+  "frozen_design": {
+    "pass_A": {
+      "status": "Exploratory already consumed, source not preregistered before first run",
+      "seed_triple": [
+        91000,
+        92000,
+        93000
+      ],
+      "training_worlds": 16,
+      "test_worlds_per_task": 64,
+      "development_measured": {
+        "return_A_Brier": {
+          "top3": 0.19517037,
+          "fullBayes": 0.19336245,
+          "lastBoverwrite": 0.31895454
+        },
+        "composition_Brier": {
+          "top3": 0.21402614,
+          "gated_top3": 0.19425172,
+          "gated_fullBayes": 0.19131024,
+          "noMemory": 0.18865013
+        }
+      },
+      "diagnosis": "Context-specific bank protects earlier operator; composing can overtrust partially learned memory. One fixed correction: likelihood-gated trust of top3 memory versus uniform 24-table prior."
+    },
+    "pass_B": {
+      "status": "Not inspected/consumed at prereg; independent source-frozen development",
+      "seed_triple": [
+        101000,
+        102000,
+        103000
+      ],
+      "training_worlds": 16,
+      "test_worlds_per_task": 64,
+      "task_types": [
+        "A cold return after final B block",
+        "B immediate context",
+        "C new composition B(A(x),x1,x2)"
+      ],
+      "single_test_observations": 3,
+      "composition_test_observations": 2,
+      "unobserved_scored_actions": 5
+    },
+    "source_data": "A,B operators sampled without replacement from 24 fixed orbit-representative truth tables; per world role permutation is unknown to learner but allowed to evaluator. Four training blocks of 4 worlds each, A4-B4-A4-B4; 4 random noisy observed interventions per training world. No labels from test target beyond fixed observed samples enter fitting.",
+    "mechanisms": [
+      "Independent posterior over 24 candidate tables per context, marginalized over 6 world-specific input permutations",
+      "Top3 truncated weighted memory for A and B, serializable, with 6 entries total",
+      "Fixed gated recall for C: posterior odds of stored model versus untrained uniform model given only the same two real composition observations; no extra data, 0.5 prior model odds"
+    ],
+    "controls": [
+      "No-memory exact uniform 24-table per slot Bayesian posterior on new observations",
+      "Fully trained untagged pooled context posterior, same 16 training worlds",
+      "Last B-only posterior substituted for A as catastrophic-overwrite negative control",
+      "Fully trained per-context observed-action frequency with Laplace smoothing, same 16 training worlds",
+      "Full exact Bayesian posterior retaining 24 tables per context, same context-labeled training worlds",
+      "Observation-likelihood-gated full exact Bayesian memory, same 0.5 initial model odds",
+      "True-operator-table oracle with unknown per-world role permutation, privileged diagnostic only"
+    ],
+    "capacity": "Candidate two banks of 3 operator tables + weights each. All strong controls may retain 24 tables per context. No new primitive beyond fixed Boolean hypothesis grammar; composition operation explicitly provided equally to all models.",
+    "evaluator": "Noisy observed input/output pairs only given to policies, true operator/role permutation used only for scoring predictions on all unobserved interventions. Brier lower better, evaluated separately A/B/C; fixed 64 worlds per task and same observations for all policies, no post-result tuning.",
+    "source_rule": "Git prereg -> source+tests commit verified by SHA256/Blob -> bind hashes to prereg before B use -> one two-OS B evaluation. A can be replayed in focused tests but is exploratory and cannot be promoted as confirmatory evidence.",
+    "runtime": "CPython 3.12 standard library, PythonHASHSEED=0, GitHub-hosted Ubuntu and Windows <=20 minutes/job; no owner/self-hosted runner, model weights, GPU, paid API or production credentials.",
+    "deterministic_expected": true,
+    "whole_process_cost": "Measure wall clock and memory optionally; no energy or speedup claim without matched instrumented data. 6 vs 48 hypotheses is a storage distinction only."
+  },
+  "controls": [
+    "Exact full 24-table/context Bayesian and model-evidence-gated exact Bayes",
+    "No-memory uniform Bayesian",
+    "Last-B overwritten posterior",
+    "Untagged pooled posterior",
+    "Fully trained action-frequency",
+    "Privileged true table oracle for diagnostic"
+  ],
+  "metrics": [
+    "Brier on unobserved interventions for A, B, C separately",
+    "A after B retention gain vs overwritten baseline",
+    "C composition gain vs ungated same top3 memory",
+    "Brier parity against strongest no-memory and full gated Bayes",
+    "Cold JSON restart parity with numerical tolerance <=1e-12",
+    "Saved posterior table count and model/evaluation process cost",
+    "Source hashes and Linux/Windows byte-identical original B results"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL only if B: (i) GATED_TOP3 Brier on novel C <=0.90x TWO_SLOT_TOP3 C, (ii) GATED_TOP3 C <=1.10x min(NO_MEMORY C,GATED_FULL_BAYES C), (iii) GATED_TOP3 return A <=0.75x LAST_B_OVERWRITE return A and <=1.10x FULL_CONTEXT_BAYES A, (iv) GATED_TOP3 B <=1.10x FULL_CONTEXT_BAYES B, (v) 3 entries per memory and successful new-process cold-restore within 1e-12. This is positive development only; no scientific superiority claim over exact Bayes.",
+    "mixed": "Return-A genuinely improves over overwrite and composition gating improves ungated but C or full Bayes parity thresholds fail; DEVELOPMENT_MIXED, stop this variant after A+B and preserve effect.",
+    "negative": "No substantial retained A memory or composition gating worsens C; DEVELOPMENT_NO_GO. Do not tune B cohort or run extra seeds to rescue.",
+    "invalid": "First B use before source/prereg SHA lock, source/seed/metric changes after B, unequal interventions, hidden table/role leakage, missing full exact Bayesian controls, cross-OS inconsistent output, or missing scientific custody; failing cold restore is separate engineering if B scored output is valid."
+  },
+  "prohibited_after_primary_run": [
+    "Change evidence gate weight or candidate K on B",
+    "Rerun fresh B seeds to postselect a win",
+    "Call fixed Boolean grammar and supplied composition rule open-ended invention",
+    "Modify CKAD native learner, main accepted model, controller, scheduler, owner runtime or deployments"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "note": "User permits bounded exploratory tuning: A exploratory before prereg; exactly one targeted correction of composition memory overtrust on B, evaluate against strong controls and stop unless pass."
+}
