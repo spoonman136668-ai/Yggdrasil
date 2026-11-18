@@ -1,0 +1,94 @@
+{
+  "budget": {
+    "audit_wall_seconds": 90,
+    "original_source_actions": 0,
+    "paid_apis": 0,
+    "primary_wall_seconds": 120,
+    "protected_first_use": 0
+  },
+  "controls": [
+    "Fully fitted original 160-rule Bayes under same evidence",
+    "Fully fitted complete 23,044-structure ANF Bayesian posterior (strongest same-family exact control)",
+    "Fully fitted degree<=3 polynomial kernel ridge with L2 penalty 1.0, same inputs",
+    "Fully trained conventional depth-6 CART decision tree",
+    "Fully trained 31-tree ExtraTrees forest (depth<=6, same public evidence)",
+    "MAP hard winner ablation of the selected hypothesis bank",
+    "Outside-basis new causal functions as a negative control of finite representation"
+  ],
+  "date": "2026-11-18",
+  "deployment": "NONE",
+  "hypotheses": {
+    "assumed_training_label_flip_probability": 0.25,
+    "candidate_birth": "generate broad ANF hypothesis space after minimum mismatch >=2 among old bank after first 12 witnessed interventions or >=3 after 24; otherwise use old bank",
+    "composed_program_space": "all Boolean XOR sums of at most three distinct monomial factors plus optional complement sign; 23,044 functions, constructed from basis rather than pre-listed grammar families",
+    "new_generic_algebraic_terms": "41 all degree1..3 square-free monomials in six intervention bits",
+    "original_prior_bank": 160,
+    "posterior_decision": "exact finite hypothesis likelihood weighted marginal (>0.5, tie to 0); normalized energy encoding is mathematically equivalent, NOT an energy-specific improvement",
+    "prior_tier_masses": [
+      0.01,
+      0.12,
+      0.27,
+      0.6
+    ]
+  },
+  "name": "ENERGY-29",
+  "native_pr_1207_head_at_freeze": "08fbe556d7ac134d3662f7003af5bc4430013ac1",
+  "negative_controls": [
+    "Source construction must make all in-basis truth masks outside original 160 old masks",
+    "Outside-basis source function must be absent from both old and constructed bank",
+    "Same public evidence and held truth for every arm, no held training",
+    "Exhaustively recompute source truth and training corruption with separately implemented audit",
+    "Check original snapshots, signatures, all 480 rows and 7 prediction arms independently",
+    "Use exact integer posterior cross-check for stratified case subset to catch floating near-ties",
+    "Fresh scored semantic replay with timing fields excluded",
+    "No post-score changes to seeds, algorithms or thresholds; retain any errors as provenance"
+  ],
+  "objective": "Test whether generic algebraic-normal-form sparse causal hypothesis construction discovers functional relations beyond an explicitly pre-listed XOR3+AND2 grammar from witnessed interventions; falsify its generality on functions requiring higher-order/more numerous terms.",
+  "parent_energy28_archive_sha": "0ae3d547c9e37e6168fbd77ff547bc4338041f43",
+  "qualification": "development only; no native learned model, no native full dual-platform final regression, no scientific first-use, no promotion",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "research_archive_pr": 1210,
+  "schema": "yggdrasil.energy29.bounded-boolean-rule-invention.prereg.v1",
+  "scientific_pass": false,
+  "source_and_scope": "Fully synthetic and disjoint from ENERGY-28. Source-side law IDs/labels; learner only sees public 6-bit intervention vectors and their observed binary consequences. No real-world first use, native Yggdrasil training, or active loop changes.",
+  "source_design": {
+    "action_space": 64,
+    "held_interventions": 24,
+    "held_noise": 0,
+    "held_per_arm": 11520,
+    "held_update_count": 0,
+    "n_action_bits": 6,
+    "noise_corrupted_training_labels": [
+      0,
+      2
+    ],
+    "seeds": [
+      2399,
+      2411,
+      2423,
+      2441
+    ],
+    "smoke_seed": 7001,
+    "source_family": [
+      "old existing XOR3 with optional AND2 correction",
+      "novel three sparse ANF monomials each degree<=3, including cubic & quadratic term and not equal to any old law",
+      "outside sparse ANF target: degree4 interaction or majority5"
+    ],
+    "source_hashing": "SHA-256 fixed seed-only disjoint split; noise positions source-side SHA-256; source law IDs never supplied to learner; same revealed actions and labels for all models",
+    "source_worlds_per_family_per_seed": 20,
+    "total_scored_cases": 480,
+    "training_interventions": 24,
+    "unused": 16
+  },
+  "success_criteria_development_all_required": {
+    "familiar_corrupted_prediction_loss_vs_old_at_most_pp": 2,
+    "familiar_noiseless_prediction_loss_vs_old_at_most_pp": 0,
+    "no_claim_of_energy_specific_gain_from_equivalent_bayes": true,
+    "no_unfounded_outside_basis_generalization_claim": true,
+    "novel_in_basis_clean_accuracy_at_least": 0.9,
+    "novel_in_basis_gain_over_old_each_noise_at_least_pp": 20,
+    "novel_in_basis_gain_over_strongest_conventional_each_noise_at_least_pp": 3,
+    "novel_in_basis_gap_below_complete_anf_each_noise_at_most_pp": 2,
+    "novel_in_basis_noisy_accuracy_at_least": 0.8
+  }
+}
