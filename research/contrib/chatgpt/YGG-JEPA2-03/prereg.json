@@ -1,0 +1,108 @@
+{
+  "schema": "yggdrasil.jepa2-03.temporal-continuation-prereg.v1",
+  "experiment": "YGG-JEPA2-03",
+  "parent_sha": "f21b16c3823e5353caae6d76a4051909bf87d944",
+  "parent_tree": "55be9c331d9884b81f25fdffc6eda243eecf87a6",
+  "question": "Can Yggdrasil's same native cumulative learner and previously trained transition/reward specialists continue, while new independently trainable temporal-history JEPA-style experts learn from new genuinely witnessed causal trajectories and improve action-consequence prediction under shift without damaging old memories?",
+  "prior": {
+    "pr": 1268,
+    "result": "DEVELOPMENT_NO_GO: 0.9? prior 0.75 native/0.25 JEPA blend degraded native on 2/2 sources; original retained checkpoints have independently verified cold training",
+    "avoid": "Do not tune/replay scored old 14071/14072 checkpoints for gains. Old source used ONLY as frozen initial model to be continued."
+  },
+  "source": {
+    "old_seed_worlds": [
+      [
+        14071,
+        0
+      ],
+      [
+        14072,
+        0
+      ]
+    ],
+    "old_state_paths": [
+      "research/contrib/chatgpt/YGG-JEPA2-02/seed-14071-states.json",
+      "research/contrib/chatgpt/YGG-JEPA2-02/seed-14072-states.json"
+    ],
+    "original_ckad37_parent": "60634ab8c46b13039e021f28f8fa70bb6b69db96",
+    "new_dev_only": [
+      88901,
+      88917
+    ],
+    "worlds_each": [
+      0,
+      1
+    ],
+    "generator": "unchanged research/contrib/chatgpt/CKAD-37/campaign.py generator; evaluator-only regime and phase. Actual public observations supplied only to original NativeEpisodeExperience.observe.",
+    "original_primary_first_use": false,
+    "expected_old_native_sha_by_seed": {
+      "14071": "90f959b217e639515b642365d05a915bb6dfbcc099eafef0666f02b88496de38",
+      "14072": "040641dba3be3fa348cf08b02fde4be1416ad38d601a70cded7b271b02fb8011"
+    }
+  },
+  "architecture": {
+    "model": "one opt-in persistent NativeTemporalMultiLearner wrapping unchanged NativeMultiLearner v1 + two independently fitted temporal latent experts",
+    "continues_old": "original native memory and both previous trained specialist weights retained and continued without any reset, no new controller",
+    "temporal_features": "current public paired views, action inputs, previous 8 witnessed action/consequence histories and relative positions, no future/hidden regime/oracle label",
+    "teacher": "2D noncollapsed fixed stop-gradient binary code, action-conditioned latent prediction of next state or actually observed terminal outcome",
+    "prediction_order": "native/one-step/temporal predictions are made before witnessed outcome; then update original native + 2 old experts + 2 temporal experts",
+    "readout": "conservative frozen 90% native + 10% temporal; temporal-only separately tracked",
+    "checkpoint": "cold persistent old and new weights with source-ledger refit verification, checksum-bound native source, duplicate and conflict atomic"
+  },
+  "train": {
+    "hidden": 8,
+    "latent": 2,
+    "history_length": 8,
+    "temporal_lr": 0.06,
+    "steps_per_expert_per_event": 3,
+    "trig_init": true,
+    "blend_native": 0.9,
+    "blend_temporal": 0.1,
+    "warm_start": "fit new temporal experts by replaying old observed native ledger; keep existing old native and learned old specialists exactly untouched until new episodes arrive",
+    "source_order": "each seed starts from CKAD37 prior world0 full source; append new dev world0 and dev world1 sequentially to SAME cumulative learner"
+  },
+  "comparators": [
+    "original continued native stream, same sources and actions",
+    "original one-step JEPA2-02 continued specialists, same sources",
+    "independent fully fitted causal-cell Beta full-history, window24, window48 and discount95, initialized on old recorded observations",
+    "same-size temporal specialist training using previous unrelated outcomes as mispair negative with matched updates",
+    "0.5 sham"
+  ],
+  "score": {
+    "primary": "pooled prequential transition/terminal Brier on new late_B and late_return_A source events, each outcome scored before actual observation",
+    "secondary": [
+      "stable_A, early_B, late_B, early_return_A and late_return_A by seed, both worlds",
+      "old native source prefix/legacy learned weights retention",
+      "cold restore exact rederived temporal and previous learned weights",
+      "source IDs and conflict duplicate atomicity",
+      "CPU/wall and full training step counts",
+      "cross-platform independent source/evidence reconstruction"
+    ],
+    "frozen_development_go": "BOTH seeds: blend pooled late Brier at least .005 below continued native and at least .010 below best independently fitted Beta; temporal-only at least .010 below mispaired temporal; early_B and late_return_A blend no worse native by .010; source and old state intact. Else DEVELOPMENT_NO_GO with no tuning/repeat on scored seeds.",
+    "science": "SCIENTIFIC_PASS always false; these are new synthetic development experiences from already-known generator, not independent first-use or real-world causal transfer."
+  },
+  "budget": {
+    "dev_seeds": 2,
+    "new_worlds_per_seed": 2,
+    "max_cumulative_episodes_per_seed": 1000,
+    "max_cpu_seconds_per_replica": 120,
+    "paid_calls": 0
+  },
+  "scope": [
+    "research/contrib/chatgpt/YGG-JEPA2-03/**",
+    "yggdrasil/native_jepa_temporal.py",
+    "tests/test_native_jepa_temporal.py",
+    ".github/workflows/ygg-jepa2-03*.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": {
+    "research_branch_only": true,
+    "merge": false,
+    "promotion": false,
+    "accepted_main": false,
+    "external_owner_first_use": false,
+    "controller": false,
+    "other_models": false,
+    "scheduled_tasks": false
+  }
+}
