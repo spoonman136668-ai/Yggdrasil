@@ -49,3 +49,7 @@ The ENERGY experiments explored classical-energy consistency, inference and lear
 - No new training, experimental scoring or native Yggdrasil first-use took place when archiving this evidence.
 - GitHub branch: `research/archive/energy-evidence-20261117`; original main/base: `5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`.
 - Engineering CI and native scientific acceptance remain separate; this archive is not promoted or deployed.
+
+## Follow-on standalone mathematical gate
+
+[ENERGY-19: counterexample to single-witness energy action choice](./ENERGY-19/REPORT.md) is a separate exact-rational safety test, **not included** in the frozen ENERGY-04–18 original bundle. It concludes that choosing a single optimistic low-energy future can lose expected reward versus correct state marginalization. No training, scientific promotion or original Yggdrasil first-use.
