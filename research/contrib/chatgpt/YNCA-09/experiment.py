@@ -180,5 +180,4 @@ def main():
     print(json.dumps({'schema':'ynca09.learned-incidence-atlas.dev.v1','results':eval_split(args.split),
                       'claims':{'native_integration':False,'scientific_pass':False,'deployed':False}},indent=2,sort_keys=True))
 
-
 if __name__=='__main__':main()
