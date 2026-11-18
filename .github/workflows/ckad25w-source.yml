@@ -1,0 +1,148 @@
+name: CKAD25-W frozen unlabeled native causal memory screen
+on:
+  pull_request:
+    paths:
+      - "research/contrib/chatgpt/CKAD25-W/**"
+      - "yggdrasil/native_cumulative_learner.py"
+      - "tests/test_native_causal_regime_recall.py"
+      - ".github/workflows/ckad25w-source.yml"
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+
+jobs:
+  native-interface-preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - name: Keep exact Git source bytes unchanged on both platforms
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Frozen original model and source Git blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "7b81c241c8eea19f669a826bb03c6232735c94c3"
+          test "$(git hash-object tests/test_native_causal_regime_recall.py)" = "7821d910f9076b6d73e34c6958d1efe89d5d2df5"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-W/run.py)" = "b4bd546859ef038a34935b59988ebe1e124cf160"
+          test "$(git hash-object yggdrasil/native_causal_relation_posterior.py)" = "ac738c0fe03e5532f9e422dfe972c378728741c7"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-S/run.py)" = "31e06746dd2fa83cf4bfedf28da43cacbc68c99f"
+          python -B - <<'PY'
+          from pathlib import Path
+          for file in ("yggdrasil/native_cumulative_learner.py",
+                       "tests/test_native_causal_regime_recall.py",
+                       "research/contrib/chatgpt/CKAD25-W/run.py"):
+              compile(Path(file).read_text(encoding="utf-8"),file,"exec")
+          print("CKAD25W_SOURCE_INTERFACE_COMPILE_PASS")
+          PY
+      - name: Native memory continuity and input-only negative controls
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_native_causal_regime_recall.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_causal_relation_posterior.py' -v
+          test -z "$(git status --porcelain)"
+          echo "CKAD25W_FROZEN_SOURCE_PREFLIGHT_PASS"
+
+  original-new-synthetic-score:
+    needs: [native-interface-preflight]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Preserve checkout byte hashes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Pin exact fitted conventional-source control dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Verify original historical cold checkpoint, not previous result
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "7b81c241c8eea19f669a826bb03c6232735c94c3"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-W/run.py)" = "b4bd546859ef038a34935b59988ebe1e124cf160"
+          python -B - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path("research/contrib/chatgpt/CKAD-25/qualified-development-runs/44331408493")
+          a=(p/"linux/stage-02.native.json").read_bytes()
+          b=(p/"windows/stage-02.native.json").read_bytes()
+          assert a==b and hashlib.sha256(a).hexdigest()=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          print("CKAD25W_ORIGINAL_SOURCE_CHECKPOINT_PASS")
+          PY
+      - name: First source-frozen 2-seed unlabelled regime screen
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD25-W/run.py --output "$RUNNER_TEMP/ckad25w-result.json"
+          cp "$RUNNER_TEMP/ckad25w-result.json" "$RUNNER_TEMP/ckad25w-original.json"
+      - name: Same-cohort byte replay, not independent further research
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD25-W/run.py --output "$RUNNER_TEMP/ckad25w-result.json"
+          cmp "$RUNNER_TEMP/ckad25w-result.json" "$RUNNER_TEMP/ckad25w-original.json"
+          python -B - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          raw=(Path(os.environ["RUNNER_TEMP"])/"ckad25w-result.json").read_bytes()
+          r=json.loads(raw)
+          assert r["schema"]=="yggdrasil.ckad25w.unlabeled-regime-recall-dev.v1"
+          assert r["source_free_native_training_rows"]==80
+          assert r["source_free_target_diagnostic_rows"]==40
+          assert r["phase_scored_outputs"]==40 and r["unique_independent_world_held_labels"]==32
+          assert r["A_return_repeated_not_independent"] is True
+          assert r["original_protected_world_actions"]==0
+          assert r["source_owner_first_use"] is False
+          assert r["accepted_main_changed"] is False
+          assert r["scientific_pass"] is False and r["accepted_model"] is False
+          assert r["forge_dispatch"] is False and r["native_promotion"] is False
+          assert r["deployment"] is False
+          assert len(r["per_seed_phase"])==10
+          assert r["frozen_gates"]["retention"] if "retention" in r["frozen_gates"] else r["frozen_gates"]["native_original_and_compiled_retain_after_pressure"]
+          assert r["source_sha256"]==hashlib.sha256(
+              Path("research/contrib/chatgpt/CKAD25-W/run.py").read_bytes()).hexdigest()
+          assert r["independent_helper_sha256"]==hashlib.sha256(
+              Path("research/contrib/chatgpt/CKAD25-S/run.py").read_bytes()).hexdigest()
+          print("CKAD25W_FROZEN_PROSPECTIVE_AUDIT_PASS")
+          print("CKAD25W_CANONICAL_RESULT_SHA256="+hashlib.sha256(raw).hexdigest())
+          PY
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad25w-unlabelled-${{ matrix.os }}
+          path: ${{ runner.temp }}/ckad25w-result.json
+          if-no-files-found: error
+          retention-days: 60
