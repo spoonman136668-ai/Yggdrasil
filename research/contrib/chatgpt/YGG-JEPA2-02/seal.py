@@ -40,6 +40,7 @@ def without_costs(result):
         seed.pop("resource_accounting")
         for world in seed["worlds"]:
             world.pop("multi_learner_sha256")
+            world.pop("multi_learner_bytes")
     return value
 
 
