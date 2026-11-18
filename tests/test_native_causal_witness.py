@@ -91,9 +91,9 @@ class NativeCausalWitnessTests(unittest.TestCase):
             m.validate_causal_source_with_witnesses(
                 3,evidence,"0"*64,source_ref="f"*64,
                 evidence_slot=12,query_context=6,query_action=1)
-        added,_,_=append(m,"g",evidence,14)
+        added,_,_=append(m,"a",evidence,14)
         with self.assertRaises(ValueError):
-            append(added,"h",evidence,14)
+            append(added,"b",evidence,14)
         self.assertEqual(m.checkpoint(),raw)
 
 
