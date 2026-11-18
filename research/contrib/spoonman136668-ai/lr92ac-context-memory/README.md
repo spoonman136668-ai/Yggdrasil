@@ -26,7 +26,7 @@ The nearest neighbor metric, eight-neighbor count, mixing weight, training sourc
 | CART | 132 | 27 | 1 | 59.9074% |
 | RF16 | 131 | 31 | 1 | 59.8900% |
 
-The retrieval rule did not improve exact causal-rule recovery over uniform inference, global episodic memory or random retrieval. It missed three of the six preset GO checks for comparison gains and held-out accuracy (four conditions failed overall). It is a **development scientific NO-GO**, not an infrastructure failure. The conventional classifiers were not matched on Bayesian posterior acceptance, so their exact-success and false-construction tradeoffs are descriptive.
+The retrieval rule did not improve exact causal-rule recovery over uniform inference, global episodic memory or random retrieval. Four of six preset GO checks failed: both exact-mechanism gains, the random-memory control, and held-out accuracy. It is a **development scientific NO-GO**, not an infrastructure failure. The conventional classifiers were not matched on Bayesian posterior acceptance, so their exact-success and false-construction tradeoffs are descriptive.
 
 ## Source, custody and reproduction
 
@@ -46,7 +46,7 @@ For each `*.zlib.b64` Python source, decode with:
 python -c "import base64,zlib,pathlib,sys;p=pathlib.Path(sys.argv[1]);pathlib.Path(str(p).removesuffix('.zlib.b64')).write_bytes(zlib.decompress(base64.b64decode(p.read_text())))" lr92ac_run.py.zlib.b64
 ```
 
-Repeat for the audit source. The original LR-92AB raw `result.json` must be supplied as `LR92AB_original_raw_result.json`, with its SHA-256 verified. On **a separate clean checkout** of this exact contribution, install `numpy==2.3.5 scipy==1.17.0 scikit-learn==1.8.0` under Python 3.13.5; then run `python lr92ac_run.py` once. It refuses to overwrite an existing `primary_result.json`. Verify the frozen raw result SHA, then `python audit_readonly.py`. Independently authored read-only audit passed **16,629 assertions** locally. The committed summary is not a substitute for the raw primary cohort.
+Repeat for the audit source. A compact independently auditable 240-world scored ledger is also committed as `scored_ledger.json.zlib.b64` (decoded 32,083-byte JSON, SHA-256 `8757b4b325390d8472da4f5203c5efb233bffcbd6c50d3f4eb4030d1c810b799`), containing per-arm correctness/acceptance/validation counts. This is **not** the original full raw observation record. The original LR-92AB raw `result.json` must be supplied as `LR92AB_original_raw_result.json`, with its SHA-256 verified. On **a separate clean checkout** of this exact contribution, install `numpy==2.3.5 scipy==1.17.0 scikit-learn==1.8.0` under Python 3.13.5; then run `python lr92ac_run.py` once. It refuses to overwrite an existing `primary_result.json`. Verify the frozen raw result SHA, then `python audit_readonly.py`. Independently authored read-only audit passed **16,629 assertions** locally. The committed summary and scored ledger are not substitutes for the raw primary observation cohort.
 
 **Limitations:** New worlds remain within the familiar 16-table grammar; simulated foreign worlds are effectively random outcomes, not proof of genuine hidden-cause transfer. Memory collection and total end-to-end cost were not fully accounted in CPU per-policy timings. No native Yggdrasil learner, JEPA, cold persistence, outside-world transfer, first-use, official owner acceptance, full regression, or deployment was tested.
 
