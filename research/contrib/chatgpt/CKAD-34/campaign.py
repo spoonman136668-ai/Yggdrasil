@@ -338,6 +338,8 @@ def score(seed):
     totals={fam:{arm:{"sq":0.,"count":0} for arm in ARMS} for fam in FAMILIES}
     coverage={fam:{arm:0 for arm in ARMS} for fam in FAMILIES}
     wrong={fam:{arm:0 for arm in ARMS} for fam in FAMILIES}
+    held_truth={fam:[] for fam in FAMILIES}
+    held_forecasts={fam:{name:[] for name in ARMS} for fam in FAMILIES}
     for i,x in enumerate(held):
         for family_index,fam in enumerate(FAMILIES):
             slots=[family_index*3+s for s in range(3)]
@@ -355,7 +357,9 @@ def score(seed):
                 if arm=="smoothed_frequency":return frequency_prob(source[slot]+calibration[slot],x)
                 return .5
             forecasts={name:[pred(name,s) for s in slots] for name in ARMS}
+            held_truth[fam].append(truth)
             for arm,v in forecasts.items():
+                held_forecasts[fam][arm].append(v)
                 for p,y in zip(v,truth):
                     if p!=.5:
                         coverage[fam][arm]+=1
@@ -374,6 +378,7 @@ def score(seed):
         "old_calibration_source_outcomes":72,"pressure_source_outcomes":168,
         "fit_public_inputs":list(fit),"cal_public_inputs":list(cal),"held_inputs":list(held),
         "held_composites_each_family":48,
+        "held_truth":held_truth,"held_forecasts":held_forecasts,
         "source_witnesses":{str(s):source[s] for s in OLD_SLOTS},
         "calibration_witnesses":{str(s):calibration[s] for s in OLD_SLOTS},
         "pressure_witnesses":{str(s):pressure_records[s] for s in PRESSURE_SLOTS},
