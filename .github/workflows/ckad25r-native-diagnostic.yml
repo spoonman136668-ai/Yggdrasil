@@ -38,7 +38,8 @@ jobs:
           python-version: "3.12"
       - name: Install existing native scientific controls only
         shell: bash
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Assert frozen diagnostic and CKAD25 source identities
         shell: bash
         run: |
@@ -54,9 +55,6 @@ jobs:
           assert hashlib.sha256(a).hexdigest()=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
           print("CKAD25R_FROZEN_SOURCE_CHECKPOINT_PASS")
           PY
-      - name: Compile frozen retrospective code
-        shell: bash
-        run: python -B -m py_compile research/contrib/chatgpt/CKAD25-R/replay.py
       - name: One frozen retrospective diagnostic, followed by deterministic replay
         shell: bash
         run: |
