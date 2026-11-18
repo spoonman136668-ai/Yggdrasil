@@ -40,7 +40,7 @@ jobs:
           test "$(git rev-parse 0be3763dcf0d991fb52700a9da8e53ea1a27ea02^)" = "ebd094153976878b0408b72739288a53e23599c2"
           test "$(git diff-tree --no-commit-id --name-only -r 0be3763dcf0d991fb52700a9da8e53ea1a27ea02)" = "research/contrib/chatgpt/WSP-169/prereg.json"
           git diff --exit-code 0be3763dcf0d991fb52700a9da8e53ea1a27ea02 HEAD -- research/contrib/chatgpt/WSP-169/prereg.json
-          git diff --exit-code 78d486a1616551d3e938fff64776d36b117e5d35 HEAD -- research/contrib/chatgpt/WSP-169/admission_audit.py
+          git diff --exit-code 0c4efef31f2f3763f0d2c948596e5aedbfcd3cfd HEAD -- research/contrib/chatgpt/WSP-169/admission_audit.py
           git diff --exit-code 194ec54d78185e299874ad4fd0b31c12bcb4cfd0 HEAD -- research/contrib/chatgpt/WSP-169/test_admission_audit.py
           git diff --exit-code ebd094153976878b0408b72739288a53e23599c2 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/WSP-164 research/contrib/chatgpt/WSP-165 research/contrib/chatgpt/WSP-166 research/contrib/chatgpt/WSP-167 research/contrib/chatgpt/WSP-168 research/contrib/chatgpt/CKAD-18
           test ! -e research/contrib/chatgpt/WSP-169/SCIENTIFIC_PASS.json
@@ -128,7 +128,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git diff --exit-code 0be3763dcf0d991fb52700a9da8e53ea1a27ea02 HEAD -- research/contrib/chatgpt/WSP-169/prereg.json
-          git diff --exit-code 78d486a1616551d3e938fff64776d36b117e5d35 HEAD -- research/contrib/chatgpt/WSP-169/admission_audit.py
+          git diff --exit-code 0c4efef31f2f3763f0d2c948596e5aedbfcd3cfd HEAD -- research/contrib/chatgpt/WSP-169/admission_audit.py
           git diff --exit-code 194ec54d78185e299874ad4fd0b31c12bcb4cfd0 HEAD -- research/contrib/chatgpt/WSP-169/test_admission_audit.py
           git diff --exit-code ebd094153976878b0408b72739288a53e23599c2 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/WSP-164 research/contrib/chatgpt/WSP-165 research/contrib/chatgpt/WSP-166 research/contrib/chatgpt/WSP-167 research/contrib/chatgpt/WSP-168 research/contrib/chatgpt/CKAD-18
           python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
