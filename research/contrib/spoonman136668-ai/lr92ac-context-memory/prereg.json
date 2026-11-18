@@ -1,0 +1,102 @@
+{
+  "authority": {
+    "accepted_ref_mutation": false,
+    "production_authority": false,
+    "promotion_authority": false,
+    "research_only": true,
+    "scheduler_or_queue_authority": false
+  },
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92ac-context-memory/"
+  ],
+  "classification_rules": {
+    "invalid": "Bad source/prereg/input SHA; future-label leakage, changed cohorts, missing controls, incorrect validation, unverified raw source, runner failures, or breached single-scored-run constraint.",
+    "mixed": "Any improvement with failed full composite, label DEVELOPMENT_NO_GO and preserve mixed notes, no promotion.",
+    "negative": "Verified run failing one or more composite criteria (DEVELOPMENT_NO_GO), no post-result tuning.",
+    "supported": "All six frozen go_checks true: retrieval>=uniform+6 exact, retrieval>=global episodic+4 exact, retrieval false<=uniform false, zero foreign/null accepted, retrieval>random8 exact, heldout accuracy>=uniform+0.005. External-development GO only, not native scientific acceptance."
+  },
+  "cohort": {
+    "foreign": 8,
+    "null": 8,
+    "stationary": 52,
+    "switch": 12
+  },
+  "contribution_class": "falsification",
+  "contributor": "spoonman136668-ai",
+  "controls": [
+    "uniform prior",
+    "global pooled learned episodic prior",
+    "historical prior",
+    "random eight episode sham",
+    "CART depth2",
+    "RF16 depth3"
+  ],
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "experiment_id": "LR-92AC",
+  "frozen_design": {
+    "capacity": "16 Boolean two-cause truth tables, 35% observation flip noise, 52 stationary historical training episodes, 8 nearest neighbors; 50% uniform smoothing; 90% posterior minimum, validation binomial p>.01.",
+    "compute_budget": "One deterministic local CPU evaluation (3 seeds x 80 worlds x 7 arms), zero hyperparameter searches, all arms matched 144 fitting observations and 288 validation observations; no paid API.",
+    "data_budget": "3*80*144 fitting and 3*80*288 validation probes, plus fixed 80-world previously measured historical training archive; no other observations.",
+    "deterministic_expected": true,
+    "evaluator": "Accepted exact stationary truth tables / 156; false constructions / 240; accepted foreign/null; heldout prediction accuracy / 69120; all arms evaluated identically except conventional Bayesian acceptance threshold mismatch; record CPU process time and historical memory-acquisition cost.",
+    "ordering": "Shuffle world type assignment once per seed; fitting actions balanced in randomized blocks; first 36 only for retrieval; all 144 for fit; 288 fresh validation observations for evaluation. Seeds fixed.",
+    "seeds": [
+      929200301,
+      929200302,
+      929200303
+    ],
+    "split": "Historical LR-92AB 80-world raw archive is TRAIN ONLY. 52 stationary historical episodes; new prospective independent 80-world test cohort per seed; frozen 144-fitting and 288-heldout validation probes/world. No test-world observations feed historical memory."
+  },
+  "historical_global_prior": [
+    0.007500000000000005,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.3435864860144939,
+    0.11533628899835795,
+    0.20038639720743992,
+    0.06786367971207133,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.007500000000000005,
+    0.190327148067637,
+    0.007500000000000005
+  ],
+  "historical_input_sha256": "c7d195a115169926988cd9ad0e369728f7fd846fc99b0814519ca90685118566",
+  "hypothesis": "A frozen eight-neighbor likelihood-free episodic prior with 50% uniform smoothing will improve exact stationary accepted mechanisms by at least six versus uniform and four versus global episodic prior, without more false constructions.",
+  "mechanism": "For each historical stationary LR-92AB world, store first36 action-wise outcome rates and uniform-Bayesian posterior after its 144 fitting probes. At test-world fit36, select eight nearest memories by four-dimensional Euclidean distance with stable tie order. Candidate prior=50% uniform + 50% mean matched episode posteriors; posterior fit uses full 144 probes. Baselines uniform, pooled historical posterior, old global prior, 8 random neighbors with independently frozen RNG, and CART/RF16.",
+  "metrics": [
+    "accepted exact mechanisms on 156 stationary worlds",
+    "false accepted constructions across all 240",
+    "accepted foreign/null constructions",
+    "heldout validation prediction accuracy",
+    "CPU process seconds per policy",
+    "training memory input exact SHA256"
+  ],
+  "predecessor_evidence": [
+    {
+      "classification": "DEVELOPMENT_NO_GO",
+      "experiment": "LR-92AB",
+      "prereg_commit": "129339cd21d566a123bb83680568ecb45f24a360",
+      "raw_result_sha256": "c7d195a115169926988cd9ad0e369728f7fd846fc99b0814519ca90685118566"
+    }
+  ],
+  "predecessor_pr": 1257,
+  "preregistration_note": "Commit this prereg before running primary; this is an isolated external synthetic cohort, not native Yggdrasil training.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra seeds/probes/model calls",
+    "held-out/evaluator leakage",
+    "reinterpretation of prior LR-92AB result"
+  ],
+  "project": "Yggdrasil",
+  "question": "Does matching previously learned causal episodes to the first 36 observations improve accepted exact mechanism identification in new worlds beyond a uniform or global memory prior?",
+  "runner_sha256": "67eacbba21dbb4ec14389e8c9b3c59de49793243f94917bbfaade51e77b1315c",
+  "schema": "yggdrasil.external-research-prereg.v1"
+}
