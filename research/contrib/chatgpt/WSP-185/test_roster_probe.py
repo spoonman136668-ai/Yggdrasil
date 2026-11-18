@@ -34,7 +34,11 @@ class RosterProbeTests(unittest.TestCase):
         self.assertFalse(d["preregistered_count_10000_matches"])
         self.assertIn("load_in", d["required_fields_present"])
         self.assertIn("hatch", d["required_fields_missing"])
-        self.assertNotIn("100", str(d))
+        self.assertEqual(set(d), {"file_sha256", "physical_record_count",
+                                  "empty_csv_records", "wrong_width_records",
+                                  "field_count", "header_fields",
+                                  "required_fields_present", "required_fields_missing",
+                                  "preregistered_count_10000_matches"})
         self.assertEqual(len(d["file_sha256"]), 64)
 
     def test_reject_invalid_duplicate_header(self):
