@@ -205,8 +205,8 @@ def target_controls(seed,policy_data,held):
     return controls,info
 
 
-def score(seed):
-    if seed not in PILOT:raise ValueError("CKAD36_ONLY_FROZEN_PILOT")
+def _development_fixture_or_science(seed):
+    """Internal full pipeline permits fresh non-pilot DEV fixtures only in tests."""
     t0,c0=time.perf_counter(),time.process_time()
     donor,initial,held,choices=design(seed)
     donor_tables,conv_tables,source,pressure,custody=source_memory(seed,donor)
@@ -293,6 +293,12 @@ def score(seed):
         "wall_seconds":round(time.perf_counter()-t0,6),
         "primary_scored":False
     }
+
+
+def score(seed):
+    if seed not in PILOT:
+        raise ValueError("CKAD36_ONLY_FROZEN_PILOT")
+    return _development_fixture_or_science(seed)
 
 
 def classify(cases):
