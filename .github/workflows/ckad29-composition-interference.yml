@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   atlas:
-    if: "github.event.head_commit.message == 'ci(ckad29): seal frozen negative evidence'"
+    if: ${{ !startsWith(github.event.head_commit.message, 'docs(ckad29):') }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
