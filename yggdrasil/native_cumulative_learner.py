@@ -10,11 +10,13 @@ import json
 from yggdrasil.native_context_basis import canonical, digest, pin, require, SOURCE_MODE, SOURCE_KIND
 from yggdrasil.native_context_accumulator import NativeContextAccumulator
 from yggdrasil.native_degree_hypothesis import NativeDegreeHypothesis
+from yggdrasil.native_sparse_hypothesis import NativeSparseHypothesis, SCHEMA as SPARSE_SCHEMA
 from yggdrasil.native_property_knowledge import NativePropertyKnowledge
 from yggdrasil.native_prior_hypothesis import input_order
 from yggdrasil.public_causal_cells import PublicCausalCells
 
 SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v1'
+REPAIR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v2'
 MAX_BYTES = 16 * 1024 * 1024
 MAX_EVENTS = 128
 
@@ -26,7 +28,7 @@ def coordinates(slot):
 
 class NativeCumulativeLearner:
     """One immutable train/save/restore interface; no rival memory substrate."""
-    __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events')
+    __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events', '_schema', '_repairs')
 
     def __init__(self, property_raw, expected_sha256):
         self._properties = NativePropertyKnowledge.restore(property_raw, expected_sha256)
@@ -34,6 +36,8 @@ class NativeCumulativeLearner:
         self._hypotheses = (None,) * 16
         self._quarantined = (False,) * 16
         self._events = ()
+        self._schema = SCHEMA
+        self._repairs = ()
 
     def _copy(self):
         obj = object.__new__(NativeCumulativeLearner)
@@ -102,13 +106,36 @@ class NativeCumulativeLearner:
                 obj._source = self._source.stage_update(a, fresh, digest(canonical(fresh)),
                                                        max_degree=bits+1, retained=r)
             n = obj._source._seen[slot].bit_count()
+            if type(self._hypotheses[slot]) is NativeSparseHypothesis:
+                require(n>=8 and n%4==0, 'INTEGRATED_SPARSE_CONTINUATION_COUNT')
             hyp = None
             if n >= 8 and n % 4 == 0:
                 raw = obj._view(slot)
-                hyp = NativeDegreeHypothesis.fit_checkpoint(raw, digest(raw))
+                if type(self._hypotheses[slot]) is NativeSparseHypothesis:
+                    hyp, _ = NativeSparseHypothesis.fit_checkpoint(raw, digest(raw))
+                    require(hyp.eligible, 'INTEGRATED_SPARSE_CONTINUATION_UNQUALIFIED')
+                else:
+                    hyp = NativeDegreeHypothesis.fit_checkpoint(raw, digest(raw))
             obj._hypotheses = self._hypotheses[:slot] + (hyp,) + self._hypotheses[slot+1:]
         obj._events = self._events + (event,)
         return obj
+
+    def repair_sparse(self, slot):
+        """Explicit opt-in repair; rejected hypotheses never replace state."""
+        coordinates(slot)
+        old = self._hypotheses[slot]
+        require(not self._quarantined[slot] and old is not None and not old.eligible
+                and type(old) is NativeDegreeHypothesis, 'INTEGRATED_SPARSE_REPAIR_SCOPE')
+        raw = self._view(slot)
+        hyp, cost = NativeSparseHypothesis.fit_checkpoint(raw, digest(raw))
+        if not hyp.eligible:
+            return self, hyp, cost
+        require(len(self._repairs)<16, 'INTEGRATED_REPAIR_CAPACITY')
+        obj=self._copy();obj._schema=REPAIR_SCHEMA
+        obj._hypotheses=self._hypotheses[:slot]+(hyp,)+self._hypotheses[slot+1:]
+        obj._repairs=self._repairs+({'slot':slot,'old_hypothesis_sha256':digest(old.checkpoint()),
+            'source_view_sha256':digest(raw),'rule':hyp.info()['rule']},)
+        return obj,hyp,cost
 
     def predict(self, slot, context, action, *, provisional=True):
         a, r = coordinates(slot)
@@ -162,13 +189,15 @@ class NativeCumulativeLearner:
                 'events': len(self._events), 'accepted_native': False, 'scientific_pass': False}
 
     def checkpoint(self):
-        raw = canonical({'schema': SCHEMA, 'source_mode': SOURCE_MODE,
+        d = {'schema': self._schema, 'source_mode': SOURCE_MODE,
             'properties_ascii': self._properties.checkpoint().decode('ascii'),
             'source_ascii': self._source.checkpoint().decode('ascii'),
             'hypotheses_ascii': [h.checkpoint().decode('ascii') if h is not None else None
                                  for h in self._hypotheses],
             'quarantined': self._quarantined, 'events': self._events,
-            'accepted_native': False, 'scientific_pass': False})
+            'accepted_native': False, 'scientific_pass': False}
+        if self._schema==REPAIR_SCHEMA:d['repairs']=self._repairs
+        raw = canonical(d)
         require(len(raw) <= MAX_BYTES, 'INTEGRATED_CHECKPOINT_CAPACITY')
         return raw
 
@@ -183,9 +212,11 @@ class NativeCumulativeLearner:
             return d
         try:
             d = json.loads(raw.decode('ascii'), object_pairs_hook=unique)
-            require(type(d) is dict and set(d) == {'schema','source_mode','properties_ascii',
-                'source_ascii','hypotheses_ascii','quarantined','events','accepted_native','scientific_pass'}
-                and d['schema'] == SCHEMA and d['source_mode'] == SOURCE_MODE
+            keys={'schema','source_mode','properties_ascii','source_ascii','hypotheses_ascii',
+                  'quarantined','events','accepted_native','scientific_pass'}
+            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA)
+                and set(d)==(keys|{'repairs'} if d['schema']==REPAIR_SCHEMA else keys)
+                and d['source_mode'] == SOURCE_MODE
                 and d['accepted_native'] is False and d['scientific_pass'] is False
                 and canonical(d) == raw, 'INTEGRATED_CHECKPOINT_CONTRACT')
             p = d['properties_ascii'].encode('ascii'); obj = cls(p, digest(p))
@@ -202,7 +233,11 @@ class NativeCumulativeLearner:
                 require((h is not None) == (n >= 8 and n % 4 == 0), 'INTEGRATED_HYPOTHESIS_REQUIRED')
                 if h is None:
                     hypotheses.append(None); continue
-                h = h.encode('ascii'); hyp = NativeDegreeHypothesis.restore(h, digest(h))
+                h = h.encode('ascii')
+                if json.loads(h)['schema']==SPARSE_SCHEMA:
+                    require(d['schema']==REPAIR_SCHEMA,'INTEGRATED_SPARSE_VERSION')
+                    hyp=NativeSparseHypothesis.restore(h,digest(h))
+                else:hyp = NativeDegreeHypothesis.restore(h, digest(h))
                 require(hyp.info()['source_checkpoint_sha256'] == digest(obj._view(slot)),
                         'INTEGRATED_HYPOTHESIS_SOURCE_JOIN')
                 hypotheses.append(hyp)
@@ -236,6 +271,19 @@ class NativeCumulativeLearner:
                             'INTEGRATED_EVENT_STATUS')
             require(flags == qs, 'INTEGRATED_QUARANTINE_LEDGER')
             obj._hypotheses = tuple(hypotheses); obj._quarantined = tuple(qs); obj._events = tuple(es)
+            obj._schema=d['schema'];repairs=d.get('repairs',[])
+            require(type(repairs) is list and len(repairs)<=16,'INTEGRATED_REPAIR_LEDGER')
+            slots=set()
+            for e in repairs:
+                require(type(e) is dict and set(e)=={'slot','old_hypothesis_sha256','source_view_sha256','rule'},
+                        'INTEGRATED_REPAIR_SCHEMA')
+                coordinates(e['slot']);h=hypotheses[e['slot']]
+                require(e['slot'] not in slots and pin(e['old_hypothesis_sha256']) and pin(e['source_view_sha256'])
+                    and type(h) is NativeSparseHypothesis and e['rule']==h.info()['rule'], 'INTEGRATED_REPAIR_JOIN')
+                slots.add(e['slot'])
+            require(slots=={s for s,h in enumerate(hypotheses) if type(h) is NativeSparseHypothesis},
+                    'INTEGRATED_REPAIR_COMPLETENESS')
+            obj._repairs=tuple(repairs)
             require(obj.checkpoint() == raw, 'INTEGRATED_COLD_BYTES')
             return obj
         except (ValueError, TypeError, KeyError, UnicodeError, AttributeError, IndexError) as exc:

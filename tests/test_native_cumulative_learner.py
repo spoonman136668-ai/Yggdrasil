@@ -24,6 +24,40 @@ def train(m, slot, r, **kwargs):
 
 
 class IntegratedLearningTests(unittest.TestCase):
+    def test_sparse_repair_cold_continuation_preserves_legacy_bytes_and_other_slots(self):
+        remaining=(4,8,12,2)
+        data=[[x&7,x>>3,int(x&3==3)] for x in range(16) if x not in remaining]
+        m=train(fixture(),0,data);old=m.checkpoint();source=m._source.checkpoint()
+        self.assertFalse(m._hypotheses[0].eligible)
+        child,hyp,cost=m.repair_sparse(0)
+        self.assertTrue(hyp.eligible);self.assertEqual(m.checkpoint(),old)
+        self.assertEqual(child._source.checkpoint(),source)
+        self.assertEqual(NativeCumulativeLearner.restore(old,digest(old)).checkpoint(),old)
+        raw=child.checkpoint();child=NativeCumulativeLearner.restore(raw,digest(raw))
+        self.assertEqual(child.checkpoint(),raw)
+        rest=[[x&7,x>>3,int(x&3==3)] for x in remaining]
+        script='''import json,sys
+from yggdrasil.native_context_basis import canonical,digest
+from yggdrasil.native_cumulative_learner import NativeCumulativeLearner
+p=json.load(sys.stdin);raw=p['raw'].encode('ascii');m=NativeCumulativeLearner.restore(raw,digest(raw))
+m=m.observe(0,p['rest'],digest(canonical(p['rest'])),source_ref='a'*64)
+raw=m.checkpoint();m=NativeCumulativeLearner.restore(raw,digest(raw))
+print(json.dumps([m.predict(0,x&7,x>>3) for x in range(16)]))
+'''
+        p=subprocess.run([sys.executable,'-B','-c',script],input=json.dumps({'raw':raw.decode('ascii'),'rest':rest}),
+                         text=True,capture_output=True,check=True,timeout=30)
+        self.assertEqual(json.loads(p.stdout),[int(x&3==3) for x in range(16)])
+
+    def test_denied_sparse_repair_preserves_full_parent_and_invalid_scope_fails(self):
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        data=[[x&7,x>>3,int(x&3==3)] for x in range(16) if x not in (4,8,12,2)]
+        m=train(fixture(),0,data);raw=m.checkpoint()
+        with patch('scipy.optimize.milp',return_value=SimpleNamespace(status=1,x=None)):
+            child,hyp,cost=m.repair_sparse(0)
+        self.assertIs(child,m);self.assertFalse(hyp.eligible);self.assertEqual(m.checkpoint(),raw)
+        with self.assertRaises(ValueError):fixture().repair_sparse(0)
+
     def test_cumulative_learning_selects_class_retains_facts_and_old_slots(self):
         m = fixture(); facts = m._properties.checkpoint()
         for r in (rows()[:4], rows()[4:8], rows()[8:]):
