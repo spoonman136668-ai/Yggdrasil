@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CKAD29",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does the unchanged cumulative native CKAD learner preserve independently learned source-grounded primitive causal relations and generalize to held, disclosed causal compositions without new composite training, at least competitively with a fully fitted conventional model and an exact Bayesian hypothesis control?",
+  "hypothesis": "A bounded compositional readout over independently learned native primitive slots improves unseen-intervention Brier over a fully trained matched conventional readout without damaging source-primitive retention, while possibly still failing to match exact Bayesian rule inference.",
+  "exact_parent_sha": "20a0279a0bd3b2244f7aec6858c167131506827f",
+  "predecessor_evidence": [
+    {
+      "ref": "spoonman136668-ai/Yggdrasil#1234",
+      "classification": "CKAD28 DEVELOPMENT_NO_GO; no policy inherited or rerun"
+    },
+    {
+      "ref": "spoonman136668-ai/Yggdrasil#1207",
+      "classification": "CKAD22 DEVELOPMENT_GO; prior native episode/cumulative substrate, no scientific superiority"
+    },
+    {
+      "ref": "spoonman136668-ai/Yggdrasil#1233",
+      "classification": "YNCA10 finite 3-variable operator memory; exact Bayes tied; this trial must not repeat single-operator recognition"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/CKAD-29/**",
+    ".github/workflows/ckad29-composition-interference.yml",
+    ".ice/code-atlas.*"
+  ],
+  "inputs": [
+    {
+      "name": "generated-public-boolean-causal-fixtures",
+      "sha256": "not-known-until-source-committed; require a pinned generator/source SHA before first-use",
+      "source": "Original synthetic binary intervention outcomes; SHA pins record bytes but does not authenticate real-world actions."
+    }
+  ],
+  "frozen_design": {
+    "mode": "External, independent, research-only; no protected native first-use or CKB/FORGE owner execution; only existing native learner and opt-in research-only readout.",
+    "seeds": [
+      404,
+      505,
+      606
+    ],
+    "split": "Each of three independent seeds has source set of 16 unique (four low context bits plus binary action) combinations per primitive and 16 disjoint held combinations from the remaining 32. Three original primitive slots 0..2; six additional pressure slots 3..8; no held consequence enters training. Two disclosed but previously unseen composite structures, XOR of three outputs and majority of three outputs, scored on held combinations; all methods see the same public composition graph. Old primitive recall evaluated on the same disjoint held inputs both before and after six additional trained slots.",
+    "ordering": "Freeze generator, source/held seeds, primitive assignment and permitted public graph before scoring. Fit slots 0..2 once, save frozen checkpoint, fit slots 3..8 from fresh independently observed public witnesses, cold restore; no hidden function mask, truth-table ID or held output crosses inference API. Quarantine response to a deliberately contradictory same-slot packet is a separate non-scored engineering negative control.",
+    "data_budget": "3 seeds x 9 slots x 16 source witnessed interventions = 432 revealed training rows; 3 seeds x 2 public composite graphs x 16 disjoint held inputs = 96 composite cases per arm; 3 x 3 x 16=144 primitive-retention cases per before/after checkpoint; no evaluator labels for training.",
+    "compute_budget": "One frozen B first-use on three seeds; at most two separately identified source-only smoke/preflight passes on non-B seeds before B, never tuned on B labels; no paid API or self-hosted runner.",
+    "capacity": "Use existing 16-slot NativeCumulativeLearner exactly as pinned; existing provisional native readout plus a stateless composition readout only. A completely trained conventional ridge/logistic model on identical primitive interventions, a fitted tabular frequency baseline, and exact Bayes over the fully disclosed bounded Boolean grammar as stronger control. All observe same source data.",
+    "evaluator": "Compute exact mean held Brier (abstention encoded probability .5) and correct prediction at threshold .5 on 96 composite outcomes; compare strongest fully trained conventional and exact Bayes. Independently verify primitive baseline/after memory preservation, cold checkpoint SHA and replay; report end-to-end CPU time, fitting and scoring calls, process memory where available.",
+    "deterministic_expected": true,
+    "research_north_star": "Independent native non-transformer non-next-token causal architecture; no tokenized model substitution.",
+    "no_test_time_composite_training": true,
+    "source_first_use_after_prereg": true
+  },
+  "controls": [
+    "Unmodified native primitive readouts and no-composition baseline (predict 0.5 on held composite)",
+    "Fully fitted per-slot conventional polynomial/ridge or logistic model from same 16 source witnesses, followed by same disclosed composition",
+    "Fitted conventional per-input frequency/pseudocount model from exactly same source witnesses, followed by same composition",
+    "Exact Bayesian posterior over prespecified Boolean primitive grammar from the same source interventions, followed by the identical public composite graph",
+    "Zero-information prior and public-graph-only deterministic sham",
+    "No held-result updates; source-private generator mask/identity never accessible from any candidate inference call",
+    "Cold checkpoint restore before and after six additional source-world fits; independent source/score audit",
+    "Separate non-scored contradiction/quarantine safety test; not evidence of continual learning"
+  ],
+  "metrics": [
+    "mean held composite Brier (primary; lower better)",
+    "held composite correct classification and per-seed gain",
+    "primitive readout coverage and Brier before vs after pressure",
+    "fraction of original source event/bytes unchanged and cold replay parity",
+    "strong exact Bayesian regret and conventional fitted baseline relative performance",
+    "source+training+readout wallclock CPU time and memory; count hash-bound data and likelihood evaluations",
+    "negative-control pass/fail and all abstentions counted"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_GO only if held Brier <= best fully fitted conventional Brier - 0.03 absolute AND held Brier <= exact Bayes Brier + 0.02 AND improves over conventional on >=2/3 seeds AND primitive-retention Brier degrades by <=0.01 absolute AND cold checkpoint exact parity AND no held-data updates AND no adverse safety/negative control. This is not SCIENTIFIC_PASS.",
+    "mixed": "DEVELOPMENT_MIXED if held Brier improves >=0.01 over strongest conventional but any remaining scientific gate fails, or native composes competitively while exact control dominates; retain as non-promotable exploratory signal.",
+    "negative": "DEVELOPMENT_NO_GO if candidate composite Brier is <0.01 better than strongest trained conventional, or worse, or native source coverage is insufficient, or old primitive Brier regresses >0.01; stop candidate with no threshold or test-seed tuning.",
+    "invalid": "INVALID if prereg/source SHA timing, matched data/actions, held-label isolation, determinism, exact source identity, cold restore, or comparison model fitting are violated. Engineering infrastructure failure must be reported separately from NO_GO."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit this file alone before implementation result scoring; any later source revision must be pinned before any held first-use. No Yggdrasil main, CKAD28 source, YNCA10 source, owner system, or controller changes."
+}
