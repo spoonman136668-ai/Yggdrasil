@@ -33,7 +33,7 @@ class EvidenceTests(unittest.TestCase):
         rows += [event(i,action=1,next_state=1) for i in range(16,32)]
         causal=m.marginal_bayes_factor(rows,("public_state","first_action"),"next_state")
         marginal=m.marginal_bayes_factor(rows,(),"next_state")
-        self.assertLess(causal,1)
+        self.assertEqual(causal,1)  # disjoint action support: neutral, not evidence of stability
         self.assertGreater(marginal,16)
 
     def test_strong_transition_shift_fires_only_with_causal_public_evidence(self):
