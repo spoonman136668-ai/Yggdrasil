@@ -1,0 +1,153 @@
+{
+  "arms": [
+    "relational: learned q-specific cross-context causal operator",
+    "independent: equal-budget uniform 256-state Bayes",
+    "global_relation: pooled learned operator ignoring q",
+    "shuffled_relation: history q labels deterministically shuffled (929209001)",
+    "CART: depth-5, leaf>=10, trained historical observations with observed base-bit posterior features; local Bayes update",
+    "RF16: 16 trees depth-7, leaf>=5, same history and local Bayes update",
+    "logistic: fit logistic regression using all historical outcomes and identical per-world features; local Bayes update"
+  ],
+  "authority": {
+    "accepted_ref_mutation": false,
+    "first_use_consumed": false,
+    "native_yggdrasil_training": false,
+    "promotion_authority": false,
+    "research_only": true,
+    "scheduler_or_queue_authority": false
+  },
+  "budgets": {
+    "paid_api_calls": 0,
+    "postscore_tuning_passes": 0,
+    "primary_fit_outcomes": 30720,
+    "primary_trials": 1,
+    "primary_validation_outcomes": 61440,
+    "primary_worlds": 240,
+    "prior_training_action_outcomes": 12288,
+    "prior_training_episodes": 128
+  },
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92ad-learned-causal-context/"
+  ],
+  "classification_rules": {
+    "invalid": "Source/prereg identity mismatch; incomplete seed/case, leaked heldout labels, changed noise/tasks/thresholds, or execution/audit error; do not reclassify statistical failure.",
+    "mixed": "Partial improvements without full GO: DEVELOPMENT_NO_GO with exploratory positives labeled.",
+    "negative": "Any frozen GO check false with valid execution: DEVELOPMENT_NO_GO, preserve nulls and no tuning to rescue primary.",
+    "supported": "All seven frozen boolean checks in runner true. External DEVELOPMENT_GO only. Formal SCIENTIFIC_PASS needs separate qualified disjoint native Yggdrasil study and strongest matched controls."
+  },
+  "contribution_class": "falsification",
+  "contributor": "spoonman136668-ai",
+  "environment": {
+    "execution": "Isolated local Linux CPU",
+    "numpy": "2.3.5",
+    "python": "3.13.5",
+    "reproducibility": "Sealed exact source/prereg+seeds; cross-host pending",
+    "scikit_learn": "1.8.0",
+    "scipy": "1.17.0"
+  },
+  "evaluation_seeds": [
+    929200411,
+    929200412,
+    929200413
+  ],
+  "evaluation_worlds_per_seed": {
+    "seen_mode_0": 32,
+    "seen_mode_1": 32,
+    "unseen_mode_2": 16
+  },
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "experiment_id": "LR-92AD",
+  "fit_budget_per_world": {
+    "context_0": 112,
+    "context_1": 16
+  },
+  "frozen_go_checks": [
+    "relational exact familiar >= independent +10",
+    "relational exact familiar >= global_relation +5",
+    "relational exact familiar >= shuffled_relation +5",
+    "relational false familiar <= independent +2",
+    "relational false unseen <= independent false unseen",
+    "relational overall validation accuracy >= strongest CART/RF16/logistic +0.005",
+    "learned-weight cold JSON restore bit-exact"
+  ],
+  "frozen_mechanisms": {
+    "data_generator": "Context 0 uses 2-cause Boolean truth table. Context 1 = context0 XOR fixed per-mode pattern. Generator patterns q0=[0,1,1,0], q1=[1,0,0,0], q2=[1,1,0,1]. q2 is NOT in training.",
+    "data_order": "128 training histories generated under seed 929200401 first; each history contains 12 observations per action per context; new cohort each seed shuffles 80 q assignments. Per test world shuffle 112 c0, 16 c1 fit actions, and independent 256 validation actions balanced across 8 context-actions.",
+    "hypothesis_space": "256 possible 8-bit contextual truth tables, two contexts x four interventions",
+    "noise_flip_probability": 0.35,
+    "test_base_table_ids": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "train_base_table_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "training_mode_ids": [
+      0,
+      1
+    ],
+    "unseen_evaluation_mode_id": 2
+  },
+  "hypothesis": "Learning per-cause outcome-change probabilities across historical interventions yields at least 10 more exact accepted familiar-context mechanisms than independent inference, at least 5 more than pooled/shuffled relation controls, and at least 0.5 percentage-point higher total heldout accuracy than the best trained conventional control without excessive false acceptances.",
+  "inputs": [
+    {
+      "label_inspection": "No evaluation labels or metrics inspected before prospective freeze",
+      "license": "self-generated synthetic",
+      "name": "Independent procedural causal worlds generated from frozen source",
+      "sha256": "GENERATED_AFTER_PREREG; records and exact source+seed hashes saved in primary result",
+      "source": "No external human data or model training data; two contexts, two causes, q-family indicated. Training base families 0..7; unseen evaluation base families 8..15. Full original outcomes generated after prereg."
+    }
+  ],
+  "learner": {
+    "acceptance": "Posterior max >=0.9 and fitting-data binomial misfit survival p >0.01; validation observations NEVER used for acceptance.",
+    "cold_retention": "Serialize learned context flip distribution to JSON and deserialize; exact array equality required.",
+    "inference": "256-state exact Bayesian posterior on all 128 per-world fit observations; joint prior couples 2 contexts per cause. Unknown q=2 uses independent prior.",
+    "training_method": "Each past history independently infers 2x4 latent causal outcome bits under frozen 35% noise likelihood; a context-conditioned per-action flip probability is estimated by pooling the posterior cross-context differences across histories, with Beta(1,1) smoothing."
+  },
+  "metrics": [
+    "Exact accepted contextual truth tables on 192 familiar-mode worlds and 48 unseen-mode worlds",
+    "False accepted contextual truth tables separately on familiar/unseen",
+    "Total heldout outcome prediction accuracy, 240 x 256 validation actions",
+    "Cold restore exactness",
+    "End-to-end local wall seconds, meta-learning training seconds and archived observations",
+    "Paired-by-world accuracy and exactness vs controls"
+  ],
+  "pre_primary_focused_tests": {
+    "passed": 7,
+    "total": 7,
+    "type": "synthetic operator arithmetic/integrity only; no primary cohort evaluated"
+  },
+  "predecessor_pr": 1263,
+  "predecessor_status": "LR-92AC DEVELOPMENT_NO_GO; nearest-episode memory 94/156 exact vs uniform 97/156; NOT native Yggdrasil.",
+  "preregistration_note": "Commit this protocol BEFORE producing the primary cohort. Research contributor lane only, no official native Yggdrasil runner or acceptance ref changes.",
+  "prohibited_after_primary_run": [
+    "new seeds for primary",
+    "postscore hyperparameter tuning",
+    "source/threshold/split changes",
+    "extra data/compute/model calls",
+    "heldout label leakage",
+    "quiet invalid/NO-GO reclassification",
+    "using reserved native Yggdrasil first-use"
+  ],
+  "project": "Yggdrasil",
+  "question": "Can an incrementally learned context-conditioned causal relation transfer to heldout base-function families, outperforming independent inference and fully trained conventional matched-information controls, while rejecting unseen modes?",
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "source_sha256": "32171291d945f7aedca941890b4137caef648a455bbb34a9c2478e3e36087b47",
+  "training_episodes_per_mode": 64,
+  "training_samples_per_context_action": 12,
+  "training_seed": 929200401,
+  "validation_budget_per_world": 256
+}
