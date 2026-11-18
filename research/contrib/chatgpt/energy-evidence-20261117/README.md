@@ -1,21 +1,34 @@
-# ENERGY research evidence — archival custody (2026-11-17)
+# Classical-energy research — preserved original evidence (ENERGY-04 through ENERGY-18)
 
-## Scope and status
-This isolated GitHub branch records the original available report texts (ENERGY-04–18), preserved failed-attempt narratives, and SHA-256 custody for 15 locally verified ZIP archives (ENERGY-04–18). ENERGY-01 remains in existing unmerged [PR #1201](https://github.com/spoonman136668-ai/Yggdrasil/pull/1201). ENERGY-02/03 raw source artifacts were not present in this session and cannot be reconstructed as originals.
+**Status:** All 15 original evidence ZIPs have been committed byte-for-byte in [the combined archive](./ENERGY-04-18-complete-original-evidence.zip). This branch is archival only, not scientific acceptance or a merge authorization.
 
-**IMPORTANT — incomplete raw archive:** Two original ZIPs (ENERGY-15 and ENERGY-16) are now stored byte-for-byte in GitHub under `original-zips/`. The remaining 13 original ZIPs and their scripts, per-case scored results, and other binary data are not yet in GitHub. The hashes are custody markers, not replacements for those bytes. Reports transferred as text have not been proven byte-identical to the original ZIP members. Do not represent this branch as independent scientific qualification, CI acceptance, native Yggdrasil execution, or a completed reproduction.
+## Complete retained evidence
 
-## Historical result
-Across ENERGY-01–18, classical-energy mechanisms demonstrated bounded causal consistency, missing-state inference, transfer inside specified families, and maze structural generalization. Multiple gates gave DEVELOPMENT NO-GO due to exact symbolic controls outperforming or inadequate trained-model convergence. ENERGY-18 found the pretrained CRAM maze energy returns excess branches on alternate-route mazes despite a connected path. No energy mechanism has been promoted into Yggdrasil.
+- **Combined archive:** `ENERGY-04-18-complete-original-evidence.zip`, 1,131,498 bytes, SHA-256 `21970d5c8b2b809ea6cc0f87359e13f4fc1aa09cad2679e44ee533dd681de09a`.
+- Git object identity: `6bb6c8451a9e86000c391479b9945cfb778b9000`; computed independently from the local archive using `git hash-object`, then matched the GitHub-created blob object.
+- 15 nested original ZIPs, including executable source, frozen protocols, scored results, model/experiment receipts and negative outcomes where those were part of the respective historical archives.
+- Two additional original ZIPs remain individually stored under `original-zips/`: ENERGY-15 and ENERGY-16.
+- 15 readable report copies (ENERGY-04–18) and seven preserved first-score, invalid-run or audit-failure narratives.
+- Machine-readable `custody.json` records exact expected ZIP file hashes and counts for verification.
 
-## Original ZIP fingerprints (locally checked, binary not uploaded)
+## Validate all original ZIPs
 
-| Gate | Original ZIP | Bytes | Members | SHA-256 |
+From this directory, using Python 3.11 or later:
+
+```sh
+python verify_bundle.py
+```
+
+The verifier checks the combined ZIP hash, size, CRC, exact 17-member set, all 15 original ZIP hashes and sizes, nested CRCs and member counts, and consistency with `custody.json`. It fails closed on corruption, missing evidence or inventory divergence. `verify_raw_archive.py` separately audits individually unpacked ZIP files and is **not** the default verification for this consolidated archive.
+
+## Original ZIP fingerprints
+
+| Gate | Original ZIP | Bytes | Nested members | SHA-256 |
 |---|---|---:|---:|---|
 | 04 | ENERGY-04-evidence.zip | 21379 | 8 | `ac5b3a992663d7d2c98b966e13dc1f583aca90cf62b7c7f578cbaed8f1329a14` |
 | 05 | ENERGY-05-evidence.zip | 44574 | 8 | `c1971b5a7081e93b80b6462ea696fbaabc78928a1129c50a73886b9562c313b6` |
-| 06 | ENERGY-06-evidence.zip | 84261 | 14 | `0994d793fec80b1cf1a3e3d21c3e32c708919bf659f3cc1ea065bb4df8a93561` |
-| 07 | ENERGY-07-evidence.zip | 105502 | 36 | `2cd6e7306dd1b3248bd3ab6038a28ee8cbdb483e2fcb8e7c48c93326bc26e82f` |
+| 06 | ENERGY-06-evidence.zip | 84261 | 17 | `0994d793fec80b1cf1a3e3d21c3e32c708919bf659f3cc1ea065bb4df8a93561` |
+| 07 | ENERGY-07-evidence.zip | 105502 | 38 | `2cd6e7306dd1b3248bd3ab6038a28ee8cbdb483e2fcb8e7c48c93326bc26e82f` |
 | 08 | ENERGY-08-evidence.zip | 44178 | 13 | `32322c75071af5e6f8400a9370a562c4586a9efad87a5ad0a239533bc6dec765` |
 | 09 | ENERGY-09-evidence.zip | 49756 | 14 | `34f344d31cc18287b39f2f5be3378635242a84b91138571cd34bed8904648519` |
 | 10 | ENERGY-10-evidence.zip | 66871 | 14 | `309fe34e79d73a58a11e5691bb09d99390256ad09a3531fb4ff288fd365f151a` |
@@ -28,5 +41,11 @@ Across ENERGY-01–18, classical-energy mechanisms demonstrated bounded causal c
 | 17 | ENERGY-17-evidence.zip | 34981 | 12 | `45791efe79d3cc51193f731d2eb3c4ca8e767e24b9cf76d5e4f7ad42e516c4d4` |
 | 18 | ENERGY-18-evidence.zip | 53991 | 13 | `dabb6ae20c5aa0cd60f02990d62bd77b1e6339851671fb4d7859264007bc13c6` |
 
-## Provenance and isolation
-Repository baseline: `5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`; archival branch: `research/archive/energy-evidence-20261117`. GitHub archival mutation only; no scientific first-use, runners, workflows, controllers, deployment, merge, or accepted-ref changes. See `custody.json` for machine-readable inventory and exact scope limitations.
+## Historical classification
+
+The ENERGY experiments explored classical-energy consistency, inference and learned causal relationships. Several experiments found limited positive effects but repeatedly **failed** the speed/accuracy threshold against exact symbolic controls, and ENERGY-18 found a specific failure to produce branch-free paths in alternate-route mazes. These remain development observations, **not evidence of a fully trained generally intelligent model**.
+
+- **Missing original history:** ENERGY-01 source is retained separately in [draft PR #1201](https://github.com/spoonman136668-ai/Yggdrasil/pull/1201); original ENERGY-02 and ENERGY-03 packages remain unavailable. The combined archive deliberately starts at ENERGY-04.
+- No new training, experimental scoring or native Yggdrasil first-use took place when archiving this evidence.
+- GitHub branch: `research/archive/energy-evidence-20261117`; original main/base: `5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`.
+- Engineering CI and native scientific acceptance remain separate; this archive is not promoted or deployed.
