@@ -14,6 +14,7 @@ from yggdrasil.native_degree_hypothesis import NativeDegreeHypothesis
 from yggdrasil.native_sparse_hypothesis import NativeSparseHypothesis, SCHEMA as SPARSE_SCHEMA
 from yggdrasil.native_stochastic_history import NativeStochasticHistory
 from yggdrasil.native_dtr_history import NativeDTRHistory
+from yggdrasil.native_episode_experience import NativeEpisodeExperience
 from yggdrasil.native_property_knowledge import NativePropertyKnowledge
 from yggdrasil.native_prior_hypothesis import input_order
 from yggdrasil.public_causal_cells import PublicCausalCells
@@ -22,6 +23,8 @@ SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v1'
 REPAIR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v2'
 HISTORY_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v3'
 DTR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v4'
+EXPERIENCE_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v5'
+EXPERIENCE_SOURCE = '20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef'
 MAX_BYTES = 16 * 1024 * 1024
 MAX_EVENTS = 128
 
@@ -31,9 +34,32 @@ def coordinates(slot):
     return (slot, False) if slot < 7 else (slot - 7, True)
 
 
+def _two_stage_plan(transition, terminal):
+    first_values = []
+    second_actions = []
+    for first_action in (0, 1):
+        next_one = transition(first_action)
+        best_rewards = []
+        contingent_actions = []
+        for next_state in (0, 1):
+            rewards = [terminal(first_action, next_state, action) for action in (0, 1)]
+            best_action = int(rewards[1] > rewards[0])
+            best_rewards.append(rewards[best_action])
+            contingent_actions.append(best_action)
+        first_values.append((1 - next_one) * best_rewards[0] + next_one * best_rewards[1])
+        second_actions.append(tuple(contingent_actions))
+
+    return {
+        "first_values": tuple((value.numerator, value.denominator) for value in first_values),
+        "first_action": int(first_values[1] > first_values[0]),
+        "second_actions": tuple(second_actions),
+    }
+
+
 class NativeCumulativeLearner:
     """One immutable train/save/restore interface; no rival memory substrate."""
-    __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events', '_schema', '_repairs', '_history', '_dtr')
+    __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events',
+                 '_schema', '_repairs', '_history', '_dtr', '_experience')
 
     def __init__(self, property_raw, expected_sha256):
         self._properties = NativePropertyKnowledge.restore(property_raw, expected_sha256)
@@ -45,6 +71,7 @@ class NativeCumulativeLearner:
         self._repairs = ()
         self._history = None
         self._dtr = None
+        self._experience = None
 
     def _copy(self):
         obj = object.__new__(NativeCumulativeLearner)
@@ -187,30 +214,53 @@ class NativeCumulativeLearner:
         NativeDTRHistory.validate(initial_state)
         if self._dtr is None:
             return None
+        return _two_stage_plan(
+            lambda first: Fraction(*self.dtr_transition_forecast(initial_state, first)),
+            lambda first, state, second: Fraction(
+                *self.dtr_terminal_forecast(initial_state, first, state, second)),
+        )
 
-        first_values = []
-        second_actions = []
-        for first_action in (0, 1):
-            transition = Fraction(*self.dtr_transition_forecast(initial_state, first_action))
-            best_rewards = []
-            contingent_actions = []
-            for next_state in (0, 1):
-                rewards = [
-                    Fraction(*self.dtr_terminal_forecast(initial_state, first_action, next_state, action))
-                    for action in (0, 1)
-                ]
-                best_action = int(rewards[1] > rewards[0])
-                best_rewards.append(rewards[best_action])
-                contingent_actions.append(best_action)
-            value = (1 - transition) * best_rewards[0] + transition * best_rewards[1]
-            first_values.append(value)
-            second_actions.append(tuple(contingent_actions))
+    def _episode_reader(self):
+        return self._experience if self._experience is not None else NativeEpisodeExperience()
 
-        return {
-            "first_values": tuple((value.numerator, value.denominator) for value in first_values),
-            "first_action": int(first_values[1] > first_values[0]),
-            "second_actions": tuple(second_actions),
-        }
+    def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256, repair=None):
+        """Admit one revealed development episode through the pilot source contract."""
+        require(self._dtr is not None, 'EPISODE_REQUIRES_INTEGRATED_PARENT')
+        require(source_sha256 == EXPERIENCE_SOURCE and
+                digest(canonical([identifier, views, row])) == packet_sha256,
+                'EPISODE_SOURCE_PACKET')
+        require(repair is None or (type(repair) is bool and self._experience is None),
+                'EPISODE_REPAIR_CONFIGURATION')
+        previous = (self._episode_reader() if repair is None
+                    else NativeEpisodeExperience(repair=repair))
+        experience = previous.observe(identifier, views, row)
+        if previous is experience:
+            return self
+        candidate = self._copy()
+        candidate._experience = experience
+        return candidate
+
+    def consolidate_experience(self):
+        """Replay the retained public episodes and verify the resulting state."""
+        if self._experience is None:
+            return self
+        candidate = self._copy()
+        candidate._experience = self._experience.consolidate()
+        require(candidate.checkpoint() == self.checkpoint(), 'EPISODE_CONSOLIDATION_DRIFT')
+        return candidate
+
+    def experience_forecast(self, view, first, next_state=None, second=None, *, full=False):
+        return self._episode_reader().forecast(view, first, next_state, second, full=full)
+
+    def experience_explore(self, view, first=None, next_state=None):
+        return self._episode_reader().propose(view, first, next_state)
+
+    def experience_plan(self, view, *, full=False):
+        experience = self._episode_reader()
+        return _two_stage_plan(
+            lambda first: experience.forecast(view, first, full=full),
+            lambda first, state, second: experience.forecast(view, first, state, second, full=full),
+        )
 
     def predict(self, slot, context, action, *, provisional=True):
         a, r = coordinates(slot)
@@ -264,6 +314,7 @@ class NativeCumulativeLearner:
                 'events': len(self._events), 'accepted_native': False, 'scientific_pass': False}
         if self._history is not None:info['stochastic_history']=self._history.info()
         if self._dtr is not None:info['dtr_history']=self._dtr.info()
+        if self._experience is not None:info['episode_experience']=self._experience.info()
         return info
 
     def checkpoint(self):
@@ -277,6 +328,10 @@ class NativeCumulativeLearner:
         if self._schema in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA):d['repairs']=self._repairs
         if self._schema in (HISTORY_SCHEMA,DTR_SCHEMA):d['history_ascii']=self._history.checkpoint().decode('ascii')
         if self._schema==DTR_SCHEMA:d['dtr_ascii']=self._dtr.checkpoint().decode('ascii')
+        if self._experience is not None:
+            d['schema'] = EXPERIENCE_SCHEMA
+            d['experience_ascii'] = self._experience.checkpoint().decode('ascii')
+            d['experience_source'] = EXPERIENCE_SOURCE
         raw = canonical(d)
         require(len(raw) <= MAX_BYTES, 'INTEGRATED_CHECKPOINT_CAPACITY')
         return raw
@@ -294,8 +349,9 @@ class NativeCumulativeLearner:
             d = json.loads(raw.decode('ascii'), object_pairs_hook=unique)
             keys={'schema','source_mode','properties_ascii','source_ascii','hypotheses_ascii',
                   'quarantined','events','accepted_native','scientific_pass'}
-            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA)
-                and set(d)==(keys|{'repairs','history_ascii','dtr_ascii'} if d['schema']==DTR_SCHEMA else
+            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA,EXPERIENCE_SCHEMA)
+                and set(d)==(keys|{'repairs','history_ascii','dtr_ascii','experience_ascii','experience_source'} if d['schema']==EXPERIENCE_SCHEMA else
+                             keys|{'repairs','history_ascii','dtr_ascii'} if d['schema']==DTR_SCHEMA else
                              keys|{'repairs','history_ascii'} if d['schema']==HISTORY_SCHEMA else
                              keys|{'repairs'} if d['schema']==REPAIR_SCHEMA else keys)
                 and d['source_mode'] == SOURCE_MODE
@@ -317,7 +373,7 @@ class NativeCumulativeLearner:
                     hypotheses.append(None); continue
                 h = h.encode('ascii')
                 if json.loads(h)['schema']==SPARSE_SCHEMA:
-                    require(d['schema'] in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA),'INTEGRATED_SPARSE_VERSION')
+                    require(d['schema'] in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA,EXPERIENCE_SCHEMA),'INTEGRATED_SPARSE_VERSION')
                     hyp=NativeSparseHypothesis.restore(h,digest(h))
                 else:hyp = NativeDegreeHypothesis.restore(h, digest(h))
                 require(hyp.info()['source_checkpoint_sha256'] == digest(obj._view(slot)),
@@ -353,7 +409,7 @@ class NativeCumulativeLearner:
                             'INTEGRATED_EVENT_STATUS')
             require(flags == qs, 'INTEGRATED_QUARANTINE_LEDGER')
             obj._hypotheses = tuple(hypotheses); obj._quarantined = tuple(qs); obj._events = tuple(es)
-            obj._schema=d['schema'];repairs=d.get('repairs',[])
+            obj._schema=DTR_SCHEMA if d['schema']==EXPERIENCE_SCHEMA else d['schema'];repairs=d.get('repairs',[])
             require(type(repairs) is list and len(repairs)<=16,'INTEGRATED_REPAIR_LEDGER')
             slots=set()
             for e in repairs:
@@ -371,6 +427,10 @@ class NativeCumulativeLearner:
                 obj._history=NativeStochasticHistory.restore(h,digest(h))
             if obj._schema==DTR_SCHEMA:
                 h=d['dtr_ascii'].encode('ascii');obj._dtr=NativeDTRHistory.restore(h,digest(h))
+            if d['schema']==EXPERIENCE_SCHEMA:
+                require(d['experience_source']==EXPERIENCE_SOURCE,'EPISODE_SOURCE_CHECKPOINT')
+                experience=d['experience_ascii'].encode('ascii')
+                obj._experience=NativeEpisodeExperience.restore(experience,digest(experience))
             require(obj.checkpoint() == raw, 'INTEGRATED_COLD_BYTES')
             return obj
         except (ValueError, TypeError, KeyError, UnicodeError, AttributeError, IndexError) as exc:
