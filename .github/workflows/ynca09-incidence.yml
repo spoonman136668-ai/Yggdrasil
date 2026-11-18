@@ -1,0 +1,81 @@
+name: YNCA09 source-locked causal incidence atlas Pass B
+on:
+  push:
+    branches:
+      - research/ynca09-learned-incidence-atlas-20261118
+    paths:
+      - .github/workflows/ynca09-incidence.yml
+permissions:
+  contents: read
+jobs:
+  paired-development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact Git bytes on Windows and Linux
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen source and run focused A-only tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import hashlib,json,pathlib
+          p=pathlib.Path('research/contrib/chatgpt/YNCA-09')
+          d=json.loads((p/'prereg.json').read_bytes())
+          source=hashlib.sha256((p/'experiment.py').read_bytes()).hexdigest()
+          tests=hashlib.sha256((p/'test_experiment.py').read_bytes()).hexdigest()
+          assert source=='fbfe640bda9a9edb76f87e8cd65311637286c264cd7473d1c6941f46d834d6c5',source
+          assert tests=='306c72ef447ffdf902d39a3ae34e5ab94187011f80528f62fd310b524c77c9ab',tests
+          assert d['frozen_design']['source_sha256']==source
+          assert d['frozen_design']['source_commit_sha']=='38b32ab2ce6a280e23c41e0246670c9be19e4580'
+          assert d['frozen_design']['tests_sha256']==tests
+          assert d['classification_rules']['supported'].startswith('DEVELOPMENT_SIGNAL')
+          print('YNCA09_SOURCE_AND_PREREG_LOCK_PASS',source,tests)
+          PY
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-09 -p 'test_*.py' -v
+      - name: Evaluate disjoint B once, report original exact bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-09/experiment.py --split B > "$RUNNER_TEMP/ynca09-original-B.json"
+          python - "$RUNNER_TEMP/ynca09-original-B.json" <<'PY'
+          import base64,hashlib,json,pathlib,sys
+          p=pathlib.Path(sys.argv[1])
+          raw=p.read_bytes().replace(b'\r\n',b'\n')
+          p.write_bytes(raw)
+          d=json.loads(raw)
+          assert d['results']['split']=='B' and d['results']['worlds']==128
+          assert d['results']['samples']==8 and d['results']['noise']==.1
+          assert d['results']['structural_bases']=={'candidate_pairs':6,'cycle_topologies':3,'all_topologies':15}
+          assert set(d['results']['metrics'])=={'INDEPENDENT_MAP','ATLAS_CYCLE_MAP','INDEPENDENT_BAYES','JOINT_BAYES_CYCLE','JOINT_BAYES_UNRESTRICTED'}
+          assert not any(d['claims'].values())
+          print('YNCA09_B_RESULT_SHA256',hashlib.sha256(raw).hexdigest())
+          print('YNCA09_B_METRICS',json.dumps(d['results'],sort_keys=True,separators=(',',':')))
+          print('YNCA09_B_ORIGINAL_B64',base64.b64encode(raw).decode('ascii'))
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve original B result without writing accepted refs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca09-B-original-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca09-original-B.json
+          if-no-files-found: warn
+          retention-days: 30
