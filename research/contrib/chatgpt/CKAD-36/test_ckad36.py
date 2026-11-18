@@ -94,6 +94,17 @@ class CKAD36Tests(unittest.TestCase):
                     self.assertTrue(0<=x[arm]["brier"]<=1)
         for policy,custody in cse["target_native_custody"].items():
             self.assertTrue(custody["cold_exact"])
+        # Qualify the independently implemented policy/outcome auditor on the
+        # same DEV-only fixture, not on any original frozen pilot source.
+        import json
+        spec=importlib.util.spec_from_file_location("ckad36_dev_auditor",HERE/"seal_pilot.py")
+        auditor=importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(auditor)
+        envelope={"schema":c.SCHEMA,"mode":"pilot","seed":88403,
+                  "lock":{"fixture":True},"primary_scored":False,"case":cse}
+        verified=auditor.audit_case(json.dumps(envelope).encode("ascii"),
+                                    88403,{"fixture":True})
+        self.assertEqual(verified["seed"],88403)
 
     def test_exact_frozen_go_classification_without_science_promotion(self):
         def example(seed,active=.03,random=.12,wrong=0,ood=3):
