@@ -39,3 +39,7 @@ The script verifies the complete original checkpoint SHA256 for each native seed
 The `.github/workflows/ygg-jepa2-01.yml` source-bound workflow is limited to this isolated branch, performs replay and expected-negative checks, G29 source-atlas reanchoring and mandatory original full Python regressions on Linux and Windows at the exact final candidate. CI/acceptance and separate source-first-use are not implied merely by a training receipt.
 
 **Next science question, not an authorized rerun:** gain useful invariant latent context from richer multi-view, temporal observations or intervene more informatively; preregister **new** genuinely disjoint world families and matched stronger baselines. Do not iterate on the same 192 evaluated rows until a different protocol is frozen.
+
+## CI correction history
+
+The first attempt to introduce the qualification workflow was rejected before any job executed because its job reference needed a valid identifier. The job identifier was corrected without modifying the frozen training module, preregistration, learned parameters or development verdict. This source-only documentation commit triggers a fresh deterministic qualification attempt; an earlier CI failure must not be treated as a failed scientific test.
