@@ -1,0 +1,106 @@
+{
+  "audit": {
+    "label_not_referee_input": true,
+    "null_information_invariant": true,
+    "split_disjoint": true,
+    "weights_normalized": true
+  },
+  "claims": {
+    "deployment": false,
+    "engineering_full": false,
+    "native_integrated": false,
+    "scientific_pass": false
+  },
+  "cohorts": {
+    "heldout": {
+      "accuracy": {
+        "adjusted": 0.6875,
+        "equal": 0.6796875,
+        "global_gate": 0.82421875,
+        "interventional": 0.796875,
+        "learned_always": 0.80859375,
+        "learned_gate": 0.82421875,
+        "observational": 0.66796875,
+        "oracle": 0.9453125,
+        "random_gate": 0.6953125,
+        "shuffled_gate": 0.796875
+      },
+      "brier": {
+        "adjusted": 0.27775716,
+        "equal": 0.1781817,
+        "global_gate": 0.12879428,
+        "interventional": 0.14561272,
+        "learned_always": 0.14438772,
+        "learned_gate": 0.13916724,
+        "observational": 0.30812934,
+        "oracle": 0.03841589,
+        "random_gate": 0.18258227,
+        "shuffled_gate": 0.12798857
+      },
+      "cases": 256,
+      "gate_calls": 64,
+      "gate_fraction": 0.25,
+      "paired_brier_gain_vs_learned_gate": {
+        "equal": {
+          "ci95": [
+            0.02008089,
+            0.0572837
+          ],
+          "gain": 0.03901446
+        },
+        "global_gate": {
+          "ci95": [
+            -0.01715287,
+            -0.00416525
+          ],
+          "gain": -0.01037296
+        },
+        "interventional": {
+          "ci95": [
+            -0.02158934,
+            0.03392741
+          ],
+          "gain": 0.00644549
+        }
+      }
+    }
+  },
+  "frozen_config": {
+    "eta": 12.0,
+    "experts": [
+      "observational",
+      "interventional",
+      "adjusted"
+    ],
+    "margin_half_width": 0.2,
+    "prior_strength": 20.0,
+    "seeds": {
+      "development": [
+        41001,
+        41129
+      ],
+      "heldout": [
+        61001,
+        61257
+      ],
+      "train": [
+        31001,
+        31257
+      ],
+      "transfer": [
+        51001,
+        51129
+      ]
+    }
+  },
+  "global_train_expert_brier": [
+    0.31934000036253546,
+    0.08893723046586133,
+    0.20659145393163483
+  ],
+  "model_name": "source-free prototype; not native Yggdrasil",
+  "paper": "https://arxiv.org/abs/2606.10607",
+  "schema": "ynca01.synthetic-development.v1",
+  "training_contexts": 7,
+  "training_worlds": 256
+}

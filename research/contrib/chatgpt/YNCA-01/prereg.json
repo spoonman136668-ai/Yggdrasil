@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-01",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a native context-dependent margin-gated expert arbiter improve held-out binary causal-edge prediction over the strongest equally informed expert and simpler global arbitration?",
+  "hypothesis": "On independently seeded shifted synthetic environments, the contextual native referee will reduce Brier loss by at least 5% relative to every nonprivileged comparator, with a positive 95% paired-bootstrap improvement over the single interventional expert and global learned gating.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1211",
+      "note": "CKAD18 synthetic experiments, separately owned; no code/seed reuse"
+    },
+    {
+      "ref": "https://arxiv.org/abs/2606.10607",
+      "note": "CEA methodology inspiration only, not a replication"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-01/prereg.json",
+    "research/contrib/chatgpt/YNCA-01/experiment.py",
+    "research/contrib/chatgpt/YNCA-01/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-01/README.md",
+    "research/contrib/chatgpt/YNCA-01/result.json",
+    "research/contrib/chatgpt/YNCA-01/provenance.json"
+  ],
+  "inputs": [
+    {
+      "name": "Procedural SCM binary X->Y with latent binary U, observed noisy proxy Z, passive and do samples",
+      "sha256": "a5a3d489c1f5732728fc5809e44c9b4b7234eb24e281975926cdc97ad128a0d0",
+      "source": "Generator is in experiment.py, SHA-256 here is source file identity, no external dataset"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "train": "31001..31256 inclusive (256 worlds)",
+      "exploratory_dev": "41001..41128 inclusive (128 worlds; outcomes already inspected)",
+      "exploratory_shift": "51001..51128 inclusive (128 worlds; outcomes already inspected)",
+      "prospective_heldout": "61001..61256 inclusive (256 worlds; outcomes not yet inspected)"
+    },
+    "split": "Train and exploratory cohorts are already consumed; ONLY 61001..61256 is prospective, using shifted confounding, proxy reliability, effect strength and intervention counts. No historical first-use or protected research source.",
+    "ordering": "Train fixed native context-category expert reliability from training labels, freeze weights, evaluate prospective heldout once; same observations/interventions for all arms; no heldout feedback to weights.",
+    "data_budget": "256 train worlds, 256 heldout worlds; 90-140 observational samples plus 16-48 do-intervention samples per world; 4 SCM regimes, balanced causal-edge sampling in expectation.",
+    "compute_budget": "Single local CPU test, 2000 paired bootstrap draws per baseline using fixed hash-seeded Python random; no GPU, paid APIs or owner runner.",
+    "capacity": "3 fixed expert functions (observational, interventional, proxy-adjusted), 3-feature context category, fixed eta=12.0, shrinkage=20.0, margin half-width=0.20.",
+    "evaluator": "YNCA-01 experiment.py frozen source SHA-256 a5a3d489c1f5732728fc5809e44c9b4b7234eb24e281975926cdc97ad128a0d0; Brier loss, edge accuracy, gate calls, deterministic 2000-draw paired bootstrap.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Best raw expert and fixed individual observations",
+    "Equal expert weights",
+    "Global learned gate trained on identical labels",
+    "Randomly reweighted gate",
+    "Circularly shuffled training labels",
+    "Privileged per-world oracle ceiling (diagnostic only)"
+  ],
+  "metrics": [
+    "Brier loss",
+    "Edge classification accuracy",
+    "Margin trigger count",
+    "95% paired bootstrap gain in Brier versus interventional, global gate and equal",
+    "Source/runtime provenance"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SUPPORTED only if heldout learned_gate Brier <=0.95 * minimum Brier of all nonprivileged expert/ensemble controls; 95% paired-bootstrap gain lower bound >0 against both interventional and global_gate; shuffled_gate Brier at least 0.005 higher; all audits pass. Does not imply SCIENTIFIC_PASS or native integration.",
+    "mixed": "Learned gate improves equal weighting, but not every strongest nonprivileged control and/or bootstrap support is absent. DEVELOPMENT_MIXED, no promotion.",
+    "negative": "Learned gate does not improve strongest equally informed control or loses to global-gate on heldout; DEVELOPMENT_NO_GO, preserve falsification.",
+    "invalid": "Heldout inspection prior to this prereg, split leakage, source mismatch, broken deterministic audit, or missing comparator => INVALID; do not rescue by retuning."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "negative-result erasure"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This prereg ONLY covers new prospective heldout seeds 61001..61256. Earlier 41001/51001 cohorts were exploratory and their outcomes were inspected before this commit; cannot count as confirmatory. No SCIENTIFIC_PASS from synthetic contributor evidence."
+}

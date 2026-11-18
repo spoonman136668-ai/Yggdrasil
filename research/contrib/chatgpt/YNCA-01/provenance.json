@@ -1,0 +1,50 @@
+{
+  "schema": "ynca01.provenance.v1",
+  "classification": "DEVELOPMENT_NO_GO",
+  "research_class": "source-free contributor synthetic falsification",
+  "accepted_or_native": false,
+  "primary_holdout": {
+    "seed_start_inclusive": 61001,
+    "seed_stop_exclusive": 61257,
+    "worlds": 256,
+    "observed_only_after_prereg_commit": true
+  },
+  "frozen_prereg_commit": "ce61b7851d6d93f376e2eb209c027b0d5235290b",
+  "exact_source_commit_before_holdout": "2de0321f8fbe4416d6a25e1d59b549ee5f01e8eb",
+  "exact_accepted_main_parent": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_file_sha256": "a5a3d489c1f5732728fc5809e44c9b4b7234eb24e281975926cdc97ad128a0d0",
+  "source_git_blob": "3b42fc5cbc5eedf54f2ff7a69379a98f40f4304c",
+  "test_file_sha256": "4ccadeeb42a42eadf3996ba9a19648479cf9a301e824159ee33584ebfa81b17b",
+  "result_json_sha256": "4817c743867d45630979ca363f5ff8c527e1bd3ce1a3f5775720e6e989bd63de",
+  "result_git_blob": "c1297e54e95d2527cfb1f47d49883362b8b3095e",
+  "result_commit": "d7cfb4ecf5cf77658e6654a3c9a8728fb8c5f1ec",
+  "local_execution": {
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "stdlib_only": true,
+    "test_count": 7,
+    "test_failures": 0,
+    "repeat_output_byte_identical": true,
+    "heldout_runs": 2,
+    "second_run_purpose": "reproduction only; no changes or selection after result"
+  },
+  "previously_inspected_cohorts": [
+    "development: 41001..41128",
+    "exploratory shifted: 51001..51128"
+  ],
+  "negative_finding": "Contextual margin-gated Brier 0.13916724 > global learned gate 0.12879428 and shuffled-label gate 0.12798857; frozen >=5% improvement and paired-CI requirements fail.",
+  "audit_limitations": [
+    "Source-free miniature binary-edge simulator only; no native Yggdrasil integration",
+    "Three experts are simple deterministic sample contrasts; no strong exact Bayesian causal graph learner supplied",
+    "Local Python 3.13.5 Linux only; full project regression on Windows/Linux not run",
+    "Label-not-input code assertion is not an independent leakage proof; independent source inspection required"
+  ],
+  "authorization": {
+    "research_only": true,
+    "first_use_protected_science": false,
+    "external_runner_or_queue": false,
+    "merge": false,
+    "deploy": false,
+    "accepted_ref_mutation": false
+  }
+}
