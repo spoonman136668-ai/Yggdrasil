@@ -162,7 +162,9 @@ class DirectPublicContext:
     def predict(self, state, action, history=()):
         baseline=self._base.predict(state,action)
         modes=self._public_modes(history)
-        if not modes:
+        # Insufficient public evidence is not a context identity.
+        # Require the full frozen five-prior context before invoking memory.
+        if len(modes)<MAX_HISTORY:
             return baseline
         p=self.inferred_persistence(history)
         center=tuple((self._means[0][k]+self._means[1][k])/2
