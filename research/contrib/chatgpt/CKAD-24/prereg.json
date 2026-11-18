@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.ckad24.coverage-continuation-development.prereg.v1",
+  "parent": "be46b0409b0c4bfc9b30e595ae19b62ccb1cf007",
+  "parent_tree": "82fe11c641f5895ea8abccbfafdceecfac76a163",
+  "hypothesis": "A native recent-action coverage floor can improve adaptation reward after action-selective equation changes during cumulative training, without relying on a detector reset or hiding a poor replica in an aggregate mean. This is an acquisition ablation, not a claimed repair of all change detection.",
+  "parent_pins": {
+    "101": "83b2ccaa36ea976974fcc397f3b54da0c4ccad6ff3e9cd8d2ed3339c67f2dd11",
+    "202": "6e9a6695d75465149a4565c5609f0447cd3e89d46b7cf78d097f9b018aaf9ded",
+    "303": "9df415ca68303284438241bf0d2375559d16b117914eb5fe88b64e62cc50b7a6"
+  },
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_seed_offset": 28000,
+  "phases": [
+    {
+      "family": "invariant",
+      "regime": 0
+    },
+    {
+      "family": "terminal_switch",
+      "regime": 1
+    },
+    {
+      "family": "invariant",
+      "regime": 1
+    },
+    {
+      "family": "invariant",
+      "regime": 0
+    }
+  ],
+  "continuation": "All four acquisition arms restore each exact qualified640-event CKAD23 state, including existing stream_start448, current context boundary and monitor score. No begin_stream, begin_context, initial-state reset or boundary callback. New cohortckad24-stream indices0..191; source seed=parentseed+28000. Four48-episode phases are evaluator-only. Final832 episodes/arm. Inherited alarms retained; new-stage detection diagnostics count only alarms beyond absolute640.",
+  "candidate": "Add coverage_explore(view,first=None,next_state=None) to the existing native episode component and a NativeCumulativeLearner wrapper. Examine last32 TOTAL actual witnessed rows, then filter by selected public stable projection/context. First decision counts X1; second counts X2 for matching projected context+actualX1+revealedS2. Count both planned and probe receipts, ignore their rewards/outcomes except revealedS2 as the public conditioning history. Return lesser-count action; ties use existing weighted-disagreement context_explore. Read-only selection, no new memory substrate, weights, detector rule, checkpoint schema, capacity or controller.",
+  "acquisition": "Candidate and original-active use3/4 exploratory episodes, every fourth current two-stage plan. Original-active exploration remains unchanged. Coverage-random uses identical coverage floor and3/4 exploration+1/4 planning schedule but uniform SHA tie choice. Uniform-random is100% SHA-uniform two actions as in CKAD23, descriptive equal-budget baseline. All four share exogenous draws. No family/regime/phase signals reach learner.",
+  "random_rule": "SHA256 ASCII ckad24/actions-v1/{cohort}/{kind}/{source_seed}/{index}; action0=digest[0]&1, action1=digest[1]&1. kindprobe-random for uniform acquisition, probe-coverage-random for coverage ties, held-matched for held Brier. Event IDs SHA256 canonical JSON [ckad24,source_sha256,cohort,source_seed,index,arm] with armcoverage_active/original_active/uniform_random/coverage_random.",
+  "evaluation": "Score at counts0,16,...192 with96 separate held episodes each. Held cohortckad24-held-{count}, indices0..95, same source seed. Source world phase0 at count0 else phase((count-1)//48). Second action conditions on observedS2. Zero held training/detector updates. Same exogenous episodes for all8 held arms.",
+  "controls": [
+    "coverage_active: the same native learner with coverage-floor acquisition.",
+    "original_active: unchanged CKAD23 acquisition and learning, same initial640 state and equal budget.",
+    "uniform_random: native stream updates with100% uniform random acquisition, equal episodes/actions.",
+    "coverage_random: same native stream and coverage floor but uniform ties, every fourth learned plan, equal budget.",
+    "pooled_replay: native pooled global readout on exact coverage-active receipts.",
+    "trailing_mle: fully fitted trailing64 MLE on exact coverage-active receipts.",
+    "exact_mixture: independent exact stream mixture restored by replaying prior448..640, then coverage-active actual receipts; every forecast, decision, coverage choice and alarm must match native.",
+    "frozen_ckad23: unchanged initial640 context readout, descriptive zero-adaptation."
+  ],
+  "metrics": "Mean held terminal reward and matched-action Brier at64,112,160; per-seed reward; final returning-world reward; online acquisition reward; stage history/action coverage; new alarms/delays/misses/false alarms (16-episode window); complete prior640/legacy preservation; actual midstream cold restore atcount80 and continuation; final cold readout; exact independent comparator replay; checkpoint sizes; wall/parentCPU/childCPU and separately measured process peaks plus CI elapsed. No compute advantage unless observed whole scope supports it.",
+  "success": {
+    "engineering": "Exact parent/source identity, immutable held scoring, all8 controls/39 checkpoints independently replayed, actual selected actions authenticated to source consequences, exact complete checkpoints and prior640 prefixes, cold continuation at80, deterministic Linux/Windows result and final mandatory full regression/G29/all-era raw audit.",
+    "development": "At64/112/160 across all3seeds: coverage-active mean reward>=original-active+0.03, >=uniform-random, >=coverage-random, >=trailing64MLE; pooled Brier<=original-active. For each individual seed, mean reward at those3checkpoints>=original-active. At192 coverage-active reward>=0.80 and >=original-active-0.05. All predicates must pass DEVELOPMENT_GO; otherwise DEVELOPMENT_NO_GO without threshold changes. Sensitivity/false alarms descriptive only. SCIENTIFIC_PASS=false because same-method exact control is required to tie.",
+    "promotion": "Draft evidence only. No accepted/native promotion or deployment. If developmentNO_GO, retain states and negative evidence but do not advance them as the qualified parent of later scientific acceptance; use CKAD23 qualified parent for a separately frozen successor."
+  },
+  "budgets": {
+    "stream_episodes_per_seed_per_acquisition_arm": 192,
+    "acquisition_arms": 4,
+    "phase_episodes": 48,
+    "coverage_total_rows": 32,
+    "held_episodes_per_checkpoint": 96,
+    "checkpoints": [
+      0,
+      16,
+      32,
+      48,
+      64,
+      80,
+      96,
+      112,
+      128,
+      144,
+      160,
+      176,
+      192
+    ],
+    "max_wall_seconds": 1200,
+    "max_ledger_episodes": 1024,
+    "original_source_actions": 0,
+    "protected_first_use": 0,
+    "held_updates": 0,
+    "paid_apis": 0
+  },
+  "stop": "One frozen candidate and complete3-seed run. No post-result parameter, policy, threshold, cohort or budget tuning. Diagnose/preserve a negative. Infrastructure-only repairs may reuse unscored execution; scored outcomes remain retained and are never silently rerun.",
+  "allowed_paths": [
+    "yggdrasil/native_episode_experience.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-24/**",
+    ".github/workflows/ckad24-coverage-continuation.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Existing draftPR1207/source-free synthetic development route only. No original/protected source first-use, merge, promotion, deployment, owner/controller/scheduler changes, competing consumers, paidAPI or interruption of other research."
+}
