@@ -40,7 +40,12 @@ jobs:
       - name: Compile exact new code
         shell: bash
         run: |
-          python -B -m py_compile yggdrasil/native_causal_relation_posterior.py yggdrasil/native_cumulative_learner.py tests/test_native_causal_relation_posterior.py
+          python -B - <<'PY'
+          from pathlib import Path
+          for name in ("yggdrasil/native_causal_relation_posterior.py", "yggdrasil/native_cumulative_learner.py", "tests/test_native_causal_relation_posterior.py"):
+              compile(Path(name).read_text(encoding="utf-8"), name, "exec")
+          print("CKAD25V_NO_CACHE_COMPILE_PASS")
+          PY
       - name: Native relation focused tests, old checkpoint compatibility
         shell: bash
         run: |
