@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.ckad28.decision-relevance.prereg.v1",
+  "id": "CKAD28",
+  "parent_commit": "43a468dea22b19498329e386aa0af0abecc3100b",
+  "baseline_result_sha256": "02b71648e562e092554eeb5ee08eb0054f13781ee87dfcdb27f27d820f358474",
+  "original_source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "goal": "One frozen, prospective source-free falsification: does choosing interventions that discriminate between hypotheses with different optimal causal decisions beat both the existing native transition-variance exploration and a deterministic random policy, while preserving the same cumulative native 448-event source prefix, 128 observed actions per arm, and exact cold retention?",
+  "scenarios": {
+    "reward_change": {
+      "source_seed_offset": 48100,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "terminal_switch",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "terminal_switch",
+          0
+        ]
+      ]
+    },
+    "stationary_null": {
+      "source_seed_offset": 48200,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ]
+      ]
+    }
+  },
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_cohort": "ckad28-source-v1",
+  "held_cohort": "ckad28-held-v1",
+  "source_episodes_per_arm": 128,
+  "phase_episodes": 32,
+  "training_policy": "One out of four episodes exploits via unchanged native context_plan, as CKAD27. Otherwise the decision candidate selects first action with greatest native-posterior expected value of perfect second-action information across observed next states; second action selects maximum (decision-discordant posterior predictive variance minus immediate mixture reward regret). Non-positive scores cause the mixture-best second action, and first-action ties fall back to native exploration. Neither hidden phase nor unseen action consequence is inspected. Native and deterministic random controls share source exogenous keys, action opportunities and held outcomes.",
+  "matched_controls": [
+    "unchanged native_context_explore 75% / context_plan 25%",
+    "deterministic random 75% / context_plan 25%",
+    "fully fitted conventional trailing-window MLE control per arm, trained on identical revealed public actions and outcomes",
+    "independent exact source witness history and cold native model replay"
+  ],
+  "held_evaluations": {
+    "checkpoints": [
+      0,
+      32,
+      64,
+      96,
+      128
+    ],
+    "episodes_per_checkpoint": 96,
+    "per_checkpoint_world": "The world at count=0 is first phase; at count 32,64,96,128 use the just-completed phase index (count-1)//32 to evaluate retention of the learned world without using results for model update.",
+    "metrics": [
+      "mean reward of the learned native context_plan on 96 new matched held episodes per arm/seed/checkpoint",
+      "transition and terminal Brier score of native context_forecast over independent deterministic fixed interventions on same held episodes",
+      "fully trained conventional fitted MLE plan score from the arm's public witnesses, separately audited",
+      "first/second action balance and directed policy dissimilarity from native",
+      "cold checkpoint exact SHA and original prefix bytes"
+    ],
+    "held_count_trained_updates": 0
+  },
+  "frozen_gates": {
+    "reward_change_gain_vs_native": "Candidate held terminal reward across counts64,96,128 exceeds native by >=0.05 absolute.",
+    "reward_change_gain_vs_random": "Candidate held terminal reward across counts64,96,128 exceeds random by >=0.05 absolute.",
+    "reward_change_per_seed": "Candidate strictly exceeds native for >=2/3 independent original pretrained seed groups.",
+    "reward_prediction_quality": "Candidate terminal Brier score at least 0.01 lower than native across same held cohorts.",
+    "stationary_no_harm": "Candidate stationary_null held reward no more than 0.03 below native.",
+    "familiar_return": "At reward_change count96 candidate held reward no more than 0.03 below native.",
+    "strong_conventional": "Candidate native held reward >= its own fully fitted matched-receipt conventional trailing-window MLE.",
+    "source_integrity": "Linux and Windows source and cold native exact parity; each source arm retains 448 original witnesses and adds 128 novel public interventions; zero held training updates or protected source first-use."
+  },
+  "promotion": "One frozen primary pass only. DEVELOPMENT_GO only if all preregistered gates pass; otherwise NO_GO and stop this candidate. Engineering qualification does not prove superior causal reasoning or general intelligence. Strong exact Bayesian-mixture parity remains an explicit limitation.",
+  "scientific_pass": false,
+  "accepted_native": false,
+  "deployment": "NONE",
+  "budgets": {
+    "total_seed_scenario_cases": 6,
+    "total_learners": 18,
+    "source_episodes_per_learner": 128,
+    "total_public_source_episodes": 2304,
+    "held_episodes_per_arm": 480,
+    "held_actions_are_evaluator_only": true,
+    "max_runtime_seconds_per_case": 900,
+    "paid_api_calls": 0,
+    "protected_first_use": 0,
+    "original_source_actions": 0
+  },
+  "allowed_paths": [
+    "research/contrib/chatgpt/CKAD-28/**",
+    ".github/workflows/ckad28-decision-relevance.yml",
+    ".ice/code-atlas.*"
+  ],
+  "isolation": "Native Yggdrasil model, model contracts, accepted main, CKAD27 frozen evidence and protected original cohorts unchanged; one contributor branch only, no new controller/scheduler, acceptance, merge, promotion or deployment.",
+  "decision_relevance": "Exact rational Fraction computations. First action: sum over prospective next states P(state|intervention) * [sum over native models weight * max(second-action reward forecast) - max(second action mixture forecast)]. Second action: for each candidate second action compute posterior variance contributed by models whose optimal action disagrees with the mixture-optimal action, minus immediate mixture-regret of that action; choose larger strictly positive score, else choose mixture-optimal. Opposing-model ties are counted as agreeing; all ties resolved deterministically. Do not retune weights, threshold, seeds, test family or budgets after seeing results."
+}
