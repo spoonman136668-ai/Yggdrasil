@@ -32,8 +32,8 @@
   "inputs": [
     {
       "name": "Synthetic 3-bit Boolean operators, 24 fixed orbit-representative candidate tables sampled once from all 256; two distinct hidden operators per cohort, world-specific input permutations, 12% independent observation flips",
-      "source": "Self-contained Python 3.12 stdlib generator in experiment.py; source SHA and original Git commit to be locked before B first use",
-      "sha256": "SOURCE_HASH_TO_PIN_BEFORE_FIRST_B"
+      "source": "research/contrib/chatgpt/YNCA-11/experiment.py at commit b6443a349a4c2838efa47ef5a31d5c467fa8efc4; Git blob 16dba7efb1b5f6d1c637b9c1b3f49a0b9ebb0dc4",
+      "sha256": "70d38215a4cba3419c3d706d9c5078a3de56e28f2bf895c3de9c0be847de874a"
     }
   ],
   "frozen_design": {
@@ -99,7 +99,13 @@
     "source_rule": "Git prereg -> source+tests commit verified by SHA256/Blob -> bind hashes to prereg before B use -> one two-OS B evaluation. A can be replayed in focused tests but is exploratory and cannot be promoted as confirmatory evidence.",
     "runtime": "CPython 3.12 standard library, PythonHASHSEED=0, GitHub-hosted Ubuntu and Windows <=20 minutes/job; no owner/self-hosted runner, model weights, GPU, paid API or production credentials.",
     "deterministic_expected": true,
-    "whole_process_cost": "Measure wall clock and memory optionally; no energy or speedup claim without matched instrumented data. 6 vs 48 hypotheses is a storage distinction only."
+    "whole_process_cost": "Measure wall clock and memory optionally; no energy or speedup claim without matched instrumented data. 6 vs 48 hypotheses is a storage distinction only.",
+    "source_commit_before_B": "b6443a349a4c2838efa47ef5a31d5c467fa8efc4",
+    "source_sha256": "70d38215a4cba3419c3d706d9c5078a3de56e28f2bf895c3de9c0be847de874a",
+    "source_blob": "16dba7efb1b5f6d1c637b9c1b3f49a0b9ebb0dc4",
+    "focused_tests_sha256": "d9b1c8a6f5522b740674fcce12e59b952a0a93be67c572f45737c1d71dbc9180",
+    "focused_tests_blob": "29a6ff50f0719236138e383239c53e589c388936",
+    "focused_tests_commit_before_B": "dcd3ec008383e86a3f6321cb95f45933810949c7"
   },
   "controls": [
     "Exact full 24-table/context Bayesian and model-evidence-gated exact Bayes",
@@ -137,5 +143,5 @@
     "promotion_authority": false,
     "scheduler_or_queue_authority": false
   },
-  "note": "User permits bounded exploratory tuning: A exploratory before prereg; exactly one targeted correction of composition memory overtrust on B, evaluate against strong controls and stop unless pass."
+  "note": "Exact GitHub experiment+tests bound before B first-use; exploratory A from local source SHA00bd is consumed, not confirmatory. No post-B model modification or cohort reuse."
 }
