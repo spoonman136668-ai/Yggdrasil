@@ -22,7 +22,7 @@ Can a tokenless native context-dependent failure memory predict when observation
 | Confidence-calibration baseline | **0.04212454** | **0.62278535** |
 | Contextual native failure memory | 0.05555556 | 0.56482873 |
 | Global rate | 0.06043956 | 0.50000000 |
-| Fully trained fixed ridge logistic | 0.06776557 | 0.48484650 |
+| 250-step fixed ridge logistic | 0.06776557 | 0.48484650 |
 | Disagreement-only diagnostic | 0.07264957 | 0.25453603 |
 
 Failure prevalence was 119/2048 = 5.81%. Native minus best baseline **+0.01343102** absolute failure risk; baseline-minus-native paired bootstrap 95% interval **[-0.02014652, -0.00549451]**. Native is worse than simple confidence calibration. This **falsifies the superiority prediction for this implementation**; it does not invalidate the larger idea of native causal arbitration. No post-result tuning, no retroactive promotion.
