@@ -170,7 +170,8 @@ def compile_native(seed,fit,cal,held):
         m = stage(m,slot,source[slot],2)
     original_sha = digest(m.checkpoint())
     original_size = len(m.checkpoint())
-    info = {str(slot):m.profile_info(*coordinates(slot)) for slot in OLD_SLOTS}
+    info = {str(slot):m.profile_info(coordinates(slot)[0], retained=coordinates(slot)[1])
+            for slot in OLD_SLOTS}
     if not all(x["rank"]==16 and x["degree"]==2 for x in info.values()):
         raise AssertionError("CKAD33_COMPILER_RANK_MISMATCH")
     cal_pass={
