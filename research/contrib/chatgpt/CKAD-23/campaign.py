@@ -31,7 +31,7 @@ def load(name,path):
 
 BASE=load("ckad23_parent21",CK21/"campaign.py")
 PARENT22=load("ckad23_parent22",CK22/"campaign.py")
-GEN=load("ckad23_base_generator",CK20/"synthetic_world.py")
+GEN=BASE  # CKAD21 already imports pinned synthetic_world; avoid duplicate module state
 REF=PARENT22.REFERENCE
 LEGACY=BASE.LEGACY
 from yggdrasil.native_context_basis import canonical,digest
