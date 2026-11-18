@@ -1,0 +1,128 @@
+{
+  "arms": [
+    "evidence_gate",
+    "fixed_memory",
+    "fixed_uniform",
+    "fixed_scrambled",
+    "random_gate",
+    "CART",
+    "RF16"
+  ],
+  "authority": {
+    "accepted_ref_mutation": false,
+    "production_authority": false,
+    "promotion_authority": false,
+    "research_only": true,
+    "scheduler_or_queue_authority": false
+  },
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92ab-memory-gate/"
+  ],
+  "classification_rules": {
+    "invalid": "Input/protocol/source SHA mismatch, cohort/reproducibility mismatch, pre-score commit absent, data leakage, missing control, incomplete output/audit.",
+    "mixed": "One or more improvements (correct, false, accuracy) without all six GO checks; no scientific support.",
+    "negative": "No composite GO, including a null or negative-transfer finding, provided execution and independent audit are valid.",
+    "supported": "All six code-defined go_checks true: gate stationary correct >= fixed uniform +3; gate correct >= fixed memory; gate false <= fixed uniform; 0 foreign/null accepted; gate correct > random gate; gate all-world heldout accuracy >= fixed uniform. One-seed external development GO only; never native scientific PASS."
+  },
+  "code_sha256": "06d817e340b2fcf485533b6781edde7524bb851e95c436e8eb4f61fede3a94a7",
+  "cohort": {
+    "foreign": 8,
+    "null": 8,
+    "stationary": 52,
+    "switch": 12
+  },
+  "contribution_class": "falsification",
+  "contributor": "spoonman136668-ai",
+  "controls": [
+    "fixed learned prior",
+    "fixed uniform prior",
+    "reversed prior negative control",
+    "random 50:50 prior gate (separate frozen seed)",
+    "CART depth2 and RF16 depth3 conventional learner, 144 fit examples, control score thresholds not fully matched"
+  ],
+  "environment": {
+    "numpy": "2.3.5",
+    "platform": "Linux CPU, single-process",
+    "python": "3.13.5",
+    "scikit_learn": "1.8.0",
+    "scipy": "1.17.0"
+  },
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "experiment_id": "LR-92AB",
+  "frozen_design": {
+    "capacity": "16 fixed Boolean two-cause mechanisms, 35% independent outcome flips; no hidden-model capacity increase; exact prior unchanged",
+    "compute_budget": "One deterministic CPU cohort, no hyperparameter search, no additional scoring attempts; single-threaded sklearn RF16; stop on invalid audit",
+    "data_budget": "144 fit + 288 validation per world, 80 worlds",
+    "deterministic_expected": true,
+    "evaluator": "Exact table identification on 52 stationary worlds with 90% posterior cutoff and held-out 288-observation binomial misfit p >0.01; all arms common heldout p threshold, conventional no comparable posterior; foreign/null acceptance counts; overall held-out accuracy; CPU process time per arm, acquisition cost disclosed",
+    "ordering": "Groups are seeded/shuffled once; within-world balanced 4-action blocks; fit, then independent validation; no scored reruns",
+    "random_gate_seed": 929290201,
+    "seeds": [
+      929200201
+    ],
+    "split": "80 new world assignments, separate 144 fitting and 288 held-out validation labels per world; historical 80-world seed 929200101 is never reused"
+  },
+  "hypothesis": "A fixed likelihood-ratio memory gate, based only on first 36 fitting observations, avoids the adverse effect of the original historical prior and improves exact stationary-mechanism discovery over the uninformed uniform prior.",
+  "inputs": [
+    {
+      "name": "LR-92AA learned prior, exact 16 float64 values",
+      "sha256": "c6fb2451be0e7f9907a45e20c068614da41bcef462a8035d5236d6c15e2cbfc9",
+      "source": "LR92AA_RESULT.json memory_prior, parent archive hash recorded; synthetic-only no personal data"
+    }
+  ],
+  "intervention_policy": "Balanced random fit actions shared identically among arms, no adaptive selection. Gate at exactly 36 first observations: use historical memory only if log p(fit36 | learned prior) - log p(fit36 | uniform prior) >= log(2); otherwise uniform. Fit fixed 144 using selected prior; never sees validation labels.",
+  "memory_input": {
+    "prior_distribution": [
+      0.007500000000000005,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.3435864860144939,
+      0.11533628899835795,
+      0.20038639720743992,
+      0.06786367971207133,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.007500000000000005,
+      0.190327148067637,
+      0.007500000000000005
+    ],
+    "prior_float64_sha256": "c6fb2451be0e7f9907a45e20c068614da41bcef462a8035d5236d6c15e2cbfc9"
+  },
+  "metrics": [
+    "stationary exact accepted count (0..52)",
+    "false construction count across all 80",
+    "foreign/null accepted count",
+    "held-out validation accuracy (all worlds)",
+    "gate use-memory count",
+    "all-in fitting/validation and inherited prior acquisition actions",
+    "CPU process seconds per arm"
+  ],
+  "predecessor_evidence": [
+    {
+      "historical_pr": 1256,
+      "id": "LR-92AA",
+      "result": "DEVELOPMENT_NO_GO",
+      "source_archive_sha256": "716dbe471bb59a1ebe6eb285f59bc682bb8ceab9db56fd89ebef0ecb44ada72d"
+    },
+    {
+      "id": "LR-92L",
+      "source_archive_sha256": "25361666bb4fb0220ce2bbe7ae11f024e9bcb386e5772552f6e6c3f5796e589c"
+    }
+  ],
+  "preregistration_note": "Protocol must be committed on GitHub before running/inspecting first primary result. This is independent synthetic research, not Yggdrasil native model training. The parent LR-92AA was historically UNPREREGISTERED on GitHub; do not reclassify it.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "project": "Yggdrasil",
+  "question": "Can intervention-evidence-based rejection of a historically learned but potentially misleading causal prior prevent negative transfer on unseen synthetic worlds?",
+  "schema": "yggdrasil.external-research-prereg.v1"
+}

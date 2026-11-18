@@ -1,0 +1,103 @@
+{
+  "schema": "lr92ab.external-synthetic-development-summary.v1",
+  "experiment_id": "LR-92AB",
+  "evidence_class": "PROSPECTIVELY_PREREGISTERED_EXTERNAL_DEVELOPMENT",
+  "classification": "DEVELOPMENT_NO_GO",
+  "official_scientific_acceptance": false,
+  "preregistration_commit": "129339cd21d566a123bb83680568ecb45f24a360",
+  "prereg_sha256": "3cc0272b162cdcd50d60d746c20cb081cb3a19475fd0fbad48088bc5e6f6d396",
+  "source_sha256": "06d817e340b2fcf485533b6781edde7524bb851e95c436e8eb4f61fede3a94a7",
+  "raw_primary_result_sha256": "c7d195a115169926988cd9ad0e369728f7fd846fc99b0814519ca90685118566",
+  "raw_primary_result_bytes": 1023625,
+  "cohort": {
+    "seed": 929200201,
+    "worlds": 80,
+    "stationary": 52,
+    "switch": 12,
+    "foreign": 8,
+    "null": 8,
+    "fit_per_world": 144,
+    "validation_per_world": 288,
+    "noise": 0.35
+  },
+  "arms": {
+    "CART": {
+      "exact": 48,
+      "false": 8,
+      "foreign_null_accepted": 0,
+      "accepted": 56,
+      "validation_accuracy": 0.606033
+    },
+    "RF16": {
+      "exact": 48,
+      "false": 8,
+      "foreign_null_accepted": 0,
+      "accepted": 56,
+      "validation_accuracy": 0.604731
+    },
+    "evidence_gate": {
+      "exact": 36,
+      "false": 1,
+      "foreign_null_accepted": 0,
+      "accepted": 37,
+      "validation_accuracy": 0.60395
+    },
+    "fixed_memory": {
+      "exact": 29,
+      "false": 5,
+      "foreign_null_accepted": 0,
+      "accepted": 34,
+      "validation_accuracy": 0.602474
+    },
+    "fixed_scrambled": {
+      "exact": 31,
+      "false": 3,
+      "foreign_null_accepted": 0,
+      "accepted": 34,
+      "validation_accuracy": 0.604036
+    },
+    "fixed_uniform": {
+      "exact": 36,
+      "false": 1,
+      "foreign_null_accepted": 0,
+      "accepted": 37,
+      "validation_accuracy": 0.603863
+    },
+    "random_gate": {
+      "exact": 34,
+      "false": 2,
+      "foreign_null_accepted": 0,
+      "accepted": 36,
+      "validation_accuracy": 0.601606
+    }
+  },
+  "gate_used_memory_worlds": 8,
+  "preset_checks": {
+    "gate_exact_ge_uniform_plus_3": false,
+    "gate_exact_ge_memory": true,
+    "gate_exact_gt_random": true,
+    "gate_false_le_uniform": true,
+    "gate_foreign_null_accept_zero": true,
+    "gate_validation_accuracy_ge_uniform": true
+  },
+  "non_performance_notes": [
+    "Historical learned prior overconcentrates on some Boolean tables; on this cohort fixed memory underperformed uniform by 7/52 exact mechanisms.",
+    "Gate eliminated the measured negative-transfer gap, but did not improve on the uniform-prior control.",
+    "Conventional CART/RF16 controls lack matched Bayesian posterior acceptance; comparative counts are descriptive.",
+    "All worlds follow the already-known 16 Boolean truth-table grammar; no native Yggdrasil learning or novel-family transfer is established."
+  ],
+  "data_custody": {
+    "full_raw_result_uploaded": false,
+    "source_uploaded": true,
+    "prereg_uploaded": true,
+    "full_source_and_raw_result_local_sha256_recorded": true,
+    "audit_source_uploaded": true
+  },
+  "acceptance": {
+    "native_training": false,
+    "first_use_reserved_consumed": 0,
+    "full_regression": "NOT_RUN",
+    "windows_ci": "UNVERIFIED",
+    "promotion": "HOLD"
+  }
+}
