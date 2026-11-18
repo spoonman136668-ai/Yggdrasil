@@ -1,0 +1,41 @@
+{
+  "schema": "yggdrasil.energy31.continuous-novelty.v1",
+  "date": "2026-11-18",
+  "classification": "isolated synthetic development only; no native source actions or protected first-use",
+  "hypothesis": "An evidence-sensitive continuous belief over old and generated causal-rule candidates should identify unsignaled novelty and recover remembered rules better than full-history and recent-window Bayesian controls on equally witnessed action consequences.",
+  "candidate_rules": "40 signed XOR3 old laws and 120 signed XOR3 plus AND of two non-parent inputs; finite predeclared compositional grammar, no claim of unrestricted invention",
+  "source": "6 binary intervention inputs; label parity rule with 10% independent SHA-drawn observed training flips; exact uncorrupted held causal outputs; separate unseen held action patterns in entire stream",
+  "source_seeds": [4001, 4013, 4021],
+  "world_indices_per_seed_and_scenario": 12,
+  "smoke_seed": 9901,
+  "smoke_world_indices": 2,
+  "scenarios": ["familiar_return", "novel_persistent", "stationary_null", "known_rule_switch"],
+  "phase_lengths": [24, 24, 24],
+  "held_patterns_per_world": 12,
+  "held_after_each_phase_observation_count": [8,16,24],
+  "arms": ["static_bayes", "recent24_bayes", "fixed_hazard32", "evidence_hazard", "oracle_boundary", "old_only"],
+  "candidate_prior": "old hypotheses collectively 7/8; novel collectively 1/8, individually uniform within each family",
+  "bayesian_emission": "P(noisy label | candidate) = 9/10 if agrees with causal function else 1/10",
+  "update_rules": {
+    "static_bayes": "normalized Bayes on all observations, no forgetting",
+    "recent24_bayes": "recompute normalized Bayes from only last 24 witnessed observations",
+    "fixed_hazard32": "predictive mixing 31/32 retained state + 1/32 base prior BEFORE every witness; normalized Bayes after witness",
+    "evidence_hazard": "predictive surprise using previous posterior and witnessed action and label: if observed-label probability <1/4, mix 1/8 prior, else mix 1/96 prior; then normalized Bayes; continuous, no source phase callbacks",
+    "oracle_boundary": "reset full candidate posterior to base prior at true phase boundaries, then normalized Bayes; privileged upper diagnostic, never a fair matched control",
+    "old_only": "normalized Bayes with only original 40 rules; no structural novelty hypothesis"
+  },
+  "controls": ["full-history 160-rule Bayesian posterior", "matched 24-witness rolling Bayesian posterior", "fixed-hazard exact 160-rule HMM", "privileged phase-oracle Bayesian reset (descriptive only)", "old-only posterior negative", "independent second implementation of all scored probabilities and posterior normalizations"],
+  "held_isolation": "12 held action patterns fixed per stream never shown in any phase training; held predictions read-only; phase identity, source truth and source noise draw never passed to model",
+  "decision": "posterior-mean held causal prediction, ties and |p-0.5|<=1e-12 label0 to stabilize floating-point reductions; exact same actions/outcomes/budget for all arms",
+  "metrics": "held accuracy and Brier at 8/16/24 per phase, novelty posterior by source truth, null false novelty, per-seed return accuracy, resource wall and process CPU",
+  "frozen_gates": {
+    "novel_shift_gain": "evidence_hazard at end of novel middle phase in familiar_return+novel_persistent >= fixed_hazard32+0.02 and >=recent24_bayes-0.01",
+    "returning_old_gain": "evidence_hazard at end of returned familiar phase in familiar_return+known_rule_switch >= 0.80 and >= fixed_hazard32+0.02",
+    "stationary_fidelity": "stationary_null final-phase evidence_hazard accuracy >= static_bayes-0.01 and final-phase average novelty mass <=0.25",
+    "per_seed_robustness": "positive evidence_hazard minus fixed_hazard32 on returning familiarity for at least 2 of 3 independent source seeds",
+    "audit": "independently regenerate all source outcomes and exact cohort splits; reimplement all six updates and posterior forecasts, check every recorded checkpoint prediction and no held learning"
+  },
+  "stop": "one preregistered primary run, one deterministic replay, one independent complete audit; do not revise source, gates, priors, seeds, observations or novelty threshold after seeing primary outcome",
+  "budgets": {"unique_streams":144,"per_stream_observed_interventions":72,"per_stream_held_actions":12,"protected_first_use":0,"native_Yggdrasil_source_actions":0,"paid_APIs":0,"max_primary_wall_seconds":120},
+  "qualification": "development_go only if all frozen gates pass; science always UNVERIFIED; deployment NONE; isolated PR #1210 evidence only; never merge or promote from this result"
+}
