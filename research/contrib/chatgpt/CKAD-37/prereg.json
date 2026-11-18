@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD37",
+  "parent_sha": "4d474f5d25987a5482503ee06a18edc0f9acd9da",
+  "prior": "spoonman136668-ai/Yggdrasil#1253 ENGINEERING_PASS SCIENTIFIC_SCREEN_NO_GO, active policy did not improve over equal-action fixed policy.",
+  "question": "Can the existing native persistent episodic learner adapt to unannounced structural changes in observed causal rules and recover old relationships when they recur, beating fully trained conventional source-only dynamic predictors?",
+  "hypothesis": "Direct NativeEpisodeExperience stream-mode cumulative learning lowers delayed Brier loss after unseen shifts compared to both its own nonstream cumulative baseline and the strongest of conventional Beta(1,1) full history, sliding24, sliding48, discounted95, under identical authentic intervention source data. Improvement is neither assumed nor guaranteed.",
+  "world": "Two independent action-consequence worlds per seed, each unseen A -> novel B -> A return with stochastic two-stage consequences, hidden rule shifts not supplied as training labels. A transition action rule is context XOR action with 0.85/0.15 probabilities, B reverses action dependence; A terminal is a conjunction-XOR, B terminal is a different conjunction-OR function with Bernoulli probabilities 0.9/0.1. Paired views contain a stable causal context bit and one varying nuisance bit. Uniformly sampled first/second actions independent of outcomes and identical across controls. No hidden outcome leaks.",
+  "split": "After 48 witnessed episodes, start an existing continuous stream ONCE. First A period 96 +/- 8 episodes, B period 72 +/- 8 episodes, A return 64 episodes. Shift times available evaluator-only; model only receives chronological verified actual paired views/actions/next-state/reward and may never see regime ID. Before source revelation: transition forecast uses public view and first action; terminal forecast may condition on actually observed next state, not on reward. No held/replay leakage.",
+  "candidate": "Existing NativeEpisodeExperience(repair=True) single cumulative immutable native instance; observe() each revealed actual episode, begin_stream() once at t=48, context_forecast() for unannounced stream, existing checkpoint/restore and consolidate. No new native subsystem, no inferred source input or conventional analogy wrapper. Retention measured through pinned prior native context-block source ranges and full ordered unique source IDs.",
+  "controls": [
+    "Same NativeEpisodeExperience without stream using its forecast",
+    "Independent fully updated conventional Beta(1,1) transition/terminal source-count model (full-history)",
+    "Independent fully trained sliding-window24 Beta(1,1) source predictor",
+    "Independent fully trained sliding-window48 Beta(1,1) source predictor",
+    "Independent fully updated exponential-discount=0.95 Beta(1,1) transition/terminal model",
+    "0.5 sham; labeled oracle boundary diagnostic only, excluded from superiority"
+  ],
+  "seed_policy": {
+    "original_pilot": [
+      14071,
+      14072
+    ],
+    "primary_reserved": [
+      24071,
+      24072,
+      24073
+    ],
+    "dev_fixture": [
+      88411,
+      88412
+    ],
+    "consumed_prior": [
+      13961,
+      13962
+    ]
+  },
+  "budgets": "2 worlds/seed; each ~220-240 chronological actual public source episodes with TWO observed consequences per episode. Every model receives identical public observations and action selection. 2 original seeds only. No paid API, live source, owner runner, scheduled task, Forge controller or first-use primary.",
+  "frozen_metrics": "Prequential mean of transition and terminal Brier/squared error per episode before updating. Report A stable, first24 B, late B, first24 return A, late return A separately, pooled late B+late return. Freeze conventional arm set, best comparator selected strictly for reporting across same pooled evaluation but no postresult tuning. Cold byte exact, original block witness SHA retained, duplicate idempotency and conflict rejection, ordered source count, memory checkpoint and CPU/wall receipts.",
+  "frozen_gate": "On BOTH independent original pilot seeds, native stream pooled late B+late A-return Brier <=0.16 and >=0.025 lower Brier than BOTH the native nonstream and the BEST fully fitted conventional comparator across the identical pooled late-phase cases; early B shift and late return Brier each no worse than native nonstream; native cold/checkpoint/source-block/ordered-IDs/duplicate-conflict/consolidate/source-only independent metric evidence all PASS. Else SCREEN_NO_GO or INVALID. No tuning/replaying consumed pilot seeds, no automatic primary.",
+  "science": "Even if joint engineering threshold passes, SCIENTIFIC_PASS remains false pending new reserved primary first-use, independent matched conventional validation and external-world transfer. This is bounded synthetic native experience learning, not a claim of GI, open-world causal discovery, or integration into accepted runtime.",
+  "custody": "Commit prereg before source, freeze exact Git blob of code/tests/auditor/workflow before pilot first-use. Preserve original raw one-use pilot JSON and independent read-only reconstruction on GitHub; mandatory full final Linux+Windows regression on exact post-evidence candidate SHA.",
+  "authority": {
+    "research_only": true,
+    "accepted_ref_change": false,
+    "merge": false,
+    "promotion": false,
+    "controller": false,
+    "owner_first_use": false,
+    "scheduled_tasks": false,
+    "paid_apis": false
+  }
+}
