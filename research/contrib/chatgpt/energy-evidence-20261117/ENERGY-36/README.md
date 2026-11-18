@@ -1,0 +1,5 @@
+# ENERGY-36 — Active causal witness allocation (frozen pre-primary)
+
+This standalone external synthetic experiment tests whether a six-member sparse-energy committee chooses better causal witnesses than an OMP committee, one-energy uncertainty policy, random or fixed pairs. All share 80 witnessed old actions, select 16 x0=1 actions from the same 80 candidate interventions without knowing outcomes, and are separately evaluated on the same 48 held x0=1 and 16 held x0=0 actions. Fully trained energy, OMP12, Ridge, logistic and tree controls fit from each selector's identical 96 actual action/outcome receipts.
+
+Unpack `experiment.py.bz2` to `experiment.py` with Python `bz2` or `bzip2 -dk`, verify the source SHA-256 stated in `prereg.json`, then run `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -B experiment.py --out scored.json`. The source archive and protocol are frozen on the preregistration commit before any primary seed is evaluated. Negative findings are preserved; no native Yggdrasil model, accepted ref, research controller or deployment is affected.
