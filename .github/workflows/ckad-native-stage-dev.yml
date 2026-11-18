@@ -42,6 +42,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           python -B -m unittest discover -s tests -p test_native_ckad_dev_stage.py -v
+          python -B -m unittest discover -s tests -p test_native_ckad_dev_campaign.py -v
           python -B -m unittest discover -s tests -p test_native_cumulative_learner.py -v
           python -B -m unittest discover -s tests -p test_native_dtr_history.py -v
           test -z "$(git status --porcelain)"
