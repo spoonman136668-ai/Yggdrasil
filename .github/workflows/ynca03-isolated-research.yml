@@ -45,6 +45,11 @@ jobs:
           set -euo pipefail
           python -B research/contrib/chatgpt/YNCA-03/experiment.py --heldout > "$RUNNER_TEMP/ynca03-result.json"
           python - "$RUNNER_TEMP/ynca03-result.json" <<'PY'
+          import pathlib,sys
+          p=pathlib.Path(sys.argv[1])
+          p.write_bytes(p.read_bytes().replace(b'\r\n',b'\n'))
+          PY
+          python - "$RUNNER_TEMP/ynca03-result.json" <<'PY'
           import hashlib,json,pathlib,sys
           path=pathlib.Path(sys.argv[1])
           result=json.loads(path.read_text())
