@@ -1,0 +1,27 @@
+{
+  "schema": "yggdrasil.energy28.hypothesis-birth-prereg.v1",
+  "research_question": "Can evidence-triggered generation of conjunctive causal interactions absent from the initial three-way parity bank improve held action-consequence prediction without degrading familiar-rule retention?",
+  "source": "Six binary interventions; signed XOR of 3 parents (40 rules), optionally XOR with AND of two nonparent intervention bits (120 novel rules). Hidden rule identities never sent to the learner.",
+  "seeds": [1811,1823,1831],
+  "smoke_seed": 8009,
+  "source_rules": 160,
+  "regimes": [0,2],
+  "observed_train_actions": 16,
+  "held_test_actions": 16,
+  "reserved_unused_actions_per_world": 32,
+  "primary_cases": 960,
+  "held_predictions_per_arm": 15360,
+  "birth_trigger": "After 8 observations, minimum old-rule mismatches >=2; or after 16 observations, >=3. Upon trigger generate all 120 new signed triple-XOR plus disjoint pairwise-AND rules by composing known triples with a new interaction feature. Fitted by identical current observed action receipts. No generative-world labels used.",
+  "controls": ["Exact fully fitted posterior over original 40 known rules", "Exact fully fitted posterior over all 160 candidate rules, including new interactions, always available as strong conventional rule-grammar control", "Fully trained kernel ridge regression on all 160 candidate rule features, exact same public intervention observations", "Hard MAP ablation with the born bank"],
+  "probability": "Fixed 1/8 Bernoulli observation-error likelihood, 7/8 total old family prior and 1/8 total new family prior, uniformly within each family. Compare correct clean held causal outcomes. Binary predictions tie to zero.",
+  "safety": "Unprotected source-free synthetic computational development only. No original action sources, native checkpoint, first-use, runner, controller, merge, scheduler, or model integration.",
+  "frozen_development_gates": {
+    "novel_birth_rate": "At least 80% of novel-world tests in each corruption stratum trigger expansion",
+    "novel_accuracy": "At least 90% held accuracy with zero corrupted training labels, >=80% with two flips",
+    "novel_gain_vs_old": "At least 10 percentage points above old bank held accuracy in both corruption strata",
+    "strong_control_parity": "Within 1 percentage point of full-grammar exact Bayesian control in BOTH novel-world corruption strata",
+    "false_birth": "At most 10% false generation on original-world clean evidence and at most 20% under two corrupted observations",
+    "efficiency": "No speed claim unless complete independent CPU benchmark confirms >=1.5x wall speedup over complete full-bank inference at matched accuracy. Not a gate for scientific promotion."
+  },
+  "qualification": "All five first development gates must pass on each stratum or classify DEVELOPMENT_NO_GO. Exact control matching is not an energy-exclusive improvement. Full native training, original first-use and independent scientific qualification are separate and not authorized here. No post-score tuning."
+}
