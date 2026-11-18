@@ -1,0 +1,91 @@
+{
+  "audits": {
+    "fixed_budget": true,
+    "no_external_sources": true,
+    "observable_only_inference": true,
+    "seed_disjoint": true
+  },
+  "claims": {
+    "native_yggdrasil_integrated": false,
+    "owner_acceptance": false,
+    "production_deployed": false,
+    "scientific_pass": false
+  },
+  "frozen_config": {
+    "bootstrap_draws": 1000,
+    "experts": [
+      "observational",
+      "interventional",
+      "proxy_adjusted"
+    ],
+    "logistic_rate": 0.3,
+    "logistic_ridge": 0.05,
+    "logistic_steps": 250,
+    "prior_strength": 50.0,
+    "ranges": {
+      "dev": [
+        110001,
+        111025
+      ],
+      "heldout": [
+        120001,
+        122049
+      ],
+      "train": [
+        100001,
+        104097
+      ]
+    },
+    "retain_fraction": 0.8
+  },
+  "outcome": {
+    "all_expert_failure_count": 119,
+    "all_expert_failure_prevalence": 0.05810547,
+    "cases": 2048,
+    "gain_over_baseline": -0.01343102,
+    "gain_paired_bootstrap_ci95": [
+      -0.02014652,
+      -0.00549451
+    ],
+    "metrics": {
+      "confidence": {
+        "auc": 0.62278535,
+        "brier": 0.05446123,
+        "selective_failure_rate_80pct": 0.04212454
+      },
+      "disagreement": {
+        "auc": 0.25453603,
+        "brier": 0.52050781,
+        "selective_failure_rate_80pct": 0.07264957
+      },
+      "global": {
+        "auc": 0.5,
+        "brier": 0.05482033,
+        "selective_failure_rate_80pct": 0.06043956
+      },
+      "logistic": {
+        "auc": 0.4848465,
+        "brier": 0.05482834,
+        "selective_failure_rate_80pct": 0.06776557
+      },
+      "native": {
+        "auc": 0.56482873,
+        "brier": 0.05684576,
+        "selective_failure_rate_80pct": 0.05555556
+      },
+      "random": {
+        "auc": 0.44929014,
+        "brier": 0.33332878,
+        "selective_failure_rate_80pct": 0.06105006
+      }
+    },
+    "retain_fraction": 0.8,
+    "strongest_nonprivileged_baseline": "confidence",
+    "verdict": "DEVELOPMENT_NO_GO"
+  },
+  "schema": "yggdrasil.ynca02.synthetic-development.v1",
+  "source_sha256": "e35bd55aef5c6839c2e9ebd773454b888ed5431faddab3e8d525a60c9c45c467",
+  "split": "heldout",
+  "train_all_expert_failures": 198,
+  "train_worlds": 4096
+}
