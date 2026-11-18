@@ -48,10 +48,9 @@ class DecisionPolicyTests(unittest.TestCase):
                          policy.decision_first(model,view))
         for first in (0,1):
             for state in (0,1):
-                for second in (0,1):
-                    v=policy.value_perfect_information(model,view,first,state,second)
-                    self.assertIsInstance(v,Fraction)
-                    self.assertGreaterEqual(v,0)
+                v=policy.value_perfect_information(model,view,first,state)
+                self.assertIsInstance(v,Fraction)
+                self.assertGreaterEqual(v,0)
         self.assertIn(policy.decision_second(model,view,1,0),(0,1))
 
     def test_bad_public_arguments_and_hidden_source_denied(self):
