@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.ckad19.balanced-causal-transfer.prereg.v1",
+  "experiment_id": "CKAD-19",
+  "parent_sha": "337ead74cc3a600598580747c3d8ca2d422777d0",
+  "parent_tree": "6dc08e25f3322f69cb213c58e9b250128d23c987",
+  "objective": "Discriminate accumulated causal-structure transfer from a shortcut based on positive-outcome frequency, on unseen synthetic parity relations with exactly matched outcome marginals.",
+  "scientific_class": "isolated development-only sidecar; no real-world or protected-first-use source; no native-learner integration",
+  "world_family": {
+    "public_inputs": "context bits c0,c1,c2 and chosen intervention bit a; x=c0+2*c1+4*c2+8*a",
+    "family_0": "y = a XOR c_i XOR offset, i in {0,1,2}, offset in {0,1}",
+    "family_1": "y = a XOR c_i XOR c_j XOR offset, i<j in {0,1,2}, offset in {0,1}",
+    "exhaustive_rules_per_family": 6,
+    "outcome_frequency": "For each rule exactly 8/16 public input+action queries return y=1; all families and held-out rules have matching 50% outcome marginals.",
+    "true_interventions": "Simulator reveals true binary y only after x containing the selected action is issued; learner never receives rule, family, or hidden mask labels.",
+    "heldout": "Each of six rules per family is held out from all four training tasks in that case. Candidate hypothesis class is known in advance; this is an unseen instance, not a previously unknown causal family."
+  },
+  "seeds": [
+    101,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808,
+    909,
+    1001
+  ],
+  "cases": "10 seeds x 2 families x 6 held rules = 120 case-folds; deterministic seeds fixed and no resampling after scores",
+  "training": "Four distinct same-domain rules selected among five nonheld rules per case, five unique intervention x per rule, sampled before observing outcomes; same 20 observations supplied to every arm. No training family labels.",
+  "test": "At held rule, observe 0,1,2,3,4 selected interventions in sequence. At each stage score 16-input Brier and eight-context action decision regret. Each arm may choose its own interventions but all outcomes are revealed only after selection.",
+  "learner": "Discrete hierarchical family posterior from four observed training tasks, each marginalized over six equal family hypotheses. Fixed emission noise 0.02 in likelihood for robustness; test readout marginalizes all 12 candidate rules. Predictions and intervention acquisition require only public x,y.",
+  "interventions": "Active policy chooses unqueried x maximizing p(y=1)*(1-p), ties resolved by ascending x. Random policy chooses seeded uniform unqueried x. Source simulator may compute true outcomes only after x selection.",
+  "arms": [
+    "meta_active: accumulated training-derived family prior + active queries",
+    "flat_active: equal family prior + identical active query algorithm",
+    "meta_random: learned family prior + random query algorithm",
+    "frequency_shadow: Laplace-smoothed public y-by-action counters from the same 20 task examples; receives the identical held task query/outcome sequence of meta_active; no context interactions",
+    "conventional_exact_control: independently implemented full 12-hypothesis Bayesian enumerator on identical data, must tie meta_active at every stage"
+  ],
+  "negatives": [
+    "family-reversed held task at identical seeded experiment settings, report effect",
+    "training labels independently shuffled within each training task, frozen deterministic shuffle, report outcomes",
+    "no-meta ablation",
+    "exact 50% population marginal verification for every rule",
+    "tampered checkpoint denied without fallback",
+    "check no held rule occurs in any of four training tasks; no outcome oracle called before selected intervention"
+  ],
+  "checkpoints": "Canonical SHA256-pinned JSON sidecar stores precisely training public x/y tasks and posterior; cold restoration rederives posterior and verifies every byte. No source labels in checkpoint.",
+  "scores": "Mean Brier and mean eight-context policy regret at t=0,1,2,3,4. Report per-family and per-seed results, absolute and relative effects, and paired 95% bootstrap CI with fixed bootstrap seed 19019 and 1000 resamples over 120 case-folds.",
+  "success": {
+    "engineering": "Correct frozen scenario counts, marginal equality, SHA-pinned cold state, no hidden-label leakage, exact 12-hypothesis independent Bayes match <=1e-12, anti-tamper and family-flip/shuffle negatives, deterministic repeat, full candidate Linux and Windows regression+atlas checks.",
+    "development": "At t=2 meta_active Brier <=0.85*flat_active Brier, mean regret <=0.80*flat_active regret with flat regret>0, meta_active Brier <=0.85*frequency_shadow Brier. Report failures even if classification NO_GO.",
+    "action_value": "At t=2 mean meta_random regret>0, and meta_active regret<=0.90*meta_random regret. Gate is false if degenerate.",
+    "scientific": "scientific_pass=false irrespective of synthetic outcomes; no superiority over identical Bayesian class, no unprogrammed causal discovery or real-world generality."
+  },
+  "resources": {
+    "training_observations_per_case": 20,
+    "test_observations_per_arm": 4,
+    "max_campaign_wall_seconds": 120,
+    "paid_apis": 0,
+    "original_source_actions": 0
+  },
+  "source_scope": [
+    "research/contrib/chatgpt/CKAD-19/**",
+    ".github/workflows/ckad19-balanced-causal-transfer.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Existing CKAD18 qualified PR1207 remains draft; isolated new branch only, no merge/promotion/controller/scheduler changes, no new external runtime or native model mutation. Do not continue primary on a modified protocol."
+}
