@@ -140,6 +140,7 @@ def run_case(parent,environment,world,source):
     require(Fraction(*final_weight)==mixture.weights[-1],"POSTERIOR")
     # Capacity and data access match the conventional controls exactly.
     readouts=PARENT22.readouts(models,mixture,foundation,retained)
+    readouts["full_beta"]=readouts["beta"]
     plans={arm:{view:readouts[arm][0](view) for view in BASE.VIEWS} for arm in ARMS}
     require(plans["novel_active"]==plans["exact_mixture"],"EXACT_MIXTURE_PLAN")
     results={}
