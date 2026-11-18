@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-183",
+  "classification": "real-physical-published-intervention-offline-development",
+  "project": "Yggdrasil",
+  "parent_sha": "c13f90f2e97908eeec3563152deea7c41bf91c44",
+  "thesis": "Train on *actual published physical-wind-tunnel intervention measurements*, not any authored synthetic world, and compare tokenless direct-effect weights to independent strong statistical controls with matched public measurement history. No original-world interactions, no blind scientific acceptance.",
+  "external_source": {
+    "repository": "juangamella/causal-chamber",
+    "commit": "967d59a42956872f37463cc561ecf6e9ceab9364",
+    "dataset": "wt_changepoints_v1",
+    "dataset_readme_blob": "66ab8d597ead7b0ffd828a722d97b8ba83579a4e",
+    "variables_blob": "2078166de5ce0bf8d1fc8497f05de6f5cae3fa8d",
+    "generator_blob": "8ca83af2102a415d0ccc581644fff2fd7d466223",
+    "license_data_blob": "4ea99c213c5c0c005ae4e80df8e52169d06896ec",
+    "archive_url": "https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/wt_changepoints_v1.zip",
+    "archive_expected_md5": "7e9f26d192674f2aaa6481f4415007eb",
+    "data_license": "CC BY 4.0; attribution to Gamella, Peters, Bühlmann, Nature Machine Intelligence 2025",
+    "new_source_actions": 0
+  },
+  "frozen_data_selection": {
+    "runs": "load_in_seed_0 through load_in_seed_9 (actual 2024 real physical measurements)",
+    "fit": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "validation": [
+      6,
+      7
+    ],
+    "public_dev": [
+      8,
+      9
+    ],
+    "event_boundary": "intervention column equals 1 at first sample after SET; do NOT use future target readings as model inputs",
+    "event_target": "within each event, post-settling mean over ordinal measurement offsets 15..79, inclusive, for rpm_in and pressure_intake (65 rows); reject too-short events, incomplete/nonfinite columns, mixing runs or timestamps. No relabeling of source as direct matched-exogenous do pairs.",
+    "input": "load_in value at first event row, optional previously completed event's measured outputs and load in same run; NEVER current event future sensor targets before prediction",
+    "evaluation": "weighted mean over events of two output root-mean-squared-error values each scaled by FIT-only sample standard deviation. Also raw per-output RMSE and per-run event counts.",
+    "physical_caveat": "Source manipulations keep other actuators fixed within each run; no guaranteed paired exogenous counterfactuals; real measurement noise, time drift, and serial dependence."
+  },
+  "frozen_controls": {
+    "pass1": "direct scalar weight-programming via online recursive least squares (intercept+load), independent fully-fitted batch ridge with identical features (must tie up to numerical precision), FIT-only mean, fitted four-level categorical means",
+    "pass2": "optional bounded post-event contradiction correction using only prior same-run observed event residuals; compare same-info conventional ARX model with previous event load and target, plus persistence",
+    "training": "All models fit on same six FIT runs, select between pass1 and pass2 on VALID runs only, with at most two development passes, no public_dev tuning",
+    "hyperparameters": "ridge regularization 1e-6 on two-feature affine; category level fixed from four author-defined load values 0.01,0.1,0.2,0.5; difference repair gain 0.5 fixed, no tuning; conditional alpha smoothing 1 fixed",
+    "unfamiliar_world_caveat": "run-level public_dev holdout is not an independently new physical mechanism; no generalized scientific transfer claim",
+    "score_floor": "at least 5% relative improvement on public_dev normalized RMSE over strongest FIT-trained conventional control across BOTH outputs with no more than 1% old-relationship retention cost; if tied/negative, STOP and preserve results"
+  },
+  "budgets": {
+    "passes_max": 2,
+    "source_actions": 0,
+    "physical_remote_lab_calls": 0,
+    "paid_api_calls": 0,
+    "platforms": [
+      "local source-bounded artifact only until exact code qualification"
+    ],
+    "stop": "If data archive unavailable/hash mismatch, run IDs absent, too few interventions, or public evidence extraction invalid: stop without adapting splits."
+  },
+  "authority": {
+    "owner_original_first_use": false,
+    "scientific_pass": false,
+    "accepted_main": false,
+    "model_deployment": false,
+    "controller": false,
+    "runner_dispatch": false,
+    "merge": false
+  },
+  "status": "FROZEN_BEFORE_OPENING_MEASURED_CSV"
+}
