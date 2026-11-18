@@ -1,0 +1,27 @@
+{
+  "schema": "ckad.identifiability.audit.v1.scope",
+  "classification": "RETROSPECTIVE_COLD_MEMORY_STRUCTURAL_AUDIT",
+  "started": "2026-11-17",
+  "baseline_commit": "cd9d52d86882326e6f0ecbb04979141dc6a2d893",
+  "baseline_tree": "fb17df7c8a05cb25c90d96f63bc43f75dc1b6851",
+  "source_checkpoint": {
+    "path": "research/contrib/chatgpt/CKAD-SHARED-V2/native-shared-checkpoint.json",
+    "git_blob_sha": "57ccfdeecb63859b7f3232ec40d8a2739e3839af"
+  },
+  "source_scores": {
+    "path": "research/contrib/chatgpt/CKAD-SHARED-V2/result.json",
+    "git_blob_sha": "ae4935481c4b85a9f52bc8194ee83b651ed96d73"
+  },
+  "goal": "Quantify observationally indistinguishable alternative causal programs under already witnessed 8 effects per evaluation world; measure coverage of predictions certified by exact consensus across a broader class; propose input-only next observations that discriminate hypotheses, WITHOUT executing any new actions or looking at outcomes.",
+  "method": "Read V2 source-pinned native checkpoint and cold restore. Extract witnessed mask/label pairs only; independently enumerate all 64 XOR linear masks, two biases and 25 action-gated positive conjunctions of degree1..3. No code path calls V2 source_truth, SimulatedWorld, held_truth or generator. Per 64 world slot enumerate exact zero-error compatible programs, minimal witnessed mismatch and counts, unseen/held-input unanimous-vote masks; validate V2 recorded answer SHA and negative result accounting. Only propose 4 unused observational-pool masks per evaluation world maximizing min(compatible0, compatible1), no outcomes accessed.",
+  "limits": "Post-hoc analysis on consumed synthetic fixtures, not a new development science test; expanding family may reduce familiar certainty, corrupted evidence may have consistent but incorrect models, no proof of predictive safety. A previously confident prediction is not logically certified by a narrow bank if expanded explanations disagree.",
+  "authority": "READ_ONLY_SOURCE evidence. No source generators, no original first-use, no new source effects, no edits to V2 checkpoint or owner PR or main, no new controller, scheduled task, paid API, merge, deployment or accepted native model.",
+  "outputs": [
+    "research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/result.json",
+    "research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/SESSION_REPORT.md",
+    "research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/audit.py",
+    "tests/test_ckad_ident_audit_v1.py",
+    ".github/workflows/ckad-ident-audit-v1.yml"
+  ],
+  "engineering": "Required dual OS independently identical read-only result, full final regressions + G29 on sealed final SHA/tree. No SCIENTIFIC_PASS; negative/null observations preserved."
+}
