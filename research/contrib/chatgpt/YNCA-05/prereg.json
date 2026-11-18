@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-05",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does diagonal passive evidence plus a two-intervention budget suffice to identify previously unknown 3-input Boolean causal laws? Which probes have positive decision value after cost?",
+  "hypothesis": "With passive actions limited to 000 and 111 and their outputs fixed 0 and 1, 64 distinct Boolean causal laws remain observationally equivalent. Any two noiseless distinct additional binary probes leave at least 16 such laws consistent. For a uniform unstructured prior, a probe outside the terminal decision pair cannot improve terminal expected utility; net value is negative after strictly positive probe costs.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1222",
+      "note": "YNCA04 exact dual-OS development negative with cost-aware probes; model used 12 passive events largely on diagonal and at most two probes; no source/seed reuse"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-05/prereg.json",
+    "research/contrib/chatgpt/YNCA-05/experiment.py",
+    "research/contrib/chatgpt/YNCA-05/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-05/result.json",
+    "research/contrib/chatgpt/YNCA-05/provenance.json",
+    "research/contrib/chatgpt/YNCA-05/README.md",
+    ".github/workflows/ynca05-analytic.yml"
+  ],
+  "inputs": [
+    {
+      "name": "All 256 three-input binary truth tables; restrict f(000)=0,f(111)=1; analyze exact 64 candidate tables",
+      "sha256": "to-be-bound-to-source-commit-before-first-outcome",
+      "source": "exhaustive self-generated mathematical universe, no external dataset, no hidden eval split"
+    }
+  ],
+  "frozen_design": {
+    "fixed_law_count": 256,
+    "conditioning": "f(000)=0, f(111)=1 -> 64 distinct laws; six unconstrained off-diagonal truth bits",
+    "action_space": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "measurement_noise_epsilon": 0.14,
+    "probe_observations": 2,
+    "max_additional_distinct_probe_actions": 2,
+    "terminal_options": "all 15 unordered distinct pairs among actions 1..6, equal weight",
+    "terminal_utility": "true binary outcome at selected terminal action minus 0.08 per active input bit",
+    "probe_cost": "0.018+0.012*number of active input bits; strictly positive for every action",
+    "first_action_policy_set": [
+      "stop",
+      "oracle expected terminal value minus probe cost",
+      "choose the cheapest candidate terminal action",
+      "fixed probe on action 1",
+      "uniform random among actions 1..6",
+      "entropy/cost-maximizing fixed probe on action 1",
+      "fixed probes 1..6"
+    ],
+    "primary_metrics": [
+      "exact number of passively indistinguishable laws",
+      "minimum residual indistinguishable laws after any two noiseless probes",
+      "count of terminal decision pairs with positive net value of probing",
+      "exact average regret-plus-probe-cost over all 15 pairs for each policy"
+    ],
+    "scoring": "Enumerate all 64 laws, all 15 candidate terminal pairs, all four ordered two-outcome sequences, and exact Bayesian likelihood/posterior updates (rational probabilities), with zero external/train/heldout data. Use deterministic arithmetic and fixed sorted tie break.",
+    "comparison": "Analytic exact Bayes decision-value oracle is a theoretical comparator, not a trainable learner. Stop, random, cheapest candidate, and fixed action controls share same 2-sample budget and actual cost accounting.",
+    "resource_budget": "Python 3.12 standard library, 10 seconds typical for complete exact analysis, GitHub Actions hosted Linux and Windows only, no paid APIs.",
+    "classification_rules": "The mathematical bound is PROVEN_ANALYTIC only if 64 laws/16 residual after 2 probes and zero information gain for off-pair probes are validated exhaustively. A cost-aware decision policy is better than controls only if exact mean net utility dominates every fixed and randomized action; no native-model scientific pass is possible from this analytic task.",
+    "source_first_use": "Pin experiment.py SHA256 and source commit before primary analytic result/CI; no parameter tuning after output.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "No probe",
+    "All six fixed off-diagonal probes",
+    "Cheapest offered terminal action",
+    "Uniform random probe",
+    "Exact Bayesian myopic value of decision information",
+    "Entropy/cost probe heuristic",
+    "Independent exhaustive law-pair equivalence verifier"
+  ],
+  "metrics": [
+    "Exact observational equivalence class cardinalities",
+    "Residual class sizes for all probe subsets",
+    "Number of pairs with positive net probe utility",
+    "Full mean terminal risk plus probe cost by policy",
+    "Correctness checks against brute-force law enumeration",
+    "Full OS and exact SHA receipts"
+  ],
+  "classification_rules": {
+    "supported": "ANALYTIC_PROOF_SUPPORTED if exhaustive independent checks establish observational equivalence cardinality and strict negative value for off-terminal-pair probes, with both OS reproducibility. Does not imply scientific intelligence gain.",
+    "mixed": "Disagreement between independent combinatorial and Bayesian enumerators, or incomplete exact controls: UNVERIFIED, no promotion.",
+    "negative": "If any of the two named identifiability bounds is disproven, ANALYTIC_HYPOTHESIS_FALSE; retain result without changing hypothesis.",
+    "invalid": "Any source/result identity mismatch, omitted laws/controls, or post-output source changes invalidates confirmatory status."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "unreported enumerator modification",
+    "reclassification of a negative",
+    "data leakage or source drift",
+    "claims of native learner training"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This is a mathematical information ceiling audit, not a new native trained model, protected original scientific experiment, or a substitution for CKAD."
+}
