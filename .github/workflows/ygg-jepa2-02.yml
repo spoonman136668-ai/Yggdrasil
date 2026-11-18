@@ -42,7 +42,7 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CKAD-37/pilot-14072.json)" = 4ea587d99ea3852f396f9d79dfcafab64c3ab4f8
           git diff --exit-code f00d39793bff2091b7c74c05192a873725e675c2 HEAD -- research/contrib/chatgpt/YGG-JEPA2-02/prereg.json
           python -B -m unittest discover -s tests -p test_native_jepa2_multilearner.py -v
-          python -B -m unittest discover -s tests -p test_native_episode_experience.py -v
+          python -B -m unittest discover -s tests -p test_native_cumulative_learner.py -v
           python -B research/contrib/chatgpt/YGG-JEPA2-02/campaign.py --help
           python -B research/contrib/chatgpt/YGG-JEPA2-02/audit.py --help
           test -z "$(git status --porcelain)"
