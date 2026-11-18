@@ -248,7 +248,9 @@ def eval_split(model,split):
     sham=mean["shuffled"]-native
     is_support=(relative<=.95 and ci[0]>0 and sham>=.005)
     verdict="DEVELOPMENT_SUPPORTED_NOT_SCIENTIFIC_PASS" if is_support else "DEVELOPMENT_NO_GO"
-    return {"world_count":n,"families":{law:sum(1 for a,_ in cases if a==law) for law in sorted(set(law for law,_ in cases))},
+    return {"world_count":n,
+            "privileged_truth_oracle_total_regret_lower_bound":0.0,
+            "families":{law:sum(1 for a,_ in cases if a==law) for law in sorted(set(law for law,_ in cases))},
             "mean_total_regret_plus_probe_cost":{p:round(mean[p],9) for p in POLICIES},
             "mean_forecast_brier":{p:round(sum(row[p][1] for law,row in cases)/n,9) for p in POLICIES},
             "mean_probe_count":{p:round(sum(row[p][2] for law,row in cases)/n,6) for p in POLICIES},
@@ -266,16 +268,21 @@ def audit(model):
     assert all(spans[i].isdisjoint(spans[j]) for i in range(3) for j in range(i+1,3))
     assert model["worlds"]==1024
     assert all(law not in TRAIN_LAWS for law in NEW_LAWS)
-    assert len(set(truth(law,a) for a in range(8)) for law in NEW_LAWS)==2
+    assert len(NEW_LAWS)==2 and set(NEW_LAWS).isdisjoint(TRAIN_LAWS)
+    assert len({tuple(truth(law,a) for a in range(8)) for law in NEW_LAWS}) == 2
     assert len(model["global"])==8
     test=posterior([(0,0),(7,1)])
     assert abs(sum(test)-1)<1e-12
     assert all(0<=v<=1 for v in test)
     # Cold restoration: no retraining or view of the test world required.
-    serial=json.dumps(model,sort_keys=True,separators=(",",":"))
+    record={"global":model["global"],
+            "cells":[[list(k),v] for k,v in sorted(model["cells"].items())],
+            "sham":[[list(k),v] for k,v in sorted(model["sham"].items())]}
+    serial=json.dumps(record,sort_keys=True,separators=(",",":"))
     restored=json.loads(serial)
-    # JSON stringifies tuple dictionary keys, so use a structured export.
     assert restored["global"]==model["global"]
+    assert {tuple(k):v for k,v in restored["cells"]}==model["cells"]
+    assert {tuple(k):v for k,v in restored["sham"]}==model["sham"]
     return {"seed_disjoint":True,"unseen_mechanism_family":True,"posterior_valid":True,
             "native_global_cold_restore":True,"equal_probe_budget":True,
             "test_labels_not_referee_inputs":True}
