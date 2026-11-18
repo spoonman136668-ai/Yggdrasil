@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-168",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "classification": "sourcefree-constructive-effect-plus-old-new-retrieval",
+  "question": "Can a single bounded tokenless exact direct-weight learner construct a higher-order action relation through composition of a previously learned public triple with each observed state coordinate, then retrieve old vs new action laws from prior public action consequences without oracle regime labels, while retaining old-law predictions after switching?",
+  "hypothesis": "From 48 strictly public synthetic paired-action FIT states, one public-only 36/12 inner-FIT tournament over compositional expansions (old-selected triple×each of four public state coordinates) will choose product with s3 in each of three frozen seeds, and refitted new-family 10-feature 4-output direct weights will yield disjoint-held new action1 RMSE <=.020, improvement >=.08 vs same-ridge nine-feature parent in all 3 seeds. A single two-slot retained model (frozen old action law plus new composed law) selecting the better match from the MOST RECENT witnessed action1 public consequence in the same episode will attain <=.020 later-step RMSE separately in old-only, new-only, and new->old held episodes, with first/new switch steps scored separately. A conventional independently fitted same-info batch polynomial + switching-recency control must tie within 1e-8 and may be more efficient. An unrepresented fifth-order action effect is an explicit negative; no scientific novel-world claim.",
+  "parent_sha": "8ae7e116ac3de2510a447a53ef6324c20bfba4fd",
+  "parent_tree": "3773105113de8d64b27e0dac25045edf7a70d4ea",
+  "lineage": [
+    "WSP167 PR1224 exact final SHA 8ae7e116ac3de2510a447a53ef6324c20bfba4fd full #44279203845 and independent G29 #44279209781 dualOS PASS, development 3-seed selected triple [0.00413,0.00357,0.00520] but unrepresented quartic RMSE [.27076,.32588,.32798] and returning old action1 [.26364,.26199,.30016], conventional same-fit tie",
+    "WSP167 exact rational isolated component checkpoint Linux/Windows identical; parent WSP160 floating full-model bytes not proven portable",
+    "CKAD PR1207 independent integrated native learner; do not modify or recast its own memory/owner",
+    "CVH10 PR1177 original protected-source owner actor virgin lease unqualified; original CausalAILab/CausalGym first use=0, conditional caps not permission"
+  ],
+  "paths": [
+    "research/contrib/chatgpt/WSP-168/prereg.json",
+    "research/contrib/chatgpt/WSP-168/composed_effects.py",
+    "research/contrib/chatgpt/WSP-168/test_composed_effects.py",
+    "research/contrib/chatgpt/WSP-168/README.md",
+    ".github/workflows/wsp168-composed-retention.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "source_boundary": {
+    "type": "investigator-authored deterministic source-free synthetic public 4D action observation/consequence tuples only, including artificial matched outcomes of both actions on same state",
+    "restriction": "No protected original CartPoleWind SCM original reset/step/do/ctf_do or original source-owner virgin cohort/actor. No oracle relation id, generator weights, future target, held regime label, private wind/graph in learner or baseline.",
+    "original_source_actions": 0
+  },
+  "frozen_protocol": {
+    "seeds": [
+      3427,
+      3539,
+      3659
+    ],
+    "state_support": "WSP166 GRID 256 dyadic 4D public states. Each seed independent random.Random(seed) permutation. First 48 matched public FIT states (old + new law each action0/action1) then next 48 wholly disjoint held public states. Same finite coordinate support, not unfamiliar external world or true unseen continuous range.",
+    "old_family": "Exactly WSP166 authored old_action_zero public next-state, constant WSP166 OLD_CONTRAST for action1. Train and freeze one WSP160 static parent on 96 old-family FIT public action rows (48 paired states). Readout old parent.predict(state,action) stays frozen even while new relationship is learned.",
+    "new_family": "action0 unchanged; action1 contrast is previous WSP166 8-feature authored bilinear coefficients plus cubic term WSP167 prior triple s0*s1*s2×(1,-.75,.75,-.5) plus new quartic interaction 4*s0*s1*s2*s3×(1,-.75,.75,-.5) and frozen per-seed mean offset ±1/32. Learner sees only paired public observed next-states, never authored source coefficients.",
+    "old_base_expression": "Reuse WSP167 public 9-feature basis [1,s0,s1,s2,s3,s0*s1,s1*s2,s0*s3,s0*s1*s2] as previously selected learned relation.",
+    "composition_grammar": "Only multiplication of the PREVIOUS learned triple (a third-order factor) by each of the four public state variables, yielding four dynamically constructed degree-4 candidates triple*s0, triple*s1, triple*s2, triple*s3. No pre-authored quartic candidate list in code, but pre-authored multiplication operator and public coordinates; this is bounded symbolic composition NOT arbitrary law invention.",
+    "selection": "From same 48 new-family matched FIT public pair outcomes: train 9-feature λ=1/64 null and 4 independent 10-feature exact Fraction RLS candidates on first 36 FIT public pairs, evaluate only remaining 12 internal FIT public pairs. Choose minimum held-inner RMSE candidate if at least .01 better than null; deterministic smallest state index tie; otherwise NONE. Refit ONE chosen 9/10 feature direct-weight head on ALL 48 FIT pairs, original old parent unchanged. No postscore corrections.",
+    "retained_learning": "Represent original old-family relationship as immutable historic parent and learned new-family composed action effect head in one opt-in two-slot readout. For action1 prequential prediction with zero witnessed previous action1 records in episode choose OLD head, then compare the squared four-output public prediction errors of OLD and NEW heads on ONLY the single most recently observed PUBLIC action1 transition (never current row outcome) and choose minimum, ties OLD. If history contains only public action0 events, no evidence about changing action1 law -> default OLD. Caller clears history at public terminal/truncated; reject any terminal prior as episode contamination. For action0 always use OLD action0. No per-regime identity input or source tuple type.",
+    "held_episode_fixtures": "48 held public states permuted separately by random.Random(seed+6000). Construct 16 episodes of length 12 per seed, with public action1 for each step and disjoint sourcefree states reused across episodes; modes encoded ONLY by evaluator: 4 all-OLD episodes, 4 all-NEW, 4 OLD->NEW at step6, 4 NEW->OLD at step6. Inside learner history only public action1 observations accumulated AFTER current forecast. Score first-of-episode, switch-first and strictly after-one-witness, old-only/new-only and returning old separately. Never supply mode label to predictor. The independent conventional switching control gets the same previous publicly witnessed action1 transition.",
+    "secondary_ood": "On 4 additional held episodes that apply NEW composed law plus hidden extra unexposed fifth-degree triple*s3*s3 × 4*(1,-.75,.75,-.5) (not in multiplication-candidate grammar), score with old/new public feedback mechanism; no FIT exposure, frozen negative. This is still authored synthetic data.",
+    "normalization": "All new coefficient/covariance updates Fraction.from_float on dyadic observations and canonical reduced rational bytes; isolated new-head checkpoint must be byte-identical Linux/Windows after 48 FIT records; old parent floating bytes excluded. Within-host cold record predictions and separate-process cold restore required.",
+    "budget": "3 seeds×(48 old FIT paired+48 new FIT paired+48 disjoint held paired context states+16×12 prequential public transitions + 4×12 OOD), <=48 new pairs per direct model, at most 5 training candidates (9 and four 10), 0 original actions, Python stdlib only, GitHub Actions qualified OS existing workflows only. No separate scheduler/queue/controller/paid API or new runner."
+  },
+  "strong_controls": [
+    "Independent conventional FULLY FIT double-precision batch Gaussian ridge of SAME selected 10-feature composition, λ=1/64, and 36/12 public-pair candidate tournament; must choose same expansion and forecasts match direct fraction model to <=1e-8. No direct programming superiority from a tie.",
+    "Strong conventional batch ridge FULL 13 public features (nine base plus all four degree4 products) FIT on same 48 new source-free public pairs; can beat selected head.",
+    "Nine-feature same-ridge source-free direct model (no composition), unchanged WSP167 nine-feature λ=1/64 model, WSP160 frozen old parent, action-erased base predictions.",
+    "Conventional independently coded previous-public-action1 likelihood-based old/new retriever using SAME conventional batch new head and old parent, no oracle labels or future, strong comparator for both learning and retained retrieval.",
+    "Oracle true active law diagnostic only (no usable predictor access), static always OLD and static always NEW controls, noisy false history and terminal-flag negative tests.",
+    "Unrepresented fifth-order interaction negative and switched first-of-change failures reported, not retuned or omitted.",
+    "Protected old action0 and exact unchanged old base checkpoint, but old action1 retrieval after observational switch must be explicitly evaluated; no claiming lifelong retention merely because the archived weights exist."
+  ],
+  "metrics": [
+    "per_seed_selected_composition",
+    "independent_conventional_selected_composition",
+    "held_new_action1_composed_rmse",
+    "held_new_action1_nine_feature_rmse",
+    "independent_same_feature_batch_rmse",
+    "fully_fit_13feature_rmse",
+    "old_parent_checkpoint_preserved",
+    "held_old_only_later_rmse",
+    "held_new_only_later_rmse",
+    "held_old_to_new_after_witness_rmse",
+    "held_new_to_old_after_witness_rmse",
+    "held_switch_first_rmse",
+    "held_first_episode_rmse",
+    "held_conventional_retriever_rmse",
+    "held_always_old_rmse",
+    "held_always_new_rmse",
+    "unrepresented_fifth_order_rmse",
+    "effect_checkpoint_bytes",
+    "effect_checkpoint_sha256",
+    "cold_max_gap",
+    "cross_os_state_identity",
+    "training_cpu_seconds",
+    "scoring_cpu_seconds",
+    "original_source_actions"
+  ],
+  "frozen_decision": {
+    "feature_dev": "PASS developmental only if all three seeds chose composition with factor s3, held new action1 <=.020, gain over same ridge 9-feature >=.08, independently fitted same-feature 10-feature batch parity <=1e-8 and selected candidate agrees with independent conventional tournament.",
+    "retention_dev": "PASS only if all 3 seeds OLD-only later, NEW-only later, OLD->NEW strictly AFTER switch one public action1 witness, and NEW->OLD strictly AFTER switch one public action1 witness each <=.020 RMSE; frozen initial and switch-first errors reported without smoothing, and independent conventional switching control equals or beats. Fail closed if returned-old is not recovered.",
+    "ood": "Unrepresented fifth-order OOD true held action1 RMSE <=.08 for all seeds would qualify separate development transfer signal; otherwise explicitly NO_GO, not capacity retune.",
+    "engineering": "Focused native tests, valid public-only input, strict checkpoint and true cross-OS isolated effect SHA equality plus mandatory 195 root+NKR05+WSP159-168 on final exact Linux+Windows candidate and independent G29 PASS. A failed scientific criterion does not alter engineering regression.",
+    "science": "SCIENTIFIC_PASS=false regardless of source-free developmental results; independently conventional fitted control parity and artificial paired source access do not establish new real-world causal discovery, tokenless native integration or whole-process efficiency."
+  },
+  "authority": {
+    "sourcefree_only": true,
+    "original_source_first_use": false,
+    "main_merge": false,
+    "accepted_model_mutation": false,
+    "CKAD_mutation": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_api": false,
+    "deployment": false
+  }
+}
