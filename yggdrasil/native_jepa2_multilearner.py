@@ -236,6 +236,16 @@ class NativeMultiLearner:
             count = native.info()["count"]
             require(t.steps == STEPS * count and r.steps == STEPS * count,
                     "JEPA2_STEPS_SOURCE_PARITY")
+            # Treat persisted neural weights as evidence-derived, not trusted
+            # metadata. Rebuild from the native immutable public source ledger.
+            reference_t, reference_r = (ActionLatentSpecialist("transition"),
+                                        ActionLatentSpecialist("reward"))
+            for _, views, first, next_state, second, outcome in native._ledger:
+                reference_t.observe(views, (first,), next_state)
+                reference_r.observe(views, (first, next_state, second), outcome)
+            require(canonical(reference_t.as_data()) == canonical(t.as_data())
+                    and canonical(reference_r.as_data()) == canonical(r.as_data()),
+                    "JEPA2_LEARNED_WEIGHTS_SOURCE_PARITY")
             obj = cls(native, t, r)
             require(obj.checkpoint() == raw, "JEPA2_CHECKPOINT_REPLAY")
             return obj
