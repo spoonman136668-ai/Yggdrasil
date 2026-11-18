@@ -24,6 +24,21 @@ def train(m, slot, r, **kwargs):
 
 
 class IntegratedLearningTests(unittest.TestCase):
+    def test_stochastic_history_updates_do_not_quarantine_deterministic_knowledge(self):
+        from pathlib import Path
+        from yggdrasil.native_stochastic_history import SOURCE_PIN
+        source=(Path(__file__).resolve().parents[1]/'research/contrib/chatgpt/NKR-20/source_fixture.json').read_bytes()
+        m=train(fixture(),0,rows());old=m.checkpoint();expected=[m.predict(0,x&7,x>>3) for x in range(16)]
+        for stop in (8,16,23):
+            m=m.observe_cached_history(source,SOURCE_PIN,stop)
+            raw=m.checkpoint();m=NativeCumulativeLearner.restore(raw,digest(raw))
+            self.assertEqual(expected,[m.predict(0,x&7,x>>3) for x in range(16)])
+            self.assertEqual(m._quarantined,(False,)*16)
+        self.assertEqual(NativeCumulativeLearner.restore(old,digest(old)).checkpoint(),old)
+        self.assertGreater(m.info()['stochastic_history']['counter_keys_with_both_outcomes'],0)
+        self.assertEqual(m.info()['stochastic_history']['training_events'],92)
+        self.assertIs(m.observe_cached_history(source,SOURCE_PIN,23),m)
+
     def test_sparse_repair_cold_continuation_preserves_legacy_bytes_and_other_slots(self):
         remaining=(4,8,12,2)
         data=[[x&7,x>>3,int(x&3==3)] for x in range(16) if x not in remaining]
