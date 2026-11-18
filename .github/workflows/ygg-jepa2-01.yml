@@ -1,0 +1,135 @@
+name: YGG-JEPA2-01 source-bound cumulative specialist qualification
+'on':
+  push:
+    branches:
+      - research/jepa2-01-native-multilearner-20261118
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  replay:
+    if: "github.event.head_commit.message == 'ci(jepa2): qualify frozen dual specialist training and reanchor atlas'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Preserve native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen source and replay learned parameters
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 8ff651073ea2505232cac6047a45c2133e56c14f:research/contrib/chatgpt/YGG-JEPA2-01/prereg.json)" = "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-JEPA2-01/prereg.json)"
+          node research/contrib/chatgpt/YGG-JEPA2-01/train.cjs "$RUNNER_TEMP/jepa2-replay"
+          node - "$RUNNER_TEMP/jepa2-replay" <<'NODE'
+          const fs=require('fs'),path=require('path'),out=process.argv[2],base='research/contrib/chatgpt/YGG-JEPA2-01';
+          function equal(a,b,p='root') {
+            if(typeof a==='number'&&typeof b==='number') {
+              if(!Number.isFinite(a)||!Number.isFinite(b)||Math.abs(a-b)>1e-10)throw Error('NUMERIC_DRIFT '+p);
+              return;
+            }
+            if(Array.isArray(a)&&Array.isArray(b)) {
+              if(a.length!==b.length)throw Error('SHAPE '+p);
+              a.forEach((v,i)=>equal(v,b[i],p+'/'+i));return;
+            }
+            if(a&&b&&typeof a==='object'&&typeof b==='object') {
+              const ka=Object.keys(a).sort(),kb=Object.keys(b).sort();
+              if(JSON.stringify(ka)!==JSON.stringify(kb))throw Error('KEYS '+p);
+              ka.forEach(k=>equal(a[k],b[k],p+'/'+k));return;
+            }
+            if(a!==b)throw Error('DRIFT '+p);
+          }
+          const e=JSON.parse(fs.readFileSync(path.join(base,'result.json')));
+          const a=JSON.parse(fs.readFileSync(path.join(out,'result.json')));
+          equal(e.replicas,a.replicas);
+          for(const seed of [101,202,303]){
+            const f='seed-'+seed+'-jepa2-checkpoint.json';
+            equal(JSON.parse(fs.readFileSync(path.join(base,f))),
+                  JSON.parse(fs.readFileSync(path.join(out,f))));
+          }
+          if(e.development_go!==false||e.science_pass!==false)throw Error('FALSE_PROMOTION');
+          process.stdout.write('YGG_JEPA2_NATIVE_TRAINING_REPLAY_PASS\n');
+          NODE
+          test -z "$(git status --porcelain)"
+  seal-atlas:
+    needs: replay
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    outputs:
+      final_sha: ${{ steps.atlas.outputs.final_sha }}
+    steps:
+      - name: Preserve native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Source-first G29 atlas reanchor without research rerun
+        id: atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "docs(jepa2): exact source atlas at $GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/jepa2-01-native-multilearner-20261118
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  final-regression:
+    needs: seal-atlas
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    timeout-minutes: 30
+    steps:
+      - name: Preserve native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal-atlas.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install preexisting pinned native solver dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Exact final source regression and atlas
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ needs.seal-atlas.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          git rev-parse HEAD 'HEAD^{tree}'
+          node --check research/contrib/chatgpt/YGG-JEPA2-01/train.cjs
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-23 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-24 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
