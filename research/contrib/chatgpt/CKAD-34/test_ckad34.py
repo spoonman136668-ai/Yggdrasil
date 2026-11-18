@@ -86,6 +86,31 @@ class CKAD34Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             c.conventional_fit([[0,0,1],[0,0,0]],1)
 
+    def test_full_fixture_pipeline_without_consuming_any_frozen_pilot(self):
+        # Exercises all native interfaces and conventional fitting on a distinct
+        # hard-coded DEV fixture namespace before first-use of pilot source.
+        seed=88703
+        fit,cal,held=c.source_partition(seed)
+        compiled,fixed,source,calibration,pressure,selection,admit,custody=(
+            c.train_selected(seed,fit,cal))
+        old,meta=c.native_baseline(seed,source,calibration,held)
+        self.assertTrue(custody["cold_exact"])
+        self.assertTrue(custody["retention_all64_exact"])
+        self.assertTrue(custody["conflict_atomic"])
+        self.assertEqual(len(old),12)
+        self.assertTrue(meta["cold_exact"])
+        self.assertEqual(len(pressure),4)
+        for slot in c.OLD_SLOTS:
+            self.assertEqual(len(source[slot]),42)
+            self.assertEqual(len(calibration[slot]),6)
+            self.assertEqual(selection[str(slot)],c.choose_degree(source[slot]))
+            conventional=c.conventional_fit(source[slot],selection[str(slot)])
+            for x in held:
+                self.assertEqual(c.native_prob(compiled,slot,x),
+                                 c.conventional_predict(conventional,x,selection[str(slot)]))
+        weights=c.logistic_fit(source[0]+calibration[0])
+        self.assertTrue(0<=c.logistic_predict(weights,held[0])<=1)
+
     def test_stop_rule_honors_conventional_and_ood_constraints(self):
         def case(seed,wrong=0,better=.25):
             sizes={"str":0}
