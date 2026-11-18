@@ -5,10 +5,6 @@ on:
       - research/ckad29-composition-interference-20261118
 permissions:
   contents: read
-env:
-  PYTHONPATH: '.'
-  PYTHONDONTWRITEBYTECODE: '1'
-  PYTHONHASHSEED: '0'
 jobs:
   frozen-source-preflight:
     runs-on: ubuntu-latest
@@ -30,4 +26,4 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 022d7477de56bb2793b52d2ae3a02e86bbf73bdd HEAD
           test "$(git hash-object research/contrib/chatgpt/CKAD-29/campaign.py)" = f32f523766368f1c7ea6cc387c5bb663e6a17282
-          python -B research/contrib/chatgpt/CKAD-29/campaign.py --mode preflight
+          PYTHONPATH=. python -B research/contrib/chatgpt/CKAD-29/campaign.py --mode preflight
