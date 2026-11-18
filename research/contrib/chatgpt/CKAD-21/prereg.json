@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.ckad21.two-timescale-belief-planning.prereg.v1",
+  "experiment_id": "CKAD-21",
+  "parent_commit": "d8f27db46af889afdfeb104fc471a710fc6d5c06",
+  "objective": "Test whether retaining distinct early/late causal models and updating a public-data belief after first-stage consequences can preserve prior-world reward without losing shifted-world reward.",
+  "research_classification": "Synthetic retrospective development on previously consumed CKAD20 source, no new environment access authority; native learned checkpoint remains byte-identical and stored legacy retained.",
+  "exact_source": {
+    "path": "research/contrib/chatgpt/CKAD-20/synthetic_world.py",
+    "sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+    "class": "previously-consumed synthetic family fixture"
+  },
+  "retained_checkpoint_pins": {
+    "101": "1319b37a689988174593b7b1702cfb974f3c4f4ae4f91d2653ca08e8a22172cc",
+    "202": "50a8ce4796c2db8d559b18a168e3727a6234e512fce995ab395b9795977700a3",
+    "303": "52441e6593281ded40b83dbd9b7cd7d2f23ca56bd5b0142f5b52e3ab6277dbfc"
+  },
+  "training_selection": "Extract only first64 previously observed 'train-0' active intervention episodes and last96 observed 'train-2' active intervention episodes from the same 224-event checkpoint; validate every event ID from frozen source, preserve chronological identity, no evaluator label/family/regime in learner.",
+  "model": "Two separate fully fitted conventional Beta(1,1) contingency tables, same public initial view projection as the native trained state, conditional transition P(s2|view,x1) and terminal P(y|view,x1,s2,x2) with pooled fallback for absent context. Fixed equal 1/2 early/late prior.",
+  "intervention_plan": "At stage1 enumerate both first actions and maximize mixture expected delayed reward; at stage2 after actual public s2 update early-vs-late model probabilities by Bayes using transition likelihood, then choose second action maximizing posterior mixture terminal success. No lookahead at hidden episode label, future state, reward or counterfactual.",
+  "frozen_arms": [
+    "two_timescale_dynamic: equal-prior early/late with consequence-conditioned Bayesian update on observed s2",
+    "two_timescale_static: same early/late tables and prior but no s2 belief update",
+    "early_only: early retained phase0 evidence alone",
+    "late_only: last96 shifted phase evidence alone",
+    "native_ckad20: unchanged integrated checkpoint planner",
+    "full_beta: exact conventional fully fitted entire 224 public episodes",
+    "trailing64_mle: previously-qualified trailing64 conventional fully trained MLE"
+  ],
+  "test_protocol": "For each seed101/202/303 evaluate 96 previously-consumed held deterministic source draws in each eval-0 invariant, eval-1 context_switch regime0, eval-2 context_switch regime1, and eval-3 terminal_switch regime1. Each arm actually executes its own selected two-stage actions on identical exogenous draws, with final reward revealed only after second action. No held adaptation or observations added to the training tables. Report per-seed/per-cohort reward and per-action trace digest.",
+  "validation": "All source bytes and checkpoints exact-pin. Complete checkpoint restored with original native APIs. Verify first64 and last96 active event IDs, collision/missing/duplicate denial, test no original source reset/do, no hidden source fields in policies, fixed deterministic cross-platform stable output. Independently recompute mixture plan with a second conventional enumeration and ensure all public view/action readouts tie; reverse early/late labels must leave dynamic/readout invariant. Existing synthetic family is not unfamiliar/first-use.",
+  "frozen_success": {
+    "development": "After phase3: eval-0 dynamic reward>=233/288 (within 5pp of phase1 native 247/288) AND eval-2 dynamic reward>=245/288 (at least 2pp above trailing64 MLE 239/288), AND dynamic policy eval0/2 each exceeds static mixture by >=6/288.",
+    "engineering": "No checkpoint/source mutation, exact input pins, negative controls, deterministic stable digest, independent formula parity, mandatory full exact candidate root+NKR05 Linux/Windows and atlas independent audits.",
+    "scientific": "No scientific superiority: both tables are conventional fully trained Bayes and source previously consumed, three seeds. scientific_pass=false."
+  },
+  "budgets": {
+    "original_source_actions": 0,
+    "paid_apis": 0,
+    "held_training_updates": 0,
+    "campaign_wall_seconds": 120
+  },
+  "allowed_paths": [
+    "research/contrib/chatgpt/CKAD-21/**",
+    ".github/workflows/ckad21-dual-timescale-retention.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated opt-in development on exact CKAD20 accepted draft evidence, no controller/owner/scheduler changes, no new PR, merge, accepted-main mutation, real source first-use, promotion or deployment. Do not change frozen criteria after scores."
+}
