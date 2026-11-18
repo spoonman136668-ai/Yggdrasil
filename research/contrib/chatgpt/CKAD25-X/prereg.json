@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CKAD25-X",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can one unchanged native causal memory checkpoint actively select discriminating do-interventions after unlabeled world switches, improving robust source-memory recall beyond equal-action fixed/random policies without mistaking unfamiliar mechanisms for familiar ones?",
+  "hypothesis": "Existing learned persistent numeric A/B memories plus a new native read-only exact rational source-disagreement probe selector outperform fixed and uniform-random source-only observation selectors by >=0.04 held Brier over the identical A/B/A/C/D phases in four fresh worlds, with known return-A correctly recalled in >=3/4 seeds, no more than one confident novel error and equal-action strong conventional Bayesian EIG controls.",
+  "parent_candidate_sha": "55b4f56f16721d37e652d7569a128fb6fc98c275",
+  "accepted_main_observed_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "original_ckad25_checkpoint_sha256": "c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+  "predecessor_evidence": [
+    "CKAD25-W PR#1251 exact final SHA 55b4f56f...: native source-conditioned posterior recall Brier .175 vs continuous exact Bayesian .152853639; known A/B/A recognized only in seed51041, all known abstained seed51047. Returned A/phase labels are not independent outcomes.",
+    "CKAD35 PR#1252 analogical transfer source-controlled source-free two pilots missed frozen .08 Brier with .12794/.13194; exact conventional 23040-hypothesis analogue tied. This gate does not test donor/context permutation analogies.",
+    "CKAD34 PR#1250 source-selected conventional degree 1/2/3, in-class tie with conventional GF2; not duplicate source-selected grammar."
+  ],
+  "changed_paths": [
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_causal_discriminator.py",
+    "research/contrib/chatgpt/CKAD25-X/**",
+    ".github/workflows/ckad25x-*.yml",
+    ".ice/code-atlas.*"
+  ],
+  "seeds": [
+    65021,
+    65027,
+    65033,
+    65039
+  ],
+  "worlds": "For each new seed choose two source-trainable 3-term four-bit Boolean GF2 ANF laws A/B from independently SHA-seeded 697-rule monomial set, requiring distinct truth tables and >=4 differing source-pool actions. Choose two distinct unfamiliar 4/5-term GF2 laws C/D not identical to either A/B, and two pressure worlds P/Q selected as distinct 2-term GF2 laws. These are generated source-free deterministic mathematical functions, not externally grounded worlds; fixed 3-term source class is already a supplied conventional grammar. No operator labels, hidden coefficients or truth tables are passed to a learner or policy.",
+  "split": "SHA256 shuffle all 16 distinct three-bit context + one action masks per seed. First 12 = A/B source training pool (8+4 witnessed native observations each), last four = common held test addresses for all policies and phases. Pressure P/Q uses the first eight source-pool inputs, in two existing other slots. A/B source can see all first-12 action consequences; policies may choose exactly four distinct target-probe addresses from these same first 12. All 4 observed target consequences come from the current unlabeled phase world and are not native source retraining, only read-only diagnostic update. Held outcomes never passed to policy.",
+  "regimes": "Five episodes per seed in order A, B, A, C, D, not identified to policies. A return repeats the same four evaluator held labels for persistence and does not count as four independent novel held samples. 4 source seed banks, 20 episodes, 80 phase held predictions/arm, 64 distinct seed/world/held outputs.",
+  "source_budget": "Four frozen arms share 4 probes per episode chosen without replacement, no carryover of target diagnostic labels across phases. Native source training =4 seeds×(12 A+12 B+8 P+8 Q)=160 original-free synthetic observations. Target diagnostics =4 seeds×5 phases×4 probes×4 policy arms=320 revealed synthetic observations total; held phase cases =80 per arm. Zero original CausalGym/protected actions. No running more probes in candidate than any control.",
+  "native_candidate": "Add opt-in read-only NativeCumulativeLearner.propose_causal_discriminator(slots, diagnostics, public_candidates): compute exact native numeric A/B source likelihoods for already revealed diagnostics, include unknown-world p0.5 likelihood, normalize equal priors; for each public candidate address use p(A),p(B),p(U)=0.5 to maximize exact rational weighted between-model predictive disagreement Σ_i w_i(p_i-mean_p)^2. Tie break smaller (context,action). Return one valid public [context,action] tuple only. Does not touch source state, accepted weights, hidden labels, current/held outcomes, or other learning mechanisms.",
+  "arms": [
+    "Existing native compiled memories + new read-only exact rational disagreement selector, followed by existing 0.90 hard-gated native recall after 4 observed target diagnostics",
+    "Uniform random source-only 4 distinct target probe masks, frozen per seed/episode with no label access, same hard native recall",
+    "Fixed ascending-address 4 distinct source-pool masks, same hard native recall",
+    "Strong independent conventional exact myopic expected Shannon information gain for selecting public probes from FULL 697-rule independently fitted A/B source posterior + unfamiliar p0.5, equal prior and observed diagnostics, fixed action tie; same native hard recall after 4 observations. Mechanism-equivalent exact rational disagreement selection is an additional parity control; all methods see only revealed do/outcomes."
+  ],
+  "readout_controls": [
+    "Continuous exact conventional Bayesian A/B+unknown mixture from independent complete 697-rule source-only posterior (after each arm's own same four target observations); its Brier must be reported, not claimed to be beaten by copying its prior",
+    "Fully trained LogisticRegression ANF and RF64 source-memory banks on identical 12 A and 12 B data, same target probe budget and 0.90 class gating",
+    "No-memory p=0.5; always A; most-recent B native, and true-regime oracle only as unattainable ceiling, not an equal-information comparator"
+  ],
+  "metrics": "Held Brier (abstain p=.5), per-seed Brier and familiar return A ranking, known phase committed accuracy and recall, novel C/D Brier/confident errors; exact intervention choice trace hashes to prevent label leak; source/old property and original native A/B committee cold retention after P/Q; exact per-query native/conventional likelihood and selector parity and expected mutual information; recorded prospective test wall CPU (not learning efficiency).",
+  "gates": {
+    "old_native_knowledge": "Original accepted CKAD25 native slot0, properties, source support, hypothesis, events and predictions byte-identical; A/B compiled numeric checkpoints preserved after P/Q source interference and cold restore; all 12/12/8/8 source records; zero quarantines.",
+    "budgets_and_leakage": "Each arm exactly four source-only novel target probes per episode, distinct and disjoint from held; no semantic family label or hidden outcome given to chooser. Unchanged four test masks per seed; preserve repeated A distinctness in counts.",
+    "gain_vs_fixed": "Candidate overall Brier <= fixed Brier -0.04 across 80 phase predictions.",
+    "gain_vs_random": "Candidate overall Brier <= random Brier -0.04 across 80 phase predictions.",
+    "return_consistency": "Candidate identifies returning A correctly in >=3 of 4 independently generated seeds, and source known phase A/B/A correctly in >=9 of 12 seed-phases.",
+    "coverage": "Candidate confidently answers at least 20 of 48 known A/B/A phase-level held questions with <=3 confidently incorrect.",
+    "novel_safety": "Candidate novel C/D held Brier <=0.27 (uniform baseline .25+0.02), at most 1 confidently wrong accepted novel held answer.",
+    "strong_control": "Candidate overall Brier <= exact independent Bayesian EIG-action native recall+0.03, and <= strongest independently fitted conventional fully trained logistic/forest memory selector+0.03, AND <= full exact continuous Bayesian mixture on candidate action observations+0.04.",
+    "exact_native_conventional_parity": "Each A/B posterior predicted fraction and new native policy action identical to separately implemented same-Gini conventional posterior selector on every probe; every held hard-gate result matches independent exact class readout."
+  },
+  "classification": "ALL pass => DEVELOPMENT_SIGNAL only; any valid performance miss => DEVELOPMENT_NO_GO; source/held label leak, post-score changes, original model mismatch, missing strongest conventional control or cross-platform deterministic drift => INVALID/ENGINEERING_FAIL. SCIENTIFIC_PASS always false as supplied grammar/prior.",
+  "stop": "Exactly four fresh development seeds once. Frozen source and controls plus Git blob committed BEFORE any held scoring. Linux/Windows same-cohort execution counts as deterministic repeat ONLY, not independent science. No post-score threshold changes, no extra seeds or reuse of original consumed held cohorts. No protected original-world first-use, accepted ref mutation, FORGE dispatch, merge, autonomous controller/scheduler or paid API.",
+  "authority": {
+    "research_only": true,
+    "accepted_main_write": false,
+    "owner_first_use": false,
+    "scientific_pass": false,
+    "promotion": false,
+    "merge": false,
+    "controller": false,
+    "deployment": false,
+    "forge_dispatch": false,
+    "paid_api": false
+  }
+}
