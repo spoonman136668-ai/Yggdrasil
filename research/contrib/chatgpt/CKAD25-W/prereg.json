@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CKAD25-W",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can Yggdrasil's single native cumulative model recognize an unlabeled returning causal relation after interference and abstain on unfamiliar relations, without semantic law labels?",
+  "hypothesis": "Native numeric source-conditioned memory retrieval improves returning-A held Brier ≥0.08 versus recency-B, preserves original and other learned state, and has ≤0.02 mean Brier harm versus no-memory on unfamiliar C/D, while staying competitive with independently fitted conventional Bayesian/fitted controls.",
+  "exact_parent_sha": "7d49be14cc39aaed8835edc96975002a310b6726",
+  "original_ckad25_checkpoint_sha256": "c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+  "previous": [
+    "CKAD25-V PR#1249 native v6 numerical posterior persisted and exactly tied full 697-rule Bayes on fresh synthetic source.",
+    "CKAD34 PR#1250 already selected conventional polynomial class with source-only evidence; do not repeat.",
+    "CKAD32 PR#1246 and CKAD25-U PR#1247 acquisition selection negatives; YNCA11/12 synthetic unfamiliar-memory negatives."
+  ],
+  "allowed_paths": [
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_causal_regime_recall.py",
+    "research/contrib/chatgpt/CKAD25-W/**",
+    ".github/workflows/ckad25w-*.yml",
+    ".ice/code-atlas.*"
+  ],
+  "seeds": [
+    51041,
+    51047
+  ],
+  "laws": {
+    "A": "1 ^ (c0 & action) ^ (c1 & c2)",
+    "B": "c2 ^ (c0 & c1) ^ (c1 & action)",
+    "C": "(c0 ^ c1) & (c2 ^ action)",
+    "D": "int(c0+c1+c2+action>=2)",
+    "P": "c0 ^ c2 ^ action",
+    "Q": "1 ^ (c0 & c2)"
+  },
+  "protocol": "Per seed SHA256-permute 16 distinct 3-context-bit+1-action masks. A and B each reveal the same 12 source training addresses (8 then 4 through native observe in source slots1,2). The last 4 are held and never revealed to native or selector. Opt-in compile each A/B numeric committee, cold restore. Add interfering P/Q each 8 witnessed rows to native slots3,4; cold restore. Source-only evaluator then reveals 4 new target do/outcome diagnostics for hidden phases A,B,A,C,D on 4 predetermined input addresses selected from the initial 12 source-known addresses (diagnostics disjoint from 4 held masks). Candidate sees ONLY each target's 4 input/outcome triples, two stored source slots, and the held query input. Never hidden world label, held outcome, future evidence or source classifier oracle. Repeated held A on return tests retention, not new independent held labels.",
+  "budget": "2 seeds×(12A+12B+8P+8Q+4×5 target diagnostics)=120 source-free synthetic observed interventions, plus 2 seeds×5 phases×4 held=40 phase predictions, only 32 unique seed×world×held outcomes because A is scored twice. Original protected-world actions: 0.",
+  "candidate": "New read-only method in SAME NativeCumulativeLearner using its stored numeric A/B compiled committees. Evaluate exact rational likelihood for four target diagnostic interventions under each native committee plus fixed unknown hypothesis likelihood 1/16; equal 1/3 prior. Select best known slot only when normalized posterior >=0.90, otherwise abstain (1,2). Return matched compiled slot/None and prediction numerator/denominator. No new state/checkpoint schema, new controller, or transformer/tokens. This is conventional Bayesian regime retrieval over *genuinely stored* causal weights, not new primitive discovery.",
+  "controls": [
+    "Independent exact 697-rule conventional Bayesian A/B source posterior + unknown p0.5, continuous hierarchical posterior mixture (strongest information-equivalent control).",
+    "Independent conventional 697-rule hard gate with same fixed 0.90 threshold (mechanism-parity control).",
+    "Fully fitted logistic ANF and random forest on same 12 source observations per A/B, same four target diagnostics and 0.90 gate.",
+    "Always-recent B native compiled memory; always A native memory; no-memory 0.5.",
+    "Privileged true-world oracle A/B or no-memory C/D (ceiling only; source label unavailable to candidate)."
+  ],
+  "metrics": "Held Brier with abstain .5, known-return A Brier versus recency-B, known correct/incorrect confident counts, novel C/D Brier and confident error counts, source/old state and A/B committee byte retention after interference/cold, exact conventional-gate per-query parity, full conventional Bayesian and fitted logistic/RF controls.",
+  "gates": {
+    "retention": "Old CKAD25 original slot0 properties/source/hypothesis/events/predictions and A/B numeric compiled source unaffected by pressure P/Q, cold byte restore, no quarantines.",
+    "return_gain": "Mean A-return held Brier >=0.08 below recency-B.",
+    "known_coverage": "At least 12 non-half confident known A/B/A phase-level answers out of 24, no more than two wrong, correctly select A/B on >=3/6 phases across two seeds.",
+    "novel_safety": "Mean novel C/D held Brier <=0.27 (uniform baseline 0.25) and <=1 confidently wrong novel held.",
+    "strong": "Overall candidate held Brier <= best fully-fitted logistic/RF matched selector+0.03, and <= full exact Bayesian continuous mixture+0.04. Exact conventional hard gate must match native per held input; this is parity not scientific superiority.",
+    "source": "All seed/split/diagnostic/held hashes consistent, zero original protected-world calls, no outcome leakage and exact frozen model source."
+  },
+  "classification": "ALL gates => DEVELOPMENT_SIGNAL only. Valid misses => DEVELOPMENT_NO_GO. Source/provenance/hidden leak/missing exact strong control => INVALID. SCIENTIFIC_PASS always false.",
+  "stop": "Exactly two original fixed synthetic pilot seeds, one first-use cohort and byte-only Linux/Windows deterministic reproduction; no post-result gates/seeds/model tuning; no second consumed scientific run.",
+  "authority": {
+    "research_only": true,
+    "accepted_main_change": false,
+    "native_owner_first_use": false,
+    "controller": false,
+    "forge_dispatch": false,
+    "paid_api": false,
+    "merge": false,
+    "deployment": false,
+    "scientific_pass": false
+  }
+}
