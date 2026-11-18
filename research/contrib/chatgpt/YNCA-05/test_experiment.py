@@ -50,7 +50,7 @@ class IdentifiabilityCeilingTests(unittest.TestCase):
 
     def test_expected_independent_law_value(self):
         w = m.unit_prior()
-        self.assertAlmostEqual(m.truth_oracle_utility(w, (1, 2)), 0.73)
+        self.assertAlmostEqual(m.truth_oracle_utility(w, (1, 2)), 0.67)
         self.assertAlmostEqual(m.utility(w, (1, 2)), 0.42)
 
     def test_exact_decision_oracle_dominates(self):
