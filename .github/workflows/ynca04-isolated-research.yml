@@ -36,3 +36,10 @@ jobs:
           python -B research/contrib/chatgpt/YNCA-04/experiment.py --fingerprint
           python -B -m unittest discover -s research/contrib/chatgpt/YNCA-04 -p 'test_*.py' -v
           test -z "$(git status --porcelain)"
+      - name: Reproduce exploratory development split without using heldout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-04/experiment.py --dev > "$RUNNER_TEMP/ynca04-dev.json"
+          python -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["split"]=="dev" and d["outcome"]["world_count"]==512; assert d["source_sha256"]=="78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc"; print("YNCA04_DEV_RESULT",json.dumps(d["outcome"],sort_keys=True))' "$RUNNER_TEMP/ynca04-dev.json"
+          test -z "$(git status --porcelain)"
