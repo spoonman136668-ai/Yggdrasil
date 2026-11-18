@@ -107,7 +107,7 @@ def check(raw):
              "FROZEN_C_SOURCE_LAW_"+str(seed))
         need(len(set(laws.values()))==3 and
              all(sum(predict(laws[k],i)!=predict(laws[j],i) for i in source)>=4
-                 for k,j in (("A","B"),("A","C"),("B","C")),"NEW_SOURCE_WORLD_DISCRIMINABLE")
+                 for k,j in (("A","B"),("A","C"),("B","C"))),"NEW_SOURCE_WORLD_DISCRIMINABLE")
         need(state["source_split_sha256"]==sha(encode(source))
              and state["validation_split_sha256"]==sha(encode(validation))
              and state["held_split_sha256"]==sha(encode(held))
