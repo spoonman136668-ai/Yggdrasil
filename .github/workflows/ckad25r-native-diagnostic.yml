@@ -1,0 +1,90 @@
+name: CKAD25-R read-only native sparse recovery diagnostic
+on:
+  pull_request:
+    paths:
+      - "research/contrib/chatgpt/CKAD25-R/**"
+      - ".github/workflows/ckad25r-native-diagnostic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+
+jobs:
+  retrospective:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Preserve Git-tracked file bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Install existing native scientific controls only
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Assert frozen diagnostic and CKAD25 source identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-R/replay.py)" = "3a5b307a250a7c6c2f821bf0c57336fad986c176"
+          python -B - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path("research/contrib/chatgpt/CKAD-25/qualified-development-runs/44331408493")
+          a=(p/"linux/stage-02.native.json").read_bytes()
+          b=(p/"windows/stage-02.native.json").read_bytes()
+          assert a==b
+          assert hashlib.sha256(a).hexdigest()=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          print("CKAD25R_FROZEN_SOURCE_CHECKPOINT_PASS")
+          PY
+      - name: Compile frozen retrospective code
+        shell: bash
+        run: python -B -m py_compile research/contrib/chatgpt/CKAD25-R/replay.py
+      - name: One frozen retrospective diagnostic, followed by deterministic replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="${{ runner.temp }}/ckad25r-result.json"
+          python -B research/contrib/chatgpt/CKAD25-R/replay.py --output "$OUT"
+          cp "$OUT" "${{ runner.temp }}/ckad25r-first.json"
+          python -B research/contrib/chatgpt/CKAD25-R/replay.py --output "$OUT"
+          cmp "$OUT" "${{ runner.temp }}/ckad25r-first.json"
+          python -B - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"ckad25r-result.json"
+          x=json.loads(p.read_bytes())
+          assert x["source_checkpoint_sha256"]=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          assert x["additional_source_observations"]==0
+          assert x["unmodified"]["answered"]==0
+          assert x["scientific_pass"] is False and x["new_model_training"] is False
+          assert x["source_first_use"] is False and x["promotion_authorized"] is False
+          assert x["old_snapshot_unchanged"] is True and x["cold_restore_verified"] is True
+          print("CKAD25R_FROZEN_REPLAY_PASS")
+          print("CKAD25R_RESULT_SHA256="+hashlib.sha256(p.read_bytes()).hexdigest())
+          print("CKAD25R_DISPOSITION="+x["disposition"])
+          PY
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad25r-retrospective-${{ matrix.os }}
+          path: ${{ runner.temp }}/ckad25r-result.json
+          if-no-files-found: error
+          retention-days: 60
