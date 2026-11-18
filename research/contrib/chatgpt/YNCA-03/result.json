@@ -1,0 +1,125 @@
+{
+  "audit": {
+    "disjoint_seeds": true,
+    "matched_4_do_samples": true,
+    "no_inference_label_argument": true,
+    "source_free": true
+  },
+  "claims": {
+    "deployment": false,
+    "native_yggdrasil_integrated": false,
+    "owner_acceptance": false,
+    "scientific_pass": false
+  },
+  "frozen": {
+    "bootstrap_draws": 1000,
+    "do_budget": 4,
+    "epsilon": 0.12,
+    "laws": [
+      "AND",
+      "OR",
+      "XOR",
+      "X1",
+      "X2",
+      "NOR"
+    ],
+    "passive_observations": 16,
+    "ranges": {
+      "dev": [
+        220001,
+        220257
+      ],
+      "heldout": [
+        230001,
+        230513
+      ],
+      "train": [
+        210001,
+        211025
+      ]
+    },
+    "shrinkage": 8
+  },
+  "outcome": {
+    "action_counts": {
+      "bayes_brier": [
+        84,
+        279,
+        95,
+        54
+      ],
+      "bayes_eig": [
+        83,
+        271,
+        95,
+        63
+      ],
+      "fixed01": [
+        0,
+        512,
+        0,
+        0
+      ],
+      "fixed10": [
+        0,
+        0,
+        512,
+        0
+      ],
+      "native": [
+        0,
+        431,
+        81,
+        0
+      ],
+      "random": [
+        146,
+        120,
+        120,
+        126
+      ],
+      "shuffled": [
+        278,
+        158,
+        76,
+        0
+      ]
+    },
+    "consensus_fault_brier": {
+      "bayes_brier": 0.001913999,
+      "bayes_eig": 0.000163011,
+      "fixed01": 0.001281463,
+      "fixed10": 0.002569108,
+      "native": 0.001826833,
+      "no_probe": 0.004082399,
+      "random": 0.003764421,
+      "shuffled": 0.001860166
+    },
+    "consensus_fault_count": 108,
+    "mean_brier": {
+      "bayes_brier": 0.02689644,
+      "bayes_eig": 0.026506007,
+      "fixed01": 0.033740377,
+      "fixed10": 0.032449478,
+      "native": 0.03308516,
+      "no_probe": 0.062541548,
+      "random": 0.050075962,
+      "shuffled": 0.057641351
+    },
+    "native_gain_vs_random": 0.016990802,
+    "native_gain_vs_random_ci95": [
+      0.013849212,
+      0.020354286
+    ],
+    "native_relative_brier_vs_strongest": 1.019589909,
+    "shuffled_minus_native_brier": 0.024556191,
+    "strongest_random_or_fixed": "fixed10",
+    "verdict": "DEVELOPMENT_NO_GO",
+    "world_count": 512
+  },
+  "schema": "yggdrasil.ynca03.synthetic-development.v1",
+  "source_sha256": "b80e0e7108a37f832671b7839e045029c7e1df7d3ec456cbff43762712ac895a",
+  "split": "heldout",
+  "train_worlds": 1024,
+  "trained_contexts": 10
+}
