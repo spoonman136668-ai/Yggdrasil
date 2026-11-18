@@ -1,0 +1,155 @@
+name: CKAD25-AB seal original source history first-use evidence
+# Retry ONLY original artifact audit after prescore-independent syntax repair; no source/held scoring.
+on:
+  push:
+    branches: [research/ckad25ab-history-informed-probes-20261118]
+    paths:
+      - ".github/workflows/ckad25ab-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  independent-result-evidence-seal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Keep byte-identical original source
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Ensure frozen original source and independent auditor compile, not rescore
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25ab-history-informed-probes-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "3f33f32c7919bba5297fbf79ff561ef9e85c7255"
+          test "$(git hash-object tests/test_native_causal_active_history.py)" = "e0ab297a22837b53c9ff7eefb78ef9e8278ce258"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AB/run.py)" = "3c3d88a66e8fe343bc9fd7fa47c8992343cc4bbb"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AB/prereg.json)" = "b99fcc06b50be68542b5a2ffbc92638b330a65ba"
+          test ! -e research/contrib/chatgpt/CKAD25-AB/result.json
+          test ! -e research/contrib/chatgpt/CKAD25-AB/provenance.json
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          file="research/contrib/chatgpt/CKAD25-AB/audit_results.py"
+          compile(Path(file).read_text(encoding="utf-8"),file,"exec")
+          print("CKAD25AB_INDEPENDENT_ORIGINAL_AUDITOR_STATIC_PASS")
+          PY
+      - name: Retrieve only original immutable source-first-use artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14480034507/zip" \
+            -o "$RUNNER_TEMP/ckad25ab-linux.zip"
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14481681156/zip" \
+            -o "$RUNNER_TEMP/ckad25ab-windows.zip"
+      - name: Authenticate exact original cross-OS source, no new action consequences
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-AB")
+          temp=Path(os.environ["RUNNER_TEMP"])
+          def sha(raw):return hashlib.sha256(raw).hexdigest()
+          originals={}
+          archives={
+              "linux":("f459a6fac22a6425fd1bf496839dc1cd04cd4967b471a6f35bdf5ab89ee12f00",14480034507),
+              "windows":("e2edd79135375916387baac11540dcc26a4e25b8081e2da8f381e5604537414d",14481681156)}
+          for system,(expected_zip,artifact_id) in archives.items():
+              z=temp/f"ckad25ab-{system}.zip"
+              assert sha(z.read_bytes())==expected_zip,(system,"ORIGINAL_ZIP_BYTES")
+              with zipfile.ZipFile(z) as f:
+                  assert f.namelist()==["ckad25ab-result.json"],f.namelist()
+                  originals[system]=f.read("ckad25ab-result.json")
+          expected="e728b1710213de407318fe20f031b45492b791b5d052e823884e83d190d51588"
+          raw=originals["linux"]
+          assert raw==originals["windows"] and sha(raw)==expected,"ORIGINAL_CROSS_OS_DRIFT"
+          d=json.loads(raw)
+          assert raw==json.dumps(d,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")
+          assert d["frozen_scoring_source_sha256"]==sha((root/"run.py").read_bytes())
+          assert d["original_native_ckad25_source_sha256"]=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          assert d["seeds"]==[76103,76123,76147,76171,76193,76213,76237,76259,76283,76309,76333,76357,76379,76403,76427,76453]
+          assert d["development_disposition"]=="DEVELOPMENT_SIGNAL"
+          assert all(d["frozen_gates"].values())
+          assert d["arm_summary"]["native_history_beta"]["detected_of_shifted"]==75
+          assert d["arm_summary"]["fixed_smallest_two"]["detected_of_shifted"]==50
+          assert d["arm_summary"]["seeded_random_two"]["detected_of_shifted"]==49
+          assert d["arm_summary"]["exact_conventional_history_beta"]==d["arm_summary"]["native_history_beta"]
+          assert d["public_source_observations"]==3744
+          assert d["scientific_pass"] is False and d["conventional_superiority"] is False
+          assert d["universal_OOD_safety"] is False
+          assert d["owner_original_first_use"] is False and d["forge_dispatch"] is False
+          assert d["accepted_main_changed"] is False and d["merge"] is False and d["deployment"] is False
+          (root/"result.json").write_bytes(raw)
+          provenance={
+              "schema":"yggdrasil.ckad25ab.prospective-source-first-use-qualification.v1",
+              "parent_exact_native_ckad25z_sha":"92c60e69185130d3cfe1635074b9cd0008ac3d04",
+              "accepted_main_observed_sha":"5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+              "original_native_checkpoint_sha256":"c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+              "first_prereg_commit":"26bbeedfadc3dd0bb1fb83210ef277318e1aa852",
+              "new_native_source_commit":"d43f92df3d40aae395ed2de2ed49b0f6410ccf61",
+              "new_native_git_blob":"3f33f32c7919bba5297fbf79ff561ef9e85c7255",
+              "new_focused_test_commit":"67c412ada332e2a9286b95d48b1d55cce1464615",
+              "new_focused_test_blob":"e0ab297a22837b53c9ff7eefb78ef9e8278ce258",
+              "frozen_original_scorer_before_first_use_commit":"fb7735f7fe5007185d409c489bbfe82cf7726620",
+              "original_source_scorer_git_blob":"3c3d88a66e8fe343bc9fd7fa47c8992343cc4bbb",
+              "original_scorer_source_sha256":sha((root/"run.py").read_bytes()),
+              "original_frozen_workflow_trigger_commit":"c7a081c9075ba2609e75cea6efd4ac1964d42cd7",
+              "original_first_use_run_id":44419306233,
+              "original_linux_job_id":135208179245,
+              "original_windows_job_id":135208179100,
+              "linux_artifact_id":14480034507,
+              "windows_artifact_id":14481681156,
+              "original_artifact_zip_sha256":{k:v[0] for k,v in archives.items()},
+              "original_raw_result_sha256":expected,
+              "original_identical_science_across_linux_windows":True,
+              "independent_read_only_auditor":"research/contrib/chatgpt/CKAD25-AB/audit_results.py",
+              "original_held_replayed_in_artifact_seal":False,
+              "source_budget":3744,"held_conditional_forecasts":1024,
+              "native_detection":75,"fixed_detection":50,"random_detection":49,
+              "identical_to_independently_learned_conventional_hazard":True,
+              "development_disposition":"DEVELOPMENT_SIGNAL",
+              "scientific_pass":False,"universal_safety":False,
+              "protected_source_actions":0,"forge_dispatch":False,
+              "accepted_model_changed":False,"merge":False,"deployment":False,
+              "limitation":"The source evaluator has a built-in recurring changed-address site with p=.75; candidate only learns risk at the SAME FOUR PUBLIC ADDRESSES, not new causal grammars, hidden variables, unfamiliar address transfer, independent scientific replication or native decision superiority. Strong exact Bayesian same-history risk policy is identical."
+          }
+          (root/"provenance.json").write_text(json.dumps(provenance,sort_keys=True,indent=2)+"\n",encoding="utf-8")
+          print("CKAD25AB_ORIGINAL_UNCHANGED_CROSS_OS_BYTES_SEALED="+expected)
+          PY
+          python3 research/contrib/chatgpt/CKAD25-AB/audit_results.py research/contrib/chatgpt/CKAD25-AB/result.json
+          test -z "$(git diff --name-only)"
+      - name: Commit ONLY original result and verified receipt to isolated draft GitHub branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25ab-history-informed-probes-20261118
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git add -- research/contrib/chatgpt/CKAD25-AB/result.json research/contrib/chatgpt/CKAD25-AB/provenance.json
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert changed=={"research/contrib/chatgpt/CKAD25-AB/result.json",
+                           "research/contrib/chatgpt/CKAD25-AB/provenance.json"},changed
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(ckad25ab): seal original learned source-history decision signal and conventional tie"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "CKAD25AB_SEALED_ORIGINAL_RESULT_COMMIT=$(git rev-parse HEAD)"
