@@ -46,7 +46,8 @@ class WSP184MemoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"MISSING_OR_DUPLICATE_COLUMNS"):
             parse_csv(b"flag,load_in,rpm_in\n0,0.3,1\n","actuators_random_walk_1")
         with self.assertRaisesRegex(ValueError,"WALK_COUNTS"):
-            parse_csv(walk_csv()[:900],"actuators_random_walk_1")
+            parse_csv(("\n".join(walk_csv().decode().splitlines()[:40])+"\n").encode(),
+                      "actuators_random_walk_1")
 
     def test_direct_linear_weights_match_independent_full_fit(self):
         model=train_fit(fake_runs())
@@ -101,7 +102,6 @@ class WSP184MemoryTests(unittest.TestCase):
                             for group in val["normalized_rmse"].values()
                             for x in group))
         self.assertEqual(evaluate_runs(seq,model),val)
-        self.assertEqual(evaluate_runs(seq,model,select=lambda s:False)["count"],0) if False else None
 
     def test_archive_never_trusts_invented_or_modified_zip(self):
         with tempfile.TemporaryDirectory() as tmp:
