@@ -25,7 +25,7 @@ class CKAD36Tests(unittest.TestCase):
             self.assertEqual(len(set(initial+held+pool)),64)
             self.assertEqual(len(set(source)),42)
             self.assertEqual(len(c.C35.fit_independent(
-                [[x&31,x>>5,0] for x in source)),42)
+                [[x&31,x>>5,0] for x in source])),42)
 
     def test_entropy_choice_does_not_see_labels(self):
         hypotheses=(0,1,2,3)
