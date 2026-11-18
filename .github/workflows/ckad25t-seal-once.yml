@@ -1,0 +1,165 @@
+name: CKAD25-T one-time evidence custody seal
+on:
+  push:
+    branches: [research/ckad25t-evidence-certified-repair-20261118]
+    paths:
+      - ".github/workflows/ckad25t-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  preserve-prior-frozen-results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Preserve source bytes for SHA custody
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Fail closed if frozen branch or source drifted
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25t-evidence-certified-repair-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-T/run.py)" = "650a84097ba06aa0373f988ef8acb5d11619929c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-S/run.py)" = "31e06746dd2fa83cf4bfedf28da43cacbc68c99f"
+          test ! -e research/contrib/chatgpt/CKAD25-T/result.json
+          test ! -e research/contrib/chatgpt/CKAD25-T/provenance.json
+          test -z "$(git status --porcelain)"
+      - name: Fetch exactly the existing successful dual-OS development artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14453407871/zip" \
+            -o "$RUNNER_TEMP/ckad25t-linux.zip"
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14453542885/zip" \
+            -o "$RUNNER_TEMP/ckad25t-windows.zip"
+      - name: Check cross-platform bytes and save original result without re-scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+
+          root=Path("research/contrib/chatgpt/CKAD25-T")
+          temp=Path(os.environ["RUNNER_TEMP"])
+          def sha(x): return hashlib.sha256(x).hexdigest()
+          zipped={
+              "linux":("8e59ff366c6debb07e85a22bc5406fd986c65be93f0ed8d89f61353abe3e77d9",14453407871),
+              "windows":("8205caf740bff48831729654600b6331655c04deb456903ddc823d89a8c668f7",14453542885)
+          }
+          rows=[]
+          for platform,(digest_expected,artifact_id) in zipped.items():
+              zp=temp/f"ckad25t-{platform}.zip"
+              assert sha(zp.read_bytes())==digest_expected,platform
+              with zipfile.ZipFile(zp) as f:
+                  assert f.namelist()==["ckad25t-result.json"],f.namelist()
+                  rows.append(f.read("ckad25t-result.json"))
+          raw=rows[0]
+          assert raw==rows[1],"PLATFORM_RESULTS_NOT_IDENTICAL"
+          result_sha="3c6400127b2c95fdd8e375b08eba755c0681e2f8df67b808c60d61c0991e43e9"
+          assert sha(raw)==result_sha
+          result=json.loads(raw)
+          assert raw==json.dumps(result,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")
+          code_sha=sha((root/"run.py").read_bytes())
+          assert result["source_script_sha256"]==code_sha
+          assert result["reused_scoring_helpers_sha256"]==sha(Path("research/contrib/chatgpt/CKAD25-S/run.py").read_bytes())
+          assert result["schema"]=="yggdrasil.ckad25t.evidence-certified-repair-dev.v1"
+          assert result["seed_law_cases"]==12
+          assert result["new_synthetic_training_interventions"]==144
+          assert result["new_synthetic_held_actions"]==48
+          assert result["original_world_interventions"]==0
+          assert result["source_first_use"] is False
+          assert result["original_held_cohorts_reused"] is False
+          assert result["scientific_pass"] is False
+          assert result["candidate_is_external_readout_only"] is True
+          assert result["native_source_modified"] is False
+          assert result["original_checkpoint_unchanged"] is True
+          assert result["cold_native_retention_pass"] is True
+          assert result["candidate_answered"]==20
+          assert result["candidate_correct_answered"]==20
+          assert result["candidate_confident_wrong"]==0
+          assert result["brier_means"]["certified_repair"]==result["brier_means"]["unconditional_repair"]==0.145833333
+          assert result["gates"]["brier_improved_0_02_vs_unconditional_native_repair"] is False
+          assert result["disposition"]=="DEVELOPMENT_MIXED_NO_GO"
+          assert result["forge_dispatch_authorized"] is False
+          assert result["native_promotion_authorized"] is False
+          assert result["accepted_model"] is False
+          assert result["deployment_authorized"] is False
+          assert len(result["per_seed_law"])==12
+
+          path=root/"result.json"
+          assert not path.exists()
+          path.write_bytes(raw)
+          provenance={
+            "schema":"yggdrasil.ckad25t.external-frozen-result-provenance.v1",
+            "study":"CKAD25-T",
+            "source_parent_ckad25s_head":"01ffab6d6493004ff3cd28bdf4e9c36cd4fa1170",
+            "accepted_main_observed_sha":"5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+            "ckad25_original_checkpoint_sha256":"c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+            "prereg_first_commit":"b48c6f56e1883979461962932e75ea362d374a1b",
+            "frozen_new_source_commit":"812a49ff80256766ecc7e08c01f09eda0af1d243",
+            "frozen_source_git_blob_sha1":"650a84097ba06aa0373f988ef8acb5d11619929c",
+            "frozen_source_sha256":code_sha,
+            "frozen_old_helper_git_blob_sha1":"31e06746dd2fa83cf4bfedf28da43cacbc68c99f",
+            "primary_github_run_id":44358411417,
+            "primary_linux_job_id":134992729614,
+            "primary_windows_job_id":134992729061,
+            "primary_linux_artifact_id":14453407871,
+            "primary_windows_artifact_id":14453542885,
+            "artifact_zip_sha256":{k:v[0] for k,v in zipped.items()},
+            "frozen_original_result_sha256":result_sha,
+            "identical_original_result_bytes_linux_windows":True,
+            "only_existing_artifact_retrieval":True,
+            "new_primary_score_executions":0,
+            "disposition":"DEVELOPMENT_MIXED_NO_GO",
+            "native_old_knowledge_preserved":True,
+            "scientific_pass":False,
+            "owner_first_use":False,
+            "native_model_mutation":False,
+            "forge_dispatch":False,
+            "promotion":False,
+            "deployment":False,
+            "limitations":"A conventional exact hypothesis certificate did not improve this native repair candidate over ungated; it is an external readout and not superior to exact sparse Bayes. All evaluated cohorts consumed."
+          }
+          (root/"provenance.json").write_text(json.dumps(provenance,sort_keys=True,indent=2)+"\n")
+          print("CKAD25T_CROSS_PLATFORM_RAW_BYTES_PASS sha256="+result_sha)
+          print("CKAD25T_RESEARCH_NO_GO_SEALED")
+          PY
+      - name: Commit only original result and provenance to isolated research branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25t-evidence-certified-repair-20261118
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git add -- research/contrib/chatgpt/CKAD25-T/result.json research/contrib/chatgpt/CKAD25-T/provenance.json
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert changed=={
+              "research/contrib/chatgpt/CKAD25-T/result.json",
+              "research/contrib/chatgpt/CKAD25-T/provenance.json"
+          },changed
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(ckad25t): seal frozen Linux/Windows no-go result"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "CKAD25T_EVIDENCE_COMMIT=$(git rev-parse HEAD)"
