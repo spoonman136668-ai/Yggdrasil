@@ -56,7 +56,11 @@ class SharedCausalMemoryTests(unittest.TestCase):
     def test_held_eval_cold_and_same_action_ablation(self):
         held,pool=c.held_split()
         trained,history,receipts,vecs=c.train_shared(held,pool)
-        model,row=c.evaluate_world(717,"TRANSFER",16,held,pool,trained)
+        # Unit preflight isolates the native evaluator from optional CART wheels.
+        # The scored primary installs sklearn and fits the unchanged real CART.
+        from unittest.mock import patch
+        with patch.object(c, "cart_predict", lambda seed, rows: (None,)*64):
+            model,row=c.evaluate_world(717,"TRANSFER",16,held,pool,trained)
         self.assertEqual(row["charged_actors"]["target"]["effects"],8)
         self.assertEqual(row["charged_actors"]["no_memory_active"]["effects"],8)
         self.assertEqual(row["charged_actors"]["shared_random"]["effects"],8)
