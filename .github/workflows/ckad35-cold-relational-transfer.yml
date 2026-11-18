@@ -1,0 +1,191 @@
+name: CKAD35 source-only cold causal transfer and full regression
+on:
+  push:
+    branches: [research/ckad35-cold-relational-transfer-20261118]
+permissions:
+  contents: read
+  actions: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  preflight:
+    if: "github.event.head_commit.message == 'ci(ckad35): development source-only preflight' || github.event.head_commit.message == 'ci(ckad35): lock source and execute original pilots'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned conventional and native CPU dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: No first-use; exact-root source-only DEV tests and immutable source validation
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor fa14893269bb93b2d192ab4134073d5c148898fd HEAD
+          git merge-base --is-ancestor 736c30c09ea1f0fe4eaad1b1f762c6a00b78dd71 HEAD
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-35 -p 'test_ckad35.py' -v
+          if test -f research/contrib/chatgpt/CKAD-35/source_lock.json; then
+            python -B research/contrib/chatgpt/CKAD-35/campaign.py --mode preflight
+          else
+            test "$GITHUB_EVENT_NAME" = push
+            test ! -f research/contrib/chatgpt/CKAD-35/pilot_screen_report.json
+          fi
+          test -z "$(git status --porcelain)"
+  pilot:
+    needs: [preflight]
+    if: "github.event.head_commit.message == 'ci(ckad35): lock source and execute original pilots' && github.run_attempt == 1"
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [13851, 13852]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned conventional and native CPU dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: One synthetic source-only first-use, never rerun consumed seed
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test ! -e research/contrib/chatgpt/CKAD-35/pilot_screen_report.json
+          BLOB="$(python -c 'import json; print(json.load(open("research/contrib/chatgpt/CKAD-35/source_lock.json"))["campaign_blob_sha1"])')"
+          test "$(git hash-object research/contrib/chatgpt/CKAD-35/campaign.py)" = "$BLOB"
+          mkdir -p "$RUNNER_TEMP/ckad35"
+          python -B research/contrib/chatgpt/CKAD-35/campaign.py --mode pilot --seed ${{ matrix.seed }} > "$RUNNER_TEMP/ckad35/result.json"
+          test -s "$RUNNER_TEMP/ckad35/result.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ckad35-pilot-${{ matrix.seed }}
+          path: ${{ runner.temp }}/ckad35/result.json
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [pilot]
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: ckad35-pilot-*
+          path: ${{ runner.temp }}/ckad35-original
+          merge-multiple: false
+      - name: Independent exact-source analogue audit and original receipt preservation
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test ! -f research/contrib/chatgpt/CKAD-35/pilot_screen_report.json
+          python -B research/contrib/chatgpt/CKAD-35/seal_pilot.py --root "$RUNNER_TEMP/ckad35-original"
+          python -B research/contrib/chatgpt/CKAD-35/seal_pilot.py
+          git add -- research/contrib/chatgpt/CKAD-35/pilot-13851.json research/contrib/chatgpt/CKAD-35/pilot-13852.json research/contrib/chatgpt/CKAD-35/pilot_screen_report.json
+          python -B -c "import subprocess; assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())=={'research/contrib/chatgpt/CKAD-35/pilot-13851.json','research/contrib/chatgpt/CKAD-35/pilot-13852.json','research/contrib/chatgpt/CKAD-35/pilot_screen_report.json'}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research(ckad35): preserve original cold transfer pilots and independent stop'
+          SOURCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git commit -m 'docs(ckad35): pin original source-only transfer atlas'
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B research/contrib/chatgpt/CKAD-35/seal_pilot.py
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ckad35-cold-relational-transfer-20261118
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  full-regression:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full pinned native and conventional CPU dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Mandatory exact-tree full native regression plus independent original source audits
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.seal.outputs.candidate }}"
+          git rev-parse HEAD HEAD^{tree}
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-31 -p 'test_ckad31.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-32 -p 'test_ckad32.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-33 -p 'test_ckad33.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-33R -p 'test_ckad33r.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-34 -p 'test_ckad34.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-35 -p 'test_ckad35.py' -v
+          PYTHONPATH=. python -B research/contrib/chatgpt/CKAD-29/independent_audit.py
+          python -B research/contrib/chatgpt/CKAD-30/audit_primary.py
+          python -B research/contrib/chatgpt/CKAD-31/seal_pilot.py
+          python -B research/contrib/chatgpt/CKAD-32/seal_pilot.py
+          python -B research/contrib/chatgpt/CKAD-33R/seal_pilot.py
+          python -B research/contrib/chatgpt/CKAD-34/seal_pilot.py
+          python -B research/contrib/chatgpt/CKAD-35/seal_pilot.py
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
