@@ -1,0 +1,110 @@
+{
+  "schema": "lr92ac.github-external-development-summary.v1",
+  "experiment_id": "LR-92AC",
+  "decision": "DEVELOPMENT_NO_GO",
+  "evidence_class": "PROSPECTIVELY_PREREGISTERED_EXTERNAL_DEVELOPMENT",
+  "scientific_acceptance": false,
+  "prereg_commit": "ec509416c1ba99f9c18419212c82646446812fd3",
+  "prereg_sha256": "40a8dae7fd06863e97a13e7aa8f507e8d948c267b26385d0ff664882cd142b52",
+  "runner_sha256": "67eacbba21dbb4ec14389e8c9b3c59de49793243f94917bbfaade51e77b1315c",
+  "raw_result_sha256": "144bd2b95dc662e053a17b3f9c0392ab946b3688c7fa5ea504536cd4267dd567",
+  "raw_result_bytes": 400608,
+  "cohort": {
+    "seeds": [
+      929200301,
+      929200302,
+      929200303
+    ],
+    "total": 240,
+    "stationary": 156,
+    "switching": 36,
+    "foreign": 24,
+    "null": 24,
+    "fit_per_world": 144,
+    "heldout_validation_per_world": 288,
+    "outcome_flip_probability": 0.35
+  },
+  "arms": {
+    "retrieval8": {
+      "exact": 94,
+      "false_constructions": 6,
+      "foreign_null_accepted": 0,
+      "heldout_accuracy": 0.596875,
+      "cpu_process_seconds": 0.05
+    },
+    "uniform": {
+      "exact": 97,
+      "false_constructions": 6,
+      "foreign_null_accepted": 0,
+      "heldout_accuracy": 0.5989583333333334,
+      "cpu_process_seconds": 0.038
+    },
+    "global_episodic": {
+      "exact": 95,
+      "false_constructions": 4,
+      "foreign_null_accepted": 0,
+      "heldout_accuracy": 0.5975405092592593,
+      "cpu_process_seconds": 0.037
+    },
+    "random8": {
+      "exact": 95,
+      "false_constructions": 6,
+      "foreign_null_accepted": 0,
+      "heldout_accuracy": 0.6008391203703703,
+      "cpu_process_seconds": 0.033
+    },
+    "historical_prior": {
+      "exact": 83,
+      "false_constructions": 6,
+      "foreign_null_accepted": 0,
+      "heldout_accuracy": 0.5921006944444445,
+      "cpu_process_seconds": 0.033
+    },
+    "CART": {
+      "exact": 132,
+      "false_constructions": 27,
+      "foreign_null_accepted": 1,
+      "heldout_accuracy": 0.5990740740740741,
+      "cpu_process_seconds": 0.199
+    },
+    "RF16": {
+      "exact": 131,
+      "false_constructions": 31,
+      "foreign_null_accepted": 1,
+      "heldout_accuracy": 0.598900462962963,
+      "cpu_process_seconds": 3.795
+    }
+  },
+  "frozen_go_checks": {
+    "vs_uniform_exact_gain6": false,
+    "vs_global_exact_gain4": false,
+    "false_no_worse_uniform": true,
+    "no_null_foreign_acceptance": true,
+    "beat_random_memory": false,
+    "validation_accuracy_ge_uniform_plus_0p005": false
+  },
+  "audit": {
+    "status": "PASS",
+    "independent_readonly_checks": 16629,
+    "classification": "local audit only, not independent owner acceptance",
+    "audit_source_sha256": "f8441c4a1d7ffdd35c6e8f87d9faa99f806f2642203704d201ced8252fd17f9d",
+    "audit_result_sha256": "7094af983d5542f086bd6a37a025a664b86316c2707f2b65cbbb506dd2ff4aad"
+  },
+  "limitations": [
+    "Same 16 Boolean truth-table grammar as predecessor; independent seeds do not establish unfamiliar causal-family transfer.",
+    "All world groups are synthetic; foreign worlds have outcomes independently randomized.",
+    "The 52 historical stationarity labels are used to select train-only episodes; no test labels used for retrieval.",
+    "CART/RF16 lack Bayesian posterior cutoff; their larger exact counts are accompanied by far higher false-construction rates.",
+    "CPU process time per arm omits historical memory acquisition, source loading, evaluation and Python startup; not whole-process efficiency.",
+    "Not native Yggdrasil training, retention, or integration.",
+    "Raw per-world result source currently only SHA-pinned in local custody; GitHub summary is not raw result."
+  ],
+  "publication": {
+    "prereg": true,
+    "runner_zlib_base64": true,
+    "auditor_zlib_base64": true,
+    "raw_result": false
+  },
+  "first_use_reserved_consumed": 0,
+  "admission": "HOLD"
+}
