@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-13",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a tokenless bounded causal table memory create two previously unknown deterministic Boolean operator identities from intervention outcomes, retain older rules, and avoid harmful confident predictions on another unseen rule?",
+  "hypothesis": "Four-table episodic memory learned without operator labels will retain AND/OR after discovering XOR/MAJ; 4 adaptive probes can predict remembered families while rejecting nonmatching MUX, without increasing error beyond 0.02 absolute Brier versus no-memory.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "YNCA-12 PR #1238: 2-observation novelty gate DEVELOPMENT_NO_GO; A/B worlds fully consumed; never reused",
+    "CKAD25 PR #1235: two true native training stages checkpoint PASS; 0/4 held predictions"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-13/**",
+    ".github/workflows/ynca13-dev-audit.yml"
+  ],
+  "inputs": [
+    {
+      "name": "procedural 3-input deterministic public Boolean laws; generator frozen in experiment.py",
+      "source": "locally generated synthetic public-domain algorithm; no source-world first-use",
+      "sha256": "procedural-code-identity-recorded-at-source-freeze"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      30113,
+      30213,
+      30313
+    ],
+    "split": "TRAIN: first 16 unlabeled episodes alternating AND/OR, then 16 alternating XOR/MAJ; each episode all 8 distinct interventions, 256 total per seed. EVAL: independent 40 episodes per law AND OR XOR MAJ MUX, 4 adaptive probes/episode; other 4 input assignments withheld for Brier scoring, no evaluator feedback to learner. One evaluation cohort only.",
+    "ordering": "Train episodes deterministic. Evaluation order per seed shuffled with seeded local RNG; no access to law name inside candidate; consistent world boundaries permitted.",
+    "data_budget": "per seed 32x8=256 training interventions; per seed 5x40x4=800 evaluation intervention outcomes per method; 5x40x4=800 unseen scored actions per method. Three seeds. No additional source actions.",
+    "compute_budget": "Python stdlib CPU only, max one preregistered primary score and one byte-reproduction check; per seed 3x256 exact hypotheses times 200x4 manageable; <=60s source-local",
+    "capacity": "four unique exact 8-bit truth tables (total 32 bits, plus up to four occurrence counters); no predefined XOR, MAJ, MUX identities in learner; stored tables learned only from full intervention outcome streams",
+    "evaluator": "Brier mean (p-y)^2 on 4 held actions per evaluation world; lower better. Same probe actions for candidate and exact Bayesian control. Candidate random-probe ablation has same number of actions, distinct randomized actions. Macro average equal families and seeds.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Untrained 0.5 no-memory predictor",
+    "256-table exact Bayesian posterior with symmetric Dirichlet pseudo-count 1 plus all fully exposed training-world table counts (same observations)",
+    "four-table exact empirical posterior using same learned memory, an expected parity control",
+    "four-table memory with equal-budget uniform-random interventions",
+    "last-observed-world exact-table memory"
+  ],
+  "metrics": [
+    "number of discovered distinct operators from consequences only",
+    "retained exact AND/OR table matches after XOR/MAJ acquisition",
+    "Brier on familiar four families, unseen MUX, and all five families",
+    "adaptive versus random-probe Brier",
+    "candidate versus 256-table and four-table exact controls"
+  ],
+  "classification_rules": {
+    "development_go": "Four distinct learned rules including two initially absent, both old laws exactly retained, familiar-four Brier <=0.15, familiar-four Brier gain >=0.05 vs 256-table exact Bayes, and MUX Brier <=0.27. No material regression relative to four-table matched exact Bayes (Brier difference <=0.005). This is behavioral development only, NOT scientific superiority.",
+    "mixed": "New rule creation and old retention PASS but any Brier admission gate fails; preserve negatives.",
+    "negative": "Rule creation fails or retention fails or unseen family harm >0.02 vs 0.25 no-memory; also mark every failed admission predicate.",
+    "invalid": "Source changed after freeze; evaluator leakage; action/capacity/source budget drift; missing exact control; nonreproducible results.",
+    "scientific_pass": "Never assert scientific_pass from this standalone synthetic exercise; requires separate native learner qualification with strongest trained controls and disjoint original source."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "retuning YNCA-12 A/B cohorts"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "scientific_first_use": false,
+    "original_source_actions": 0,
+    "paid_api_calls": 0
+  },
+  "preregistration_note": "This prereg commit must precede both executable source freeze and primary outcome; code must be committed before any primary evaluation. No tuning after primary. Accept negative."
+}
