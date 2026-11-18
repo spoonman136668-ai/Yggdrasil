@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-04",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a tokenless intervention policy learn to value the downstream decision benefit of evidence per unit intervention cost, and outperform both fixed probes and an exact Bayesian planner on genuinely unfamiliar causal mechanisms?",
+  "hypothesis": "Learned intervention-cost-aware policy will achieve at least 5% lower aggregate intervention-plus-decision regret than the strongest matched nonprivileged fixed-probe, random-probe, exact Bayesian decision-value, and information-gain controls on disjoint shifted causal worlds; each arm receives the same observations, allowable actions and total action-cost budget.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1215",
+      "note": "YNCA01 context arbitration failed global/shuffled controls"
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1217",
+      "note": "YNCA02 static all-expert failure memory lost confidence calibration; exploratory source-custody limitation"
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1220",
+      "note": "YNCA03 learned intervention beat random but lost fixed and Bayes; all tested law families predefined"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-04/prereg.json",
+    "research/contrib/chatgpt/YNCA-04/experiment.py",
+    "research/contrib/chatgpt/YNCA-04/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-04/README.md",
+    "research/contrib/chatgpt/YNCA-04/result.json",
+    "research/contrib/chatgpt/YNCA-04/provenance.json",
+    ".github/workflows/ynca04-isolated-research.yml",
+    ".github/workflows/ynca04-firstuse-heldout.yml"
+  ],
+  "inputs": [
+    {
+      "name": "Deterministic source-free SCM generator, four trained Boolean laws plus two heldout unseen mechanisms",
+      "sha256": "78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc",
+      "source": "research/contrib/chatgpt/YNCA-04/experiment.py; exact source-commit b8bb54b41f8849cfdc3e768edff9f76049fdd53b; Git blob eaf6c8341e4f66b3baa261a9fea26a9391147142; Python stdlib"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "train": "250001..251024 inclusive (1024 worlds)",
+      "exploratory_dev": "260001..260512 inclusive (512 development worlds; train grammar only)",
+      "prospective_heldout": "270001..271024 inclusive (1024 heldout worlds; MAJ3/MUX3 only)"
+    },
+    "split": "Train: AND3,OR3,XOR3,X0; DEV uses only training grammar; heldout: MAJ3 and MUX3 (majority and multiplex conditional selection) never in training hypothesis grammar. Generator first-use heldout source freeze at b8bb54b41f8849cfdc3e768edff9f76049fdd53b. No YNCA01-03 cohorts reused.",
+    "ordering": "Training fits fixed-size tokenless action value memory from 1024 source-free train worlds without heldout access. Source fingerprint -> focused train-only tests -> read-only CI first heldout (once) -> preserve result. Same passive observation and available probe menu/cost ceiling for each arm; no outcome labels exposed to policy inference.",
+    "data_budget": "12 noisy passive binary-observation tuples/world; 2 samples per probe; at most 2 probe actions and 4 intervention results per world; max total probe cost 0.085; terminal two candidate interventions; one 1024-world heldout cohort.",
+    "compute_budget": "CPU stdlib Python 3.12 on GitHub-hosted Linux/Windows (no paid API); single 1024-world original heldout per platform for independent reproduction; 1000 paired bootstrap resamples, 1024 training worlds, 8 candidate probes each training step (two offline steps) and 2 at test.",
+    "capacity": "Finite tokenless 2-step x 3 confidence-bin x 3 terminal-margin-bin x 8 action-key table (<=144 entries) with shrinkage12; a global trained mean action return; two independently trained same-size tables for native and shuffled-reward control. No hidden capacity growth.",
+    "evaluator": "Cost-sensitive regret = maximum true terminal causal payoff among two offered terminal decisions minus chosen action's true payoff + actual intervention costs; payoff = true binary outcome - 0.08*bitcount(terminal action). Probe cost = 0.018+0.012*bitcount(probe). Fixed 4 training laws, 2 unfamiliar heldout laws, observation flip epsilon 0.14. Lower total regret better. Exact Bayesian myopic value and entropy calculations enumerate all possible two-outcome probe batches within the four training laws, deliberately misspecified for unseen families.",
+    "deterministic_expected": true,
+    "source_commit_sha": "b8bb54b41f8849cfdc3e768edff9f76049fdd53b",
+    "source_git_blob_sha": "eaf6c8341e4f66b3baa261a9fea26a9391147142",
+    "source_sha256": "78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc",
+    "scoring_and_controls_frozen_before_first_use": true,
+    "bounded_action_observation_and_cost_provenance": "Same deterministic world seed and per-action/outcome random streams across all policies. Each arm's actual resource charge is included in its primary score.",
+    "pre_heldout_dev_run": "44279758792; both Linux and Windows 8/8 focused PASS; dev split only and negative versus Bayes; primary thresholds, evaluation seeds and source unchanged"
+  },
+  "controls": [
+    "Eight explicit fixed-action policies fixed0..fixed7",
+    "Random probe arm with same available action menu and maximum cost budget",
+    "Exact four-known-law Bayesian myopic expected terminal-value control; grammar misspecified on unfamiliar heldout",
+    "Exact four-known-law Bayesian expected entropy-reduction control; grammar misspecified on unfamiliar heldout",
+    "Fully fitted globally trained action-value policy from identical training experiences",
+    "Never-probe/confidence-abstention baseline",
+    "Shuffled-reward native policy as negative control",
+    "Privileged true-law oracle lower bound (diagnostic only, not admissible baseline)"
+  ],
+  "metrics": [
+    "Mean combined terminal decision regret and charged intervention cost (primary)",
+    "Best frozen eligible control among random/fixed/global/Bayesian/no_probe",
+    "Paired 95% deterministic bootstrap CI over 1024-world heldout",
+    "Cold checkpoint serialization parity within Python process",
+    "Per-policy mean probe count and actual cost",
+    "Causal rule family coverage and transfer to MAJ3/MUX3",
+    "8-context forecast Brier loss",
+    "Full wall-clock and resource cost",
+    "Exact source/result hashes"
+  ],
+  "classification_rules": {
+    "supported": "Development-only candidate if native 1024-world heldout combined cost-sensitive regret <=0.95 x strongest eligible nonprivileged control; bootstrap lower bound (strongest minus native) >0; shuffled control worse than native by >=0.005; all source/evaluator/audit checks pass. No SCIENTIFIC_PASS from synthetic external research.",
+    "mixed": "Native improves at least one control but not strongest, or CI spans 0; DEVELOPMENT_MIXED, no promotion.",
+    "negative": "Native fails >=5% vs strongest control, or falls behind matched control net of probe cost; DEVELOPMENT_NO_GO regardless of any gains vs random.",
+    "invalid": "Pre-source-lock heldout use, source hash mismatch, invalid disjoint family/splits, action-cost/count mismatch, absent listed comparator, label entering policy decisions, or test code changing after first-use; INVALID rather than science outcome."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "SOURCE-FROZEN AFTER PRE-PRIMARY CONTROL BUG REPAIR. The exact corrected Bayesian value-of-information source is committed at b8bb54b41f8849cfdc3e768edff9f76049fdd53b. Prior Linux focused test caught negative value-of-information sign and failed before any heldout first-use. This digest and all thresholds are frozen before primary."
+}

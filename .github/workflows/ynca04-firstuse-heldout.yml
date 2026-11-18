@@ -1,0 +1,50 @@
+name: YNCA04 frozen heldout independent dual-OS
+on:
+  push:
+    branches:
+      - research/ynca04-information-cost-probing-20261118
+    paths:
+      - .github/workflows/ynca04-firstuse-heldout.yml
+permissions:
+  contents: read
+jobs:
+  source-locked-heldout:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Prevent Windows checkout source rewriting
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen identity before primary source-free evaluation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -c 'import hashlib,json,pathlib; p=pathlib.Path("research/contrib/chatgpt/YNCA-04"); h=hashlib.sha256((p/"experiment.py").read_bytes()).hexdigest(); d=json.loads((p/"prereg.json").read_bytes()); assert h=="78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc"; assert d["frozen_design"]["source_sha256"]==h; assert d["frozen_design"]["source_commit_sha"]=="b8bb54b41f8849cfdc3e768edff9f76049fdd53b"; print("YNCA04_FROZEN_FIRST_USE_PASS",h)'
+      - name: Run exactly the prespecified disjoint 1024-world heldout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-04/experiment.py --heldout > "$RUNNER_TEMP/ynca04-result.json"
+          python -c 'import json,hashlib,base64,sys,pathlib; b=pathlib.Path(sys.argv[1]).read_bytes().replace(b"\r\n",b"\n"); p=pathlib.Path(sys.argv[1]); p.write_bytes(b); d=json.loads(b); assert d["split"]=="heldout" and d["outcome"]["world_count"]==1024; assert set(d["outcome"]["families"])=={"MAJ3","MUX3"}; assert all(d["audit"].values()); assert not any(d["claims"].values()); print("YNCA04_PRIMARY_SHA256",hashlib.sha256(b).hexdigest()); print("YNCA04_PRIMARY_B64",base64.b64encode(b).decode("ascii"))' "$RUNNER_TEMP/ynca04-result.json"
+          test -z "$(git status --porcelain)"
+      - name: Preserve original heldout result
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca04-original-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca04-result.json
+          if-no-files-found: warn
+          retention-days: 30

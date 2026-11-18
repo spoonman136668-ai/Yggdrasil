@@ -1,0 +1,45 @@
+# Source-frozen Bayes correction b8bb54b41f8849cfdc3e768edff9f76049fdd53b (no heldout consumed).
+name: YNCA04 source-locked preflight
+on:
+  push:
+    branches:
+      - research/ynca04-information-cost-probing-20261118
+    paths:
+      - .github/workflows/ynca04-isolated-research.yml
+permissions:
+  contents: read
+jobs:
+  focused-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Preserve Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source lock and run training-only focused controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B research/contrib/chatgpt/YNCA-04/experiment.py --fingerprint
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-04 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+      - name: Reproduce exploratory development split without using heldout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-04/experiment.py --dev > "$RUNNER_TEMP/ynca04-dev.json"
+          python -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["split"]=="dev" and d["outcome"]["world_count"]==512; assert d["source_sha256"]=="78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc"; print("YNCA04_DEV_RESULT",json.dumps(d["outcome"],sort_keys=True))' "$RUNNER_TEMP/ynca04-dev.json"
+          test -z "$(git status --porcelain)"
