@@ -1,0 +1,53 @@
+name: CKAD25-V focused native relation compiler compatibility
+on:
+  push:
+    branches: [research/ckad25v-native-relation-compilation-20261118]
+    paths:
+      - ".github/workflows/ckad25v-focused.yml"
+  pull_request:
+    paths:
+      - "yggdrasil/native_causal_relation_posterior.py"
+      - "yggdrasil/native_cumulative_learner.py"
+      - "tests/test_native_causal_relation_posterior.py"
+      - ".github/workflows/ckad25v-focused.yml"
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  PYTHONPATH: .
+
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - name: Preserve source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Compile exact new code
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          from pathlib import Path
+          for name in ("yggdrasil/native_causal_relation_posterior.py", "yggdrasil/native_cumulative_learner.py", "tests/test_native_causal_relation_posterior.py"):
+              compile(Path(name).read_text(encoding="utf-8"), name, "exec")
+          print("CKAD25V_NO_CACHE_COMPILE_PASS")
+          PY
+      - name: Native relation focused tests, old checkpoint compatibility
+        shell: bash
+        run: |
+          python -B -m unittest discover -s tests -p 'test_native_causal_relation_posterior.py' -v
+          test -z "$(git status --porcelain)"

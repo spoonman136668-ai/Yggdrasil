@@ -12,6 +12,7 @@ from yggdrasil.native_context_basis import canonical, digest, pin, require, SOUR
 from yggdrasil.native_context_accumulator import NativeContextAccumulator
 from yggdrasil.native_degree_hypothesis import NativeDegreeHypothesis
 from yggdrasil.native_sparse_hypothesis import NativeSparseHypothesis, SCHEMA as SPARSE_SCHEMA
+from yggdrasil.native_causal_relation_posterior import NativeCausalRelationPosterior
 from yggdrasil.native_stochastic_history import NativeStochasticHistory
 from yggdrasil.native_dtr_history import NativeDTRHistory
 from yggdrasil.native_episode_experience import NativeEpisodeExperience
@@ -24,6 +25,7 @@ REPAIR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v2'
 HISTORY_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v3'
 DTR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v4'
 EXPERIENCE_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v5'
+RELATION_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v6'
 EXPERIENCE_SOURCE = '20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef'
 MAX_BYTES = 16 * 1024 * 1024
 MAX_EVENTS = 128
@@ -59,7 +61,7 @@ def _two_stage_plan(transition, terminal):
 class NativeCumulativeLearner:
     """One immutable train/save/restore interface; no rival memory substrate."""
     __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events',
-                 '_schema', '_repairs', '_history', '_dtr', '_experience')
+                 '_schema', '_repairs', '_history', '_dtr', '_experience', '_compiled')
 
     def __init__(self, property_raw, expected_sha256):
         self._properties = NativePropertyKnowledge.restore(property_raw, expected_sha256)
@@ -72,6 +74,7 @@ class NativeCumulativeLearner:
         self._history = None
         self._dtr = None
         self._experience = None
+        self._compiled = (None,) * 16
 
     def _copy(self):
         obj = object.__new__(NativeCumulativeLearner)
@@ -152,11 +155,17 @@ class NativeCumulativeLearner:
                     hyp = NativeDegreeHypothesis.fit_checkpoint(raw, digest(raw))
             obj._hypotheses = self._hypotheses[:slot] + (hyp,) + self._hypotheses[slot+1:]
         obj._events = self._events + (event,)
+        if self._schema == RELATION_SCHEMA and self._compiled[slot] is not None:
+            # Fresh witnessed evidence invalidates only its own compiled version space.
+            obj._compiled = (self._compiled[:slot] + (None,) + self._compiled[slot+1:])
+            if not any(obj._compiled):
+                obj._schema = SCHEMA
         return obj
 
     def repair_sparse(self, slot):
         """Explicit opt-in repair; rejected hypotheses never replace state."""
         coordinates(slot)
+        require(self._schema != RELATION_SCHEMA, 'INTEGRATED_SPARSE_WITH_COMPILED_SCOPE')
         old = self._hypotheses[slot]
         require(not self._quarantined[slot] and old is not None and not old.eligible
                 and type(old) is NativeDegreeHypothesis, 'INTEGRATED_SPARSE_REPAIR_SCOPE')
@@ -172,8 +181,46 @@ class NativeCumulativeLearner:
             'source_view_sha256':digest(raw),'rule':hyp.info()['rule']},)
         return obj,hyp,cost
 
+    def compile_causal_relations(self, slot):
+        """Opt-in numeric multi-hypothesis compilation in THIS native state.
+
+        Existing witnessed source only. A conventional fixed ANF grammar is
+        supplied, so this is not autonomous operator discovery or acceptance.
+        """
+        coordinates(slot)
+        require(self._schema in (SCHEMA, RELATION_SCHEMA)
+                and not self._repairs and self._history is None and self._dtr is None
+                and self._experience is None, 'INTEGRATED_RELATION_COMPILE_SCOPE')
+        require(not self._quarantined[slot] and self._hypotheses[slot] is not None
+                and type(self._hypotheses[slot]) is NativeDegreeHypothesis
+                and self._source._seen[slot].bit_count() in (8, 12, 16),
+                'INTEGRATED_RELATION_SOURCE_COUNT')
+        raw = self._view(slot)
+        committee = NativeCausalRelationPosterior.fit_checkpoint(raw, digest(raw))
+        if (self._compiled[slot] is not None and
+                self._compiled[slot].checkpoint() == committee.checkpoint()):
+            return self
+        child = self._copy()
+        child._compiled = self._compiled[:slot] + (committee,) + self._compiled[slot+1:]
+        child._schema = RELATION_SCHEMA
+        return child
+
+    def causal_relation_probability(self, slot, context, action):
+        """Return source-known or posterior (ones,total), or None if absent."""
+        a, r = coordinates(slot)
+        c = self._source._model._context(context)
+        PublicCausalCells._bit(action, 'ACTION')
+        if self._quarantined[slot]:
+            return None
+        seen = self._source.predict(a, c, action, retained=r)
+        if seen is not None:
+            return (seen, 1)
+        committee = self._compiled[slot]
+        return None if committee is None else committee.predict_fraction(c, action)
+
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
+        require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_HISTORY_SCOPE')
         old=self._history if self._history is not None else NativeStochasticHistory()
         history=old.stage_prefix(raw,expected_sha256,stop)
         if history is old:return self
@@ -191,6 +238,7 @@ class NativeCumulativeLearner:
                 self._history.predict_backoff(world,before,action,previous_reward))
 
     def observe_cached_dtr(self,raw,expected_sha256,stop):
+        require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_DTR_SCOPE')
         require(self._history is not None,'INTEGRATED_DTR_REQUIRES_HISTORY_PARENT')
         old=self._dtr if self._dtr is not None else NativeDTRHistory()
         dtr=old.stage_prefix(raw,expected_sha256,stop)
@@ -357,6 +405,14 @@ class NativeCumulativeLearner:
         if self._schema in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA):d['repairs']=self._repairs
         if self._schema in (HISTORY_SCHEMA,DTR_SCHEMA):d['history_ascii']=self._history.checkpoint().decode('ascii')
         if self._schema==DTR_SCHEMA:d['dtr_ascii']=self._dtr.checkpoint().decode('ascii')
+        if self._schema == RELATION_SCHEMA:
+            require(any(self._compiled) and not self._repairs and self._history is None
+                    and self._dtr is None and self._experience is None,
+                    'INTEGRATED_RELATION_CHECKPOINT_SCOPE')
+            d['compiled_ascii'] = [c.checkpoint().decode('ascii') if c is not None else None
+                                   for c in self._compiled]
+        else:
+            require(not any(self._compiled), 'INTEGRATED_RELATION_SCHEMA_LOSS')
         if self._experience is not None:
             d['schema'] = EXPERIENCE_SCHEMA
             d['experience_ascii'] = self._experience.checkpoint().decode('ascii')
@@ -378,8 +434,9 @@ class NativeCumulativeLearner:
             d = json.loads(raw.decode('ascii'), object_pairs_hook=unique)
             keys={'schema','source_mode','properties_ascii','source_ascii','hypotheses_ascii',
                   'quarantined','events','accepted_native','scientific_pass'}
-            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA,EXPERIENCE_SCHEMA)
-                and set(d)==(keys|{'repairs','history_ascii','dtr_ascii','experience_ascii','experience_source'} if d['schema']==EXPERIENCE_SCHEMA else
+            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA,EXPERIENCE_SCHEMA,RELATION_SCHEMA)
+                and set(d)==(keys|{'compiled_ascii'} if d['schema']==RELATION_SCHEMA else
+                             keys|{'repairs','history_ascii','dtr_ascii','experience_ascii','experience_source'} if d['schema']==EXPERIENCE_SCHEMA else
                              keys|{'repairs','history_ascii','dtr_ascii'} if d['schema']==DTR_SCHEMA else
                              keys|{'repairs','history_ascii'} if d['schema']==HISTORY_SCHEMA else
                              keys|{'repairs'} if d['schema']==REPAIR_SCHEMA else keys)
@@ -451,6 +508,26 @@ class NativeCumulativeLearner:
             require(slots=={s for s,h in enumerate(hypotheses) if type(h) is NativeSparseHypothesis},
                     'INTEGRATED_REPAIR_COMPLETENESS')
             obj._repairs=tuple(repairs)
+            if d['schema'] == RELATION_SCHEMA:
+                entries = d['compiled_ascii']
+                require(type(entries) is list and len(entries) == 16 and any(v is not None for v in entries)
+                        and not repairs, 'INTEGRATED_RELATION_ENTRIES')
+                compiled = []
+                for slot, value in enumerate(entries):
+                    if value is None:
+                        compiled.append(None)
+                        continue
+                    require(type(value) is str and type(hypotheses[slot]) is NativeDegreeHypothesis
+                            and not qs[slot], 'INTEGRATED_RELATION_SLOT_SCOPE')
+                    source_view = obj._view(slot)
+                    raw_compiled = value.encode('ascii')
+                    old = NativeCausalRelationPosterior.restore(raw_compiled, digest(raw_compiled))
+                    fresh = NativeCausalRelationPosterior.fit_checkpoint(source_view, digest(source_view))
+                    require(old.info()['source_checkpoint_sha256'] == digest(source_view)
+                            and old.checkpoint() == fresh.checkpoint(),
+                            'INTEGRATED_RELATION_RECALCULATED_SOURCE_JOIN')
+                    compiled.append(old)
+                obj._compiled = tuple(compiled)
             if obj._schema in (HISTORY_SCHEMA,DTR_SCHEMA):
                 h=d['history_ascii'].encode('ascii')
                 obj._history=NativeStochasticHistory.restore(h,digest(h))
