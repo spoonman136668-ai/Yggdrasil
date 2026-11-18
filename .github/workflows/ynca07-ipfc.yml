@@ -1,0 +1,75 @@
+name: YNCA07 IPFC bounded second development pass
+on:
+  push:
+    branches:
+      - research/ynca07-ipfc-bounded-pass-20261118
+    paths:
+      - .github/workflows/ynca07-ipfc.yml
+permissions:
+  contents: read
+jobs:
+  independent-b:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Prevent source line ending rewriting
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Source-bound freeze and focused preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import hashlib,json,pathlib
+          root=pathlib.Path('research/contrib/chatgpt/YNCA-07-IPFC')
+          prereg=json.loads((root/'prereg.json').read_text())
+          h=hashlib.sha256((root/'experiment.py').read_bytes()).hexdigest()
+          assert h=='ae1df1d71754d8d0449dcd2b5f48275e25f1b54b36cb9cb623644684aed0245c',h
+          assert prereg['frozen_design']['source_sha256']==h
+          assert prereg['frozen_design']['source_commit_sha']=='e5ee9031ff1cef63ef50c1c6f6ec0f89bf92997b'
+          print('YNCA07_SOURCE_FROZEN_PASS',h)
+          PY
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-07-IPFC -p 'test_*.py' -v
+      - name: One independent B development run, no retuning
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-07-IPFC/experiment.py --split B > "$RUNNER_TEMP/ynca07-b.json"
+          python - "$RUNNER_TEMP/ynca07-b.json" <<'PY'
+          import hashlib,base64,json,pathlib,sys
+          p=pathlib.Path(sys.argv[1])
+          raw=p.read_bytes().replace(b'\r\n',b'\n')
+          p.write_bytes(raw)
+          d=json.loads(raw)
+          assert d['split']=='B' and d['n']==128 and d['grammar_size']==59
+          assert set(d['metrics'])=={'IPFC_A','IPFC_B','EIG','EIG_TRAINED','fixed','random'}
+          assert d['best_control'] in ('EIG','EIG_TRAINED','fixed','random')
+          print('YNCA07_B_SHA256',hashlib.sha256(raw).hexdigest())
+          print('YNCA07_B_METRICS',json.dumps(d,sort_keys=True,separators=(',',':')))
+          print('YNCA07_B_B64',base64.b64encode(raw).decode('ascii'))
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve original B output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca07-b-development-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca07-b.json
+          if-no-files-found: warn
+          retention-days: 30

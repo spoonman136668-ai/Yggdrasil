@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.ynca07.provenance.v1",
+  "kind": "source-free external development only",
+  "experiment_id": "YNCA-07-IPFC-A-B",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/ynca07-ipfc-bounded-pass-20261118",
+  "accepted_main_fork": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "pass_a": {
+    "type": "exploratory local pre-prereg",
+    "worlds": 128,
+    "seeds": "171001..171128",
+    "source": "Original IPFC_A mechanism reproduced by frozen combined code, but local A outcome was inspected before source-locked GitHub prereg",
+    "brier": 0.1237971,
+    "baseline_eig_brier": 0.1007487,
+    "verdict": "NO_CLEAR_SIGNAL"
+  },
+  "pass_b": {
+    "type": "source-locked independent development first use",
+    "worlds": 128,
+    "seeds": "172001..172128",
+    "source_commit": "e5ee9031ff1cef63ef50c1c6f6ec0f89bf92997b",
+    "source_sha256": "ae1df1d71754d8d0449dcd2b5f48275e25f1b54b36cb9cb623644684aed0245c",
+    "source_git_blob": "12ee55d97079d768d69ba64a0ddaa1a0f0ebef42",
+    "prereg_original_commit": "c35981ca44d9d5f6b9b57e0f787abea97735ef98",
+    "prereg_source_lock_before_b": "5c5b2f37d987f8e75ffaddf12e36ea92cbc40524",
+    "evaluation_source_tree_commit": "d8120c8ba51bad3a9d71b8ce0e5bd6dd1fe47024",
+    "original_dual_os_run": 44293196873,
+    "original_jobs": {
+      "linux": 134763370597,
+      "windows": 134763371068
+    },
+    "tests_passed_per_os": 7,
+    "original_result_sha256": "f8c0d79c33927727846e772f945d198c638a399ea25b77a57c223c7d58b2066a",
+    "original_result_bytes": 1379,
+    "original_result_commit": "b97c0ec95c99cb9956e1b352375093f4170fce2a",
+    "byte_identical_cross_os": true,
+    "trained_prior_worlds": 64,
+    "trained_prior_seeds": "160001..160064",
+    "future_reserved_unused": "181001..181256",
+    "best_control": "fixed",
+    "scores": {
+      "ipfc_a_brier": 0.12233724,
+      "ipfc_b_brier": 0.09410943,
+      "eig_brier": 0.09743245,
+      "trained_eig_brier": 0.10187826,
+      "fixed_brier": 0.09720486,
+      "random_brier": 0.10471498,
+      "ipfc_b_bit_accuracy": 0.73730469,
+      "fixed_bit_accuracy": 0.796875
+    },
+    "primary_relative_gain_over_best_control": 0.0318444,
+    "frozen_threshold_relative_gain": 0.05,
+    "accuracy_deficit_vs_best_control": 0.05957031,
+    "frozen_max_accuracy_deficit": 0.02,
+    "decision": "DEVELOPMENT_MIXED_STOP_THIS_VARIANT",
+    "scientific_pass": false
+  },
+  "provenance_limits": [
+    "Actual runtime is bounded symbolic counterexample program synthesis with a fixed 59-program grammar, not open-ended invention of arbitrary unknown causal primitives.",
+    "The falsifier adapts preferences within each world only; no learned adversarial model weights or cumulative cross-world optimization.",
+    "All ground truths are included in the fixed grammar, which makes exact Bayesian EIG a strong and fair control but does not test out-of-grammar novelty.",
+    "Prediction Brier is computed from uniform surviving-program posterior; EIG_TRAINED selects probes using trained prior but uses the same uniform scoring posterior; note interpretation.",
+    "Development-only noiseless binary outcomes; no cold retention, source owner/CKAD integration, genuine hidden-confounder transfer or independent original-world first-use.",
+    "Pass A inspected before prereg; Pass B was source-locked before independent cohort; no further tuning on B or future reserved cohort."
+  ],
+  "authority": {
+    "accepted_ref_edit": false,
+    "merge": false,
+    "promotion": false,
+    "controller": false,
+    "scheduler": false,
+    "original_science_first_use": false,
+    "paid_api": false
+  }
+}
