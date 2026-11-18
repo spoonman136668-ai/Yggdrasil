@@ -86,7 +86,7 @@ jobs:
           test -z "$(git status --porcelain)"
           git push origin "HEAD:refs/heads/$BRANCH"
   final-regression:
-    if: "github.event.head_commit.message == 'ci(ckad24): seal source atlas'"
+    if: "github.event.head_commit.message == 'ci(ckad24): seal source atlas' || github.event.head_commit.message == 'ci(ckad25): final evidence qualification'"
     strategy:
       fail-fast: false
       matrix:
