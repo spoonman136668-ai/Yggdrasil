@@ -1,0 +1,136 @@
+{
+  "B_scored": false,
+  "case": {
+    "candidate_repair_attempts": 3,
+    "candidate_repairs_eligible": 1,
+    "cold_checkpoint_sha256": {
+      "native_original": "879f62bedbffd5a15ef95681ed8276a429ee20feb416539bc03a08f02f410c14",
+      "native_sparse_repair": "c9cfeaa31df969c2c90e2529d3818bfab8bb919d5dec12647ec589c3ed3173c9"
+    },
+    "cold_restore_exact": true,
+    "coverage": {
+      "native_original": 0.0,
+      "native_sparse_repair": 0.3333333333333333
+    },
+    "cpu_seconds": 0.493122,
+    "held_composite_cases": 48,
+    "local_quarantine_exact": true,
+    "metrics": {
+      "exact_2880_bayes": {
+        "accuracy": 1.0,
+        "brier": 0.0,
+        "cases": 48,
+        "correct": 48
+      },
+      "native_original": {
+        "accuracy": 0.5416666667,
+        "brier": 0.25,
+        "cases": 48,
+        "correct": 26
+      },
+      "native_sparse_repair": {
+        "accuracy": 0.625,
+        "brier": 0.2083333333,
+        "cases": 48,
+        "correct": 30
+      },
+      "polynomial_logistic": {
+        "accuracy": 0.5208333333,
+        "brier": 0.2653709258,
+        "cases": 48,
+        "correct": 25
+      },
+      "smoothed_frequency": {
+        "accuracy": 0.5416666667,
+        "brier": 0.25,
+        "cases": 48,
+        "correct": 26
+      },
+      "uninformative_sham": {
+        "accuracy": 0.5416666667,
+        "brier": 0.25,
+        "cases": 48,
+        "correct": 26
+      }
+    },
+    "old_checkpoint_sha256": {
+      "native_original": "7c35a01e08c1de3acbd02299d01d9104eb9e963a9e2f572e3cb27208ffb1d38c",
+      "native_sparse_repair": "91dd36b553edfc239aa64c7070ba5a1e6a357745ca01954fe934591d18d9a4e1"
+    },
+    "old_primitive_retention_exact": true,
+    "posterior_law_counts": [
+      1,
+      1,
+      1
+    ],
+    "seed": 9101,
+    "solver": [
+      {
+        "attempted": true,
+        "cost": {
+          "solver_dual_bound": 5.0,
+          "solver_nodes": 1.0,
+          "solver_primal_bound": 5.0,
+          "solver_seconds": 0.001858122000001572,
+          "solver_status": 0
+        },
+        "eligible": false,
+        "slot": 0
+      },
+      {
+        "attempted": true,
+        "cost": {
+          "solver_dual_bound": 4.0,
+          "solver_nodes": 1.0,
+          "solver_primal_bound": 4.0,
+          "solver_seconds": 0.0029563619999990465,
+          "solver_status": 0
+        },
+        "eligible": false,
+        "slot": 1
+      },
+      {
+        "attempted": true,
+        "cost": {
+          "solver_dual_bound": 4.0,
+          "solver_nodes": 1.0,
+          "solver_primal_bound": 4.0,
+          "solver_seconds": 0.0011847679999945626,
+          "solver_status": 0
+        },
+        "eligible": true,
+        "slot": 2
+      }
+    ],
+    "source_rows": 144,
+    "wall_seconds": 0.621274
+  },
+  "mode": "pilot",
+  "schema": "yggdrasil.ckad30.two-interaction-repair.v1",
+  "source_lock": {
+    "accepted_main_unchanged": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "campaign_blob_sha1": "298bce2aa314374ce4dda7719f209b7d8ef11dea",
+    "files": {
+      ".github/workflows/ckad30-sparse-composition.yml": "133631aa5cb63d7752e1b7d3e3475ed0ce483df6",
+      "research/contrib/chatgpt/CKAD-30/audit_pilot.py": "1eaea92aaa5fab4bdb3b2a2a8db447b4c2daf4e8",
+      "research/contrib/chatgpt/CKAD-30/campaign.py": "298bce2aa314374ce4dda7719f209b7d8ef11dea",
+      "research/contrib/chatgpt/CKAD-30/seal_pilot.py": "a5c9da2756092d8f92ba9404c80b61f8530c3911",
+      "research/contrib/chatgpt/CKAD-30/test_ckad30.py": "3ab50109026e58df0dba646877960ffcc9eca07a"
+    },
+    "parent_sha": "b2960465f419bc26026488777c7d7b0fa7ca8f92",
+    "pilot_seeds": [
+      9101,
+      9102
+    ],
+    "prefirstuse_source_head": "bd01ca60c7ee516b3538eae04d3f273046f9e662",
+    "prereg_commit": "d320fb29b5cd186a71f09a5bc01de2e2ce5ffa38",
+    "primary_seeds": [
+      707,
+      808,
+      909
+    ],
+    "remark": "Frozen source identity before any pilot or primary scoring. Pilot script accepts only source witness rows, and no primary B evaluation without qualified separate certificate.",
+    "schema": "yggdrasil.ckad30.source-lock.v1",
+    "source_first_use": false
+  }
+}
