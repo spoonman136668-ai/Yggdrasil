@@ -1,0 +1,82 @@
+name: YNCA05 exhaustive identifiability analytic qualification
+on:
+  push:
+    branches:
+      - research/ynca05-identifiability-ceiling-20261118
+    paths:
+      - .github/workflows/ynca05-analytic.yml
+permissions:
+  contents: read
+jobs:
+  verify-and-evaluate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen source identity and focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import hashlib,json,pathlib
+          p=pathlib.Path('research/contrib/chatgpt/YNCA-05')
+          source=(p/'experiment.py').read_bytes()
+          h=hashlib.sha256(source).hexdigest()
+          d=json.loads((p/'prereg.json').read_bytes())
+          assert h=='cd3a455caad032f534f1ae04ac190f19e053c1a038b7030ee1067b40099569bb',h
+          assert d['frozen_design']['source_sha256']==h
+          assert d['inputs'][0]['sha256']==h
+          assert d['frozen_design']['source_commit_sha']=='f582a375500636148e7ec31f43668f3866e94b5f'
+          print('YNCA05_FROZEN_SOURCE_PASS',h)
+          PY
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-05 -p 'test_*.py' -v
+      - name: Exact analytic evaluation, no model training
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-05/experiment.py --run > "$RUNNER_TEMP/ynca05-primary.json"
+          python - "$RUNNER_TEMP/ynca05-primary.json" <<'PY'
+          import json,pathlib,hashlib,base64,sys
+          p=pathlib.Path(sys.argv[1])
+          raw=p.read_bytes().replace(b'\r\n',b'\n')
+          p.write_bytes(raw)
+          d=json.loads(raw)
+          assert d['truth_table_count_full']==256
+          assert d['truth_table_count_conditioned']==64
+          assert d['analysis']['identifiability_by_probes']['2']['min_compatible_class']==16
+          assert d['analysis']['decision_value']['out_of_pair_information_value_max_abs']<=1e-12
+          assert not any(d['claims'].values())
+          print('YNCA05_PRIMARY_SHA256',hashlib.sha256(raw).hexdigest())
+          print('YNCA05_PRIMARY_JSON',json.dumps({
+            'bounds':d['analysis']['identifiability_by_probes'],
+            'decision':{k:v for k,v in d['analysis']['decision_value'].items() if k!='per_pair'}},
+            sort_keys=True,separators=(',',':')))
+          print('YNCA05_PRIMARY_B64',base64.b64encode(raw).decode('ascii'))
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve exact original result
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca05-analytic-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca05-primary.json
+          if-no-files-found: warn
+          retention-days: 30
