@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.wsp185.public-source-metadata-diagnostic.v1",
+  "scope": "WSP185 independent read-only source-record roster inspection, no WSP184 frozen protocol edit, no model training",
+  "parent_sha": "2a8ca9b1830d6fa5ac0802c227f45211ca2ba272",
+  "branch": "research/wsp185-physical-source-roster-20261118",
+  "source": {
+    "repo": "juangamella/causal-chamber",
+    "commit": "967d59a42956872f37463cc561ecf6e9ceab9364",
+    "dataset": "wt_walks_v1",
+    "published_url": "https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/wt_walks_v1.zip",
+    "published_md5": "19bb4e92cbe0b8dff49299b9b509ac36",
+    "license": "CC BY 4.0",
+    "citation": "Gamella, Peters, Bühlmann (2025), doi:10.1038/s42256-024-00964-x"
+  },
+  "question": "What exact recorded CSV row counts and source data schema actually exist for the previously preregistered walk1..10 and regime_jumps_single, and why did WSP184 stop before training?",
+  "frozen_before_archive_read": true,
+  "allowed_actions": [
+    "download already published ZIP via GitHub-hosted CI after verify HTTPS origin",
+    "validate full archive against published MD5",
+    "inspect ZIP member names, compressed/uncompressed sizes, CRC via read",
+    "count physical CSV rows using CSV reader, nonempty headers, blank rows, and presence of required columns",
+    "report only per-run row counts, header field names, missing/trailing rows, filenames and SHA256 file/archive digests",
+    "record no model fit and no measured output numeric values"
+  ],
+  "prohibited": [
+    "read or report measured rpm/pressure values",
+    "train any model",
+    "evaluate VALID/DEV/HELD performance",
+    "modify WSP184 source, prereg, or accepted baseline",
+    "relax WSP184 expected row condition",
+    "download or use live Remote Lab or private protected world",
+    "original source first-use",
+    "make scheduling/queue/controller changes",
+    "paid API",
+    "merge/deploy"
+  ],
+  "exact_roster": [
+    "actuators_random_walk_1",
+    "actuators_random_walk_2",
+    "actuators_random_walk_3",
+    "actuators_random_walk_4",
+    "actuators_random_walk_5",
+    "actuators_random_walk_6",
+    "actuators_random_walk_7",
+    "actuators_random_walk_8",
+    "actuators_random_walk_9",
+    "actuators_random_walk_10",
+    "regime_jumps_single"
+  ],
+  "metadata_outcome": "Count-only, no scientific or model outcome. A WSP184 row mismatch remains historical and frozen. Recommend a new separately preregistered physical study only if evidence justifies it.",
+  "source_owner_first_use_allowed": false,
+  "status": "FROZEN_METADATA_ONLY_BEFORE_PUBLIC_ARCHIVE_READ"
+}
