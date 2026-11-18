@@ -1,0 +1,52 @@
+name: YNCA-13 source-free bounded development
+on:
+  pull_request:
+    paths:
+      - "research/contrib/chatgpt/YNCA-13/**"
+      - ".github/workflows/ynca13-dev-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-free:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Exact frozen source compile
+        run: python -B -m py_compile research/contrib/chatgpt/YNCA-13/experiment.py
+      - name: Bounded synthetic development evaluation
+        run: python -B research/contrib/chatgpt/YNCA-13/experiment.py --output research/contrib/chatgpt/YNCA-13/run-result.json
+      - name: Repeat byte-deterministic frozen score
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          import subprocess,sys
+          p=Path("research/contrib/chatgpt/YNCA-13/run-result.json")
+          first=p.read_bytes()
+          subprocess.run([sys.executable, "-B", "research/contrib/chatgpt/YNCA-13/experiment.py", "--output",str(p)],check=True, capture_output=True)
+          assert p.read_bytes()==first, "non-deterministic outcome"
+          data=json.loads(first)
+          assert data["native_yggdrasil_trained"] is False
+          assert data["scientific_pass"] is False
+          assert data["protected_first_use"] is False
+          assert data["training_worlds"]==32
+          assert data["evaluation_worlds_per_seed"]==200
+          print("YNCA13_DEV_AUDIT_PASS source_sha256="+data["source_sha256"])
+          print("YNCA13_DEV_DISPOSITION="+data["verdict"])
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ynca13-dev-${{ matrix.os }}
+          path: research/contrib/chatgpt/YNCA-13/run-result.json
+          if-no-files-found: error
+          retention-days: 30
