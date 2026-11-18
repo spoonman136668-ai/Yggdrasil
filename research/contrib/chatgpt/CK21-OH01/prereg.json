@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.ck21oh01.informed-oracle-headroom.prereg.v1",
+  "experiment_id": "CK21-OH01",
+  "source_commit": "392f6c5d66adfff3b79d6a6a2910b6557dfccbdc",
+  "source_tree": "5cb964eab7abea21852b6fd05bd82381c54ae089",
+  "source_fixture_path": "research/contrib/chatgpt/CKAD-20/synthetic_world.py",
+  "source_fixture_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "original_ckad21_stable_sha256": "c986dd9dc63ace08f4a0185f80258099971e22ff50884cf6a7ec58e9b1ad650e",
+  "objective": "Determine whether CKAD21 5% retention-vs-pooled requirement is close to the attainable score of a non-clairvoyant reference policy informed of the true evaluator family/regime, but never hidden per-episode variables. Identify whether returning-regime failure is a memory-retrieval or near-ceiling decision problem.",
+  "exact_held_design": {
+    "seeds": [
+      101,
+      202,
+      303
+    ],
+    "sessions": [
+      [
+        "invariant",
+        0
+      ],
+      [
+        "context_switch",
+        1
+      ],
+      [
+        "context_switch",
+        0
+      ],
+      [
+        "invariant",
+        0
+      ],
+      [
+        "context_switch",
+        1
+      ],
+      [
+        "terminal_switch",
+        1
+      ]
+    ],
+    "cohort_template": "ckad21-held-{session}",
+    "indices": "0..95",
+    "total_held_episodes": 1728,
+    "returning_sessions": [
+      0,
+      3
+    ],
+    "shifted_sessions": [
+      1,
+      4
+    ]
+  },
+  "oracle_policy": "Use only public initial s1, true evaluator family and regime to pick a1 with highest expected probability of s2=0 conditional on hidden/noise distribution. After actual s2, choose a2 matching public causal target as specified by true evaluator family. No instance hidden, transition noise, reward noise, alternate outcomes, future labels or seed/index exposed to decision functions.",
+  "model_distribution": {
+    "hidden": "Bernoulli(1/2)",
+    "public_initial_flip": "Bernoulli(1/4)",
+    "transition_noise_if_hidden0": "Bernoulli(1/8)",
+    "transition_noise_if_hidden1": "Bernoulli(1/4)",
+    "reward_flip": "Bernoulli(1/16)"
+  },
+  "independent_control": "Separate exact rational enumeration over hidden, public-view flip, transition noise and reward noise must verify the compact oracle at both possible s1 and every family/regime; mean theoretical informed-oracle reward is 113/128=0.8828125.",
+  "metrics": "Observed oracle reward on exact 3 seeds x6 sessions x96 frozen held episodes. Compare with original CKAD21 context_active, context_random and pooled rewards per seed and session; report oracle-active reward, oracle-pooled reward, returning session3 remaining headroom, required 29/576 successes to exceed pooled by >=5pp, and exact output trace hashes.",
+  "falsification": "If informed reference oracle fails to reach pooled+29 on the returning cohort, classify CKAD21 frozen 5pp success target as requiring realized outcomes above the expected-optimal informed policy on this fixed sample, NOT mathematically impossible under finite draws or evidence of native superiority. No post-hoc adjustment of original threshold.",
+  "negative_controls": [
+    "No hidden or private noise fields in oracle decision callbacks",
+    "Source fixture SHA pinned",
+    "Known-world oracle and independently enumerated exact expected-value controller must tie",
+    "Score returned from actual rollout, not predicted reward",
+    "All original recorded session counts and same cohort namespace checked",
+    "No native learner mutation, new original source actions or protected first-use"
+  ],
+  "budgets": {
+    "paid_apis": 0,
+    "original_source_actions": 0,
+    "protected_first_use": 0,
+    "read_only_synthetic_evaluation_episodes": 1728,
+    "new_training_episodes": 0,
+    "max_wall_seconds": 60
+  },
+  "scope": "Isolated read-only synthetic development diagnostic; information-privileged policy is an evaluator reference, not an implementable native learner and not a scientific superiority baseline.",
+  "scientific_pass": false,
+  "allowed_paths": [
+    "research/contrib/chatgpt/CK21-OH01/**",
+    ".github/workflows/ck21-oh01-oracle-headroom.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Separate non-overlapping branch from previously qualified PR head, keep active CKAD22 on its own owner path, no PR creation/merge/accepted main edit/native changes/promotion/deployment."
+}
