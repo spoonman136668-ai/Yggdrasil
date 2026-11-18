@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-159",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can an isolated strict public-transition boundary for original continuous-control causal learning be implemented and regression-qualified without importing the external simulator, consuming protected source actions, leaking latent wind/SCM state, or modifying CKAD and WSP158?",
+  "hypothesis": "Given only four public state floats, a chosen 0/1 action, four next-state floats, scalar reward, and two terminal flags, an immutable canonical record can faithfully retain permissible action-consequence observations, reject privileged fields and non-finite values, and cold-serialize identically on Linux and Windows. This establishes data-boundary engineering only, not direct-weight scientific efficacy.",
+  "exact_parent_sha": "256cf3c240524ba009016d09ba5c8543b537411f",
+  "predecessor_evidence": [
+    "WSP-158 PR1209 scientific NO_GO and exact final SHA 256cf3c240524ba009016d09ba5c8543b537411f",
+    "CKAD-18 PR1207 continues consumed synthetic witness slot accumulation; no adaptation/rewrite of CKAD",
+    "CVH-10 PR1177 lacks qualified independent virgin source-owner cohort/actor; conditional 13312-source-action cap is NOT WSP159 authority"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-159/prereg.json",
+    "research/contrib/chatgpt/WSP-159/public_boundary.py",
+    "research/contrib/chatgpt/WSP-159/test_public_boundary.py",
+    "research/contrib/chatgpt/WSP-159/README.md",
+    ".github/workflows/wsp159-public-boundary.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "CartPoleWind upstream source",
+      "source": "CausalAILab/Causal-Gymnasium Apache-2.0, static read-only Git blob; ORIGINAL ENV EXECUTION PROHIBITED in this phase",
+      "sha256": null,
+      "git_blob": "d65a6a31941709dc9201259d80dd4ebbcf48b4fa",
+      "source_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf"
+    },
+    {
+      "name": "PCH permission/API contract",
+      "source": "CausalAILab/Causal-Gymnasium@c94e9a4, static source read only",
+      "sha256": null,
+      "source_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf"
+    },
+    {
+      "name": "synthetic interface validation inputs",
+      "source": "literal records generated entirely inside unit tests; no upstream source reset/step/do/ctf_do",
+      "sha256": null
+    }
+  ],
+  "upstream": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "source_path": "causal_gym/envs/cartpole_wind.py",
+    "source_git_blob": "d65a6a31941709dc9201259d80dd4ebbcf48b4fa",
+    "core_path": "causal_gym/core/pch.py",
+    "license_git_blob": "993e3a4922f003dced0fd061735697c850ea7205",
+    "license": "Apache-2.0"
+  },
+  "scope": "Source-free interface/preflight ONLY. Not model training, not external data acquisition, not original first-use, not evidence of intelligence or architecture superiority.",
+  "frozen_design": {
+    "seeds": [],
+    "split": "No source train/valid/test cohorts used. Tests employ fabricated edge cases and deterministic record roundtrips only.",
+    "ordering": "Preregistration sole-file commit before boundary source/tests. Engineering tests may repeat; no scientific primary is scored.",
+    "data_budget": "0 original environment resets, 0 steps, 0 do/ctf_do actions, 0 original/private trace rows. Fabricated negative/roundtrip vectors only.",
+    "compute_budget": "Focused Python stdlib unittest and one mandatory complete root test regression on Linux and Windows; G29 source-atlas qualification if generated. No paid APIs or GPU.",
+    "capacity": "Only immutable 4-float observation, two-action, 4-float next observation, scalar public reward, terminated/truncated booleans. No native memory, model, weights, or new controller in this phase.",
+    "evaluator": "Strict schema, reject extra/private fields and nonfinite/invalid actions, canonical JSON digest roundtrip, defensive detached copying, deterministic ordering and source-absent import checks.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Known-good public-only records, boundary negatives for wind/info/get_graph/ctf_do/hidden state and arbitrary keys, type-flag-mismatch, nonfinite, invalid action, overflow, mutation/copy and tamper, stable canonical hash."
+  ],
+  "metrics": [
+    "source_action_count",
+    "privileged_input_acceptances",
+    "valid_record_roundtrip",
+    "deterministic_hash_match",
+    "source_import_count",
+    "focused_tests",
+    "complete_root_tests_Linux_Windows",
+    "G29"
+  ],
+  "classification_rules": {
+    "supported": "Development interface PASS only if all strict field, serialization, type and negative tests pass, original source action count=0, no source package imported, full exact-source Linux and Windows root regression PASS, and exact G29 qualification PASS. SCIENTIFIC_PASS always false.",
+    "mixed": "Focused pass but full regression, exact-source G29 or independent OS unavailable -> ENGINEERING_UNVERIFIED without science claim.",
+    "negative": "Any valid public-only record fails or schema allows privileged info -> ENGINEERING_NO_GO. Never change frozen test expectations to paper over it.",
+    "invalid": "Any original external reset/step/do/ctf_do, source-first-use, accepted-ref or CKAD source mutation, missing identity, or evidence/protocol mismatch."
+  },
+  "future_science_contract": {
+    "status": "UNAUTHORIZED_AND_UNRUN",
+    "requirement": "Separately frozen and source-owner approved genuinely virgin family cohorts/action journal and fixed full-trained equal-information conventional+independent symbolic/model-based controls BEFORE any original source action, with meaningful advantage headroom; no reuse of CVH10 13312 cap as WSP159 lease.",
+    "learner_input": "Public tuple only; never provide latent wind, simulator source internals, counterfactual oracle, unwrapped env, graph, privileged info, or hidden labels.",
+    "goals": [
+      "observed action-consequence learning",
+      "unfamiliar dynamics transfer",
+      "cold retention",
+      "bounded error repair",
+      "model-selected intervention value",
+      "whole-process cost"
+    ],
+    "next_phase": "Separate new freeze/engineering qualification, only after source-owner custody."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_source_first_use": false
+  },
+  "preregistration_note": "Commit prereg.json alone before writing boundary implementation or tests; source-free engineering may then proceed and is not scientific first-use."
+}

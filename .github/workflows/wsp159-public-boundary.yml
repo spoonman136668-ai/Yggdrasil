@@ -1,0 +1,124 @@
+name: WSP159 strict source-free public boundary
+
+on:
+  push:
+    branches: [research/wsp159-continuous-public-boundary-20261117]
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify first prereg and source isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 20a367d38e4a3525e914520ab348a3bbd02ced78^)" = "256cf3c240524ba009016d09ba5c8543b537411f"
+          test "$(git diff-tree --no-commit-id --name-only -r 20a367d38e4a3525e914520ab348a3bbd02ced78)" = "research/contrib/chatgpt/WSP-159/prereg.json"
+          git diff --exit-code 20a367d38e4a3525e914520ab348a3bbd02ced78 HEAD -- research/contrib/chatgpt/WSP-159/prereg.json
+          git diff --exit-code 256cf3c240524ba009016d09ba5c8543b537411f HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/CKAD-18
+          test ! -e research/contrib/chatgpt/WSP-159/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-159/source_first_use_authority.json
+          test -z "$(git status --porcelain)"
+      - name: Public-only schema and negative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo WSP159_FOCUSED_PUBLIC_BOUNDARY_PASS
+
+  atlas-once:
+    needs: [focused]
+    if: "github.event.head_commit.message == 'ci(wsp159): activate source-free qualification' && github.run_attempt == 1 && needs.focused.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp159-single-derived-atlas
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only three G29 files and pin source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp159): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp159-continuous-public-boundary-20261117
+
+  full-final:
+    needs: [focused]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp159): pin G29 source atlas at ') && github.run_attempt == 1 && needs.focused.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full root/NKR05, WSP159 and exact G29 source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 20a367d38e4a3525e914520ab348a3bbd02ced78 HEAD -- research/contrib/chatgpt/WSP-159/prereg.json
+          git diff --exit-code 256cf3c240524ba009016d09ba5c8543b537411f HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/CKAD-18
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo WSP159_FINAL_SOURCEFREE_REGRESSION_PASS
