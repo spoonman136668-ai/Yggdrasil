@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CKAD25-T",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a prospectively frozen agreement certificate over training-consistent sparse causal hypotheses prevent harmful confident native repairs on unfamiliar laws while keeping the same cumulative native checkpoint and at least modest forecast coverage?",
+  "hypothesis": "A gate that accepts existing native repair only where all training-consistent <=3-term GF(2) ANF hypotheses agree on a query's predicted outcome, otherwise abstaining, will reduce Brier by >=0.02 compared with always accepting the native sparse repair on four new synthetic causal rule families, preserve original native knowledge, yield at least 12/48 confident answers with no more than two wrong, and remain within 0.02 of an exact sparse-Bayes strong control.",
+  "exact_parent_sha": "01ffab6d6493004ff3cd28bdf4e9c36cd4fa1170",
+  "accepted_main_observed_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "previously_consumed_evidence": {
+    "native": "CKAD25 parent #1235, exact source checkpoint sha256 c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+    "negative": "CKAD25-S PR #1241, head 01ffab6d6493004ff3cd28bdf4e9c36cd4fa1170; frozen Brier native-sparse 0.229166667 vs native-degree 0.1875; 24/48 answered 19/48 correct. This entire cohort is CONSUMED and cannot be new held proof.",
+    "retrospective": "CKAD25-R PR #1240 recovered 4/4 old already-scored held cases by conventional minimum-support GF2 MILP; retrospective only."
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/CKAD25-T/**",
+    ".github/workflows/ckad25t-prospective.yml"
+  ],
+  "design": {
+    "law_families": {
+      "xor4": "c0 ^ c1 ^ c2 ^ a (four input linear parity)",
+      "nand2": "1 ^ (c0 & c2) (two-term ANF)",
+      "cross_mux": "(c0 & a) ^ (c2 & (1 ^ a)) (three-term ANF)",
+      "threshold4": "int(c0+c1+c2+a>=3) (nonlinear threshold)"
+    },
+    "seeds": [
+      4409,
+      5519,
+      6637
+    ],
+    "split": "Per seed × family, deterministic SHA-256 keyed permutation of 16 unique context+action inputs. Reveal exactly first 12 do-action/outcome rows (8 then 4 through actual NativeCumulativeLearner.observe) and hold the other 4 *unseen answers*. Each family starts an existing, separate native slot (1..4), which supplies an explicit task boundary but no semantic law name. All arms see identical 12 observations per family, 3 seeds × 4 families × 4 held = 48 new scored examples.",
+    "model": "One single source-owned CKAD25 cumulative native learner checkpoint (same original 12 observations), extended in existing 4 additional slots, with no native source algorithm edits or accepted-model mutation. Source-seeded procedural fixture only, 0 protected original-world calls.",
+    "candidate": "First use unmodified eligible native degree forecast when available. When it abstains and existing repair_sparse is eligible, use the repaired 0/1 native prediction ONLY if ALL <=3-monomial four-input GF2 ANF hypotheses consistent with the same 12 training observations predict that bit. Otherwise return None/0.5. For a class with zero consistent hypotheses, abstain. Truth of the withheld row is never consulted for selection.",
+    "comparators": [
+      "Original native degree without repair",
+      "Unconditionally eligible native sparse repair",
+      "Fully trained exact <=3-term GF2 ANF Bayesian posterior mean",
+      "Fully trained CART depth4",
+      "Fully trained random forest 64 depth4",
+      "Fully trained L2 logistic ANF C1",
+      "Fitted beta-smoothed training frequency",
+      "No-memory 0.5 prior",
+      "Exact agreement-gate oracle on same conventional bounded hypothesis class (algebraic equivalence diagnostic, not superiority)"
+    ],
+    "scoring": "Brier with abstentions=0.5, number answered and incorrect on 48 held actions, old-slot native checkpoint retention, source observation counts, exact deterministic replay. Confident answer when native returns 0/1. Report per-family/seed accuracy, Brier, and fraction of abstained predictions.",
+    "budget": "Three fresh seeds, four NEW (non-CKAD25-S) law families, 12 training+4 held per family. 144 synthetic native source rows, 48 new held per primary run. CI repeats same bytes on Windows/Linux for determinism, NOT new scientific samples. Existing Python 3.12 and pinned numpy/scipy/sklearn, <=20m/OS.",
+    "capacity": "Existing 16 native slots unchanged. Gate enumerates sum_{k=0}^3 C(16,k)=697 conventional ANF hypotheses, no fitted parameters beyond 12 rows; no extra solver weights, additional source actions, semantic law labels or meta-training."
+  },
+  "frozen_qualification": {
+    "predicates": {
+      "retained_native": "All original properties, slot0 source support, learned hypothesis, events prefix and all original predictions must match input checkpoint; all new slots 12 unique witnessed rows; no source mutation; all cold restorations byte-exact.",
+      "confident_coverage": "At least 12 of 48 held outputs answered (25%).",
+      "confident_error_limit": "At most 2 wrong out of all 48 held outputs (<=4.17%) and at most 1 wrong in each law-family group (3 seeds per family).",
+      "brier_vs_ungated": "Candidate Brier <= ungated sparse Brier - 0.02.",
+      "brier_vs_degree": "Candidate Brier <= unmodified native degree Brier + 0.01.",
+      "brier_vs_exact_bayes": "Candidate Brier <= conventional exact sparse Bayes Brier + 0.02.",
+      "benefit_vs_uniform": "Candidate Brier <= 0.23."
+    },
+    "classify": "DEVELOPMENT_SIGNAL only if all predicates pass. Otherwise DEVELOPMENT_MIXED_NO_GO if custody is valid. INVALID if source drift, leakage, changed native/source state, missing controls or non-deterministic cross-platform result. SCIENTIFIC_PASS false by construction.",
+    "stop_rule": "One primary scored cohort. At most one engineering-only correction before first successful source-frozen primary if syntax/setup fails; never alter scientific model, frozen laws, seeds, thresholds or scored cohort. Do not deep-tune once results are visible."
+  },
+  "custody": {
+    "original_held_labels_reused_as_new_science": false,
+    "original_source_actions": 0,
+    "source_mode": "previously-consumed developer CKAD25 input + distinct synthetic engineering rows",
+    "native_model_source_modified": false,
+    "scheduler_or_owner_changed": false,
+    "accepted_refs_changed": false,
+    "forge_dispatch": false,
+    "paid_apis": 0,
+    "independent_science": false,
+    "scientific_pass": false,
+    "autonomous_training": false,
+    "promotion": false,
+    "merge": false,
+    "deployment": false
+  },
+  "note": "This is an external readout policy and a conventional exact hypothesis certificate; if it works, native source integration requires a separately authorized candidate and full final regression. It is not algorithmic superiority over its exact Bayesian verifier."
+}
