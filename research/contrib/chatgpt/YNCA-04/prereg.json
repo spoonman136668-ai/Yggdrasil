@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-04",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a tokenless intervention policy learn to value the downstream decision benefit of evidence per unit intervention cost, and outperform both fixed probes and an exact Bayesian planner on genuinely unfamiliar causal mechanisms?",
+  "hypothesis": "Learned intervention-cost-aware policy will achieve at least 5% lower aggregate intervention-plus-decision regret than the strongest matched nonprivileged fixed-probe, random-probe, exact Bayesian decision-value, and information-gain controls on disjoint shifted causal worlds; each arm receives the same observations, allowable actions and total action-cost budget.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1215",
+      "note": "YNCA01 context arbitration failed global/shuffled controls"
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1217",
+      "note": "YNCA02 static all-expert failure memory lost confidence calibration; exploratory source-custody limitation"
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1220",
+      "note": "YNCA03 learned intervention beat random but lost fixed and Bayes; all tested law families predefined"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-04/prereg.json",
+    "research/contrib/chatgpt/YNCA-04/experiment.py",
+    "research/contrib/chatgpt/YNCA-04/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-04/README.md",
+    "research/contrib/chatgpt/YNCA-04/result.json",
+    "research/contrib/chatgpt/YNCA-04/provenance.json",
+    ".github/workflows/ynca04-isolated-research.yml"
+  ],
+  "inputs": [
+    {
+      "name": "source-free synthetic intervention environments with independent latent causal mechanisms and action-cost schedule",
+      "sha256": "TO_BE_PINNED_BEFORE_ANY_PRIMARY_USE",
+      "source": "Successor design only, no datasets generated or consumed; generator identity requires later immutable source commit, design-first freeze not primary qualification"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "development": "260001..260512 inclusive; exploratory only",
+      "prospective_heldout": "270001..271024 inclusive; must remain unconsumed until exact source and evaluator locked"
+    },
+    "split": "Train mechanism families and hold out at least two genuinely new mechanism types, not merely reparameterizations; identity/provenance of law generator and family assignment to be fixed in a separate source-locked version before first use.",
+    "ordering": "Observe passive examples, optionally select up to four interventions within identical cumulative cost budget, update native beliefs, choose terminal action; no access to hidden structural labels; test policy frozen before heldout.",
+    "data_budget": "Prospective design max 1024 heldout worlds; up to four probes/world, equal raw observations/actions across all arms.",
+    "compute_budget": "CPU-only local developer qualification preferred, no paid API; exact runtime/step limits must be locked with source before first use.",
+    "capacity": "One native tokenless action-value learner with fixed capacity; no architecture substitution or trained model integration; exact parameter count fixed in source-lock.",
+    "evaluator": "Total cost-sensitive regret = terminal loss relative to privileged best action + actual intervention costs; calibrated causal identification and cold retention secondary.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Strongest single fixed probe",
+    "Random budget-matched probes",
+    "Exact Bayesian expected utility of interventions",
+    "Exact Bayesian information gain",
+    "Confidence-only abstention/no probing",
+    "Untrained and shuffled-reward learner",
+    "Privileged oracle ceiling"
+  ],
+  "metrics": [
+    "Cost-sensitive total decision regret (primary)",
+    "Causal identification accuracy",
+    "Intervention count and total cost",
+    "Brier score",
+    "Cold retention after fresh process",
+    "Disjoint-world transfer",
+    "Wall-clock and computation cost"
+  ],
+  "classification_rules": {
+    "supported": "SCIENCE_CANDIDATE only if frozen primary total regret improves >=5% over strongest fully matched control, paired bootstrap 95% improvement CI excludes zero, all negative controls behave as expected, source/heldout independence and provenance independently qualified. Local development alone not SCIENTIFIC_PASS.",
+    "mixed": "Positive against some but not strongest exact Bayesian/fixed control or CI includes zero; MIXED, no integration.",
+    "negative": "Fails strongest cost-matched control or no demonstrable intervention value net of costs; NO_GO, preserve unchanged original.",
+    "invalid": "First-use prior to source/seed lock, missing conventional/negative control, leakage, unsupported capacity/compute difference or provenance mismatch; INVALID."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "THIS IS A DESIGN-ONLY PRE-PREREGISTRATION. Source, controls, exact family split, resource budget and dataset identities MUST be finalized in a later frozen source-bound revision BEFORE running any prospective cohort. No experiment execution or success is claimed."
+}
