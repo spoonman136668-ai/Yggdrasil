@@ -40,12 +40,13 @@ jobs:
           test "$(git rev-parse 028af69c6317b9f8c8ec5d1b83c0affb63473273^)" = "245dae308bc3b7ca04b2a5af574ffc45cd6621a4"
           test "$(git diff-tree --no-commit-id --name-only -r 028af69c6317b9f8c8ec5d1b83c0affb63473273)" = "research/contrib/chatgpt/WSP-164/prereg.json"
           git diff --exit-code 028af69c6317b9f8c8ec5d1b83c0affb63473273 HEAD -- research/contrib/chatgpt/WSP-164/prereg.json
-          git diff --exit-code 28197ce4bb1e6a3f5a1d28e1fa048353ca95de12 HEAD -- research/contrib/chatgpt/WSP-164/reliability_gate.py research/contrib/chatgpt/WSP-164/test_reliability_gate.py
+          git diff --exit-code 28197ce4bb1e6a3f5a1d28e1fa048353ca95de12 HEAD -- research/contrib/chatgpt/WSP-164/reliability_gate.py
+          git diff --exit-code 343411cdc617457828157dc5f224e8a7ab9a117f HEAD -- research/contrib/chatgpt/WSP-164/test_reliability_gate.py
           git diff --exit-code 245dae308bc3b7ca04b2a5af574ffc45cd6621a4 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/CKAD-18
           test ! -e research/contrib/chatgpt/WSP-164/SCIENTIFIC_PASS.json
           test ! -e research/contrib/chatgpt/WSP-164/source_first_use_authority.json
           test -z "$(git status --porcelain)"
-      - name: Inherited WSP159-163 and Bayesian public-feedback controls
+      - name: Inherited WSP159-163 and H1 negative-harness corrected Bayesian controls
         shell: bash
         run: |
           set -euo pipefail
@@ -121,7 +122,8 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git diff --exit-code 028af69c6317b9f8c8ec5d1b83c0affb63473273 HEAD -- research/contrib/chatgpt/WSP-164/prereg.json
-          git diff --exit-code 28197ce4bb1e6a3f5a1d28e1fa048353ca95de12 HEAD -- research/contrib/chatgpt/WSP-164/reliability_gate.py research/contrib/chatgpt/WSP-164/test_reliability_gate.py
+          git diff --exit-code 28197ce4bb1e6a3f5a1d28e1fa048353ca95de12 HEAD -- research/contrib/chatgpt/WSP-164/reliability_gate.py
+          git diff --exit-code 343411cdc617457828157dc5f224e8a7ab9a117f HEAD -- research/contrib/chatgpt/WSP-164/test_reliability_gate.py
           git diff --exit-code 245dae308bc3b7ca04b2a5af574ffc45cd6621a4 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/CKAD-18
           python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
