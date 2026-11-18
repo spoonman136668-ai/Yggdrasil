@@ -33,8 +33,8 @@
   "inputs": [
     {
       "name": "Deterministic source-free SCM generator, four trained Boolean laws plus two heldout unseen mechanisms",
-      "sha256": "3b10a149828a5d4c060bce05806bd0e0cf3e0e4527d93347a821ff571abc39ea",
-      "source": "research/contrib/chatgpt/YNCA-04/experiment.py; exact source-commit 812a71fa788f9f003071bd82a693bbddf8c99d41; Git blob 7523781544ac733d1b55a6b7399b42550ee4d381; Python stdlib only"
+      "sha256": "78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc",
+      "source": "research/contrib/chatgpt/YNCA-04/experiment.py; exact source-commit b8bb54b41f8849cfdc3e768edff9f76049fdd53b; Git blob eaf6c8341e4f66b3baa261a9fea26a9391147142; Python stdlib"
     }
   ],
   "frozen_design": {
@@ -43,16 +43,16 @@
       "exploratory_dev": "260001..260512 inclusive (512 development worlds; train grammar only)",
       "prospective_heldout": "270001..271024 inclusive (1024 heldout worlds; MAJ3/MUX3 only)"
     },
-    "split": "Train: AND3,OR3,XOR3,X0; DEV uses only training grammar; heldout: MAJ3 and MUX3 (majority and multiplex conditional selection) never in training hypothesis grammar. Generator first-use heldout source freeze at 812a71fa788f9f003071bd82a693bbddf8c99d41. No YNCA01-03 cohorts reused.",
+    "split": "Train: AND3,OR3,XOR3,X0; DEV uses only training grammar; heldout: MAJ3 and MUX3 (majority and multiplex conditional selection) never in training hypothesis grammar. Generator first-use heldout source freeze at b8bb54b41f8849cfdc3e768edff9f76049fdd53b. No YNCA01-03 cohorts reused.",
     "ordering": "Training fits fixed-size tokenless action value memory from 1024 source-free train worlds without heldout access. Source fingerprint -> focused train-only tests -> read-only CI first heldout (once) -> preserve result. Same passive observation and available probe menu/cost ceiling for each arm; no outcome labels exposed to policy inference.",
     "data_budget": "12 noisy passive binary-observation tuples/world; 2 samples per probe; at most 2 probe actions and 4 intervention results per world; max total probe cost 0.085; terminal two candidate interventions; one 1024-world heldout cohort.",
     "compute_budget": "CPU stdlib Python 3.12 on GitHub-hosted Linux/Windows (no paid API); single 1024-world original heldout per platform for independent reproduction; 1000 paired bootstrap resamples, 1024 training worlds, 8 candidate probes each training step (two offline steps) and 2 at test.",
     "capacity": "Finite tokenless 2-step x 3 confidence-bin x 3 terminal-margin-bin x 8 action-key table (<=144 entries) with shrinkage12; a global trained mean action return; two independently trained same-size tables for native and shuffled-reward control. No hidden capacity growth.",
     "evaluator": "Cost-sensitive regret = maximum true terminal causal payoff among two offered terminal decisions minus chosen action's true payoff + actual intervention costs; payoff = true binary outcome - 0.08*bitcount(terminal action). Probe cost = 0.018+0.012*bitcount(probe). Fixed 4 training laws, 2 unfamiliar heldout laws, observation flip epsilon 0.14. Lower total regret better. Exact Bayesian myopic value and entropy calculations enumerate all possible two-outcome probe batches within the four training laws, deliberately misspecified for unseen families.",
     "deterministic_expected": true,
-    "source_commit_sha": "812a71fa788f9f003071bd82a693bbddf8c99d41",
-    "source_git_blob_sha": "7523781544ac733d1b55a6b7399b42550ee4d381",
-    "source_sha256": "3b10a149828a5d4c060bce05806bd0e0cf3e0e4527d93347a821ff571abc39ea",
+    "source_commit_sha": "b8bb54b41f8849cfdc3e768edff9f76049fdd53b",
+    "source_git_blob_sha": "eaf6c8341e4f66b3baa261a9fea26a9391147142",
+    "source_sha256": "78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc",
     "scoring_and_controls_frozen_before_first_use": true,
     "bounded_action_observation_and_cost_provenance": "Same deterministic world seed and per-action/outcome random streams across all policies. Each arm's actual resource charge is included in its primary score."
   },
@@ -98,5 +98,5 @@
     "promotion_authority": false,
     "scheduler_or_queue_authority": false
   },
-  "preregistration_note": "SOURCE-LOCKED BEFORE FIRST USE. Frozen experiment.py was committed at 812a71fa788f9f003071bd82a693bbddf8c99d41, verified source SHA256 and git blob. This prereg update and focused tests precede the first heldout run. This is external development-only research, with separate acceptance authority."
+  "preregistration_note": "SOURCE-FROZEN AFTER PRE-PRIMARY CONTROL BUG REPAIR. The exact corrected Bayesian value-of-information source is committed at b8bb54b41f8849cfdc3e768edff9f76049fdd53b. Prior Linux focused test caught negative value-of-information sign and failed before any heldout first-use. This digest and all thresholds are frozen before primary."
 }
