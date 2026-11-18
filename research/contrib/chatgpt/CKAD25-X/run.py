@@ -140,7 +140,8 @@ def independent_gini_choice(h,models,diagnostics,available):
     """Not the native implementation; re-fit independent exact source models."""
     w=regime_posterior(h,models,diagnostics)
     best=None
-    for mask in sorted(available):
+    # Native contract ties by public (context, action), not packed mask.
+    for mask in sorted(available, key=lambda x: (x & 7, x >> 3)):
         p={slot:posterior_fraction(h,models[slot],mask) for slot in (1,2)}
         mean=w[1]*p[1]+w[2]*p[2]+w["unknown"]*Fraction(1,2)
         gain=(w[1]*(p[1]-mean)**2+w[2]*(p[2]-mean)**2
