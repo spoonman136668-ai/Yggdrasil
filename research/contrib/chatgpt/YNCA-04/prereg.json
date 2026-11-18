@@ -3,7 +3,7 @@
   "project": "Yggdrasil",
   "experiment_id": "YNCA-04",
   "contributor": "chatgpt",
-  "contribution_class": "successor-proposal",
+  "contribution_class": "falsification",
   "question": "Can a tokenless intervention policy learn to value the downstream decision benefit of evidence per unit intervention cost, and outperform both fixed probes and an exact Bayesian planner on genuinely unfamiliar causal mechanisms?",
   "hypothesis": "Learned intervention-cost-aware policy will achieve at least 5% lower aggregate intervention-plus-decision regret than the strongest matched nonprivileged fixed-probe, random-probe, exact Bayesian decision-value, and information-gain controls on disjoint shifted causal worlds; each arm receives the same observations, allowable actions and total action-cost budget.",
   "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
@@ -32,47 +32,56 @@
   ],
   "inputs": [
     {
-      "name": "source-free synthetic intervention environments with independent latent causal mechanisms and action-cost schedule",
-      "sha256": "TO_BE_PINNED_BEFORE_ANY_PRIMARY_USE",
-      "source": "Successor design only, no datasets generated or consumed; generator identity requires later immutable source commit, design-first freeze not primary qualification"
+      "name": "Deterministic source-free SCM generator, four trained Boolean laws plus two heldout unseen mechanisms",
+      "sha256": "3b10a149828a5d4c060bce05806bd0e0cf3e0e4527d93347a821ff571abc39ea",
+      "source": "research/contrib/chatgpt/YNCA-04/experiment.py; exact source-commit 812a71fa788f9f003071bd82a693bbddf8c99d41; Git blob 7523781544ac733d1b55a6b7399b42550ee4d381; Python stdlib only"
     }
   ],
   "frozen_design": {
     "seeds": {
-      "development": "260001..260512 inclusive; exploratory only",
-      "prospective_heldout": "270001..271024 inclusive; must remain unconsumed until exact source and evaluator locked"
+      "train": "250001..251024 inclusive (1024 worlds)",
+      "exploratory_dev": "260001..260512 inclusive (512 development worlds; train grammar only)",
+      "prospective_heldout": "270001..271024 inclusive (1024 heldout worlds; MAJ3/MUX3 only)"
     },
-    "split": "Train mechanism families and hold out at least two genuinely new mechanism types, not merely reparameterizations; identity/provenance of law generator and family assignment to be fixed in a separate source-locked version before first use.",
-    "ordering": "Observe passive examples, optionally select up to four interventions within identical cumulative cost budget, update native beliefs, choose terminal action; no access to hidden structural labels; test policy frozen before heldout.",
-    "data_budget": "Prospective design max 1024 heldout worlds; up to four probes/world, equal raw observations/actions across all arms.",
-    "compute_budget": "CPU-only local developer qualification preferred, no paid API; exact runtime/step limits must be locked with source before first use.",
-    "capacity": "One native tokenless action-value learner with fixed capacity; no architecture substitution or trained model integration; exact parameter count fixed in source-lock.",
-    "evaluator": "Total cost-sensitive regret = terminal loss relative to privileged best action + actual intervention costs; calibrated causal identification and cold retention secondary.",
-    "deterministic_expected": true
+    "split": "Train: AND3,OR3,XOR3,X0; DEV uses only training grammar; heldout: MAJ3 and MUX3 (majority and multiplex conditional selection) never in training hypothesis grammar. Generator first-use heldout source freeze at 812a71fa788f9f003071bd82a693bbddf8c99d41. No YNCA01-03 cohorts reused.",
+    "ordering": "Training fits fixed-size tokenless action value memory from 1024 source-free train worlds without heldout access. Source fingerprint -> focused train-only tests -> read-only CI first heldout (once) -> preserve result. Same passive observation and available probe menu/cost ceiling for each arm; no outcome labels exposed to policy inference.",
+    "data_budget": "12 noisy passive binary-observation tuples/world; 2 samples per probe; at most 2 probe actions and 4 intervention results per world; max total probe cost 0.085; terminal two candidate interventions; one 1024-world heldout cohort.",
+    "compute_budget": "CPU stdlib Python 3.12 on GitHub-hosted Linux/Windows (no paid API); single 1024-world original heldout per platform for independent reproduction; 1000 paired bootstrap resamples, 1024 training worlds, 8 candidate probes each training step (two offline steps) and 2 at test.",
+    "capacity": "Finite tokenless 2-step x 3 confidence-bin x 3 terminal-margin-bin x 8 action-key table (<=144 entries) with shrinkage12; a global trained mean action return; two independently trained same-size tables for native and shuffled-reward control. No hidden capacity growth.",
+    "evaluator": "Cost-sensitive regret = maximum true terminal causal payoff among two offered terminal decisions minus chosen action's true payoff + actual intervention costs; payoff = true binary outcome - 0.08*bitcount(terminal action). Probe cost = 0.018+0.012*bitcount(probe). Fixed 4 training laws, 2 unfamiliar heldout laws, observation flip epsilon 0.14. Lower total regret better. Exact Bayesian myopic value and entropy calculations enumerate all possible two-outcome probe batches within the four training laws, deliberately misspecified for unseen families.",
+    "deterministic_expected": true,
+    "source_commit_sha": "812a71fa788f9f003071bd82a693bbddf8c99d41",
+    "source_git_blob_sha": "7523781544ac733d1b55a6b7399b42550ee4d381",
+    "source_sha256": "3b10a149828a5d4c060bce05806bd0e0cf3e0e4527d93347a821ff571abc39ea",
+    "scoring_and_controls_frozen_before_first_use": true,
+    "bounded_action_observation_and_cost_provenance": "Same deterministic world seed and per-action/outcome random streams across all policies. Each arm's actual resource charge is included in its primary score."
   },
   "controls": [
-    "Strongest single fixed probe",
-    "Random budget-matched probes",
-    "Exact Bayesian expected utility of interventions",
-    "Exact Bayesian information gain",
-    "Confidence-only abstention/no probing",
-    "Untrained and shuffled-reward learner",
-    "Privileged oracle ceiling"
+    "Eight explicit fixed-action policies fixed0..fixed7",
+    "Random probe arm with same available action menu and maximum cost budget",
+    "Exact four-known-law Bayesian myopic expected terminal-value control; grammar misspecified on unfamiliar heldout",
+    "Exact four-known-law Bayesian expected entropy-reduction control; grammar misspecified on unfamiliar heldout",
+    "Fully fitted globally trained action-value policy from identical training experiences",
+    "Never-probe/confidence-abstention baseline",
+    "Shuffled-reward native policy as negative control",
+    "Privileged true-law oracle lower bound (diagnostic only, not admissible baseline)"
   ],
   "metrics": [
-    "Cost-sensitive total decision regret (primary)",
-    "Causal identification accuracy",
-    "Intervention count and total cost",
-    "Brier score",
-    "Cold retention after fresh process",
-    "Disjoint-world transfer",
-    "Wall-clock and computation cost"
+    "Mean combined terminal decision regret and charged intervention cost (primary)",
+    "Best frozen eligible control among random/fixed/global/Bayesian/no_probe",
+    "Paired 95% deterministic bootstrap CI over 1024-world heldout",
+    "Cold checkpoint serialization parity within Python process",
+    "Per-policy mean probe count and actual cost",
+    "Causal rule family coverage and transfer to MAJ3/MUX3",
+    "8-context forecast Brier loss",
+    "Full wall-clock and resource cost",
+    "Exact source/result hashes"
   ],
   "classification_rules": {
-    "supported": "SCIENCE_CANDIDATE only if frozen primary total regret improves >=5% over strongest fully matched control, paired bootstrap 95% improvement CI excludes zero, all negative controls behave as expected, source/heldout independence and provenance independently qualified. Local development alone not SCIENTIFIC_PASS.",
-    "mixed": "Positive against some but not strongest exact Bayesian/fixed control or CI includes zero; MIXED, no integration.",
-    "negative": "Fails strongest cost-matched control or no demonstrable intervention value net of costs; NO_GO, preserve unchanged original.",
-    "invalid": "First-use prior to source/seed lock, missing conventional/negative control, leakage, unsupported capacity/compute difference or provenance mismatch; INVALID."
+    "supported": "Development-only candidate if native 1024-world heldout combined cost-sensitive regret <=0.95 x strongest eligible nonprivileged control; bootstrap lower bound (strongest minus native) >0; shuffled control worse than native by >=0.005; all source/evaluator/audit checks pass. No SCIENTIFIC_PASS from synthetic external research.",
+    "mixed": "Native improves at least one control but not strongest, or CI spans 0; DEVELOPMENT_MIXED, no promotion.",
+    "negative": "Native fails >=5% vs strongest control, or falls behind matched control net of probe cost; DEVELOPMENT_NO_GO regardless of any gains vs random.",
+    "invalid": "Pre-source-lock heldout use, source hash mismatch, invalid disjoint family/splits, action-cost/count mismatch, absent listed comparator, label entering policy decisions, or test code changing after first-use; INVALID rather than science outcome."
   },
   "prohibited_after_primary_run": [
     "threshold changes",
@@ -89,5 +98,5 @@
     "promotion_authority": false,
     "scheduler_or_queue_authority": false
   },
-  "preregistration_note": "THIS IS A DESIGN-ONLY PRE-PREREGISTRATION. Source, controls, exact family split, resource budget and dataset identities MUST be finalized in a later frozen source-bound revision BEFORE running any prospective cohort. No experiment execution or success is claimed."
+  "preregistration_note": "SOURCE-LOCKED BEFORE FIRST USE. Frozen experiment.py was committed at 812a71fa788f9f003071bd82a693bbddf8c99d41, verified source SHA256 and git blob. This prereg update and focused tests precede the first heldout run. This is external development-only research, with separate acceptance authority."
 }
