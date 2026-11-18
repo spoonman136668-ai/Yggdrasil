@@ -1,0 +1,134 @@
+name: WSP163 source-free public history direct weights
+
+on:
+  push:
+    branches: [research/wsp163-public-history-direct-weights-20261118]
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify first prereg and source isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse 6049e4c542d9e98b4383376dade7508721d6daad^)" = "890507bf393dd87d4aed36c01680d11742b2bd31"
+          test "$(git diff-tree --no-commit-id --name-only -r 6049e4c542d9e98b4383376dade7508721d6daad)" = "research/contrib/chatgpt/WSP-163/prereg.json"
+          git diff --exit-code 6049e4c542d9e98b4383376dade7508721d6daad HEAD -- research/contrib/chatgpt/WSP-163/prereg.json
+          git diff --exit-code bdf310ffae4182fd06fe802da105efe9cbf55a79 HEAD -- research/contrib/chatgpt/WSP-163/history_weights.py research/contrib/chatgpt/WSP-163/test_history_weights.py
+          git diff --exit-code 890507bf393dd87d4aed36c01680d11742b2bd31 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/CKAD-18
+          test ! -e research/contrib/chatgpt/WSP-163/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-163/source_first_use_authority.json
+          test -z "$(git status --porcelain)"
+      - name: Inherited WSP159-162 and public history controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-161 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-162 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-163 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo WSP163_HISTORY_FOCUSED_PASS
+
+  atlas-once:
+    needs: [focused]
+    if: "github.event.head_commit.message == 'ci(wsp163): activate source-free qualification' && github.run_attempt == 1 && needs.focused.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp163-single-derived-atlas
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only three G29 files and pin source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp163): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp163-public-history-direct-weights-20261118
+
+  full-final:
+    needs: [focused]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp163): pin G29 source atlas at ') && github.run_attempt == 1 && needs.focused.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full root/NKR05, boundary and direct numerical controls, and G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 6049e4c542d9e98b4383376dade7508721d6daad HEAD -- research/contrib/chatgpt/WSP-163/prereg.json
+          git diff --exit-code bdf310ffae4182fd06fe802da105efe9cbf55a79 HEAD -- research/contrib/chatgpt/WSP-163/history_weights.py research/contrib/chatgpt/WSP-163/test_history_weights.py
+          git diff --exit-code 890507bf393dd87d4aed36c01680d11742b2bd31 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/CKAD-18
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-161 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-162 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-163 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo WSP163_HISTORY_FINAL_PASS
