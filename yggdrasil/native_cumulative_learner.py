@@ -262,6 +262,28 @@ class NativeCumulativeLearner:
             lambda first, state, second: experience.forecast(view, first, state, second, full=full),
         )
 
+    def begin_experience_context(self):
+        """Start a public context session over retained experience hypotheses."""
+        require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
+        candidate = self._copy()
+        candidate._experience = self._experience.begin_context()
+        return candidate
+
+    def experience_context_forecast(self, view, first, next_state=None, second=None):
+        require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
+        return self._experience.context_forecast(view, first, next_state, second)
+
+    def experience_context_explore(self, view, first=None, next_state=None):
+        require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
+        return self._experience.context_explore(view, first, next_state)
+
+    def experience_context_plan(self, view):
+        require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
+        return _two_stage_plan(
+            lambda first: self._experience.context_forecast(view, first),
+            lambda first, state, second: self._experience.context_forecast(view, first, state, second),
+        )
+
     def predict(self, slot, context, action, *, provisional=True):
         a, r = coordinates(slot)
         require(type(provisional) is bool, 'INTEGRATED_PROVISIONAL_FLAG')
