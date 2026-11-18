@@ -63,7 +63,7 @@ jobs:
           process.stdout.write('YGG_JEPA2_NATIVE_TRAINING_REPLAY_PASS\n');
           NODE
           test -z "$(git status --porcelain)"
-  seal-atlas:
+  seal_atlas:
     needs: replay
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -96,7 +96,7 @@ jobs:
           git push origin HEAD:refs/heads/research/jepa2-01-native-multilearner-20261118
           echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   final-regression:
-    needs: seal-atlas
+    needs: seal_atlas
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -109,7 +109,7 @@ jobs:
         run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: ${{ needs.seal-atlas.outputs.final_sha }}
+          ref: ${{ needs.seal_atlas.outputs.final_sha }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -121,7 +121,7 @@ jobs:
       - name: Exact final source regression and atlas
         shell: bash
         env:
-          EXPECTED_SHA: ${{ needs.seal-atlas.outputs.final_sha }}
+          EXPECTED_SHA: ${{ needs.seal_atlas.outputs.final_sha }}
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
