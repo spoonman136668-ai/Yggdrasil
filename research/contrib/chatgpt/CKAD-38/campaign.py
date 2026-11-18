@@ -336,7 +336,7 @@ def main():
     args=parser.parse_args()
     if args.mode=="preflight":
         if args.seed is not None:raise ValueError("CKAD38_PREFLIGHT_NEVER_SCORES_SEEDS")
-        assert len(ARMS)==7 and len(PHASES)==5
+        assert len(ARMS)==12 and len(PHASES)==5
         if (HERE/"source_lock.json").exists():frozen_lock()
         print(json.dumps({"schema":SCHEMA,"status":"PREFLIGHT_OK",
                           "first_use":False,"reserved_primary":list(PRIMARY)},sort_keys=True))
