@@ -218,6 +218,59 @@ class NativeCumulativeLearner:
         committee = self._compiled[slot]
         return None if committee is None else committee.predict_fraction(c, action)
 
+    def recall_causal_regime(self, slots, diagnostics, context, action):
+        """Unlabeled source-only relation recall from THIS learner's native memory.
+
+        Retained numeric committees are conditioned on real witnessed source,
+        but the equal priors, unfamiliar-world alternative and 0.90 selection
+        threshold are conventional supplied assumptions, NOT new primitive
+        discovery, a source trust certificate, or accepted-model authority.
+        No model state or source/held outcome is changed or accessed here.
+        Returns (native_probability_numerator, denominator, slot_or_none).
+        """
+        from fractions import Fraction
+
+        require(type(slots) in (list, tuple) and len(slots) == 2
+                and all(type(s) is int and 0 <= s < 16 for s in slots)
+                and slots[0] != slots[1], 'INTEGRATED_RECALL_SLOTS')
+        require(type(diagnostics) is list and len(diagnostics) == 4,
+                'INTEGRATED_RECALL_PUBLIC_DIAGNOSTICS')
+        self._source._model._context(context)
+        PublicCausalCells._bit(action, 'ACTION')
+        require(all(self._compiled[s] is not None and not self._quarantined[s]
+                    for s in slots), 'INTEGRATED_RECALL_NO_NATIVE_MEMORY')
+        unique = set()
+        for record in diagnostics:
+            require(type(record) is list and len(record) == 3,
+                    'INTEGRATED_RECALL_RECORD_SHAPE')
+            c, a, y = record
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            PublicCausalCells._bit(y, 'PUBLIC_OUTCOME')
+            require((c, a) not in unique, 'INTEGRATED_RECALL_DUPLICATE_INPUT')
+            unique.add((c, a))
+        # The unknown-world alternative is a fully specified four-Bernoulli
+        # source-only likelihood 1/16. There are no hidden class labels.
+        evidence = {}
+        for slot in slots:
+            likelihood = Fraction(1, 1)
+            for c, a, y in diagnostics:
+                probability = self.causal_relation_probability(slot, c, a)
+                require(probability is not None, 'INTEGRATED_RECALL_MISSING_MEMORY')
+                ones, total = probability
+                require(type(ones) is int and type(total) is int
+                        and total > 0 and 0 <= ones <= total,
+                        'INTEGRATED_RECALL_PROBABILITY')
+                likelihood *= Fraction(ones if y else total - ones, total)
+            evidence[slot] = likelihood
+        denominator = sum(evidence.values(), Fraction(1, 16))
+        selected = max(slots, key=lambda slot: (evidence[slot], -slot))
+        if evidence[selected] / denominator < Fraction(9, 10):
+            return (1, 2, None)
+        probability = self.causal_relation_probability(selected, context, action)
+        require(probability is not None, 'INTEGRATED_RECALL_EMPTY_PREDICTION')
+        return (probability[0], probability[1], selected)
+
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
         require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_HISTORY_SCOPE')
