@@ -35,13 +35,14 @@ Seedwise paired-energy minus strongest conventional shifted held correct: **+15,
 
 ## Custody, independent audit and reproduction
 - Complete **144-case score receipts**, including all 9 fitted arms' old/new accuracies, are byte-preserved in `case_receipts.csv`, Git blob `1271a455ae7fa827b4ec25b06d7aa08f0ee498e7`, SHA-256 `c6ba7aec571c1d590121cf2fe0eaf9e4a0f1079a8a5efb19b5357c956cadcfa3`, 11,775 bytes.
-- The original **227,730-byte `scored.json` is not in GitHub**; its SHA-256 is `96f1bffc8117764b1bc9fdd2110107a8f212591be80f119a1fdcded7aacba435`. The exact committed scorer recreates all semantically meaningful fields; wall/runtime timing fields differ. Non-timing deterministic semantic replay SHA-256: `ae81d9d06be1ce685f370aab4ca2d6a691ac56ba92f788c21027c74a6ac3bae8`.
+- The **complete byte-exact original 227,730-byte `scored.json` is preserved on GitHub**, as `scored.json.bz2` (13,894 bytes), compressed-object SHA-256 `99ec8fab9f04ab8304cdc8a322e5aa212384c3f8c9fc4bdf360154de95b1dbb1` and original Git blob `4190716bded95671b6109a6191207b4d379d5bc7`. Decompressing yields the original JSON SHA-256 `96f1bffc8117764b1bc9fdd2110107a8f212591be80f119a1fdcded7aacba435` without re-scoring or omitting timings. The exact committed scorer also recreates all semantically meaningful fields; wall/runtime fields differ on reruns. `verify_archive.py` checks both byte-exact custody and each case receipt. Non-timing deterministic semantic replay SHA-256: `ae81d9d06be1ce685f370aab4ca2d6a691ac56ba92f788c21027c74a6ac3bae8`.
 - Independent `audit.py`, without importing the scorer, reconstructed all source worlds, action allocations, label corruption, refit all nine model arms from identical witnessed inputs, compared every held score and learned support, reaggregated all metrics and frozen gates: **5,052 assertions PASS**. It uses the same scikit-learn library for conventional solver implementations; this does not imply an independently implemented sklearn. Source Git blob `b4fc8e626df00ef8ae686333d39ee489a9b2b362`.
 - Local Linux CPU, Python 3.13.5, NumPy 2.3.5, scikit-learn 1.8.0, explicit single-threaded BLAS. Full Linux/Windows repository regression, G29 atlas acceptance and native scientific first-use **not performed** for this external evidence.
 
-From a clean checkout of the pinned archive branch at this evidence commit:
+From a clean checkout of the pinned archive branch at this evidence commit, first verify the complete deposited original score and 144 receipts:
 ```bash
 cd research/contrib/chatgpt/energy-evidence-20261117/ENERGY-35
+python -B verify_archive.py
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -B experiment.py --out scored.json
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -B audit.py scored.json
 ```
