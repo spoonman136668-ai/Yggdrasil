@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CKAD25-Y",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "purpose": "Make the SAME tokenless native learner use source-observed contradictions to autonomously allocate a fresh persistent source-conditioned causal memory, then retrieve that learned state after cold resets and unrelated interference. Unlike CKAD25-W/X this actually changes native model knowledge on an unlabelled novel world; unlike CKAD35/36 this does not fit an external donor-analogy search.",
+  "hypothesis": "Under a fixed source-free changing-law protocol, the native learner allocates an unfamiliar in-class causal state C from 12 actual witnessed interventions without a family label, preserves A/B and original slot0, later recalls all A/B/C in >=10 of 16 returning phases across four seeds using only four new unlabelled target outcomes, improves recall-phase held Brier >=0.05 relative to an equally informed memoryless exact GF2 learner, and matches strong independent conventional online Bayesian state allocation without claiming superiority.",
+  "parent_source_sha": "fb0cd9754b154bd57c227242495dfb7f5dd69616",
+  "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "ckad25_source_checkpoint_sha256": "c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+  "related_predecessors": [
+    "CKAD25-X PR1255 exact SHA fb0cd975... native fixed Bayesian-Gini active probes, all 4 returned A, but only 0.00625 Brier ahead of matched random vs frozen ≥0.04 => DEVELOPMENT_NO_GO; don't retest action policy.",
+    "CKAD25-W PR1251 source-known recall A/B/A only one of two seeds, stronger continuous Bayes winner. No new source memories dynamically created.",
+    "CKAD34/35/36 PR1250/1252/1253 tested conventional class selection, supplied donor-analogy and active analogy; each tied conventional equivalent or missed source-frozen gates.",
+    "WSP163 PR1218 public lagged residual learning improved persistent settings but regressed rapid switches; conventional ridge matched and checkpoint cross-OS bytes drift. Separate architecture, no integration authority.",
+    "DG1-HC10 PR977 studied external two-bank context steering under 40-step budget; no same-CKAD native source memory allocation."
+  ],
+  "paths": [
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_causal_state_acquisition.py",
+    "research/contrib/chatgpt/CKAD25-Y/**",
+    ".github/workflows/ckad25y-*.yml",
+    ".ice/code-atlas.*"
+  ],
+  "worlds": {
+    "A": "Three monomial weight XOR drawn independently from supplied sixteen-term 4-bit ANF grammar, with action sensitivity",
+    "B": "Different three-term source law; at least four input disagreements with A across the twelve revealed address pool",
+    "C": "Third three-term source law with >=4 disagreements versus A and B across twelve source addresses; genuinely unfamiliar to native at first presentation",
+    "D": "Four-/five-term source law outside known <=3 monomial ANF candidate class; out-of-grammar harm control",
+    "P_Q": "Two unrelated in-class two-term pressure laws trained in source slots 10 and 11, not available to automatic A/B/C selection"
+  },
+  "seeds": [
+    68011,
+    68023,
+    68041,
+    68059
+  ],
+  "protocol": "Per seed, SHA256 permute sixteen 3-bit-context+1-action addresses; first twelve are actual witnessed do/outcome inputs, last four source-evaluator withheld. Original CKAD25 native slot0 preserved. One native cumulative learner starts with no A/B/C source memories. Eight evaluator phases A12, B12, A4, C12, D12, C4, A4, B4; the active stage gives the model only a list of [context,action,observed consequence] and its source packet SHA. For a 4-record episode, it may return a retained state or abstain but cannot silently train a new state with too few independent witnesses. For a 12-record episode it must select an existing known source only if posterior >=0.90, otherwise allocate the lowest unused source slot 1..9, call the existing native observe in 8+4 authentic source packets, compile its numeric weight hypotheses, and cold restore. On D out-of-grammar, retain negative state evidence but readout p0.5 if no source-consistent <=3-term weights; never overwrite A/B/C source. Hidden A/B/C/D class names/weights and all held consequences are evaluator-only and never inputs to the learner. After D, train independent P/Q in slots10/11 for 8 witnessed actions each and cold restore to test interference before return C/A/B. Repeated A/B/C evaluator-held addresses test cold retention only and are NOT additional independent held labels.",
+  "budget": "Four seeds × (64 targeted observed source interventions +16 P/Q pressure observations) =320 source-free observed action outcomes. Eight phases x four held query inputs x four seeds =128 phase predictions; only four worlds x four held addresses x four seeds=64 independent unique evaluator held outcomes. Return phases A/B/C repeat held truth as retention. All observations are synthetic deterministic do-action functions, not original protected-source first-use.",
+  "native_method": "Add opt-in NativeCumulativeLearner.incorporate_causal_world(records, expected_sha256, source_ref, available_slots tuple 1..9) -> (new_learner, chosen_slot_or_none, outcome enum). Strictly validate 4 or 12 UNIQUE observed public (context,action,0/1) records and source SHA, no semantic regime ID. Compute exact Fraction of each existing stored source committee's predictive probabilities on observed records and one unfamiliar prior (0.5^count), equal priors; recall only if a known bank posterior≥.90. For 12 genuinely unrecalled records, allocate lowest empty slot, train with existing observe(8), observe(4), then compile_causal_relations and persist to original same native checkpoint, recording true source record and learned coefficient committee in that slot; if zero surviving source models label INCOMPATIBLE and use (1,2) as a strict negative, never call this learned novel-rule success. On four unrecognized records, return unchanged model/None/ABSTAIN. Every method call immutable/idempotent on repeated source, fail closed on missing capacity/cross-slot conflicting input or unauthorized source mode.",
+  "equal_information_controls": [
+    "Independent full conventional exact Bayesian 697-ANF online state allocator with same unfamiliar prior, same 0.90 known-state admission, same eight/twelve source action rows and native-independent source-level posterior and archive; parity expected by design, no scientific superiority.",
+    "Independent conventional switching hidden-Markov source classifier with sticky transition prior and otherwise full 697-rule conditional source model; it trains its own archive from the same past observations, known/unknown priors separately frozen.",
+    "Memoryless fully fitted exact 697-rule conventional Bayes on only current 4 or 12 observed intervention outcomes; no stored source-bank reuse.",
+    "Fully trained RandomForestClassifier 64 and LogisticRegression ANF per source-discovered conventional bank using identical witnessed source packets, retrained on each new source and same unlabelled diagnostic evidence; source-specific predictive likelihood and same unknown prior.",
+    "Always most recent source bank, original native static/no-memory p0.5, current-source oracle with hidden regime labels (non-comparable upper bound only)."
+  ],
+  "metrics": "Per-seed first A/B/C labels assigned from native own slot; returning A/B/C recovered after pressure/cold; new C and D held Brier and confident wrong, archived old source/checkpoint exact hashes, original slot0 and learned A/B weights unchanged, inferred slot correspondence only audited against evaluator labels after training, full exact Bayesian and HMM/fitted controls, source and held Brier, CPU/wall, source model count, no hidden class leakage.",
+  "development_gates": {
+    "custody": "No owner-source first-use, accepted main or FORGE action; no input/held overlap, 320 actual source-free actions and 64 distinct evaluator held cases; no hidden generator ID/outcome passed to policy or native method.",
+    "training": "All 4 seeds acquire a genuine NEW source state C into a new native slot from 12 verified interventions, and two old state memories A/B exist before it; D never corrupts those memories, and original slot0 remains identical.",
+    "retention": "Old property, slot0 original source/predictions/events, and learned A/B/C committee bytes retained after D, pressure P/Q and every native cold restore; no source quarantine of A/B/C; deterministic cross-platform check for frozen results.",
+    "return": "At least 10 of 16 returning known episode states (A at phase2, C phase5, A phase6, B phase7) correctly recognized among four seeds.",
+    "accuracy": "Candidate return-phase Brier <= memoryless independent source-only exact GF2 held Brier -0.05, using identical four diagnostics and four held addresses.",
+    "novelty": "D out-of-grammar unknown phase held Brier<=0.27 (uniform .25+0.02); at most 1 confident incorrect D prediction in sixteen D held questions.",
+    "conventional": "Native held Brier <= independently fitted exact dynamic Bayesian allocator Brier+0.01 and <= full HMM Brier+0.03, <= best fully trained source-memory RF/logistic +0.03; exact native-versus-independent same-rule comparator posterior/output parity at every held query.",
+    "science": "SCIENTIFIC_PASS always false: fixed supplied grammar and Bayes allocation are conventional; a development signal only demonstrates integration and source-cumulative learning."
+  },
+  "classification": "All gates pass => DEVELOPMENT_SIGNAL; valid misses => DEVELOPMENT_NO_GO; source leakage, native loss, inconsistent hashes, missing independent comparator or cross-platform byte drift => INVALID/ENGINEERING_FAIL. Never retune scored cohort.",
+  "stop": "One prescore disjoint engineering seed 68999; full current-user seed roster frozen before primary; two platforms execute same one-shot primary, repeat same source only for deterministic custody, never claim two independent sciences. No post-result change of gates/prior, seed roster, class, observed budgets or source. No broad merge/acceptance/promotion.",
+  "authority": {
+    "research_only": true,
+    "protected_source_first_use": false,
+    "owner_execution": false,
+    "merge": false,
+    "accepted_main_edit": false,
+    "forge_dispatch": false,
+    "controller": false,
+    "scheduler": false,
+    "paid_api": false,
+    "scientific_pass": false,
+    "deployment": false
+  }
+}
