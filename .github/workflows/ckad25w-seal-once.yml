@@ -1,0 +1,156 @@
+name: CKAD25-W seal exact original cross-OS causal recall evidence
+on:
+  push:
+    branches: [research/ckad25w-unlabeled-causal-recall-20261118]
+    paths:
+      - ".github/workflows/ckad25w-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  seal-science-once-no-score-reruns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Keep exact Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Fail closed on changed scientific code or prior evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25w-unlabeled-causal-recall-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "7b81c241c8eea19f669a826bb03c6232735c94c3"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-W/run.py)" = "b4bd546859ef038a34935b59988ebe1e124cf160"
+          test "$(git hash-object tests/test_native_causal_regime_recall.py)" = "7821d910f9076b6d73e34c6958d1efe89d5d2df5"
+          test ! -e research/contrib/chatgpt/CKAD25-W/result.json
+          test ! -e research/contrib/chatgpt/CKAD25-W/provenance.json
+          test -z "$(git status --porcelain)"
+      - name: Download previously scored first-use artifacts only
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14470042818/zip" \
+            -o "$RUNNER_TEMP/ckad25w-linux.zip"
+          curl --fail --location --silent --show-error -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14472107272/zip" \
+            -o "$RUNNER_TEMP/ckad25w-windows.zip"
+      - name: Preserve authentic result and exact science provenance without re-executing score
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-W")
+          temp=Path(os.environ["RUNNER_TEMP"])
+          pairs={
+              "linux":("21432ac5cffc5e25d1354a0cf8b1cf03c2579031d8f57e9934421d831a24cda2",14470042818),
+              "windows":("d297e71e43b5122055077b6b0b8001190b369d4c08d6084ce0232a2f36c5362a",14472107272)
+          }
+          def sha(raw):return hashlib.sha256(raw).hexdigest()
+          collected={}
+          for osname,(archive_sha,artifact_id) in pairs.items():
+              z=temp/f"ckad25w-{osname}.zip"
+              assert sha(z.read_bytes())==archive_sha,(osname,"ZIP_DIGEST_DRIFT")
+              with zipfile.ZipFile(z) as f:
+                  assert f.namelist()==["ckad25w-result.json"],f.namelist()
+                  collected[osname]=f.read("ckad25w-result.json")
+          raw=collected["linux"]
+          result_hash="57bb674f9492e77390a25193a4b3f9ee0695d7fa7b391bf53b3fa9d92778b0e0"
+          assert sha(raw)==result_hash
+          assert raw==collected["windows"],"CROSS_OS_SOURCE_RESULT_DRIFT"
+          x=json.loads(raw)
+          assert raw==json.dumps(x,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")
+          assert x["schema"]=="yggdrasil.ckad25w.unlabeled-regime-recall-dev.v1"
+          assert x["source_sha256"]==sha((root/"run.py").read_bytes())
+          assert x["independent_helper_sha256"]==sha(Path("research/contrib/chatgpt/CKAD25-S/run.py").read_bytes())
+          assert x["original_native_checkpoint_sha256"]=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          assert x["source_free_native_training_rows"]==80 and x["source_free_target_diagnostic_rows"]==40
+          assert x["phase_scored_outputs"]==40 and x["unique_independent_world_held_labels"]==32
+          assert x["A_return_repeated_not_independent"] is True
+          assert x["original_protected_world_actions"]==0 and x["source_owner_first_use"] is False
+          assert x["one_native_cumulative_learner_per_seed"] is True
+          assert x["native_causal_memory_uses_existing_checkpoint"] is True
+          assert x["scientific_pass"] is False and x["forge_dispatch"] is False
+          assert x["accepted_main_changed"] is False and x["deployment"] is False
+          assert x["native_promotion"] is False and x["accepted_model"] is False
+          assert x["known_confident_answered"]==12
+          assert x["novel_brier"]==.25 and x["return_A_brier_gain_vs_recency_B"]==.291666667
+          assert x["overall_mean_brier"]["native_recall"]==x["overall_mean_brier"]["exact_gate"]==.175
+          assert x["overall_mean_brier"]["full_exact_bayes"]==.152853639
+          assert x["disposition"]=="DEVELOPMENT_SIGNAL" and all(x["frozen_gates"].values())
+          assert len(x["per_seed_phase"])==10
+          assert all(r["diagnostics_count"]==r["held_count"]==4 for r in x["per_seed_phase"])
+          assert x["per_seed_phase"][2]["first_A_repeat_is_not_independent"] is True
+          assert x["per_seed_phase"][7]["first_A_repeat_is_not_independent"] is True
+          for s in ("51041","51047"):
+              assert x["per_seed"][s]["native_retention_pass"] is True
+          (root/"result.json").write_bytes(raw)
+          provenance={
+              "schema":"yggdrasil.ckad25w.external-source-frozen-provenance.v1",
+              "original_native_parent_ckad25v_sha":"7d49be14cc39aaed8835edc96975002a310b6726",
+              "original_accepted_main_observed_sha":"5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+              "native_original_checkpoint_sha256":"c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+              "first_prereg_commit":"33919529d6ebbd014c1ce84e44c7f8bb1e0824da",
+              "new_recall_model_source_commit":"81c3f95f2d547346169876eeb8f995fd0d1eaac1",
+              "new_native_cumulative_git_blob":"7b81c241c8eea19f669a826bb03c6232735c94c3",
+              "source_score_committed_before_first_use":"f4322491277f403a68b41308362019a11080bb65",
+              "frozen_score_source_git_blob":"b4bd546859ef038a34935b59988ebe1e124cf160",
+              "frozen_score_source_sha256":sha((root/"run.py").read_bytes()),
+              "original_score_run_id":44397995767,
+              "linux_science_job_id":135133193364,
+              "windows_science_job_id":135133193351,
+              "linux_artifact_id":14470042818,
+              "windows_artifact_id":14472107272,
+              "artifact_zip_sha256":{k:v[0] for k,v in pairs.items()},
+              "original_result_sha256":result_hash,
+              "identical_original_result_bytes_across_platforms":True,
+              "original_science_rerun_during_seal":False,
+              "first_use_protected_source_actions":0,
+              "source_mode":"engineering_fixture_only",
+              "classified_development_signal":True,
+              "scientific_pass":False,
+              "conventional_exact_hard_gate_parity":True,
+              "stronger_continuous_exact_Bayes_outperforms_native":True,
+              "A_held_truth_repeated_for_retention_only":True,
+              "merge":False,"accepted_ref_mutation":False,
+              "forge_dispatch":False,"owner_first_use":False,
+              "production_deployment":False,
+              "interpretation":"Conventional selector retrieves native persistent A/B source weights under a two-regime prior; novel C/D abstentions and return-A improvement do not establish self-discovered causal classes or original-world generalization."
+          }
+          (root/"provenance.json").write_text(json.dumps(provenance,sort_keys=True,indent=2)+"\n",encoding="utf-8")
+          print("CKAD25W_ORIGINAL_RESULT_BYTE_SEAL_PASS sha256="+result_hash)
+          print("CKAD25W_NEGATIVE_CONTROLS_AND_LIMITS_PRESERVED")
+          PY
+      - name: Commit only sealed original result and provenance to research PR
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25w-unlabeled-causal-recall-20261118
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git add research/contrib/chatgpt/CKAD25-W/result.json research/contrib/chatgpt/CKAD25-W/provenance.json
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert changed=={"research/contrib/chatgpt/CKAD25-W/result.json","research/contrib/chatgpt/CKAD25-W/provenance.json"},changed
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(ckad25w): seal original cross-OS source-free memory recall evidence"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "CKAD25W_ORIGINAL_EVIDENCE_COMMIT=$(git rev-parse HEAD)"
