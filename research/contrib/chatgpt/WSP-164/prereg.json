@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-164",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a bounded public-history coherence gate prevent the known WSP163 rapid hidden-switching regression while retaining most of its within-episode persistent hidden-regime learning, and how does it compare with independently trained Bayesian persistence-vs-iid controls given identical source-free public episodes?",
+  "hypothesis": "A single frozen WSP163 4D autoregressive direct-weight model with a public-evidence reliability gate (5 prior public records; last four consecutive residual cosine similarities above a FIT-calibrated cap between 0.75 and 0.86) will reduce persistent later-step VALID RMSE by >=0.04 versus same-data fully fitted static WSP160, and incur iid hidden-step RMSE regret <=0.01 versus that static model in all three new seeded source-free replicas. The fitted conventional Bayesian persistence-vs-iid mixture is independently trained on identical public FIT evidence and may tie or beat the direct gated learner; any superiority claim requires new strong-control evidence, not assumed here.",
+  "exact_parent_sha": "245dae308bc3b7ca04b2a5af574ffc45cd6621a4",
+  "parent_tree_sha": "98d420dc6cdfa527c963974e9be89e990407890f",
+  "predecessor_evidence": [
+    "WSP163 PR1218 finalized SHA245dae308bc3b7ca04b2a5af574ffc45cd6621a4 G29 #44266791915 and full #44266783693 dual OS PASS; historical three seeds persistent later static~0.143 vs history~0.03 but iid memory regret +0.0338..+0.0675; retain frozen scientific DEVELOPMENT_NO_GO.",
+    "WSP163 cross-OS numeric metrics match but JSON checkpoint hashes/length differ; do not claim portable byte-identical state or silently normalize prior evidence.",
+    "WSP162 PR1216 static public-only prediction irreducible overlap floor; history is extra observed evidence, no hidden labels.",
+    "CKAD PR1207 independently runs native context recovery and does not confer WSP first-use/model integration authority."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-164/prereg.json",
+    "research/contrib/chatgpt/WSP-164/reliability_gate.py",
+    "research/contrib/chatgpt/WSP-164/test_reliability_gate.py",
+    "research/contrib/chatgpt/WSP-164/README.md",
+    ".github/workflows/wsp164-reliability.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "Existing WSP163 public history source-free readout / fixtures",
+      "repo_sha": "245dae308bc3b7ca04b2a5af574ffc45cd6621a4",
+      "source": "unchanged qualified research module; reused same authored generator family but NEW seeded independent episodes"
+    },
+    {
+      "name": "New source-free public episode replicas",
+      "source": "WSP163 fixtures(seed) with disjoint seeds 1931/2053/2179, each 32×16 FIT persistent +16×16 VALID persistent +16×16 held iid-switch; 4D states and public outcomes only",
+      "sha256": null
+    },
+    {
+      "name": "Independent fully fitted conventional Bayesian control",
+      "source": "Self-supervised inferred two-component residual emission prototypes and empirical Beta-smoothed regime persistence from SAME FIT public residuals; Bayesian odds of persistent vs iid hypothesis updated from preceding public inferred state changes only; no hidden family labels and no held target read before forecast",
+      "sha256": null
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      1931,
+      2053,
+      2179
+    ],
+    "split": "Same unmodified authored 16-public-state-context fixture family as WSP163, but 3 new independent deterministic seed draws not evaluated in WSP163. Each seed 32 persistent FIT episodes x16 rows; 16 disjoint persistent VALID episodes x16; 16 held iid-switch stress episodes x16. Hidden source regime labels NEVER passed to learner or controls. Not unfamiliar source families or original-science first-use.",
+    "ordering": "First single-file prereg commit; source/tests fixed before any new scored metrics. Train WSP160 base on all 512 FIT public rows, WSP163 lag-RLS on 480 within-episode FIT witness pairs, then calibrate one source-free gate threshold from FIT residual pair similarities. In held VALID predict before seeing current outcome, only last <=5 *previously* witnessed public records from same episode; reset history at terminal. Score persistent and IID; no post-result tuning; preserve negative.",
+    "data_budget": "3 seeds x (512 FIT+256 VALID persistent+256 held iid) source-free public transitions. All conventional controls see 512 FIT and same preceding public within-episode histories. Zero original CartPoleWind/Gym reset/step/do/ctf_do, zero paid calls, no new source actor.",
+    "compute_budget": "Python 3.12 stdlib only; existing WSP160 4x10, WSP163 4x4 learner one shared model; gate calibration <=480 FIT public adjacent residual pairs; 5-entry fixed public evidence window. Bayesian control <=2 discrete hidden modes, fitted residual prototypes and smoothed stay probability, no oracle labels. Exactly 3 new frozen replicas and final source-identical Linux/Windows full root+NKR05/G29.",
+    "capacity": "No new direct coefficient parameters beyond WSP163 base+lag readout. Gate has one learned scalar threshold from FIT public consecutive cosine similarities: max(0.75, min(0.86, mean_cosine -0.10)). Use threshold on EACH of the four last adjacent public residual cosine pairs; 5 prior public witness records required, then all-or-nothing current lag correction. No adjustment based on held loss, labels or hidden regime; no per-world bank.",
+    "evaluator": "Compute held later-step (t>=1) and whole-episode RMSE for gated, un-gated WSP163, WSP160 static, conventional Bayesian persistence-vs-iid mixture, inexpensive simple public residual carry, plus shuffled-history negative. Score persistent and IID separately, same actual previously witnessed public rows, never future. Record number of gated-on forecasts, learning threshold per seed, first-step strict parity, native checkpoint compatibility and OS drift, fit/eval CPU and source actions.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Existing unchanged WSP163 un-gated learned 4x4 history-RLS from same FIT public rows (known IID failure); must not retune after results.",
+    "Same-data fully fitted STATIC WSP160 baseline with no history.",
+    "Independent Bayesian 2-mode persistent-vs-IID mixture: FIT public residuals infer two emission prototypes by residual first-coordinate sign, Beta(1,1)-smoothed within-episode same-sign transition probability (clipped [0.51,0.99]); equal 0.5 prior on persistent/iid process, online posterior using public sign transition likelihoods only; predicts current mean mode, no oracle family or current target.",
+    "Same-history cheap previous-public-residual carry; no learned lag coefficient",
+    "Shuffled public FIT histories used as reliability negative; if that outperforms aligned history report failure.",
+    "Wrong history crosses episode terminal, invalid privileged fields / current future outcomes, empty-history first-step, tampered state and nonfinite cases must reject",
+    "Cross-platform weight checkpoint hash/byte size differences retained explicitly, never called exact deterministic unless independently observed."
+  ],
+  "metrics": [
+    "seed",
+    "fit_gate_cosine_threshold",
+    "persistent_later_static_rmse",
+    "persistent_later_ungated_rmse",
+    "persistent_later_gated_rmse",
+    "persistent_later_bayes_rmse",
+    "persistent_later_carry_rmse",
+    "iid_later_static_rmse",
+    "iid_later_ungated_rmse",
+    "iid_later_gated_rmse",
+    "iid_later_bayes_rmse",
+    "iid_gated_regret",
+    "first_step_gated_static_gap",
+    "gate_on_fraction_persistent",
+    "gate_on_fraction_iid",
+    "cold_prediction_max_gap",
+    "cross_os_checkpoint_sha256",
+    "cpu_fit_seconds",
+    "cpu_eval_seconds",
+    "original_source_actions"
+  ],
+  "classification_rules": {
+    "supported": "SOURCEFREE_RELIABILITY_ENGINEERING_SUPPORTED iff every seed has persistent later static-gated RMSE >=0.04; iid gated regret <=0.01 (gated minus static); original un-gated WSP163 iid regret reproduces positive >=0.01; gate NEVER uses current outcome/future/hidden regime; same-OS cold outputs exact; final focused/full inherited root+NKR05/G29 on exact final Linux/Windows PASS. Bayesian control is separately reported and may outperform; no scientific claim.",
+    "mixed": "If a seed improves persistent while IID gate regret >0.01 or loses >=0.04 improvement, freeze DEVELOPMENT_NO_GO under this prereg. Cross-platform state bytes differ -> TRANSPORT_DETERMINISM_UNVERIFIED even if scalar metrics match; no promotion.",
+    "negative": "Failure to gate based on prior history, new hidden oracle leak, future leak, bad matched controls, or any prespecified threshold misses; preserve results, no post-result source/seed/threshold adjustment.",
+    "invalid": "Any external original source execution, hidden regime supplied as feature, held VALID used in FIT threshold, after-result test/code edits presented as confirmatory, modified inherited WSP/CKAD, unsafe controller/accepted main changes."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "future_gate": "If even Bayesian reliability cannot preserve IID, separately freeze richer public-state/time/event evidence and exact matched strong HMM/change-point controls; avoid endless gated retuning. Original-source first use still requires independent source-owner virgin actor/cohort signoff.",
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "original_source_execution": false
+  }
+}
