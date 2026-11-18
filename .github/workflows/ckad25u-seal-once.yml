@@ -1,0 +1,149 @@
+name: CKAD25-U one-time cross-OS research evidence seal
+on:
+  push:
+    branches: [research/ckad25u-native-intervention-choice-20261118]
+    paths:
+      - ".github/workflows/ckad25u-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  seal-existing-evidence-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Preserve Git-tracked source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Check exact research branch/source, no prior seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25u-native-intervention-choice-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-U/run.py)" = "661c9d73bf62a4b85c21a28c3a5c04fe30cccf58"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-S/run.py)" = "31e06746dd2fa83cf4bfedf28da43cacbc68c99f"
+          test ! -e research/evidence/CKAD25-U/result.json
+          test ! -e research/evidence/CKAD25-U/provenance.json
+          test -z "$(git status --porcelain)"
+      - name: Fetch ONLY previously scored and independently replayed OS artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14456579777/zip" \
+            -o "$RUNNER_TEMP/ckad25u-linux.zip"
+          curl --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14457415457/zip" \
+            -o "$RUNNER_TEMP/ckad25u-windows.zip"
+      - name: Audit original score bytes, freeze negative without executing evaluator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          temp=Path(os.environ["RUNNER_TEMP"])
+          target=Path("research/evidence/CKAD25-U")
+          target.mkdir(parents=True,exist_ok=True)
+          entries={
+            "linux":("92e8dd8fbb22f40602c3ce694abe72b5a7ae49c3c40aa30d954c232f5604fb3a",14456579777),
+            "windows":("4091e1d310eeebbe90f918ff134087b46ceeed0639d8978a67bc4f8ae88c5287",14457415457)
+          }
+          def sha(data): return hashlib.sha256(data).hexdigest()
+          originals={}
+          for platform,(expected_zip,artifact) in entries.items():
+              z=temp/f"ckad25u-{platform}.zip"
+              assert sha(z.read_bytes())==expected_zip,platform
+              with zipfile.ZipFile(z) as archive:
+                  assert archive.namelist()==["ckad25u-result.json"],archive.namelist()
+                  originals[platform]=archive.read("ckad25u-result.json")
+          raw=originals["linux"]
+          assert raw==originals["windows"],"CROSS_PLATFORM_RESULT_DRIFT"
+          result_sha="2b4f6955c37381b4c452a3a22172f7590f58584fbbadb111d253d96deab86f95"
+          assert sha(raw)==result_sha
+          d=json.loads(raw)
+          source=Path("research/contrib/chatgpt/CKAD25-U/run.py")
+          helper=Path("research/contrib/chatgpt/CKAD25-S/run.py")
+          assert d["frozen_source_sha256"]==sha(source.read_bytes())
+          assert d["helper_source_sha256"]==sha(helper.read_bytes())
+          assert d["original_native_checkpoint_sha256"]=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          assert d["same_held_test_actions_per_arm"]==72 and len(d["per_seed_policy_law"])==72
+          assert d["new_synthetic_observations_all_arms"]==576
+          assert d["original_protected_actions"]==0 and d["original_held_outcome_reused"] is False
+          assert d["native_source_changed"] is False and d["scientific_pass"] is False
+          assert d["accepted_model"] is False and d["forge_dispatch_authorized"] is False
+          assert d["native_promotion_authorized"] is False
+          assert d["deployment_authorized"] is False
+          assert d["gates"]["old_native_knowledge_retained"] is True
+          assert d["gates"]["gain_0_03_vs_fixed"] is False
+          assert d["gates"]["at_least_18_correct_answered"] is False
+          assert d["disposition"]=="DEVELOPMENT_NO_GO"
+          fingerprint={}
+          for r in d["per_seed_policy_law"]:
+              k=(r["seed"],r["law_family"])
+              fingerprint.setdefault(k,set()).add(r["held_inputs_sha256"])
+          assert len(fingerprint)==18 and all(len(v)==1 for v in fingerprint.values())
+          (target/"result.json").write_bytes(raw)
+          receipt={
+              "schema":"yggdrasil.ckad25u.sealed-prospective-provenance.v1",
+              "study":"CKAD25-U",
+              "accepted_main_observed_sha":"5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+              "source_branch_parent_sha":"93c66467427b7d5e3827eb9a27a6c0195e296c52",
+              "original_native_ckad25_checkpoint_sha256":"c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f",
+              "frozen_prereg_commit":"d7fd9367d31e4dd1d17567444fcf2ba26c5510c8",
+              "frozen_science_source_commit":"be2362d2172d38c7a110ab89b98c3c60a92034e3",
+              "frozen_science_source_git_blob":"661c9d73bf62a4b85c21a28c3a5c04fe30cccf58",
+              "frozen_science_source_sha256":sha(source.read_bytes()),
+              "unchanged_ckad25s_helper_git_blob":"31e06746dd2fa83cf4bfedf28da43cacbc68c99f",
+              "original_qualification_run_id":44366620805,
+              "linux_job_id":135021955526,"windows_job_id":135021954977,
+              "linux_artifact_id":14456579777,"windows_artifact_id":14457415457,
+              "original_artifact_zip_sha256":{k:v[0] for k,v in entries.items()},
+              "original_result_sha256":result_sha,
+              "identical_linux_windows_result_bytes":True,
+              "research_result_git_commit_will_follow":"seal-workflow bot commit only, no source rerun",
+              "sealed_source_copies_only":True,
+              "new_scored_evaluator_runs_in_seal":0,
+              "frozen_scientific_disposition":"DEVELOPMENT_NO_GO",
+              "original_source_actions":0,"owner_first_use":False,"scientific_pass":False,
+              "accepted_ref_changed":False,"forge_dispatch":False,"native_model_edited":False,
+              "promotion":False,"deployment":False,
+              "negative_summary":"Unchanged native proposer Brier=0.222222222, same as fixed, better than random=0.277777778; 8/72 confident answers, all 8 correct, fails frozen 18 required. This tests the early four-observation proposal heuristic, not post-fit posterior EIG. No superiority over exact Bayesian readout."
+          }
+          (target/"provenance.json").write_text(json.dumps(receipt,sort_keys=True,indent=2)+"\n",encoding="utf-8")
+          print("CKAD25U_ORIGINAL_OS_RESULT_SEAL_PASS sha256="+result_sha)
+          print("CKAD25U_NEGATIVE_VERDICT_PRESERVED")
+          PY
+      - name: Publish only original result and provenance to isolated research branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25u-native-intervention-choice-20261118
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git add research/evidence/CKAD25-U/result.json research/evidence/CKAD25-U/provenance.json
+          python3 - <<'PY'
+          import subprocess
+          expected={"research/evidence/CKAD25-U/result.json","research/evidence/CKAD25-U/provenance.json"}
+          observed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert observed==expected,observed
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(ckad25u): seal source-frozen cross-OS no-go evidence"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "CKAD25U_EVIDENCE_COMMIT=$(git rev-parse HEAD)"
