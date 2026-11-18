@@ -349,6 +349,29 @@ class NativeEpisodeExperience:
         weights = self._context_weights_for(view, first, next_state)
         return sum((w * p for w, p in zip(weights, predictions)), Fraction(0))
 
+    def context_forecast_recall(self, view, first, next_state=None, second=None):
+        """Opt-in read-only recall after witnessed streaming contradictions.
+
+        Reuse the *existing* native context hypothesis ledger, forecasts,
+        source-only online weights, and unannounced stream detector. In the
+        24 public events following a detector firing, focus on posterior
+        hypotheses by squaring their weights. Stable periods use the original
+        native mixture. Never alter trained counters, source IDs, snapshots,
+        or reveal a hidden environmental boundary.
+        """
+        if self._stream_start is None or not self._stream_detections:
+            return self.context_forecast(view, first, next_state, second)
+        latest_detection_index = self._stream_detections[-1][1]
+        if not 0 <= len(self._ledger) - latest_detection_index < 24:
+            return self.context_forecast(view, first, next_state, second)
+        probabilities = self._context_predictions(view, first, next_state, second)
+        posterior = self._context_weights_for(view, first, next_state)
+        strengths = tuple(weight * weight for weight in posterior)
+        total = sum(strengths, Fraction(0))
+        require(total > 0, "EPISODE_RECALL_POSTERIOR")
+        return sum((w * p for w, p in zip(strengths, probabilities)),
+                   Fraction(0)) / total
+
     def context_explore(self, view, first=None, next_state=None):
         """Choose the intervention with greatest weighted forecast disagreement."""
         require((first is None) == (next_state is None), "EPISODE_CONTEXT_HISTORY")
