@@ -1,0 +1,110 @@
+name: CKAD33R evidence-only original artifact recovery and exact two-OS qualification
+on:
+  push:
+    branches: [research/ckad33-native-compilation-20261118]
+permissions:
+  contents: read
+  actions: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  seal:
+    if: "github.event.head_commit.message == 'ci(ckad33r): salvage original evidence without rescore'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Retrieve ONLY original GitHub Actions artifacts, never rerun learner
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          run-id: 44371654835
+          github-token: ${{ github.token }}
+          pattern: ckad33r-pilot-*
+          path: ${{ runner.temp }}/ckad33r-original
+          merge-multiple: false
+      - name: Independently audit, seal, pin original evidence and publish to existing PR branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test ! -e research/contrib/chatgpt/CKAD-33R/pilot_screen_report.json
+          test -s "$RUNNER_TEMP/ckad33r-original/ckad33r-pilot-13631/result.json"
+          test -s "$RUNNER_TEMP/ckad33r-original/ckad33r-pilot-13632/result.json"
+          python -B research/contrib/chatgpt/CKAD-33R/seal_pilot.py --root "$RUNNER_TEMP/ckad33r-original"
+          python -B research/contrib/chatgpt/CKAD-33R/seal_pilot.py
+          git add -- research/contrib/chatgpt/CKAD-33R/pilot-13631.json research/contrib/chatgpt/CKAD-33R/pilot-13632.json research/contrib/chatgpt/CKAD-33R/pilot_screen_report.json
+          python -B -c "import subprocess; assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())=={'research/contrib/chatgpt/CKAD-33R/pilot-13631.json','research/contrib/chatgpt/CKAD-33R/pilot-13632.json','research/contrib/chatgpt/CKAD-33R/pilot_screen_report.json'}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research(ckad33r): seal already-produced original pilot receipts'
+          SOURCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git commit -m 'docs(ckad33r): pin original pilot evidence source atlas'
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B research/contrib/chatgpt/CKAD-33R/seal_pilot.py
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ckad33-native-compilation-20261118
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  full-regression:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned native and conventional CPU regression deps
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Final full existing native regression and source-pinned read-only evidence audits
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.seal.outputs.candidate }}"
+          git rev-parse HEAD HEAD^{tree}
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-31 -p 'test_ckad31.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-32 -p 'test_ckad32.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-33 -p 'test_ckad33.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-33R -p 'test_ckad33r.py' -v
+          PYTHONPATH=. python -B research/contrib/chatgpt/CKAD-29/independent_audit.py
+          python -B research/contrib/chatgpt/CKAD-30/audit_primary.py
+          python -B research/contrib/chatgpt/CKAD-31/seal_pilot.py
+          python -B research/contrib/chatgpt/CKAD-32/seal_pilot.py
+          python -B research/contrib/chatgpt/CKAD-33R/seal_pilot.py
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
