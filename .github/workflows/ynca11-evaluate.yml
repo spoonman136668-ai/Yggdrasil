@@ -1,0 +1,84 @@
+name: YNCA11 source-locked multioperator interference B
+on:
+  push:
+    branches:
+      - research/ynca11-multioperator-interference-20261118
+    paths:
+      - .github/workflows/ynca11-evaluate.yml
+permissions:
+  contents: read
+jobs:
+  disjoint-B:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Avoid platform text mutation
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source/prereg custody and A-only focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('research/contrib/chatgpt/YNCA-11')
+          d=json.loads((root/'prereg.json').read_bytes())
+          code=hashlib.sha256((root/'experiment.py').read_bytes()).hexdigest()
+          tests=hashlib.sha256((root/'test_experiment.py').read_bytes()).hexdigest()
+          assert code=='70d38215a4cba3419c3d706d9c5078a3de56e28f2bf895c3de9c0be847de874a',code
+          assert tests=='d9b1c8a6f5522b740674fcce12e59b952a0a93be67c572f45737c1d71dbc9180',tests
+          assert d['frozen_design']['source_sha256']==code
+          assert d['frozen_design']['focused_tests_sha256']==tests
+          assert d['frozen_design']['source_commit_before_B']=='b6443a349a4c2838efa47ef5a31d5c467fa8efc4'
+          assert d['frozen_design']['pass_B']['seed_triple']==[101000,102000,103000]
+          print('YNCA11_SOURCE_LOCK_PASS',code,tests)
+          PY
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-11 -p 'test_*.py' -v
+      - name: Run frozen 128+64 B worlds once and preserve scored evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-11/experiment.py --split B > "$RUNNER_TEMP/ynca11-B.json"
+          python - "$RUNNER_TEMP/ynca11-B.json" <<'PY'
+          import sys,pathlib,json,hashlib,base64
+          p=pathlib.Path(sys.argv[1])
+          raw=p.read_bytes().replace(b'\r\n',b'\n')
+          p.write_bytes(raw)
+          d=json.loads(raw)
+          assert d['split']=='B' and d['candidate_library_size']==24
+          assert d['interleaving_sequence']=='AAAA-BBBB-AAAA-BBBB'
+          assert d['trained_worlds_per_context']==8 and d['test_worlds_per_type']==64
+          assert d['memory_entries']=={'A':3,'B':3}
+          assert set(d['metrics'])=={'A','B','C'}
+          assert set(d['metrics']['C'])=={'NO_MEMORY','SHARED_UNTAGGED','LAST_B_OVERWRITE','TRAINED_FREQUENCY','TWO_SLOT_TOP3','GATED_TOP3','FULL_CONTEXT_BAYES','GATED_FULL_BAYES','ORACLE_TABLE'}
+          assert d['memory_cold_roundtrip_exact'] is True
+          assert not any(d['claims'].values())
+          print('YNCA11_B_SHA256',hashlib.sha256(raw).hexdigest())
+          print('YNCA11_B_METRICS',json.dumps(d['metrics'],sort_keys=True,separators=(',',':')))
+          print('YNCA11_B64',base64.b64encode(raw).decode('ascii'))
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve original B output without Git write
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca11-original-B-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca11-B.json
+          if-no-files-found: warn
+          retention-days: 30
