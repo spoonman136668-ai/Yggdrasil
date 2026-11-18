@@ -1,0 +1,159 @@
+{
+  "schema": "yggdrasil.energy35.aggregate-result.v1",
+  "experiment_id": "ENERGY-35",
+  "classification": "DEVELOPMENT_NO_GO",
+  "mode": "primary",
+  "valid_worlds": 144,
+  "independent_source_worlds": 72,
+  "seeds": [
+    7307,
+    7331,
+    7349
+  ],
+  "source_sha256": "dde9f68ea1f86e7e09b291859adffec78d33cfb6dd1197e8fdf25e92e4bdca9c",
+  "source_commit_sha": "061ac19ac7d411b6bf1858b3a76d5d1ddf212359",
+  "preregistration_commit_sha": "ded9bc2dd96a2b14c0abac15cb80c1f0d91aa6b9",
+  "worlds_per_regime": 72,
+  "observations_per_world": 96,
+  "held_per_world": 64,
+  "paired_intervention_count_in_bridge16": 16,
+  "denominators": {
+    "bridge16": {
+      "old": 1152,
+      "new": 3456
+    },
+    "no_bridge": {
+      "old": 1152,
+      "new": 3456
+    }
+  },
+  "scores": {
+    "bridge16": {
+      "paired_energy": {
+        "old": 1050,
+        "new": 2782
+      },
+      "plain_energy": {
+        "old": 1079,
+        "new": 2816
+      },
+      "omp12": {
+        "old": 1018,
+        "new": 2774
+      },
+      "paired_omp12": {
+        "old": 1018,
+        "new": 2734
+      },
+      "paired_ridge": {
+        "old": 722,
+        "new": 2007
+      },
+      "logistic": {
+        "old": 751,
+        "new": 2001
+      },
+      "rbf_svm": {
+        "old": 756,
+        "new": 2054
+      },
+      "decision_tree": {
+        "old": 726,
+        "new": 2099
+      },
+      "shuffled_energy": {
+        "old": 614,
+        "new": 1754
+      }
+    },
+    "no_bridge": {
+      "paired_energy": {
+        "old": 1062,
+        "new": 2023
+      },
+      "plain_energy": {
+        "old": 1062,
+        "new": 2023
+      },
+      "omp12": {
+        "old": 1034,
+        "new": 2174
+      },
+      "paired_omp12": {
+        "old": 1034,
+        "new": 2174
+      },
+      "paired_ridge": {
+        "old": 725,
+        "new": 1855
+      },
+      "logistic": {
+        "old": 785,
+        "new": 1915
+      },
+      "rbf_svm": {
+        "old": 784,
+        "new": 1989
+      },
+      "decision_tree": {
+        "old": 775,
+        "new": 2076
+      },
+      "shuffled_energy": {
+        "old": 621,
+        "new": 1810
+      }
+    }
+  },
+  "seed_shift_margins_vs_strongest": [
+    15,
+    -31,
+    15
+  ],
+  "fit_plus_held_prediction_seconds": {
+    "bridge16": {
+      "decision_tree": 0.053897689999871545,
+      "logistic": 0.24642709099975946,
+      "omp12": 0.06356313399976443,
+      "paired_energy": 0.27524294800025473,
+      "paired_omp12": 0.05909803900044608,
+      "paired_ridge": 0.06546441099987987,
+      "plain_energy": 0.14369953000016267,
+      "rbf_svm": 0.07523341299963704,
+      "shuffled_energy": 0.2938178980009525
+    },
+    "no_bridge": {
+      "decision_tree": 0.05343458200013629,
+      "logistic": 0.27474813299954803,
+      "omp12": 0.06612775600024179,
+      "paired_energy": 0.14308675900042545,
+      "paired_omp12": 0.05264239899986478,
+      "paired_ridge": 0.052193388999853596,
+      "plain_energy": 0.1340385820001302,
+      "rbf_svm": 0.0768825400004971,
+      "shuffled_energy": 0.16765286499958165
+    }
+  },
+  "primary_full_scored_json_sha256": "96f1bffc8117764b1bc9fdd2110107a8f212591be80f119a1fdcded7aacba435",
+  "primary_full_scored_json_bytes": 227730,
+  "case_receipts_csv_sha256": "c6ba7aec571c1d590121cf2fe0eaf9e4a0f1079a8a5efb19b5357c956cadcfa3",
+  "case_receipts_git_blob": "1271a455ae7fa827b4ec25b06d7aa08f0ee498e7",
+  "semantic_replay_sha256": "ae81d9d06be1ce685f370aab4ca2d6a691ac56ba92f788c21027c74a6ac3bae8",
+  "timing": {
+    "primary_all_arms_wall_seconds": 2.4082925339999974,
+    "interpretation": "local CPU, source prep/qualification/CI/GitHub excluded; not controlled whole-process speed comparison"
+  },
+  "gates": {
+    "shift_vs_strongest": false,
+    "old_retention": true,
+    "contrast_ablation": false,
+    "bridge_value": true,
+    "seed_stability": true,
+    "shuffled_control": true,
+    "fit_cost": false
+  },
+  "scientific_pass": false,
+  "native_checkpoint_run": false,
+  "deployment": "NONE",
+  "evidence_limit": "Full original 227730-byte scored.json remains local and its SHA-256 is recorded; complete 144-world per-arm score receipts and exact regenerating source are on GitHub; timing fields are not included in deposited CSV."
+}
