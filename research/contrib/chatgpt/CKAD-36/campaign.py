@@ -193,11 +193,20 @@ def target_controls(seed,policy_data,held):
     controls={}
     for slot in TARGETS:
         rows=fit[slot]+cal[slot]
-        pivots=C35.fit_independent(rows)
+        # A target can be truly outside the declared degree3 control class.
+        # In that case the conventional control abstains, rather than leaking
+        # the OOD family from evaluator metadata or aborting the pilot.
+        try:
+            pivots=C35.fit_independent(rows)
+        except ValueError as exc:
+            if str(exc)!="CKAD35_CONVENTIONAL_OUT_OF_CLASS":
+                raise
+            pivots=None
         logit=C35.logistic_fit(rows)
         controls[str(slot)]={
             "native_target":native[slot],
-            "target_gf2":[C35.predict_independent(pivots,x) for x in held],
+            "target_gf2":[C35.predict_independent(pivots,x) if pivots is not None
+                          else .5 for x in held],
             "polynomial_logistic":[C35.logistic_prob(logit,x) for x in held],
             "frequency":[C35.source_frequency(rows,x) for x in held],
             "sham":[.5]*len(held)
