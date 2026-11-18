@@ -1,0 +1,32 @@
+{
+  "schema": "yggdrasil.ckad18.fresh-world-active-transfer.prereg.v1",
+  "experiment_id": "CKAD-18",
+  "exact_parent_sha": "ba3a3b7513806d17e0a8f4b808e0055d18957555",
+  "objective": "Test whether a learned domain-level causal overhypothesis improves predictions and interventions on held-out Boolean world structures.",
+  "classification": "isolated synthetic development; no original source or scientific first-use",
+  "worlds": "Four public binary context features. Outcome AND/OR of two signed literals; six feature pairs, four sign combinations, two shared domain-level families = 48 possible deterministic laws. Each fold holds one pair entirely out of training; test pair is unseen.",
+  "information": "Learners receive only chosen public intervention x and observed binary y. No pair, sign, family, seed, held label, or oracle likelihood is provided. Oracle ground truth is used only by source simulator after chosen action, and by evaluation scoring.",
+  "training": "For each seed and held pair: five other pairs as five tasks, six fixed uniformly sampled x/y interventions per task, identical for every arm. Training task evidence marginalizes 24 pair/sign hypotheses in each family. No reset of cross-task posterior between tasks.",
+  "testing": "Four sequential intervention queries per unfamiliar pair, greedy binary predictive entropy for active and seeded uniform unqueried for random. Score 16-context Brier before, after 2, and after 4 queries, plus intervention decision regret choosing bit3 on eight fixed backgrounds after four queries.",
+  "seeds": [101,202,303,404,505],
+  "families": ["AND","OR"],
+  "held_pairs": [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],
+  "interventions": {"train_per_task":6,"test_per_task":4,"candidate_actions":16},
+  "fixed_prior": {"per_family":0.5,"per_pair_sign_within_family":"uniform 1/24","cross_task_pseudocount":0.001},
+  "arms": [
+    "native_meta_active: accumulated family posterior, exact 48-hypothesis readout, entropy intervention",
+    "native_no_meta_active: identical readout/selection, family posterior reset",
+    "native_meta_random: accumulated posterior, uniform seeded intervention",
+    "conventional_exact_meta_active: independent discrete Bayesian implementation, same training and actions; full parity mandatory",
+    "constant_half: untrained 0.5 baseline"
+  ],
+  "success": {
+    "engineering": "Deterministic reproducibility, cold-restart retention, correct held-pair exclusion, no held training or family-label leakage, shared training observations, conventional Bayes parity at 1e-12, shuffle/family-flip diagnostics, tampered checkpoint rejection, full exact-candidate final dual-platform regression before acceptance",
+    "development": "At 2 test observations meta-active mean Brier <=0.85*no-meta-active. After 4 test observations meta-active decision regret <=0.85*meta-random. Report failures with no tuning.",
+    "science": "No scientific superiority claim against exact matched Bayesian control even on positive outcomes. Synthetic tests cannot prove general intelligence or real-world transfer; scientific_pass=false."
+  },
+  "negative_controls": ["shuffle training labels","invert held domain family","no-meta ablation","checkpoint corruption rejected","independent exact control"],
+  "budget": {"max_wall_seconds":120,"paid_apis":0,"new_original_source_actions":0,"new_protected_source_actions":0},
+  "allowed_paths": ["research/contrib/chatgpt/CKAD-18/**",".github/workflows/ckad18-fresh-world-active.yml"],
+  "authority": "Isolated development branch from qualified CKAD17 SHA; no duplicate PR, accepted-main mutation, owner/controller/scheduler action, original-source first-use, merge or deployment. No native API changes before the development comparison qualifies."
+}
