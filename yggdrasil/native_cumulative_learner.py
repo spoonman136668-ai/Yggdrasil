@@ -284,6 +284,11 @@ class NativeCumulativeLearner:
         require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
         return self._experience.context_explore(view, first, next_state)
 
+    def experience_coverage_explore(self, view, first=None, next_state=None):
+        """Select a covered intervention from the same retained native stream."""
+        require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
+        return self._experience.coverage_explore(view, first, next_state)
+
     def experience_context_plan(self, view):
         require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
         return _two_stage_plan(
@@ -464,3 +469,4 @@ class NativeCumulativeLearner:
             return obj
         except (ValueError, TypeError, KeyError, UnicodeError, AttributeError, IndexError) as exc:
             raise ValueError('CKAD_INTEGRATED_CHECKPOINT_REJECTED') from exc
+

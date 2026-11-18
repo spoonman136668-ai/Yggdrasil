@@ -363,6 +363,33 @@ class NativeEpisodeExperience:
             priorities.append((variance, -abs(mean - Fraction(1, 2))))
         return int(priorities[1] > priorities[0])
 
+    def coverage_explore(self, view, first=None, next_state=None):
+        """Balance recent public action histories, breaking ties by disagreement.
+
+        The window counts total witnessed episodes before filtering by the
+        learned projection and the public decision history. Selection reads
+        retained evidence and does not alter learned state or the detector.
+        """
+        view = _view(view)
+        require(self._stream_start is not None and self._projection is not None,
+                "EPISODE_COVERAGE_REQUIRES_STREAM_PROJECTION")
+        require((first is None) == (next_state is None), "EPISODE_COVERAGE_HISTORY")
+        if first is not None:
+            first = PublicCausalCells._bit(first, "X1")
+            next_state = PublicCausalCells._bit(next_state, "S2")
+        context = view[self._projection]
+        counts = [0, 0]
+        for _, views, x1, state, x2, _ in self._ledger[-32:]:
+            if self._context(views) != context:
+                continue
+            if first is None:
+                counts[x1] += 1
+            elif x1 == first and state == next_state:
+                counts[x2] += 1
+        if counts[0] != counts[1]:
+            return int(counts[1] < counts[0])
+        return self.context_explore(view, first, next_state)
+
     def consolidate(self):
         """Rebuild the native banks from the unique, ordered witness ledger."""
         rebuilt = NativeEpisodeExperience(repair=self._repair_enabled)
@@ -526,3 +553,4 @@ class NativeEpisodeExperience:
             return candidate
         except (AttributeError, KeyError, TypeError, ValueError, RecursionError) as exc:
             raise ValueError("CKAD_NATIVE_EPISODE_CHECKPOINT_REJECTED") from exc
+
