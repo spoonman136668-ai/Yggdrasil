@@ -302,7 +302,7 @@ class FrozenFeatureTournamentTests(unittest.TestCase):
                           zero.observation,2)
         with self.assertRaises(TypeError):
             model.observe_pair(zero,one,hidden_regime=1)
-        with self.assertRaisesRegex(ValueError,"UNKNOWN_CANDIDATE"):
+        with self.assertRaisesRegex(ValueError,"WSP167_CANDIDATE"):
             SelectedPublicEffect("secret-triple-source")
         self.assertEqual(pristine,model.checkpoint())
 
