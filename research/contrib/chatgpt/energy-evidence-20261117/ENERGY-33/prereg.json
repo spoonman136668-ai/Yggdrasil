@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-33",
+  "title": "Single-change-point energy for causal structure adaptation under noisy interventions",
+  "classification": "isolated synthetic development; no protected native first-use",
+  "parent_evidence_head": "76ea77c0443f76c50fec947d26863f78d21d1f9a",
+  "code_commit": "69a2ceca247694aa3962b853a6a8a8a3e4e08318",
+  "source_git_blob": "d0de3f100627e74dee89d34826431f551e2ee43a",
+  "source_sha256": "c9cd0ebcd1ef2d0e9c85c8ea481bd4b5bf5a90e3f4eb876dfc1c9bb90d0c4ce3",
+  "run_stage": "PRIMARY NOT YET EXECUTED AS OF PREREG COMMIT",
+  "hypothesis": "A single-change-point energy formulation can retain old causal knowledge under noisy observations while learning changed causal relations, beating fixed-hazard, 16-observation window, and full-history controls given identical interventions. A mathematically equivalent conventional Bayesian reference must produce matching predictions; energy-specific distinctiveness is not implied.",
+  "method": "Exact normalized negative log-likelihood energies for 40 signed XOR3 familiar and 120 generated XOR3+AND2 composite rules; latent one-change boundary over 8..39 witnessed steps, no privileged boundary marker; posterior over change points; deterministic SHA256 source streams.",
+  "source": "synthetic self-authored six-bit intervention worlds generated inside pinned experiment.py; no external or protected dataset",
+  "source_partition": "64 action combinations per world; independently SHA256-shuffled 24 old and 16 challenge observations, 12 disjoint held actions. Evaluator-only truth and noise. Old prefix is not flagged as a known phase to policies.",
+  "primary_seeds": [
+    6067,
+    6073,
+    6089,
+    6101
+  ],
+  "smoke_excluded_seed": 99013,
+  "familiar_old_rule_ids": "0,2,4,...,38 (20)",
+  "scenarios": [
+    "stationary",
+    "novel_change",
+    "familiar_switch"
+  ],
+  "world_count": 240,
+  "observations_per_world": 40,
+  "held_actions_per_world": 12,
+  "held_outcome_total_per_arm": 2880,
+  "observed_label_error_probability": 0.15,
+  "candidate_rules": 160,
+  "fixed_hazard": 0.020833333333333332,
+  "methods": [
+    "cp_energy",
+    "cp_bayes",
+    "fixed_hazard",
+    "recent16",
+    "full_history"
+  ],
+  "information_actions_capacity": "All five policies receive identical 40 observed action-outcome records and use the same finite 160-rule representational grammar. The single-change prior is part of tested structural bias; results must not be called an energy-specific advantage.",
+  "decision_rule": "For held ground-truth causal bit, predict 1 only when P(bit=1)>0.5+1e-12. A change alarm is posterior probability of any switch >0.5 on the 40th witnessed action.",
+  "predeclared_gates": {
+    "novel_gain_over_strongest": "cp_energy >=3 percentage points over highest held accuracy among fixed_hazard, recent16, full_history on novel_change",
+    "familiar_gain_over_strongest": "cp_energy >=3 percentage points over highest held accuracy among fixed_hazard, recent16, full_history on familiar_switch",
+    "stationary_retention": "cp_energy accuracy >=95% and within 1 percentage point of full_history stationary accuracy",
+    "false_alarm_at_most_10pct": "Stationary change alarms <=10% (<=8/80 worlds)",
+    "exact_energy_bayes_parity": "Maximum posterior held probability and change alarm difference <=1e-10",
+    "energy_distinctive": "Must demonstrate an energy-specific advantage; exact Bayes equivalence precludes this in this formulation (frozen false)."
+  },
+  "classification_logic": "DEVELOPMENT_GO only if all gates are true; otherwise DEVELOPMENT_NO_GO; no scientific pass or promotion even with development success.",
+  "timing_policy": "Record local component and whole run times descriptively, but do not claim wall-clock/whole-process speedup from alternative Python implementations. No arbitrary cross-platform speed or cost superiority claim.",
+  "no_postresult_tuning": true,
+  "stop_policy": "Run exactly this frozen primary configuration once. On NO_GO, stop this candidate rather than sweeping consumed seeds or adjusting thresholds. Subsequent mechanisms need new independent source and prereg.",
+  "prohibited": [
+    "protected native checkpoint use",
+    "accepted main mutation",
+    "controller or scheduler mutation",
+    "deployment",
+    "promotion",
+    "science acceptance"
+  ],
+  "run_cmd": "python -B experiment.py --out scored.json",
+  "runtime": "Python 3.13, NumPy 2.3.5, local Linux CPU",
+  "notes": "ENERGY-32 measured 15/80 paired false alarms and no held advantage; ENERGY-33 tests structural one-change Bayesian inference, not a tuned repeat threshold. Smoke on seed 99013 was run before prereg and is excluded from primary."
+}
