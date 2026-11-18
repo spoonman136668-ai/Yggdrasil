@@ -46,6 +46,9 @@ jobs:
           test "$(git hash-object research/contrib/chatgpt/CKAD-23/prereg.json)" = 2809b5c565e0cef55c06aabaf43e08f0f453235b
           test "$(git hash-object research/contrib/chatgpt/CKAD-23/campaign.py)" = 0ca5ed54d4457bab44ead452305d7ca66284508f
           test "$(git hash-object research/contrib/chatgpt/CKAD-23/audit.py)" = e77b74c12c9f0dea50f950039d5368f945d821f8
+          test "$(git hash-object yggdrasil/native_episode_experience.py)" = 9ccc53565d1ee59b423d777e7a8e030f943266be
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = e067e6f9af2aeeb55f5dbf72e745d4dd4fe6a3bf
+          test "$(git hash-object research/contrib/chatgpt/CKAD-23/test_ckad23_stream.py)" = 42face32de5c4ac671228bec39b57b4f610d244f
           python -B -m unittest discover -s research/contrib/chatgpt/CKAD-23 -p 'test_*.py' -v
           python -B -m unittest discover -s tests -p 'test_native_cumulative_learner.py' -v
           python -B research/contrib/chatgpt/CKAD-22/independent_audit.py
