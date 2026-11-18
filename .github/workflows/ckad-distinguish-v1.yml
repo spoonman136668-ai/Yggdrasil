@@ -1,0 +1,261 @@
+name: CKAD distinctive counterexplanation interventions
+on:
+  push:
+    branches: [research/ckad-discriminating-v1-20261117]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  preflight:
+    if: "github.event.head_commit.message == 'ci(ckad-distinguish-v1): execute frozen counterexplanation intervention test'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact preregistration and sourcefree focused negative qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 119e91177ed14256ce272709a0d39d8fbe290b08 HEAD
+          python -B -m unittest discover -s tests -p test_ckad_distinguish_v1.py -v
+          test -z "$(git status --porcelain)"
+  primary:
+    needs: [preflight]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install completely fitted conventional comparator pinned wheels
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Single frozen sourcefree training and counterexplanation action campaign
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B research/contrib/chatgpt/CKAD-DISTINGUISH-V1/campaign.py --out "$RUNNER_TEMP/ckad-distinguish-primary"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad-distinguish-primary-linux
+          path: ${{ runner.temp }}/ckad-distinguish-primary/
+          if-no-files-found: error
+          retention-days: 30
+  replica:
+    needs: [primary]
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ckad-distinguish-primary-linux
+          path: ${{ runner.temp }}/ckad-distinguish-primary-proof
+      - name: Install identical fully trained conventional control
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Windows replica against Linux source-free frozen receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="$(python - <<'PY'
+          import os,json
+          from pathlib import Path
+          source=Path(os.environ['RUNNER_TEMP'])/'ckad-distinguish-primary-proof/result.json'
+          print(json.loads(source.read_bytes())['stable_sha256'])
+          PY
+          )"
+          test -n "$EXPECTED"
+          python -B research/contrib/chatgpt/CKAD-DISTINGUISH-V1/campaign.py --out "$RUNNER_TEMP/ckad-distinguish-replica" --expected-stable "$EXPECTED"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad-distinguish-replica-windows
+          path: ${{ runner.temp }}/ckad-distinguish-replica/
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [primary, replica]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ckad-distinguish-primary-linux
+          path: ${{ runner.temp }}/ckad-distinguish-primary-proof
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ckad-distinguish-replica-windows
+          path: ${{ runner.temp }}/ckad-distinguish-replica-proof
+      - name: Cross-platform exact result, source actions, native cold state and source-pinned G29
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch origin research/ckad-discriminating-v1-20261117
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          from yggdrasil.native_hypothesis_portfolio import canonical,digest
+          from yggdrasil.native_shared_operator_memory import NativeSharedOperatorMemory
+          root=Path(os.environ['RUNNER_TEMP'])
+          a=json.loads((root/'ckad-distinguish-primary-proof/result.json').read_bytes())
+          b=json.loads((root/'ckad-distinguish-replica-proof/result.json').read_bytes())
+          c=json.loads((root/'ckad-distinguish-primary-proof/native-checkpoint-bundle.json').read_bytes())
+          d=json.loads((root/'ckad-distinguish-replica-proof/native-checkpoint-bundle.json').read_bytes())
+          spec=importlib.util.spec_from_file_location('ckad_distinguish_seal',Path('research/contrib/chatgpt/CKAD-DISTINGUISH-V1/campaign.py'))
+          campaign=importlib.util.module_from_spec(spec);spec.loader.exec_module(campaign)
+          assert a['stable_sha256']==b['stable_sha256'],'CROSS_PLATFORM_HASH_DRIFT'
+          assert campaign.stable_view(a)==campaign.stable_view(b),'CROSS_PLATFORM_RECORD_DRIFT'
+          assert digest(canonical(campaign.stable_view(a)))==a['stable_sha256']
+          assert c==d,'CROSS_PLATFORM_NATIVE_COLD_DRIFT'
+          assert a['evaluation_worlds']==96 and a['fit_worlds']==16 and len(a['cases'])==96
+          assert a['new_synthetic_source_calls']==4864
+          assert a['original_source_actions']==0 and not a['original_first_use']
+          assert a['cold_models']==12 and len(c['models'])==12
+          for name,item in c['models'].items():
+              raw=item['checkpoint_ascii'].encode('ascii')
+              assert digest(raw)==item['sha256']
+              model=NativeSharedOperatorMemory.restore(raw,item['sha256'])
+              vec=[model.vector(i) for i in range(48)]
+              assert digest(canonical(vec))==item['readouts_sha256'],name
+          for row in a['cases']:
+              assert set(row['actors'])==set(campaign.POLICIES)
+              assert all(v['source_effect_calls']==12 for v in row['actors'].values())
+              assert row['target_audit']['future_effects_read']==0
+              assert row['scores']['target']==row['scores']['independent_symbolic']
+          dest=Path('research/contrib/chatgpt/CKAD-DISTINGUISH-V1')
+          (dest/'result.json').write_bytes(canonical(a))
+          (dest/'native-checkpoint-bundle.json').write_bytes(canonical(c))
+          lines=['# CKAD-DISTINGUISH-V1 — prospective counterexplanation interventions','',
+             'Classification: '+a['classification'],
+             'ENGINEERING source-free only; scientific_pass=false; accepted_native=false.',
+             'No original source action or protected first-use.','',
+             '| Regime | Method | Correct | Wrong | Abstained |',
+             '|---|---|---:|---:|---:|']
+          for regime,block in a['cohorts'].items():
+              for method,v in block['arms'].items():
+                  lines.append(f"| {regime} | {method} | {v['correct']} | {v['wrong']} | {v['abstained']} |")
+          lines.extend(['',
+             'Frozen gates: '+str(a['gates']),
+             'Learned shared gate count: '+str(a['learned_shared_gate_count']),
+             'Target vs random audit transfer correct gain: '+str(a['transfer_vs_random_audit_gain']),
+             'Paired frozen bootstrap 95% lower: '+str(a['bootstrap_lower_95']),
+             'Synthetic source effect calls: '+str(a['new_synthetic_source_calls']),
+             'Cold native models: '+str(a['cold_models']),
+             'Checkpoint bundle bytes: '+str(a['total_checkpoint_bytes']),
+             'Whole Linux process wall seconds: '+str(a['whole_wall_seconds']),
+             'Stable SHA256: '+a['stable_sha256'],
+             'Exact frozen source candidate: '+os.environ['GITHUB_SHA'],
+             'Matching independent symbolic learner is not native scientific superiority.',
+             'All transfer and negative outcomes preserved; no acceptance, merge, controller or deployment.',''])
+          (dest/'SESSION_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+          print('CKAD_DISTINGUISH_V1_CROSS_PLATFORM_PASS='+a['stable_sha256'])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- research/contrib/chatgpt/CKAD-DISTINGUISH-V1/result.json research/contrib/chatgpt/CKAD-DISTINGUISH-V1/native-checkpoint-bundle.json research/contrib/chatgpt/CKAD-DISTINGUISH-V1/SESSION_REPORT.md
+          git commit -m "research(ckad-distinguish): seal prospective falsification and negative controls"
+          SOURCE="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --quiet && exit 1
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = 3
+          git commit -m "docs(ckad-distinguish): pin derived G29 at $SOURCE"
+          FINAL="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ckad-discriminating-v1-20261117
+          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
+          echo "CKAD_DISTINGUISH_FINAL_SHA=$FINAL"
+  final:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: MANDATORY exact-final complete root/NKR05 and independent G29
+        shell: bash
+        env:
+          EXPECTED: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py'
+          python scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py
+          test -z "$(git status --porcelain)"
