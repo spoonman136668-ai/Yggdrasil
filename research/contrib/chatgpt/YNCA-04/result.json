@@ -1,0 +1,138 @@
+{
+  "audit": {
+    "equal_probe_budget": true,
+    "native_global_cold_restore": true,
+    "posterior_valid": true,
+    "seed_disjoint": true,
+    "test_labels_not_referee_inputs": true,
+    "unseen_mechanism_family": true
+  },
+  "claims": {
+    "deployment": false,
+    "native_yggdrasil_integrated": false,
+    "owner_acceptance": false,
+    "scientific_pass": false
+  },
+  "frozen": {
+    "bootstrap_draws": 1000,
+    "epsilon": 0.14,
+    "max_probe_cost": 0.085,
+    "max_probes": 2,
+    "passive": 12,
+    "ranges": {
+      "dev": [
+        260001,
+        260513
+      ],
+      "heldout": [
+        270001,
+        271025
+      ],
+      "train": [
+        250001,
+        251025
+      ]
+    },
+    "samples_per_probe": 2,
+    "shrinkage": 12.0,
+    "train_laws": [
+      "AND3",
+      "OR3",
+      "XOR3",
+      "X0"
+    ],
+    "unseen_laws": [
+      "MAJ3",
+      "MUX3"
+    ]
+  },
+  "outcome": {
+    "best_control_minus_native": -0.005697266,
+    "families": {
+      "MAJ3": 488,
+      "MUX3": 536
+    },
+    "mean_forecast_brier": {
+      "bayes_eig": 0.351775634,
+      "bayes_value": 0.288067806,
+      "fixed0": 0.280211859,
+      "fixed1": 0.299747555,
+      "fixed2": 0.298382631,
+      "fixed3": 0.342193355,
+      "fixed4": 0.343122461,
+      "fixed5": 0.298654703,
+      "fixed6": 0.300746992,
+      "fixed7": 0.280211859,
+      "native": 0.285613999,
+      "no_probe": 0.280211859,
+      "random": 0.302370256,
+      "shuffled": 0.283625714,
+      "trained_global": 0.280211859
+    },
+    "mean_probe_cost": {
+      "bayes_eig": 0.059806641,
+      "bayes_value": 0.013453125,
+      "fixed0": 0.036,
+      "fixed1": 0.06,
+      "fixed2": 0.06,
+      "fixed3": 0.084,
+      "fixed4": 0.06,
+      "fixed5": 0.084,
+      "fixed6": 0.084,
+      "fixed7": 0.054,
+      "native": 0.009462891,
+      "no_probe": 0.0,
+      "random": 0.069925781,
+      "shuffled": 0.00853125,
+      "trained_global": 0.0
+    },
+    "mean_probe_count": {
+      "bayes_eig": 1.84668,
+      "bayes_value": 0.394531,
+      "fixed0": 2.0,
+      "fixed1": 2.0,
+      "fixed2": 2.0,
+      "fixed3": 2.0,
+      "fixed4": 2.0,
+      "fixed5": 2.0,
+      "fixed6": 2.0,
+      "fixed7": 1.0,
+      "native": 0.31543,
+      "no_probe": 0.0,
+      "random": 2.0,
+      "shuffled": 0.203125,
+      "trained_global": 0.0
+    },
+    "mean_total_regret_plus_probe_cost": {
+      "bayes_eig": 0.401837891,
+      "bayes_value": 0.297554687,
+      "fixed0": 0.334476563,
+      "fixed1": 0.353164062,
+      "fixed2": 0.373867187,
+      "fixed3": 0.440367187,
+      "fixed4": 0.424921875,
+      "fixed5": 0.382164063,
+      "fixed6": 0.39025,
+      "fixed7": 0.352476562,
+      "native": 0.303251953,
+      "no_probe": 0.298476562,
+      "random": 0.395199219,
+      "shuffled": 0.30321875,
+      "trained_global": 0.298476562
+    },
+    "native_relative_to_best": 1.019146953,
+    "paired_bootstrap_ci95": [
+      -0.020068359,
+      0.009515625
+    ],
+    "privileged_truth_oracle_total_regret_lower_bound": 0.0,
+    "shuffled_minus_native": -3.3203e-05,
+    "strongest_control": "bayes_value",
+    "verdict": "DEVELOPMENT_NO_GO",
+    "world_count": 1024
+  },
+  "schema": "yggdrasil.ynca04.synthetic-development.v1",
+  "source_sha256": "78cb7150bddc215b07422073b8df9100fda05f36cea57ad1219f99a819c596bc",
+  "split": "heldout",
+  "train_worlds": 1024
+}
