@@ -24,6 +24,23 @@ def train(m, slot, r, **kwargs):
 
 
 class IntegratedLearningTests(unittest.TestCase):
+    def test_second_source_preserves_deterministic_and_first_source_state(self):
+        from pathlib import Path
+        from yggdrasil.native_stochastic_history import SOURCE_PIN as MDP_PIN
+        from yggdrasil.native_dtr_history import SOURCE_PIN as DTR_PIN
+        root=Path(__file__).resolve().parents[1]
+        mdp=(root/'research/contrib/chatgpt/NKR-20/source_fixture.json').read_bytes()
+        dtr=(root/'research/contrib/chatgpt/CKAD-16/source_public_fit.json').read_bytes()
+        m=train(fixture(),0,rows()).observe_cached_history(mdp,MDP_PIN,23)
+        raw=m.checkpoint();core=m._source.checkpoint();history=m._history.checkpoint()
+        for stop in (64,128,192):
+            m=m.observe_cached_dtr(dtr,DTR_PIN,stop);r=m.checkpoint();m=NativeCumulativeLearner.restore(r,digest(r))
+            self.assertEqual(m._source.checkpoint(),core);self.assertEqual(m._history.checkpoint(),history)
+            self.assertEqual([m.predict(0,x&7,x>>3) for x in range(16)],[r[2] for r in rows()])
+        self.assertEqual(NativeCumulativeLearner.restore(raw,digest(raw)).checkpoint(),raw)
+        self.assertIs(m.observe_cached_dtr(dtr,DTR_PIN,192),m)
+        self.assertIs(m.observe_cached_history(mdp,MDP_PIN,23),m)
+
     def test_stochastic_history_updates_do_not_quarantine_deterministic_knowledge(self):
         from pathlib import Path
         from yggdrasil.native_stochastic_history import SOURCE_PIN

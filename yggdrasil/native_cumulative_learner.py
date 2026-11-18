@@ -12,6 +12,7 @@ from yggdrasil.native_context_accumulator import NativeContextAccumulator
 from yggdrasil.native_degree_hypothesis import NativeDegreeHypothesis
 from yggdrasil.native_sparse_hypothesis import NativeSparseHypothesis, SCHEMA as SPARSE_SCHEMA
 from yggdrasil.native_stochastic_history import NativeStochasticHistory
+from yggdrasil.native_dtr_history import NativeDTRHistory
 from yggdrasil.native_property_knowledge import NativePropertyKnowledge
 from yggdrasil.native_prior_hypothesis import input_order
 from yggdrasil.public_causal_cells import PublicCausalCells
@@ -19,6 +20,7 @@ from yggdrasil.public_causal_cells import PublicCausalCells
 SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v1'
 REPAIR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v2'
 HISTORY_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v3'
+DTR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v4'
 MAX_BYTES = 16 * 1024 * 1024
 MAX_EVENTS = 128
 
@@ -30,7 +32,7 @@ def coordinates(slot):
 
 class NativeCumulativeLearner:
     """One immutable train/save/restore interface; no rival memory substrate."""
-    __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events', '_schema', '_repairs', '_history')
+    __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events', '_schema', '_repairs', '_history', '_dtr')
 
     def __init__(self, property_raw, expected_sha256):
         self._properties = NativePropertyKnowledge.restore(property_raw, expected_sha256)
@@ -41,6 +43,7 @@ class NativeCumulativeLearner:
         self._schema = SCHEMA
         self._repairs = ()
         self._history = None
+        self._dtr = None
 
     def _copy(self):
         obj = object.__new__(NativeCumulativeLearner)
@@ -134,7 +137,8 @@ class NativeCumulativeLearner:
         if not hyp.eligible:
             return self, hyp, cost
         require(len(self._repairs)<16, 'INTEGRATED_REPAIR_CAPACITY')
-        obj=self._copy();obj._schema=HISTORY_SCHEMA if self._history is not None else REPAIR_SCHEMA
+        obj=self._copy();obj._schema=(DTR_SCHEMA if self._dtr is not None else
+                                    HISTORY_SCHEMA if self._history is not None else REPAIR_SCHEMA)
         obj._hypotheses=self._hypotheses[:slot]+(hyp,)+self._hypotheses[slot+1:]
         obj._repairs=self._repairs+({'slot':slot,'old_hypothesis_sha256':digest(old.checkpoint()),
             'source_view_sha256':digest(raw),'rule':hyp.info()['rule']},)
@@ -145,13 +149,28 @@ class NativeCumulativeLearner:
         old=self._history if self._history is not None else NativeStochasticHistory()
         history=old.stage_prefix(raw,expected_sha256,stop)
         if history is old:return self
-        obj=self._copy();obj._schema=HISTORY_SCHEMA;obj._history=history
+        obj=self._copy();obj._schema=DTR_SCHEMA if self._dtr is not None else HISTORY_SCHEMA;obj._history=history
         return obj
 
     def history_forecast(self,world,before,action,previous_reward):
         NativeStochasticHistory.address(world,before,action,previous_reward)
         return (((1,2),(1,2)) if self._history is None else
                 self._history.predict(world,before,action,previous_reward))
+
+    def observe_cached_dtr(self,raw,expected_sha256,stop):
+        require(self._history is not None,'INTEGRATED_DTR_REQUIRES_HISTORY_PARENT')
+        old=self._dtr if self._dtr is not None else NativeDTRHistory()
+        dtr=old.stage_prefix(raw,expected_sha256,stop)
+        if dtr is old:return self
+        obj=self._copy();obj._schema=DTR_SCHEMA;obj._dtr=dtr;return obj
+
+    def dtr_transition_forecast(self,s1,x1):
+        NativeDTRHistory.validate(s1,x1)
+        return (1,2) if self._dtr is None else self._dtr.transition(s1,x1)
+
+    def dtr_terminal_forecast(self,s1,x1,s2,x2):
+        NativeDTRHistory.validate(s1,x1,s2,x2)
+        return (1,2) if self._dtr is None else self._dtr.terminal(s1,x1,s2,x2)
 
     def predict(self, slot, context, action, *, provisional=True):
         a, r = coordinates(slot)
@@ -204,6 +223,7 @@ class NativeCumulativeLearner:
                 'representations': [h.info() if h is not None else None for h in self._hypotheses],
                 'events': len(self._events), 'accepted_native': False, 'scientific_pass': False}
         if self._history is not None:info['stochastic_history']=self._history.info()
+        if self._dtr is not None:info['dtr_history']=self._dtr.info()
         return info
 
     def checkpoint(self):
@@ -214,8 +234,9 @@ class NativeCumulativeLearner:
                                  for h in self._hypotheses],
             'quarantined': self._quarantined, 'events': self._events,
             'accepted_native': False, 'scientific_pass': False}
-        if self._schema in (REPAIR_SCHEMA,HISTORY_SCHEMA):d['repairs']=self._repairs
-        if self._schema==HISTORY_SCHEMA:d['history_ascii']=self._history.checkpoint().decode('ascii')
+        if self._schema in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA):d['repairs']=self._repairs
+        if self._schema in (HISTORY_SCHEMA,DTR_SCHEMA):d['history_ascii']=self._history.checkpoint().decode('ascii')
+        if self._schema==DTR_SCHEMA:d['dtr_ascii']=self._dtr.checkpoint().decode('ascii')
         raw = canonical(d)
         require(len(raw) <= MAX_BYTES, 'INTEGRATED_CHECKPOINT_CAPACITY')
         return raw
@@ -233,8 +254,9 @@ class NativeCumulativeLearner:
             d = json.loads(raw.decode('ascii'), object_pairs_hook=unique)
             keys={'schema','source_mode','properties_ascii','source_ascii','hypotheses_ascii',
                   'quarantined','events','accepted_native','scientific_pass'}
-            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA)
-                and set(d)==(keys|{'repairs','history_ascii'} if d['schema']==HISTORY_SCHEMA else
+            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA)
+                and set(d)==(keys|{'repairs','history_ascii','dtr_ascii'} if d['schema']==DTR_SCHEMA else
+                             keys|{'repairs','history_ascii'} if d['schema']==HISTORY_SCHEMA else
                              keys|{'repairs'} if d['schema']==REPAIR_SCHEMA else keys)
                 and d['source_mode'] == SOURCE_MODE
                 and d['accepted_native'] is False and d['scientific_pass'] is False
@@ -255,7 +277,7 @@ class NativeCumulativeLearner:
                     hypotheses.append(None); continue
                 h = h.encode('ascii')
                 if json.loads(h)['schema']==SPARSE_SCHEMA:
-                    require(d['schema'] in (REPAIR_SCHEMA,HISTORY_SCHEMA),'INTEGRATED_SPARSE_VERSION')
+                    require(d['schema'] in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA),'INTEGRATED_SPARSE_VERSION')
                     hyp=NativeSparseHypothesis.restore(h,digest(h))
                 else:hyp = NativeDegreeHypothesis.restore(h, digest(h))
                 require(hyp.info()['source_checkpoint_sha256'] == digest(obj._view(slot)),
@@ -304,9 +326,11 @@ class NativeCumulativeLearner:
             require(slots=={s for s,h in enumerate(hypotheses) if type(h) is NativeSparseHypothesis},
                     'INTEGRATED_REPAIR_COMPLETENESS')
             obj._repairs=tuple(repairs)
-            if obj._schema==HISTORY_SCHEMA:
+            if obj._schema in (HISTORY_SCHEMA,DTR_SCHEMA):
                 h=d['history_ascii'].encode('ascii')
                 obj._history=NativeStochasticHistory.restore(h,digest(h))
+            if obj._schema==DTR_SCHEMA:
+                h=d['dtr_ascii'].encode('ascii');obj._dtr=NativeDTRHistory.restore(h,digest(h))
             require(obj.checkpoint() == raw, 'INTEGRATED_COLD_BYTES')
             return obj
         except (ValueError, TypeError, KeyError, UnicodeError, AttributeError, IndexError) as exc:
