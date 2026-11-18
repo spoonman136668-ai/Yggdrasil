@@ -1,0 +1,40 @@
+{
+  "schema": "yggdrasil.ckad.distinguishing.v1.prereg",
+  "time_utc": "2026-11-18",
+  "frozen_before_implementation": true,
+  "parent_sha": "a919b489e3983cfa7d94c70326bb987b65939af7",
+  "parent_tree": "608f3d38bbc5c4697eda9135117b63917f368a6e",
+  "owner_pr": 1182,
+  "research_question": "Does choosing extra observed interventions specifically to falsify a learned shared causal operator reduce confidently wrong unfamiliar predictions more effectively than matched-budget ordinary active, random observation, or random audit, while retaining accurate within-family transfer?",
+  "scope": "Novel SOURCE-FREE synthetic 6-bit Boolean causal worlds. All source generators, cohorts, deterministic seed hash prefix 'ckad-distinguish-v1:' and outcomes independent of previously consumed CKAD-SHARED-V2. NO original-world, DTR/CausalGym, protected first-use, owner branch or accepted model edits. Learn shared gate from 16 FIT worlds then freeze.",
+  "generator": {
+    "inputs": "Six public binary attributes: five context bits and one action bit5. 64 masks, fixed32 held by SHA256('ckad-distinguish-v1:held:'+mask), disjoint32 effect-action pool.",
+    "truth": "Per-world response parity(mask & private_linear6) XOR action*AND(context subset gate) XOR private_bias; context gates are positive conjunctions. FIT and TRANSFER share one private gate of size 1 or2, fixed by SHA256('ckad-distinguish-v1:shared-gate'), never passed to policies. Every world has independently derived linear6 and bias.",
+    "FIT": "16 seeds 1501..1516, each receives 8 common initial+8 degree2 input-only rank probes =16 distinct fabricated effect calls; learn same 15-gate marginal shared operator prior as qualified V2, no source seed or truth given to model.",
+    "TRANSFER": "32 new seeds 1601..1632 under same private gate, independently varying local linear6/bias. Four initial + eight subsequent effect calls per policy, then32 held inputs evaluated after all policies' predictions sealed.",
+    "SHIFT": "32 new seeds 1701..1732 with private degree3 context conjunction not in narrow learned gate class, no truth-family label.",
+    "CORRUPT": "32 new seeds 1801..1832 with shared true gate, exactly 2 of the initial 4 labels flipped by SHA256 seed+mask before model observation; later observations genuine, no tamper flag.",
+    "truth_boundary": "Each policy actor has private source state, duplicate/out-of-pool/held early access forbidden. All held outcomes evaluated only after policy readouts frozen. 12 genuinely performed fabricated do effects per arm per evaluation world; no protected source actions."
+  },
+  "mechanism": {
+    "native": "Reuse previously qualified NativeSharedOperatorMemory and its frozen global gate support. Narrow candidate program posterior evolves via witnessed input/outcome rows. Broad independent alternative pool of all 25 action-gated conjunctions degree1..3 times 64 XOR linear masks times2 bias (3200). Broader pool is a monitoring counterhypothesis, NOT an oracle truth label or learned new primitive.",
+    "target": "All arms share four initial factual effects. Target first performs 4 ordinary narrow-hypothesis active interventions, then four unique discriminating interventions from remaining pool maximizing the number of broader-model alternatives that disagree with a narrow *unanimous* prediction, with deterministic SHA ties. Target selection only sees the actual previous observed effects, no hidden truth/outcomes, and no future other-arm data.",
+    "audit_and_readout": "Freeze preliminary narrow prediction at 8 observed effects. All four final probes must have an identified prediction from that frozen state and agree with actually observed effects; otherwise all32 target held outputs abstain. After probes, the ordinary narrow model is refitted on all12 effects. Empty/inconsistent posterior also abstains. No threshold or source labels chosen after seeing results. Retain a separately reported broadened-consensus fallback readout for contradictions but never relabel failures as success.",
+    "ordinary_active": "Same global shared prior and four initial outcomes, then eight ordinary candidate-vote splitting interventions without an extra audited check. Same12 source effects.",
+    "random": "Same global shared prior and four initial source effects, then eight distinct SHA-random source actions. Same12 effects.",
+    "random_audit": "Same first four active interventions as target after initial four, then four SHA-random unique audit interventions. Apply EXACT same 4/4 identified/no-contradiction gate. Same12 effects.",
+    "no_memory_matched": "Full original 1920 program bank on EXACT same target's12 observations/actions, no shared prior; no extra effect calls, measures history contribution.",
+    "strong_independent": "Independent symbolic enumerator over all 15 gates×64×2 reimplements target narrow consensus and readout; broad independent degree<=3 enumerator finds exact alternatives without relying on native bitsets. Full prediction parity all64 masks, not only held.",
+    "cart": "Fully fitted conventional sklearn DecisionTreeClassifier(max_depth=None,min_samples_leaf=1,criterion=gini,random_state=seed) for each arm on same observed rows. Record separate compute and fit time; no extra source effects.",
+    "cold_retention": "Training-world prior and predictions unchanged throughout 96 eval worlds. Exact checkpoint cold restored in another process and cross-platform byte equal. No new knowledge accepted."
+  },
+  "frozen_metrics": {
+    "primary": "Across SHIFT+CORRUPT, 64 worlds, target audited wrong held predictions at most 10% of ordinary_active wrong, AND at most 5% errors among target answered in EACH negative cohort, AND at least 30% absolute held coverage on SHIFT OR CORRUPT (to exclude all-abstain success).",
+    "transfer": "On 32 TRANSFER worlds, target >=75% correct held coverage, 0 wrong answers; paired world bootstrap 1000 resamples lower 2.5% bound on target minus random_audit correct coverage >=-0.05 (at most 5pp loss). Report ordinary_active and random on same12 action budget.",
+    "action_comparison": "Target versus random_audit share identical first8 action/effect history and differ only in chosen four final probes. This is primary action-quality contrast. Compare distinct action traces, contradiction detections, admitted models and effect counts. Strong independent symbolic ties are not native exclusive advantage.",
+    "additional": "Track per-world false confidence, acquired knowledge after 12 effects, partial/full bank contradictions, expanded-consensus alternative, held correct/wrong/abstain, active choice CPU/wall, model fit, whole-process wall and memory cost.",
+    "calibration": "Empty or zero answered cohort is not an empirical safety guarantee. No postresult tuning; preserve null and failures.",
+    "security_and_provenance": "No source action until frozen prereg commit, no original source first-use, no modification of owner #1182/main, no new controller, scheduled task, paid model, live model integration, deployment or merge.",
+    "science": "ALWAYS scientific_pass=false: supplied algebraic grammar, artificial deterministic worlds and exact symbolic reference. Final engineering requires focused negatives + complete exact-final root/NKR05/G29 regression on Linux and Windows."
+  }
+}
