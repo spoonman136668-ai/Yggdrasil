@@ -1,0 +1,40 @@
+{
+  "schema": "yggdrasil.ck20.paired-policy-value-audit.prereg.v1",
+  "id": "CK20-PVA-01",
+  "parent_sha": "89832563e125934796e50eb1497916972c348351",
+  "scope": "Read-only mathematical audit of CKAD20 frozen synthetic evaluation protocol, not CKAD20 implementation or a competing learner.",
+  "question": "Can a >=0.02 paired reward lift across three seeds with 96 held episodes per seed establish scientific evidence of intervention value?",
+  "facts_at_freeze": {
+    "seeds": [
+      101,
+      202,
+      303
+    ],
+    "evaluation_per_seed": 96,
+    "final_cohort": "context_switch regime1",
+    "paired_final_cohort_trials": 288,
+    "development_reward_margin": 0.02,
+    "no_outcome_evidence_yet": true
+  },
+  "method": {
+    "independence_unit": "Seed-cluster, accounting for shared training and adaptive episodes within seed.",
+    "exact_test": "Enumerate 2^3 paired sign flips of within-seed mean reward differences and compute two-sided P(abs(flipped_mean)>=abs(observed_mean)).",
+    "min_p_bound": "With three independent nonzero seed clusters, exact two-sided p>=0.25, regardless of reward effect.",
+    "sample_sensitivity": "At delta=.02 and discordance fraction q, approximate n80=ceil((z.975+z.80)^2*(q-delta^2)/delta^2). This is planning sensitivity, not observed variance.",
+    "strict_custody": "Both policies actually executed on the same exogenous episode draw with separate action receipts and observed binary rewards. Reject imputation, duplicates and mixed cohorts."
+  },
+  "negative_controls": [
+    "Perfect favorable scores still cannot achieve seed-cluster p<0.05",
+    "Adversarial seed can cancel pooled improvement",
+    "Imputed counterfactual rejected",
+    "Missing comparator rejected",
+    "Duplicate episode identity rejected"
+  ],
+  "success": "Independently validate minimum p, sample sensitivity, and evidence-schema negative controls. Do not retroactively change CKAD20 frozen criteria or claim it executed.",
+  "allowed_paths": [
+    "research/contrib/chatgpt/CK20-PVA-01/**",
+    ".github/workflows/ck20-pva01-independent-audit.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Separate isolated research branch. No source/controller/runner/scheduler change, accepted-main edit, merge, protected-first-use, original source actions or paid APIs."
+}
