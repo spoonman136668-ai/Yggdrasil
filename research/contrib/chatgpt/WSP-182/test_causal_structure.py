@@ -188,7 +188,7 @@ class WSP182TwoPassTests(unittest.TestCase):
         self.assertNotIn("env.step(",source)
         self.assertNotIn("env.reset(",source)
         self.assertNotIn("source_graph",source)
-        self.assertIn("No protected source imports or first-use calls",source)
+        self.assertIn("no protected source imports or first-use calls",source)
 
 
 if __name__=="__main__":
