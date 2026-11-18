@@ -12,10 +12,12 @@ from yggdrasil.public_causal_cells import PublicCausalCells
 
 SCHEMA = "yggdrasil.ckad.native-episode-experience.v1"
 CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v2"
+NOVEL_CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v3"
 MAX_EPISODES = 1024
 MAX_CHECKPOINT_BYTES = 160 * 1024
 PROJECTION_WITNESSES = 8
 CONTEXT_BLOCK = 32
+NOVEL_PRIOR = Fraction(1, 8)
 MIN_LOCAL_WITNESSES = 12
 CONTRADICTION_STREAK = 3
 ROW_FIELDS = ("s1", "x1", "s2", "x2", "y")
@@ -57,7 +59,7 @@ class NativeEpisodeExperience:
         "_repair_enabled", "_ledger", "_ids", "_projection", "_mismatches",
         "_transition", "_terminal", "_transition_loss", "_terminal_loss",
         "_streaks", "_repairs",
-        "_context_start", "_context_models", "_context_weights",
+        "_context_start", "_context_models", "_context_weights", "_context_novel",
     )
 
     def __init__(self, *, repair=True):
@@ -76,6 +78,7 @@ class NativeEpisodeExperience:
         self._context_start = None
         self._context_models = ()
         self._context_weights = ()
+        self._context_novel = False
 
     @staticmethod
     def _selected(loss):
@@ -104,6 +107,7 @@ class NativeEpisodeExperience:
         candidate._context_start = self._context_start
         candidate._context_models = self._context_models
         candidate._context_weights = self._context_weights
+        candidate._context_novel = self._context_novel
         return candidate
 
     def observe(self, identifier, views, row):
@@ -227,14 +231,15 @@ class NativeEpisodeExperience:
             priorities.append((abs(full - pooled), -abs(current - Fraction(1, 2)), -trials))
         return int(priorities[1] > priorities[0])
 
-    def begin_context(self):
-        """Retrieve models from ordered witness blocks with uniform prior mass."""
+    def begin_context(self, *, novel=False):
+        """Retrieve witness-block models, optionally admitting an empty candidate."""
+        require(type(novel) is bool, "EPISODE_NOVEL_FLAG")
         require(len(self._ledger) >= PROJECTION_WITNESSES, "EPISODE_CONTEXT_SUPPORT")
         candidate = self._clone()
-        candidate._load_context(len(candidate._ledger))
+        candidate._load_context(len(candidate._ledger), novel=novel)
         return candidate
 
-    def _load_context(self, context_start):
+    def _load_context(self, context_start, *, novel=False):
         require(type(context_start) is int
                 and PROJECTION_WITNESSES <= context_start <= len(self._ledger),
                 "EPISODE_CONTEXT_START")
@@ -249,13 +254,19 @@ class NativeEpisodeExperience:
                 model._append(event)
             models.append((start, stop, digest(canonical(block)), model))
         self._context_start = context_start
+        self._context_novel = novel
+        if novel:
+            self._context_weights = ((1 - NOVEL_PRIOR) / len(models),) * len(models) + (NOVEL_PRIOR,)
+            empty = NativeEpisodeExperience(repair=self._repair_enabled)
+            models.append((context_start, context_start, digest(canonical(())), empty))
+        else:
+            self._context_weights = (Fraction(1, len(models)),) * len(models)
         self._context_models = tuple(models)
-        self._context_weights = (Fraction(1, len(models)),) * len(models)
         for event in self._ledger[context_start:]:
             self._update_context(event)
 
     def _update_context(self, event):
-        _, views, first, next_state, second, reward = event
+        identifier, views, first, next_state, second, reward = event
         view = views[0]
         products = []
         for weight, (_, _, _, model) in zip(self._context_weights, self._context_models):
@@ -266,6 +277,16 @@ class NativeEpisodeExperience:
             products.append(weight * transition_likelihood * terminal_likelihood)
         total = sum(products, Fraction(0))
         self._context_weights = tuple(product / total for product in products)
+        if self._context_novel:
+            # The likelihood above uses predictions from before this episode.
+            # Only the new member revises its counts after scoring.
+            start, _, _, newest = self._context_models[-1]
+            revised = newest.observe(identifier, views, {
+                "s1": 0, "x1": first, "s2": next_state, "x2": second, "y": reward,
+            })
+            stop = start + len(revised._ledger)
+            live_range = (start, stop, digest(canonical(revised._ledger)), revised)
+            self._context_models = self._context_models[:-1] + (live_range,)
 
     def _context_predictions(self, view, first, next_state, second):
         require(self._context_start is not None, "EPISODE_CONTEXT_REQUIRED")
@@ -287,7 +308,7 @@ class NativeEpisodeExperience:
         return tuple(weight / total for weight in supported)
 
     def context_forecast(self, view, first, next_state=None, second=None):
-        """Mix frozen forecasts, conditioning terminal reads on the public transition."""
+        """Mix current forecasts, conditioning terminal reads on the public transition."""
         predictions = self._context_predictions(view, first, next_state, second)
         weights = self._context_weights_for(view, first, next_state)
         return sum((w * p for w, p in zip(weights, predictions)), Fraction(0))
@@ -312,7 +333,7 @@ class NativeEpisodeExperience:
         for event in self._ledger:
             rebuilt._append(event)
         if self._context_start is not None:
-            rebuilt._load_context(self._context_start)
+            rebuilt._load_context(self._context_start, novel=self._context_novel)
         require(rebuilt._state_digest() == self._state_digest(), "EPISODE_REPLAY_DRIFT")
         return rebuilt
 
@@ -330,7 +351,7 @@ class NativeEpisodeExperience:
             # Bound checkpoint serialization independently of Python's decimal
             # integer conversion limit during long exact posterior updates.
             weights = [[format(value, "x") for value in pair] for pair in weights]
-        return {
+        info = {
             "context_start": self._context_start, "candidate_count": len(self._context_models),
             "weights": weights,
             "source_ranges": [
@@ -338,6 +359,13 @@ class NativeEpisodeExperience:
                 for start, stop, source_pin, _ in self._context_models
             ],
         }
+        if self._context_novel:
+            info.update({
+                "novel_enabled": True,
+                "novel_prior": _ratio(NOVEL_PRIOR),
+                "novel_checkpoint_sha256": digest(self._context_models[-1][3].checkpoint()),
+            })
+        return info
 
     def _state_digest(self):
         state = {
@@ -374,6 +402,9 @@ class NativeEpisodeExperience:
         if self._context_start is not None:
             data["schema"] = CONTEXT_SCHEMA
             data["context_start"] = self._context_start
+        if self._context_novel:
+            data["schema"] = NOVEL_CONTEXT_SCHEMA
+            data["novel"] = True
         raw = canonical(data)
         require(len(raw) <= MAX_CHECKPOINT_BYTES, "EPISODE_CHECKPOINT_CAPACITY")
         return raw
@@ -384,12 +415,18 @@ class NativeEpisodeExperience:
                 and pin(expected_sha256) and digest(raw) == expected_sha256, "EPISODE_CHECKPOINT_PIN")
         try:
             data = json.loads(raw.decode("ascii"))
-            require(type(data) is dict and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA),
+            require(type(data) is dict
+                    and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA, NOVEL_CONTEXT_SCHEMA),
                     "EPISODE_CHECKPOINT_SCHEMA")
             keys = {"schema", "repair", "episodes", "state_sha256"}
-            context = data["schema"] == CONTEXT_SCHEMA
-            require(set(data) == (keys | {"context_start"} if context else keys)
-                    and canonical(data) == raw, "EPISODE_CHECKPOINT_CONTRACT")
+            context = data["schema"] != SCHEMA
+            novel = data["schema"] == NOVEL_CONTEXT_SCHEMA
+            if context:
+                keys.add("context_start")
+            if novel:
+                keys.add("novel")
+                require(data.get("novel") is True, "EPISODE_NOVEL_CHECKPOINT_FLAG")
+            require(set(data) == keys and canonical(data) == raw, "EPISODE_CHECKPOINT_CONTRACT")
             episodes = data["episodes"]
             require(type(episodes) is list and len(episodes) <= MAX_EPISODES, "EPISODE_CHECKPOINT_COUNT")
             candidate = cls(repair=data["repair"])
@@ -403,7 +440,7 @@ class NativeEpisodeExperience:
                 bits = [PublicCausalCells._bit(bit, name.upper()) for name, bit in zip(ROW_FIELDS[1:], row)]
                 candidate._append((identifier, pair, *bits))
             if context:
-                candidate._load_context(data["context_start"])
+                candidate._load_context(data["context_start"], novel=novel)
             require(candidate.checkpoint() == raw, "EPISODE_CHECKPOINT_REPLAY")
             return candidate
         except (AttributeError, KeyError, TypeError, ValueError, RecursionError) as exc:

@@ -262,11 +262,11 @@ class NativeCumulativeLearner:
             lambda first, state, second: experience.forecast(view, first, state, second, full=full),
         )
 
-    def begin_experience_context(self):
+    def begin_experience_context(self, *, novel=False):
         """Start a public context session over retained experience hypotheses."""
         require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
         candidate = self._copy()
-        candidate._experience = self._experience.begin_context()
+        candidate._experience = self._experience.begin_context(novel=novel)
         return candidate
 
     def experience_context_forecast(self, view, first, next_state=None, second=None):
