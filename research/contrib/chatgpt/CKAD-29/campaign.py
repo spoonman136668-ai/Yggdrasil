@@ -254,10 +254,21 @@ def main():
     args=parser.parse_args()
     lock=verify_lock()
     if args.mode=="preflight":
-        # No source world, evaluation label, or candidate fitting is accessed.
+        # Non-B smoke: admission and cold-replay contract. No B outcomes scored.
         assert len(PAIR)==10 and 9<=16 and TRAIN==16
+        inputs, unused = split(9001)
+        rows = source_rows(9001, 0, inputs)
+        smoke = fit_native(candidate_model(), 0, rows, 9001)
+        raw = smoke.checkpoint()
+        restored = NativeCumulativeLearner.restore(raw, digest(raw))
+        assert restored.checkpoint() == raw
+        assert [native_probability(smoke, 0, x) for x in range(32)] == [
+            native_probability(restored, 0, x) for x in range(32)]
+        assert 0 <= exact_probability(rows, 7) <= 1
+        assert 0 <= logistic_probability(fit_logistic(rows), 7) <= 1
         print(json.dumps({"schema":SCHEMA,"mode":"preflight","status":"PASS",
-                          "prereg_commit":lock["prereg_commit"],"B_scored":False},sort_keys=True))
+                          "prereg_commit":lock["prereg_commit"],"B_scored":False,
+                          "non_B_smoke_seed":9001},sort_keys=True))
         return
     start=time.perf_counter()
     cases=[scored(seed) for seed in SEEDS]
