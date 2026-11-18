@@ -49,7 +49,7 @@ def inputs(seed):
 
 
 def records(w,masks,wrong=None):
-    return [[m&7,m>>3,heldtruth(w,m)^(m==wrong) for m in masks]
+    return [[m&7,m>>3,heldtruth(w,m)^(m==wrong)] for m in masks]
 
 
 def full_models(data):
