@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-161",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can bounded projection-constrained direct coefficient edits preserve native prior public-state/action predictions exactly while learning new identifiable public action consequences from later observations, without an oracle family label or hidden source state?",
+  "hypothesis": "In authored two-regime linear development where old observations span 8 of 10 public action-context feature directions (s3=0) and later observations reveal changes confined to the two previously unused s3/sign(action)*s3 directions, a fixed-rank projection repair will retain old public predictions (max drift <=1e-9), fit novel observed-state consequences (new VALID RMSE <=0.03), and match independently solved constrained batch ridge (max forecast gap <=1e-8), while an unedited base has larger new VALID RMSE by >=0.05. This is a narrow subspace adaptation hypothesis, not proof of unknown causal-family discovery.",
+  "exact_parent_sha": "a76f9a566e6a015a130a6b7e3d0376cfa91b3853",
+  "parent_tree_sha": "4cf6db0d8f97211fce2795f21a65bd1d15a80f68",
+  "predecessor_evidence": [
+    "WSP-160 PR1213 #44221667335 exact final Linux/Windows root 195/195+NKR05 6/6 and #44221673660 independent G29 PASS; parent native-style direct RLS ties batch ridge; cannot claim superiority",
+    "WSP-159 PR1212 source-blind public transition schema, no original first use; no modifications",
+    "CKAD PR1207 through CKAD19 independently exercises binary sparse/knowledge and disjoint-slot retention; do not duplicate its sources/architecture",
+    "CVH10 PR1177 original source owner custody missing; zero upstream original reset/do permitted; no source first-use claim"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-161/prereg.json",
+    "research/contrib/chatgpt/WSP-161/projected_repair.py",
+    "research/contrib/chatgpt/WSP-161/test_projected_repair.py",
+    "research/contrib/chatgpt/WSP-161/README.md",
+    ".github/workflows/wsp161-projected-repair.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "WSP-160 original direct action-program public feature schema/checkpoint",
+      "source_sha": "a76f9a566e6a015a130a6b7e3d0376cfa91b3853",
+      "source": "unchanged inherited research module, no original-world actions"
+    },
+    {
+      "name": "Synthetic public transition fixtures",
+      "source": "deterministic local Python stdlib algebra; deliberately constrained rank8 old support and rank2 novel additive weight directions, no simulator imports or source-first-use data",
+      "sha256": null
+    },
+    {
+      "name": "CartPoleWind upstream reference",
+      "source": "CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf static source only; original execution forbidden",
+      "sha256": null
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      607,
+      809,
+      911
+    ],
+    "split": "Per replica: 192 old FIT with s3=0 and balanced public actions; 64 old untouched VALID with s3=0; 128 new FIT with nonzero s3 and both public actions; 64 new untouched VALID; all from same authored linear base law with novel additive s3 and action*s3 coefficient terms. Holders are generated after fit without their target leakage into learner; no actual original source.",
+    "ordering": "Prereg sole-file commit FIRST; source-only engineer and test fixture fixed before first scored CI; per seed fit old, freeze old model and 8-direction public anchor subspace from old FIT, fit new, evaluate both VALID, cold restore. No postscore parameter/threshold changes.",
+    "data_budget": "192 old +128 new FIT public action observations, 64 old +64 new VALID per seed, 3 seeds. Zero original CartPoleWind resets/steps/do; no unqualified original source actions.",
+    "compute_budget": "Pure Python stdlib <=2K WSP160 rows, 10 features x4 outputs, <=16 old public anchors for orthonormal projector Q rank <=8. Only 1 projected RLS residual mechanism, 1 independent Gaussian elimination constrained ridge control, vanilla continuation RLS, and frozen base; exact full Linux/Windows root NKR05 and G29 at final SHA; no paid API/GPU.",
+    "capacity": "Base WSP160 fixed 4x10 weights+10x10 covariance, protected residual additional 4x10 weights+10x10 covariance, <=8 orthonormal 10D anchor vectors, no growing per-family bank, no hidden family label. Independent comparator sees exact same base and projector and has same residual dimension. Preservation guaranteed only on frozen old anchor span, NOT all previously learned worlds.",
+    "evaluator": "On both VALID suites compute old max absolute forecast drift relative frozen base, old RMSE against ground-truth authored outcomes, new RMSE, frozen base new RMSE, naive continued WSP160 old drift/new RMSE, independently fitted constrained batch new RMSE and max forecast parity difference; reject contradictory alias public contexts with no distinguishable projector feature and preserve prior weights/checkpoint. Honest whole-process costs and all negative outcomes.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Conventional independent constrained batch ridge residual fit using identical frozen old base, identical old public anchor subspace and all 128 new FIT records; expected numeric tie, no unique native architecture advantage",
+    "Naive continued WSP160 RLS on same additional observations, same frozen old base, old drift/new fit",
+    "Frozen old base with zero updates, same old checkpoint; preserves old but cannot learn novel",
+    "Public-alias contradiction at identical protected context with inconsistent new outcome must be marked UNIDENTIFIABLE, no update",
+    "Tampered/rehashed checkpoint, nonfinite/shape/action leakage and cold continuation negatives"
+  ],
+  "metrics": [
+    "old_anchor_prediction_max_drift",
+    "old_valid_rmse",
+    "new_valid_rmse",
+    "frozen_old_base_new_rmse",
+    "naive_continuation_old_drift",
+    "naive_continuation_new_rmse",
+    "constrained_batch_ridge_new_rmse",
+    "constrained_batch_vs_projected_max_gap",
+    "conflict_refusal_count",
+    "checkpoint_size",
+    "process_time_cpu",
+    "original_source_actions"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_PROJECTED_REPAIR_SUPPORTED iff all three seeds projected old VALID forecast drift <=1e-9, new VALID RMSE <=0.03, base frozen new RMSE - projected new RMSE >=0.05; independent equally informed constrained batch ridge max held new prediction diff <=1e-8, correct alias refusal and cold exact checkpoint pass; full final Linux+Windows WSP159/160/161, root+NKR05, independent G29 PASS. This is only source-free constrained-retention engineering, SCIENTIFIC_PASS=false.",
+    "mixed": "Numerical tests pass but exact final source/root/G29 unverified -> ENGINEERING_UNVERIFIED, science unverified.",
+    "negative": "Any threshold miss = DEVELOPMENT_NO_GO, preserve scored results and do not change parameters/seeds or claim engineering scientific advantage; all strong-control ties are acknowledged.",
+    "invalid": "Any original externally sourced actions or hidden simulator use, new family oracle label, protected old target leakage into new training, duplicate research PR, source/CKAD/WSP160 mutation, missing source custody/identity."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "original_source_execution": false
+  },
+  "future_science": "Authentic virgin original source owner/actor/lease and matched fully trained controls remain unverified. This engineered old subspace/new support is NOT unseen-world transfer or lifelong retention.",
+  "preregistration_note": "Freeze sole-file before new implementation/CI; preserve previous negatives and source boundary."
+}
