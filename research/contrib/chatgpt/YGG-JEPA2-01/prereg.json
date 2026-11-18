@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.jepa2-multilearner-development.prereg.v1",
+  "experiment_id": "YGG-JEPA2-01",
+  "question": "Can separately trained action-conditioned latent predictive learners learn new parameters from the already retained CKAD24 native causal experience while preserving the original native model state, and improve previously untrained chronological forecasts over fully trained direct controls?",
+  "parent_sha": "a5faea392679756f172b87f3e40399ed88329a06",
+  "parent_tree": "3bdaf312823209f5e6dd196895a5000e0f9a9c5f",
+  "native_model": "NativeCumulativeLearner v5 with intact native_episode_experience v4",
+  "source_repository": "spoonman136668-ai/Yggdrasil",
+  "source_path_template": "research/contrib/chatgpt/CKAD-24/seed-{seed}-coverage-native.json",
+  "sources": [
+    {
+      "seed": 101,
+      "checkpoint_sha256": "52452b533495807f45a9f1489e3737ec179de96d8f4d3fdc68e03d80f183e57b",
+      "git_blob": "c4cbbe025db60a70a8fcdd88425d1ab39fdba4ff"
+    },
+    {
+      "seed": 202,
+      "checkpoint_sha256": "9d9bfd406d48f94024c8a033e4f649ef3723957b3db6db8f0cf213cc8e1ccc81",
+      "git_blob": "f6aadc83ae545034abd69ec8f8e864f4442bd591"
+    },
+    {
+      "seed": 303,
+      "checkpoint_sha256": "bcd931564f8cd384ea401ca9a8b7d4e35821cde985638285460b494f80ee8b30",
+      "git_blob": "62d654c48c4089bf5fae6b2f61487494b8c43c70"
+    }
+  ],
+  "architecture": "Two independently trainable nontransformer tokenless latent prediction specialists on Yggdrasil's public two-view intervention ledger: transition learner encodes 4 public view bits plus first action to predict stop-gradient 2D noncollapsed code for next state; terminal learner independently encodes view bits, first action, revealed next state, second action to predict fixed stop-gradient 2D code for reward. Each specialist learns nonlinear encoder and latent predictor; code is not Meta's video V-JEPA2 and has no image/video, EMA pretraining or claims of V-JEPA2 replication.",
+  "data": "Exactly 832 existing witnessed CKAD24 episodes per seed, only public views and actions/outcomes. No hidden world state, evaluator family label, original-world first-use, new actions, network calls or held updates before scoring.",
+  "split": {
+    "initial_train": "episodes [0,640)",
+    "chronological_hold": "episodes [640,832) before specialist continuation",
+    "continued_train": "after scoring hold, train on [640,832) and persist both specialist weights",
+    "is_new_science": false
+  },
+  "frozen_hyperparameters": {
+    "hidden": 8,
+    "latent": 2,
+    "first_epochs": 80,
+    "continuation_epochs": 24,
+    "batch": "full deterministic batch",
+    "jepa_lr": 0.3,
+    "direct_lr": 0.8,
+    "initialization": "fixed deterministic sin/cos",
+    "target_encoder": "binary fixed noncollapsed teacher, stop-gradient",
+    "sham_shift": 320
+  },
+  "controls": [
+    "independently fully fitted direct logistic stage predictors: same observed inputs and 80 full-batch passes",
+    "Laplace-smoothed conditional frequency table from initial 640",
+    "same-capacity JEPA trained with mismatched target pair shift by 320"
+  ],
+  "primary_metrics": [
+    "per-stage and pooled chronological holdout Brier at 640 on next 192",
+    "before/after sidecar continuation weight change and native checkpoint immutability",
+    "old 640 observed-outcome Brier before and after specialist continuation",
+    "shuffled-pair negative",
+    "finite parameters, cold stage1 save/restore deterministic continuation"
+  ],
+  "success": {
+    "engineering": "All 3 exact source pins, public-feature-only, pre-held training only, weights finite and changed, cold stage1 restore and identical continuation, original native JSON bytes unchanged; full final regression on candidate SHA must separately PASS.",
+    "development": "On all 3 seeds, initial held pooled Brier <= strongest trained direct or conditional control minus 0.01, and better than mispaired JEPA by >=0.01; after continuation old-prefix pooled Brier deterioration <=0.03. Otherwise DEVELOPMENT_NO_GO, no rerun/tune with these same held rows.",
+    "science": "SCIENTIFIC_PASS must remain false because previously consumed synthetic public source and no independent new worlds, source first-use, or matched whole-process training costs."
+  },
+  "stop": "One preregistered 3-seed execution. No post-result tuning, source changes, hidden lookahead, new actions, budget growth, native accepted-model mutation, merge, deployment, queue/scheduler changes.",
+  "scope": [
+    "research/contrib/chatgpt/YGG-JEPA2-01/**",
+    ".github/workflows/ygg-jepa2-01.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated draft source-free Yggdrasil development branch. Original owner, other live training branches, accepted ref, original source, and controllers unchanged."
+}

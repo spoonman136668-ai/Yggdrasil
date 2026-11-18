@@ -1,0 +1,35 @@
+name: YGG JEPA2 native specialist replay
+'on':
+  push:
+    branches:
+      - research/jepa2-01-native-multilearner-20261118
+    paths:
+      - '.github/workflows/ygg-jepa2-01.yml'
+      - 'research/contrib/chatgpt/YGG-JEPA2-01/**'
+permissions:
+  contents: write
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Verify actual Yggdrasil training replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          node research/contrib/chatgpt/YGG-JEPA2-01/train.cjs "$RUNNER_TEMP/jepa2-replay"
+          node -e 'const fs=require("fs");const a=JSON.parse(fs.readFileSync("research/contrib/chatgpt/YGG-JEPA2-01/result.json"));const b=JSON.parse(fs.readFileSync(process.argv[1]+"/result.json"));if(a.replicas.length!==3||b.replicas.length!==3||b.development_go!==false||b.science_pass!==false)process.exit(2); for(let i=0;i<3;i++){let x=a.replicas[i],y=b.replicas[i];if(x.seed!==y.seed||Math.abs(x.metrics.held_before_continuation.pooled-y.metrics.held_before_continuation.pooled)>1e-10)process.exit(3)}console.log("YGG_JEPA2_NATIVE_TRAINING_REPLAY_PASS");' "$RUNNER_TEMP/jepa2-replay"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(jepa2): exact G29 source atlas at $GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/jepa2-01-native-multilearner-20261118
