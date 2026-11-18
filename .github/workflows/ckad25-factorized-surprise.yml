@@ -1,0 +1,207 @@
+name: CKAD25 factorized causal surprise and no-change null
+on:
+  push:
+    branches: [research/ckad25-factorized-surprise-20261118]
+permissions:
+  contents: read
+  actions: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  focused:
+    if: "github.event.head_commit.message == 'ci(ckad25): execute frozen factorized surprise'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned native CPU solver dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Verify frozen protocol, exact native algorithm, independent shadow monitors and negative controls
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 33daba7912a2c0533cdad13968cdeb359cd4e24d HEAD
+          git merge-base --is-ancestor 4ecc1144b1c2a3af388734fbd11a619c2cd50498 HEAD
+          test "$(git hash-object research/contrib/chatgpt/CKAD-25/prereg.json)" = dcc76abd81dae35a636e8d8f7a1973e1ea47af44
+          test "$(git hash-object research/contrib/chatgpt/CKAD-25/campaign.py)" = 55cb71ddb8585415fa93683ea234a53a8298f116
+          test "$(git hash-object research/contrib/chatgpt/CKAD-25/audit.py)" = b66b7901b5256a65842928d70135eb2ec1951795
+          test "$(git hash-object research/contrib/chatgpt/CKAD-25/test_ckad25.py)" = e43f357ae089517fcd01a3f17b7878bcdc4f90b5
+          test "$(git hash-object research/contrib/chatgpt/CKAD-25/seal.py)" = 4ae5266cdd8ffb158420fe00a7923483adbf79bd
+          test "$(git hash-object research/contrib/chatgpt/CKAD-25/independent_audit.py)" = d0133c3ec4642d2fdf842174476c89e847c002e7
+          test "$(git hash-object yggdrasil/native_episode_experience.py)" = 94b7e033aff18080e65d48b479a7ae4bb3aba1c8
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-25 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-23 -p test_ckad23.py -v
+          python -B -m unittest discover -s tests -p test_native_cumulative_learner.py -v
+          python -B research/contrib/chatgpt/CKAD-22/independent_audit.py
+          test -z "$(git status --porcelain)"
+  development:
+    needs: [focused]
+    if: github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+        schedule: [transition_only, reward_only, stationary_null]
+        seed: [101, 202, 303]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 24
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Execute exact 192-action source stream and four shadow detectors
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B research/contrib/chatgpt/CKAD-25/campaign.py \
+            --schedule ${{ matrix.schedule }} --seed ${{ matrix.seed }} \
+            --output-directory "$RUNNER_TEMP/ckad25-case"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ckad25-${{ matrix.os }}-${{ matrix.schedule }}-${{ matrix.seed }}-proof
+          path: ${{ runner.temp }}/ckad25-case/
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [development]
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: ckad25-*-proof
+          path: ${{ runner.temp }}/ckad25-all
+          merge-multiple: false
+      - name: Independently seal all 18 exact-source executions and nine native checkpoints
+        id: seal
+        env:
+          CKAD25_ARTIFACT_ROOT: ${{ runner.temp }}/ckad25-all
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B research/contrib/chatgpt/CKAD-25/seal.py
+          git add -- research/contrib/chatgpt/CKAD-25
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research(ckad25): seal factorized surprise and null results without promotion'
+          SOURCE_COMMIT="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE_COMMIT"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          python -B -c "import subprocess; assert set(subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines())=={'.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json'}"
+          git commit -m "docs(ckad25): qualify frozen surprise source atlas at $SOURCE_COMMIT"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ckad25-factorized-surprise-20261118
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  final-regression:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned complete native regression dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Mandatory full exact-candidate regression, all nine cold native checkpoint proofs
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.seal.outputs.candidate }}"
+          git rev-parse HEAD HEAD^{tree}
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-25 -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/CKAD-22/independent_audit.py
+          python -B research/contrib/chatgpt/CKAD-25/independent_audit.py
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+  independent-g29:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent G29 atlas, CKAD22 parent and factorized evidence replay
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          python -B research/contrib/chatgpt/CKAD-22/independent_audit.py
+          python -B research/contrib/chatgpt/CKAD-25/independent_audit.py
+          test -z "$(git status --porcelain)"
