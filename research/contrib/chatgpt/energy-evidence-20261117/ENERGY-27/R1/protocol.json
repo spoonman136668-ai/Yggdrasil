@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.energy27.heteroscedastic-active-causal-identification.v1",
+  "date": "2026-11-18",
+  "classification": "isolated synthetic CPU development; no native Yggdrasil training/first-use",
+  "hypothesis": "With a homogeneous binary-outcome corruption rate, posterior disagreement variance and expected information gain induce the same action ordering. When the observation noise rate depends on the chosen intervention, exact information gain may improve held causal-rule predictions over variance-only acquisition under equal action budgets, but the Bayesian and normalized-energy parameterizations remain equivalent.",
+  "causal_worlds": "Five Boolean interventions, one unobserved signed XOR rule on one of the ten 3-parent subsets; 20 balanced hidden rule types per primary seed. Every action outcome is actually witnessed. A separate fixed 8-pattern intervention holdout is never used for acquisition.",
+  "primary_seeds": [
+    1543,
+    1549,
+    1553,
+    1567,
+    1571,
+    1579
+  ],
+  "smoke_seed": 9003,
+  "causal_rules": 20,
+  "regimes": {
+    "homogeneous": "every observed binary outcome flips with probability 1/10",
+    "heterogeneous": "if intervention bit0=0 the observation flips with probability 1/50, otherwise probability 7/20"
+  },
+  "interventions": "32 binary 5-vectors. Eight fixed SHA256-sorted patterns withheld across all arms; six distinct sequential actions chosen from remaining 24, never revisiting within each arm. Exogenous noise indexed by seed, true rule and episode step, paired across methods; candidate selection never reads truth or held labels.",
+  "training_budget": 6,
+  "held_patterns": 8,
+  "arms": [
+    "variance",
+    "information_gain",
+    "uniform_random"
+  ],
+  "learning": "Fully fitted exact 20-hypothesis Bayesian posterior from identical per-arm observed action-consequence receipts using the correct, public, action-dependent noise probability. Normalized exponential constraint-energy has exactly the same posterior. Candidate held predictions are posterior mixtures; one hard-MAP candidate and fully fitted cubic ridge are evaluated as same-receipt ablations. The information-gain and variance arms use equal action and inference budgets. Uniform random uses an independent fixed hash-deterministic action policy. No held updates. Stable IEEE-754 classification ties resolve to 0 using a 1e-12 tolerance; same handling for MAP index ties and fitted ridge decision.",
+  "acquisition": "variance: maximum posterior variance of Bernoulli candidate P(Y=1|action), tie by closeness of predictive mean to 1/2 and ascending action index. information_gain: maximum I(H;Y|action)=H_b(m)-H_b(error(action)), same tie convention. random: deterministic hash index over remaining candidates. All selection happens before observing noisy consequence. Random SHA policy key must depend only on seed/regime/public step, never hidden law.",
+  "metrics": "Correct held latent outcomes, held Brier of causal target, hidden-rule identification, change of chosen interventions, per-seed and regime outcome, paired case outcomes, wall-clock cost including fitting and inference, independent audit of public receipt chronology and source identity.",
+  "frozen_development_gate": "On heterogeneous regime, info-gain posterior held accuracy exceeds variance posterior by >=3 percentage points (at least 29 extra correct of 960), at least four of six independent primary seeds have positive paired gain, and no per-seed loss greater than 5 percentage points (8/160). Homogeneous condition must show exact identical action sequence and posterior predictions under variance and information gain. Otherwise DEVELOPMENT_NO_GO. No scientific promotion even if pass; any superiority over exact same-receipt Bayes is mathematically impossible.",
+  "strong_controls": [
+    "Exact full 20-rule Bayesian posterior fitted on all actual receipts in each arm",
+    "matched same-receipt normalized Boltzmann constraint energy (must coincide)",
+    "hard MAP rule (same receipt)",
+    "capacity-fitted conventional cubic ridge from same receipt",
+    "random acquisition with exact Bayes readout",
+    "homogeneous symmetric noise negative control"
+  ],
+  "stop": {
+    "protected_first_use": 0,
+    "native_original_source_actions": 0,
+    "held_learning": 0,
+    "paid_apis": 0,
+    "promotions": 0,
+    "max_worlds": 240,
+    "max_interventions": 1440,
+    "max_wall_seconds": 120
+  },
+  "source_scope": "Correction-only R1, disjoint new sealed source seeds; initial 720-case score invalidated due to random action selector hidden-rule key and floating tie policy. Existing ENERGY archival PR1210 only; no native Yggdrasil changes."
+}

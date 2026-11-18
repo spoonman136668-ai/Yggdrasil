@@ -1,0 +1,5 @@
+# ENERGY-27 initial score: excluded from qualified primary evidence
+
+The initial 720-case score was frozen and completed before the independent audit. The post-score independent audit revealed exact rational P=1/2 ties classified inconsistently by IEEE-754 (`q > .5`) and a source-isolation breach: the `uniform_random` action selector's SHA random choice was initialized with the hidden causal rule index (a random oracle hashing that index, not an explicit rule-conditioned policy). This should not be an authorized learner feature even if cryptographic hash output hides it.
+
+Scored files and source remain unmodified in this folder. The informed-policies' 120/120 homogeneous and 120/120 heterogeneous matched trajectories and zero information-gain benefit are unaffected by the random-selector defect, but the initial primary result is not being accepted as clean qualification. A corrected source and independently disjoint fresh primary seeds were frozen and run as R1. The original audit failure and subsequent audit repairs are recorded. No post-result optimization of the algorithm's scientific objectives or thresholds was made.
