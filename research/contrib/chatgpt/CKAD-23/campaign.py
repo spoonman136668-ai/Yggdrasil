@@ -322,7 +322,7 @@ def run_seed(seed,protocol,output):
     need(elapsed<protocol["budgets"]["max_wall_seconds"],
          "SOURCE_WALL_BUDGET")
     detector=models["detector_active"].info()["episode_experience"]["stream"]["detections"]
-    alarms=sum(not any(change+1<=event["count"]<=change+16 for change in BOUNDARIES)
+    alarms=sum(not any(change+1<=event["count"]-448<=change+16 for change in BOUNDARIES)
                for event in detector)
     return {
       "seed":seed,"source_seed":source_seed,
@@ -401,7 +401,7 @@ def run(args):
       "source_sha256":SOURCE_SHA,
       "source_candidate_sha":subprocess.check_output(
           ["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),
-      "seeds":seeds,"science_pass":False,"accepted_native":False,
+      "seeds":seeds,"scientific_pass":False,"accepted_native":False,
       "deployment":"NONE","scope":{
         "original_source_actions":0,"protected_first_use":0,"held_updates":0,
         "stream_episodes":192*len(seeds),
