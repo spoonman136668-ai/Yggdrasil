@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-34",
+  "program": "classical energies / Yggdrasil external synthetic research",
+  "date": "2026-11-18",
+  "classification": "DEVELOPMENT only; no protected native science first-use",
+  "prior_energy33_head": "53ae6757c354417fd61cdd29f873fa9c52fb199a",
+  "source_commit": "ab77c4747e6d59ea4c3d97920a91e246c83cf0ea",
+  "source_git_blob": "73a8a24fad2afca8a93afd3e241e420ed849917e",
+  "source_sha256": "716f090f935184763f2d882a1aa6743867af0e2f3422946e789839b3ff3a0419",
+  "status_at_freeze": "PRIMARY UNRUN; only smoke source seed 99059 used for implementation qualification",
+  "hypothesis": "An actually fitted sparse contrastive-margin energy for native binary action-consequence constraints can beat the strongest fully trained conventional control on disjoint and shifted interventions at comparable data/capacity and lower fit-plus-inference computational cost.",
+  "source": "Self-authored deterministic 8-bit synthetic causal worlds; all code generated from public seed-keyed action intervention draws; no external dataset or native Yggdrasil state.",
+  "primary_seeds": [
+    7117,
+    7129,
+    7151
+  ],
+  "smoke_seed_excluded": 99059,
+  "per_seed_world_ids": "0..7",
+  "causal_families": [
+    "parity3",
+    "mixed",
+    "extended4"
+  ],
+  "evaluation_scenarios": [
+    "iid",
+    "shift_x0",
+    "heavy_noise"
+  ],
+  "worlds": 216,
+  "inputs": "8 binary intervention inputs, 256 possible input combinations per world; unknown deterministic consequence generated from 3 hidden signed parity/AND factors; conditional consequence bit is observed only after chosen intervention.",
+  "budget": {
+    "train_interventions_per_world": 96,
+    "disjoint_held_interventions_per_world": 64,
+    "total_training_outcomes_per_arm": 20736,
+    "held_outcomes_per_arm": 13824,
+    "label_corruption": {
+      "iid": 0.1,
+      "shift_x0": 0.1,
+      "heavy_noise": 0.3
+    },
+    "energy_epochs": 64,
+    "energy_support_limit": 12,
+    "energy_gradient_coordinates_per_epoch": 8
+  },
+  "intervention_splits": "iid/heavy_noise: 96 fitting from SHA-shuffled all 256, 64 disjoint held. shift_x0: fit only x0=0, evaluate only x0=1, no held fitting. No model sees evaluator's true factor IDs/signs.",
+  "energy_mechanism": "learned nonconvex sparse E(y|x)=-y (w dot phi(x)); observed negative-label contrastive margin updates, strongest-8 gradient and hard top-12 support pruning; one field-evaluation prediction after fitting; not an exact Bayesian reparameterization.",
+  "feature_dictionary": "190 fixed parity degree 1..4 and pairwise AND features. Same 190 features and 96 labels accessible to energy, OMP, logistic and ridge. Source family rules are evaluator-side and not passed to learners.",
+  "methods": [
+    "sparse_energy",
+    "omp12",
+    "logistic",
+    "ridge",
+    "rbf_svm",
+    "decision_tree",
+    "shuffled_energy",
+    "majority"
+  ],
+  "fitted_controls": "OMP trained with <=12 active feature couplings (capacity-matched); logistic L2 max_iter=500 tol=1e-8; dense ridge alpha 3; RBF SVM C=2; depth-8 decision tree; all fit from identical training action/outcome rows. Shuffled-energy sees permuted noisy labels; majority constant is diagnostic.",
+  "prereg_gates": {
+    "iid_accuracy_vs_strongest": ">=+3pp accuracy over highest IID result among OMP12, logistic, ridge, RBF-SVM, tree (denominator 4608)",
+    "shift_accuracy_vs_strongest": " >=+3pp accuracy over highest x0-shift result among same five trained controls (denominator 4608)",
+    "heavy_noise_nonregression": "no worse than 1pp below best of those controls at 30% label corruption",
+    "seed_stability": "on at least 2 of 3 primary seeds, energy beats strongest control on both IID and shift",
+    "learned_vs_shuffled": "energy strictly more correct than same-model shuffled-label negative on all 3 scenarios",
+    "efficiency_vs_fastest_control": "sum of local measured per-arm fitting+prediction seconds <=0.5 x minimum such duration among five trained conventional controls; preprocessing/hosting excluded; never call this end-to-end speedup"
+  },
+  "decision": "DEVELOPMENT_GO iff all six frozen boolean gates true. Otherwise DEVELOPMENT_NO_GO, stop this candidate. Even GO is not SCIENTIFIC_PASS or automatic Yggdrasil integration.",
+  "planned_audit": "independent receipt reaggregation, frozen source Git blob SHA/custody, case/population partitions and no-held leakage, deterministic semantic replay, compare full strong-control cohort",
+  "runtime": "local Python 3.13.5, NumPy 2.3.5, scikit-learn 1.8.0, CPU only; no paid inference",
+  "boundaries": [
+    "no native Yggdrasil source edit",
+    "no accepted main/ref mutation",
+    "no model training first-use",
+    "no research-controller, runner or scheduling changes",
+    "no deployment or merge",
+    "no postscore hyperparameter, source, threshold, seed or split tuning"
+  ]
+}
