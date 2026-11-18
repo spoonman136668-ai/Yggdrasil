@@ -1,0 +1,83 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CKAD25-S",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does the SAME real NativeCumulativeLearner learned state and pre-existing sparse repair generalize to four previously unobserved causal rule families from matched native intervention/outcome evidence without damaging existing native knowledge?",
+  "hypothesis": "A single native learner, cold-restored from CKAD25's actual 12-observation training checkpoint and extended in distinct native slots with four disjoint binary-law families, will correctly recover at least 75% of withheld truth assignments after 12 action/outcome observations per law; it will not underperform a fully fitted decision-tree, random forest, or exact small GF2 sparse posterior on held Brier by more than 0.02. All earlier source planes and original slot's predictions remain exactly unchanged.",
+  "exact_parent_sha": "224196b24878fbbbc8dbd2ca4e28afbde06b2d8b",
+  "predecessor_evidence": [
+    "CKAD25 PR #1235: existing native two-stage source-owned training on consumed engineering fixture persisted and cold-replayed; original held answers 0/4.",
+    "CKAD25-R PR #1240: existing conventional min-support GF2 MILP retroactively recovered 4/4 already-consumed held answers, with exact Linux/Windows result parity; not novel transfer.",
+    "YNCA-13 PR #1239: compact operator memory preserved familiar laws but unseen MUX Brier 0.5 versus no-memory 0.25; development mixed."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/CKAD25-S/**",
+    ".github/workflows/ckad25s-prospective-dev.yml"
+  ],
+  "inputs": [
+    {
+      "name": "public source-free procedural deterministic 4-input causal law generator: four fixed formulas on (context bit0, bit1, bit2, action bit); see first committed run.py",
+      "source": "fully synthetic binary interventions; test harness source generated, never protected CausalGym original sources",
+      "sha256": "source-frozen-by-Git-blob-before-primary; generated data SHA256 included in each scored result"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      1103,
+      2207,
+      3301
+    ],
+    "split": "For each seed and each distinct causal law, derive one deterministic shuffle of 16 unique (three context bits, binary action) assignments; reveal first 12 action/outcome pairs through two native observe updates (8 then 4), and score only remaining 4. No original 4 CKAD25 held outcomes are used as a new score. Four rule identities are only visible to generator/evaluator, never passed to learner.",
+    "ordering": "Each seed starts by cold-restoring the same validated original CKAD25 checkpoint, and trains four rule families in slots 1,2,3,4 of one persistent native learner; each 12-observation stage is sequential and cold-restored after all four. Numeric seed and slot-derived SHA refs only, no family labels in native APIs.",
+    "data_budget": "exactly 3 seeds × 4 families × 12=144 new synthetic training intervention/outcomes; 3×4×4=48 withheld examples. All arms get exactly same 12 exposed examples per family. 0 protected original-source observations or actions.",
+    "compute_budget": "One frozen prospective primary evaluation per platform and deterministic byte replay of exactly same cohort (not new science); pinned Python 3.12 and NumPy 2.3.5 SciPy 1.16.3 scikit-learn 1.8.0; <=15 minutes each Linux/Windows worker, no paid API.",
+    "capacity": "one pre-existing native learner with original slot0 plus four new native slots; original memory slot count 16, active <=7; no native source mutation. Sparse prior max 8 GF2 ANF weights. Conventional CART max_depth 4, RF 64 estimators depth 4, logistic ridge L2 fixed C=1, exact <=3-term GF2 posterior with at most 697 hypotheses, all fitted only on 12 training examples.",
+    "evaluator": "Per family/seed 4 withheld action outcomes: Brier of p for binary model, p=0.5 for native abstention; macro-average equal seeds and families. Report answered/correct/incorrect, cold retention, reference exact full Boolean law uniform prior p=0.5, training frequency, fully fitted CART, RF, logistic, exact <=3-term sparse ANF Bayesian prior, and unmodified native without sparse repair. The conventional min-support MILP IS the native repair algorithm, so no independent superiority over it can be asserted.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Original unmodified NativeCumulativeLearner provisional prediction without repair (per same newly trained 12 rows)",
+    "no-memory uniform prior p=0.5",
+    "training-frequency full fitted Beta(1,1)",
+    "fully trained sklearn CART depth 4",
+    "fully trained sklearn RandomForestClassifier 64 estimators max_depth 4",
+    "fully trained sklearn LogisticRegression L2 C=1 with 16 ANF features",
+    "exact Boolean sparse ANF posterior over <=3 active terms from all 16 monomials; absent-fit fallback 0.5 marked as model-class misspecification",
+    "same native repair_sparse MIN_SUPPORT_GF2_MILP8 conventional solver: no structural superiority claim"
+  ],
+  "metrics": [
+    "Native answered/correct/incorrect and Brier on genuinely withheld synthetic new law assignments",
+    "Brier for all conventional/exact controls on same withheld assignments and with identical information",
+    "old checkpoint byte identity and original slot0 prediction preservation after four new-law native updates",
+    "native new-slot source witness counts and cold restore across OS",
+    "whole run elapsed seconds and repair count and matched source provenance (not efficiency superiority)"
+  ],
+  "classification_rules": {
+    "development_go": "Across 12 seed-law holdouts: at least 36/48 correctly answered (>=75% answered + correct), all original source/properties and old predictions preserved, all native new slots contain exactly 12 observed interventions after cold restoration, no quarantine; native Brier <= no-memory 0.25-0.03; and candidate Brier <= min(CART,RF,Logistic,exact sparse posterior) +0.02. This is a development signal only, never scientific superiority.",
+    "mixed": "Native retention and valid cold restore PASS but candidate fails one or more prospective gain/strong-control gates; mark all failed gates and preserve negatives.",
+    "negative": "Old knowledge loss, erroneous confident predictions, predictive Brier >0.25, failed native repair, or persistent quarantine: development NO-GO (may also be engineering failure if source/contract invalid).",
+    "invalid": "Wrong exact parent/Git blob, input split leakage, changing native model, source/held label exposure, unauthorized original source first use, hidden capacity growth, missing strong control, nondeterministic cross-platform result, or invalid experiment execution."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "changing source-generator laws/seeds",
+    "reordering train/held based on outcomes",
+    "retuning on held scores",
+    "new model version or extra training observations",
+    "native first-use/owner permission changes",
+    "merging/promotion based only on synthetic development results"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_original_source_first_use": false,
+    "original_source_actions": 0,
+    "paid_api_calls": 0
+  },
+  "preregistration_note": "Preregister before committing executable source and BEFORE any primary result. Native model and authentic first-use contracts remain unchanged. One falsifiable prospective development score; no deep tuning of failed cohorts."
+}
