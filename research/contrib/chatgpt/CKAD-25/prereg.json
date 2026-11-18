@@ -1,0 +1,149 @@
+{
+  "schema": "yggdrasil.ckad25.factorized-surprise-development.prereg.v1",
+  "id": "CKAD-25",
+  "experiment_class": "SYNTHETIC_DEVELOPMENT_FALSIFICATION_WITH_PRE_FROZEN_PROSPECTIVE_NEW_SOURCE_DRAWS",
+  "parent_commit": "4ecc1144b1c2a3af388734fbd11a619c2cd50498",
+  "parent_tree": "744d13b08a7b444fd452ed66ad2b972ee9f44edc",
+  "original_qualified_source_model": "yggdrasil/native_episode_experience.py",
+  "unchanged_native_required": true,
+  "original_qualified_ckad23_model_sha": "08fbe556d7ac134d3662f7003af5bc4430013ac1",
+  "original_source_generator": "research/contrib/chatgpt/CKAD-20/synthetic_world.py",
+  "generator_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "checkpoint_parent_group_seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_namespace": "ckad25-stream-v1",
+  "source_seed_offsets": {
+    "transition_only": 45100,
+    "reward_only": 45200,
+    "stationary_null": 45300
+  },
+  "source_schedules": {
+    "transition_only": [
+      [
+        "invariant",
+        0
+      ],
+      [
+        "invariant",
+        1
+      ],
+      [
+        "invariant",
+        0
+      ],
+      [
+        "invariant",
+        1
+      ]
+    ],
+    "reward_only": [
+      [
+        "invariant",
+        0
+      ],
+      [
+        "terminal_switch",
+        0
+      ],
+      [
+        "invariant",
+        0
+      ],
+      [
+        "terminal_switch",
+        0
+      ]
+    ],
+    "stationary_null": [
+      [
+        "invariant",
+        0
+      ],
+      [
+        "invariant",
+        0
+      ],
+      [
+        "invariant",
+        0
+      ],
+      [
+        "invariant",
+        0
+      ]
+    ]
+  },
+  "true_change_counts": {
+    "transition_only": [
+      48,
+      96,
+      144
+    ],
+    "reward_only": [
+      48,
+      96,
+      144
+    ],
+    "stationary_null": []
+  },
+  "objectives": [
+    "Falsify reliability of a frozen factorized transition/reward prequential detector on truly new exogenous synthetic draws without altering the accepted native learner.",
+    "Separate sensitivity, false alarm rate, and source evidence parity. Do not infer policy improvement because factorized monitors are shadow signals only, not deployed hypothesis resets.",
+    "Classify every true boundary independently; duplicate alarms count against specificity."
+  ],
+  "acquisition": "Each of 9 streams starts from the original byte-exact CKAD22 448-witness parent checkpoint and uses the unchanged CKAD23 native stream's first and second public intervention choices; separate monitors receive identical chosen actions, public S2 and Y after their consequences occur.",
+  "detectors": {
+    "joint": "CKAD23 original native stream threshold: S_joint=max(1,S_joint/(4*p_T_observed*p_Y_observed)), alarm S_joint>=16 and >=8 episodes since last reset. Monitor must exactly match original independent CKAD23 reference.",
+    "transition": "S_T=max(1,S_T/(2*p_T_observed)), alarm S_T>=16 and >=8 since last reset; reset S_T to 1.",
+    "reward": "S_Y=max(1,S_Y/(2*p_Y_observed)), alarm S_Y>=16 and >=8 since last reset; reset S_Y to 1.",
+    "factorized_or": "Maintain independent transition/reward S_T,S_Y with same factors 2 and threshold16. At first alarm on either component with 8 episodes since last OR alarm, record source witness, reset both S_T,S_Y to1.",
+    "stationary": "The null schedule has no true change points; all alarms under every mechanism are false alarms."
+  },
+  "held_windows": {
+    "earliest_after_boundary": 1,
+    "latest_after_boundary": 16,
+    "duplicate_alarms_count_false": true,
+    "late_alarms_count_false": true
+  },
+  "budgets": {
+    "source_case_count": 9,
+    "per_case_public_episodes": 192,
+    "per_case_parent_episodes": 448,
+    "per_case_checkpoint_episodes": 640,
+    "per_case_max_wall_seconds": 900,
+    "per_case_hidden_bits_passed_to_learner": 0,
+    "max_paid_apis": 0,
+    "protected_first_use": 0,
+    "original_source_actions": 0,
+    "held_reward_adaptation": 0
+  },
+  "controls": [
+    "native joint-surprise alarm with exact rational replay parity",
+    "transition-only normalized prequential alarm",
+    "reward-only normalized prequential alarm",
+    "factorized OR alarm, independent reset",
+    "stationary no-change null source family",
+    "same-actions same-outcomes and 448-prefix immutable witness custody",
+    "cold checkpoint equality and cross-OS semantic and bytes replication"
+  ],
+  "frozen_gates": {
+    "sensitivity": "For BOTH actual-change schedules, factorized OR detects EACH of three change points within +1..+16 public episodes in at least 2 of 3 independent parent groups.",
+    "comparative_sensitivity": "Factorized OR has at least 4 more total distinct true-boundary detections than the joint native stream across both change schedules (18 opportunities).",
+    "specificity": "At most three duplicate/unmatched factorized alarms per seed in each changed schedule, and at most one alarm per seed in no-change stationary null.",
+    "evidence": "All nine exact 640-episode history prefixes and unique witness ids preserved, cross-platform exact rational replay and checkpoint identity, no scientific promotion."
+  },
+  "classification": "DEVELOPMENT_SIGNAL_GO only if every frozen gate passes, otherwise DEVELOPMENT_SIGNAL_NO_GO; any source/test failure is ENGINEERING_FAIL/UNVERIFIED rather than scientific failure.",
+  "limits": "Factorized alarms are shadow signals calculated from the frozen native model's public forecasts. They do not change the native hypothesis posterior/weights or the source's active policy. This tests detection information, NOT whether split alarms improve policy reward or retention.",
+  "scientific_pass": false,
+  "accepted_native": false,
+  "deployment": "NONE",
+  "scope": "Read-only advisory Mind-Palace plus isolated GitHub contributor branch; no merge, owner PR edits, accepted-main, source controller, scheduler, real-world action or promotion",
+  "allowed_paths": [
+    "research/contrib/chatgpt/CKAD-25/**",
+    ".github/workflows/ckad25-factorized-surprise.yml",
+    ".ice/code-atlas.*"
+  ]
+}
