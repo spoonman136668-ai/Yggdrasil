@@ -35,7 +35,8 @@ jobs:
           python-version: '3.12'
       - name: Install exact pinned solver dependencies
         shell: bash
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Focused native representation and source-negative qualification
         shell: bash
         run: |
@@ -190,7 +191,8 @@ jobs:
           python-version: '3.12'
       - name: Install exact pinned solver dependencies
         shell: bash
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Mandatory complete final candidate regression
         env:
           EXPECTED_CANDIDATE: ${{ needs.seal.outputs.candidate }}
