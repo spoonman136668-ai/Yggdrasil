@@ -1,0 +1,153 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "experiment_id": "ENERGY-43",
+  "date": "2026-11-18",
+  "contribution_class": "falsification",
+  "question": "Can a persistent sparse structural-energy learner discover causal factor supports unknown to it from randomized interventions, learn one newly introduced mechanism without catastrophically forgetting older causal relations, and transfer to a third untrained nuisance distribution better than strong fully trained conventional learners?",
+  "hypothesis": "The single learner will recover at least 60% of the hidden causal motif supports, retain earlier effect prediction within 10% MSE of its prior checkpoint, and reduce cold-shift MSE by at least 10% relative to the best conventional trained baseline with no more than 2x OMP local training+inference cost.",
+  "exact_parent_sha": "4fc4b038aa982046801530fac9276c97276eaf8c",
+  "source_commit_sha": "8d828ce929f3c625141858df2a510ce810ab7eb8",
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-43/**"
+  ],
+  "inputs": [
+    {
+      "name": "Original source-free synthetic intervention-consequence hidden-factor generator",
+      "source": "Reproducible SHA256-derived seed streams in frozen experiment.py; no external/protected dataset or model checkpoint",
+      "sha256": "48a798f75c1afc9701158edb4131d076dbe07f9dd3ad9374b9095ad2b47fe79f"
+    }
+  ],
+  "code_freeze": {
+    "experiment": "experiment.py.bz2",
+    "experiment_blob": "e42717a22801ae944295c27700fb3793db970714",
+    "experiment_original_sha256": "48a798f75c1afc9701158edb4131d076dbe07f9dd3ad9374b9095ad2b47fe79f",
+    "experiment_compressed_sha256": "c44dc6d77a57453e90da4858835f949d73713f1035abe674156f0f2df42530fe",
+    "auditor": "audit.py.bz2",
+    "auditor_blob": "fa7477d72890420814b1b2c72e9afe2fa193df98",
+    "auditor_original_sha256": "b838cf23568016d97c068c8ea0e1e818b9355ab3a28992d602d1cb4f4d775e61",
+    "auditor_compressed_sha256": "f6e56bcbbe55a1a00ee386ef08a9a6a7896307006eb51d62d22b3fb720abacb0"
+  },
+  "source_program": {
+    "n_action_bits": 12,
+    "hidden_causal_bits": 10,
+    "spurious_cue_bits": [
+      10,
+      11
+    ],
+    "modeled_factor_grammar": "Known grammar generated from intervention inputs: P1 (12), P2 (66), P3 (220), A2 (66): 364 candidate supports (728 including new-stage-gated copies). No ground-truth planted factor supports or weights supplied to any learner; however grammar itself is supplied to all structured models and not discovered.",
+    "world_families": [
+      "parity2",
+      "parity3",
+      "mixed"
+    ],
+    "per_world_hidden_factors": 5,
+    "per_world_sharing": "3 invariant causal factors plus 1 old-only factor and 1 new-only factor, independently signed weights magnitude .85-1.15; all selected from first 10 causal action bits, candidate does not know which bits are causal.",
+    "observations": "Each label is the additive real-valued consequence of active signed parity/conjunction factors plus seeded Gaussian noise sigma=0.3. Inputs are randomized externally set do-interventions, not passively observed correlations; this is not an active action-selection test.",
+    "distribution_shifts": "Old: cue10 approximately copies bit0, cue11 bit1; new: cue10 approximately reverses bit0, cue11 copies bit2; cold: cues10/11 independent random. Held old/new and new-mechanism cold groups use separately seeded action and noise streams.",
+    "conditioned_context": "Old/new context stage label is known to all learners for new-stage-gated grammar. Cold test is new-context mechanism with cue distribution unseen in training.",
+    "evaluation_leakage": "Generator truth, true latent supports and all held consequences used only in evaluator. No test labels during fitting or feature selection."
+  },
+  "frozen_design": {
+    "primary_seeds": [
+      8617,
+      8629,
+      8651
+    ],
+    "smoke_only_excluded_seed": 99811,
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": [
+      "parity2",
+      "parity3",
+      "mixed"
+    ],
+    "worlds": 36,
+    "old_train_observations_per_world": 96,
+    "new_train_observations_per_world": 96,
+    "cumulative_train_per_world": 192,
+    "held_old": 128,
+    "held_new": 128,
+    "held_cold": 128,
+    "total_held_each_context": 4608,
+    "all_train_interventions": 6912,
+    "causal_factor_cap": "7 selected shared/new-gated supports for energy candidate, no-memory and OMP structural-memory; 4 stage-one supports, top3 old factors locked during new stage, 20 ridge anchor penalty; exhaustive OMP gets 7 nonzero supports. Ridge and ElasticNet dense coefficients and RandomForest larger capacity reported separately as stronger heterocapacity controls.",
+    "learner": "Stage one residual-energy factor discovery via deterministic normalized correlation contrast over grammar, recursive least-squares with 0.02 ridge; stage two retains three stage-one factor structures, rehearses all old+new observed consequences, penalizes drift of stage-one coefficients with lambda20, and adds up to four new supports. This is explicit sparse regression over a known finite composition grammar, not arbitrary unknown operator discovery.",
+    "arms": [
+      "energy_structural (persistent structural-memory hypothesis)",
+      "energy_no_memory (no locked motifs or coefficient anchoring)",
+      "omp_structural_memory (4 OMP old factors, 3 locked, same discovered capacity and replay but no coefficient anchor)",
+      "omp_full (scikit-learn OMP n_nonzero_coefs=7 fit_intercept=True on cumulative labels)",
+      "ridge_full (alpha=40)",
+      "elastic_net_full (alpha=.025,l1_ratio=.85,max_iter=5000,tol=1e-5)",
+      "forest_raw (60 trees, max_depth9,min_samples_leaf3 on raw action+context)",
+      "shuffled_energy (identical sparse source but SHA256-permuted 192 training consequences)"
+    ],
+    "negative_controls": [
+      "shuffled_energy same 192 observations/capacity",
+      "energy_no_memory same 192 observations with no retention lock"
+    ],
+    "strong_controls": [
+      "omp_structural_memory same factor grammar+support budget+old structural replay",
+      "omp_full sparse full grammar OMP7",
+      "ridge_full dense",
+      "elastic_net_full dense",
+      "forest_raw 60-tree raw nonlinear"
+    ],
+    "seeds_and_order": "SHA256 key E43:v1, independent source domains; seed=case_id=f'{world_id}:{family}'; frozen sequential order seed→world id→family→arm",
+    "time_definition": "Single CPU local per-arm measured fit_s+pred_s; all arms charged the same shared old/new design construction; individual arm repeated cold/old/new design and predict captured, not whole host or CI/GitHub/wall provisioning cost.",
+    "runtime": "Linux CPU, Python 3.13.5 NumPy 2.3.5 SciPy 1.17.0 scikit-learn 1.8.0, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1; no GPU/paid API.",
+    "budget": "36 primary worlds and one unchanged-source semantic replay plus independent refit audit; not more than 1 primary scoring run, no tuning on primary."
+  },
+  "metrics": [
+    "Mean held cold MSE on fresh cue distribution vs best conventional fully fitted model",
+    "Mean exact identified true factor supports from five world-generating motifs (exact-match support, ignores coefficient sign; gate key includes 'shared' but denominator is all five motifs)",
+    "Old held MSE immediately after stage one versus after stage two",
+    "Old held MSE against best fully trained non-sham conventional model",
+    "Cold held MSE against label-shuffled negative",
+    "Seed-wise strict cold MSE improvement against best conventional control",
+    "Local per-arm fit+eval CPU wall seconds versus OMP7"
+  ],
+  "frozen_gates": {
+    "cold_relative_gain_vs_strongest_10pct": "Mean candidate cold MSE <= .90 * minimum mean cold MSE over omp_structural_memory,omp_full,ridge_full,elastic_net_full,forest_raw.",
+    "shared_factor_recall_at_least_60pct": "Mean recall of ALL FIVE hidden true factor supports across 36 worlds >=.60. Name is legacy; includes three shared plus two stage-specific supports, NOT only shared factors.",
+    "old_retention_inflation_at_most_10pct": "After-stage-two old MSE <=1.10 times candidate old MSE immediately after stage one.",
+    "old_no_worse_than_best_control_5pct": "Candidate old-after-stage-two MSE <=1.05 times minimum old MSE among the same five fully fitted controls.",
+    "sham_negative_cold_relative_gain_20pct": "Candidate cold MSE <=.80 times label-shuffled energy control cold MSE.",
+    "seed_stability_two_of_three": "Strict candidate mean cold MSE lower than strongest conventional baseline separately within >=2 of 3 primary seeds (three-seed smoke is not required; smoke seed excluded).",
+    "fit_and_eval_cost_at_most_2x_omp": "Total candidate measured fit_s+pred_s over all 36 worlds <=2.0 times full-grammar OMP7 fit_s+pred_s over same worlds."
+  },
+  "decision_rules": {
+    "development_go": "All 7 frozen gates PASS AND independently authored full-source/world/model audit PASS; still not native scientific qualification.",
+    "development_no_go": "Any one gate FAIL with protocol/independent audit intact. Preserve all measured results and stop tuning against evaluated primary seeds.",
+    "invalid": "Source SHA mismatch, early primary outcome before prereg, source/held label leakage, identity drift, missing strong controls, broken independent source/model audit, unequal observed training labels, code path altered after freeze. Treat infrastructure separately.",
+    "mixed": "Report all gates with point estimates and relevant per-seed/family breakdowns; no postscore gate or selection changes."
+  },
+  "preprimary_smoke": {
+    "seed": 99811,
+    "worlds": 3,
+    "independent_refit_audit": "PASS",
+    "checks": 9753,
+    "interpretation": "Only implementation validation; 6/7 smoke gates passed but stability gate defined on three primary seeds is not meaningful on one excluded smoke seed. Never classify smoke as development go."
+  },
+  "prohibited_after_freeze": [
+    "No parameter/seed/family/output metric/postscore selection adjustments",
+    "No additional primary evaluations beyond one exact-source unchanged replay",
+    "No native scientific first-use, Yggdrasil model changes, accepted ref mutation, controller/scheduler/runner changes, merge/promotion, deployment"
+  ],
+  "authority": {
+    "research_only": true,
+    "external_contribution_only": true,
+    "native_training_authority": false,
+    "accepted_ref_mutation": false,
+    "scientific_first_use": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Exact frozen experiment and auditor are committed in source_commit_sha. Primary seeds 8617,8629,8651 have NOT been run at this preregistration boundary."
+}
