@@ -1,0 +1,239 @@
+{
+  "aggregate": {
+    "elastic_net_full": {
+      "cold_held": 0.188398841070841,
+      "fit_s": 0.2867676740006573,
+      "new_held": 0.14122566465625538,
+      "old_held": 0.14281874247880835,
+      "pred_s": 0.20712558899958822
+    },
+    "energy_no_memory": {
+      "cold_held": 0.13519275036937659,
+      "fit_s": 0.19327079600043362,
+      "new_held": 0.1165572383934897,
+      "old_held": 0.12687046988702413,
+      "pred_s": 0.18992938499741285
+    },
+    "energy_structural": {
+      "cold_held": 0.13928994740977765,
+      "fit_s": 0.2082931240020116,
+      "new_held": 0.10892312587065653,
+      "old_before": 0.09291275632057971,
+      "old_held": 0.12259968770947041,
+      "pred_s": 0.272027633000107,
+      "true_factor_recall": 0.9944444444444444
+    },
+    "forest_raw": {
+      "cold_held": 2.8715441329633946,
+      "fit_s": 1.5466202250008791,
+      "new_held": 2.6620123294832267,
+      "old_held": 2.657509067116324,
+      "pred_s": 0.3456910750001043
+    },
+    "omp_full": {
+      "cold_held": 0.36662330799169385,
+      "fit_s": 0.20496637200267287,
+      "new_held": 0.17958613981346458,
+      "old_held": 0.16862119006950643,
+      "pred_s": 0.2052472420009508
+    },
+    "omp_structural_memory": {
+      "cold_held": 0.12355848850228683,
+      "fit_s": 0.20551272600368975,
+      "new_held": 0.10449555439682166,
+      "old_held": 0.0976450296417932,
+      "pred_s": 0.18926412999735476
+    },
+    "ridge_full": {
+      "cold_held": 2.2922509969827223,
+      "fit_s": 0.2163104579976789,
+      "new_held": 1.9259566159070198,
+      "old_held": 2.121189629661428,
+      "pred_s": 0.21014086500144913
+    },
+    "shuffled_energy": {
+      "cold_held": 5.870803659379527,
+      "fit_s": 0.20099386000219965,
+      "new_held": 5.976499535396763,
+      "old_held": 4.806120024550802,
+      "pred_s": 0.19613811499766598
+    }
+  },
+  "archived_case_receipts": {
+    "file": "case_receipts.json.bz2",
+    "packed_bytes": 8298,
+    "packed_sha256": "d3250a6b936200e4a412a6d4d59329f82e3d3c699f2d896125e7134f99299d13",
+    "raw_bytes": 42953,
+    "raw_sha256": "2fcac188fd971a5d06ec55c44a8153876291d2c682d7c485f3643ee512e6db99",
+    "rows": 36
+  },
+  "arms": [
+    "elastic_net_full",
+    "energy_no_memory",
+    "energy_structural",
+    "forest_raw",
+    "omp_full",
+    "omp_structural_memory",
+    "ridge_full",
+    "shuffled_energy"
+  ],
+  "best_control_cold_mse": 0.12355848850228683,
+  "candidate_cost_s": 0.4803207570021186,
+  "classification": "DEVELOPMENT_NO_GO",
+  "deployment": "NONE",
+  "domains": [
+    "old_held",
+    "new_held",
+    "cold_held"
+  ],
+  "experiment_id": "ENERGY-43",
+  "factor_structure_recovery": {
+    "energy_no_memory": {
+      "all_five_correct_worlds": 33,
+      "mean_recall": 0.9777777777777779,
+      "world_count": 36
+    },
+    "energy_structural": {
+      "all_five_correct_worlds": 35,
+      "mean_recall": 0.9944444444444444,
+      "world_count": 36
+    },
+    "omp_structural_memory": {
+      "all_five_correct_worlds": 36,
+      "mean_recall": 1.0,
+      "world_count": 36
+    }
+  },
+  "families": [
+    "parity2",
+    "parity3",
+    "mixed"
+  ],
+  "gates": {
+    "cold_relative_gain_vs_strongest_10pct": false,
+    "fit_and_eval_cost_at_most_2x_omp": true,
+    "old_no_worse_than_best_control_5pct": false,
+    "old_retention_inflation_at_most_10pct": false,
+    "seed_stability_two_of_three": false,
+    "sham_negative_cold_relative_gain_20pct": true,
+    "shared_factor_recall_at_least_60pct": true
+  },
+  "gates_passed": 3,
+  "held_outcomes_per_domain_per_world": 128,
+  "independent_audit": {
+    "all_8_arms_refit": true,
+    "all_held_predictions_checked": true,
+    "checks": 116772,
+    "errors": [],
+    "source_reconstructed": true,
+    "status": "PASS",
+    "worlds": 36
+  },
+  "max_discovered_supports": 7,
+  "model_grammar_size": 364,
+  "native_yggdrasil_model_trained": false,
+  "observed_outcomes_per_world": 192,
+  "omp_full_cost_s": 0.41021361400362366,
+  "original_primary": {
+    "bytes": 164277,
+    "sha256": "853b6fdeb4a38fa77b7dcd49afeffd7d678f34000a74e368fbb9777b7d7210fa",
+    "uploaded_to_github": false
+  },
+  "per_family": [
+    {
+      "cold_mse": {
+        "elastic_net_full": 0.1315590613403744,
+        "energy_no_memory": 0.09583545721574349,
+        "energy_structural": 0.09595125359687551,
+        "omp_structural_memory": 0.0958354572157435
+      },
+      "family": "parity2",
+      "worlds": 12
+    },
+    {
+      "cold_mse": {
+        "elastic_net_full": 0.28457966681764263,
+        "energy_no_memory": 0.17650802007034416,
+        "energy_structural": 0.18550150944979452,
+        "omp_structural_memory": 0.17650802007034413
+      },
+      "family": "parity3",
+      "worlds": 12
+    },
+    {
+      "cold_mse": {
+        "elastic_net_full": 0.14905779505450611,
+        "energy_no_memory": 0.1332347738220421,
+        "energy_structural": 0.13641707918266296,
+        "omp_structural_memory": 0.09833198822077284
+      },
+      "family": "mixed",
+      "worlds": 12
+    }
+  ],
+  "per_seed": [
+    {
+      "cold_mse": {
+        "elastic_net_full": 0.21192637557081773,
+        "energy_no_memory": 0.11500051371740766,
+        "energy_structural": 0.09452262232334803,
+        "omp_structural_memory": 0.09551984503189077
+      },
+      "factor_recall": 0.9833333333333334,
+      "seed": 8617,
+      "worlds": 12
+    },
+    {
+      "cold_mse": {
+        "elastic_net_full": 0.17777873994484253,
+        "energy_no_memory": 0.16125057148923097,
+        "energy_structural": 0.18825543252759294,
+        "omp_structural_memory": 0.14582845457347857
+      },
+      "factor_recall": 1.0,
+      "seed": 8629,
+      "worlds": 12
+    },
+    {
+      "cold_mse": {
+        "elastic_net_full": 0.17549140769686286,
+        "energy_no_memory": 0.12932716590149113,
+        "energy_structural": 0.135091787378392,
+        "omp_structural_memory": 0.12932716590149113
+      },
+      "factor_recall": 1.0,
+      "seed": 8651,
+      "worlds": 12
+    }
+  ],
+  "prereg_commit": "288ee9322dfda7975ea40d687ca5cb6b37f92bd5",
+  "primary_seeds": [
+    8617,
+    8629,
+    8651
+  ],
+  "qualification": "synthetic external contributor development only",
+  "schema": "yggdrasil.energy43.result.v1",
+  "scientific_pass": false,
+  "seed_wins": 1,
+  "semantic_replay": {
+    "canonical_bytes": 74516,
+    "canonical_sha256": "ae3e3f64b103eabe45b4cad9b3ef3d49159897170746a7d3ce3e76488e5ae3c4",
+    "status": "PASS",
+    "timing_exclusions": [
+      "wall_s",
+      "aggregate fit_s/pred_s",
+      "per-world fit_s/pred_s",
+      "decision energy_cpu_s/omp_cpu_s"
+    ]
+  },
+  "smoke_excluded_seed": 99811,
+  "source_commit": "8d828ce929f3c625141858df2a510ce810ab7eb8",
+  "world_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "worlds": 36
+}
