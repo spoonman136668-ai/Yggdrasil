@@ -1,0 +1,61 @@
+name: YNCA03 isolated intervention research reproducibility
+on:
+  push:
+    branches:
+      - research/ynca03-active-fault-probes-20261118
+    paths:
+      - research/contrib/chatgpt/YNCA-03/experiment.py
+permissions:
+  contents: read
+jobs:
+  focused-frozen-synthetic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout pinned candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Prepare pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Validate exact SHA and focused tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B -m unittest discover -s research/contrib/chatgpt/YNCA-03 -p 'test_*.py' -v
+      - name: Execute source-frozen synthetic heldout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YNCA-03/experiment.py --heldout > "$RUNNER_TEMP/ynca03-result.json"
+          python - "$RUNNER_TEMP/ynca03-result.json" <<'PY'
+          import hashlib,json,pathlib,sys
+          path=pathlib.Path(sys.argv[1])
+          result=json.loads(path.read_text())
+          assert result['split']=='heldout'
+          assert result['outcome']['world_count']==512
+          assert result['audit']['disjoint_seeds']
+          print('YNCA03_SOURCE_SHA256='+result['source_sha256'])
+          print('YNCA03_RESULT_SHA256='+hashlib.sha256(path.read_bytes()).hexdigest())
+          print('YNCA03_RESULT_JSON='+json.dumps(result,sort_keys=True,separators=(',',':')))
+          PY
+      - name: Upload bounded evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca03-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca03-result.json
+          if-no-files-found: warn
+          retention-days: 30
