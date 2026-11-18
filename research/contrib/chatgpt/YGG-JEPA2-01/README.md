@@ -43,3 +43,5 @@ The `.github/workflows/ygg-jepa2-01.yml` source-bound workflow is limited to thi
 ## CI correction history
 
 The first attempt to introduce the qualification workflow was rejected before any job executed because its job reference needed a valid identifier. The job identifier was corrected without modifying the frozen training module, preregistration, learned parameters or development verdict. This source-only documentation commit triggers a fresh deterministic qualification attempt; an earlier CI failure must not be treated as a failed scientific test.
+
+The original development result remains frozen; later workflow revisions repair CI YAML and atlas custody only. A source-first G29 descendant is required after any such workflow source change, followed by independent Linux and Windows regression on the final SHA. Do not reinterpret CI setup failures as science outcomes.
