@@ -106,7 +106,7 @@ def audit_historical_admission(records):
     drift, never automatic reauthorization. All claims in this audit are
     anchored to the immutable Git SHA/blob set in PINNED.
     """
-    _expect(type(records) is dict and set(records)==set(k for k,*_ in PINN),
+    _expect(type(records) is dict and set(records)==set(k for k,*_ in PINNED),
             "report_set")
     r=copy.deepcopy(records)
     for key,_,_,_,schema in PINNED:
