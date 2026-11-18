@@ -1,0 +1,177 @@
+{
+  "schema": "yggdrasil.energy41.disposition.v1",
+  "experiment_id": "ENERGY-41",
+  "date": "2026-11-18",
+  "classification": "INVALID",
+  "reason_code": "IMPLEMENTATION_SIGN_INVERSION",
+  "frozen_scorer_classification": "DEVELOPMENT_NO_GO",
+  "source_commit": "f92697824a1aa129c5651c5848dd251d54a1aa1a",
+  "prereg_commit": "c7bf0c44c2a1a9928183986f78ec64355bbe3300",
+  "primary_seeds": [
+    8407,
+    8423,
+    8431
+  ],
+  "held_denominators": {
+    "novel": 1440,
+    "old": 480,
+    "lattice": 480,
+    "n52": 720
+  },
+  "scores": {
+    "structured_energy": {
+      "novel": 912,
+      "old": 235,
+      "lattice": 382,
+      "n52": 474,
+      "seconds": 0.4689817859971299
+    },
+    "bayes": {
+      "novel": 964,
+      "old": 423,
+      "lattice": 384,
+      "n52": 450,
+      "seconds": 0.44421264399716165
+    },
+    "logistic": {
+      "novel": 978,
+      "old": 423,
+      "lattice": 384,
+      "n52": 450,
+      "seconds": 0.4576064330012741
+    },
+    "uniform": {
+      "novel": 893,
+      "old": 294,
+      "lattice": 382,
+      "n52": 444,
+      "seconds": 0.4502242690005005
+    },
+    "shuffled_energy": {
+      "novel": 940,
+      "old": 253,
+      "lattice": 377,
+      "n52": 483,
+      "seconds": 0.4612396069978786
+    },
+    "oracle": {
+      "novel": 966,
+      "old": 423,
+      "lattice": 384,
+      "n52": 451,
+      "seconds": 0.44832774499536754
+    }
+  },
+  "per_seed_novel": {
+    "8407": {
+      "structured_energy": 324,
+      "bayes": 335,
+      "logistic": 335,
+      "oracle": 329,
+      "shuffled_energy": 327,
+      "uniform": 272
+    },
+    "8423": {
+      "structured_energy": 287,
+      "bayes": 286,
+      "logistic": 300,
+      "oracle": 294,
+      "shuffled_energy": 312,
+      "uniform": 320
+    },
+    "8431": {
+      "structured_energy": 301,
+      "bayes": 343,
+      "logistic": 343,
+      "oracle": 343,
+      "shuffled_energy": 301,
+      "uniform": 301
+    }
+  },
+  "weights_by_seed": {
+    "8407": {
+      "structured_energy": [
+        0.051,
+        0.051,
+        2.898
+      ],
+      "bayes": [
+        1.912,
+        0.911,
+        0.178
+      ]
+    },
+    "8423": {
+      "structured_energy": [
+        0.051,
+        0.051,
+        2.898
+      ],
+      "bayes": [
+        1.718,
+        1.048,
+        0.234
+      ]
+    },
+    "8431": {
+      "structured_energy": [
+        0.051,
+        0.051,
+        2.898
+      ],
+      "bayes": [
+        1.749,
+        1.067,
+        0.185
+      ]
+    }
+  },
+  "frozen_gates": {
+    "end_to_end_value_per_second_1point2x_bayes": false,
+    "group_shuffled_negative_5pp": false,
+    "n52_vs_bayes_1pp": true,
+    "novel_vs_best_information_matched_2pp": false,
+    "novel_vs_uniform_3pp": false,
+    "old_retention_at_most_1pp_loss": false,
+    "seed_stability_two_of_three": false,
+    "unseen_family_vs_bayes_1pp": false
+  },
+  "frozen_scorer_gates_passed": 1,
+  "defect": {
+    "schema": "yggdrasil.energy41.defect.v1",
+    "status": "FAIL_IMPLEMENTATION_INVARIANT",
+    "retested_training_worlds": 48,
+    "group_vertex_comparisons": 2880,
+    "sign_mismatches": 2217,
+    "negative_of_direct_count": 2880,
+    "first_counterexample": {
+      "seed": 8407,
+      "family": "erdos",
+      "vertex": 0,
+      "group": 0,
+      "source_delta": -2,
+      "direct_delta": 2
+    },
+    "consequence": "The first-principles feature difference V_group(flip)-V_group(truth) is negated in original frozen source. Original score is invalid as a test of the specified learner."
+  },
+  "original_primary_scored_json": {
+    "bytes": 1076680,
+    "sha256": "0da31d294659a0f6a71d0f454d2a4a952b519b3895e1607007a3c03f596b40eb",
+    "uploaded": false
+  },
+  "archived_case_scores": {
+    "file": "case_scores.csv.bz2",
+    "rows": 48,
+    "raw_sha256": "9aecdf075c1e025305e5d1c7a60ad66ac15acfe3b098dda1dcfc792e5b5f86f7",
+    "packed_sha256": "70abeda54a628a4f64f0c1949bdbf912cc0acf4f023e1e74d133fd6999ccbbce",
+    "git_blob": "7f641c7430ff264caa59e1c3018de41e2b0921e8"
+  },
+  "independent_audit": {
+    "status": "CONSISTENCY_PASS_SEMANTIC_INVARIANT_FAIL",
+    "checks": 68729,
+    "scope": "source recreation, fitted arm scoring and inference replay; sign error copied by independent audit"
+  },
+  "native_yggdrasil_training": false,
+  "scientific_pass": false,
+  "deployment": "NONE"
+}
