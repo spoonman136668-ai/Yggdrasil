@@ -23,7 +23,7 @@ STATUS = "DEV_ONLY_UNATTESTED_ORIGINAL_SCIENCE_NOT_RUN"
 SOURCE_PIN = "dido1998/CausalMBRL@2c595988b06b3d568fdde53213029e97841acb03"
 MAX_RECORDS = 50000
 ARMS = ("direct_programmed", "categorical_conditional", "identity", "uniform")
-_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}\\Z", re.ASCII)
+_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}", re.ASCII)
 
 
 @dataclass(frozen=True, slots=True)
