@@ -144,10 +144,13 @@ def _dev_or_pilot(seed):
         for t,(identifier,views,row,phase) in enumerate(events):
             if t==48:
                 native=native.begin_stream()
+                # The first complete archival block is immutable even if a
+                # later context detector re-partitions the partial 32:48 block.
+                first48_pin=digest(canonical(native._ledger[:48]))
                 old_ranges=tuple(
                     (item["start"],item["stop"],item["sha256"])
                     for item in native.info()["context"]["source_ranges"]
-                    if item["stop"]<=48)
+                    if item["stop"]<=32)
                 native,checkpoints["start"]=cold(native)
                 global_native,_=cold(global_native)
             predictions={}
@@ -182,6 +185,8 @@ def _dev_or_pilot(seed):
             if t>=48:
                 ranges=tuple((i["start"],i["stop"],i["sha256"]) for i in
                              native.info()["context"]["source_ranges"])
+                if digest(canonical(native._ledger[:48]))!=first48_pin:
+                    raise AssertionError("CKAD37_PRIOR_SOURCE_PREFIX_CHANGED")
                 for old in old_ranges:
                     if old not in ranges:
                         raise AssertionError("CKAD37_OLD_SOURCE_BLOCK_LOST")
@@ -208,7 +213,8 @@ def _dev_or_pilot(seed):
             "eval_boundaries_private":private_boundaries,
             "checkpoint_records":checkpoints,
             "old_source_ranges":[list(i) for i in old_ranges],
-            "old_source_preserved":True,"source_count":len(witnessed),
+            "old_source_preserved":True,"original_first48_sha256":first48_pin,
+            "source_count":len(witnessed),
             "duplicate_idempotent":True,"conflict_atomic":True,
             "consolidated_exact":True,"cold_exact":True,
             "detected_events":detections,
