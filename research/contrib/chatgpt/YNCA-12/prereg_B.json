@@ -1,0 +1,30 @@
+{
+  "schema": "ynca12.passB.correction-lock.v1",
+  "parent_A_result_sha256": "355b13dbf38b6908c3696dce4e9864dbfd72770112c40a3ab516f4c14ff18d5e",
+  "A_result_git_blob": "330d6b79e3c98431844e7a120dfe7cf3675810f0",
+  "A_source_git_blob": "f861ea09eb19bb8986491ce4f1ac89ceb234359d",
+  "observed_A": "Five of six gates PASS; familiar Brier top6=0.167213268 versus exact full pair=0.167213255; novel top6=0.420822797 vs no-memory=0.227565884. Full Bayes also fails novelty, so grammar/memory-family mismatch is diagnosed.",
+  "correction": "Introduce exactly one Bayesian out-of-family novelty mixture with fixed 50/50 prior: weigh retained-pair likelihood versus broad 24-function uniform no-memory likelihood from the SAME two newly revealed actions. Never see true operator or context labels. Apply identically to top6 and full-pair comparator.",
+  "evidence": "Use 2 revealed actions per new world; choose action pairs before scoring and no updates from withheld targets.",
+  "B_seed": 181200,
+  "B_splits": "32 new unlabeled training worlds + 64 familiar and 64 third-operator new test worlds, disjoint from A; 4 train, 2 test revealed pairs, 6 withheld per world",
+  "arms": [
+    "GATED_TOP6_PAIR",
+    "GATED_FULL_PAIR_BAYES",
+    "UNGATED_TOP6_PAIR",
+    "UNGATED_FULL_PAIR_BAYES",
+    "FULL_SINGLE_OPERATOR_BAYES",
+    "FREQUENCY",
+    "NO_MEMORY_BAYES"
+  ],
+  "gates": {
+    "familiar_gain_over_best_nonpair_absolute_min": 0.02,
+    "familiar_brier_ratio_to_gated_full_pair_max": 1.15,
+    "familiarity_accuracy_loss_vs_gated_full_pair_max_pp": 2,
+    "novel_brier_harm_vs_no_memory_absolute_max": 0.02,
+    "combined_familiar_and_novel_brier_gain_vs_best_nonpair_absolute_min": 0.02,
+    "cold_restore_error_max": 1e-12
+  },
+  "stopping": "ONE correction only, ONE B first-use after script source and prereg both pinned. Do not modify or rerun B for tuning. A and B both development-only. If any gate fails: DEVELOPMENT_NO_GO, stop this branch; preserve negative.",
+  "isolation": "No original Yggdrasil science first-use, CKAD state, FORGE owner, accepted main, native weights, deployment, new controller or paid API"
+}

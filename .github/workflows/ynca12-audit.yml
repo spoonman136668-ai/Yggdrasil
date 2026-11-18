@@ -1,0 +1,39 @@
+name: YNCA12 frozen evidence audit
+on:
+  push:
+    branches:
+      - research/ynca12-unlabeled-context-dev-20261118
+    paths:
+      - research/contrib/chatgpt/YNCA-12/**
+      - .github/workflows/ynca12-audit.yml
+permissions:
+  contents: read
+jobs:
+  preserved-results:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve source bytes across platforms
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Audit immutable source and stored results without re-scoring B
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B research/contrib/chatgpt/YNCA-12/audit_results.py
+          test -z "$(git status --porcelain)"
