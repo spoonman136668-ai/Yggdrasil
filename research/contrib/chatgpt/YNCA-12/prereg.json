@@ -1,0 +1,41 @@
+{
+  "schema": "ynca12.unlabeled-operator-context.prereg.v1",
+  "experiment": "YNCA-12 exploratory development: infer two retained causal operator contexts without labels",
+  "parent_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": "YNCA-11 PR #1236 at c72105f947651e231d67940d4bce9a49164fca27; its source-frozen B is consumed and must not be retuned",
+  "scope": "Synthetic contributor-only study; not native Yggdrasil/CKAD learning, scientific first-use, deployment or accepted-ref change",
+  "hypothesis": "A top-six unordered-operator-pair posterior learned from unlabeled intervention/outcome worlds survives interference and approaches full 300-pair Bayesian predictive Brier while retaining <=6 pairs.",
+  "grammar": "Exactly YNCA-11 deterministic 24 nontrivial permutation-orbit representative Boolean functions; not open-grammar invention",
+  "protocol": {
+    "train": "32 independent worlds, 8A 8B 8A 8B latent order hidden from all learners; 4 noisy actions/world",
+    "test": "64 fresh in-family worlds plus 64 third-operator out-of-family negative worlds; 2 revealed actions/world, evaluate all 6 withheld noiseless bits; zero updates from withheld data",
+    "observation_noise": 0.1,
+    "hidden_per_world_role_permutation": "uniform among 6",
+    "interventions": "uniform without replacement, matched across all fitted arms",
+    "splits": {
+      "A_development": 171200,
+      "B_reserved_unused": 181200
+    },
+    "rng": "SHA-256 domain-separated deterministic seeds",
+    "methods": [
+      "TOP6_PAIR_POSTERIOR",
+      "FULL_PAIR_BAYES_300",
+      "FULL_SINGLE_OPERATOR_BAYES_24",
+      "FULLY_TRAINED_FREQUENCY",
+      "NO_MEMORY_BAYES_24",
+      "LAST_WORLD_ONLY"
+    ],
+    "metric": "withheld Brier, 0.5 accuracy, novel-operator Brier, serialized cold parity, model size, wall/CPU/peak memory and counted likelihood operations"
+  },
+  "pass_A_frozen_gates": {
+    "gain_over_best_non_pair_control_absolute_brier_min": 0.02,
+    "max_brier_ratio_to_full_pair_bayes": 1.15,
+    "max_accuracy_loss_vs_full_pair_bayes_percentage_points": 2,
+    "max_out_of_family_brier_harm_vs_no_memory_absolute": 0.02,
+    "max_cold_prediction_abs_error": 1e-12,
+    "max_stored_pairs": 6
+  },
+  "tuning": "Evaluate A exactly once. If credible diagnosable failure, permit one mechanism-targeted change and one independent development split with a new prescore source lock, then stop if still unpromising. B reserve is never a post hoc rescue; original protected Yggdrasil data untouched.",
+  "classification": "DEVELOPMENT ONLY; no SCIENTIFIC_PASS until separately qualified native first-use with strong matched exact/fully trained controls.",
+  "isolation": "No main/native-weight/CKAD/FORGE/controller/runner/scheduler/promotion/deployment/paid API change."
+}
