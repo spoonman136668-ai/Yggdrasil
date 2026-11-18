@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD38",
+  "kind": "native rule-change recall intervention",
+  "source_parent": "60634ab8c46b13039e021f28f8fa70bb6b69db96",
+  "question": "Will a read-only, contradiction-triggered sharpening of the existing NativeEpisodeExperience posterior over retained old causal blocks improve recovery after unannounced structural shifts, without erasing old memories or relying on hidden rule labels?",
+  "mechanism": "Branch-only opt-in NativeEpisodeExperience.context_forecast_recall: when an endogenous stream contradiction detector has fired within the last 24 genuine episodes, square the posterior context-model weights and normalize before reading native transition and terminal forecasts; otherwise call unchanged context_forecast. Learn and retain evidence ONLY through original native.observe/stream. No new controller/learner, no inferred outcomes, no oracle boundary, no accepted change.",
+  "worlds": "Two independent worlds per seed; each unannounced stochastic A->novel B->A return at private variable boundaries with random paired-view nuisance bits and authentic two-stage action/transition/reward consequences. Two source family variants: family0 previously described XOR-vs-OR transition/terminal structures; family1 a conjunction-gated transition and independent parity-vs-disjunction terminal structural change (not relabeling). The variant is generated evaluator-only and NOT passed to the native or conventional predictors.",
+  "source_and_split": "Actual source-only episodes from independent simulator seed and world; sequential actions sampled independent of regime/outcome, same for all arms. First 48 witnessed events warm old native memory, begin native stream ONCE before rule changes. A first period 96+/-8; B 72+/-8; return A 64. Score transition before next-state observation, terminal after next-state is observed but before reward. Regime and phase labels used only to score afterwards.",
+  "controls": [
+    "Unmodified existing NativeEpisodeExperience(repair=True) stream forecast",
+    "Same native stream with local repair=False as native ablation",
+    "Existing native global nonstream",
+    "Fully fitted independent Beta(1,1) causal transition+terminal cell full history",
+    "Fully trained sliding-window12, sliding-window24 and sliding-window48 conventional Beta(1,1)",
+    "Fully updated exponential-discount0.85 and discount0.95 conventional Beta",
+    "Online prequential conventional Hedge mixture over all 6 conventional models, fixed eta=4 (updated only after real observed outcome)",
+    "Sham 0.5"
+  ],
+  "original_pilots": [
+    14181,
+    14182
+  ],
+  "dev_only": [
+    88511,
+    88512
+  ],
+  "primary_reserved": [
+    24181,
+    24182,
+    24183
+  ],
+  "consumed_do_not_replay": [
+    14071,
+    14072
+  ],
+  "metrics": "Prequential transition+conditional-terminal mean squared/Brier loss per episode, grouped by stable A, first24 B, late B, first24 A-return, late A-return and pooled late B+late return. Identical observations/actions/model capacity accounting and per-episode forecast receipts for all native and conventional arms. Native detector counts, context source archive SHA, model/checkpoint byte identity, actual observed event IDs, duplicate/contradiction atomicity, CPU/wall per seed.",
+  "frozen_go": "Both original pilots: candidate recall Brier on pooled late B+late return <=0.145 AND >=0.025 absolute lower than BOTH unmodified native stream AND strongest of ALL independently fully fitted conventional controls (including online Hedge) on same seed, and <= unmodified native stream during early B and late A-return; native prestream predictions exactly equal original; cold byte identity, all genuine source IDs, first48 prefix and old complete context-block SHA preserved, context readout causes zero checkpoint mutation, conflicting duplicate rejected, negative controls/auditor PASS. Else SCREEN_NO_GO. Pilot GO never SCIENTIFIC_PASS; require independently qualified held primary and unfamiliar transfer first.",
+  "source_custody": "Preregister BEFORE feature/source changes; DEV-only smoke tests disjoint seeds; freeze Git blobs of native method, campaign, tests, independent auditor, workflow before one-shot pilots. Independent audit reconstructs public truth and strong conventional predictors without importing campaign/native learner, score original Git-sealed receipts. Exact final two-OS full regression at post-seal SHA. Never rerun or tune original pilots.",
+  "science_boundary": "This is engineering-only synthetic observed-action training of one existing native learner; read-only posterior sharpening is not an independent intelligence system or proof of GI. No accepted model/runtimes, no Forge/controller integration, no scheduled tasks, no merge/promotion/live operation.",
+  "authority": {
+    "research_only": true,
+    "no_owner_first_use": true,
+    "merge": false,
+    "promotion": false,
+    "controller": false,
+    "scheduled_tasks": false,
+    "paid_api": false
+  }
+}
