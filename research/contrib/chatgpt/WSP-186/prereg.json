@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.wsp186.public-physical-context-prereg.v1",
+  "experiment_id": "WSP-186",
+  "project": "Yggdrasil",
+  "classification": "real-published-physical-offline-frozen-development-experiment",
+  "parent_source_sha": "24db4efb5593c463c09756162c91d0863c87d1d2",
+  "branch": "research/wsp186-corrected-public-physical-walks-20261118",
+  "context": "WSP-184 was NEVER trained on original source; stopped at walk 1 source row count. WSP-185 verified actual original row counts without reading measured numerical sensor outputs. This is a NEW prospective cohort, NOT alteration or rerun of WSP184 prereg.",
+  "scientific_question": "Does WSP184's tokenless contradiction-gated residual context memory improve real measured adaptive physical sensor predictions beyond independently FIT-trained batch autoregression, same-info EMA, and persistence when a physical chamber's instrument parameters change?",
+  "source": {
+    "repo": "juangamella/causal-chamber",
+    "sha": "967d59a42956872f37463cc561ecf6e9ceab9364",
+    "dataset": "wt_walks_v1",
+    "license": "CC BY 4.0, Gamella/Peters/Buehlmann",
+    "zip_url": "https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/wt_walks_v1.zip",
+    "archive_md5": "19bb4e92cbe0b8dff49299b9b509ac36",
+    "archive_sha256": "1ef92d39fff7645a9e6e8cd41311e708362606491590a1534c6a5135d207736e",
+    "metadata_provenance_wsp185_sha": "24db4efb5593c463c09756162c91d0863c87d1d2",
+    "member_sha256": {
+      "actuators_random_walk_2": "de9ddacd37582f9b8b3fe28c6d852c86ef891e4b87de48679a54f84b00326f9a",
+      "actuators_random_walk_3": "7a039b92188c78d906f9d8f0ab5646281c89d83a3e458f1661cdccd096dd2d3b",
+      "actuators_random_walk_4": "022c754017fa4ac831adf91a98fbd49d984086d7c21164ec2c5986bfd85e8c6b",
+      "actuators_random_walk_5": "f4e26667ef8650edbdb5bc9b182543527461d2e7bde03063ea7cf1e7bab45a37",
+      "actuators_random_walk_6": "7502f2acd9ed1b40d2039f17320d50a58d01b7d749d4c8298af7f5efa8bba18d",
+      "actuators_random_walk_7": "710c2d7ca785971f73e3c8777fefda85fcd241e3f0c771f05706204cfe46e8b9",
+      "actuators_random_walk_8": "cc38d03b6b7e0f53a9c4b46a1227d34979fda58a9db15137791e66b2c00c05e6",
+      "actuators_random_walk_9": "750d9e25f3ef9c8b6eb2c6b1cc3743a10ffd4ac0dc3ab1c2141f2b66f17d4ea4",
+      "actuators_random_walk_10": "4e9630d13ddea8d481190b764e816523045550d8c73a4484d1cd9b04be548cae",
+      "regime_jumps_single": "ae00d09adddde4db86f571d85f402adc959017f376848e14cc16625b02cd59e0"
+    },
+    "excluded_source_file": "actuators_random_walk_1.csv; known 1016 readings, excluded BEFORE this experiment by WSP185 metadata",
+    "new_physical_actions": 0,
+    "remote_lab_calls": 0
+  },
+  "frozen_cohorts": {
+    "FIT": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "VALID": [
+      7,
+      8
+    ],
+    "PUBLIC_DEV": [
+      9,
+      10
+    ],
+    "PUBLIC_CHANGED_CONTEXT": "regime_jumps_single",
+    "count_per_walk": 10000,
+    "regime_count": 32,
+    "rows_per_regime": 10000,
+    "no_use_of_walk_1": true,
+    "source_is_not_independent_unfamiliar_mechanism": true
+  },
+  "frozen_methods": {
+    "reuse": "WSP-184/physical_context.py as immutable imported source; WSP186 permits a separate roster loader ONLY and does not edit or rescope WSP184.",
+    "features": "five CURRENT public commanded actuator values (load_in, load_out, hatch, pot_1, pot_2) plus both sensor readings from the previous completed measurement; exclude current sensor values, hidden ground-truth regime flag, timestamp index/seed; first row of each walk cannot be scored.",
+    "train": "FIT-only normalized eight-feature causal ARX via direct recursive ridge least squares, lambda 0.01; independent full-batch ridge same FIT and features with <=1e-5 coefficient difference. No periodic validation/DEV model retrain.",
+    "controls": "fully FIT-trained batch ridge, same-public-history EMA bias alpha0.2, same-history sensor persistence. All controls and candidate receive identical observation stream.",
+    "candidate": "contradiction gate on 3 consecutive previous errors >1.5 FIT residual standard deviations, per output, gain0.2 and decay0.98. No post-DEV hyperparameter tuning.",
+    "metrics": "FIT-normalized RMSE both outputs and mean across outputs, on PUBLIC_DEV walk9-10, change regime first 200 measurements of each regime 1..31 and all 310,000 changed-regime measures; candidate gate compared to best actually scored control independently per output (oracle conservative screen).",
+    "threshold": ">=5% lower normalized RMSE on BOTH RPM and pressure during first 200 recorded measurements after each of 31 original physical regime transitions; equal frozen base checkpoint byte SHA256 pre/post, otherwise NO_GO.",
+    "score_order": "train FIT, select best conventional comparator by VALID only, then OPEN PUBLIC_DEV ONCE. Even if benchmark fails, preserve full scores, do not change any parameter, cohort, threshold or data alignment on same source.",
+    "interpretation": "developer evidence on preexisting public physical source measurements, NOT first-use, native Yggdrasil integration, causal graph discovery, unfamiliar world transfer, or SCIENTIFIC_PASS. Source instrument interventions within one chamber change configuration but not proof of new independently sourced causal worlds."
+  },
+  "gate": {
+    "maximum_development_passes": 2,
+    "negative_stop": true,
+    "source_owner_first_use_authorized": false,
+    "scientific_pass": false,
+    "merge": false,
+    "deployment": false,
+    "paid_API": false,
+    "controllers": false,
+    "scheduled_tasks": false
+  },
+  "status": "FROZEN_BEFORE_OPENING_SOURCE_NUMERIC_MEASUREMENTS"
+}
