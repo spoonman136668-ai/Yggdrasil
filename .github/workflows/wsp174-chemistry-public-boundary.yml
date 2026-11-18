@@ -1,0 +1,144 @@
+name: WSP174 chemistry public boundary source-free qualification
+on:
+  push:
+    branches: [research/wsp174-chemistry-public-boundary-20261118]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen WSP169 ancestry and source isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor b88d025b9744f21132ac260caa521836cb50ddd6 HEAD
+          git diff --exit-code b88d025b9744f21132ac260caa521836cb50ddd6 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/WSP-164 research/contrib/chatgpt/WSP-165 research/contrib/chatgpt/WSP-166 research/contrib/chatgpt/WSP-167 research/contrib/chatgpt/WSP-168 research/contrib/chatgpt/WSP-169 research/contrib/chatgpt/CKAD-18
+          test ! -e research/contrib/chatgpt/WSP-174/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-174/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Source-free negative controls and inherited WSP regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-161 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-162 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-163 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-164 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-165 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-166 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-167 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-168 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-169 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-174 -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/WSP-169/admission_audit.py
+          test -z "$(git status --porcelain)"
+          echo WSP174_FOCUSED_SOURCEFREE_PASS
+
+  atlas-once:
+    needs: [focused]
+    if: "github.event.head_commit.message == 'ci(wsp174): activate source-free qualification' && github.run_attempt == 1 && needs.focused.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp174-single-derived-atlas
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate only three G29 source atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp174): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp174-chemistry-public-boundary-20261118
+
+  full-final:
+    needs: [focused]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp174): pin G29 source atlas at ') && github.run_attempt == 1 && needs.focused.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact final inherited/full regression and G29 checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor b88d025b9744f21132ac260caa521836cb50ddd6 HEAD
+          git diff --exit-code b88d025b9744f21132ac260caa521836cb50ddd6 HEAD -- yggdrasil research/contrib/chatgpt/WSP-158 research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/WSP-164 research/contrib/chatgpt/WSP-165 research/contrib/chatgpt/WSP-166 research/contrib/chatgpt/WSP-167 research/contrib/chatgpt/WSP-168 research/contrib/chatgpt/WSP-169 research/contrib/chatgpt/CKAD-18
+          test ! -e research/contrib/chatgpt/WSP-174/source_first_use_authority.json
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-161 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-162 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-163 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-164 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-165 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-166 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-167 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-168 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-169 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-174 -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/WSP-169/admission_audit.py
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo WSP174_FULL_FINAL_SOURCEFREE_PASS
