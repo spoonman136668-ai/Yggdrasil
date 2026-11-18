@@ -1,0 +1,124 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-09-INCIDENCE-ATLAS",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can an external tokenless learner infer previously unknown four-vertex causal edge incidence and response-channel offsets from eight noisy interventions, and does enforcing a globally coherent learned cycle improve structure recovery without falsely claiming discovery of arbitrary new topologies?",
+  "hypothesis": "One targeted Pass B correction (joint global cycle MAP over candidate unknown edge assignments) lowers Brier at least 15% against Pass A independent MAP, stays within 10% of exact correct-family cycle Bayes Brier, and does not reduce exact edge+offset recovery rate. Strong exact unrestricted graph Bayes is retained as a check on inductive bias. If it fails, stop this variant after two bounded development passes.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1231",
+      "note": "YNCA08 learned to filter the obstruction from a manually supplied constant F2 sheaf; did not learn the sheaf incidence itself"
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1225",
+      "note": "YNCA05 established information ceilings from insufficient interventions; this experiment acquires action-consequence evidence for previously unlabeled edge structure"
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1207",
+      "note": "CKAD cumulative native learner separate, not modified"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-09/prereg.json",
+    "research/contrib/chatgpt/YNCA-09/experiment.py",
+    "research/contrib/chatgpt/YNCA-09/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-09/result_A.json",
+    "research/contrib/chatgpt/YNCA-09/result_B.json",
+    "research/contrib/chatgpt/YNCA-09/README.md",
+    "research/contrib/chatgpt/YNCA-09/provenance.json",
+    ".github/workflows/ynca09-incidence.yml"
+  ],
+  "inputs": [
+    {
+      "name": "Synthetic four-vertex causal graph, four anonymous noisy binary response channels, eight per-world independent uniform binary vertex interventions",
+      "sha256": "B_SOURCE_SHA256_PENDING_SOURCE_COMMIT",
+      "source": "External source-free deterministic Python stdlib generator. No native Yggdrasil world model, protected holdout, private original data or paid API."
+    }
+  ],
+  "frozen_design": {
+    "pass_A": {
+      "status": "Exploratory executed locally before prereg; not confirmatory",
+      "worlds": 64,
+      "seeds": "410001..410064",
+      "noise": 0.1,
+      "observations": 8,
+      "mean_brier": {
+        "INDEPENDENT_MAP": 0.10546875,
+        "INDEPENDENT_BAYES": 0.06076572,
+        "JOINT_BAYES_CYCLE": 0.02695266,
+        "JOINT_BAYES_UNRESTRICTED": 0.04532538
+      },
+      "independent_MAP_exact_channel_edge_offset_accuracy": 0.7890625,
+      "diagnosis": "Independent edge maximum likelihood ignores evidence that every response channel must belong to a different edge of a single connected cycle. One pre-registered correction is joint cycle-constrained MAP."
+    },
+    "pass_B": {
+      "status": "Unseen, not executed before prereg/source lock",
+      "worlds": 128,
+      "seeds": "420001..420128",
+      "noise": 0.1,
+      "observations": 8,
+      "interventions": "Eight uniform hash-seeded 4-bit vertex interventions/world, four noisy anonymous edge response channels per action",
+      "outcome": "All 16 intervention assignments and four channels scored after inference, never exposed to policy; fixed 64-bit evaluation target/world",
+      "source": "Freeze source Git SHA and SHA-256 before first B run; result separately archived and compared across Linux + Windows."
+    },
+    "shift_holdout": {
+      "status": "RESERVED; do NOT run in this gate unless an independent protocol authorizes it",
+      "worlds": 64,
+      "seeds": "430001..430064",
+      "topologies": "Noncycle 4-edge connected graph (triangle with attached vertex), outside cycle-only B's structural grammar; expected falsification"
+    },
+    "grammar": "Four labelled vertex binary action bits; 6 candidate unordered XOR edges; 4 unknown distinct response-channel edges and 4 independent unknown edge-bit offsets. Train/A/B graphs drawn from all three unlabeled four-cycles. Candidate B includes cycle topology and channel permutation, selected by joint maximum likelihood on noisy consequence observations. No hidden evaluation truth enters prediction.",
+    "controls": [
+      "Independent per-channel maximum likelihood over all 6 edges x 2 offsets (Pass A)",
+      "Independent per-channel full Bayesian mixture over all edges and offsets",
+      "Exact Bayesian graph+offset posterior over 3 four-cycle topologies and all channel permutations",
+      "Exact Bayesian graph+offset posterior over all 15 distinct 4-edge connected topologies and channel permutations"
+    ],
+    "equal_information": true,
+    "evaluator": "64 channel/action truth bits/world. Brier and 0.5-threshold channel accuracy; exact edge-and-offset assignment accuracy; source/runtime receipts. All inference sees the same eight noisy four-channel observations. Calibrations at 10% independent bit noise; held-out truth never used for fitting.",
+    "compute_budget": "Python 3.12 standard library, GitHub hosted Linux and Windows <=12 min/job, no GPUs, no paid APIs, no native owner runner",
+    "capacity": "4 binary vertices, 4 anonymous channels, 6 potential XOR edges, up to 15 topology families, no increasing model parameters or new primitive operations across B cohorts",
+    "possible_shift_limit": "The graph cycle relation is supplied as a prior; this is wiring discovery inside a fixed algebraic family, not autonomous invention of a new relation or learned sheaf restriction maps.",
+    "deterministic_expected": true,
+    "frozen_source_before_B": "source commit and file SHA-256 to be appended to prereg before B workflow first use"
+  },
+  "controls": [
+    "Independent MAP six-edge matching (A)",
+    "Independent exact Bayesian posterior over 12 edge/offset pairs",
+    "Exact Bayes uniform prior over correct four-cycle graph family with unknown channel mapping and edge offsets",
+    "Exact Bayes over all 15 connected four-edge graph topologies"
+  ],
+  "metrics": [
+    "Mean full 16-action four-channel Brier score lower better",
+    "Held-out truth-bit prediction accuracy",
+    "Exact channel edge-and-offset recovery rate",
+    "Brier change versus A and ratio to exact cycle Bayes",
+    "Linux/Windows original-result hash and 6+ focused negative controls",
+    "Offline model posterior/sampling operation counts; wallclock if available"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL if corrected joint-cycle MAP Brier <=0.85x independent-MAP Brier, Brier <=1.10x exact cycle Bayes, and edge-plus-offset identification accuracy >= independent-MAP; all sources frozen before independent B and exact output matches OS. This does NOT demonstrate SCIENTIFIC_PASS, native transfer or novel operators.",
+    "mixed": "Joint MAP reduces Brier and raises correct edge recovery, but misses exact-Bayes proximity/15% threshold: DEVELOPMENT_MIXED, preserve progress but do not tune this candidate further on B.",
+    "negative": "Joint MAP is worse than independent MAP or fails key recovery/accuracy checks; DEVELOPMENT_NO_GO. Stop after bounded A+B instead of tuning B.",
+    "invalid": "B or SHIFT outcomes inspected before source prereg lock; loss of source/hash identity; inconsistent OS result; hidden edge labels supplied to fitted policy; omitted exact Bayes; post-result threshold edits or unseen additional models."
+  },
+  "prohibited_after_primary_run": [
+    "tune on B outcomes",
+    "use reserved SHIFT to salvage B negative",
+    "change source or thresholds and call the new run original B",
+    "promote external contributor evidence to accepted native learning",
+    "claim fixed cycle prior is autonomously generated by learner",
+    "modify CKAD, owner, controller, scheduler, accepted refs or deployments"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "A exploratory local inspection is disclosed. B candidate source will be pinned and executed only once per OS on disjoint worlds. The user allows one targeted development correction, not unlimited tuning."
+}
