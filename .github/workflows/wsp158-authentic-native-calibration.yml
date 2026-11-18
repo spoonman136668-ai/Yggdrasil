@@ -160,6 +160,20 @@ jobs:
           git diff --exit-code 75e8b1da111319cbccf25e76e3153ccba508ce9f HEAD -- yggdrasil/public_causal_cells.py research/contrib/chatgpt/WSP-157 research/contrib/chatgpt/NKR-19
           test ! -e research/contrib/chatgpt/WSP-158/SCIENTIFIC_PASS.json
           test ! -e research/contrib/chatgpt/WSP-158/original_first_use_authorization.json
+          git diff --exit-code 98773b18b496d1339fd0ff54ce202e5f3bf5ae32 HEAD -- research/contrib/chatgpt/WSP-158/result.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('research/contrib/chatgpt/WSP-158/result.json').read_text('utf8'))
+          assert r['classification']=='DEVELOPMENT_NATIVE_CALIBRATION_NO_GO'
+          assert r['provenance']['first_semantic_sha256']=='336f93c5629e9cb9e3ed75a2f2abcafe8b6e3a891671fcefa4e8f73624121d8e'
+          assert r['result']['gain_over_MLE_absolute']<0.005
+          assert r['result']['gain_over_MLE_absolute']==0.000081809767
+          assert r['scientific']['scientific_pass'] is False
+          assert r['source']['new_original_do']==0
+          assert r['source_changes_after_first_score'] is False
+          print('WSP158_FROZEN_NEGATIVE_RECEIPT_PASS')
+          PY
           python -B -m unittest discover -s tests -p 'test_*.py' -v
           python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
