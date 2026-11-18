@@ -1,0 +1,166 @@
+{
+  "cases": [
+    {
+      "cold_restore_exact": true,
+      "contradiction_quarantine_local": true,
+      "full_checkpoint_sha256": "825fce155febbf0852b50f2d3bdc16adada44efcc2bb3f55168c64c8be8f3277",
+      "held_composite_cases": 32,
+      "metrics": {
+        "exact_bayesian": {
+          "accuracy": 1,
+          "brier": 0,
+          "cases": 32
+        },
+        "fitted_frequency": {
+          "accuracy": 0.40625,
+          "brier": 0.25,
+          "cases": 32
+        },
+        "fitted_logistic": {
+          "accuracy": 0.5625,
+          "brier": 0.270849365,
+          "cases": 32
+        },
+        "native_composed": {
+          "accuracy": 0.40625,
+          "brier": 0.25,
+          "cases": 32
+        },
+        "no_composition_sham": {
+          "accuracy": 0.40625,
+          "brier": 0.25,
+          "cases": 32
+        }
+      },
+      "native_primitive_held_coverage": 0,
+      "old_prediction_retention_exact": true,
+      "original_checkpoint_sha256": "3ead34ef7ee01b2607c6f20be8fce9d772d941d2d2dff27f03ecf22eed5ea198",
+      "revealed_source_rows": 144,
+      "seed": 404
+    },
+    {
+      "cold_restore_exact": true,
+      "contradiction_quarantine_local": true,
+      "full_checkpoint_sha256": "b7bd16cf929f626bca627e621a0374654d8e0aad71e59d2a3c0c058686485262",
+      "held_composite_cases": 32,
+      "metrics": {
+        "exact_bayesian": {
+          "accuracy": 1,
+          "brier": 0,
+          "cases": 32
+        },
+        "fitted_frequency": {
+          "accuracy": 0.53125,
+          "brier": 0.25,
+          "cases": 32
+        },
+        "fitted_logistic": {
+          "accuracy": 0.4375,
+          "brier": 0.2895275095,
+          "cases": 32
+        },
+        "native_composed": {
+          "accuracy": 0.65625,
+          "brier": 0.21875,
+          "cases": 32
+        },
+        "no_composition_sham": {
+          "accuracy": 0.53125,
+          "brier": 0.25,
+          "cases": 32
+        }
+      },
+      "native_primitive_held_coverage": 0.3333333333333333,
+      "old_prediction_retention_exact": true,
+      "original_checkpoint_sha256": "6ab41afcb6e23b96baf0e72b30081de998215ca778cd07d4e04e22474a2493f3",
+      "revealed_source_rows": 144,
+      "seed": 505
+    },
+    {
+      "cold_restore_exact": true,
+      "contradiction_quarantine_local": true,
+      "full_checkpoint_sha256": "6677b256b605a97c0b4e3f85d197ad8947a5e9e780a4c8e6a9a730ac485204e9",
+      "held_composite_cases": 32,
+      "metrics": {
+        "exact_bayesian": {
+          "accuracy": 1,
+          "brier": 0,
+          "cases": 32
+        },
+        "fitted_frequency": {
+          "accuracy": 0.53125,
+          "brier": 0.25,
+          "cases": 32
+        },
+        "fitted_logistic": {
+          "accuracy": 0.40625,
+          "brier": 0.3790838809,
+          "cases": 32
+        },
+        "native_composed": {
+          "accuracy": 0.5,
+          "brier": 0.25,
+          "cases": 32
+        },
+        "no_composition_sham": {
+          "accuracy": 0.53125,
+          "brier": 0.25,
+          "cases": 32
+        }
+      },
+      "native_primitive_held_coverage": 0.3333333333333333,
+      "old_prediction_retention_exact": true,
+      "original_checkpoint_sha256": "6d3305a9f33cae676f4dca4bd2e44baf6338fe7d363eff7d98c262a1ac3e81d2",
+      "revealed_source_rows": 144,
+      "seed": 606
+    }
+  ],
+  "held_cases": 96,
+  "native_model_mutated": false,
+  "protected_first_use": false,
+  "schema": "yggdrasil.ckad29.composition.v1",
+  "source_lock": {
+    "campaign_blob_sha1": "f32f523766368f1c7ea6cc387c5bb663e6a17282",
+    "campaign_commit": "08cd467527ce1bc36ca0d81ed448747603380c6e",
+    "cohort": "ckad29-public-synthetic-B-20261118",
+    "controls": [
+      "native-composed",
+      "fitted-logistic",
+      "fitted-frequency",
+      "exact-bayesian",
+      "sham"
+    ],
+    "experiment": "CKAD29",
+    "first_use": "not_consumed_at_lock",
+    "locked_seeds": [
+      404,
+      505,
+      606
+    ],
+    "note": "Immutable source committed after prereg, before any B scoring. First-use runner must verify Git blob SHA-1 of campaign.py. No tuning after primary B outcomes.",
+    "parent_native_sha": "20a0279a0bd3b2244f7aec6858c167131506827f",
+    "pre_first_use_amendment": "Added one non-B smoke test of source admission and cold replay, without inspecting B outcomes.",
+    "prereg_commit": "022d7477de56bb2793b52d2ae3a02e86bbf73bdd",
+    "schema": "yggdrasil.ckad29.source-lock.v1"
+  },
+  "summary": {
+    "accepted_native": false,
+    "decision": "DEVELOPMENT_MIXED",
+    "deployment": "NONE",
+    "exact_bayes_brier": 0,
+    "mean_brier_equal_seed": {
+      "exact_bayesian": 0,
+      "fitted_frequency": 0.25,
+      "fitted_logistic": 0.3131535851,
+      "native_composed": 0.2395833333,
+      "no_composition_sham": 0.25
+    },
+    "native_minus_exact": 0.2395833333,
+    "native_minus_strongest_conventional": -0.0104166667,
+    "per_seed_native_beats_strongest": 1,
+    "scientific_pass": false,
+    "strongest_conventional_brier": 0.25
+  },
+  "training_rows": 432,
+  "wall_seconds": 0.78809
+}
