@@ -13,8 +13,10 @@ from math import cos, exp, isfinite, sin, tanh
 
 from yggdrasil.native_context_basis import canonical, digest, pin, require
 from yggdrasil.native_jepa2_multilearner import (
-    NativeMultiLearner, _bit, _views,
+    NativeMultiLearner, ActionLatentSpecialist, STEPS as OLD_STEPS,
+    _bit, _views,
 )
+from yggdrasil.native_episode_experience import NativeEpisodeExperience
 
 SCHEMA = "yggdrasil.ckad.native-temporal-multilearner.v1"
 HISTORY, HIDDEN, LATENT = 8, 8, 2
@@ -190,6 +192,67 @@ def _fit_history(ledger, *, mispair=False):
     return t, r
 
 
+
+NUMERIC_SOURCE_TOLERANCE = 1e-9
+
+
+def _source_equivalent(saved, recomputed):
+    """Require identical architecture/step counts and bounded float parity.
+
+    The original checkpoint SHA and canonical bytes remain exact, but Linux
+    and Windows libm sin/cos/tanh differ in the last few ULPs on refit.
+    """
+    a, b = saved.data() if hasattr(saved, "data") else saved.as_data(), (
+        recomputed.data() if hasattr(recomputed, "data")
+        else recomputed.as_data())
+    require(a["kind"] == b["kind"] and a["steps"] == b["steps"],
+            "JEPA3_SOURCE_EXPERT_IDENTITY")
+    require(set(a) == set(b) and a["steps"] >= 0,
+            "JEPA3_SOURCE_EXPERT_FIELDS")
+    for key in ("encoder", "predictor"):
+        require(len(a[key]) == len(b[key]), "JEPA3_SOURCE_SHAPE")
+        for ra, rb in zip(a[key], b[key]):
+            require(len(ra) == len(rb) and all(
+                isfinite(x) and isfinite(y)
+                and abs(x-y) <= NUMERIC_SOURCE_TOLERANCE
+                for x,y in zip(ra,rb)), "JEPA3_SOURCE_NUMERIC_PARITY")
+    for key in ("encoder_bias", "predictor_bias"):
+        require(len(a[key]) == len(b[key]) and all(
+            isfinite(x) and isfinite(y)
+            and abs(x-y) <= NUMERIC_SOURCE_TOLERANCE
+            for x,y in zip(a[key],b[key])), "JEPA3_SOURCE_BIAS_PARITY")
+
+
+def _restore_prior_native_model(raw, sha):
+    """Bounded cross-platform compatibility for the sealed JEPA2-02 checkpoint.
+
+    No change to old source bytes or native code. Independently refit old
+    learned weights from authentic native witnessed events, within a frozen
+    ULP-scale numerical allowance; reject forged source even if rehashed.
+    """
+    require(type(raw) is bytes and 0<len(raw)<=MAX_BYTES
+            and pin(sha) and digest(raw)==sha, "JEPA3_OLD_SOURCE_PIN")
+    d=json.loads(raw.decode("ascii"))
+    require(type(d) is dict and set(d)=={
+        "schema","native_ascii","native_sha256","transition","reward"
+    } and d["schema"]=="yggdrasil.ckad.native-multilearner-jepa2.v1"
+    and canonical(d)==raw, "JEPA3_OLD_CHECKPOINT_SCHEMA")
+    native_raw=d["native_ascii"].encode("ascii")
+    native=NativeEpisodeExperience.restore(native_raw,d["native_sha256"])
+    t=ActionLatentSpecialist.from_data(d["transition"],"transition")
+    r=ActionLatentSpecialist.from_data(d["reward"],"reward")
+    require(t.steps==r.steps==len(native._ledger)*OLD_STEPS,
+            "JEPA3_OLD_SPECIALISTS_SOURCE_UPDATES")
+    rt,rr=ActionLatentSpecialist("transition"),ActionLatentSpecialist("reward")
+    for _,views,first,state,second,reward in native._ledger:
+        rt.observe(views,(first,),state)
+        rr.observe(views,(first,state,second),reward)
+    _source_equivalent(t,rt)
+    _source_equivalent(r,rr)
+    restored=NativeMultiLearner(native,t,r)
+    require(restored.checkpoint()==raw,"JEPA3_OLD_BYTE_EXACT_CUSTODY")
+    return restored
+
 class NativeTemporalMultiLearner:
     """One cumulative native experience model, four independently trained heads.
 
@@ -207,7 +270,7 @@ class NativeTemporalMultiLearner:
 
     @classmethod
     def bootstrap(cls, base_raw, expected_sha):
-        base = NativeMultiLearner.restore(base_raw, expected_sha)
+        base = _restore_prior_native_model(base_raw, expected_sha)
         pinned = base.checkpoint()
         t,r = _fit_history(base.native._ledger)
         require(base.checkpoint() == pinned, "JEPA3_OLD_MODEL_RESTART")
@@ -258,7 +321,7 @@ class NativeTemporalMultiLearner:
             } and d["schema"] == SCHEMA and canonical(d) == raw,
                     "JEPA3_CHECKPOINT_SCHEMA")
             base_raw=d["base_ascii"].encode("ascii")
-            base=NativeMultiLearner.restore(base_raw,d["base_sha256"])
+            base=_restore_prior_native_model(base_raw,d["base_sha256"])
             source_count=d["source_count"]
             require(type(source_count) is int and
                     1 <= source_count <= len(base.native._ledger) <= MAX_EPISODES,
@@ -270,9 +333,8 @@ class NativeTemporalMultiLearner:
             # Full authentic causal witness replay rejects forged latent
             # parameters even with an otherwise valid rehashed ZIP/checkpoint.
             rt,rr = _fit_history(base.native._ledger)
-            require(canonical(t.data()) == canonical(rt.data()) and
-                    canonical(r.data()) == canonical(rr.data()),
-                    "JEPA3_WEIGHTS_SOURCE_PARITY")
+            _source_equivalent(t,rt)
+            _source_equivalent(r,rr)
             obj=cls(base,t,r,source_count)
             require(obj.checkpoint() == raw, "JEPA3_COLD_REPLAY")
             return obj
