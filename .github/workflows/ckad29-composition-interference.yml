@@ -3,11 +3,14 @@ on:
   push:
     branches:
       - research/ckad29-composition-interference-20261118
+    paths-ignore:
+      - '.ice/code-atlas.json'
+      - '.ice/code-atlas.html'
+      - '.ice/code-atlas.ice'
 permissions:
   contents: read
 jobs:
   atlas:
-    if: ${{ !startsWith(github.event.head_commit.message, 'docs(ckad29):') }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
