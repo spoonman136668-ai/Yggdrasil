@@ -1,0 +1,159 @@
+name: CKAD25-Y exact-final native regression and G29
+on:
+  push:
+    branches: [research/ckad25y-causal-state-acquisition-20261118]
+    paths:
+      - ".github/workflows/ckad25y-final-regression.yml"
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+
+jobs:
+  source-only-g29:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.g29.outputs.source_sha }}
+      final_sha: ${{ steps.g29.outputs.final_sha }}
+    steps:
+      - name: Prevent OS-dependent source checkout edits
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Pin original no-go source and derive G29 atlas only
+        id: g29
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25y-causal-state-acquisition-20261118
+          test "$GITHUB_REF" = "refs/heads/$BRANCH"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "67126b37763c2bd19e612d08c4ece21c506e578a"
+          test "$(git hash-object tests/test_native_causal_state_acquisition.py)" = "df90939eacd50da3b3bf4a4ebccbd68963fe779f"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Y/run.py)" = "319fc831b8a810f914592d702b768b2324a33410"
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          raw=Path("research/contrib/chatgpt/CKAD25-Y/result.json").read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=="59145b61488cb3f51fb4976e50bb99a20276395c716c677a3b97ea97aaf5eb2d"
+          d=json.loads(raw)
+          assert d["disposition"]=="DEVELOPMENT_NO_GO"
+          assert d["gates"]["novel_D_brier_le_0_27"] is False
+          assert d["gates"]["novel_D_confident_wrong_le_1"] is False
+          assert d["gates"]["all_four_native_learn_unseen_source_C"] is True
+          assert d["novel_D_confident_wrong"]==4
+          assert d["scientific_pass"] is False
+          print("CKAD25Y_ORIGINAL_NEGATIVE_UNCHANGED_PASS")
+          PY
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          python -B - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert changed=={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"},changed
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci(ckad25y): pin source-only G29 atlas to frozen native state no-go"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "CKAD25Y_G29_SOURCE_SHA=$GITHUB_SHA"
+          echo "CKAD25Y_G29_FINAL_SHA=$(git rev-parse HEAD)"
+
+  full-native-regression:
+    needs: [source-only-g29]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - name: Preserve exact checkout source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-only-g29.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Install pinned conventional baselines and inherited regression
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Full inherited regression, source-negative controls and original independent evidence audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.source-only-g29.outputs.final_sha }}"
+          test "$(git rev-parse 'HEAD^')" = "${{ needs.source-only-g29.outputs.source_sha }}"
+          git rev-parse 'HEAD^{tree}'
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "67126b37763c2bd19e612d08c4ece21c506e578a"
+          test "$(git hash-object tests/test_native_causal_state_acquisition.py)" = "df90939eacd50da3b3bf4a4ebccbd68963fe779f"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Y/run.py)" = "319fc831b8a810f914592d702b768b2324a33410"
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-23 -p test_ckad23.py -v
+          python -B research/contrib/chatgpt/CKAD25-Y/audit_results.py research/contrib/chatgpt/CKAD25-Y/result.json
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-Y")
+          raw=(root/"result.json").read_bytes()
+          prov=json.loads((root/"provenance.json").read_bytes())
+          d=json.loads(raw)
+          assert hashlib.sha256(raw).hexdigest()=="59145b61488cb3f51fb4976e50bb99a20276395c716c677a3b97ea97aaf5eb2d"
+          assert prov["original_result_sha256"]==hashlib.sha256(raw).hexdigest()
+          assert prov["original_identical_across_linux_windows"] is True
+          assert prov["original_score_rerun_during_seal"] is False
+          assert d["source_sha256"]==hashlib.sha256((root/"run.py").read_bytes()).hexdigest()
+          assert d["independent_control_sha256"]==hashlib.sha256(Path("research/contrib/chatgpt/CKAD25-S/run.py").read_bytes()).hexdigest()
+          assert d["source_free_observations"]==320 and d["held_phase_predictions"]==128
+          assert d["unique_held_world_labels"]==64
+          assert d["disposition"]=="DEVELOPMENT_NO_GO"
+          assert d["gates"]["all_four_native_learn_unseen_source_C"] is True
+          assert d["gates"]["native_return_brier_beats_memoryless_exact_by_0_05"] is True
+          assert d["gates"]["source_old_and_learned_retained_with_pressure"] is True
+          assert d["gates"]["exact_native_conventional_parity_all_128"] is True
+          assert d["gates"]["novel_D_brier_le_0_27"] is False
+          assert d["gates"]["novel_D_confident_wrong_le_1"] is False
+          assert d["return_states_correct"]==13 and d["novel_D_brier"]==.40625
+          assert d["novel_D_confident_wrong"]==4
+          assert d["mean_brier"]["native"]==d["mean_brier"]["conventional_exact"]==.12668075
+          assert d["scientific_pass"] is False and d["conventional_superiority"] is False
+          assert d["original_protected_source_actions"]==0 and d["original_owner_first_use"] is False
+          assert d["accepted_main_changed"] is False and d["forge_dispatch"] is False
+          assert d["native_owner_promoted"] is False and d["deployment"] is False
+          print("CKAD25Y_EXACT_FINAL_ORIGINAL_SCIENCE_NO_GO_AUDIT_PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo "CKAD25Y_FULL_FINAL_REGRESSION_PASS_SHA=$(git rev-parse HEAD)"

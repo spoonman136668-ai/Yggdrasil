@@ -347,6 +347,86 @@ class NativeCumulativeLearner:
                 best = [c, a]
         return best
 
+    def incorporate_causal_world(self, records, expected_sha256, *, source_ref,
+                                 available_slots=(1, 2, 3, 4, 5, 6, 7, 8, 9)):
+        """Learn an unlabelled causal relation in this SAME native checkpoint.
+
+        A known source must explain all witnessed consequences strongly enough
+        under the supplied Bayesian admission prior. Otherwise twelve actual
+        do/outcomes can create a new source-backed native committee; four
+        insufficient do/outcomes only permit recall/abstention. Does not accept
+        semantic regime labels, model coefficients or future held outcomes.
+        A supplied 697-model ANF grammar is NOT intrinsic primitive discovery.
+        """
+        require(self._schema in (SCHEMA, RELATION_SCHEMA)
+                and self._history is None and self._dtr is None
+                and self._experience is None and not self._repairs,
+                'INTEGRATED_CAUSAL_STATE_SCOPE')
+        require(type(records) is list and len(records) in (4, 12)
+                and pin(expected_sha256) and digest(canonical(records)) == expected_sha256
+                and pin(source_ref), 'INTEGRATED_CAUSAL_STATE_SOURCE_PIN')
+        require(type(available_slots) in (tuple, list)
+                and 1 <= len(available_slots) <= 9
+                and list(available_slots) == sorted(set(available_slots))
+                and all(type(s) is int and 1 <= s <= 9 for s in available_slots),
+                'INTEGRATED_CAUSAL_STATE_ALLOWED_SLOTS')
+        observed = set()
+        for row in records:
+            require(type(row) is list and len(row) == 3,
+                    'INTEGRATED_CAUSAL_STATE_PUBLIC_ROW')
+            c, a, y = row
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            PublicCausalCells._bit(y, 'PUBLIC_OUTCOME')
+            require((c, a) not in observed, 'INTEGRATED_CAUSAL_STATE_DUPLICATE_DO')
+            observed.add((c, a))
+        from fractions import Fraction
+
+        known = [slot for slot in available_slots
+                 if self._compiled[slot] is not None
+                 and self._compiled[slot].model_count > 0
+                 and not self._quarantined[slot]]
+        likelihood = {}
+        for slot in known:
+            score = Fraction(1, 1)
+            for c, a, y in records:
+                nums = self.causal_relation_probability(slot, c, a)
+                require(nums is not None and type(nums[0]) is int
+                        and type(nums[1]) is int and nums[1] > 0
+                        and 0 <= nums[0] <= nums[1],
+                        'INTEGRATED_CAUSAL_STATE_POSTERIOR')
+                p = Fraction(nums[0], nums[1])
+                score *= p if y else 1 - p
+            likelihood[slot] = score
+        unknown = Fraction(1, 2) ** len(records)
+        denominator = sum(likelihood.values(), unknown)
+        if known:
+            selected = max(known, key=lambda slot: (likelihood[slot], -slot))
+            if likelihood[selected] / denominator >= Fraction(9, 10):
+                # The source packet is used as observed recall evidence only;
+                # it never overwrites or double-counts native source weights.
+                return self, selected, 'RECALLED'
+        if len(records) == 4:
+            return self, None, 'ABSTAIN'
+        empty = next((slot for slot in available_slots
+                      if self._source._seen[slot] == 0
+                      and self._hypotheses[slot] is None
+                      and self._compiled[slot] is None
+                      and not self._quarantined[slot]), None)
+        require(empty is not None, 'INTEGRATED_CAUSAL_STATE_CAPACITY_EXHAUSTED')
+        state = self
+        for packet in (records[:8], records[8:]):
+            state = state.observe(empty, packet, digest(canonical(packet)),
+                                  source_ref=source_ref)
+        state = state.compile_causal_relations(empty)
+        require(state._source._seen[empty].bit_count() == 12
+                and state._compiled[empty] is not None
+                and all(state._compiled[slot].checkpoint()
+                        == self._compiled[slot].checkpoint() for slot in known),
+                'INTEGRATED_CAUSAL_STATE_LEARNED_CUSTODY')
+        return (state, empty, 'ACQUIRED' if state._compiled[empty].model_count
+                else 'INCOMPATIBLE')
+
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
         require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_HISTORY_SCOPE')
