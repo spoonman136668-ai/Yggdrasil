@@ -28,8 +28,8 @@
   "inputs": [
     {
       "name": "Four-input Boolean compositional circuits from deterministic explicit grammar: atom,not,and,or,xor,majority,xor3,mux,xor4; 59 truth-unique programs",
-      "sha256": "SOURCE_SHA_TO_BE_BOUND_BEFORE_B_FIRST_USE",
-      "source": "Source-free procedural simulator, no CKAD data, no native learner, no first-use protected science"
+      "sha256": "ae1df1d71754d8d0449dcd2b5f48275e25f1b54b36cb9cb623644684aed0245c",
+      "source": "research/contrib/chatgpt/YNCA-07-IPFC/experiment.py at commit e5ee9031ff1cef63ef50c1c6f6ec0f89bf92997b, Git blob 12ee55d97079d768d69ba64a0ddaa1a0f0ebef42"
     }
   ],
   "frozen_design": {
@@ -42,12 +42,15 @@
     },
     "worlds": "Ground truth sampled deterministically from 33 higher-composition majority/mux/xor3/xor4 programs. Same fixed source grammar of 59 unique truth tables shared by all policies; two passive diagonal observations (actions 0,15); four active probes with fixed cost .02/action, 16-input final Brier and exact program accuracy.",
     "methods": "IPFC_A minimal consistent program + synthesized contradictory program per action; real action-outcome feedback updates competing family preference. IPFC_B one targeted correction to balance survivor split 4p(1-p) and retain small learned family preference. Fully matched uniform EIG, 64-train-world Dirichlet-smoothed EIG_TRAINED, random and fixed probe comparators.",
-    "source_stage": "Pass A local exploratory only; frozen B source hash and commit required before running Pass B.",
+    "source_stage": "Pass B source/fixed controls pinned here BEFORE first inspection of B. Pass A exploratory already consumed. Future reserved untouched.",
     "data_budget": "128 B worlds; four actively observed probes per world; same information/actions/all controls; no offline oracle labels exposed at policy inference, only evaluation.",
     "compute_budget": "Python 3.12 stdlib, <60s per platform, no paid API, no owner model calls, no GPU",
     "capacity": "59 deduplicated programs; fixed four probes; family reliability weights min 0.5 max 3.0, 0.25 increment and 0.10 decrement on real observations; IPFC_B adjustment adds split-balance score with factor 4 and 0.03 family preference.",
     "evaluator": "Mean Brier loss of posterior uniform survivor predictions over 16 input actions, plus mean exact-grammar classification, mean correct bits, active probe count and cost. B verdict independent of any A tuner changes.",
-    "deterministic_expected": true
+    "deterministic_expected": true,
+    "source_sha256": "ae1df1d71754d8d0449dcd2b5f48275e25f1b54b36cb9cb623644684aed0245c",
+    "source_commit_sha": "e5ee9031ff1cef63ef50c1c6f6ec0f89bf92997b",
+    "source_git_blob": "12ee55d97079d768d69ba64a0ddaa1a0f0ebef42"
   },
   "controls": [
     "Exact EIG uniform prior over same grammar and observed actions",
