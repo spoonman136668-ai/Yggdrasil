@@ -40,5 +40,27 @@ class StreamRegression(unittest.TestCase):
         with self.assertRaises(ValueError):
             model.begin_stream().begin_stream()
 
+    def test_sealed_checkpoints_continue_after_process_restart(self):
+        from pathlib import Path
+        import subprocess
+        import sys
+        report = json.loads(subprocess.check_output(
+            [sys.executable, "-B", str(Path(__file__).with_name("continuation_qualification.py"))],
+            text=True))
+        self.assertEqual(report["classification"], "COLD_CONTINUED_TRAINING_VERIFIED")
+        self.assertEqual([row["witnesses"] for row in report["seeds"]], [642, 642, 642])
+        self.assertFalse(report["primary_results_changed"])
+        self.assertFalse(report["saved_primary_states_changed"])
+
+    def test_independent_audit_rejects_tampered_controls(self):
+        from pathlib import Path
+        import subprocess
+        import sys
+        report = json.loads(subprocess.check_output(
+            [sys.executable, "-B", str(Path(__file__).with_name("audit_negative_controls.py"))],
+            text=True))
+        self.assertEqual(report["negative_controls"], "PASS")
+        self.assertEqual(set(report["rejections"]), {"gate", "comparator", "random_monitor", "state"})
+
 if __name__ == "__main__":
     unittest.main()
