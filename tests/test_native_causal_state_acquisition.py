@@ -69,7 +69,7 @@ class NativeCausalStateAcquisitionTests(unittest.TestCase):
         self.assertEqual([fresh._source._seen[i].bit_count() for i in (1,2,3,4)],
                          [12,12,12,12])
         if status=="INCOMPATIBLE":
-            self.assertEqual(fresh.causal_relation_probability(4,3,0),(1,2))
+            self.assertEqual(fresh.causal_relation_probability(4,4,1),(1,2))
 
     def test_source_quarantine_and_unrelated_pressure_isolation(self):
         m=original()
