@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-163",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can one bounded direct-weight update model, conditioned only on the previous fully observed public action-consequence transition, predict new consequences at identical current public inputs better than static weights across persistent hidden-regime changes, while exposing failure under memory-uninformative rapid switching?",
+  "hypothesis": "For authored persistent two-regime 4D continuous source-free transitions with identical public state/action inputs but hidden regime-specific output offsets and observation noise, one shared four-by-four recursive least-squares lag-residual program trained on only past public transitions will lower held later-step RMSE relative to the fully fitted static WSP160 model by at least 0.05 for all 3 independent seeded simulation replicas; it will numerically tie an independently solved same-information lag-ridge control (<=1e-8). Historical context reset is necessary; an iid-per-step regime stress may show negative transfer and MUST be recorded, not hidden or retuned. First-of-episode forecasts cannot use future feedback. No direct-weight superiority or original-source scientific first use is claimed.",
+  "exact_parent_sha": "890507bf393dd87d4aed36c01680d11742b2bd31",
+  "parent_tree_sha": "c26d19bd235724837b3098e461e6627cea38ff25",
+  "predecessor_evidence": [
+    "WSP162 PR1216 sourcefree contradictory public-input result at 890507bf393dd87d4aed36c01680d11742b2bd31; #44226295000 exact final full root and #44226298989 G29 dual OS PASS; single static public-input mapping has irreducible RMSE floor 0.1369306394",
+    "WSP160 PR1213 uses fixed 4D public input 10-feature action-conditioned gradient-free RLS weights, equal conventional batch ridge; reuse unchanged frozen baseline code",
+    "WSP159 PR1212 source-only strict public event schema. Never execute external original CartPoleWind source without independently approved owner-signed first-use actor lease",
+    "CKAD PR1207 CKAD21 discrete cumulative feedback-context recovery independently advances; this experiment is isolated 4D continuous one-lag numeric readout, not an alternative Yggdrasil owner/controller or duplicate CKAD implementation"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-163/prereg.json",
+    "research/contrib/chatgpt/WSP-163/history_weights.py",
+    "research/contrib/chatgpt/WSP-163/test_history_weights.py",
+    "research/contrib/chatgpt/WSP-163/README.md",
+    ".github/workflows/wsp163-history-weights.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "Existing WSP159 PublicTransition / WSP160 ProgrammedPublicDynamics",
+      "source": "source unchanged inherited at 890507bf393dd87d4aed36c01680d11742b2bd31, schema public-only 4D input and selected 0/1 action",
+      "source_sha": "890507bf393dd87d4aed36c01680d11742b2bd31"
+    },
+    {
+      "name": "Investigator-authored persistent and iid source-free public transition streams",
+      "source": "pure Python stdlib random.Random, 16 visible 4D state/action inputs from fixed WSP162 corners; same public current input in both hidden regimes, two fixed ± offset vectors (0.20,-0.15,0.10,-0.05), σ=0.02 normal observation noise per output; no real external source calls, hidden regime drawn only by fixture and NEVER supplied to model",
+      "sha256": null
+    },
+    {
+      "name": "Conventional baseline",
+      "source": "same public FIT rows: WSP160 static ridge RLS; independent full-batch Gaussian elimination conventional lag-1 residual ridge and last-residual carry heuristic",
+      "source_sha": "579b591ae0d22ab7414aca0527b5abd8d92b199e"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      1631,
+      1741,
+      1867
+    ],
+    "split": "For each seeded replica, generate 32 FIT episodes each 16 steps with independently sampled but within-episode persistent hidden regime ±1, then 16 held VALID episodes each 16 steps using independent generator continuation; same observed public state/action support but distinct transition noise and episodes. Each episode has public terminal flag at step16. Also 16 16-step IID stress episodes where hidden regime independently resamples every step. No actual virgin original source, and all VALID predictions are strictly prequential based only on preceding public witness.",
+    "ordering": "Freeze prereg alone before source, fixture and primary CI. Generate all source-free FIT and VALID streams, fit STATIC WSP160 from only FIT public transitions, then fit HISTORY 4x4 RLS from pairs of *preceding* and current FIT public residuals within each episode. On VALID: predict before observing current outcome, use only last public record inside same episode. Score first-step separately, later-step, all-step, iid stress, independent matched controls. Never pass source regime labels to learner or conventional controls. No post-score tuning.",
+    "data_budget": "Per seed 512 FIT public transitions (32x16), 256 persistent VALID (16x16) and 256 independently iid-switch stress transitions (16x16), zero original CausalGym resets/steps/do/ctf_do, no protected first-use, no hidden simulator values passed to models. 3 seeds x same rule family but truly disjoint noisy episodes, not three independent real source environments.",
+    "compute_budget": "Python 3.12 stdlib, 4x4 coefficient/covariance =32 floating parameters for history update plus inherited WSP160 4x10/10x10 static model; <=2048 FIT rows/model, 3 frozen seeds, focused tests and mandatory full exact candidate Linux/Windows root+NKR05 regression and G29. No new runners, paid APIs, GPU, scheduler, controller.",
+    "capacity": "ONE frozen WSP160 static 4D direct-program baseline + ONE bounded 4x4 lag-residual RLS inside the same opt-in history-conditioned predictor (no per-family expert bank, no source family labels); 4x4 inverse ridge covariance, λ=1, max 2048 pairs; immutable updates, exact canonical integrity-bound cold checkpoint. Strong comparators may use same FIT public data and identical one-previous-public-transition input.",
+    "evaluator": "For VALID persistent sourcefree episodes compute RMSE STATIC, history direct RLS, fully trained independently implemented Gaussian-elimination lag ridge with SAME STATIC predictor, one-step public last-residual carry, first-of-episode only, and history-shuffled negative; for iid switch stress compare full and later-step RMSE with static. Record true nonregression or regression without post-hoc thresholds. Check max forecast gap to conventional same-features lag ridge <=1e-8, exact checkpoint cold/restart and caller-defined public episode-boundary reset, privacy, malformed/NaN and provenance.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Independent conventional fully fitted 4x4 lag-residual ridge from the exact same FIT public history/response pairs and the same baseline, Gaussian elimination, expected numerical tie",
+    "Last-public-residual carry predictor with no trained lag weights, same baseline; tests whether trained direct weights add anything above cheap public history",
+    "Source-blind STATIC WSP160 predictor fit on same FIT rows, no public history",
+    "Public-history shuffled across FIT/VALID episodes negative control; genuine historical alignment should outperform shuffled",
+    "IID hidden regime redraw every step stress; memory regressing versus static >0.01 RMSE is a frozen robustness NO-GO rather than silent success",
+    "First-of-episode none history cannot access previous episode or current outcome; private `u_wind`, family label, future/public target leakage, invalid state/action, incorrect previous terminal, tamper and unqualified source access fail closed"
+  ],
+  "metrics": [
+    "persistent_later_static_rmse",
+    "persistent_later_native_history_rmse",
+    "persistent_later_independent_lag_ridge_rmse",
+    "persistent_later_carry_rmse",
+    "persistent_all_static_rmse",
+    "persistent_all_history_rmse",
+    "first_step_static_rmse",
+    "first_step_history_rmse",
+    "iid_later_static_rmse",
+    "iid_later_history_rmse",
+    "iid_regret",
+    "shuffled_history_rmse",
+    "max_lag_ridge_prediction_gap",
+    "cold_prediction_max_gap",
+    "checkpoint_bytes",
+    "cpu_fit_seconds",
+    "cpu_validation_seconds",
+    "original_source_actions"
+  ],
+  "classification_rules": {
+    "supported": "ENGINEERING_PUBLIC_HISTORY_SUPPORTED iff all 3 seeds native history later-step persistent RMSE improves vs static by >=0.05, matches fully fitted independent lag-ridge forecasts to <=1e-8, first step (no history) equals static byte-exact, history shuffled negative cannot beat correctly ordered history, all source-only integrity tests and final full exact Linux/Windows root+NKR05/G29 PASS. The conventional control tie is NOT scientific superiority. SCIENTIFIC_PASS always FALSE.",
+    "mixed": "If fitted native history improves persistent case but iid stress history regret >0.01 RMSE, explicitly classify DEVELOPMENT_NO_GO_FOR_UNKNOWN_REGIME_PERSISTENCE even if engineering metrics PASS; no promotion or model-wide deployment. If full exact qualification unavailable, ENGINEERING_UNVERIFIED regardless of synthetic scores.",
+    "negative": "If persistent later-step improvement <0.05 for any seed, same-feature conventional parity fails, shuffled history outperforms ordered, or forbidden future/private evidence reaches model, record DEVELOPMENT_NO_GO and preserve scored evidence, no tuning.",
+    "invalid": "Any upstream original reset/step/do/ctf_do, supplied hidden regime or simulator internals to predictor, score-driven post-result source changes, direct edit to WSP159–162/CKAD, owner/controller mutation, failure to pin source provenance."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "future_gate": "Separate versioned WSP164 candidate if rapid-switch stress invalidates history reliability, using public-history evidence gated adaptation with equal-capacity HMM/change-point controls. Authentic first original-source evaluation requires independently qualified virgin owner-signed actor/cohort source custody; previous CVH10 conditional action budget is not WSP source authority.",
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "original_source_execution": false
+  },
+  "preregistration_note": "Prereg one file committed FIRST. No helper source, fixture scoring or CI before freeze."
+}
