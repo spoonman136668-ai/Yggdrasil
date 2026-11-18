@@ -5,6 +5,7 @@ on:
       - research/ynca03-active-fault-probes-20261118
     paths:
       - research/contrib/chatgpt/YNCA-03/experiment.py
+      - .github/workflows/ynca03-isolated-research.yml
 permissions:
   contents: read
 jobs:
@@ -19,6 +20,9 @@ jobs:
       PYTHONHASHSEED: '0'
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
+      - name: Preserve Git source bytes on Windows
+        shell: bash
+        run: git config --global core.autocrlf false
       - name: Checkout pinned candidate
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -47,6 +51,7 @@ jobs:
           assert result['split']=='heldout'
           assert result['outcome']['world_count']==512
           assert result['audit']['disjoint_seeds']
+          assert result['source_sha256']=='b80e0e7108a37f832671b7839e045029c7e1df7d3ec456cbff43762712ac895a'
           print('YNCA03_SOURCE_SHA256='+result['source_sha256'])
           print('YNCA03_RESULT_SHA256='+hashlib.sha256(path.read_bytes()).hexdigest())
           print('YNCA03_RESULT_JSON='+json.dumps(result,sort_keys=True,separators=(',',':')))
