@@ -1,0 +1,131 @@
+{
+  "schema": "yggdrasil.ckad26.causal-change-bayes-prereg.v1",
+  "id": "CKAD26",
+  "parent_commit": "a4c6d82727256306c06c20bf28d65bf888f7e671",
+  "source_generator_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "prior_qualified_ckad25_result_sha256": "868d908567a3f553d05f1ae5b3a46ea4a6a2ec91a12596e46d7590629ffb5a38",
+  "goal": "Prospectively falsify an explicit conditional causal-change hypothesis test against original joint-surprise and a conventional unconditioned Beta-Binomial change detector using matched public interventions.",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_cohort": "ckad26-causal-change",
+  "schedules": {
+    "transition_flip": {
+      "offset": 46100,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          1
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          1
+        ]
+      ],
+      "true_changes": [
+        48,
+        96,
+        144
+      ]
+    },
+    "reward_flip": {
+      "offset": 46200,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "terminal_switch",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "terminal_switch",
+          0
+        ]
+      ],
+      "true_changes": [
+        48,
+        96,
+        144
+      ]
+    },
+    "no_change": {
+      "offset": 46300,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ]
+      ],
+      "true_changes": []
+    }
+  },
+  "exposure": {
+    "parent_checkpoints": "CKAD22 exact three native 448-event training checkpoints at same SHA as CKAD25",
+    "public_episodes_per_case": 192,
+    "parent_episodes": 448,
+    "matched_first_and_second_actions": 384,
+    "source_actions_original": 0,
+    "protected_first_use": 0,
+    "held_updates": 0,
+    "case_count": 9
+  },
+  "algorithms": {
+    "causal_bayes": "At t>=32 use exactly the previous 32 observed public episodes. For each variable, compare a Beta(1,1) independent pre16/post16 conditional model against one Beta(1,1) shared model. Transition bins by (public s1, intervened x1). Reward bins by (public s1, intervened x1, observed s2, intervened x2). Take max of two exact marginal Bayes factors; threshold >=16 on two consecutive observations, >=8 episodes between alarms. All values use exact rational factorial products; no hidden phase or held outcome.",
+    "unconditional_bayes": "Identical exact Beta-Binomial 16/16 change-point detector, but one global unconditional binary bin for s2 and one for y; same >=16 and two-consecutive threshold and >=8 spacing. Select max of the two components. This is a standard conventional no-causal-conditioning control.",
+    "joint_native": "Original CKAD23 rational joint-surprise alarm, preserving all 448 historical witnesses, unchanged source policy and checkpoint history.",
+    "random_alarm": "Deterministic hash-based label-free alarm at each 48th event plus a seed-dependent offset in 1..16; same number of predetermined alarms; controls benefit from the known phase-duration prior and is not a fair unseen-environment standalone policy; report as upper-biased schedule control only.",
+    "no_change": "No-change schedule must not contain a true change; count all alarms as false.",
+    "limits": "Candidate detectors are shadow-only. No change to native online hypotheses, learned weights, intervention policy, prior witnesses, or reward. No scientific claims about online adaptation."
+  },
+  "frozen_gates": {
+    "recognition": "For each changing schedule and EACH of 3 changes, the causal Bayes detector recognizes at least 2/3 independent parent groups in +1..+16 public outcome steps.",
+    "comparative_detection": "Across 18 true changes, the causal Bayes detector recognizes at least four more than the native joint detector and at least two more than unconditional conventional Bayes.",
+    "specificity": "On stationary null at most one causal Bayes alarm per seed; on changing schedules at most two unmatched/duplicate alarms per seed.",
+    "source": "Identical source action/consequence traces between all shadow detectors, checkpoint prefix 448 intact, 192 new events, Linux/Windows semantic and byte-for-byte checkpoint parity, full final regressions."
+  },
+  "classification": "DEVELOPMENT_SIGNAL_GO only if all gates pass. Otherwise DEVELOPMENT_SIGNAL_NO_GO. Infrastructure/test failures remain separately ENGINEERING_FAIL, never scientific nulls.",
+  "science_pass": false,
+  "accepted_native": false,
+  "deployment": "NONE",
+  "source_types": "Previously used synthetic causal-family generator with newly frozen disjoint exogenous draw namespaces; NOT disjoint real-world scientific first-use.",
+  "budget": {
+    "paid_api_calls": 0,
+    "max_wall_seconds_per_case": 900,
+    "total_native_source_case_count": 9,
+    "protected_first_use": 0
+  },
+  "allowed_paths": [
+    "research/contrib/chatgpt/CKAD-26/**",
+    ".github/workflows/ckad26-causal-bayes.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated contributor evidence branch only. No accepted main, PR #1207 owner edits, production model mutation, merge, promotion, controller or scheduler."
+}
