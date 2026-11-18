@@ -1,0 +1,131 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-10-OPERATOR-MEMORY",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a source-free tokenless system learn an unknown three-input causal operator from noisy interventions across worlds and reuse a compact cold-restorable operator memory on unseen input permutations without copying a hand-given operator library?",
+  "hypothesis": "On disjoint B operator/worlds with same budgets, top-eight posterior operator memory from 48 training worlds improves unseen-action Brier at least 15% versus no cross-world learning and trained frequency baseline, while achieving Brier <=1.10x the better of exact hierarchical 256-table Bayes and exact true-generator 210-table Bayes, accuracy no more than 2pp below that exact Bayes, memory saved and cold-restored bit-exactly, and <=1/16 table enumeration at test time. This is development evidence of reusable finite operator learning, NOT open-ended function-invention or scientific superiority.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1232",
+      "note": "YNCA09 joint structural graph learning improves independent MAP but remains worse than exact Bayes and assumes XOR operator; branch remains draft/unmerged."
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1207",
+      "note": "CKAD integrated native learner is separate and untouched."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-10/prereg.json",
+    "research/contrib/chatgpt/YNCA-10/experiment.py",
+    "research/contrib/chatgpt/YNCA-10/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-10/result_A.json",
+    "research/contrib/chatgpt/YNCA-10/result_B.json",
+    "research/contrib/chatgpt/YNCA-10/provenance.json",
+    "research/contrib/chatgpt/YNCA-10/README.md",
+    ".github/workflows/ynca10-operator.yml",
+    ".github/workflows/ynca10-full-regression.yml",
+    ".github/workflows/ynca10-atlas-export.yml"
+  ],
+  "inputs": [
+    {
+      "name": "Synthetic previously unlisted operator from all 256 3-input Boolean truth tables, excluding 46 known standard operator truth tables; 48 noisy training worlds and disjoint test cohorts",
+      "sha256": "6b2f04ebe91ceccd47f675d67a3ade649d5fd030384bcad0aeded0b2180ef305",
+      "source": "research/contrib/chatgpt/YNCA-10/experiment.py at exact commit 50642f920d28560971449c76aa9ad6327b10f50d, Git blob 920809e71de1a3224e0d4dd15f32805546b37b6e"
+    }
+  ],
+  "frozen_design": {
+    "A": {
+      "status": "Already run locally exploratory prior to this prereg; never relabel as confirmatory",
+      "split": "A",
+      "secret_operator_seed": 51001,
+      "training_world_seeds": "610001..610048",
+      "test_world_seeds": "620001..620064",
+      "training_worlds": 48,
+      "test_worlds": 64,
+      "observations_per_training_world": 5,
+      "observations_per_test_world": 3,
+      "result_Brier": {
+        "compact": 0.0593292,
+        "exact_bayes": 0.0593292,
+        "frequency": 0.09421627,
+        "no_memory": 0.25
+      }
+    },
+    "B": {
+      "status": "Not inspected/consumed; independent source-frozen development",
+      "split": "B",
+      "secret_operator_seed": 52001,
+      "training_world_seeds": "710001..710048",
+      "test_world_seeds": "720001..720128",
+      "training_worlds": 48,
+      "test_worlds": 128,
+      "observations_per_training_world": 5,
+      "observations_per_test_world": 3,
+      "unobserved_actions_scored_per_test_world": 5
+    },
+    "grammar": "3-bit input x in 0..7 and all 256 binary truth tables as permissible *hypotheses*, with heldout true operator sampled from 210 tables outside a fixed 46-template familiar library; 6 hidden per-world input permutations. No true operator table or permutation supplied to any fitted policy.",
+    "mechanism": "Pass A untrained independent per-world exact posterior with uniform prior. Targeted Pass B: train reusable posterior across 48 worlds using only sampled action-outcome pairs while marginalizing unknown permutations; retain only top 8 learned operator tables, serialize memory and restore, then infer unknown per-world permutation using 3 new noisy samples.",
+    "controls": [
+      "Untrained exact per-world uniform 256-table Bayesian posterior; no transfer (reference)",
+      "Fully trained per-action frequency memory using same 48 worlds and three test observations",
+      "Fixed 46-known-operator family Bayes negative control",
+      "Fully trained exact hierarchical 256-table Bayes over identical training worlds and test observations",
+      "Exact generator-aware Bayesian 210-table posterior with correctly specified out-of-library prior",
+      "Privileged true-table Oracle diagnostic; not eligible for claims of superiority"
+    ],
+    "evaluation": "Brier and threshold accuracy ONLY across five unobserved 3-bit intervention assignments in each test world, averaged over independent worlds. Operator inference never receives true table/permutation. All methods have identical sampled observations; fixed noise .1. Report posterior orbit mass only as diagnostic using evaluator truth.",
+    "model_capacity": "Candidate keeps exactly 8 operator tables and weights after 256-table fit; fully trained exact Bayes retains 256 or 210 weights; candidate and exact Bayes share same 48-world fitting cost, candidate reduces only per-test-world table/permutation inference. Count likelihood factors, do not claim a measured energy speedup.",
+    "noise": 0.1,
+    "compute_budget": "Python 3.12 stdlib, <=20 min GitHub hosted Linux and Windows each, deterministic SHA, no paid API/GPU/owner runners.",
+    "deterministic_expected": true,
+    "source_rule": "Commit source, tests, prereg source hash/bindings before first B run; B evaluated once per OS; never reuse B for tuning.",
+    "reserved_shift": "None; no further autonomous expansion of this cohort after B.",
+    "source_commit_sha": "50642f920d28560971449c76aa9ad6327b10f50d",
+    "source_sha256": "6b2f04ebe91ceccd47f675d67a3ade649d5fd030384bcad0aeded0b2180ef305",
+    "source_git_blob": "920809e71de1a3224e0d4dd15f32805546b37b6e",
+    "test_sha256": "c11d7e6d202bfac4e41850da67e9608ef0680a9331d419f53e982f44d8344387",
+    "test_git_blob": "46015bf26ccfb0366360ab70ffe6e8c1895734ba"
+  },
+  "controls": [
+    "Exact generator-aware 210-table Bayes strongest",
+    "Full exact hierarchical 256-table Bayes",
+    "Fully trained empirical frequency baseline",
+    "Untrained exact per-world Bayes",
+    "46-template known-operator Bayes",
+    "Privileged true-table oracle (diagnostic only)"
+  ],
+  "metrics": [
+    "Unobserved-action mean Brier (primary lower)",
+    "Unobserved-action accuracy",
+    "Brier vs strongest exact model",
+    "Brier vs fully trained empirical frequency",
+    "Top-K stored operator weights and true-orbit posterior mass",
+    "Exact JSON cold serialization parity",
+    "Table/permutation likelihood-factor count estimates and test-time 256/8 compression",
+    "Linux/Windows original output SHA and tests"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL iff compact learned operator memory beats BOTH untrained exact per-world and fully trained frequency by >=15% Brier on B, Brier <=1.10x better of generator-aware exact Bayes and full 256-table exact Bayes, within 2 percentage points of strongest exact Bayes accuracy, top8 memory restores bit-exactly and >=16x fewer table hypotheses at test time. This is NOT proof of scientific intelligence superiority or operator invention outside finite search space.",
+    "mixed": "At least 10% Brier improvement vs untrained and frequency baselines, but insufficient exact Bayesian parity or accuracy: DEVELOPMENT_MIXED; stop this fixed prototype after bounded B.",
+    "negative": "No improvement over trained frequency baseline, source-invalid, or harmful accuracy loss: DEVELOPMENT_NO_GO; stop rather than iterate after two passes.",
+    "invalid": "Source or prereg hash mismatch, B executed before source freeze, hidden truth leaked into inference, unauthorized threshold change, unequal test observations, differing Linux/Windows outputs, any after-B tuning, or protected original science consumed."
+  },
+  "prohibited_after_primary_run": [
+    "Change B model hyperparameters/thresholds after observing B",
+    "Run another B seed or reuse B to tune",
+    "Call compressed exact Bayesian inference a new cognitive operator beyond all 256 Boolean tables",
+    "Replace native CKAD learner, owner, controllers or accepted refs",
+    "Claim physical compute/energy improvement from likelihood factor counts"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Executable and nine focused A-only tests committed and hash-locked BEFORE unseen B-world test outcomes. A consumed before initial prereg, remains exploratory. B classification uses all prereg controls including 15% improvement versus trained frequency even if program decision flag omits it. Cold restore must be checked in a SECOND process using saved learned weights."
+}

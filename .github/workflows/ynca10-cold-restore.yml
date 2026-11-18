@@ -1,0 +1,80 @@
+name: YNCA10 independent cold-memory restore (no B scoring replay)
+on:
+  push:
+    branches:
+      - research/ynca10-transfer-operator-memory-20261118
+    paths:
+      - .github/workflows/ynca10-cold-restore.yml
+permissions:
+  contents: read
+jobs:
+  cold-process-restore:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONPATH: research/contrib/chatgpt/YNCA-10
+    steps:
+      - name: Preserve source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original frozen scientific executable is unchanged
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,pathlib
+          h=hashlib.sha256(pathlib.Path('research/contrib/chatgpt/YNCA-10/experiment.py').read_bytes()).hexdigest()
+          assert h=='6b2f04ebe91ceccd47f675d67a3ade649d5fd030384bcad0aeded0b2180ef305'
+          print('YNCA10_ORIGINAL_B_EXECUTABLE_UNCHANGED',h)
+          PY
+      - name: Process 1 — train and write 8-entry learned operator memory
+        shell: bash
+        run: |
+          python -B - "$RUNNER_TEMP/ynca10-cold.json" <<'PY'
+          import experiment as e,json,pathlib,hashlib,sys
+          posterior=e.compress(e.train_posterior('B'))
+          observed=next(e.generate_worlds('B',False))['observations']
+          prediction=e.predict(posterior,observed)
+          memory={'weights':{str(t):v for t,v in posterior.items()},'expected':prediction}
+          path=pathlib.Path(sys.argv[1])
+          path.write_text(json.dumps(memory,sort_keys=True),encoding='utf-8')
+          print('YNCA10_PROCESS_1_MEMORY_SHA256',hashlib.sha256(path.read_bytes()).hexdigest())
+          PY
+      - name: Process 2 — cold restore and numerical parity within fixed tolerance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B - "$RUNNER_TEMP/ynca10-cold.json" <<'PY'
+          import experiment as e,json,pathlib,sys
+          memory=json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
+          weights={int(k):v for k,v in memory['weights'].items()}
+          obs=next(e.generate_worlds('B',False))['observations']
+          actual=e.predict(weights,obs)
+          differences=[abs(a-b) for a,b in zip(memory['expected'],actual)]
+          maximum=max(differences)
+          assert len(weights)==8
+          assert len(actual)==8
+          assert maximum<=1e-12,(maximum,actual,memory['expected'])
+          print('YNCA10_COLD_RESTORE_NEW_PROCESS_PASS',len(weights),'maximum_abs_float_difference',maximum)
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve exact compact model bytes
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ynca10-cold-memory-${{ matrix.os }}
+          path: ${{ runner.temp }}/ynca10-cold.json
+          if-no-files-found: error
+          retention-days: 30
