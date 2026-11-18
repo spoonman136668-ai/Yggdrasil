@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.ckad23.compositional-disjoint-development.prereg.v1",
+  "id": "CKAD-23",
+  "parent_sha": "f04cfcac2aa07806a6b942d968119de87bfb6aaf",
+  "parent_tree": "5ebe3abff5f8305115a671c43336f80875a7e06f",
+  "parent_ckad22_result_semantic_sha256": "4b20ef3b9229eddfd509e5897e6aa8f8d5226288ab331c4a98f8a7bc46fbccc2",
+  "parent_checkpoint_paths": [
+    "research/contrib/chatgpt/CKAD-22/seed-101-expanded-native.json",
+    "research/contrib/chatgpt/CKAD-22/seed-202-expanded-native.json",
+    "research/contrib/chatgpt/CKAD-22/seed-303-expanded-native.json"
+  ],
+  "source_dependency": {
+    "path": "research/contrib/chatgpt/CKAD-20/synthetic_world.py",
+    "sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+    "reuse": "Public synthetic exogenous draw generator; no protected source first-use"
+  },
+  "objective": "Falsify CKAD22's seed-concentrated new-candidate gain using two entirely new synthetic structural equations, eight disjoint evaluation draw namespaces, and three already-qualified independently retained native parent checkpoints. Each native model must acquire evidence through actual action-consequence interventions, not from hidden source family labels.",
+  "worlds": [
+    {
+      "name": "conjunctive_terminal",
+      "regime": 0,
+      "transition": "s2=x1 XOR transition_noise",
+      "target": "x2=(s1 AND s2) XOR x1",
+      "ready": "s2==0 OR hidden==1",
+      "reward": "y=ready AND (x2==target) XOR reward_noise"
+    },
+    {
+      "name": "interaction_gate",
+      "regime": 1,
+      "transition": "s2=(x1 AND s1) XOR 1 XOR transition_noise",
+      "target": "x2=s1 XOR (x1 AND s2)",
+      "ready": "s2==1 OR hidden==0",
+      "reward": "y=ready AND (x2==target) XOR reward_noise"
+    }
+  ],
+  "public_interface": "Two public views [(s1,nuisance_a),(s1,nuisance_b)]. Chosen a1 -> actual s2 -> chosen a2 -> actual y. hidden, transition_noise, reward_noise, true name/regime and alternate outcomes never passed to learner.",
+  "parent_groups": [
+    101,
+    202,
+    303
+  ],
+  "evaluation_namespace_seeds": [
+    1009,
+    1013,
+    1019,
+    1021,
+    1031,
+    1033,
+    1039,
+    1049
+  ],
+  "composite_source_seed": "(parent_seed*100000+evaluation_namespace_seed), with deterministic cohort prefixes ckad23-probe/held/familiar",
+  "case_schedule": "3 parent checkpoints * 8 independent synthetic draw namespaces * 2 new world structures = 48 trained transfer cases; no claim that eight namespaces are eight independently trained model seeds.",
+  "probe_budget_per_case": 16,
+  "held_per_case_per_world": 48,
+  "retention_held_per_case": 48,
+  "training": "Begin each test case from SHA256-verified complete CKAD22 parent checkpoint. For each of 16 new source episodes, native novel_active selects both sequential interventions from public views and observed s2; retrieval_only/pooled/Beta receive exactly those same receipts and identical actions. Novel_random has identical probe budget but its own predefined hash-seeded random first and second actions on the same exogenous probe episodes. Freeze per-world control budgets, identity, and source readout. The trained frozen old prefix is never mutated or overwritten.",
+  "scoring": "For each case score 48 independent held episodes for each trained policy by actually applying its choices, same exogenous draw across arms; no held updates. Independently evaluate 48 familiar invariant/regime0 held episodes on that same trained checkpoint after new-family learning. Report means, per-parent-group, per-namespace-seed, per-family, exact exact-control parity and action divergence.",
+  "arms": [
+    "novel_active",
+    "retrieval_only",
+    "novel_random",
+    "full_beta",
+    "trailing_mle",
+    "pooled_replay",
+    "exact_mixture"
+  ],
+  "controls": "full_beta and trailing_mle fully fit from all 448 CKAD22 parent public action receipts plus 16 observed active probe receipts, using the same capacity/settings as prior CKAD22 qualified ConventionalControl. retrieval_only, pooled_replay trained on identical receipts and actions. Novel_random samples separate public action interventions but no extra budget. Exact independent mixture is required to tie all novel policies and forecasts.",
+  "frozen_go_thresholds": {
+    "family_wise_novel_vs_retrieval": "At least +3 percentage points (>=35 additional successes out of 1152 held cases per new family) compared to retrieval_only, both new families.",
+    "family_wise_novel_vs_beta": "At least as many successes as full_beta in both new families.",
+    "seed_namespace_robustness": "At least 6 of 8 composite-source namespaces show positive pooled novel_active minus retrieval_only on both new world structures. This is environmental replication only, not independent fully trained baselines.",
+    "retention": "Familiar invariant/regime0 after new training: novel_active >=75% and at least retrieval_only minus5 percentage points for each world.",
+    "first_use": "True protected-first-use count = 0, user-visible provenance distinguishes newly authored unprotected synthetic development fixtures from reserved scientific test data."
+  },
+  "negatives": [
+    "Source generator exact SHA and native checkpoint exact SHA match",
+    "No hidden bits passed to readouts",
+    "No source intervention before a public action is chosen",
+    "No held sample learning; all 16 public probe event IDs unique",
+    "No state/ledger prefix mutation, cold restore bytes preserved",
+    "Independent exact online-mixture predictions and plans match native",
+    "No capacity increase/extra training/control data",
+    "Retain all failed thresholds and 3 group controls; do not post-tune"
+  ],
+  "budget": {
+    "max_execution_wall_seconds_per_shard": 900,
+    "paid_apis": 0,
+    "protected_first_use": 0,
+    "original_real_world_source_actions": 0,
+    "synthetic_probes_per_arm": 768,
+    "synthetic_held_episodes_per_family": 1152,
+    "scientific_promotions": 0
+  },
+  "scope": "Isolated parallel development branch; no accepted main edit, no merge/new PR, no production or autonomous controller changes. Fully synthetic source additions have separate provenance from previously consumed worlds.",
+  "scientific_pass": false,
+  "accepted_native": false,
+  "deployment": "NONE",
+  "allowed_paths": [
+    "research/contrib/chatgpt/CKAD-23/**",
+    ".github/workflows/ckad23-compositional-transfer.yml",
+    ".ice/code-atlas.*"
+  ]
+}
