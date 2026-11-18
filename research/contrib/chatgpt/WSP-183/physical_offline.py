@@ -225,8 +225,7 @@ def build_fit(events):
     arx=[]
     for k in range(2):
         # Separate predictor for each output; other output never included.
-        rows=[(x,(y[k],0.)) for x,y in arx_rows[k]]
-        arx.append(ridge(rows,4)[0])
+        arx.append(ridge(arx_rows[k],4)[0])
     return {"direct":direct,"batch":batch,"category":categories,
             "arx":tuple(arx),"mu":fit_mu,"std":fit_std,"fit_load":fit_load,
             "parity_max_weight_abs_gap":gap}
