@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-184",
+  "title": "Real physical changed-context memory vs matched autoregressive and online residual controls",
+  "project": "Yggdrasil",
+  "parent_sha": "384594f2f171e8322c514ad98fc7c52e3e0d2aee",
+  "branch": "research/wsp184-physical-context-memory-20261118",
+  "north_star": "Tokenless native causal learning, with explicit advisory separation from native runtime. Offline standalone research only.",
+  "hypothesis": "After FIT-only training on real actuator walk, selective contradiction-gated residual memory can adapt faster to a previously unseen real physical sensor-parameter regime change while preserving frozen old readout, and beat the strongest equal-public-data conventional static and online residual controls.",
+  "source": {
+    "repo": "juangamella/causal-chamber",
+    "commit": "967d59a42956872f37463cc561ecf6e9ceab9364",
+    "dataset": "wt_walks_v1",
+    "published_zip": "https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/wt_walks_v1.zip",
+    "zip_md5": "19bb4e92cbe0b8dff49299b9b509ac36",
+    "readme_blob": "269cb8c1551ac3d1e6553b1693a7005fdd4356cc",
+    "variables_blob": "2078166de5ce0bf8d1fc8497f05de6f5cae3fa8",
+    "walk_generator_blob": "5755a2b5ff69da5c05d4e70d3719dc7b0a866f00",
+    "regime_generator_blob": "551c21e1c7effc44cccca28d33f98fca11247385",
+    "license_blob": "4ea99c213c5c0c005ae4e80df8e52169d06896ec",
+    "license": "CC BY 4.0 physical CSV; MIT experiment generator; attribution Gamella/Peters/Bühlmann, NMI 2025, DOI 10.1038/s42256-024-00964-x",
+    "original_physical_actions_preexisting": true,
+    "new_source_actions": 0,
+    "paid_api_calls": 0
+  },
+  "frozen_custody": {
+    "fit_runs": [
+      "actuators_random_walk_1",
+      "actuators_random_walk_2",
+      "actuators_random_walk_3",
+      "actuators_random_walk_4",
+      "actuators_random_walk_5",
+      "actuators_random_walk_6"
+    ],
+    "validation_runs": [
+      "actuators_random_walk_7",
+      "actuators_random_walk_8"
+    ],
+    "public_dev_runs": [
+      "actuators_random_walk_9",
+      "actuators_random_walk_10"
+    ],
+    "changed_context_public_dev": "regime_jumps_single",
+    "exclude": [
+      "regime_jumps_multi",
+      "loads_hatch_mix_*",
+      "actuators_random_walk_11..16 if present"
+    ],
+    "expected_count_per_walk": 10000,
+    "expected_changed_context_rows": 320000,
+    "visibility": "Five current manipulable actuators load_in,load_out,hatch,pot_1,pot_2; previous observed rpm_in and pressure_intake only; current rpm_in/pressure_intake strictly withheld until loss computed. No flag or true regime target names to model. Timestamp/counter evaluator custody only.",
+    "regimes": "Regime 0 is original physical reference; regimes 1..31 are parameter interventions in the same tunnel, not proof of novel causal mechanism. Evaluate first 200 observations of each regime 1..31 as frozen changed-context adaptation window and all 320000 observations independently.",
+    "no_score_first_each_run": true,
+    "no_current_target_as_input": true
+  },
+  "methods": {
+    "normalization": "FIT-only means and population-standard deviations for input and output columns. Missing/zero/nonfinite standard deviations terminate before scoring.",
+    "training": "Program normalized linear ARX weights via recursive ridge least-squares on FIT; compare to independently fully fitted batch ridge, same 8 features (intercept, 5 actuator values, prior two public sensor values) and FIT, lambda=0.01, parity tolerance 0.00001 coefficient.",
+    "conventional_controls": [
+      "fully fitted same-feature batch ridge",
+      "same-info online residual EMA with 2 output scalar biases, update alpha=0.2 on past measured errors",
+      "public-history persistence predictor"
+    ],
+    "candidate": "same directly programmed ARX weights, plus per-output contradiction gate: normalized previous-error >1.5 FIT residual standard deviation for three consecutive observations; only then update bias = 0.8*oldbias+0.2*past_error; otherwise bias*=0.98. At time t, bias already updated only from observations strictly before t; gate never sees current withheld output.",
+    "capacity": "candidate adds two scalar biases and two integer mismatch counters; EMA adds two scalar biases; report capacity difference rather than claiming exact matched memory capacity.",
+    "scoring": "Per-output FIT normalized RMSE; lower is better. On walk public DEV seeds9-10 and changed-context regime first200 per regime1..31, plus all regime1..31. Strongest control for dev is the minimum scored *per output* across all available FIT-trained conventional controls (conservative oracle reporting; not a deployable selector). Fixed hyperparameters, no post-result adjustment.",
+    "retention": "Preserve SHA256 of frozen base model and 32 fixed old-walk-DEV checkpoint predictions before and after streaming new-regime observations; zero byte/prediction drift. This is SOFTWARE COLD PRESERVATION, not proof of behavioral retention under re-learning.",
+    "thresholds": {
+      "candidate_both_sensor_improvement_over_best_conventional_relative": 0.05,
+      "old_checkpoint_drift_bytes": 0,
+      "changed_context_regimes_evaluable": 31
+    },
+    "passes_max": 2,
+    "first_pass": "Source parser/schema and 6-FIT trained batch vs RLS parity engineering",
+    "second_pass": "Single immutable PUBLIC DEV run of contradiction gate vs conventional, no further tuning if negative",
+    "source_substitution": "No surrogate/synthetic scientific results; small hand-authored fixtures permitted solely to unit-test parser and no-current-target leakage.",
+    "scientific_acceptance": "Not admitted, this is offline public developer evidence. SCIENTIFIC_PASS is always false; never claim original first-use, native Yggdrasil integration, autonomous intervention selection, unfamiliar-world transfer or physical energy savings."
+  },
+  "restrictions": {
+    "owner_first_use_denied": true,
+    "real_original_actor": false,
+    "controller": false,
+    "scheduled_tasks": false,
+    "deploy": false,
+    "merge": false,
+    "accepted_main": false,
+    "paid_API": false
+  },
+  "status": "FROZEN_BEFORE_READING_MEASURED_ROWS"
+}
