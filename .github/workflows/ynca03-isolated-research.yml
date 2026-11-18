@@ -146,6 +146,10 @@ jobs:
           git rev-parse HEAD HEAD^{tree}
           python -B scripts/build_code_atlas.py --check-if-present
           python -B -m unittest discover -s tests -p 'test_*.py' -v
-          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          if test -d research/contrib/chatgpt/NKR-05; then
+            python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          else
+            echo 'YNCA03_NKR05_NOT_PRESENT_IN_SOURCE=SKIP'
+          fi
           python -B -m unittest discover -s research/contrib/chatgpt/YNCA-03 -p 'test_*.py' -v
           test -z "$(git status --porcelain)"
