@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-160",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a bounded, tokenless, opt-in numerical weight program learn continuous 4D public next-state consequences for two actions through one-pass direct rank-one updates without gradients, and cold-preserve all weight/covariance state, while matching an independently fitted control on clean source-free numeric data?",
+  "hypothesis": "A fixed 10-feature action-conditional linear delta model updated by recursive least squares (RLS) will reproduce the independently fitted batch ridge solution to floating tolerance on deterministic fabricated transitions, and show action-dependent predictive benefit versus an action-erased same-budget control; this is only algorithmic engineering parity, NOT a new intelligence/scientific-superiority claim.",
+  "exact_parent_sha": "d550127634c50801b4060945e815f961eb104e1c",
+  "parent_tree_sha": "e4be55fd2ede6429a023be8e9fc65c7992d2cef2",
+  "predecessor_evidence": [
+    "WSP-159 PR1212 final exact head d550127634c50801b4060945e815f961eb104e1c, source-only public boundary qualified Linux/Windows CI #44218520862 and G29 #44218526012",
+    "WSP-158 PR1209 prior DTR calibration NO-GO; retain all negatives unchanged",
+    "CKAD PR1207 independent cumulative binary native research; do not duplicate its sparse solver or checkpoints",
+    "CVH10 PR1177 first original scientific use unqualified; conditional prior action budget is not authorization"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-160/prereg.json",
+    "research/contrib/chatgpt/WSP-160/direct_weights.py",
+    "research/contrib/chatgpt/WSP-160/test_direct_weights.py",
+    "research/contrib/chatgpt/WSP-160/README.md",
+    ".github/workflows/wsp160-direct-weight-engineering.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ],
+  "inputs": [
+    {
+      "name": "WSP-159 strict public transition",
+      "source": "Repository parent immutable program, public fields only",
+      "git_sha": "d550127634c50801b4060945e815f961eb104e1c"
+    },
+    {
+      "name": "Fabricated source-free 4D action-dependent linear transitions",
+      "source": "In-test deterministic algebra and seeded Python stdlib RNG; NOT CausalGym source execution",
+      "sha256": null
+    },
+    {
+      "name": "Original external CartPoleWind (static inspection only)",
+      "source": "CausalAILab/Causal-Gymnasium at c94e9a4cd3641588b6b8507e71ccee5c27032bdf, original source blob d65a6a31941709dc9201259d80dd4ebbcf48b4fa, Apache-2.0; original execution prohibited",
+      "sha256": null
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      211,
+      337,
+      503
+    ],
+    "split": "Per seed 192 FIT public transition tuples and 64 disjoint VALID tuples from deterministic local algebra; no upstream source and no protected held-out data.",
+    "ordering": "Prereg first single file commit before implementation and any primary measurement. Validate only same source-free synthetic protocol; do not retune after score.",
+    "data_budget": "192 FIT +64 VALID per replica, 3 replicas; zero original source actions/reset/do/step; no random hidden-source or owner cohort.",
+    "compute_budget": "Pure Python stdlib, fixed 10-dimensional feature and 4-output capacity, max 2048 accumulated rows/model; one source-free dev run per seed; exact final full Linux/Windows regression and independent G29; no GPU/paid APIs.",
+    "capacity": "10 lifted public features [1, s0..s3, sign(a), sign(a)*s0..s3], 4 output delta coefficient vectors, 10x10 inverse regularized covariance. Ridge regularizer lambda=1 exactly. No architectural dependence on CKAD or simulator; no hidden family labels or privileged wind. One shared model, no separate family bank, no long-term retention claims.",
+    "evaluator": "Public next-state RMSE on held fabricated tuples; independent batch closed-form Gaussian elimination ridge control using all 192 same FIT records; action-erased basis control with 5 features at identical observations; zero-motion control, permuted-action negative. Byte-exact native save/restore, 32-byte SHA integrity and strict nonfinite/tamper rejects; record input only WSP159 public semantics.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Independent batch ridge solver with distinct Gaussian-elimination normal equations (should tie numeric RLS, not count as unique native advantage)",
+    "Same-data action-erased ridge model",
+    "Zero-delta/no learning",
+    "Permuted-action negative (independent seeded fixed permutation)",
+    "Cold checkpoint output parity and wrong-hash/tamper/poison/nonfinite rejections"
+  ],
+  "metrics": [
+    "valid_rmse_native",
+    "valid_rmse_batch_ridge",
+    "valid_rmse_action_erased",
+    "valid_rmse_zero",
+    "valid_rmse_permuted",
+    "max_abs_prediction_difference_vs_batch",
+    "cold_snapshot_sha256",
+    "mean_fit_seconds",
+    "mean_inference_seconds",
+    "checkpoint_bytes",
+    "original_source_actions"
+  ],
+  "classification_rules": {
+    "supported": "SOURCEFREE_DIRECT_WEIGHT_ENGINEERING_PASS if all source-free tests, exact cold bytes and integrity checks PASS; numeric predictor matches independent batch ridge max_abs_diff<=1e-8 per output and held fabricated RMSE<=0.10; action-aware RMSE must be at least 0.01 lower than action-erased on the predeclared synthetic family; final exact SHA Linux+Windows full root and G29 PASS. Scientific PASS permanently FALSE.",
+    "mixed": "Focused fixture pass without full final dual-OS regression/G29 -> ENGINEERING_UNVERIFIED; no scientific gain claim.",
+    "negative": "Parity failure, action-erased no worse, source-free synthetic RMSE above target, or invalid public input admitted -> DEVELOPMENT_NO_GO, freeze negatives. No postscore threshold/code adjustment; new candidate if necessary.",
+    "invalid": "Any original upstream source execution, fetched protected new source effects, changed WSP159/WSP158/CKAD core, hidden external source exposure, failed source integrity or unfrozen post-result tuning."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "future_source_first_use": "NOT QUALIFIED. New original-family owner-signed virgin FIT/VALID/TRANSFER cohorts and explicit action/actor ledger required separately. Never interpret WSP160 synthetic development as causally grounded, unfamiliar-world native science.",
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "original_source_execution": false
+  },
+  "preregistration_note": "Create single prereg commit first. Program new opt-in research source, tests and source-free workflow only after this commit; keep draft unmerged; no original simulator imported."
+}
