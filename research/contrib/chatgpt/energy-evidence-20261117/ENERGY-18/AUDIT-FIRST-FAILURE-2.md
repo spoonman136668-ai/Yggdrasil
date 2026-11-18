@@ -1,0 +1,7 @@
+# ENERGY-18 independent-audit first failure (post-score)
+
+The first audit invocation failed at `wrong cycle rank`. This was an overly strict **auditor assumption**, not an inference/scorer failure: the scored perturbation opens a wall cell with at least two existing neighbors, but it can touch **three or four** open neighbors. That can introduce more than one graph cycle per added corridor. The preregistered experiment defines the arms by one or eight added corridor cells, not by a guarantee of exactly one or eight graph cycles.
+
+Correction: keep the scored cohort and all frozen sources byte-identical; change only the auditor to require cycle rank **at least** the number of added corridor cells and independently prove the original S-to-G path has an alternative bypass. Disclose the distinction between 'one additional corridor' and 'one simple cycle'. No tuning or re-scoring was performed.
+
+Second audit-only issue: the bypass check excluded the first and last interior S/G nodes (slice `[2:-2]`), which could be precisely where a valid short bypass exists. Corrected the independent auditor to test every interior route vertex (`[1:-1]`), without modifying scored data or its frozen source.
