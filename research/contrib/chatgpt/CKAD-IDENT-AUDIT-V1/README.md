@@ -1,0 +1,11 @@
+# CKAD-IDENT-AUDIT-V1 — structural certainty from existing memories
+
+This is a **retrospective, read-only source-evidence audit**, not a new original-source experiment or prospective scientific test. It analyzes the exact 64 already-qualified CKAD-SHARED-V2 native world states at parent `cd9d52d86882326e6f0ecbb04979141dc6a2d893`.
+
+The audit opens only the pinned saved checkpoint and the previously sealed scored result. It does **not** import the source-world simulator, create new worlds, call `do` or `reset`, query held outcomes, retrain any learned state, or edit the original checkpoint. It independently enumerates 3,200 possible binary programs comprising local six-bit XOR, output bias, and action-conditional positive context conjunctions of degree 1, 2 or 3. The trained shared gate from V2 is deliberately **not assumed correct** for this audit.
+
+For each original world, it recovers only the publicly witnessed 8 (evaluation) or 16 (training) input/outcome pairs from authenticated native checkpoint state, identifies all broader programs with zero observed mismatches, and counts the unseen/held *input masks* on which they agree. A consensus claim is conditional on the broader **supplied** class and is not a guarantee of real-world safety or correct corrupted labels. It compares the original native answer hashes to the original scored archive without reading held outcomes, and supplies up to four **unexecuted input-mask recommendations** for distinguishing witnesses.
+
+The study is retrospective by design; the previous negative cases are already known. It is inappropriate to claim a new SCIENTIFIC_PASS or to retune previous frozen source cohorts from these results. Any prospective intervention study must be independently frozen on new source-free worlds and qualify the action owner before first-use. The next meaningful mechanism is bounded native causal revision with measured action costs and confident error behavior, not a confidence threshold applied after looking at old labels.
+
+Reproduction: `python -B research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/audit.py --out OUTPUT.json`. The CI job checks pinned Git blob identities, independent structural arithmetic, non-effect invariants, exact Linux/Windows stable receipt, full final root/NKR05 and G29. Original CKAD02–12 owner PR #1182 and accepted `main` remain unchanged.

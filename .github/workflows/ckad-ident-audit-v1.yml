@@ -1,0 +1,162 @@
+name: CKAD read-only structural identifiability audit
+on:
+  push:
+    branches: [research/ckad-identifiability-audit-v1-20261117]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+jobs:
+  evaluate:
+    if: "github.event.head_commit.message == 'ci(ckad-ident-v1): audit sealed native observational equivalence'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source custody, structural negatives, and input-only witnesses
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor e761490014553ca3585484e68be00efed6ba2494 HEAD
+          python -B -m unittest discover -s tests -p test_ckad_ident_audit_v1.py -v
+          python -B research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/audit.py --out "$RUNNER_TEMP/ckad-ident-v1/result.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad-ident-v1-${{ matrix.os }}
+          path: ${{ runner.temp }}/ckad-ident-v1/result.json
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: [evaluate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: ckad-ident-v1-*
+          path: ${{ runner.temp }}/ckad-ident-v1-evidence
+          merge-multiple: false
+      - name: Seal byte-identical read-only evidence and derived G29
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch origin research/ckad-identifiability-audit-v1-20261117
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from yggdrasil.native_hypothesis_portfolio import canonical,digest
+          base=Path(os.environ['RUNNER_TEMP'])/'ckad-ident-v1-evidence'
+          a=json.loads((base/'ckad-ident-v1-ubuntu-latest/result.json').read_bytes())
+          b=json.loads((base/'ckad-ident-v1-windows-2022/result.json').read_bytes())
+          assert a==b,'CROSS_OS_ARCHIVE_AUDIT_DRIFT'
+          assert digest(canonical(a['result']))==a['stable_sha256']
+          p=a['result']
+          assert p['classification']=='RETROSPECTIVE_SOURCE_FREE_IDENTIFIABILITY_AUDIT'
+          assert not p['scientific_pass'] and not p['accepted_native']
+          assert p['new_original_source_actions']==p['new_synthetic_source_actions']==0
+          assert p['held_outcome_reads']==p['new_model_training_calls']==0
+          assert len(p['cases'])==64 and p['family_terms']==25
+          assert p['source_checkpoint_git_blob']=='57ccfdeecb63859b7f3232ec40d8a2739e3839af'
+          assert p['source_result_git_blob']=='ae4935481c4b85a9f52bc8194ee83b651ed96d73'
+          root=Path('research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1')
+          (root/'result.json').write_bytes(canonical(a))
+          lines=['# CKAD-IDENT-AUDIT-V1 — observational equivalence on sealed native memory','',
+              'Retrospective read-only audit; scientific_pass=false; accepted_native=false.',
+              'Original source effects=0, synthetic source effects=0, held outcome reads=0, training=0.','',
+              '| Condition | Worlds | Existing singleton worlds | Multiple broader explanations | Incompatible broadened worlds | Originally answered held | Answered but not broadly certified |',
+              '|---|---:|---:|---:|---:|---:|---:|']
+          for regime,block in p['grouped'].items():
+              lines.append(f"| {regime} | {block['worlds']} | {block['v2_singleton_worlds']} | {block['expanded_multiple_worlds']} | {block['expanded_inconsistent_worlds']} | {block['held_original_answered']} | {block['held_original_answered_not_certified']} |")
+          lines.extend(['','The broader program grammar (25 possible gates x64 local masks x2 bias=3200) is a supplied diagnostic class, NOT a newly learned world truth.',
+              'Input-only proposals are hypothetical and unexecuted, with no outcomes inspected.',
+              'Original held outcomes are not available to this audit; scoring a new safety policy here would be retrospective and invalid.',
+              'All original unknown-world and corruption confident errors remain in the V2 source scores.',
+              'Stable SHA256: '+a['stable_sha256'],
+              'Read-only source candidate: '+os.environ['GITHUB_SHA'],
+              'No original first-use, merge, model promotion, controller or deployment.',''])
+          (root/'SESSION_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+          print('CKAD_IDENT_V1_SEALED_EQUAL_PLATFORM_PASS='+a['stable_sha256'])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/result.json research/contrib/chatgpt/CKAD-IDENT-AUDIT-V1/SESSION_REPORT.md
+          git commit -m "research(ckad-ident-v1): seal exact archived-source identifiability audit"
+          SOURCE="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --quiet && exit 1
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = 3
+          git commit -m "docs(ckad-ident-v1): pin derived G29 at $SOURCE"
+          FINAL="$(git rev-parse HEAD)"
+          python scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ckad-identifiability-audit-v1-20261117
+          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
+          echo "CKAD_IDENT_V1_FINAL_SHA=$FINAL"
+  final:
+    needs: [seal]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full exact-final root/NKR05 and independent G29 qualification
+        shell: bash
+        env:
+          EXPECTED: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py'
+          python scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py
+          test -z "$(git status --porcelain)"
