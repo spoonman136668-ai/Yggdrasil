@@ -56,7 +56,7 @@ def hidden_law(seed,slot):
     r=random.Random(seed_int("hidden-source-generator",seed,slot))
     bias=r.randrange(2)
     linear=r.randrange(64)
-    fam=slot//3
+    fam=slot//3 if slot<12 else (slot-12)%3
     pair_a,pair_b=r.sample(PAIRS,2)
     triple_a,triple_b=r.sample(TRIPLES,2)
     quart=r.choice(QUARTETS)
@@ -76,7 +76,7 @@ def effect(law,x):
 def reveal(seed,slot,x):
     if slot not in (*OLD_SLOTS,*PRESSURE_SLOTS) or not 0<=x<N_INPUTS:
         raise ValueError("CKAD34_REVEAL_INPUT")
-    return effect(hidden_law(seed,slot if slot<12 else slot-12),x)
+    return effect(hidden_law(seed,slot),x)
 
 
 def monomials(degree):
@@ -231,9 +231,9 @@ def train_selected(seed,fit,cal):
     pre_sha=digest(candidate.checkpoint())
     frozen=[[native_prob(candidate,s,x) for x in range(N_INPUTS)] for s in OLD_SLOTS]
     # Four disjoint source-only pressure slots, with no reuse of old slot IDs.
+    pressure_records={slot:public_rows(seed,slot,fit) for slot in PRESSURE_SLOTS}
     for slot in PRESSURE_SLOTS:
-        pressure=public_rows(seed,slot,fit)
-        candidate=native_stage(candidate,slot,pressure,3)
+        candidate=native_stage(candidate,slot,pressure_records[slot],3)
     raw=candidate.checkpoint()
     cold=NativeContextAccumulator.restore(raw,digest(raw))
     if raw!=cold.checkpoint():
@@ -255,7 +255,7 @@ def train_selected(seed,fit,cal):
         raise AssertionError("CKAD34_CONFLICT_WAS_ADMITTED")
     if cold.checkpoint()!=old_raw:
         raise AssertionError("CKAD34_CONTRADICTION_MUTATED_STATE")
-    return cold,fixed,source,calibration,selection,admitted,{
+    return cold,fixed,source,calibration,pressure_records,selection,admitted,{
         "profile_selected_bytes":selected_sizes,
         "profile_fixed_degree3_bytes":forced_sizes,
         "ranks":ranks,
@@ -317,7 +317,7 @@ def score(seed):
     if seed not in PILOT:raise ValueError("CKAD34_ONLY_FROZEN_PILOT_FIRST_USE")
     start,cpu=time.perf_counter(),time.process_time()
     fit,cal,held=source_partition(seed)
-    compiled,fixed,source,calibration,selected,admitted,custody=train_selected(seed,fit,cal)
+    compiled,fixed,source,calibration,pressure_records,selected,admitted,custody=train_selected(seed,fit,cal)
     baseline,oldcustody=native_baseline(seed,source,calibration,held)
     conventional={}
     fixed_conv={}
@@ -374,6 +374,9 @@ def score(seed):
         "old_calibration_source_outcomes":72,"pressure_source_outcomes":168,
         "fit_public_inputs":list(fit),"cal_public_inputs":list(cal),"held_inputs":list(held),
         "held_composites_each_family":48,
+        "source_witnesses":{str(s):source[s] for s in OLD_SLOTS},
+        "calibration_witnesses":{str(s):calibration[s] for s in OLD_SLOTS},
+        "pressure_witnesses":{str(s):pressure_records[s] for s in PRESSURE_SLOTS},
         "selected_degrees":selected,"source_only_admitted":admitted,
         "native_checkpoint":custody,"old_native_checkpoint":oldcustody,
         "metrics":metrics,
