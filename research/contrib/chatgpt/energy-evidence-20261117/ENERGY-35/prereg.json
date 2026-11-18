@@ -1,0 +1,105 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-35",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does learned sparse contrastive causal energy from paired interventions improve held cross-context transfer over strong fully fitted conventional baselines, without old-context loss or excessive compute?",
+  "hypothesis": "When a previously unobserved binary intervention dimension is crossed by 16 training bridges, pair-delta max-margin constraints will improve disjoint other-side predictions over all matched learned controls and the no-pair energy ablation, while retaining base-side knowledge.",
+  "exact_parent_sha": "f3bf4e8f93cd713b24493c4f71b68eace5af265a",
+  "predecessor_evidence": [
+    "ENERGY-34 DEVEL_NO_GO: x0=0 only training led nonidentifiability on x0=1 held; energy 2709/4608 versus OMP 2862/4608."
+  ],
+  "source_commit_sha": "061ac19ac7d411b6bf1858b3a76d5d1ddf212359",
+  "source_git_blob": "fc65b0f5aa224397ea94f22753c25ee27996a305",
+  "source_sha256": "dde9f68ea1f86e7e09b291859adffec78d33cfb6dd1197e8fdf25e92e4bdca9c",
+  "status": "FROZEN BEFORE PRIMARY; only excluded smoke seed 99079 assessed, two pre-freeze contrast weights (.75/.15 then .20/.02), no primary seed run.",
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-35/**"
+  ],
+  "inputs": [
+    {
+      "name": "Self-authored SHA256-keyed eight-bit causal-intervention world generator",
+      "sha256": "dde9f68ea1f86e7e09b291859adffec78d33cfb6dd1197e8fdf25e92e4bdca9c",
+      "source": "Original local synthetic public code; no external data or protected model checkpoint."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      7307,
+      7331,
+      7349
+    ],
+    "smoke_excluded": [
+      99079
+    ],
+    "world_ids": "0..7 per seed",
+    "families": [
+      "parity3",
+      "mixed",
+      "extended4"
+    ],
+    "regimes": [
+      "bridge16",
+      "no_bridge"
+    ],
+    "split": "Per source (seed, world, family): independently hash-sort 128 x0=0 action patterns, take first 80 as common fitting interventions, next 16 as no_bridge substituted x0=0, next 16 as x0=0 held; in bridge16 use the x0=1 flips of first 16 common actions as 16 new training interventions instead of substituted 16 x0=0; held x0=1 are first 48 hash-sorted not among bridge actions; held same for both regimes; no overlap.",
+    "ordering": "SHA256 hash prefix energy35-v1; noise 0.10 independently per unique intervention; 96 experienced actions per arm and world. Hidden rule chosen from signed 3-factor majority in predeclared 190 dimensional parity/AND dictionary.",
+    "data_budget": "3 seeds * 8 world ids * 3 families * 2 regimes =144 worlds; 96 witnessed intervention/outcome labels per world; 64 disjoint held predictions (16 original x0=0 / 48 shifted x0=1); 16 paired counterfactual bridge interventions only in bridge16; no_bridge gets 16 alternative x0=0 labels at equal 96 label budget; controls within each regime get exact identical observations.",
+    "compute_budget": "48 fixed paired/plain energy passes; 8 gradient coordinates per pass; support<=12; OMP12 n_nonzero=12; logistic max_iter=500 tol 1e-8, C=1; ridge alpha=3; SVC C=2 gamma=scale; decision tree depth<=8. No paid models, CPU only. Time each full fit + held prediction within arm; record whole run seconds separately.",
+    "capacity": "190 fixed features accessible to energy, OMP and ridge/logistic; <=12 energy/OMP learned support. SVM/tree are strong conventional non-matched-capacity controls and their larger capacity must be disclosed.",
+    "evaluator": "E(y|x)=-y w dot phi(x); predict class 1 iff score>0 else -1; score noise-free causal bit separately on 16 x0=0 and 48 x0=1 held actions. Source true rule, factor IDs and noise remain evaluator-only. x0 context is specified to learner by observed intervention bits only; no hidden regime target labels.",
+    "deterministic_expected": true,
+    "runtime": "Python 3.13.5, NumPy 2.3.5, scikit-learn 1.8.0, Linux CPU, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1"
+  },
+  "controls": [
+    "Plain sparse-energy same 48 epochs and support<=12 without pair contrastive gradients",
+    "Conventional OMP12, fitted 96 observed labels",
+    "Paired OMP12 with 16 additional label-difference training rows derived only from same observed 96 labels",
+    "Paired Ridge with same derivative rows from the 96 labels",
+    "Fully fitted L2 logistic regression on same dictionary",
+    "Fully fitted RBF SVM on raw action bits",
+    "Fully fitted depth-8 decision tree on raw action bits",
+    "Shuffled-label paired-energy negative control",
+    "no_bridge policy uses same 96 total observed consequences, different interventions, no x0=1 action; not a paired algorithm comparison"
+  ],
+  "metrics": [
+    "Shifted held correct out of 72 worlds*48=3456 per regime",
+    "Old held correct out of 72*16=1152 per regime",
+    "Per-seed shift margins against best fully fitted conventional control",
+    "Paired-vs-plain energy shift accuracy",
+    "Bridge16 vs no_bridge energy shifted accuracy",
+    "Shuffled-label control accuracy",
+    "Aggregate per-arm wall component time, complete process wall time"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_GO iff all seven frozen gates pass, but scientific acceptance and energy-specific speedup still require independent native qualification.",
+    "mixed": "Explicitly report which individual development gates pass and which fail; no selective promotion.",
+    "negative": "DEVELOPMENT_NO_GO if any gate fails; stop this candidate rather than tune primary seeds.",
+    "invalid": "Missing commit-before-score, source/seed mismatch, evidence/control leakage, missing strong baselines, or unreproducible primary receipts. Distinguish infrastructure failures from science."
+  },
+  "gates": {
+    "shift_vs_strongest": "In bridge16, paired-energy x0=1 held correct must exceed MAX over OMP12, paired OMP12, paired Ridge, logistic, RBF-SVM and decision tree by >=3pp (denominator 3456).",
+    "old_retention": "In bridge16, paired-energy x0=0 held correct must be within 1pp of strongest conventional control old accuracy (denominator 1152).",
+    "contrast_ablation": "In bridge16, paired-energy must gain >=2pp on shifted held over same-source plain-energy ablation.",
+    "bridge_value": "Paired-energy bridge16 must gain >=5pp on shifted held against equal-observation-budget paired-energy no_bridge.",
+    "seed_stability": "Positive shifted margin against strongest conventional control in at least 2 of the 3 source seeds.",
+    "shuffled_control": "In bridge16, paired-energy shifted correct strictly exceeds shuffled-label paired-energy.",
+    "fit_cost": "Measured aggregate paired-energy fit+held-predict component time <=1.5 times fastest fully trained conventional control in bridge16; this cannot alone claim whole-process speedup."
+  },
+  "prohibited_after_primary_run": [
+    "no threshold/seed/action/split/capacity/optimizer retuning using primary cohort",
+    "no post-result gate changes",
+    "no native protected first use",
+    "no accepted-ref mutation",
+    "no owner/runner/controller changes",
+    "no automatic deployment or merge"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  }
+}
