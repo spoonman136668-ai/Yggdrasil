@@ -269,6 +269,13 @@ class NativeCumulativeLearner:
         candidate._experience = self._experience.begin_context(novel=novel)
         return candidate
 
+    def begin_experience_stream(self):
+        """Start a single cumulative, consequence-monitored stream."""
+        require(self._experience is not None, 'STREAM_REQUIRES_EXPERIENCE')
+        candidate = self._copy()
+        candidate._experience = self._experience.begin_stream()
+        return candidate
+
     def experience_context_forecast(self, view, first, next_state=None, second=None):
         require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
         return self._experience.context_forecast(view, first, next_state, second)

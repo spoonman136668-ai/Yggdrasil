@@ -13,6 +13,7 @@ from yggdrasil.public_causal_cells import PublicCausalCells
 SCHEMA = "yggdrasil.ckad.native-episode-experience.v1"
 CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v2"
 NOVEL_CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v3"
+STREAM_SCHEMA = "yggdrasil.ckad.native-episode-experience.v4"
 MAX_EPISODES = 1024
 MAX_CHECKPOINT_BYTES = 160 * 1024
 PROJECTION_WITNESSES = 8
@@ -60,6 +61,7 @@ class NativeEpisodeExperience:
         "_transition", "_terminal", "_transition_loss", "_terminal_loss",
         "_streaks", "_repairs",
         "_context_start", "_context_models", "_context_weights", "_context_novel",
+        "_stream_start", "_stream_score", "_stream_detections",
     )
 
     def __init__(self, *, repair=True):
@@ -79,6 +81,9 @@ class NativeEpisodeExperience:
         self._context_models = ()
         self._context_weights = ()
         self._context_novel = False
+        self._stream_start = None
+        self._stream_score = Fraction(1)
+        self._stream_detections = ()
 
     @staticmethod
     def _selected(loss):
@@ -108,6 +113,9 @@ class NativeEpisodeExperience:
         candidate._context_models = self._context_models
         candidate._context_weights = self._context_weights
         candidate._context_novel = self._context_novel
+        candidate._stream_start = self._stream_start
+        candidate._stream_score = self._stream_score
+        candidate._stream_detections = self._stream_detections
         return candidate
 
     def observe(self, identifier, views, row):
@@ -127,10 +135,28 @@ class NativeEpisodeExperience:
             return self
         require(len(self._ledger) < MAX_EPISODES, "EPISODE_CAPACITY")
         candidate = self._clone()
-        candidate._append(event)
-        if candidate._context_start is not None:
-            candidate._update_context(event)
+        candidate._accept(event)
         return candidate
+
+    def _accept(self, event):
+        """Score before training; update detector only from revealed outcomes."""
+        p = None
+        if self._stream_start is not None:
+            _, views, first, state, second, reward = event
+            view = views[0]
+            a = self.context_forecast(view, first)
+            b = self.context_forecast(view, first, state, second)
+            p = (a if state else 1 - a) * (b if reward else 1 - b)
+            require(p > 0, "EPISODE_STREAM_LIKELIHOOD")
+        self._append(event)
+        if self._context_start is not None:
+            self._update_context(event)
+        if p is not None:
+            self._stream_score = max(Fraction(1), self._stream_score / (4 * p))
+            if self._stream_score >= 16 and len(self._ledger) - self._context_start >= 8:
+                self._stream_detections += ((event[0], len(self._ledger), self._stream_score),)
+                self._load_context(len(self._ledger), novel=True)
+                self._stream_score = Fraction(1)
 
     def _append(self, event):
         identifier, views, first, next_state, second, reward = event
@@ -236,7 +262,17 @@ class NativeEpisodeExperience:
         require(type(novel) is bool, "EPISODE_NOVEL_FLAG")
         require(len(self._ledger) >= PROJECTION_WITNESSES, "EPISODE_CONTEXT_SUPPORT")
         candidate = self._clone()
+        require(self._stream_start is None, "EPISODE_STREAM_CONTEXT_EXCLUSIVE")
         candidate._load_context(len(candidate._ledger), novel=novel)
+        return candidate
+
+    def begin_stream(self):
+        """One causal learner; no source boundary labels are supplied."""
+        require(self._stream_start is None and len(self._ledger) >= PROJECTION_WITNESSES,
+                "EPISODE_STREAM_BEGIN")
+        candidate = self._clone()
+        candidate._load_context(len(candidate._ledger), novel=True)
+        candidate._stream_start = len(candidate._ledger)
         return candidate
 
     def _load_context(self, context_start, *, novel=False):
@@ -330,10 +366,17 @@ class NativeEpisodeExperience:
     def consolidate(self):
         """Rebuild the native banks from the unique, ordered witness ledger."""
         rebuilt = NativeEpisodeExperience(repair=self._repair_enabled)
-        for event in self._ledger:
-            rebuilt._append(event)
-        if self._context_start is not None:
-            rebuilt._load_context(self._context_start, novel=self._context_novel)
+        if self._stream_start is None:
+            for event in self._ledger:
+                rebuilt._append(event)
+            if self._context_start is not None:
+                rebuilt._load_context(self._context_start, novel=self._context_novel)
+        else:
+            for event in self._ledger[:self._stream_start]:
+                rebuilt._append(event)
+            rebuilt = rebuilt.begin_stream()
+            for event in self._ledger[self._stream_start:]:
+                rebuilt._accept(event)
         require(rebuilt._state_digest() == self._state_digest(), "EPISODE_REPLAY_DRIFT")
         return rebuilt
 
@@ -367,6 +410,19 @@ class NativeEpisodeExperience:
             })
         return info
 
+    def _stream_info(self, *, hexadecimal=False):
+        def encoded(value):
+            pair = _ratio(value)
+            return [format(item, "x") for item in pair] if hexadecimal else pair
+        return {
+            "stream_start": self._stream_start,
+            "score": encoded(self._stream_score),
+            "detections": [
+                {"event_id": identifier, "evidence_count": count, "score": encoded(value)}
+                for identifier, count, value in self._stream_detections
+            ],
+        }
+
     def _state_digest(self):
         state = {
             "projection": self._projection, "mismatches": self._mismatches,
@@ -378,6 +434,8 @@ class NativeEpisodeExperience:
         }
         if self._context_start is not None:
             state["context"] = self._context_info(hex_weights=True)
+        if self._stream_start is not None:
+            state["stream"] = self._stream_info(hexadecimal=True)
         return digest(canonical(state))
 
     def info(self):
@@ -392,6 +450,8 @@ class NativeEpisodeExperience:
         }
         if self._context_start is not None:
             info["context"] = self._context_info()
+        if self._stream_start is not None:
+            info["stream"] = self._stream_info()
         return info
 
     def checkpoint(self):
@@ -405,6 +465,9 @@ class NativeEpisodeExperience:
         if self._context_novel:
             data["schema"] = NOVEL_CONTEXT_SCHEMA
             data["novel"] = True
+        if self._stream_start is not None:
+            data["schema"] = STREAM_SCHEMA
+            data["stream_start"] = self._stream_start
         raw = canonical(data)
         require(len(raw) <= MAX_CHECKPOINT_BYTES, "EPISODE_CHECKPOINT_CAPACITY")
         return raw
@@ -416,21 +479,29 @@ class NativeEpisodeExperience:
         try:
             data = json.loads(raw.decode("ascii"))
             require(type(data) is dict
-                    and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA, NOVEL_CONTEXT_SCHEMA),
+                    and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA, NOVEL_CONTEXT_SCHEMA,
+                                               STREAM_SCHEMA),
                     "EPISODE_CHECKPOINT_SCHEMA")
             keys = {"schema", "repair", "episodes", "state_sha256"}
             context = data["schema"] != SCHEMA
-            novel = data["schema"] == NOVEL_CONTEXT_SCHEMA
+            novel = data["schema"] in (NOVEL_CONTEXT_SCHEMA, STREAM_SCHEMA)
+            stream = data["schema"] == STREAM_SCHEMA
             if context:
                 keys.add("context_start")
             if novel:
                 keys.add("novel")
                 require(data.get("novel") is True, "EPISODE_NOVEL_CHECKPOINT_FLAG")
+            if stream:
+                keys.add("stream_start")
             require(set(data) == keys and canonical(data) == raw, "EPISODE_CHECKPOINT_CONTRACT")
             episodes = data["episodes"]
             require(type(episodes) is list and len(episodes) <= MAX_EPISODES, "EPISODE_CHECKPOINT_COUNT")
             candidate = cls(repair=data["repair"])
-            for event in episodes:
+            start = data.get("stream_start")
+            if stream:
+                require(type(start) is int and PROJECTION_WITNESSES <= start <= len(episodes),
+                        "EPISODE_STREAM_START_INVALID")
+            for index, event in enumerate(episodes):
                 require(type(event) is list and len(event) == 6, "EPISODE_CHECKPOINT_ROW")
                 identifier, views, *row = event
                 require(pin(identifier) and identifier not in candidate._ids, "EPISODE_CHECKPOINT_ID")
@@ -438,8 +509,18 @@ class NativeEpisodeExperience:
                         "EPISODE_CHECKPOINT_VIEWS")
                 pair = _views(tuple(tuple(view) for view in views))
                 bits = [PublicCausalCells._bit(bit, name.upper()) for name, bit in zip(ROW_FIELDS[1:], row)]
-                candidate._append((identifier, pair, *bits))
-            if context:
+                if stream and index == start:
+                    candidate = candidate.begin_stream()
+                if stream and index >= start:
+                    candidate._accept((identifier, pair, *bits))
+                else:
+                    candidate._append((identifier, pair, *bits))
+            if stream:
+                if start == len(episodes):
+                    candidate = candidate.begin_stream()
+                require(candidate._context_start == data["context_start"],
+                        "EPISODE_STREAM_REPLAY_CONTEXT")
+            elif context:
                 candidate._load_context(data["context_start"], novel=novel)
             require(candidate.checkpoint() == raw, "EPISODE_CHECKPOINT_REPLAY")
             return candidate
