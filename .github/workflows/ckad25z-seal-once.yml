@@ -35,6 +35,12 @@ jobs:
           test ! -e research/contrib/chatgpt/CKAD25-Z/result.json
           test ! -e research/contrib/chatgpt/CKAD25-Z/provenance.json
           test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          path="research/contrib/chatgpt/CKAD25-Z/audit_results.py"
+          compile(Path(path).read_text(encoding="utf-8"),path,"exec")
+          print("CKAD25Z_READONLY_AUDITOR_SYNTAX_PASS")
+          PY
       - name: Retrieve only 2 original scored source receipts, no scientific source rerun
         shell: bash
         env:
