@@ -1,0 +1,121 @@
+{
+  "schema": "yggdrasil.ckad27.reward-intervention.prereg.v1",
+  "id": "CKAD27",
+  "parent_commit": "cf08d1995fee0cf11eed0f057a5ba4b782632421",
+  "parent_tree": "f917acdb47e3264daf5c33d600fa9ba5e393b3d1",
+  "baseline_result_sha256": "68a11deda00b31c75e33656be09e97cd6e4f9569f5e08606d6c86695be792aaf",
+  "original_source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "goal": "Frozen prospective, matched-budget falsification of reward-hypothesis-directed two-stage public interventions vs unchanged native exploration and deterministic random, using one cumulative native model per arm and cold retention of original CKAD22 448 public witness prefix.",
+  "scenarios": {
+    "reward_change": {
+      "source_seed_offset": 47100,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "terminal_switch",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "terminal_switch",
+          0
+        ]
+      ]
+    },
+    "stationary_null": {
+      "source_seed_offset": 47200,
+      "phases": [
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ],
+        [
+          "invariant",
+          0
+        ]
+      ]
+    }
+  },
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_cohort": "ckad27-source-v1",
+  "held_cohort": "ckad27-held-v1",
+  "source_episodes_per_arm": 128,
+  "phase_episodes": 32,
+  "training_policy": "For every fourth episode, all arms exploit using the unchanged native two-stage context_plan. For other episodes, directed chooses first action maximizing native posterior expected terminal-hypothesis prediction disagreement, averaged over both next states and optimized second action. After observed transition, directed chooses second action maximizing posterior terminal-hypothesis disagreement. Native control chooses original context_explore for each stage. Random control chooses each stage independently from deterministic SHA-256 stream. All use exactly one public S2 and terminal Y consequence per episode, no counterfactual label to the learner.",
+  "reward_disagreement": "Per candidate first and second action, compute exact Fraction weighted variance across the currently stored native retrieved context models, conditioning posterior on observed S2 for second stage. Select argmax expected terminal variance over S2, weighting native transition forecast P(S2|s1,a1). Tie -> native context_explore. If all weighted disagreement zero -> native context_explore. No held-out reward or hidden phase enters policy.",
+  "matched_controls": [
+    "native_context_explore 75% / context_plan 25%",
+    "deterministic_random 75% / context_plan 25%",
+    "fully fitted conventional trailing-window MLE control per source arm on exactly the same public witness receipts",
+    "exact independent source witness history and cold model replay"
+  ],
+  "held_evaluations": {
+    "checkpoints": [
+      0,
+      32,
+      64,
+      96,
+      128
+    ],
+    "episodes_per_checkpoint": 96,
+    "per_checkpoint_world": "The world at count=0 is first phase; at count 32,64,96,128 use the just-completed phase index (count-1)//32 to evaluate retention of the learned world without using results for model update.",
+    "metrics": [
+      "mean reward of the learned native context_plan on 96 new matched held episodes per arm/seed/checkpoint",
+      "transition and terminal Brier score of native context_forecast over independent deterministic fixed interventions on same held episodes",
+      "fully trained conventional fitted MLE plan score from the arm's public witnesses, separately audited",
+      "first/second action balance and directed policy dissimilarity from native",
+      "cold checkpoint exact SHA and original prefix bytes"
+    ],
+    "held_count_trained_updates": 0
+  },
+  "frozen_gates": {
+    "reward_change_gain_vs_native": "Aggregated held reward for directed across counts 64,96,128 >= native by 0.05 absolute (9 matched checkpoint-seed groups, 864 held episodes).",
+    "reward_change_gain_vs_random": "Same directed aggregated reward >= random by 0.05 absolute.",
+    "reward_change_per_seed": "Directed beats native (strictly) on >=2 of 3 independent parent seed groups, over the same three held checkpoints.",
+    "reward_prediction_quality": "Directed has terminal Brier reduction >=0.01 absolute vs native across same held checkpoints.",
+    "stationary_no_harm": "Aggregated held reward on stationary_null across counts 64,96,128 no more than 0.03 absolute below native.",
+    "familiar_return": "At reward_change checkpoint 96, directed held reward no more than 0.03 below native's familiar-world reward.",
+    "strong_conventional": "On reward_change, directed native held reward >= its own fully trained matched-receipt conventional trailing MLE fitted reward.",
+    "source_integrity": "Linux and Windows exact semantic, deterministic action receipts and cold checkpoints match; every source arm retains original 448 witnesses plus exactly 128 new distinct public witnesses, no protected source first-use, no held learning."
+  },
+  "promotion": "Only mark DEVELOPMENT_GO if ALL frozen gates pass. ENGINEERING_PASS does not establish learning, generalized reasoning, structural transfer, intelligence, scientific_pass or native acceptance.",
+  "scientific_pass": false,
+  "accepted_native": false,
+  "deployment": "NONE",
+  "budgets": {
+    "total_seed_scenario_cases": 6,
+    "total_learners": 18,
+    "source_episodes_per_learner": 128,
+    "total_public_source_episodes": 2304,
+    "held_episodes_per_arm": 480,
+    "held_actions_are_evaluator_only": true,
+    "max_runtime_seconds_per_case": 900,
+    "paid_api_calls": 0,
+    "protected_first_use": 0,
+    "original_source_actions": 0
+  },
+  "allowed_paths": [
+    "research/contrib/chatgpt/CKAD-27/**",
+    ".github/workflows/ckad27-reward-intervention.yml",
+    ".ice/code-atlas.*"
+  ],
+  "isolation": "Existing Yggdrasil native model and CKAD23 detection are unmodified. CKAD27 contributor branch only. No PR1207 owner edit, merge, promotion, controller, external scheduler, or production adoption."
+}
