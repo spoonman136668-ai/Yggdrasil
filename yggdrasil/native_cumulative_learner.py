@@ -427,6 +427,82 @@ class NativeCumulativeLearner:
         return (state, empty, 'ACQUIRED' if state._compiled[empty].model_count
                 else 'INCOMPATIBLE')
 
+    def validate_causal_source_with_witnesses(
+            self, slot, records, expected_sha256, *,
+            source_ref, evidence_slot, query_context, query_action):
+        """Source-trained numeric model falsification with actual new interventions.
+
+        Two previously unwitnessed do/outcome results are stored in another
+        native source slot on this SAME immutable learner. Original source
+        coefficients and compiled relation memories are never overwritten.
+        A still-compatible conventional <=3-term source class is not proof
+        against alternative unseen mechanisms. No hidden labels or simulator.
+        """
+        from yggdrasil.native_context_basis import feature_row
+        require(self._schema == RELATION_SCHEMA and
+                type(slot) is int and 1 <= slot <= 9 and
+                type(evidence_slot) is int and 12 <= evidence_slot <= 14
+                and self._compiled[slot] is not None and
+                self._compiled[slot].model_count > 0 and
+                not self._quarantined[slot] and
+                not self._repairs and self._history is None
+                and self._dtr is None and self._experience is None,
+                'INTEGRATED_CAUSAL_WITNESS_SCOPE')
+        require(type(records) is list and len(records) == 2
+                and pin(expected_sha256)
+                and digest(canonical(records)) == expected_sha256
+                and pin(source_ref), 'INTEGRATED_CAUSAL_WITNESS_SOURCE_PIN')
+        addresses = set()
+        known = self._source._seen[slot]
+        for row in records:
+            require(type(row) is list and len(row) == 3,
+                    'INTEGRATED_CAUSAL_WITNESS_SHAPE')
+            c, a, observed_y = row
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            PublicCausalCells._bit(observed_y, 'PUBLIC_OUTCOME')
+            k = c | (a << self._source._model.context_bits)
+            require(k not in addresses and not (known & (1 << k)),
+                    'INTEGRATED_CAUSAL_WITNESS_OVERLAP')
+            addresses.add(k)
+        self._source._model._context(query_context)
+        PublicCausalCells._bit(query_action, 'ACTION')
+        query = query_context | (query_action << self._source._model.context_bits)
+        require(query not in addresses and not (known & (1 << query)),
+                'INTEGRATED_CAUSAL_WITNESS_HELD_QUERY_LEAK')
+        prior_events = [e for e in self._events if e['slot'] == evidence_slot]
+        if prior_events:
+            require(len(prior_events) == 1
+                    and prior_events[0]['source_sha256'] == expected_sha256
+                    and prior_events[0]['source_ref'] == source_ref
+                    and self._source._seen[evidence_slot].bit_count() == 2
+                    and {tuple(x) for x in self._rows(evidence_slot)}
+                         == {tuple(x) for x in records},
+                    'INTEGRATED_CAUSAL_WITNESS_LEDGER_REUSE')
+        else:
+            require(self._source._seen[evidence_slot] == 0
+                    and self._compiled[evidence_slot] is None
+                    and self._hypotheses[evidence_slot] is None
+                    and not self._quarantined[evidence_slot],
+                    'INTEGRATED_CAUSAL_WITNESS_EVIDENCE_SLOT_OCCUPIED')
+        retained = []
+        for weight in self._compiled[slot]._models:
+            if all(((weight & feature_row(c | (a << 3), 4)).bit_count() & 1)
+                   == outcome for c, a, outcome in records):
+                retained.append(weight)
+        version = (sum(((w & feature_row(query, 4)).bit_count() & 1)
+                       for w in retained), len(retained)) if retained else (1, 2)
+        status = 'CONSISTENT' if retained else 'FALSIFIED'
+        updated = self.observe(evidence_slot, records, expected_sha256,
+                               source_ref=source_ref)
+        require(updated._compiled[slot] is not None
+                and updated._compiled[slot].checkpoint()
+                    == self._compiled[slot].checkpoint()
+                and updated._source._seen[evidence_slot].bit_count() == 2
+                and updated._source._seen[slot] == known,
+                'INTEGRATED_CAUSAL_WITNESS_MEMORY_CUSTODY')
+        return updated, version, status
+
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
         require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_HISTORY_SCOPE')

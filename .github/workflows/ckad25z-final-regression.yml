@@ -1,0 +1,164 @@
+name: CKAD25-Z exact-final native source and G29 regression
+on:
+  push:
+    branches: [research/ckad25z-outofclass-witness-20261118]
+    paths:
+      - ".github/workflows/ckad25z-final-regression.yml"
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+
+jobs:
+  source-only-pinned-G29:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.g29.outputs.source_sha }}
+      final_sha: ${{ steps.g29.outputs.final_sha }}
+    steps:
+      - name: Keep exact source text across platforms
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Verify immutable original positive and negative receipt then derive only G29 source index
+        id: g29
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25z-outofclass-witness-20261118
+          test "$GITHUB_REF" = "refs/heads/$BRANCH"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "bb83fd2e3a0f175edd07c23fca6b359a8dfbfbd0"
+          test "$(git hash-object tests/test_native_causal_witness.py)" = "a6aaa144187fabdff7294b4c65d164b4bdea1468"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Z/run.py)" = "6ff323e2876f09a35c58ced3bc25763e0a38dc55"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Z/result.json)" = "57858ca136c6c39ab9f7af7d48044de7f860775c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Z/provenance.json)" = "40a30a7485cf2955a69672ca5b1f746327d4692e"
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-Z")
+          raw=(root/"result.json").read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=="22e6722e34eaf939180d52d76e83449e1a792425c7c599e95da72d35a316b119"
+          d=json.loads(raw)
+          assert d["development_disposition"]=="BOUNDED_DETECTION_SIGNAL"
+          assert d["scientific_pass"] is False and d["universal_OOD_safety"] is False
+          assert d["by_world_brier"]["D1"]["guarded_native"]==.25
+          assert d["by_world_brier"]["D2"]["guarded_native"]==.5
+          print("CKAD25Z_ORIGINAL_BOUNDED_SIGNAL_AND_IMPOSSIBILITY_RECEIPT_PASS")
+          PY
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          python -B - <<'PY'
+          import subprocess
+          change=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert change=={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"},change
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci(ckad25z): pin G29 to original witnessed contradiction source tree"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "CKAD25Z_G29_SOURCE_SHA=$GITHUB_SHA"
+          echo "CKAD25Z_G29_FINAL_SHA=$(git rev-parse HEAD)"
+
+  mandatory-full-native:
+    needs: [source-only-pinned-G29]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Preserve immutable checkout exact source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.source-only-pinned-G29.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Install pinned conventional baselines for inherited regression
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Exact final native whole suite, negative science audits and pinned G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.source-only-pinned-G29.outputs.final_sha }}"
+          test "$(git rev-parse 'HEAD^')" = "${{ needs.source-only-pinned-G29.outputs.source_sha }}"
+          git rev-parse 'HEAD^{tree}'
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "bb83fd2e3a0f175edd07c23fca6b359a8dfbfbd0"
+          test "$(git hash-object tests/test_native_causal_witness.py)" = "a6aaa144187fabdff7294b4c65d164b4bdea1468"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Z/run.py)" = "6ff323e2876f09a35c58ced3bc25763e0a38dc55"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Z/result.json)" = "57858ca136c6c39ab9f7af7d48044de7f860775c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-Z/provenance.json)" = "40a30a7485cf2955a69672ca5b1f746327d4692e"
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-23 -p test_ckad23.py -v
+          python -B research/contrib/chatgpt/CKAD25-Z/audit_results.py research/contrib/chatgpt/CKAD25-Z/result.json
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-Z")
+          original=(root/"result.json").read_bytes()
+          prov=json.loads((root/"provenance.json").read_bytes())
+          d=json.loads(original)
+          assert hashlib.sha256(original).hexdigest()=="22e6722e34eaf939180d52d76e83449e1a792425c7c599e95da72d35a316b119"
+          assert prov["original_result_sha256"]==hashlib.sha256(original).hexdigest()
+          assert prov["identical_science_result_bytes_both_platforms"] is True
+          assert prov["original_held_rescored_during_seal"] is False
+          assert d["executed_source_sha256"]==hashlib.sha256((root/"run.py").read_bytes()).hexdigest()
+          assert d["independent_conventional_helper_sha256"]==hashlib.sha256(Path("research/contrib/chatgpt/CKAD25-S/run.py").read_bytes()).hexdigest()
+          assert d["science_seeds"]==[72011,72029,72047,72061]
+          assert d["genuine_source_free_action_consequences"]==312
+          assert d["held_phase_predictions"]==24 and d["alias_worlds_not_independent_families"] is True
+          assert len(d["per_seed_world"])==12
+          assert d["development_disposition"]=="BOUNDED_DETECTION_SIGNAL"
+          assert all(d["gates"].values())
+          assert d["mean_brier"]["guarded_native"]==.25
+          assert d["mean_brier"]["exact_equivalent_697"]==.25
+          assert d["mean_brier"]["source_unvalidated"]==.333333333
+          assert d["by_world_brier"]["C"]["guarded_native"]==0.
+          assert d["by_world_brier"]["D1"]["guarded_native"]==.25
+          assert d["by_world_brier"]["D2"]["guarded_native"]==.5
+          assert d["universal_OOD_safety"] is False
+          assert d["information_theoretic_alias_D2_unresolved"] is True
+          assert d["scientific_pass"] is False and d["conventional_superiority"] is False
+          assert d["original_owner_science_first_use"] is False and d["accepted_main_changed"] is False
+          assert d["forge_dispatch"] is False and d["native_promotion"] is False
+          assert d["merge"] is False and d["deployment"] is False
+          print("CKAD25Z_EXACT_FINAL_FROZEN_SCIENCE_BOUNDARY_AUDIT_PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo "CKAD25Z_FULL_FINAL_REGRESSION_PASS_SHA=$(git rev-parse HEAD)"
