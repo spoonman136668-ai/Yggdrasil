@@ -19,7 +19,13 @@ def check(root=HERE):
     linux_shards=json.loads((root/"shards-linux.json").read_bytes())
     windows_shards=json.loads((root/"shards-windows.json").read_bytes())
     a,b=combine(linux_shards),combine(windows_shards)
-    need(a==b==recorded==windows,"INDEPENDENT_RECOMPUTE")
+    # JSON object keys are strings; Python's parent-checkpoint dict is keyed by
+    # integer seed IDs before serialization. Normalize only that representational
+    # difference. All values, scores, evidence hashes and scientific gates stay exact.
+    need(a==b,"OS_EXACT_RECOMPUTE")
+    normalized={**a, "previously_frozen_checkpoints": {
+        str(k):v for k,v in a["previously_frozen_checkpoints"].items()}}
+    need(normalized==recorded==windows,"INDEPENDENT_RECOMPUTE")
     expect=digest(canonical({k:v for k,v in a.items() if k!="stable_sha256"}))
     need(a["stable_sha256"]==expect,"STABLE_RESULT_PIN")
     need(a["contexts_trained"]==48 and a["new_probes"]==768 and
