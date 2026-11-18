@@ -1,0 +1,118 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-44",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "date": "2026-11-18",
+  "exact_parent_sha": "cd6fd81689489490bf6fd409c109f3810f0a6e64",
+  "source_commit": "12c4a83b581c6a11e2b0db143e4756b2d6c9fd5f",
+  "question": "Can selective context-gated sparse residual-energy repair preserve previously learned intervention predictions and beat strong fully trained conventional corrective learners on new and cold causal environments?",
+  "hypothesis": "Candidate should maintain old MSE within 1% of its frozen stage-one checkpoint, exceed best conventional cold MSE by >=10%, exceed conventional exactly matched OMP2 residual repair by >=5%, and identify >=80% of the two stage-specific causal support identities.",
+  "source": {
+    "source_file": "experiment.py.bz2",
+    "source_blob": "3aecb7f3029448db38711ae511492249c3a64292",
+    "source_raw_sha256": "6882e7e4f202de660b90b9a0d08d20eb4ccfe67a8d143105a6c7390d5ea8ba30",
+    "source_packed_sha256": "82159c625e2cb272587e5e51dab22a7025840b47978091054b0fe9efbe32e96f",
+    "source_bytes": 10903,
+    "independent_auditor_file": "audit.py.bz2",
+    "auditor_blob": "577e304685a1b66c15fa700cbb575ca1945c8d74",
+    "auditor_raw_sha256": "64743cf9ab2ec23475519ce12ec1cd566f09c4ee00fc5a9e1108871486f9ad90",
+    "auditor_packed_sha256": "7a2e16c6285ce53a0da16753d31b1872243c2e15c2f651f1dbd1381990803a00",
+    "auditor_bytes": 7514,
+    "dependent_unchanged_generator": "ENERGY-43/experiment.py.bz2 original sha256 48a798f75c1afc9701158edb4131d076dbe07f9dd3ad9374b9095ad2b47fe79f, Git blob e42717a22801ae944295c27700fb3793db970714",
+    "dependent_independent_generator": "ENERGY-43/audit.py.bz2 original sha256 b838cf23568016d97c068c8ea0e1e818b9355ab3a28992d602d1cb4f4d775e61, Git blob fa7477d72890420814b1b2c72e9afe2fa193df98"
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-44/**"
+  ],
+  "data": {
+    "provenance": "Unchanged ENERGY-43 source-generated independent synthetic 12-bit randomized actions with 364 author-specified unary/pair/triple parity and AND features. No real data or native Yggdrasil checkpoint. New seeds, no reuse of ENERGY-43 primary seeds.",
+    "hidden_rule": "Three invariant signed causal supports, one old-only support and one new-only support, all on first ten unknown causal bits. Two nuisance cue bits change correlations across old/new/cold settings. Independent Gaussian consequence noise sigma .3. Generator hidden factor ids and weights evaluator-only.",
+    "source_family": [
+      "parity2",
+      "parity3",
+      "mixed"
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "primary_seeds": [
+      8713,
+      8731,
+      8741
+    ],
+    "excluded_smoke_seed": 99829,
+    "worlds": 36,
+    "train_per_world": {
+      "old": 96,
+      "new": 96,
+      "total": 192
+    },
+    "held_per_world": {
+      "old": 128,
+      "new": 128,
+      "cold": 128
+    },
+    "eval_held_each_context": 4608,
+    "leakage_guard": "Only observed randomized intervention actions, stage, and train consequences provided to methods. Planted support and weights and all held consequences used only after fitting for scoring. Old/new/cold streams hash-separated."
+  },
+  "algorithm": {
+    "candidate": "Train frozen OMP4 factor supports on 96 old outcomes. On new context compute residual y_new - frozen_old_model(x_new). Rank all 364 features by normalized new-witness residual correlation, enumerate all unordered pairs in top16 (120) and fit ridge=.02 weights, choose minimum observed new residual MSE + .0001*L2; apply exactly two corrections ONLY in new/cold context. Old model never updated. Externally named classical sparse residual-energy minimization, no physical energy claim.",
+    "strong_controls": {
+      "omp_delta2": "Identical frozen OMP4, use same 96 new residual observations and conventional sklearn OMP2 over all 364 features to fit two correction factors; exact capacity and inputs matched.",
+      "omp_structural_memory": "Conventional cumulative 192-observation OMP structural memory, three old locked factors and up to 7 active gated supports (ENERGY-43 strongest).",
+      "full_omp7": "Standard OMP 7 over 728 gated grammar features fit to same 192 outcomes.",
+      "stagewise_retrain": "Separate 4-support OMP on 96 new observed consequences, frozen old OMP for old context.",
+      "ridge": "Ridge alpha40 fit full cumulative gated grammar.",
+      "elasticnet": "ElasticNet alpha .025 l1_ratio .85 max_iter5000 tol1e-5 fit full gated grammar.",
+      "forest": "Random forest 60 trees max_depth9 min_leaf3 n_jobs1, raw action+stage fit same 192 outcomes",
+      "no_repair": "Old model with no new adaptation. Causal adaptation ablation.",
+      "shuffled_delta": "Same exact two-factor candidate with deterministically shuffled new residual targets. Negative learning control."
+    },
+    "model_capacity": "Candidate freezes 4 stage-one supports plus 2 delta supports, OMP delta comparator same 4+2. Larger-capacity control models retained and included in strongest comparator; cannot selectively ignore them.",
+    "compute": "One 36-world primary score with fresh fixed seeds, one unchanged-source semantic replay, independently authored 10-arm full refit audit. Fixed two-factor pair search among top16. No primary tuning.",
+    "timing": "Linux CPU Python3.13.5 NumPy2.3.5 scikit-learn1.8.0, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1. Sum per-arm fit+prediction Python wall seconds, excluding source generation, Python start, CI and audit; physical energy not measured."
+  },
+  "frozen_gates": {
+    "cold_gain_vs_best_control_10pct": "Candidate mean cold MSE <= .90 × lowest mean cold MSE among omp_delta2,omp_structural_memory,full_omp7,stagewise_retrain,ridge,elasticnet,forest.",
+    "old_retention_max_1pct": "Candidate old held after new training MSE <= 1.01 × identical frozen old checkpoint MSE.",
+    "old_vs_best_control_5pct": "Candidate old MSE <= 1.05 × minimum old MSE among seven conventional fitted controls.",
+    "cold_gain_vs_omp_delta2_5pct": "Candidate cold MSE <= .95 × OMP2 corrective delta cold MSE.",
+    "cold_gain_vs_shuffled_20pct": "Candidate cold MSE <= .80 × shuffled new-outcome corrective candidate MSE.",
+    "new_mechanism_delta_recall_80pct": "Across 36 cases candidate selected context-delta supports include at least 80% of two true stage-specific factor IDs (old-only and new-only).",
+    "seed_stability_2of3": "Candidate seed-mean cold MSE lower than strongest conventional comparator separately in >=2 of 3 fixed primary seeds.",
+    "fit_predict_cpu_max_3x_omp_structural": "Candidate sum fit+predict local seconds <=3 × conventional OMP structural-memory sum, without claiming full-system cost."
+  },
+  "decision_rules": {
+    "development_go": "All 8 prospectively frozen gates true and independent all-world refit audit PASS. Does not qualify native training, scientific acceptance or deployment.",
+    "development_no_go": "Any frozen gate fails with valid provenance, data and independent audit. Preserve negative, stop tuning consumed seeds.",
+    "invalid": "Any source/hash/prereg ordering mismatch, leakage, missing matched control, changed sample budget or seed, invalid exact error computation, independent refit audit failure or shuffled negative not applied.",
+    "mixed": "Report all failures and controls, per-seed and per-family outcomes without tuning or changing the primary definition."
+  },
+  "smoke": {
+    "seed": 99829,
+    "worlds": 3,
+    "independent_refit_audit": "PASS",
+    "checks": 11583,
+    "scope": "all ten arms, source regeneration, factor/weight identity, all old/new/cold predictions",
+    "primary_seeds_consumed": false
+  },
+  "frozen_after_primary": [
+    "source/thresholds/metrics/seed list/controls unchanged",
+    "No postscore hyperparameter exploration on consumed seeds",
+    "No native first-use, model writes, accepted ref mutations, controller/runner/queue/scheduler changes, merge/promotion/deployment"
+  ],
+  "authority": {
+    "external_research_only": true,
+    "scientific_first_use": false,
+    "native_training": false,
+    "merge": false,
+    "production": false,
+    "accepted_main": false
+  },
+  "note": "Both exact source blobs committed at 12c4a83b581c6a11e2b0db143e4756b2d6c9fd5f BEFORE this preregistration; do not score primary until prereg GitHub commit succeeds."
+}
