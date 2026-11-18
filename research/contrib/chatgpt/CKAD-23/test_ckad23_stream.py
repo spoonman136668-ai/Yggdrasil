@@ -74,8 +74,18 @@ class UnsignaledStreamTests(unittest.TestCase):
         for i in range(64):m=add(m,i)
         baseline=m.checkpoint()
         current=m.begin_stream()
+        # Exercise the frozen trigger with a deliberately adversarial PUBLIC
+        # outcome stream. A one-time distribution shift alone need not trigger:
+        # a rapidly adapting model can explain it without accumulated surprise.
         for i in range(64,88):
-            current=add(current,i,flipped=True)
+            identifier,views,row=witness(i,flipped=True)
+            first,second=row["x1"],row["x2"]
+            p_state=current.context_forecast(views[0],first)
+            state=int(p_state<=Fraction(1,2))
+            p_reward=current.context_forecast(views[0],first,state,second)
+            reward=int(p_reward<=Fraction(1,2))
+            current=current.observe(identifier,views,
+                {**row,"s2":state,"y":reward})
         info=current.info()
         self.assertEqual(info["stream"]["stream_start"],64)
         self.assertEqual(info["count"],88)
