@@ -181,8 +181,8 @@ def check(raw):
                 need(predicted==stored,"STRONG_CLASS_REBUILD_"+method)
             need([Fraction(*v) for v in row["prediction_metrics"]["unrestricted_world"]["held_fraction"]]
                   ==[Fraction(1,2)]*2,"UNRESTRICTED_WORLD_EPISTEMIC_PRIOR")
-            need([Fraction(*v) for v in row["prediction_metrics"]["privileged_oracle"]["held_fraction"]]
-                  ==list(map(Fraction,y)),"PRIVILEGED_EVALUATOR_CEILING")
+            need([v[0]/v[1] for v in row["prediction_metrics"]["privileged_oracle"]["held_fraction"]]
+                  ==y,"PRIVILEGED_EVALUATOR_CEILING")
     need(len(actual)==12,"ALL_SOURCE_EPISODES_PRESENT")
     byworld={}
     means={}
