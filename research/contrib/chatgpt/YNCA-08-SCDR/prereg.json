@@ -30,8 +30,8 @@
   "inputs": [
     {
       "name": "Source-free 3-context triangulated observation cycle with independent per-episode F2 vertex gauges, latent switching obstruction, 10% sensor flips, 24 timesteps/world",
-      "sha256": "TO_PIN_SOURCE_BEFORE_B_FIRST_USE",
-      "source": "Algorithm implemented locally for exploratory A; no original-world data, owner model, native training, protected holdout, or paid API"
+      "sha256": "bec99d3b9f4123582de66cf823ca4dae286e18f0619b46457128aae7b20eebde",
+      "source": "experiment.py frozen at Git commit 749ff6e3d7ee1719bbbc11e62bbc942d8ebe7d3e; blob a5501ddd37a68c86121d76517ed49a53d430ec3d"
     }
   ],
   "frozen_design": {
@@ -81,7 +81,12 @@
     ],
     "compute": "<=1 CPU minute per platform for source-free fit/evaluation; no GPU or paid services; whole-process cost not separately measured, so no efficiency claim from simple code size.",
     "evaluator": "Per-frame hidden obstruction Brier loss primary; threshold .5 accuracy; high-confidence >=0.95 FP/TP; null per-frame confident FP. Report all controls, 96 worlds *24 frames; exact source/result SHA and dual-OS parity.",
-    "pass_B_no_revisions_after_result": true
+    "pass_B_no_revisions_after_result": true,
+    "source_commit_sha": "749ff6e3d7ee1719bbbc11e62bbc942d8ebe7d3e",
+    "source_sha256": "bec99d3b9f4123582de66cf823ca4dae286e18f0619b46457128aae7b20eebde",
+    "source_git_blob_sha": "a5501ddd37a68c86121d76517ed49a53d430ec3d",
+    "test_file_sha256": "0912a312b59947fd3f33cf46b9bf694a7729951422d26c70041146704f439f73",
+    "test_file_git_blob": "9dbd9f777888aa82a21772462800fbbc9310b45f"
   },
   "controls": [
     "Fully trained supervised two-state categorical HMM trained on same observation channel (additional labels on training only)",
@@ -118,5 +123,5 @@
     "promotion_authority": false,
     "scheduler_or_queue_authority": false
   },
-  "preregistration_note": "User requested bounded experimentation (not zero tuning): Pass A smoke failed; only one targeted Pass B memory correction, then continue/pivot/stop. B source to be pinned via separate Git commit before first B execution."
+  "preregistration_note": "B source frozen before first use after exploratory A. No code or threshold changes permitted after B; subsequent root/full CI may require generated source atlas companion without changing scientific code. A remains exploratory."
 }
