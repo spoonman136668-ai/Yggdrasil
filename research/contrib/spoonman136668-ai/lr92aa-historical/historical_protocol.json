@@ -1,0 +1,54 @@
+{
+  "schema": "lr92aa.retrospective-transcription-of-local-pre-scoring-protocol.v1",
+  "note": "This is a historical transcription, NOT a prospective GitHub preregistration. Local freeze SHA-256 e2f74874cb7fd37f0dc5f57b17315019e66c2c955578dd4f9ca6d658baf59039.",
+  "original_local_protocol_status": "FROZEN_BEFORE_NEW_WORLD_GENERATION",
+  "seed": 929200101,
+  "world_counts": {
+    "stationary": 52,
+    "switch": 12,
+    "foreign": 8,
+    "null": 8
+  },
+  "grammar": "All 16 Boolean two-cause truth tables; foreign/null outside stationary family",
+  "memory_prior": "One group-agnostic arithmetic average of 40 archived LR-92L learned-cue prior distributions",
+  "outcome_flip_probability": 0.35,
+  "fit_probes": 144,
+  "validation_probes": 288,
+  "checkpoints": [
+    36,
+    48,
+    72,
+    96,
+    120,
+    144
+  ],
+  "stop_rule": {
+    "min_posterior": 0.995,
+    "minimum_fit_misfit_p": 0.1,
+    "earliest_checkpoint": 36
+  },
+  "acceptance": {
+    "min_posterior": 0.9,
+    "minimum_validation_misfit_p": 0.01
+  },
+  "arms": [
+    "fixed144_memory",
+    "simple_stop_memory",
+    "fixed144_uniform",
+    "simple_stop_uniform",
+    "fixed144_scrambled",
+    "CART_fixed144",
+    "RF16_fixed144",
+    "CART_stop_budget",
+    "RF16_stop_budget"
+  ],
+  "preset_go": {
+    "minimum_fit_saving_fraction": 0.15,
+    "minimum_total_observation_saving_fraction": 0.05,
+    "max_exact_loss_vs_fixed_memory": 2,
+    "max_extra_false_vs_fixed_memory": 0,
+    "max_accepted_foreign_null": 0,
+    "must_beat_best_fixed_conventional_on_correct_without_more_false": true,
+    "require_independent_audit": true
+  }
+}
