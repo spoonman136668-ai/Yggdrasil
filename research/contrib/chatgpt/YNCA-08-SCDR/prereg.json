@@ -1,0 +1,122 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YNCA-08-SCDR-A-B",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a formal constant-F2 sheaf obstruction on an observation cycle and a single noise-calibrated, self-supervised temporal-memory correction infer switching latent defects better or more efficiently than a fully trained HMM and exact Bayesian parity filter?",
+  "hypothesis": "Pass B, with only one targeted change to Pass A (temporal noise-aware state filtering with transition probability estimated from unlabeled defect changes), should reduce Brier >=20% relative to A on fresh worlds. To establish a unique scientific advantage, it must also improve Brier >=5% versus both a fully trained two-state raw-observation HMM and an exact known-noise/transition Bayesian parity filter (or demonstrate a separately measured >=1.5x whole-process efficiency improvement at equivalent accuracy). Failing strong controls stops tuning this prototype.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1228",
+      "note": "Previous Stage0 correctly refuted graph-loop-only as a latent-state proof. Formal sheaf construction required."
+    },
+    {
+      "ref": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1229",
+      "note": "Prior IPFC bounded two-pass development, isolated and unmerged."
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YNCA-08-SCDR/prereg.json",
+    "research/contrib/chatgpt/YNCA-08-SCDR/experiment.py",
+    "research/contrib/chatgpt/YNCA-08-SCDR/test_experiment.py",
+    "research/contrib/chatgpt/YNCA-08-SCDR/result_A.json",
+    "research/contrib/chatgpt/YNCA-08-SCDR/result_B.json",
+    "research/contrib/chatgpt/YNCA-08-SCDR/provenance.json",
+    "research/contrib/chatgpt/YNCA-08-SCDR/README.md",
+    ".github/workflows/ynca08-scdr.yml"
+  ],
+  "inputs": [
+    {
+      "name": "Source-free 3-context triangulated observation cycle with independent per-episode F2 vertex gauges, latent switching obstruction, 10% sensor flips, 24 timesteps/world",
+      "sha256": "TO_PIN_SOURCE_BEFORE_B_FIRST_USE",
+      "source": "Algorithm implemented locally for exploratory A; no original-world data, owner model, native training, protected holdout, or paid API"
+    }
+  ],
+  "frozen_design": {
+    "pass_A": {
+      "status": "exploratory consumed BEFORE GitHub prereg",
+      "seeds": "310001..310096 inclusive",
+      "worlds": 96,
+      "frames": 2304,
+      "results": {
+        "SCDR_A_brier": 0.18642489,
+        "exact_Bayes_brier": 0.12761882,
+        "trained_HMM_brier": 0.12768446,
+        "closing_only_brier": 0.25
+      }
+    },
+    "pass_B": {
+      "status": "not yet inspected at prereg",
+      "seeds": "320001..320096 inclusive",
+      "worlds": 96,
+      "frames": 2304,
+      "objective": "Frozen one-targeted-correction comparison of sheaf defect temporal filter to Pass A, strong trained HMM, known-parameter exact Bayes, and closing-only null."
+    },
+    "train": {
+      "seeds": "300001..300160 inclusive",
+      "worlds": 160,
+      "frames": 3840,
+      "supervised_HMM": "Two-state categorical HMM emission model trained with state labels and Laplace smoothing on all eight raw edge symbols; supervised transition MLE",
+      "SCDR_B": "No hidden-state training labels; transition probability derived from unlabeled consecutive obstruction changes and known sensor-noise calibration."
+    },
+    "null": {
+      "seeds": "330001..330096 inclusive",
+      "worlds": 96,
+      "frames": 2304,
+      "h_hidden": "Always zero; gauge vectors and sensor noise remain random",
+      "metric": "Rate of false high-confidence h=1 detection at posterior >=0.95"
+    },
+    "source": "CPython 3.12 stdlib, exact deterministic hash-seeded source; source SHA and commit frozen before B first use.",
+    "math": "Constant F2 cellular sheaf on 3-cycle graph: C0=F2^3, C1=F2^3, d0(x)=(x0 xor x1, x1 xor x2, x2 xor x0), rank(d0)=2, H1=C1/im(d0) dimension1. Defect cohomology representative is XOR of observed three edge measurements. This is true cellular sheaf cohomology, not graph-cycle rank mistaken for it.",
+    "generator": "At each time t, independent random gauge g0,g1,g2; clean edge observations d0(g) plus one parity obstruction bit h_t; hidden h switches with probability 0.08; each edge sensor independently flips with p=0.10, resulting defect noise q=(1-(1-2p)^3)/2=0.244",
+    "matched_budget": "All methods receive exactly the same three observed noisy edge bits per time step and temporal stream; no interventions, no external data calls, no owner model.",
+    "methods": [
+      "SCDR_A/no-memory constant-F2 sheaf obstruction score",
+      "SCDR_B/one targeted temporal noise-aware self-supervised hidden-state filter",
+      "Fully supervised 2-state raw-symbol HMM (strong privileged training-label comparator)",
+      "Exact true-parameter Bayesian hidden-state filter on parity (strong privileged oracle comparator)",
+      "Closing-edge-only/no-context null"
+    ],
+    "compute": "<=1 CPU minute per platform for source-free fit/evaluation; no GPU or paid services; whole-process cost not separately measured, so no efficiency claim from simple code size.",
+    "evaluator": "Per-frame hidden obstruction Brier loss primary; threshold .5 accuracy; high-confidence >=0.95 FP/TP; null per-frame confident FP. Report all controls, 96 worlds *24 frames; exact source/result SHA and dual-OS parity.",
+    "pass_B_no_revisions_after_result": true
+  },
+  "controls": [
+    "Fully trained supervised two-state categorical HMM trained on same observation channel (additional labels on training only)",
+    "Exact true-parameter Bayesian parity filter (privileged stronger baseline)",
+    "No-memory sheaf raw obstruction",
+    "Closing-edge-only uninformative baseline",
+    "No-hidden-state noise-only null to audit spurious defect alarms"
+  ],
+  "metrics": [
+    "Per-frame latent-defect Brier score",
+    "Per-frame accuracy",
+    "Null-world high-confidence false-positive rate",
+    "High-confidence TPR/FPR",
+    "Self-supervised transition estimate vs true rate",
+    "Source/result SHA and deterministic two-OS reproducibility"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL only if Pass B improves Pass A Brier by >=20%, null confident FP <=5%, and B's Brier/accuracy are within 2% relative Brier and 2pp accuracy of both strongest comparator methods; this supports representation but not scientific superiority. For SCIENCE_CANDIDATE require >=5% Brier gain vs BOTH trained HMM and exact Bayes on same B worlds or verified >=1.5x full-process compute advantage at parity; these stronger claims cannot be made by Stage development alone.",
+    "mixed": "Pass B improves A but fails strongest HMM/Bayes; DEVELOPMENT_MIXED, stop this implementation after two passes; preserve possible sheaf-invariant feature for independent future work.",
+    "negative": "Pass B doesn't improve A by 20% or harms noise calibration / accuracy, DEVELOPMENT_NO_GO; stop without third tuning pass.",
+    "invalid": "Source SHA mismatch, B inspected before source lock, omitted fully trained HMM or exact Bayesian control, label leaked into candidate inference, or post-result retuning/split change invalidates confirmatory development."
+  },
+  "prohibited_after_primary_run": [
+    "tune source based on B results",
+    "consume any other original scientific cohort",
+    "merge this external experiment into accepted Yggdrasil native learning",
+    "claim graph cycle alone proves hidden state",
+    "claim stronger sheaf inference than exact Bayes absent evidence"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "User requested bounded experimentation (not zero tuning): Pass A smoke failed; only one targeted Pass B memory correction, then continue/pivot/stop. B source to be pinned via separate Git commit before first B execution."
+}
