@@ -208,7 +208,7 @@ def run_seed(oldseed, source):
             "private_world_boundaries_used_for_training":False
         })
     after_raw=model.checkpoint()
-    identifier,views,row=events[-1]
+    identifier,views,row,_evaluator_only_phase=events[-1]
     check(model.observe(identifier,views,row) is model,
           "CUMULATIVE_DUPLICATE_IDEMPOTENCE")
     corrupted=dict(row);corrupted["y"]^=1
