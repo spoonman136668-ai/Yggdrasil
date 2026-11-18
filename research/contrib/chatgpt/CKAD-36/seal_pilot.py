@@ -221,8 +221,14 @@ def audit_case(raw,seed,lock):
                     "INDEPENDENT_POSTERIOR_FORECAST")
             # Two conventional source-only target controls are recomputed here.
             rows=[[x&31,x>>5,y] for x,y in base+acts]
-            gf2=conventional_fit(rows)
-            expected_gf2=[conventional_predict(gf2,x) for x in held]
+            try:
+                gf2=conventional_fit(rows)
+            except ValueError as exc:
+                if str(exc)!="CKAD36_INDEPENDENT_AUDIT_OUTSIDE_SOURCE_GF2_CLASS":
+                    raise
+                gf2=None
+            expected_gf2=[conventional_predict(gf2,x) if gf2 is not None
+                          else .5 for x in held]
             ctl=c["policy_target_controls"][policy][str(slot)]
             require(all(abs(a-b)<=1e-12 for a,b in
                         zip(ctl["target_gf2"],expected_gf2)),"TARGET_GF2_PARITY")
