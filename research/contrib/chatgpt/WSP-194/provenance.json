@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.wsp194.provenance.v1",
+  "id": "WSP-194",
+  "research_lane": "external contribution only",
+  "branch": "research/wsp194-kras-sequential-fitness-20261119",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source": {
+    "repository": "luo-group/SynFit",
+    "git_commit": "4a11c268b5719ea3c64459a5bb5b4f3a45f0b09a",
+    "single": {
+      "path": "dataset/KRAS_data/KRAS_6_binding_single_mutation.csv",
+      "blob": "064c356b09ba9a951a9e635f78aecc9c8fd32c74",
+      "bytes": 764573,
+      "rows": 2417
+    },
+    "multi": {
+      "path": "dataset/KRAS_data/KRAS_6_binding_multi_mutation.csv",
+      "blob": "13fadeb5ca181a041d7c432c2728df673153410c",
+      "bytes": 4226513,
+      "rows": 13229
+    },
+    "original_source_redistributed": false,
+    "data_license_status": "SynFit software MIT; underlying published assay data reuse/redistribution terms unverified separately; original CSV never copied to Yggdrasil",
+    "study": "Historical KRAS protein-binding effects measured in six assays RAF PI3 RAL SOS K27 K55; no virgin new physical experiments."
+  },
+  "boundary": {
+    "first_prereg_commit": "5ea08782aacd270b69c56f6393532d46d622cc06",
+    "frozen_evaluator_commit": "ed38e37b349148aad1e5a24ff03075c10402ad11",
+    "frozen_evaluator_git_blob": "5260f172880c5836f494ab076efa989ca4122192",
+    "synthetic_focused_test_commit": "ec91b85d480d43ff8b07be2480c1f6eb6e481a56",
+    "synthetic_test_git_blob": "b169437e1383bf2e4fcbf356b15b02a0ae2b2fc5",
+    "pre_score_source_qualification_commit": "e963843d009f768a8ff7022e643e1b93e009c513",
+    "primary_result_commit": "1189e7d07390671b6710facef37f11658341c14d",
+    "primary_result_git_blob": "92cf46874e8dd98c00fc676466168385867724cb",
+    "later_postscore_metadata_diagnostic_commit": "48bb06e51bbb54bfa23e425a34213f213a701cc3",
+    "later_structure_blob": "abe1c67bf5dac88a26633e83db598a98fea23a28",
+    "primary_dev_runs": 1,
+    "postscore_changes_to_evaluator_or_thresholds": false,
+    "original_raw_fitness_values_opened_after_first_prereg_and_frozen_evaluator": true,
+    "independent_replication": "NOT_RUN"
+  },
+  "engineering": {
+    "source_free_fixture_checks": "PASS, 19 assertions on exact committed source/test bytes in V8",
+    "original_git_source": "PASS, two original code repository refs and exact lengths",
+    "qualifying_source_admission": "PASS, all six assays",
+    "controls": "all pairwise ridge variants converged",
+    "full_regression_linux_windows": "NOT_RUN",
+    "github_g29": "NOT_RUN_AS_OF_THIS_RECEIPT",
+    "scientific_execution_runtime_ms": 3659,
+    "whole_process_runtime_ms": "unverified",
+    "peak_memory_cost": "unmeasured",
+    "source_download_and_biological_cost": "unmeasured"
+  },
+  "science": {
+    "classification": "PUBLIC_DEV_NO_GO",
+    "measured_single_mutants": 2417,
+    "measured_double_mutants": 13229,
+    "source_common_reference_length": 187,
+    "six_assays_admitted": true,
+    "cohorts": {
+      "fit": 9379,
+      "valid": 1945,
+      "dev": 1905
+    },
+    "unique_fit_pair_feature_coordinates": 9379,
+    "valid_pair_feature_overlap_with_fit": 0,
+    "dev_pair_feature_overlap_with_fit": 0,
+    "all_six_candidate_betas": 0,
+    "paired_bootstrap_gain_interval": "[0,0] because candidate and strongest validation-selected additive predictions were exactly identical; this is not a statistical improvement",
+    "held_error_gain_percent": 0,
+    "cold_weight_retention": "Only guaranteed by freezing stage-one weights in memory, NOT independent cold serialization or robust transfer",
+    "native_yggdrasil_training": false,
+    "scientific_pass": false,
+    "interpretation": "Per-pair memorization has no transferable coordinates to previously unseen double mutants; stronger compositional factorization is a NEXT hypothesis, not a measured win",
+    "limitation": "Six readouts from the same KRAS source share variant identities; they are not six independent worlds."
+  },
+  "deployment": {
+    "merged": false,
+    "accepted_main_mutated": false,
+    "original_first_use_issue_426_denied": true,
+    "runner_dispatched": false,
+    "scheduler_or_controller_changed": false,
+    "model_promoted": false
+  }
+}
