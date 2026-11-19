@@ -1,0 +1,137 @@
+name: CKAD25-AC native changed-action role transfer falsifier
+on:
+  push:
+    branches: [research/ckad25ac-identity-reassignment-20261118]
+    paths:
+      - ".github/workflows/ckad25ac-frozen.yml"
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  OPENBLAS_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+
+jobs:
+  source-only-disjoint-preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Keep source Git blob bytes across OS
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Source hash, exact original qualified snapshot, disjoint fixture and fail-closed negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25ac-identity-reassignment-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "3f33f32c7919bba5297fbf79ff561ef9e85c7255"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AB/run.py)" = "3c3d88a66e8fe343bc9fd7fa47c8992343cc4bbb"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AC/run.py)" = "e14d2513b11fecc8598cf8a5174c40535fa5e91c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AC/prereg.json)" = "0b63db34a34bfb37c1167f3c3cf6eca3a2211ce4"
+          test "$(git hash-object tests/test_native_causal_identity_reassignment.py)" = "614361d7184453df16fe1373c583643913f67c5b"
+          python -B - <<'PY'
+          import hashlib
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD-25/qualified-development-runs/44331408493")
+          linux=(root/"linux/stage-02.native.json").read_bytes()
+          windows=(root/"windows/stage-02.native.json").read_bytes()
+          assert linux==windows and hashlib.sha256(linux).hexdigest()=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          for path in ("research/contrib/chatgpt/CKAD25-AC/run.py",
+                       "tests/test_native_causal_identity_reassignment.py"):
+              compile(Path(path).read_text(encoding="utf-8"),path,"exec")
+          print("CKAD25AC_ORIGINAL_NATIVE_SOURCE_COLD_SHA_PASS")
+          PY
+          python -B -m unittest discover -s tests -p 'test_native_causal_identity_reassignment.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_causal_active_history.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_causal_witness.py' -v
+          python -B research/contrib/chatgpt/CKAD25-AC/run.py --preflight
+          test -z "$(git status --porcelain)"
+          echo "CKAD25AC_DISJOINT_DEV_SOURCE_PREFLIGHT_PASS"
+
+  original-first-use-identity-reassignment:
+    needs: [source-only-disjoint-preflight]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve identical source original bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Lock original source and no prior result before scoring frozen new 16-seed cohort
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "3f33f32c7919bba5297fbf79ff561ef9e85c7255"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AB/run.py)" = "3c3d88a66e8fe343bc9fd7fa47c8992343cc4bbb"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AC/run.py)" = "e14d2513b11fecc8598cf8a5174c40535fa5e91c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AC/prereg.json)" = "0b63db34a34bfb37c1167f3c3cf6eca3a2211ce4"
+          test ! -e research/contrib/chatgpt/CKAD25-AC/result.json
+          test -z "$(git status --porcelain)"
+          echo "CKAD25AC_FROZEN_FIRST_NEW_SOURCE_LOCK_PASS"
+      - name: Exactly one frozen source-only original sixteen-seed score per OS
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD25-AC/run.py --output "$RUNNER_TEMP/ckad25ac-result.json"
+          python -B - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          raw=(Path(os.environ["RUNNER_TEMP"])/"ckad25ac-result.json").read_bytes()
+          d=json.loads(raw)
+          assert d["schema"]=="yggdrasil.ckad25ac.identity-mutation-location-reassignment.v1"
+          assert d["seeds"]==[78101,78119,78139,78157,78179,78203,78233,78251,78277,78299,78317,78341,78367,78383,78407,78431]
+          assert d["scored_original"] is True
+          assert d["genuine_source_actions"]==8352
+          assert d["held_conditional_predictions"]==2560
+          assert d["distinct_evaluator_labels"]==1024
+          assert len(d["policy_world_cases"])==1280 and len(d["per_seed_provenance"])==16
+          assert d["source_checkpoint_sha256"]=="c52681bf26f08817b3747647472913fa792da2de33f74b8fa7c0f2b0e78c119f"
+          assert d["no_true_role_or_mapping_supplied_to_native"] is True
+          assert d["latent_role_reassigned_no_mapping_sensor"] is True
+          assert d["full_action_semantics_remapped"] is False
+          assert d["no_independent_science_replication"] is True
+          assert d["frozen_gates"]["conventional_no_information_leak"] is True
+          assert d["frozen_gates"]["all_native_committee_and_source_history_retain_exact_cold"] is True
+          assert d["scientific_pass"] is False and d["conventional_superiority"] is False
+          assert d["universal_OOD_safety"] is False
+          assert d["protected_owner_first_use"] is False and d["accepted_main_changed"] is False
+          assert d["forge_dispatch"] is False and d["merge"] is False and d["deployment"] is False
+          assert d["source_sha256"]==hashlib.sha256(Path("research/contrib/chatgpt/CKAD25-AC/run.py").read_bytes()).hexdigest()
+          print("CKAD25AC_ORIGINAL_SOURCE_SCIENCE_AND_NONPROMOTION_BOUNDARY_PASS")
+          print("CKAD25AC_ORIGINAL_RESULT_SHA256="+hashlib.sha256(raw).hexdigest())
+          print("CKAD25AC_FROZEN_DISPOSITION="+d["development_disposition"])
+          PY
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ckad25ac-original-${{ matrix.os }}
+          path: ${{ runner.temp }}/ckad25ac-result.json
+          if-no-files-found: error
+          retention-days: 60
