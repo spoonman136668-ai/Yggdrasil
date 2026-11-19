@@ -1,0 +1,19 @@
+{
+  "id": "amalgam-observation-fitted-probe-allocation-dev-01",
+  "parent_diagnostic": "ddc406201df47d8702cedc81da3762fbc4b6cf0e",
+  "seeds": [994101, 994127, 994151],
+  "families": {
+    "balanced_contrast": [[0.30, 0.70], [0.68, 0.32]],
+    "strong_donor": [[0.10, 0.90], [0.62, 0.38]]
+  },
+  "fit_worlds": 32,
+  "fit_probes_per_cell": 4,
+  "held_worlds": 96,
+  "probes": 8,
+  "budget_actions": 75456,
+  "min_correlated_gain": 0.005,
+  "max_null_drift": 0.002,
+  "score": "Mean correlated gain versus the best held fixed allocation in each replica. Worst independent drift versus target-only. The known-law allocation and forecast are evaluator references.",
+  "controls": ["target only", "balanced", "donor only", "known-law oracle"],
+  "method": "Estimator fits both symmetric marginal rates and a finite dependence posterior from unlabeled calibration. It chooses a single allocation per cohort through expected reduction in Brier. The four nonoracle arms use the same calibrated predictor. Evaluator shares exogenous randomness, charges every policy-selected synthetic probe and charges the separately scored target outcome once. Held target outcomes never enter the fit. Frozen action budget and independent-drift requirements. Development simulator only."
+}
