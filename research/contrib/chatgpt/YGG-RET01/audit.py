@@ -155,8 +155,8 @@ def audit(folder):
               ==original,"RETAIN_ORIGINAL_WITNESS_PREFIX")
         model_before_return=actual.current.checkpoint()
         for i,(historical,old_record) in enumerate(zip(old_rows,old_original[-32:])):
-            identifier,views,first,state,second,reward=old_record
-            row={"s1":views[0][0],"x1":first,"s2":state,"x2":second,"y":reward}
+            identifier,views,first,observed_state,second,reward=old_record
+            row={"s1":views[0][0],"x1":first,"s2":observed_state,"x2":second,"y":reward}
             check(historical["order"]==i
                   and historical["old_seed"]==oldseed
                   and historical["source_id"]==identifier
