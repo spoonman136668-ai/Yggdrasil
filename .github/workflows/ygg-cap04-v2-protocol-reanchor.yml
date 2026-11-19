@@ -1,0 +1,62 @@
+name: YGG CAP04 v2 protected-source protocol atlas reanchor
+'on':
+  push:
+    branches:
+      - research/ygg-cap04-v2-keyed-source-protocol-20261119
+    paths:
+      - '.github/workflows/ygg-cap04-v2-protocol-reanchor.yml'
+permissions:
+  contents: read
+jobs:
+  cap04_reanchor:
+    if: >-
+      github.event_name == 'push' &&
+      github.ref_name == 'research/ygg-cap04-v2-keyed-source-protocol-20261119' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Bounded source-only atlas reanchor on isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.sha }}"
+          test "$(git rev-parse HEAD^)" = 62e66d7ad03d1ed2f329435191e44285c356dad9
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/ygg-cap04-v2-protocol-reanchor.yml"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
+          test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = cd3065a30edf5c08ec92eccc9eec1776d4570da4
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/shortcut_controls.py)" = 1b08cb9d3efe6ae8b9c7c390a034477e4c8885fb
+          test "$(git rev-parse HEAD:tests/test_cap04_shortcut_controls.py)" = 1a27efdb6dcdf99e6f906e5bc3b907f425003667
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source_v2.py)" = 038c781598aaccce524af1db08048e112fcc95d1
+          test "$(git rev-parse HEAD:tests/test_cap04_keyed_source_v2.py)" = 931893dc2086f09c610a7bd95b498529f9d046e4
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
+          git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
+          test ! -f research/contrib/chatgpt/YGG-CAP04/source.py
+          git config --global core.autocrlf false
+          python -B -m unittest discover -s tests -p 'test_cap04_prospective_source_contract.py' -v
+          python -B -m unittest discover -s tests -p 'test_cap04_shortcut_controls.py' -v
+          python -B -m unittest discover -s tests -p 'test_cap04_keyed_source_v2.py' -v
+          test -z "$(git status --porcelain)"
+          SOURCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test "$(git diff --cached --name-only | LC_ALL=C sort | tr '\n' '|')" = ".ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json|"
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "docs(cap04): G29 source atlas for v2 opaque witness protocol $SOURCE"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/ygg-cap04-v2-keyed-source-protocol-20261119"
