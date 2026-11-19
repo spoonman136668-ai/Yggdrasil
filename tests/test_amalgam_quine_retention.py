@@ -127,6 +127,34 @@ class QuineRetentionTests(unittest.TestCase):
         self.assertLessEqual(report["largest_single_quine_delta"], 0.02)
         self.assertGreater(report["regimes"]["mastered-A"]["familiar_transition_drift"], 0.02)
 
+    def test_unselected_old_witness_catastrophic_drift_cannot_hide_in_average(self):
+        # Source-free negative: with 48 familiar examples, a single
+        # severe regression is diluted below +0.02 in the regime mean.
+        # The original Quine-only-plus-means guard would ADMIT this update.
+        anchor = FakeSystem(evidence(96))
+        manifest = QUINE.select_quines(anchor, {
+            "mastered-A": (0, 48), "mastered-B": (48, 96),
+        })
+        chosen = {item["index"] for group in manifest["regimes"].values()
+                  for item in group["quines"]}
+        index = next(i for i in range(0, 48, 2) if i not in chosen)
+        candidate = FakeSystem(
+            anchor.events + (("next-96", ((96, 0), (96, 1)), 0, 0, 0, 0),),
+            {(index, "transition"): Fraction(9, 10)},
+        )
+        kept, report = QUINE.assess_update(
+            anchor, anchor, candidate, manifest, digest(canonical(manifest)))
+        self.assertIs(kept, anchor)
+        self.assertEqual(report["status"], "VETO_SHARED_STATE_OVERWRITE")
+        self.assertTrue(report["regimes"]["mastered-A"]["pass"])
+        self.assertLess(report["regimes"]["mastered-A"]["familiar_transition_drift"],
+                        0.02)
+        self.assertLess(report["full_anchor_transition_drift"], 0.02)
+        self.assertEqual(report["largest_single_quine_delta"], 0)
+        self.assertGreater(report["largest_old_witness_delta"], 0.7)
+        self.assertEqual(report["worst_old_witness_index"], index)
+        self.assertEqual(report["worst_old_stage"], "transition")
+
     def test_rejected_proposal_preserves_previously_admitted_witness(self):
         first, _ = QUINE.assess_update(
             self.anchor, self.current, self.proposal(), self.manifest, self.pin)

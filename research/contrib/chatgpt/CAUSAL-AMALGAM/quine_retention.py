@@ -96,7 +96,7 @@ def select_quines(anchor, regime_windows, *, count=8):
 
 def assess_update(anchor, current, proposed, quines, quine_sha256, *,
                   max_brier_drift=TOLERANCE):
-    """Veto an overwrite if any Quine OR any familiar regime drifts > 0.02.
+    """Veto any Quine, individual old witness, or regime drift > 0.02.
 
     The unchanged current state is returned on veto, NOT the original anchor:
     previously admitted continuation remains cumulative. A rejected candidate
@@ -166,21 +166,36 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
     if not groups:
         raise ValueError("No Quines selected")
     baseline, candidate = [0, 0], [0, 0]
-    for event in old:
-        for target, value in enumerate(_loss(anchor, event)):
-            baseline[target] += value
-        for target, value in enumerate(_loss(proposed, event)):
-            candidate[target] += value
+    largest_old_witness = Fraction(0)
+    worst_old_witness_index = None
+    worst_old_stage = None
+    for index, event in enumerate(old):
+        original, updated = _loss(anchor, event), _loss(proposed, event)
+        for target, (before, new) in enumerate(zip(original, updated, strict=True)):
+            baseline[target] += before
+            candidate[target] += new
+            delta = Fraction(new - before, SCALE * SCALE)
+            if delta > largest_old_witness:
+                largest_old_witness = delta
+                worst_old_witness_index = index
+                worst_old_stage = ("transition", "reward")[target]
     overall = [Fraction(new - before, len(old) * SCALE * SCALE)
                for before, new in zip(baseline, candidate, strict=True)]
     passed = all(group["pass"] for group in groups.values())
     passed &= all(value <= max_brier_drift for value in overall)
+    # Quines cover only 5-10 witnesses per regime. A single unselected
+    # mastered witness can otherwise be catastrophically forgotten while its
+    # damage is hidden by the regime and whole-prefix averages.
+    passed &= largest_old_witness <= max_brier_drift
     candidate_pin = digest(_checkpoint(proposed))
     return (proposed if passed else current), {
         "status": "ADMIT_RESEARCH_CANDIDATE" if passed else "VETO_SHARED_STATE_OVERWRITE",
         "scientific_pass": False,
         "quines_checked": items,
         "largest_single_quine_delta": float(largest),
+        "largest_old_witness_delta": float(largest_old_witness),
+        "worst_old_witness_index": worst_old_witness_index,
+        "worst_old_stage": worst_old_stage,
         "max_brier_drift": str(max_brier_drift),
         "full_anchor_transition_drift": float(overall[0]),
         "full_anchor_reward_drift": float(overall[1]),
