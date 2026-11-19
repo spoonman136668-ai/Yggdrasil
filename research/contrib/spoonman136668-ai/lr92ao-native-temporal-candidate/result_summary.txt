@@ -1,0 +1,155 @@
+{
+  "schema": "lr92ao.external-dev-result.v1",
+  "experiment": "LR-92AO",
+  "classification": "DEVELOPMENT_SUPPORTED_6_OF_6",
+  "scientific_status": "UNVERIFIED_NOT_NATIVE_TRAINING",
+  "native_integration_status": "NOT_PERFORMED",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "base_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "branch": "research/lr92ao-native-temporal-candidate-20261119",
+  "frozen_protocol_commit": "2ad2fbb87e2669a65079f5f2b2763073c0d81cac",
+  "original_source_commit": "ad7d8a06fdd2ac99bc2d16d1b827e1ff70c7040e",
+  "tests_source_commit": "4f4042aabe65c67959432fec5595a3a29c24c547",
+  "evaluator_source_commit": "ae812949723435fe5ec8e14925bdafa711c6389d",
+  "provenance": {
+    "source_sha256": "7c73ae6d867780fc9e1119d1520f1fbf6ca86d61a289add710664fa5be930428",
+    "tests_sha256": "0a2186b0229e4cdd750b4d0de5d6a4bac86bc03172439075d921ab3c0d4c5f1f",
+    "evaluator_sha256": "8c3e50b9d2947697d19d0663c9fb4b7da1e7e5a612d9ce7a8a86d4289ac2e3f7",
+    "audit_sha256": "efafda83638c40d44d4bb2a4d88e20035caaf83e71ec1f0fbd31bd11d9efe3a6",
+    "audit_receipt_sha256": "8f2b417fbeaa274b3368c0c65e66a35432c8b1d0a37a55a1de4b6bd85131f603",
+    "primary_raw_sha256": "37bfecab480a50e5e6ddb48010965bc52ac3783c483b0159a21aba9c45d20686",
+    "primary_original_bytes": 55446,
+    "canonical_science_sha256": "06356e417b3fbdf1257ac32d421baeb87940f5ea9e154dacf6af266f51b4cc10",
+    "paired_ledger_decoded_sha256": "f88bfda8272e415758d3e5860fbb71a49cd015684021990c135e5c17cf588ba3",
+    "paired_ledger_bytes": 2312
+  },
+  "test_setup": {
+    "local_python": "3.13.5",
+    "platform": "isolated Linux CPU",
+    "numpy": "2.3.5",
+    "scikit_learn": "1.8.0",
+    "fixture_unit_tests_pass": 8,
+    "fixture_worlds_pass": 4,
+    "primary_seeds": [
+      929208101,
+      929208102,
+      929208103
+    ],
+    "worlds": 144,
+    "per_family_worlds": 36,
+    "train_per_world": 360,
+    "heldout_per_world": 280,
+    "total_train": 51840,
+    "total_heldout": 40320,
+    "outcome_flip_noise": 0.15,
+    "one_valid_primary": true,
+    "postscore_hyperparameter_tuning": 0,
+    "primary_wall_seconds": 4.6244
+  },
+  "native_candidate": {
+    "binary_action_count": 2,
+    "historical_actions": [
+      0,
+      1,
+      2
+    ],
+    "physically_reachable_histories": 7,
+    "patterns_per_address": 14,
+    "active_slots": 7,
+    "retained_slots": 9,
+    "counter_bytes": 896,
+    "chronology_bytes": 32,
+    "checkpoint_bytes": 964,
+    "checkpoint_magic": "YPT3",
+    "existing_PublicCausalCells_checkpoint_unchanged": true,
+    "truth_table_representable": 14
+  },
+  "heldout_accuracy": {
+    "XOR": {
+      "temporal": 0.8534722222222222,
+      "tabular14": 0.8534722222222222,
+      "action_only": 0.5357142857142857,
+      "history_shuffle": 0.5349206349206349,
+      "rf32": 0.8530753968253968
+    },
+    "AND": {
+      "temporal": 0.8474206349206349,
+      "tabular14": 0.8474206349206349,
+      "action_only": 0.7192460317460317,
+      "history_shuffle": 0.7143849206349207,
+      "rf32": 0.8474206349206349
+    },
+    "STATIC": {
+      "temporal": 0.8552579365079365,
+      "tabular14": 0.8552579365079365,
+      "action_only": 0.8552579365079365,
+      "history_shuffle": 0.8552579365079365,
+      "rf32": 0.8552579365079365
+    },
+    "RANDOM": {
+      "temporal": 0.8474206349206349,
+      "tabular14": 0.8474206349206349,
+      "action_only": 0.620436507936508,
+      "history_shuffle": 0.6162698412698413,
+      "rf32": 0.8474206349206349
+    }
+  },
+  "frozen_checks": {
+    "C1_temporal_action_only_XOR_AND": {
+      "observed_pp": 22.296626984126984,
+      "required_pp": 5,
+      "pass": true
+    },
+    "C2_temporal_history_shuffle_XOR_AND": {
+      "observed_pp": 22.57936507936508,
+      "required_pp": 5,
+      "pass": true
+    },
+    "C3_tabular14_parity_every_world": {
+      "observed": "144 of 144 exact paired correct-score ties",
+      "pass": true
+    },
+    "C4_random_RF32_noninferiority": {
+      "observed_pp": 0,
+      "required_at_least_pp": -2,
+      "pass": true
+    },
+    "C5_retained_cold_slot": {
+      "observed": "144 of 144 address-isolation checks PASS",
+      "pass": true
+    },
+    "C6_static_action_only": {
+      "observed_pp": 0,
+      "required_at_least_pp": -3,
+      "pass": true
+    }
+  },
+  "independent_audit": {
+    "checks": 255044,
+    "exact_score_replays": 144,
+    "all_5_controls_refitted": true,
+    "source_data_sha_checks": true,
+    "canonical_no_timing_digest_verified": true,
+    "negative_tamper_control": "PASS rejected changes to scientific scores",
+    "metadata_walltime_perturbation": "PASS unchanged canonical result",
+    "status": "PASS"
+  },
+  "limitations": [
+    "Original full 55446-byte primary JSON locally held and hash verified, NOT committed to GitHub; compact 144-world paired score ledger is committed. Reconstruct primary from exact code/seeds; canonical digest excludes nondeterministic time.",
+    "Source code is staged in external research as compressed Python; it is NOT installed in tracked native yggdrasil/ on main or PR.",
+    "Conditional tabular14 baseline is mathematically equivalent and empirically exactly matches the candidate, so novel scientific superiority is NOT established.",
+    "RF32 is fully fitted with matched public observations but computational cost and memory capacity are not matched.",
+    "Action-only comparator is a Laplace-smoothed action count, not actual execution of existing PublicCausalCells.choose().",
+    "No transfer of accumulated weights or learned causal grammar across new worlds; each world starts fresh. Cold isolation tests separate memory addresses, not recovery after overwriting the same memory.",
+    "Truth-table induction requires support for all 14 reachable history/action patterns. No evidence for arbitrary time depth, open-world novelty or general cognition.",
+    "Native Yggdrasil full regression and cross-OS model science not performed. G29 is source-index custody only, if it passes."
+  ],
+  "authority": {
+    "accepted_ref_unchanged": true,
+    "first_use_consumed": false,
+    "official_yggdrasil_model_changed": false,
+    "controller_or_runner_dispatched": false,
+    "merged": false,
+    "deployed": false
+  }
+}
