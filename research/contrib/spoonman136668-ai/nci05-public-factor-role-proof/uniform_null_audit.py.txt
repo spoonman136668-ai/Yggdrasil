@@ -1,0 +1,122 @@
+"""NCI-05H exact unrestricted-Boolean null confidence audit.
+
+Source-free combinatorics, NOT a model trainer or a new science dataset.
+The actual NCI05 public query policy stops after five when the supplied
+ten-law family has no unique proposal. Four unobserved null continuations
+are integrated analytically for denominator uniformity, NEVER queried.
+"""
+from __future__ import annotations
+
+from itertools import product
+from hashlib import sha256
+import json
+
+from role_probe import infer_conditional_role, exact_symbolic_control, probe_masks
+from challenge_guard import assess_public_challenges, challenge_masks
+
+ORIGINAL_PUBLIC_EFFECTS=5
+ADDITIONAL_PUBLIC_EFFECTS=2
+BINARY_INPUT_BITS=6
+TOTAL_INPUT_MASKS=1<<BINARY_INPUT_BITS
+UNOBSERVED_AFTER_COMPLETE=TOTAL_INPUT_MASKS-7
+GLOBAL_COMPLETE_FUNCTIONS_PER_SUPPORT=1<<UNOBSERVED_AFTER_COMPLETE
+
+
+def audit_action_bit(action_bit: int) -> dict:
+    initial_masks=probe_masks(action_bit)
+    counters={"candidate_prefix_vectors":0,"support":0,"reject":0,
+              "abstain_normalized":0,"initial_prefix_vectors":0,
+              "actual_public_challenge_pairs":0}
+    samples=[]
+    for bits in product((0,1),repeat=ORIGINAL_PUBLIC_EFFECTS):
+        counters["initial_prefix_vectors"]+=1
+        initial=list(zip(initial_masks,bits))
+        proposal=infer_conditional_role(action_bit,initial)
+        exact=exact_symbolic_control(action_bit,initial)
+        if proposal is None:
+            # Four null continuations are integrated out; this policy
+            # actually executes no two additional public interventions.
+            if len(exact)==1:
+                raise AssertionError("NCI05H_SYMBOLIC_UNIQUE_DISAGREEMENT")
+            counters["abstain_normalized"]+=4
+            continue
+        if exact!=((proposal.factor_bit,proposal.offset),):
+            raise AssertionError("NCI05H_SYMBOLIC_CONTROL_DISAGREEMENT")
+        counters["candidate_prefix_vectors"]+=1
+        extra=challenge_masks(proposal)
+        if len(set((*initial_masks,*extra)))!=7:
+            raise AssertionError("NCI05H_NOT_SEVEN_DISTINCT_MASKS")
+        counters["actual_public_challenge_pairs"]+=4
+        support_patterns=[]
+        for tails in product((0,1),repeat=ADDITIONAL_PUBLIC_EFFECTS):
+            additional=list(zip(extra,tails))
+            assessment=assess_public_challenges(proposal,initial,additional)
+            if assessment.newly_witnessed_effects!=2:
+                raise AssertionError("NCI05H_PUBLIC_COUNTER_MISMATCH")
+            if (assessment.globally_certified or assessment.native_admission
+                    or assessment.scientific_pass):
+                raise AssertionError("NCI05H_ILLEGAL_GLOBAL_OR_NATIVE_CLAIM")
+            if assessment.status=="SUPPORTED_UNDER_SUPPLIED_GRAMMAR_ONLY":
+                counters["support"]+=1
+                support_patterns.append(tuple(tails))
+            elif assessment.status=="REJECTED_OFF_PRIOR_WITNESS":
+                counters["reject"]+=1
+            else:
+                raise AssertionError("NCI05H_UNEXPECTED_ASSESSMENT")
+        if len(support_patterns)!=1:
+            raise AssertionError("NCI05H_BAD_NULL_CONDITIONAL_SUPPORT_COUNT")
+        samples.append((proposal.factor_bit,proposal.offset,extra,
+                        support_patterns[0]))
+    counters["normalized_outcome_vectors"]=sum(
+        counters[k] for k in ("support","reject","abstain_normalized"))
+    if (counters["initial_prefix_vectors"]!=32 or
+        counters["candidate_prefix_vectors"]!=10 or
+        counters["support"]!=10 or counters["reject"]!=30 or
+        counters["abstain_normalized"]!=88 or
+        counters["normalized_outcome_vectors"]!=128):
+        raise AssertionError("NCI05H_FROZEN_EXACT_NULL_COUNT_MISMATCH")
+    if len(set((j,b) for j,b,_,_ in samples))!=10:
+        raise AssertionError("NCI05H_CANDIDATE_ROLE_COVERAGE_MISMATCH")
+    return {"action_bit":action_bit,**counters,
+            "expected_global_function_completions_per_support":
+                GLOBAL_COMPLETE_FUNCTIONS_PER_SUPPORT,
+            "conditional_support_probability_exact":"10/128",
+            "support_given_candidate_probability_exact":"1/4",
+            "global_truth_given_support_under_uniform_table_exact":
+                "1/2^57",
+            "public_evidence_digest":sha256(json.dumps(samples,
+                           separators=(",",":")).encode("ascii")).hexdigest(),
+            "examples":samples}
+
+
+def audit_all() -> dict:
+    rows=tuple(audit_action_bit(a) for a in range(BINARY_INPUT_BITS))
+    return {
+        "schema":"nci05.uniform-null.sourcefree-exact-audit.v1",
+        "status":"ENGINEERING_ONLY_NOT_NATIVE_SCIENCE_OR_FIRST_USE",
+        "previous_protocol_frozen_unchanged":True,
+        "source_first_use":False,
+        "owner_model_used":False,
+        "source_laws_generated":False,
+        "uniform_full_truth_table_is_assumed_not_measured":True,
+        "results_by_action_bit":rows,
+        "aggregate":{
+            "normalized_7bit_pattern_count":sum(r["normalized_outcome_vectors"]
+                                                 for r in rows),
+            "candidate_5bit_prefix_count":sum(r["candidate_prefix_vectors"]
+                                               for r in rows),
+            "conditionally_supported_pattern_count":sum(r["support"] for r in rows),
+            "rejected_pattern_count":sum(r["reject"] for r in rows),
+            "abstained_pattern_count":sum(r["abstain_normalized"] for r in rows),
+            "uniform_null_spurious_support_fraction":"10/128",
+            "global_boolean_table_completions_per_support":
+                str(GLOBAL_COMPLETE_FUNCTIONS_PER_SUPPORT),
+            "global_truth_fraction_given_support":"1/2^57"},
+        "conclusion":"NO_GLOBAL_CAUSAL_CONFIDENCE_FROM_SEVEN_RESTRICTED_PRIOR_WITNESSES"}
+        
+
+if __name__=="__main__":
+    result=audit_all()
+    # The bounded structured record below is source-only; no protected world.
+    print("NCI05H_EXACT_UNIFORM_NULL_RESULT="+json.dumps(result,
+           sort_keys=True,separators=(",",":")))
