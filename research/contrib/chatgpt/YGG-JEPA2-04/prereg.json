@@ -1,0 +1,109 @@
+{
+  "schema": "yggdrasil.jepa2-04.multistep-future-state.v1",
+  "experiment": "YGG-JEPA2-04",
+  "frozen_before_implementation": true,
+  "parent_sha": "eee9ab7719f52c1c67ce30b142e8f07f36454dd1",
+  "parent_tree": "4e091a48e94219559be8bdd8cc4e3899337d6d24",
+  "negative_prior": {
+    "pr": 1271,
+    "sha": "eee9ab7719f52c1c67ce30b142e8f07f36454dd1",
+    "development": "NO_GO; temporal and one-step JEPA predictive heads inferior to native conditional Brier on 2 seeds; do not reuse/tune scored cohorts"
+  },
+  "question": "Can the existing native cumulative learner with four independent trained JEPA heads be continued through novel multi-variable causal dynamics while two additional independently trainable action-conditioned future-state JEPA heads learn 3-step sensory and reward representations with a learned stop-gradient teacher, yielding better multi-step observed consequence predictions without damaging prior native knowledge?",
+  "source": {
+    "kind": "NEW disjoint synthetic development family, not private research primary science or real physical world",
+    "old_checkpoint_seeds": [
+      14071,
+      14072
+    ],
+    "old_state_paths": [
+      "research/contrib/chatgpt/YGG-JEPA2-03/seed-14071-state.json",
+      "research/contrib/chatgpt/YGG-JEPA2-03/seed-14072-state.json"
+    ],
+    "old_state_sha256": "must be verified at run from original prior-branch immutable files and exact parent commit",
+    "new_seeds": [
+      95413,
+      95429
+    ],
+    "worlds_per_seed": 2,
+    "events_per_world": 120,
+    "source": "research/contrib/chatgpt/YGG-JEPA2-04/source.py",
+    "family": "four observed bits (three sensor bits plus reward), hidden delayed intermediate mediator, two predetermined public interventions per step, two distinct causal logic families, deterministic hidden rule A/B/A shifts; planned actions for t,t+1,t+2 publicly frozen before scoring, revealed public outcomes after scoring only",
+    "exclusions": "no old CKAD37 generator, no scored 88901/88917 replay, no hidden regime labels or simulator latent state given to any learner",
+    "first_use_status": "development synthetic source generation, not protected scientific first-use"
+  },
+  "model": {
+    "native": "one persistent original NativeTemporalMultiLearner, with NativeEpisodeExperience and prior four independent trained specialists carried through each public observed intervention, exact original ledger prefix and learned source checkpoints preserved",
+    "new": "two independent learned future-state specialists, sensory 3x3-bit target and reward 3-bit target; no tokens or transformers",
+    "prediction": "at t predict public sensor and consequence observations at t,t+1,t+2 given current 3-bit public observation, three announced 2-action interventions, and preceding four verified public outcomes",
+    "timing": "score before observing any future outcome; train target/predictor only once entire three-step actual future observation vector has been revealed, never using future labels earlier",
+    "teacher": "EMA teacher encoder of multi-step public future observations (momentum=0.98), stop-gradient latent target; online future encoder separately reconstructs public target bits and prevents trivial latent collapse; predictor latent to outcome readout is learned concurrently",
+    "checkpoint": "cold versioned source-bound artifact contains old exact native checkpoint and all six learned heads; reject source mutation and forged new head weights by full ledger/source replay on cold restore; canonical SHA and tolerance 1e-7"
+  },
+  "frozen": {
+    "horizon": 3,
+    "history": 4,
+    "sensory_bits": 9,
+    "reward_bits": 3,
+    "latent_width": 8,
+    "hidden_width": 16,
+    "ema_momentum": 0.98,
+    "lr_future": 0.03,
+    "lr_pred": 0.03,
+    "lr_readout": 0.04,
+    "lr_direct": 0.08,
+    "steps_per_completed_window": 2,
+    "initial": "deterministic sin/cos with seed-independent specialist salt",
+    "anti_collapse": "future encoder trained on observed target bit reconstruction and per-head latent variance must exceed 0.002 on scored windows",
+    "new_episode_cap": 480,
+    "total_cumulative_cap": 1000,
+    "max_cpu_seconds_per_seed": 150,
+    "max_checkpoint_bytes": 2000000,
+    "source_seeds": [
+      95413,
+      95429
+    ],
+    "all_results_single_preset": "one seed pair, no post-result tuning"
+  },
+  "controls": [
+    "original continued native context learner with action marginalization and no future-state leakage",
+    "fully trained online direct-logistic next-three multi-label predictor with same current view/planned actions/history and same update opportunities",
+    "Beta conditional counts using same public viewed state and announced intervention sequence, 3-horizon and optional sliding-window 24/48",
+    "same capacity future-state predictor with deliberately mismatched future observation triples (previous unrelated verified target), matched train steps and input/action information",
+    "frozen old one-step+temporal JEPA continuation readouts and fixed .5 sham",
+    "no-history and no-action development ablation, no future label lookahead"
+  ],
+  "metrics": {
+    "primary": "prequential pooled Brier on six 3-step native-supported public outcomes (three observed s2 + three rewards) in new A/B/A late-B and return-A phases",
+    "secondary": [
+      "12-bit future sensor+reward Brier",
+      "held early-B and old-return retention",
+      "latent variance anti-collapse",
+      "source/action/label leakage guards",
+      "matched observation and update budgets",
+      "native old source prefix and original performance cold retention",
+      "old+new cumulative trained weights persisted",
+      "multi-platform deterministic source receipts and costs",
+      "real measured intervention-plan effect"
+    ],
+    "success": "On BOTH new dev seeds new future-state combined readout must beat strongest fully trained native/original and best conventional by >=.005 pooled six-bit Brier; beat same-size mispaired by >=.010, old 32 receipts old native Brier no worse by .03; all source/ledger/cold/negative guards pass and target variance >=.002. Otherwise DEVELOPMENT_NO_GO, preserve negative without tuning.",
+    "scientific": "SCIENCE_PASS always false; new synthetic family and same developer authorship are not independent science"
+  },
+  "scope": [
+    "research/contrib/chatgpt/YGG-JEPA2-04/**",
+    "yggdrasil/native_jepa_future.py",
+    "tests/test_native_jepa_future.py",
+    ".github/workflows/ygg-jepa2-04.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": {
+    "isolated_draft": true,
+    "original_owner_first_use": false,
+    "accepted_main_mutation": false,
+    "merge": false,
+    "autonomous_controller_change": false,
+    "paid_api": false,
+    "existing_runners_only": true,
+    "scheduled_tasks": false
+  }
+}
