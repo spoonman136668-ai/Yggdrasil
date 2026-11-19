@@ -15,7 +15,7 @@ env:
   MKL_NUM_THREADS: '1'
 jobs:
   atlas:
-    if: "github.event.head_commit.message == 'ci(amalgam): qualify bounded native integration'"
+    if: "github.event.head_commit.message == 'ci(amalgam): qualify shared consequence updates'"
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -92,10 +92,19 @@ jobs:
         done
         python -B "$AMALGAM/shadow_preflight.py" "$RUNNER_TEMP/amalgam-ckad26" "$DONORS" > "$RUNNER_TEMP/amalgam-shadow.json"
         python -B "$AMALGAM/growth_preflight.py" "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" > "$RUNNER_TEMP/amalgam-growth.json"
-        python -B "$AMALGAM/verify_preflight.py" "$RUNNER_TEMP/amalgam-shadow.json" "$RUNNER_TEMP/amalgam-growth.json"
+        python -B "$AMALGAM/joint_update_preflight.py" "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$DONORS/seed-14071-state.json" --checkpoint-out "$RUNNER_TEMP/amalgam-joint-state.json" > "$RUNNER_TEMP/amalgam-joint.json"
+        python -B "$AMALGAM/verify_preflight.py" "$RUNNER_TEMP/amalgam-shadow.json" "$RUNNER_TEMP/amalgam-growth.json" "$RUNNER_TEMP/amalgam-joint.json"
         python -B -m unittest discover -s tests -p 'test_*.py'
         for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
           python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
         done
         python -B scripts/build_code_atlas.py --check-if-present
         test -z "$(git status --porcelain)"
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: Amalgam-shared-consequence-${{ matrix.os }}
+        path: |
+          ${{ runner.temp }}/amalgam-joint.json
+          ${{ runner.temp }}/amalgam-joint-state.json
+        if-no-files-found: error
+        retention-days: 30

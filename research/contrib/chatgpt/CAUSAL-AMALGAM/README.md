@@ -54,6 +54,18 @@ same 1,025-witness bytes, and replay consolidation reproduces those bytes.
 Duplicate replay remains idempotent, and conflict and repeated growth are
 rejected. This fixture supplies no scientific performance evidence.
 
+The shared consequence preflight uses the same engineering fixture to update
+the existing native learner and all four saved JEPA heads in a single
+transaction. A joint checkpoint stores one complete native world state, the
+four learned heads, and both source pins. It carries no duplicate donor
+history. Restore uses the pinned source checkpoints to replay the accepted
+suffix and rejects rehashed forged weights. Warm and fresh-process bytes
+match on each platform. Floating-point weights may differ between platforms
+within the reused JEPA source refit tolerance. The native descendant SHA
+must match on both platforms. Run `joint_update_preflight.py` with the
+seed-101 native and seed-14071 specialist files. Use `--checkpoint-out PATH`
+to retain the genuine engineering descendant.
+
 ## First combination to qualify
 
 Use the complete descendant native state and existing saved JEPA heads.
