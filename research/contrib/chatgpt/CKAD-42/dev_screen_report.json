@@ -1,0 +1,869 @@
+{
+  "schema": "yggdrasil.ckad42.dev-evidence.v1",
+  "experiment_id": "CKAD42",
+  "scientific_decision": "DEV_NO_GO",
+  "engineering_decision": "NOT_QUALIFIED_CROSS_PLATFORM_CHECKPOINT_DRIFT",
+  "original_pre_source_prereg": "05f37a8675177b102b041741a1d3b678598a411e",
+  "source_parent": "c4aca6373211487f8cbe07ef0f64f88b937bd0f2",
+  "exact_scored_source_sha": "290b9a7f0ccd351b62e1bfb8f1de762601663bf2",
+  "exact_scored_source_tree": "596b0007f09e078d9738b12077e3b7264edceda4",
+  "exact_scored_source_blobs": {
+    "research/contrib/chatgpt/CKAD-42/prereg.json": "6de06f4096a283876dc5699955d11f208d54cc89",
+    "research/contrib/chatgpt/CKAD-42/campaign.py": "fd7a3d77defa7cab9a1e929d944467bd2332f9d9",
+    "research/contrib/chatgpt/CKAD-42/test_ckad42.py": "f67fb0ab321eea50e9aa8bcea2975cfb1f9ed160",
+    "research/contrib/chatgpt/CKAD-42/screen_dev.py": "3fdfab2c6fe9b36ece22e734fcdd2f1e57a9e986",
+    ".github/workflows/ckad42-native-causal-relations.yml": "7ca6cd708ca08bcb957920efeb22ac8d4c84a359"
+  },
+  "ci": {
+    "run_id": 44445368631,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44445368631",
+    "commit": "290b9a7f0ccd351b62e1bfb8f1de762601663bf2",
+    "ubuntu": {
+      "job_id": 135296094740,
+      "unit_tests_passed": 7,
+      "conclusion": "success"
+    },
+    "windows": {
+      "job_id": 135296096805,
+      "unit_tests_passed": 7,
+      "conclusion": "success"
+    },
+    "deterministic_scoring_metrics_equal": true,
+    "exact_learned_checkpoint_sha256_equal": false,
+    "exact_original_native_checkpoint_sha256_equal": true,
+    "learned_checkpoint_drifts": [
+      {
+        "seed": 42111,
+        "world": 0,
+        "linux_sha256": "778448569fb8513e728b34a8a9e07bd1e87bb3b922fad568bbbba3e49e0294d1",
+        "windows_sha256": "9c5e084ed4e48d0f2abbef53b3aa2c4d391d8be370a4e2befa545423542534e2"
+      }
+    ],
+    "note": "GitHub Actions success establishes local test pass only. Original cross-platform deterministic checkpoint requirement FAILS; no engineering acceptance."
+  },
+  "cohort": {
+    "dev_consumed": [
+      42111,
+      42112
+    ],
+    "pilots_reserved_untouched": [
+      42211,
+      42212
+    ],
+    "primary_reserved_untouched": [
+      42311,
+      42312,
+      42313
+    ],
+    "world_count": 4,
+    "total_authentic_synthetic_episodes": 917,
+    "total_authentic_synthetic_observed_consequences": 1834
+  },
+  "frozen_gates": {
+    "candidate_max_brier": 0.15,
+    "required_gain_over_all_controls": 0.01,
+    "max_early_phase_worsening": 0.01,
+    "both_dev_seeds_must_pass": true
+  },
+  "research_summary": [
+    {
+      "seed": 42111,
+      "events": 457,
+      "pooled_late_phase_brier": {
+        "native_dual_causal": 0.12271732560775975,
+        "native_stream": 0.14883569357636264,
+        "causal_full": 0.2633049137539809,
+        "causal_discount93": 0.12263556067602435,
+        "causal_no_action": 0.2909966584143519,
+        "strongest_conventional": 0.13742373016699794
+      },
+      "gain_over_native": 0.026118367968602896,
+      "gain_over_strongest_conventional": 0.01470640455923819,
+      "gain_over_single_discounted": -0.00008176493173539523,
+      "early_B": {
+        "dual": 0.306346032348401,
+        "native": 0.28576040785297874
+      },
+      "early_return_A": {
+        "dual": 0.22634758581801742,
+        "native": 0.204021496342632
+      }
+    },
+    {
+      "seed": 42112,
+      "events": 460,
+      "pooled_late_phase_brier": {
+        "native_dual_causal": 0.14363383065187862,
+        "native_stream": 0.1456807451894137,
+        "causal_full": 0.22825626726814668,
+        "causal_discount93": 0.14034930102905738,
+        "causal_no_action": 0.26518180223282606,
+        "strongest_conventional": 0.15403165980167938
+      },
+      "gain_over_native": 0.002046914537535083,
+      "gain_over_strongest_conventional": 0.010397829149800752,
+      "gain_over_single_discounted": -0.0032845296228212473,
+      "early_B": {
+        "dual": 0.2424524284160929,
+        "native": 0.23767959974188954
+      },
+      "early_return_A": {
+        "dual": 0.24888561176442034,
+        "native": 0.18779259172716403
+      }
+    }
+  ],
+  "original_linux_dev_report": {
+    "basis_hypothesis_count": [
+      16,
+      429
+    ],
+    "cases": [
+      {
+        "elapsed_wall_seconds": 2.00914,
+        "phase_metrics": {
+          "early_B": {
+            "brier": {
+              "beta_discount85": 0.2185699055007869,
+              "beta_discount95": 0.23428344883228525,
+              "beta_full": 0.29228614447059525,
+              "beta_hedge": 0.28054804787224663,
+              "beta_window12": 0.21683108052248679,
+              "beta_window24": 0.23545292003633791,
+              "beta_window48": 0.26960165694365074,
+              "causal_discount93": 0.23733629544635285,
+              "causal_full": 0.33916409528250197,
+              "causal_no_action": 0.35073296412500476,
+              "native_dual_causal": 0.306346032348401,
+              "native_stream": 0.28576040785297874,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "early_return_A": {
+            "brier": {
+              "beta_discount85": 0.20188338962117988,
+              "beta_discount95": 0.22863074228595145,
+              "beta_full": 0.1489102025426647,
+              "beta_hedge": 0.23306790119294551,
+              "beta_window12": 0.21019773524764843,
+              "beta_window24": 0.23028517621577124,
+              "beta_window48": 0.28607357560526897,
+              "causal_discount93": 0.22634758581801773,
+              "causal_full": 0.1490916193255943,
+              "causal_no_action": 0.3100145184945368,
+              "native_dual_causal": 0.22634758581801742,
+              "native_stream": 0.204021496342632,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "late_B": {
+            "brier": {
+              "beta_discount85": 0.16990880441075776,
+              "beta_discount95": 0.14363278424771458,
+              "beta_full": 0.24636516068167047,
+              "beta_hedge": 0.13381058993528938,
+              "beta_window12": 0.15752653376165282,
+              "beta_window24": 0.12737894382364381,
+              "beta_window48": 0.1406622510507648,
+              "causal_discount93": 0.1106200221656066,
+              "causal_full": 0.38562411131570457,
+              "causal_no_action": 0.2874357228685516,
+              "native_dual_causal": 0.11077446703666965,
+              "native_stream": 0.14688044667756994,
+              "sham": 0.25
+            },
+            "episodes": 90
+          },
+          "late_return_A": {
+            "brier": {
+              "beta_discount85": 0.1926581164968611,
+              "beta_discount95": 0.16052353887596743,
+              "beta_full": 0.1566013094394653,
+              "beta_hedge": 0.14871944491236994,
+              "beta_window12": 0.18761812641723358,
+              "beta_window24": 0.14872411480327133,
+              "beta_window48": 0.15287216536862702,
+              "causal_discount93": 0.13615304150024432,
+              "causal_full": 0.1256958164970417,
+              "causal_no_action": 0.2950027109033772,
+              "native_dual_causal": 0.1361530415002361,
+              "native_stream": 0.1510353463375044,
+              "sham": 0.25
+            },
+            "episodes": 80
+          },
+          "pooled_late_shift_and_return": {
+            "brier": {
+              "beta_discount85": 0.18061436303951225,
+              "beta_discount95": 0.15158137466101004,
+              "beta_full": 0.20412334833239745,
+              "beta_hedge": 0.14082652168920964,
+              "beta_window12": 0.171687283246632,
+              "beta_window24": 0.13742373016699794,
+              "beta_window48": 0.14640809308269997,
+              "causal_discount93": 0.12263556067602435,
+              "causal_full": 0.2633049137539809,
+              "causal_no_action": 0.2909966584143519,
+              "native_dual_causal": 0.12271732560775975,
+              "native_stream": 0.14883569357636264,
+              "sham": 0.25
+            },
+            "episodes": 170
+          },
+          "stable_A": {
+            "brier": {
+              "beta_discount85": 0.17495499456585442,
+              "beta_discount95": 0.12872512124493082,
+              "beta_full": 0.10346748307414998,
+              "beta_hedge": 0.10547059166554845,
+              "beta_window12": 0.15753716881489438,
+              "beta_window24": 0.12459178235305508,
+              "beta_window48": 0.11024428948268382,
+              "causal_discount93": 0.10737468203075257,
+              "causal_full": 0.08346202913110753,
+              "causal_no_action": 0.24835553009925776,
+              "native_dual_causal": 0.08420029728776861,
+              "native_stream": 0.12232492073561403,
+              "sham": 0.25
+            },
+            "episodes": 95
+          }
+        },
+        "seed": 42111,
+        "total_consequences": 914,
+        "total_events": 457,
+        "worlds": [
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 456,
+            "duplicate_idempotent": true,
+            "events": 228,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "2045b870ca4a091c18c9fa746a2b5d4a956f103c7f13397543f6704b4903575b",
+            "read_only": true,
+            "relation_checkpoint_bytes": 64971,
+            "relation_checkpoint_sha256": "778448569fb8513e728b34a8a9e07bd1e87bb3b922fad568bbbba3e49e0294d1",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 228,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 99,
+              "boundary_B_to_A": 164,
+              "total_episodes": 228,
+              "world": 0
+            },
+            "world": 0
+          },
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 458,
+            "duplicate_idempotent": true,
+            "events": 229,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "18511175c405138578373d7db2d2f288729c25f4cf8c2b0ae7c83755803c4c52",
+            "read_only": true,
+            "relation_checkpoint_bytes": 65235,
+            "relation_checkpoint_sha256": "3e2687427f86ebb09793f22866b58ca9afa0461d578ff3ab08dc2a780f606039",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 229,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 92,
+              "boundary_B_to_A": 165,
+              "total_episodes": 229,
+              "world": 1
+            },
+            "world": 1
+          }
+        ]
+      },
+      {
+        "elapsed_wall_seconds": 2.00335,
+        "phase_metrics": {
+          "early_B": {
+            "brier": {
+              "beta_discount85": 0.20506981504669378,
+              "beta_discount95": 0.21788464814456407,
+              "beta_full": 0.30466267352010407,
+              "beta_hedge": 0.24292782802487536,
+              "beta_window12": 0.1911624776260813,
+              "beta_window24": 0.21649428325325346,
+              "beta_window48": 0.2459372285128236,
+              "causal_discount93": 0.20047077737569544,
+              "causal_full": 0.346740263430885,
+              "causal_no_action": 0.28810451220900307,
+              "native_dual_causal": 0.2424524284160929,
+              "native_stream": 0.23767959974188954,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "early_return_A": {
+            "brier": {
+              "beta_discount85": 0.2507171606390534,
+              "beta_discount95": 0.254024282468442,
+              "beta_full": 0.16835014983022992,
+              "beta_hedge": 0.25377948307160053,
+              "beta_window12": 0.24710541199504496,
+              "beta_window24": 0.25817338247221516,
+              "beta_window48": 0.2771858522913059,
+              "causal_discount93": 0.2509615063941762,
+              "causal_full": 0.14655052952106454,
+              "causal_no_action": 0.31397636512906807,
+              "native_dual_causal": 0.24888561176442034,
+              "native_stream": 0.18779259172716403,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "late_B": {
+            "brier": {
+              "beta_discount85": 0.1959970866246494,
+              "beta_discount95": 0.17453058096858473,
+              "beta_full": 0.23764683314523302,
+              "beta_hedge": 0.17461062061595384,
+              "beta_window12": 0.1882956756575416,
+              "beta_window24": 0.17276206657356982,
+              "beta_window48": 0.16673758802940244,
+              "causal_discount93": 0.1602569957919117,
+              "causal_full": 0.32475064325494485,
+              "causal_no_action": 0.26246990030555384,
+              "native_dual_causal": 0.172296957927586,
+              "native_stream": 0.16965893654978648,
+              "sham": 0.25
+            },
+            "episodes": 92
+          },
+          "late_return_A": {
+            "brier": {
+              "beta_discount85": 0.18576736715121017,
+              "beta_discount95": 0.1560203273125762,
+              "beta_full": 0.13600600555126005,
+              "beta_hedge": 0.13036585486526375,
+              "beta_window12": 0.17299162946428573,
+              "beta_window24": 0.14826601772852138,
+              "beta_window48": 0.14318021865041844,
+              "causal_discount93": 0.1174554520517749,
+              "causal_full": 0.11728773488332875,
+              "causal_no_action": 0.2683004894491891,
+              "native_dual_causal": 0.11067123428481511,
+              "native_stream": 0.11810582512498502,
+              "sham": 0.25
+            },
+            "episodes": 80
+          },
+          "pooled_late_shift_and_return": {
+            "brier": {
+              "beta_discount85": 0.1912390775672358,
+              "beta_discount95": 0.1659211606634645,
+              "beta_full": 0.1903720296131526,
+              "beta_hedge": 0.15403165980167938,
+              "beta_window12": 0.18117751463742257,
+              "beta_window24": 0.16136855548284962,
+              "beta_window48": 0.15578067203917734,
+              "causal_discount93": 0.14034930102905738,
+              "causal_full": 0.22825626726814668,
+              "causal_no_action": 0.26518180223282606,
+              "native_dual_causal": 0.14363383065187862,
+              "native_stream": 0.1456807451894137,
+              "sham": 0.25
+            },
+            "episodes": 172
+          },
+          "stable_A": {
+            "brier": {
+              "beta_discount85": 0.1915183323738945,
+              "beta_discount95": 0.1586071618621717,
+              "beta_full": 0.14075091062826042,
+              "beta_hedge": 0.1439786118396114,
+              "beta_window12": 0.18437792632485095,
+              "beta_window24": 0.1595406856075582,
+              "beta_window48": 0.14799817657189246,
+              "causal_discount93": 0.15406787099638294,
+              "causal_full": 0.12945699901762373,
+              "causal_no_action": 0.31465045372337236,
+              "native_dual_causal": 0.1307663588083072,
+              "native_stream": 0.1501499375270037,
+              "sham": 0.25
+            },
+            "episodes": 96
+          }
+        },
+        "seed": 42112,
+        "total_consequences": 920,
+        "total_events": 460,
+        "worlds": [
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 470,
+            "duplicate_idempotent": true,
+            "events": 235,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "a3bdd56e23a836cf8a14eda706fd3687c17a935b3d7b561b4450db2f97460291",
+            "read_only": true,
+            "relation_checkpoint_bytes": 65957,
+            "relation_checkpoint_sha256": "cc60f3bd3919098550537f442640b22aa0ca3e52d277bc4b003732fbc131af01",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 235,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 98,
+              "boundary_B_to_A": 171,
+              "total_episodes": 235,
+              "world": 0
+            },
+            "world": 0
+          },
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 450,
+            "duplicate_idempotent": true,
+            "events": 225,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "176b37265e2b64a9cd2a73f3b163aa212025e8a44b5e79cf4f2e8b3eab9d40d4",
+            "read_only": true,
+            "relation_checkpoint_bytes": 64636,
+            "relation_checkpoint_sha256": "8892365f4ebf88daba694625cefc46243a1a516afe7494cd88a2aba31aaca29a",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 225,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 94,
+              "boundary_B_to_A": 161,
+              "total_episodes": 225,
+              "world": 1
+            },
+            "world": 1
+          }
+        ]
+      }
+    ],
+    "decision": "DEV_NO_GO",
+    "dev_seeds_consumed": [
+      42111,
+      42112
+    ],
+    "engineering_integrity": true,
+    "fixed_thresholds": {
+      "max_early_phase_worsening_against_native": 0.01,
+      "pooled_candidate_brier_at_most": 0.15,
+      "pooled_gain_over_action_ablation_at_least": 0.01,
+      "pooled_gain_over_all_full_fit_controls_at_least": 0.01
+    },
+    "limits": "Only frozen two-seed DEV synthetic observed-action training; the grammar is a declared prior. This is not an unfamiliar-world or native scientific qualification, accepted research state, autonomous loop execution, or deployment.",
+    "original_pilots_reserved": [
+      42211,
+      42212
+    ],
+    "pilot_scored": false,
+    "prereg_commit": "05f37a8675177b102b041741a1d3b678598a411e",
+    "primary_reserved": [
+      42311,
+      42312,
+      42313
+    ],
+    "primary_scored": false,
+    "schema": "yggdrasil.ckad42.dev-screen.v1",
+    "scientific_pass": false,
+    "source_parent": "c4aca6373211487f8cbe07ef0f64f88b937bd0f2"
+  },
+  "original_windows_dev_report": {
+    "basis_hypothesis_count": [
+      16,
+      429
+    ],
+    "cases": [
+      {
+        "elapsed_wall_seconds": 1.63253,
+        "phase_metrics": {
+          "early_B": {
+            "brier": {
+              "beta_discount85": 0.2185699055007869,
+              "beta_discount95": 0.23428344883228525,
+              "beta_full": 0.29228614447059525,
+              "beta_hedge": 0.28054804787224663,
+              "beta_window12": 0.21683108052248679,
+              "beta_window24": 0.23545292003633791,
+              "beta_window48": 0.26960165694365074,
+              "causal_discount93": 0.23733629544635285,
+              "causal_full": 0.33916409528250197,
+              "causal_no_action": 0.35073296412500476,
+              "native_dual_causal": 0.306346032348401,
+              "native_stream": 0.28576040785297874,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "early_return_A": {
+            "brier": {
+              "beta_discount85": 0.20188338962117988,
+              "beta_discount95": 0.22863074228595145,
+              "beta_full": 0.1489102025426647,
+              "beta_hedge": 0.23306790119294551,
+              "beta_window12": 0.21019773524764843,
+              "beta_window24": 0.23028517621577124,
+              "beta_window48": 0.28607357560526897,
+              "causal_discount93": 0.22634758581801773,
+              "causal_full": 0.1490916193255943,
+              "causal_no_action": 0.3100145184945368,
+              "native_dual_causal": 0.22634758581801742,
+              "native_stream": 0.204021496342632,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "late_B": {
+            "brier": {
+              "beta_discount85": 0.16990880441075776,
+              "beta_discount95": 0.14363278424771458,
+              "beta_full": 0.24636516068167047,
+              "beta_hedge": 0.13381058993528938,
+              "beta_window12": 0.15752653376165282,
+              "beta_window24": 0.12737894382364381,
+              "beta_window48": 0.1406622510507648,
+              "causal_discount93": 0.1106200221656066,
+              "causal_full": 0.38562411131570457,
+              "causal_no_action": 0.2874357228685516,
+              "native_dual_causal": 0.11077446703666965,
+              "native_stream": 0.14688044667756994,
+              "sham": 0.25
+            },
+            "episodes": 90
+          },
+          "late_return_A": {
+            "brier": {
+              "beta_discount85": 0.1926581164968611,
+              "beta_discount95": 0.16052353887596743,
+              "beta_full": 0.1566013094394653,
+              "beta_hedge": 0.14871944491236994,
+              "beta_window12": 0.18761812641723358,
+              "beta_window24": 0.14872411480327133,
+              "beta_window48": 0.15287216536862702,
+              "causal_discount93": 0.13615304150024432,
+              "causal_full": 0.1256958164970417,
+              "causal_no_action": 0.2950027109033772,
+              "native_dual_causal": 0.1361530415002361,
+              "native_stream": 0.1510353463375044,
+              "sham": 0.25
+            },
+            "episodes": 80
+          },
+          "pooled_late_shift_and_return": {
+            "brier": {
+              "beta_discount85": 0.18061436303951225,
+              "beta_discount95": 0.15158137466101004,
+              "beta_full": 0.20412334833239745,
+              "beta_hedge": 0.14082652168920964,
+              "beta_window12": 0.171687283246632,
+              "beta_window24": 0.13742373016699794,
+              "beta_window48": 0.14640809308269997,
+              "causal_discount93": 0.12263556067602435,
+              "causal_full": 0.2633049137539809,
+              "causal_no_action": 0.2909966584143519,
+              "native_dual_causal": 0.12271732560775975,
+              "native_stream": 0.14883569357636264,
+              "sham": 0.25
+            },
+            "episodes": 170
+          },
+          "stable_A": {
+            "brier": {
+              "beta_discount85": 0.17495499456585442,
+              "beta_discount95": 0.12872512124493082,
+              "beta_full": 0.10346748307414998,
+              "beta_hedge": 0.10547059166554845,
+              "beta_window12": 0.15753716881489438,
+              "beta_window24": 0.12459178235305508,
+              "beta_window48": 0.11024428948268382,
+              "causal_discount93": 0.10737468203075257,
+              "causal_full": 0.08346202913110753,
+              "causal_no_action": 0.24835553009925776,
+              "native_dual_causal": 0.08420029728776861,
+              "native_stream": 0.12232492073561403,
+              "sham": 0.25
+            },
+            "episodes": 95
+          }
+        },
+        "seed": 42111,
+        "total_consequences": 914,
+        "total_events": 457,
+        "worlds": [
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 456,
+            "duplicate_idempotent": true,
+            "events": 228,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "2045b870ca4a091c18c9fa746a2b5d4a956f103c7f13397543f6704b4903575b",
+            "read_only": true,
+            "relation_checkpoint_bytes": 64971,
+            "relation_checkpoint_sha256": "9c5e084ed4e48d0f2abbef53b3aa2c4d391d8be370a4e2befa545423542534e2",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 228,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 99,
+              "boundary_B_to_A": 164,
+              "total_episodes": 228,
+              "world": 0
+            },
+            "world": 0
+          },
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 458,
+            "duplicate_idempotent": true,
+            "events": 229,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "18511175c405138578373d7db2d2f288729c25f4cf8c2b0ae7c83755803c4c52",
+            "read_only": true,
+            "relation_checkpoint_bytes": 65235,
+            "relation_checkpoint_sha256": "3e2687427f86ebb09793f22866b58ca9afa0461d578ff3ab08dc2a780f606039",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 229,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 92,
+              "boundary_B_to_A": 165,
+              "total_episodes": 229,
+              "world": 1
+            },
+            "world": 1
+          }
+        ]
+      },
+      {
+        "elapsed_wall_seconds": 1.61486,
+        "phase_metrics": {
+          "early_B": {
+            "brier": {
+              "beta_discount85": 0.20506981504669378,
+              "beta_discount95": 0.21788464814456407,
+              "beta_full": 0.30466267352010407,
+              "beta_hedge": 0.24292782802487536,
+              "beta_window12": 0.1911624776260813,
+              "beta_window24": 0.21649428325325346,
+              "beta_window48": 0.2459372285128236,
+              "causal_discount93": 0.20047077737569544,
+              "causal_full": 0.346740263430885,
+              "causal_no_action": 0.28810451220900307,
+              "native_dual_causal": 0.2424524284160929,
+              "native_stream": 0.23767959974188954,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "early_return_A": {
+            "brier": {
+              "beta_discount85": 0.2507171606390534,
+              "beta_discount95": 0.254024282468442,
+              "beta_full": 0.16835014983022992,
+              "beta_hedge": 0.25377948307160053,
+              "beta_window12": 0.24710541199504496,
+              "beta_window24": 0.25817338247221516,
+              "beta_window48": 0.2771858522913059,
+              "causal_discount93": 0.2509615063941762,
+              "causal_full": 0.14655052952106454,
+              "causal_no_action": 0.31397636512906807,
+              "native_dual_causal": 0.24888561176442034,
+              "native_stream": 0.18779259172716403,
+              "sham": 0.25
+            },
+            "episodes": 48
+          },
+          "late_B": {
+            "brier": {
+              "beta_discount85": 0.1959970866246494,
+              "beta_discount95": 0.17453058096858473,
+              "beta_full": 0.23764683314523302,
+              "beta_hedge": 0.17461062061595384,
+              "beta_window12": 0.1882956756575416,
+              "beta_window24": 0.17276206657356982,
+              "beta_window48": 0.16673758802940244,
+              "causal_discount93": 0.1602569957919117,
+              "causal_full": 0.32475064325494485,
+              "causal_no_action": 0.26246990030555384,
+              "native_dual_causal": 0.172296957927586,
+              "native_stream": 0.16965893654978648,
+              "sham": 0.25
+            },
+            "episodes": 92
+          },
+          "late_return_A": {
+            "brier": {
+              "beta_discount85": 0.18576736715121017,
+              "beta_discount95": 0.1560203273125762,
+              "beta_full": 0.13600600555126005,
+              "beta_hedge": 0.13036585486526375,
+              "beta_window12": 0.17299162946428573,
+              "beta_window24": 0.14826601772852138,
+              "beta_window48": 0.14318021865041844,
+              "causal_discount93": 0.1174554520517749,
+              "causal_full": 0.11728773488332875,
+              "causal_no_action": 0.2683004894491891,
+              "native_dual_causal": 0.11067123428481511,
+              "native_stream": 0.11810582512498502,
+              "sham": 0.25
+            },
+            "episodes": 80
+          },
+          "pooled_late_shift_and_return": {
+            "brier": {
+              "beta_discount85": 0.1912390775672358,
+              "beta_discount95": 0.1659211606634645,
+              "beta_full": 0.1903720296131526,
+              "beta_hedge": 0.15403165980167938,
+              "beta_window12": 0.18117751463742257,
+              "beta_window24": 0.16136855548284962,
+              "beta_window48": 0.15578067203917734,
+              "causal_discount93": 0.14034930102905738,
+              "causal_full": 0.22825626726814668,
+              "causal_no_action": 0.26518180223282606,
+              "native_dual_causal": 0.14363383065187862,
+              "native_stream": 0.1456807451894137,
+              "sham": 0.25
+            },
+            "episodes": 172
+          },
+          "stable_A": {
+            "brier": {
+              "beta_discount85": 0.1915183323738945,
+              "beta_discount95": 0.1586071618621717,
+              "beta_full": 0.14075091062826042,
+              "beta_hedge": 0.1439786118396114,
+              "beta_window12": 0.18437792632485095,
+              "beta_window24": 0.1595406856075582,
+              "beta_window48": 0.14799817657189246,
+              "causal_discount93": 0.15406787099638294,
+              "causal_full": 0.12945699901762373,
+              "causal_no_action": 0.31465045372337236,
+              "native_dual_causal": 0.1307663588083072,
+              "native_stream": 0.1501499375270037,
+              "sham": 0.25
+            },
+            "episodes": 96
+          }
+        },
+        "seed": 42112,
+        "total_consequences": 920,
+        "total_events": 460,
+        "worlds": [
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 470,
+            "duplicate_idempotent": true,
+            "events": 235,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "a3bdd56e23a836cf8a14eda706fd3687c17a935b3d7b561b4450db2f97460291",
+            "read_only": true,
+            "relation_checkpoint_bytes": 65957,
+            "relation_checkpoint_sha256": "cc60f3bd3919098550537f442640b22aa0ca3e52d277bc4b003732fbc131af01",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 235,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 98,
+              "boundary_B_to_A": 171,
+              "total_episodes": 235,
+              "world": 0
+            },
+            "world": 0
+          },
+          {
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "consequences": 450,
+            "duplicate_idempotent": true,
+            "events": 225,
+            "learned_basis_dimension": [
+              16,
+              429
+            ],
+            "native_checkpoint_sha256": "176b37265e2b64a9cd2a73f3b163aa212025e8a44b5e79cf4f2e8b3eab9d40d4",
+            "read_only": true,
+            "relation_checkpoint_bytes": 64636,
+            "relation_checkpoint_sha256": "8892365f4ebf88daba694625cefc46243a1a516afe7494cd88a2aba31aaca29a",
+            "source_complete": true,
+            "source_prefix_exact": true,
+            "training_updates": 225,
+            "true_boundaries_evaluator_only": {
+              "boundary_A_to_B": 94,
+              "boundary_B_to_A": 161,
+              "total_episodes": 225,
+              "world": 1
+            },
+            "world": 1
+          }
+        ]
+      }
+    ],
+    "decision": "DEV_NO_GO",
+    "dev_seeds_consumed": [
+      42111,
+      42112
+    ],
+    "engineering_integrity": true,
+    "fixed_thresholds": {
+      "max_early_phase_worsening_against_native": 0.01,
+      "pooled_candidate_brier_at_most": 0.15,
+      "pooled_gain_over_action_ablation_at_least": 0.01,
+      "pooled_gain_over_all_full_fit_controls_at_least": 0.01
+    },
+    "limits": "Only frozen two-seed DEV synthetic observed-action training; the grammar is a declared prior. This is not an unfamiliar-world or native scientific qualification, accepted research state, autonomous loop execution, or deployment.",
+    "original_pilots_reserved": [
+      42211,
+      42212
+    ],
+    "pilot_scored": false,
+    "prereg_commit": "05f37a8675177b102b041741a1d3b678598a411e",
+    "primary_reserved": [
+      42311,
+      42312,
+      42313
+    ],
+    "primary_scored": false,
+    "schema": "yggdrasil.ckad42.dev-screen.v1",
+    "scientific_pass": false,
+    "source_parent": "c4aca6373211487f8cbe07ef0f64f88b937bd0f2"
+  },
+  "meaning": "Online causal templates learn action-dependent relationships with lower Brier than original native on both DEV seeds; however precommitted gain vs individually trained discounted causal-basis control and early return retention fail. They are not scientifically qualified. One cross-OS weight checkpoint differs despite matching scores. Do not claim deterministic checkpoint success or promote.",
+  "limits": [
+    "This is source-only synthetic development, not real-world knowledge or genuinely unfamiliar causal-family transfer.",
+    "Finite Boolean grammar is an explicitly chosen representational prior containing some source relations, not autonomous discovery of unrestricted causal laws.",
+    "The new learner increases compute and checkpoint bytes relative to original native; no efficiency claim.",
+    "CKAD42 original DEV first-use seeds were consumed at source SHA; post-score modifications cannot produce an independent confirmatory result on the same seeds.",
+    "Original pilots/primary untouched, no full final regression, no owner first-use, no accepted source merge, no controller, schedule, production changes."
+  ],
+  "next": "Investigate platform-specific float serialization/rounding using fixture-only runs in a NEW engineering-only branch. A new independently preregistered scientific successor needs disjoint seeds and an explicit cold-retention/early-return intervention, not post hoc changes to this cohort."
+}
