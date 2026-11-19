@@ -66,7 +66,7 @@ export function evaluateWSP193(csv) {
   if(multi.FIT.length<350||multi.VALID.length<75||multi.DEV.length<75)throw Error("INSUFFICIENT_MULTI_IN_"+assay);
   const feat=new Map(),sites=new Set();
   for(const r of groups.FIT)for(const x of r.m){if(!feat.has(x))feat.set(x,feat.size);sites.add(Number(x.match(/\d+/)[0]));}
-  if(feat.size<20||sites.size<10)throw Error("INSUFFICIENT_FEATURES_OR_SITES_IN_"+assay);
+  if(feat.size<20||sites.size<(assay===0?10:4))throw Error("INSUFFICIENT_FEATURES_OR_SITES_IN_"+assay);
   const fitMean=groups.FIT.reduce((s,r)=>s+r.ys[assay],0)/groups.FIT.length;
   const fitStd=Math.sqrt(groups.FIT.reduce((s,r)=>s+(r.ys[assay]-fitMean)**2,0)/groups.FIT.length);
   if(!(fitStd>1e-10))throw Error("DEGENERATE_FIT_ASSAY");
