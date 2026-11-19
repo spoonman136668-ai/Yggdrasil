@@ -51,3 +51,17 @@ native probabilities, selector/native bypass, config drift, routing-state
 cold-replay divergence, and single shared-witness admission. Exact changed-
 candidate dual-platform full regression is still required; no real mastered
 regime, owner cold restore, or protected new source use is claimed.
+
+## Frozen-input validation on idempotent replay (2026-11-19)
+
+The opt-in `guarded_observe` now checks the unchanged frozen Quine manifest
+pin, the fixed +0.02 drift contract, active-policy configuration, P0 anchor
+checkpoint and ledger digests, and the original ledger prefix **before**
+calling the existing observe route. An idempotent existing-witness replay
+therefore cannot bypass those input checks. The same preflight is shared
+with a proposed new-witness gate so the two paths cannot diverge.
+
+A source-free negative test supplies a wrong manifest pin, altered manifest,
+changed tolerance, and stale anchor to the idempotent route. This is only
+research-branch integrity hardening: owner custody, fresh learning,
+scientific benefit, and accepted deployment remain UNVERIFIED.

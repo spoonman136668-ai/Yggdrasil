@@ -168,6 +168,24 @@ def select_quines(anchor, regime_windows, *, count=8):
     }
 
 
+
+def _verify_frozen_inputs(anchor, current, quines, quine_sha256, max_brier_drift):
+    """Authenticate the frozen guard before any observation, including replay."""
+    if type(max_brier_drift) is not Fraction or max_brier_drift != TOLERANCE:
+        raise ValueError("Frozen Quine drift gate is exactly 1/50")
+    if (type(quines) is not dict
+            or digest(canonical(quines)) != quine_sha256
+            or quines.get("schema") != SCHEMA):
+        raise ValueError("Quine manifest pin mismatch")
+    _require_policy_modes(anchor, current)
+    old, prior = _ledger(anchor), _ledger(current)
+    if (quines.get("anchor_checkpoint_sha256") != digest(_checkpoint(anchor))
+            or quines.get("anchor_ledger_sha256") != digest(canonical(old))
+            or prior[:len(old)] != old):
+        raise ValueError("Quine anchor or exact shared prefix mismatch")
+    return old, prior
+
+
 def assess_update(anchor, current, proposed, quines, quine_sha256, *,
                   max_brier_drift=TOLERANCE):
     """Veto an overwrite if any Quine OR any familiar regime drifts > 0.02.
@@ -176,15 +194,11 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
     previously admitted continuation remains cumulative. A rejected candidate
     hash is advisory fork provenance only; no rival specialist is activated.
     """
-    if type(max_brier_drift) is not Fraction or max_brier_drift != TOLERANCE:
-        raise ValueError("Frozen Quine drift gate is exactly 1/50")
-    if digest(canonical(quines)) != quine_sha256 or quines.get("schema") != SCHEMA:
-        raise ValueError("Quine manifest pin mismatch")
     _require_policy_modes(anchor, current, proposed)
-    old, prior, after = _ledger(anchor), _ledger(current), _ledger(proposed)
-    if (quines.get("anchor_checkpoint_sha256") != digest(_checkpoint(anchor))
-            or quines.get("anchor_ledger_sha256") != digest(canonical(old))
-            or prior[:len(old)] != old or after[:len(prior)] != prior):
+    old, prior = _verify_frozen_inputs(anchor, current, quines,
+                                       quine_sha256, max_brier_drift)
+    after = _ledger(proposed)
+    if after[:len(prior)] != prior:
         raise ValueError("Quine anchor or exact shared prefix mismatch")
     if len(after) != len(prior) + 1:
         raise ValueError("Each Quine gate checks exactly one newly witnessed episode")
@@ -269,7 +283,8 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
 def guarded_observe(anchor, current, quines, quine_sha256, identifier, views, row, *,
                     source_sha256, packet_sha256, max_brier_drift=TOLERANCE):
     """Wrap the existing single shared-witness transaction, no second learner."""
-    _require_policy_modes(anchor, current)
+    _verify_frozen_inputs(anchor, current, quines, quine_sha256,
+                          max_brier_drift)
     before = digest(_checkpoint(current))
     anchor_before = digest(_checkpoint(anchor))
     proposed = current.observe_experience(

@@ -247,6 +247,42 @@ class QuineRetentionTests(unittest.TestCase):
         self.assertEqual(len(selected.system.events), 25)
         self.assertEqual(len(anchor.system.events), 24)
 
+    def test_idempotent_replay_checks_frozen_guard_before_return(self):
+        identifier, views, first, state, second, reward = self.next_event
+        row = {"s1": views[0][0], "x1": first, "s2": state,
+               "x2": second, "y": reward}
+        packet = digest(canonical([identifier, views, row]))
+        kwargs = {"source_sha256": "pinned-fixture",
+                  "packet_sha256": packet}
+        selected, _ = QUINE.guarded_observe(
+            self.anchor, self.current, self.manifest, self.pin,
+            identifier, views, row, **kwargs)
+        self.assertEqual(len(selected.events), 25)
+
+        with self.assertRaisesRegex(ValueError, "pin mismatch"):
+            QUINE.guarded_observe(
+                self.anchor, selected, self.manifest, "0" * 64,
+                identifier, views, row, **kwargs)
+        poisoned = dict(self.manifest)
+        poisoned["ranking"] = "tampered"
+        with self.assertRaisesRegex(ValueError, "pin mismatch"):
+            QUINE.guarded_observe(
+                self.anchor, selected, poisoned, self.pin,
+                identifier, views, row, **kwargs)
+        with self.assertRaisesRegex(ValueError, "exactly 1/50"):
+            QUINE.guarded_observe(
+                self.anchor, selected, self.manifest, self.pin,
+                identifier, views, row, max_brier_drift=Fraction(1, 2),
+                **kwargs)
+        stale_anchor = FakeSystem(
+            self.anchor.events, {(0, "transition"): Fraction(9, 10)})
+        with self.assertRaisesRegex(ValueError, "anchor or exact shared prefix"):
+            QUINE.guarded_observe(
+                stale_anchor, selected, self.manifest, self.pin,
+                identifier, views, row, **kwargs)
+        self.assertEqual(len(selected.events), 25)
+        self.assertEqual(len(self.anchor.events), 24)
+
     def test_atomic_guarded_observe_and_idempotent_replay(self):
         identifier, views, first, state, second, reward = self.next_event
         row = {"s1": views[0][0], "x1": first, "s2": state,
