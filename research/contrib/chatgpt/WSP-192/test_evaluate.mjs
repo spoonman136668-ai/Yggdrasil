@@ -27,5 +27,5 @@ assert.equal(result.held_comparison.bootstrap_replicates,2000);
 assert.ok(result.bilinear_controls.every(x=>Number.isFinite(x.fit_rmse) && Number.isFinite(x.validation_rmse)));
 assert.throws(()=>evaluateWSP192("gene,A,B\nA,1,2\nB,2,1\n"),/AUTHOR_MATRIX_HEADER_MISMATCH/);
 assert.throws(()=>evaluateWSP192(sample.replace("gene,G000,","gene,G000,G000,")),/DUPLICATE_COLUMN|ROW_WIDTH_MISMATCH/);
-assert.throws(()=>evaluateWSP192(sample.replace("G000,G001","G000,G001_NONEXISTENT")),/INSUFFICIENT_GENES|ROW_WIDTH_MISMATCH/);
+assert.throws(()=>evaluateWSP192(sample.replace("\nG001,","\nG000,")),/DUPLICATE_ROW/);
 console.log(JSON.stringify({engineering_fixture:"PASS",tests:15,scientific_training:false,genes:80,source:"synthetic engineering-only fixture"}));
