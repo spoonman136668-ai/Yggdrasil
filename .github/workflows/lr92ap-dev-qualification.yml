@@ -1,0 +1,69 @@
+name: LR-92AP unprotected development and full native regression
+'on':
+  push:
+    branches:
+      - research/lr92ap-same-address-causal-retention-20261119
+    paths:
+      - 'research/contrib/spoonman136668-ai/lr92ap-same-address-retention/**'
+      - '.github/workflows/lr92ap-dev-qualification.yml'
+permissions:
+  contents: read
+concurrency:
+  group: lr92ap-dev-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Exact byte-stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full original native regression on exact commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Execute source-in-TXT LR-92AP development tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          export WORKDIR="$RUNNER_TEMP/lr92ap-python"
+          mkdir -p "$WORKDIR"
+          python -B - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path('research/contrib/spoonman136668-ai/lr92ap-same-address-retention')
+          dest = Path(os.environ['WORKDIR'])
+          names = ('public_dual_timescale_cells', 'bounded_runlength_bocpd',
+                   'fourteen_context_dev', 'test_fourteen_context_dev',
+                   'test_bounded_runlength_bocpd')
+          for name in names:
+              raw = (root / (name + '.py.txt')).read_bytes()
+              (dest / (name + '.py')).write_bytes(raw)
+          print('LR92AP_SOURCE_IN_TXT_COPIED_VERBATIM=PASS')
+          PY
+          (cd "$WORKDIR" && python -B -m unittest -v test_fourteen_context_dev test_bounded_runlength_bocpd)
+      - name: Check original source and tree remain untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          echo 'LR92AP_NATIVE_AND_DEV_QUALIFICATION=PASS'
