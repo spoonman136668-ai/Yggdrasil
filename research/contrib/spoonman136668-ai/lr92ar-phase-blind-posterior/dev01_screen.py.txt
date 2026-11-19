@@ -1,0 +1,191 @@
+"""Frozen LR-92AR DEV01 prequential scorer: no protected or owner data.
+
+The separate, immutable DEV prereg MUST predate source birth and execution.
+Explicitly diagnostic development only, not native Yggdrasil scientific first
+use. All candidates and 928-byte conventional controls are prequential:
+prediction before public feedback, one update per event, no switch labels.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import math
+import time
+
+from dev01_worlds import SEEDS, FAMILIES, WORLD_INDICES, TOTAL, all_worlds
+from phase_blind_posterior import PhaseBlindEvidencePosterior
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from matched_tabular_controls import FullHistory14, FixedWindow14
+from two_regime_hmm_control import TwoRegimeHMM
+from bounded_bayesian_controls import SoftHMM14, ApproxBayesChangePoint14
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+from random_gate_control import RandomGateDualTimescaleCells
+from bocpd_exact_reference import ExactRunLengthBOCPD14
+
+MODELS={
+    "LRA1_new_phase_blind":PhaseBlindEvidencePosterior,
+    "YPT4_original":PublicDualTimescaleCells,
+    "FullHistory14":FullHistory14,
+    "FixedWindow14":FixedWindow14,
+    "HardMAP_HMM":TwoRegimeHMM,
+    "SoftHMM14":SoftHMM14,
+    "ApproxCPD14":ApproxBayesChangePoint14,
+    "BoundedBOCPD896":BoundedRunLengthBOCPD14,
+    "RandomGate928":RandomGateDualTimescaleCells,
+    "ExactBOCPD_overbudget":ExactRunLengthBOCPD14,
+}
+BYTES={
+    "LRA1_new_phase_blind":928,
+    "YPT4_original":928,
+    "FullHistory14":480,
+    "FixedWindow14":832,
+    "HardMAP_HMM":928,
+    "SoftHMM14":928,
+    "ApproxCPD14":928,
+    "BoundedBOCPD896":896,
+    "RandomGate928":928,
+    "ExactBOCPD_overbudget":None,
+}
+METRICS=("A","B","return_first1","return_5_16","return_1_16","return_after16")
+SCORING_CLASSIFICATION="DEV_ONLY_NOT_PROTECTED_OR_NATIVE"
+
+
+def run_one(w,constructor,name):
+    expected=BYTES[name]
+    if (expected is not None and
+        getattr(constructor,"LEARNED_AND_HISTORY_BYTES",
+                getattr(constructor,"LEARNED_BYTES",None))!=expected):
+        raise AssertionError("LRA_DEV_MODEL_STATE_BUDGET_DRIFT")
+    learner=constructor()
+    started=time.perf_counter_ns()
+    scores={metric:[] for metric in METRICS}
+    A=w.private.dwell_A
+    return_start=A+w.private.dwell_B
+    actual_predictions=actual_updates=0
+    for t,obs in enumerate(w.public):
+        if obs.episode_start:
+            learner.end_episode()
+        if obs.index != t:
+            raise AssertionError("LRA_DEV_PUBLIC_ORDER_DRIFT")
+        before=learner.snapshot() if t in (0,31,80,120) else None
+        pred=learner.predict(0,obs.action)
+        actual_predictions+=1
+        if not isinstance(pred,(float,int)) or isinstance(pred,bool) or (
+            not math.isfinite(pred) or not 0 <= pred <= 1):
+            raise ValueError("LRA_DEV_INVALID_FORECAST")
+        if before is not None and before!=learner.snapshot():
+            raise AssertionError("LRA_DEV_PREDICTION_MUTATED")
+        loss=(pred-obs.outcome)**2
+        if t<A:
+            scores["A"].append(loss)
+        if A<=t<return_start:
+            scores["B"].append(loss)
+        if t==return_start:
+            scores["return_first1"].append(loss)
+        if return_start+4<=t<return_start+16:
+            scores["return_5_16"].append(loss)
+        if return_start<=t<return_start+16:
+            scores["return_1_16"].append(loss)
+        if t>=return_start+16:
+            scores["return_after16"].append(loss)
+        learner.observe_step(0,obs.action,obs.outcome)
+        actual_updates+=1
+        if t==32:  # public fixed time, A under every frozen schedule
+            snap=learner.snapshot()
+            learner=type(learner).restore(snap)
+            if learner.snapshot()!=snap:
+                raise AssertionError("LRA_DEV_COLD_RESTORE_MISMATCH")
+    final_snap=learner.snapshot()
+    if type(learner).restore(final_snap).snapshot()!=final_snap:
+        raise AssertionError("LRA_DEV_FINAL_RESTORE_MISMATCH")
+    elapsed_ns=time.perf_counter_ns()-started
+    if actual_predictions!=TOTAL or actual_updates!=TOTAL:
+        raise AssertionError("LRA_DEV_MISSING_OR_DOUBLE_PUBLIC_UPDATE")
+    if any(not scores[key] for key in METRICS):
+        raise AssertionError("LRA_DEV_EMPTY_METRIC")
+    if expected is not None and len(final_snap)!=expected+36:
+        raise AssertionError("LRA_DEV_CHECKPOINT_BUDGET_MISMATCH")
+    if expected is None and len(final_snap)<=928+36:
+        raise AssertionError("LRA_DEV_OUTOFBUDGET_MISLABEL")
+    return {
+        "metrics":{key:sum(v)/len(v) for key,v in scores.items()},
+        "events":actual_updates,
+        "checkpoint_bytes":len(final_snap),
+        "snapshot_digest":hashlib.sha256(final_snap).hexdigest(),
+        "duration_ns_dev_only":elapsed_ns
+    }
+
+
+def evaluate():
+    assert (SEEDS,FAMILIES,WORLD_INDICES,TOTAL)==(
+        (73004511,73004512,73004513),("xor","and","random14"),(0,1,2,3),192)
+    records=[]
+    for seed,family,index,w in all_worlds():
+        per={}
+        for name,cls in MODELS.items():
+            per[name]=run_one(w,cls,name)
+        if per["YPT4_original"]["snapshot_digest"]!=per["RandomGate928"]["snapshot_digest"]:
+            raise AssertionError("LRA_DEV_RANDOM_GATE_CHANGED_SHARED_UPDATE")
+        records.append({"seed":seed,"family":family,"index":index,
+                        "input_digest":w.public_digest(),"public_events":len(w.public),
+                        "dwell":(w.private.dwell_A,w.private.dwell_B,
+                                 w.private.dwell_return),"models":per})
+    if len(records)!=36 or sum(r["public_events"] for r in records)!=6912:
+        raise AssertionError("LRA_DEV_BAD_WORLD_OR_EVENT_COUNT")
+    return records
+
+
+def decision(rows):
+    if len(rows)!=36 or len({(x["seed"],x["family"],x["index"]) for x in rows})!=36:
+        raise ValueError("LRA_DEV_INCOMPLETE_OR_DUPLICATED")
+    inbudget=[n for n in MODELS if n not in ("LRA1_new_phase_blind","ExactBOCPD_overbudget")]
+    strata=[]
+    for seed in SEEDS:
+        subset=[x for x in rows if x["seed"]==seed]
+        if len(subset)!=12:
+            raise ValueError("LRA_DEV_SEED_GROUP_MISSING")
+        avg=lambda name,metric,group:sum(x["models"][name]["metrics"][metric] for x in group)/len(group)
+        cand_ret=avg("LRA1_new_phase_blind","return_5_16",subset)
+        cand_b=avg("LRA1_new_phase_blind","B",subset)
+        worst_gain=min(avg(n,"return_5_16",subset)-cand_ret for n in inbudget)
+        worst_b_regression=max(cand_b-avg(n,"B",subset) for n in inbudget)
+        r14=[x for x in subset if x["family"]=="random14"]
+        rand14_regression=max(avg("LRA1_new_phase_blind","return_5_16",r14)-
+                              avg(n,"return_5_16",r14) for n in inbudget
+                              if n!="RandomGate928")
+        passed=(worst_gain>=.010 and worst_b_regression<=.010 and
+                rand14_regression<=.010)
+        strata.append({"seed":seed,"worst_return_gain_vs_inbudget":worst_gain,
+                       "worst_B_regression_vs_inbudget":worst_b_regression,
+                       "worst_random14_return_regression":rand14_regression,
+                       "GO":bool(passed)})
+    return {"classification":"DEV_SCREEN_GO_UNCONFIRMED" if all(r["GO"] for r in strata)
+            else "DEV_NO_GO","strata":strata}
+
+
+def summarize(rows):
+    if len(rows)!=36:
+        raise ValueError("LRA_DEV_BAD_ROWS")
+    digest=hashlib.sha256()
+    for r in rows:
+        digest.update(bytes.fromhex(r["input_digest"]))
+    macro={}
+    cost={}
+    for name in MODELS:
+        macro[name]={metric:sum(r["models"][name]["metrics"][metric] for r in rows)/len(rows)
+                     for metric in METRICS}
+        cost[name]=sum(r["models"][name]["duration_ns_dev_only"] for r in rows)
+    return {
+        "identity":"LR92AR_DEV01",
+        "classification":"DEVELOPMENT_ONLY",
+        "candidate":"2f8763bed46450115b1d9a384c82219c9cb95980",
+        "worlds":len(rows),"events_per_model":sum(r["public_events"] for r in rows),
+        "source_digest":digest.hexdigest(),"model_state_budget":BYTES,
+        "scores":macro,"screening":decision(rows),"elapsed_ns_dev_only":cost,
+        "native_owner_checkpoint_used":False,"protected_primary_used":False,
+        "scientific_pass":False
+    }
+
+
+if __name__=="__main__":
+    raise SystemExit("RUN_VIA_DEV01_TESTS_ONCE_AFTER_SOURCE_CUSTODY_CHECK")
