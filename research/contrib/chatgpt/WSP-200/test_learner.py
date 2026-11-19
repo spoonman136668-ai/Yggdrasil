@@ -5,6 +5,7 @@ import json
 import subprocess
 import sys
 import unittest
+from pathlib import Path
 
 from learner import Learner, Sample, pair_group, group_bucket, fit_stage, _solve_cholesky
 
@@ -184,7 +185,8 @@ class WSP200SourceFree(unittest.TestCase):
                 "print(json.dumps([m.predict(*p),m.checkpoint().decode()]))")
         proc = subprocess.run([sys.executable, "-c", code,
                                json.dumps([first.left, first.right])],
-                              input=model.checkpoint(), capture_output=True, check=True)
+                              input=model.checkpoint(), capture_output=True, check=True,
+                              cwd=Path(__file__).resolve().parent)
         self.assertEqual(control, json.loads(proc.stdout))
 
     def test_diagnostic_fixture_is_purely_fabricated_and_held(self):
