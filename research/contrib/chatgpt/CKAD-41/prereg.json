@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD41",
+  "kind": "native source-trained causal microanchors — development-only falsification",
+  "source_parent": "d95674f3edae01268353f47c2d8dddd85ab8f21b",
+  "question": "Do event-sourced compact native causal microanchors (16 witnessed episodes per frozen source) improve genuine unannounced A->B->A adaptation and A-return retention over the original cumulative native stream, equally episode-budgeted 32-episode native anchors, and fully fitted conventional controls?",
+  "mechanism": "Maintain one original NativeEpisodeExperience continuous source learner. A separate research-only learned native source archive trains NativeEpisodeExperience(repair=True) for each contiguous nonoverlapping 16-event segment solely from already witnessed actual public action/transition/terminal observations; freeze complete segments and retain the most recent 128 stored source episodes (8 x 16), without editing original model/learner. A 32-event archive using 4 x 32 trained native segments receives the same maximum source-episode memory budget. An opt-in forecast selects an unlabeled native archival distribution via last 16 genuinely witnessed, nonoverlapping action/consequence observations, using equal-prior likelihoods of each eligible block; archived sources whose training touches the evidence window cannot be used. Endogenous evidence only, no oracle regime, no hidden transition labels, no future reward. No extra source observations or actions.",
+  "source_generator": "Reuse CKAD39 frozen authentic synthetic A->B->A environment and matched action draws with two structural variants, independent new seed/world cohorts. Phase/regime is scorer-only; no source-family labels input to learner. Predictor gets public paired numeric views, first action, previously observed transition for conditional terminal, and past real events. One source learner and two separate comparison archives are trained only after public consequences.",
+  "controls": [
+    "Original unmodified NativeEpisodeExperience stream from same source, same warm-start 48",
+    "Native 32-event archive, max 128 retained source events, identical likelihood selector",
+    "Fully trained Beta full history, sliding window12/24/48, discounted 0.85/0.95 and prequential online Hedge eta4",
+    "Sham 0.5"
+  ],
+  "budget_and_cost": "Same 2 real observed consequences per episode, same action sequence, 2 worlds per seed, no synthetic replay as fresh source, fixed 128-episode source archive cap for both native-archive arms; log their trained-native work and total wall/CPU, do not claim equal compute. Extra archive training is explicitly an intervention against unchanged native stream, not free zero-compute benefit.",
+  "dev_only": [
+    41101,
+    41102
+  ],
+  "pilots_reserved_unconsumed": [
+    42101,
+    42102
+  ],
+  "primary_reserved_unconsumed": [
+    43101,
+    43102,
+    43103
+  ],
+  "forbidden_consumed": [
+    40811,
+    40812,
+    38911,
+    38912,
+    39181,
+    39182,
+    14181,
+    14182,
+    14071,
+    14072
+  ],
+  "outcomes": "Prequential two-stage combined transition/conditional-terminal Brier, separately stable_A, early_B, late_B, early_return_A, late_return_A and pooled late_B+late_return_A, paired same actions/sources. Archive source block count, B-pure archive coverage by evaluator only, memory cap, original native checkpoint integrity, exact cold restore, idempotence/conflict, and read-only forecasts. No evaluator labels in archive routing.",
+  "frozen_dev_go": "BOTH original DEV seeds: microanchor16 pooled late B+return Brier <=0.145 AND >=0.015 absolute gain versus original native stream AND native32-matched archive AND strongest (minimum score) fitted Beta/Hedge conventional arm. Must not worsen early_B or early_return_A versus original native stream by >0.005; no source/custody/memory/read purity failure. Otherwise DEV_NO_GO stop; do not consume pilot/primary or retune consumed development seeds.",
+  "technical_preflight": "Prereg first commit before candidate code. Run unit negative controls with all pilot/primary seeds rejected from CLI. Only then run two original DEV seeds once on exact source SHA; repeat only cross-OS deterministic replication, no post-result hyperparameter changes. Preserve original first 48 ledger, source IDs and checkpoint exact byte identity; guard source training/evidence disjointness and 128-record retention. Two OS unit+DEV qualification, no scheduled tasks.",
+  "qualification": "Development-only numeric benchmark on synthetic sources; cannot establish unfamiliar-world transfer, native scientific PASS, general intelligence, full regression, independent owner acceptance or deployment even if DEV_GO.",
+  "authority": {
+    "research_only": true,
+    "no_scheduled_tasks": true,
+    "no_owner_first_use": true,
+    "no_merged_ref": true,
+    "no_controller": true,
+    "no_paid_api": true
+  }
+}
