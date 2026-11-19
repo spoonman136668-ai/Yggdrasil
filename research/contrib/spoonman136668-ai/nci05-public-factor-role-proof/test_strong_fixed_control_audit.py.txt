@@ -1,0 +1,102 @@
+"""Independent source-free regression tests of post-hoc stronger symbolic control.
+
+Do not label this audit new preregistered research, native acceptance or
+scientific-first-use. No generated external original worlds or owner changes.
+"""
+from __future__ import annotations
+import json
+from pathlib import Path
+import unittest
+
+from role_probe import candidates, probe_masks
+from strong_fixed_control_audit import (
+    FAMILIES, aliased_offfamily_cases, audit_action_bit, audit_all,
+    supplied_offfamily_laws,
+)
+
+class SourceFreeStrongControlAuditTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.report=audit_all()
+
+    def test_01_original_source_first_protocol_unmodified_and_scoped(self):
+        base=json.loads(Path(__file__).with_name("prereg.json.txt").read_text())
+        follow=json.loads(Path(__file__).with_name("challenge_prereg.json.txt").read_text())
+        self.assertEqual(base["schema"],"nci05.public-factor-role.sourcefree-proof.v1")
+        self.assertEqual(follow["schema"],"nci05.followup-two-public-challenges.proof.v1")
+        self.assertEqual(follow["offfamily_exhaustive_cases"]["adaptive_two_query_refutations"],624)
+        self.assertEqual(follow["offfamily_exhaustive_cases"]["fixed_two_query_refutations"],600)
+        self.assertFalse(base["authority"]["protected_original_first_use"])
+        self.assertFalse(follow["scientific"]["scientific_pass"])
+        self.assertTrue(self.report["strong_fixed_policy_is_posthoc_oracle_grammar_aware"])
+        self.assertFalse(self.report["fresh_scientific_first_use"])
+
+    def test_02_every_one_of_six_action_roles_has_140_offfamily_laws(self):
+        self.assertEqual(len(FAMILIES),3)
+        for a in range(6):
+            laws=tuple(supplied_offfamily_laws(a))
+            self.assertEqual(len(laws),140)
+            tally={k:sum(fam==k for fam,_ in laws) for k in FAMILIES}
+            self.assertEqual(tally,{"two_factor_parity":20,
+                                    "two_factor_and":20,
+                                    "single_xor_plus_pair_and":100})
+            self.assertTrue(all(len(truth)==64 and set(truth)<={0,1}
+                                for _,truth in laws))
+
+    def test_03_exhaustive_aliases_match_frozen_exposed_cohort_counts(self):
+        for a in range(6):
+            cases=aliased_offfamily_cases(a)
+            self.assertEqual(len(cases),104)
+            self.assertEqual({f:sum(row[0]==f for row in cases) for f in FAMILIES},
+                             {"two_factor_parity":12,
+                              "two_factor_and":10,
+                              "single_xor_plus_pair_and":82})
+
+    def test_04_stronger_fixed_two_queries_reject_all_624_aliases(self):
+        totals=self.report["aggregate"]
+        self.assertEqual(totals["offfamily_laws"],840)
+        self.assertEqual(totals["five_query_unique_role_aliases"],624)
+        self.assertEqual(totals["optimized_fixed_two_query_rejections"],624)
+        self.assertEqual(totals["adaptive_two_query_rejections"],624)
+        self.assertEqual(totals["original_weak_fixed_two_query_rejections"],600)
+        self.assertEqual(totals["single_query_upper_rejections"],564)
+        self.assertEqual(totals["fixed_pairs_exhaustively_checked"],10266)
+        self.assertEqual(self.report["conclusion"],
+            "NO_UNIQUE_ADAPTIVE_BENEFIT_VS_POSTHOC_OPTIMIZED_EQUAL_BUDGET_FIXED_CONTROL")
+
+    def test_05_exact_optimized_control_has_no_hidden_role_or_outcome_inputs(self):
+        # These six pairs use ONLY the known action bit and a supplied
+        # enumerated off-family grammar; they do NOT consult the inferred j.
+        expected=((22,62),(21,61),(19,59),(19,55),(11,47),(11,31))
+        for a,row in enumerate(self.report["per_action_bit"]):
+            self.assertEqual(row["action_bit"],a)
+            self.assertEqual(tuple(row["optimized_fixed_pair"]),expected[a])
+            self.assertEqual(row["unused_public_masks"],59)
+            self.assertEqual(row["fixed_mask_pairs_exhaustively_checked"],1711)
+            self.assertEqual(row["optimized_fixed_rejections"],104)
+            self.assertEqual(row["old_fixed_rejections"],100)
+            self.assertEqual(row["adaptive_pair_rejections"],104)
+            self.assertEqual(row["single_query_upper_rejections"],94)
+            self.assertTrue(set(row["optimized_fixed_pair"]).isdisjoint(probe_masks(a)))
+            self.assertTrue(set(row["optimized_fixed_pair"])<set(range(64)))
+
+    def test_06_source_only_no_owner_checkpoint_or_source_first_use(self):
+        src=Path(__file__).with_name("strong_fixed_control_audit.py").read_text()
+        self.assertNotIn("import yggdrasil",src)
+        self.assertNotIn("from yggdrasil",src)
+        self.assertNotIn("subprocess",src)
+        self.assertNotIn("requests",src)
+        self.assertTrue(self.report["original_frozen_protocol_unmodified"])
+        self.assertFalse(self.report["owner_or_learner_touched"])
+        self.assertFalse(self.report["worlds_or_training_executed"])
+        self.assertEqual(self.report["status"],
+                         "RETROSPECTIVE_SOURCEFREE_NOT_PREREGISTERED_NOT_SCIENTIFIC")
+
+    def test_07_repeated_independent_enumeration_is_deterministic(self):
+        # Repeat just one role to catch accidental data/scoring drift,
+        # not re-run all original protected or claimed scientific worlds.
+        again=audit_action_bit(0)
+        self.assertEqual(self.report["per_action_bit"][0],again)
+
+if __name__=="__main__":
+    unittest.main()
