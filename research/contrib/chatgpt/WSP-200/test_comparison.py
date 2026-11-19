@@ -45,6 +45,15 @@ class FullSourceFreeComparison(unittest.TestCase):
         self.assertGreater(result["paired_comparison"]["cost_ratio"],0)
         print("WSP208_FABRICATED_COMPARISON=" + json.dumps(
             result["paired_comparison"], sort_keys=True))
+        print("WSP208_FABRICATED_ABSOLUTE=" + json.dumps({
+            "candidate_b0_mse": result["arms"]["contradiction_r4"]["b0_mse_after_b3"],
+            "rank4_b0_mse": result["arms"]["full_refit_r4"]["b0_mse_after_b3"],
+            "candidate_held_rmse": result["arms"]["contradiction_r4"]["dev_group_weighted_rmse"],
+            "rank4_held_rmse": result["arms"]["full_refit_r4"]["dev_group_weighted_rmse"],
+            "zero_readout_rmse": result["readout_only"]["dev_group_weighted_rmse"],
+            "candidate_b0_drift_mse": result["arms"]["contradiction_r4"]["b0_prediction_drift_mse"],
+            "rank4_b0_drift_mse": result["arms"]["full_refit_r4"]["b0_prediction_drift_mse"]
+        }, sort_keys=True))
 
     def test_reserved_outcomes_not_read_even_with_poison(self):
         manifest, labels = fixture()
