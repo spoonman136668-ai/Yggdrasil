@@ -1,0 +1,105 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "LR-92AL",
+  "contributor": "spoonman136668-ai",
+  "contribution_class": "disjoint-replication",
+  "question": "Can first-order-posterior preservation avoid lag1 forgetting while a posterior-evidence-gated lag2 specialist improves unfamiliar lag2 prediction under matched interventions?",
+  "hypothesis": "Route to the two-step expert only if its training-only posterior mass reaches 0.55. Otherwise retain the independent first-order posterior. This should reduce incorrect static routing without sacrificing genuine lag2 gains.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1294,
+      "head": "df51f37c2ce819b5cf3f313c3ca91274df2fa20b",
+      "classification": "DEVELOPMENT_NO_GO"
+    },
+    {
+      "pr": 1297,
+      "head": "c9c8abb260855b85cf3a4ca9a660e12f1cf66dc5",
+      "classification": "EXPLORATORY_DIAGNOSTIC",
+      "ledger_sha256": "404c35a82958afcb95f52c9ed2ce2b4ab97459774c195b2b2367a5417f1a861b"
+    }
+  ],
+  "scope": "Independent from-scratch 80-state synthetic causal family substrate. This is NOT executable-source-continuous replication of LR-92AJ, native Yggdrasil model training, or evidence of higher-level general intelligence.",
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92al-protected-causal-memory/"
+  ],
+  "inputs": [
+    {
+      "name": "fresh procedural worlds",
+      "sha256": "deterministic generation code hash committed in later source commit, no external dataset",
+      "source": "original simulator authored for this prereg; synthetic only"
+    },
+    {
+      "name": "frozen predecessor confusion ledger",
+      "sha256": "404c35a82958afcb95f52c9ed2ce2b4ab97459774c195b2b2367a5417f1a861b",
+      "source": "parent PR1297, used for mechanism hypothesis only; never reused as evaluation labels"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      929205101,
+      929205102,
+      929205103
+    ],
+    "worlds_per_seed": {
+      "static": 27,
+      "lag1": 27,
+      "lag2": 26
+    },
+    "worlds_total": 240,
+    "ordering": "Per seed deterministic randomized order within 80 worlds; no checkpoint or tuning across seeds",
+    "data_budget": "112 context0 fit outcomes, 64 context1 selected interventions, 256 independent context1 validation labels and 256 cold context0 validation labels per world; Gaussian-free binary XOR observations with flip p=0.35 and matched counterfactual noise tapes per action/time",
+    "compute_budget": "Single isolated CPU primary on 240 worlds plus one read-only independent audit; no repeated scored seeds, no paid APIs; stop at one primary result. Target <300s wall time and <8GB memory.",
+    "capacity": "Binary inputs q(context),a(action),prev1,prev2; 16 base tables and two possible lag1 masks, two lag2 masks; 16*(1+2+2)=80 fixed latent states. Static/lag1/lag2 family priors .65/.175/.175. Frozen first-order expert uses same 16 tables and 2 lag1 masks with prior .65/.35. No per-world handoff of hidden truth, oracle or adjustable capacity.",
+    "policy": "Protected EIG = P(lag2|FIT)>=.55 => conditional lag2 posterior predictive; otherwise identical-tape first-order posterior. Original gate = strongest family P>=.55 => conditional family predictive; otherwise first-order posterior. Ungated mix and sham on candidate exact tape; balanced intervention policy; own-action first-order EIG; fully fit RF32 on same candidate training labels (not compute matched).",
+    "evaluator": "Bitwise heldout accuracy on 256 q1 + 256 cold q0 independent outcomes; fixed 0.5 tie => predict 1, paired per-world differences, 95% paired seed-stratified world bootstrap 5000 replicates seed 929205901 descriptive only.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Original strongest-family .55 gate on exact candidate action tape",
+    "Frozen first-order Bayesian learner reusing exact candidate data (inference-only control)",
+    "First-order EIG with its own action choices (policy baseline)",
+    "Unconditional 80-state posterior on exact candidate tape",
+    "Candidate with previous actions corrupted during inference (negative control)",
+    "Balanced action selection with identical 64 observation budget",
+    "Fully fitted 32-tree random forest trained on the same 176 within-world observations; no preserved Bayesian prior, resource asymmetry noted"
+  ],
+  "metrics": [
+    "Lag1 q1 heldout protected accuracy vs same-tape first-order accuracy",
+    "Lag2 q1 heldout protected accuracy vs same-tape first-order accuracy",
+    "Static q1 protected accuracy vs same-tape first-order",
+    "Cold q0 post-context1 heldout protected accuracy vs same-tape first-order",
+    "Lag2 vs shuffled-history sham",
+    "Family MAP confusion and false-static routing",
+    "Per-seed paired gains, paired descriptive bootstrap CI",
+    "RF32 holdout accuracy and measured per-world wall time"
+  ],
+  "classification_rules": {
+    "supported": "Development-supported only if lag1 q1 protected accuracy >= same-tape first-order minus 0.0075; lag2 q1 protected accuracy >= same-tape first-order plus 0.030; static q1 accuracy >= first-order minus 0.015; cold q0 retained accuracy >= first-order minus 0.015; all budgets/leakage/integrity checks PASS. This never equals scientific acceptance.",
+    "mixed": "If integrity passes and one of the two primary lag1/lag2 criteria misses by <=0.005 absolute while the other primary criterion passes, report MIXED; do not call supported.",
+    "negative": "Integrity passes but not supported or mixed: DEVELOPMENT_NO_GO. Preserve all negatives.",
+    "invalid": "Source/protocol mismatch, evaluation seed used during development, heldout leakage, unequal intended action budgets, missing required comparator, incomplete result, or byte-integrity failure makes run INVALID, not negative."
+  },
+  "secondary_diagnostics": "Original gate, balanced, sham, RF32, bootstrap uncertainty, family MAP and all three seed directions are reported regardless of outcome; none is tuned or silently dropped.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "seed/split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "additional primary scored cohorts",
+    "evaluation-label leakage",
+    "unverified promotion"
+  ],
+  "authority": {
+    "research_only": true,
+    "native_training": false,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_scientific_first_use": false,
+    "merge": false
+  },
+  "preregistration_note": "This file is committed first; primary never evaluated before source and fixture tests are committed and GitHub-readback verified. Using .txt extension leaves the native G29 code atlas unchanged; this is an isolated external contributor preregistration."
+}
