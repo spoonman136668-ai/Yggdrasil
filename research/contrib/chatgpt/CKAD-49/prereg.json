@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.ckad49.prereg.v1",
+  "experiment_id": "CKAD49",
+  "parent_sha": "5949204f743f113891efe18d0ba81c690151acce",
+  "hypothesis": "Can a tokenless causal learner infer exception-state membership and a new action-composition operator from genuine interventions, not choose CKAD48's four named partitions, and beat an unrestricted fully trained conditional control in genuinely changed nonlinear mechanics?",
+  "worlds": {
+    "state_domain": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "action_domain": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "world0": {
+      "operator": "modular addition mod4",
+      "exception": "state zero vs others",
+      "reward": "final state in {0,3}"
+    },
+    "world1": {
+      "operator": "bitwise XOR",
+      "exception": "state three vs others",
+      "reward": "final state in {1,2}"
+    },
+    "mapping": "Two distinct bijections of actions 0-3 onto four operator deltas, one per hidden state class; class1 map is rotated from class0 and is hidden from all learners.",
+    "noise": "Transition .9 intended next state, .1/3 each alternative; terminal reward .9 for true-bit else .1.",
+    "episodes_per_world": 256,
+    "known_old_actions": [
+      0,
+      79
+    ],
+    "new_effects_actions_2_3": [
+      80,
+      191
+    ],
+    "cold_old_actions": [
+      192,
+      255
+    ],
+    "public_source": "s0,a1,s1,a2,s2,y; two actually witnessed transitions and final reward. All arms train identical rows exactly once; no oracle hidden mapping or sampled counterfactual."
+  },
+  "candidate": {
+    "mechanism": "Build finite state-group feature hypotheses from observed conditional delta distributions instead of using CKAD48's four named partitions. Search canonical all 7 two-group partitions plus a pooled baseline, with both XOR and modular-add operators (16 structural hypotheses). Dirichlet(.25) action-by-group effect counts and Beta(1,1) state-reward counts. Every actual witnessed transition updates prequential Bayesian structural evidence and learned counts. Use full posterior averaging until best hypothesis posterior >=0.80, then hard-select the learned relation for both composed interventions. Preserve all structural hypotheses, old evidence and raw source IDs without reset.",
+    "limit": "The correct structure IS in this newly extended finite search family, although it was absent from CKAD48's restricted state partitions/XOR-only bank. This is not arbitrary new feature invention or unrestricted physical law discovery."
+  },
+  "strong_controls": {
+    "exact_full": "Independent fully source-trained Bayesian model averaging over all 16 structure hypotheses with same prior and reward Beta; two-step prediction shares the same hypothesis, not separate latent assignments. No private true structure.",
+    "tabular": "Independently trained 16 state/action 4-way transition Dirichlet(.25) plus reward-state Beta; unrestricted physical action-state conditionals.",
+    "ckad48_restricted": "Independent source-trained original four named partitions invariant/lowbit/highbit/parity with XOR only and exact BMA.",
+    "sham": "Uniform terminal reward 0.5; not a strong baseline."
+  },
+  "data_and_science": {
+    "dev": [
+      49111,
+      49112
+    ],
+    "pilot_held": [
+      49211,
+      49212
+    ],
+    "primary_held": [
+      49311,
+      49312,
+      49313
+    ],
+    "excluded_consumed": [
+      48111,
+      48112,
+      47111,
+      47112,
+      46111,
+      46112,
+      45111,
+      45112,
+      44111,
+      44112
+    ],
+    "source_episodes_per_seed": 512,
+    "actual_observed_consequences_per_seed": 1536,
+    "examiner_query_times": [
+      80,
+      96,
+      112,
+      128,
+      144,
+      160,
+      176,
+      192,
+      208,
+      224,
+      240
+    ],
+    "query": "For each time before its actual source event, read-only exhaustive 4 initial states x4 first actions x4 second actions=64 queries. Scoring uses evaluator-private exact expected Bernoulli Brier, which NEVER trains candidate or controls. Scored phases early novel 80/96, late novel 144/160/176, cold return 192/208/224/240, pooled final 7."
+  },
+  "frozen_go": {
+    "both_dev_seeds_required": true,
+    "pooled_expected_Brier_max": 0.19,
+    "gain_over_fully_trained_tabular_min": 0.01,
+    "gain_over_CKAD48_restricted_min": 0.025,
+    "max_gap_over_full_exact_BMA": 0.004,
+    "max_early_novel_worsening_over_exact_BMA": 0.015,
+    "max_cold_return_worsening_over_exact_BMA": 0.008,
+    "true_exception_operator_recovered_by_last_probe": true,
+    "all_4_actions_witnessed": true,
+    "original_source_and_cold_exact": true,
+    "linux_windows_source_and_score_sha_parity": true,
+    "decision": "Any failed threshold: DEV_NO_GO or SOURCE_INVALID. Passing all development thresholds: DEV_FEASIBLE_NOT_SCIENTIFIC, never SCIENTIFIC_PASS. No tuning or replay on consumed original seeds; no automatic held first-use."
+  },
+  "fixture_controls": "New state singleton exceptions and mod4 action operators are distinguishable from the old restricted CKAD48 invariance. A separate arbitrary lookup state-action map outside the new finite structure must favor fully fitted tabular; verify duplicate/conflict atomicity and cold restore and read purity using only engineering fixture seed zero.",
+  "cost_and_authority": "Measured whole-process CPU/wall and checkpoint bytes, source actions/outcomes matched but compute not matched. Research-only folder/workflow and stacked draft PR. No accepted binary Yggdrasil API changes, owner training, first-use, merge, controller, scheduler, paid API or deployment. No full final regression unless candidate scientific qualification and owner accepted."
+}
