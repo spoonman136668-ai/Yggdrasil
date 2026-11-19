@@ -11,6 +11,8 @@ import importlib.util
 import itertools
 import json
 import math
+from decimal import Context, Decimal, ROUND_HALF_EVEN
+from functools import lru_cache
 import sys
 import time
 from pathlib import Path
@@ -78,18 +80,27 @@ def bit_index(context,first,next_state=None,second=None):
     return context | (first<<1) | (next_state<<2) | (second<<3)
 
 
-def _canonical_learning_float(value):
-    """Portable 12-significant-digit *checkpoint* representation only.
+# CKAD42-EXACT: pin the source evidence log constants to identical binary64
+# values across libc implementations (not a modification of model priors).
+_SOURCE_LOGS={
+    2:(float.fromhex("-0x1.4cd6b97964179p-3"),
+       float.fromhex("-0x1.e5a9a7c3ac418p+0")),
+    4:(float.fromhex("-0x1.af8e8210a415cp-4"),
+       float.fromhex("-0x1.26bb1bbb55515p+1")),
+}
+_PORTABLE_DECIMAL_CONTEXT=Context(prec=42,rounding=ROUND_HALF_EVEN)
 
-    Training and prediction retain their exact pre-existing in-memory floats.
-    This removes nonsemantic sub-ULP/libm drift from serialized snapshots;
-    no quantization happens when learning or reading a forecast.
+
+@lru_cache(maxsize=65536)
+def _portable_exp(value):
+    """Deterministic exp rounded ONCE to binary64; no checkpoint rounding.
+
+    Decimal.from_float reads the exact binary64 input. Decimal exp uses its
+    correctly rounded decimal context independently of platform libm.
     """
     if type(value) is not float or not math.isfinite(value):
-        raise ValueError("CKAD42_NONFINITE_CHECKPOINT_LEARNING_WEIGHT")
-    if value == 0.0:
-        return 0.0
-    return float(format(value, ".12g"))
+        raise ValueError("CKAD42_NONFINITE_EXP_INPUT")
+    return float(_PORTABLE_DECIMAL_CONTEXT.exp(Decimal.from_float(value)))
 
 
 class LearnedCausalBasis:
@@ -113,7 +124,7 @@ class LearnedCausalBasis:
         positive=0.0
         total=0.0
         for mask,score in zip(self.patterns,scores):
-            weight=math.exp(score-m)
+            weight=_portable_exp(score-m)
             total+=weight
             if (mask>>index)&1:
                 positive+=weight
@@ -127,8 +138,7 @@ class LearnedCausalBasis:
             raise ValueError("CKAD42_SOURCE_CAPACITY")
         # These probabilities are pre-frozen generic noise priors; they do not
         # access private generator parameters, hidden family or oracle regime.
-        correct=math.log(.85 if self.bits==2 else .9)
-        wrong=math.log(.15 if self.bits==2 else .1)
+        correct,wrong=_SOURCE_LOGS[self.bits]
         for i,mask in enumerate(self.patterns):
             ll=correct if ((mask>>index)&1)==result else wrong
             self.full[i]+=ll
@@ -136,10 +146,8 @@ class LearnedCausalBasis:
         self.n+=1
 
     def checkpoint(self):
-        return {"bits":self.bits,
-                "full":[_canonical_learning_float(v) for v in self.full],
-                "short":[_canonical_learning_float(v) for v in self.short],
-                "n":self.n}
+        return {"bits":self.bits,"full":self.full.copy(),
+                "short":self.short.copy(),"n":self.n}
 
     @classmethod
     def restore(cls,data):
@@ -224,7 +232,7 @@ class NativeInterventionRelations:
             q=self.terminal.predict(index_y,mode)
             losses.append(((p-next_state)**2+(q-reward)**2)/2)
         for i,loss in enumerate(losses):
-            self.hedge[i]*=math.exp(-ETA*loss)
+            self.hedge[i]*=_portable_exp(-ETA*loss)
         normalizer=max(self.hedge)
         self.hedge=[w/normalizer for w in self.hedge]
         self.transition.observe(index_t,next_state)
@@ -240,8 +248,7 @@ class NativeInterventionRelations:
                  "terminal":self.terminal.checkpoint(),
                  "mask_transition":self.mask_transition.checkpoint(),
                  "mask_terminal":self.mask_terminal.checkpoint(),
-                 "hedge":[_canonical_learning_float(v) for v in self.hedge],
-                 "n":self.n,
+                 "hedge":self.hedge,"n":self.n,
                  "receipts":self.receipts})
 
     @classmethod
