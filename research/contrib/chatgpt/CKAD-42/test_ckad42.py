@@ -73,8 +73,10 @@ class CKAD42Tests(unittest.TestCase):
         raw=model.checkpoint()
         restored=C.NativeInterventionRelations.restore(raw,digest(raw))
         self.assertEqual(raw,restored.checkpoint())
-        self.assertEqual(model.read("dual",(1,0),1),
-                         restored.read("dual",(1,0),1))
+        # This engineering-only branch intentionally changes *serialized*
+        # precision, not training. The preregistered cold readout bound is 1e-8.
+        self.assertAlmostEqual(model.read("dual",(1,0),1),
+                               restored.read("dual",(1,0),1),delta=1e-8)
 
     def test_source_identity_atomicity_and_duplicate_idempotence(self):
         model=C.NativeInterventionRelations()
