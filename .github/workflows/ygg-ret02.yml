@@ -38,7 +38,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git diff --exit-code 651fb51d4b2d03b0a639af92978ee8903f367e2c HEAD -- research/contrib/chatgpt/YGG-RET02/prereg.json
-          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_screen.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
           mkdir -p "$RUNNER_TEMP/RET02"
           python -B research/contrib/chatgpt/YGG-RET02/screen.py --output "$RUNNER_TEMP/RET02/result.json"
           test -z "$(git status --porcelain)"
@@ -84,13 +84,13 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git diff --exit-code 651fb51d4b2d03b0a639af92978ee8903f367e2c HEAD -- research/contrib/chatgpt/YGG-RET02/prereg.json
-          cmp "$RUNNER_TEMP/ret02-linux/result.json" "$RUNNER_TEMP/ret02-windows/result.json"
+          python -B research/contrib/chatgpt/YGG-RET02/parity.py "$RUNNER_TEMP/ret02-linux/result.json" "$RUNNER_TEMP/ret02-windows/result.json" --output research/contrib/chatgpt/YGG-RET02/parity.json
           python -B research/contrib/chatgpt/YGG-RET02/screen.py --output "$RUNNER_TEMP/ret02-local.json"
-          cmp "$RUNNER_TEMP/ret02-local.json" "$RUNNER_TEMP/ret02-linux/result.json"
-          cp "$RUNNER_TEMP/ret02-local.json" research/contrib/chatgpt/YGG-RET02/result.json
+          python -B research/contrib/chatgpt/YGG-RET02/parity.py "$RUNNER_TEMP/ret02-linux/result.json" "$RUNNER_TEMP/ret02-local.json"
+          cp "$RUNNER_TEMP/ret02-linux/result.json" research/contrib/chatgpt/YGG-RET02/result.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/contrib/chatgpt/YGG-RET02/result.json
+          git add research/contrib/chatgpt/YGG-RET02/result.json research/contrib/chatgpt/YGG-RET02/parity.json
           git commit -m 'research(ret02): seal retrospective original readout screen'
           EVIDENCE="$(git rev-parse HEAD)"
           python -B scripts/build_code_atlas.py --write --source-commit "$EVIDENCE"
@@ -137,7 +137,7 @@ jobs:
           for n in 31 32 33 33R 34 35 36 37; do
             python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
           done
-          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_screen.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
           python -B -m unittest discover -s tests -p test_code_atlas.py -v
           test -z "$(git status --porcelain)"
