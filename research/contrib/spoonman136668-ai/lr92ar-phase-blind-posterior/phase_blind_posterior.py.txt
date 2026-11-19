@@ -1,0 +1,132 @@
+"""LR-92AR: public-evidence posterior over native-style causal count banks.
+
+Isolated engineering candidate, NOT installed/accepted Yggdrasil. No phase,
+hidden switch-time, evaluator readout or future outcome enters this learner.
+Original LR-92AP/LR-92AQ world labels are forbidden in development testing.
+Native tokenless, two public-action history bits (with sentinel), 16 slots.
+
+The first 48 public observations per slot populate the immutable early bank.
+A bounded recency bank adapts to subsequently witnessed contradictions.
+One Q8 posterior per slot estimates which archived bank forecasts current
+outcomes better; posterior switches are driven by observed predictive
+likelihoods, never by known phase timing. The two banks themselves are updated
+on the actual shared public stream; this is NOT a two-state generative HMM.
+"""
+from __future__ import annotations
+import hashlib
+
+
+class PhaseBlindEvidencePosterior:
+    PATTERNS=((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1))
+    MAGIC=b"LRA1"
+    EARLY_LIMIT=48
+    RECENT_WINDOW=32
+    SWITCH_HAZARD=1.0/64.0
+    LEARNED_AND_HISTORY_BYTES=928
+    CHECKPOINT_BYTES=964
+
+    def __init__(self):
+        self._early=bytearray(448)
+        self._recent=bytearray(448)
+        self._history=bytearray(16)  # encoded two prior public actions
+        self._posterior=bytearray([128]*16)  # archived hypothesis Q8
+
+    @staticmethod
+    def _slot(address,retained):
+        if type(retained) is not bool or type(address) is not int:
+            raise ValueError("LRA_ADDRESS_INVALID")
+        if not 0<=address<(9 if retained else 7):
+            raise ValueError("LRA_ADDRESS_INVALID")
+        return address+(7 if retained else 0)
+
+    @staticmethod
+    def _bit(value):
+        if type(value) is not int or value not in (0,1):
+            raise ValueError("LRA_BIT_INVALID")
+        return value
+
+    def _pos(self,slot,action):
+        code=self._history[slot]
+        if code>=7:
+            raise ValueError("LRA_INVALID_HISTORY")
+        return slot*28+code*4+action*2
+
+    @staticmethod
+    def _p(bank,pos):
+        no,yes=bank[pos],bank[pos+1]
+        return (yes+1.0)/(no+yes+2.0)
+
+    def _weights(self,slot):
+        q=self._posterior[slot]/255.0
+        h=self.SWITCH_HAZARD
+        return q*(1.0-h)+(1.0-q)*h
+
+    def predict(self,address,action,*,retained=False):
+        slot=self._slot(address,retained)
+        act=self._bit(action)
+        pos=self._pos(slot,act)
+        q=self._weights(slot)
+        return q*self._p(self._early,pos)+(1.0-q)*self._p(self._recent,pos)
+
+    def diagnostic_early(self,address,action,*,retained=False):
+        """Standalone archive readout; NEVER an autonomous phase-aware policy."""
+        slot=self._slot(address,retained)
+        pos=self._pos(slot,self._bit(action))
+        return self._p(self._early,pos)
+
+    def observe_step(self,address,action,public_outcome,*,retained=False):
+        # Reject all malformed external inputs before a state change.
+        slot=self._slot(address,retained)
+        act=self._bit(action)
+        y=self._bit(public_outcome)
+        pos=self._pos(slot,act)
+
+        # Both emission probabilities come from PRE-OBSERVATION public counts.
+        p_early=self._p(self._early,pos)
+        p_recent=self._p(self._recent,pos)
+        e_early=p_early if y else 1.0-p_early
+        e_recent=p_recent if y else 1.0-p_recent
+        q=self._weights(slot)
+        denom=q*e_early+(1.0-q)*e_recent
+        if not denom>0.0:
+            raise ValueError("LRA_INVALID_LIKELIHOOD")
+        post=q*e_early/denom
+
+        base=slot*28
+        if sum(self._early[base:base+28])<self.EARLY_LIMIT:
+            self._early[pos+y]=min(255,self._early[pos+y]+1)
+
+        # Explicit fixed recency capacity per action/history bin. No clock cue.
+        if self._recent[pos]+self._recent[pos+1]>=self.RECENT_WINDOW:
+            self._recent[pos]=(self._recent[pos]+1)//2
+            self._recent[pos+1]=(self._recent[pos+1]+1)//2
+        self._recent[pos+y]=min(255,self._recent[pos+y]+1)
+
+        old=self.PATTERNS[self._history[slot]]
+        self._history[slot]=self.PATTERNS.index((act,old[0]))
+        self._posterior[slot]=max(0,min(255,round(255.0*post)))
+
+    def end_episode(self):
+        # Public episode boundary changes two-action context, not learned state.
+        self._history[:]=bytes(16)
+
+    def snapshot(self):
+        body=(self.MAGIC+bytes(self._early)+bytes(self._recent)+
+              bytes(self._history)+bytes(self._posterior))
+        assert len(body)==self.CHECKPOINT_BYTES-32
+        return body+hashlib.sha256(body).digest()
+
+    @classmethod
+    def restore(cls,blob):
+        if (type(blob) is not bytes or len(blob)!=cls.CHECKPOINT_BYTES or
+            blob[:4]!=cls.MAGIC or
+            hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError("LRA_CHECKPOINT_REJECTED")
+        if any(x>6 for x in blob[900:916]):
+            raise ValueError("LRA_INVALID_HISTORY")
+        obj=cls()
+        obj._early[:]=blob[4:452]
+        obj._recent[:]=blob[452:900]
+        obj._history[:]=blob[900:916]
+        obj._posterior[:]=blob[916:932]
+        return obj
