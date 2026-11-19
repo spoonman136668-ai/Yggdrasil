@@ -1,0 +1,77 @@
+{
+  "schema": "yggdrasil.ret02.context-addressed-retrospective.prereg.v1",
+  "experiment": "YGG-RET02",
+  "type": "retrospective already-consumed development screen, not source first-use, scientific qualification or new native training",
+  "parent": {
+    "branch": "research/ygg-ret01-evidence-readout-20261118",
+    "sha": "f3b906c03730f7f3efb64683d77e00ba631dd409",
+    "pr": 1285,
+    "ret01": "DEVELOPMENT_NO_GO"
+  },
+  "question": "Can a causally prequential public-context-addressed gate recover archive readout when it is useful, rather than sharing one unstable global posterior across all contexts?",
+  "artifact_inputs": [
+    {
+      "path": "research/contrib/chatgpt/YGG-RET01/seed-14071-trace.json",
+      "git_blob": "6950dbecb1db8f3a5d3450d2678e604e0c0a8062"
+    },
+    {
+      "path": "research/contrib/chatgpt/YGG-RET01/seed-14072-trace.json",
+      "git_blob": "2aa21a5a3565c608f3ddd117c158f51b3861d494"
+    },
+    {
+      "path": "research/contrib/chatgpt/YGG-RET01/seed-14071-old-probe.json",
+      "source": "RET01 already-consumed historical diagnostic"
+    },
+    {
+      "path": "research/contrib/chatgpt/YGG-RET01/seed-14072-old-probe.json",
+      "source": "RET01 already-consumed historical diagnostic"
+    }
+  ],
+  "setup": "One fixed selector; do not alter the original learner, frozen source, seal, checkpoint, memory, or original result. Reuse already-produced prequential forecasts and revealed outcomes.",
+  "algorithm": {
+    "key": "(public_views[0],row.x1); public observable prior to first intervention consequence",
+    "prior": 0.125,
+    "posterior_clamp": [
+      0.03125,
+      0.96875
+    ],
+    "likelihood": "joint Bernoulli likelihood for observed s2 and y from existing archived/live source predictions; exactly RET01 _advance math",
+    "chronology": "score archive/live mixture with key's posterior before each event, then apply that event's witnessed s2,y and update only that key; unknown key uses prior. New trace is scored chronologically; after all new events, old diagnostic trace is scored then updated in its historical order. No phase/world/seed labels may enter gate.",
+    "negative": "RET01 mispaired gate from source, global gate, naive 50-50 mixture, live, archive, chance and fully fitted Beta controls already in trace",
+    "oracle": "Separate unattainable per-event hindsight optimum convex blend is *only* an upper-bound diagnostic; never inputs to gate, controls, training, thresholds or parameter selection."
+  },
+  "scoring": {
+    "new_metric": "mean two-bit Brier on late_B + late_return_A, 16 events/seed",
+    "old_metric": "32 previously consumed historical readouts per seed; diagnostic only",
+    "thresholds": {
+      "new_vs_global": 0.005,
+      "new_vs_strongest_beta": 0.005,
+      "new_vs_mispaired": 0.005,
+      "old_vs_live": 0.01,
+      "old_max_over_archive": 0.03
+    },
+    "rule": "PASS development screen only if all thresholds met on both replicas and exact deterministic/custody tests PASS. A failed threshold is DEVELOPMENT_NO_GO. No second model choice or tuning using these same traces."
+  },
+  "controls": {
+    "source_pinning": true,
+    "no_future_outcomes_in_current_weight": true,
+    "no_hidden_phase": true,
+    "no_altered_native_weights": true,
+    "replay_equivalence": true,
+    "dirty_worktree_fail": true,
+    "linux_windows_parity": true,
+    "full_candidate_regression_required": true
+  },
+  "authority": {
+    "scope": "isolated GitHub research branch and draft only",
+    "first_use": false,
+    "merge": false,
+    "accepted_main": false,
+    "forge_controller": false,
+    "local_runners": false,
+    "new_scheduled_tasks": false,
+    "paid_apis": false,
+    "scientific_pass": false,
+    "deployment": "NONE"
+  }
+}
