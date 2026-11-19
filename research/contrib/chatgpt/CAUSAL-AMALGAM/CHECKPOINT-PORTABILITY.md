@@ -33,3 +33,14 @@ replay manifests. To recheck the receipt with these manifests:
 PYTHONPATH=. python -B research/contrib/chatgpt/CAUSAL-AMALGAM/checkpoint_replay_parity.py \
   compare LINUX_JSON WINDOWS_JSON EXACT_CANDIDATE_SHA
 ```
+
+## Linux replay cost
+
+Linux can collect portability summaries directly from the same restored states
+that pass scientific-receipt verification. The separate Windows replay and
+the final cross-platform comparison remain independent. The matched Linux
+benchmark preserved the complete canonical digest of all ten model records.
+Verification took 171.23 seconds with reuse versus 307.40 seconds with a
+separate replay (44.3% lower, 1.80x faster for this component). Both used
+the same checkpoint bytes, source protocols and recorded witnesses.
+See evidence-reuse-measurement.json for wall and CPU measurements.

@@ -99,6 +99,16 @@ jobs:
         done
         python -B scripts/build_code_atlas.py --check-if-present
         test -z "$(git status --porcelain)"
+    - name: Verify that the sealed protocols and traces are unchanged
+      shell: bash
+      run: |
+        set -euo pipefail
+        AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+        git diff --exit-code 52a429cc40106b05857dcdf38338c5873c592c35 HEAD -- \
+          "$AMALGAM/selection_protocol_dev.json" "$AMALGAM/growth-result.json" \
+          "$AMALGAM/staged_retention_protocol.json" "$AMALGAM/staged-retention-dev-01" \
+          "$AMALGAM/causal_templates_protocol.json" "$AMALGAM/causal-templates-dev-01" \
+          "$AMALGAM/open_set_protocol.json" "$AMALGAM/open-set-dev-01"
     - name: Verify sealed research receipts on the Linux producer platform
       if: runner.os == 'Linux'
       shell: bash
@@ -110,19 +120,16 @@ jobs:
         cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
-        python -B "$AMALGAM/staged_retention_audit.py" "$PARENTS" \
-          "$AMALGAM/staged_retention_protocol.json" "$AMALGAM/staged-retention-dev-01"
-        python -B "$AMALGAM/causal_templates_audit.py" "$PARENTS" \
-          "$AMALGAM/causal_templates_protocol.json" "$AMALGAM/causal-templates-dev-01"
-        python -B "$AMALGAM/open_set_audit.py" "$PARENTS" \
-          "$AMALGAM/open_set_protocol.json" "$AMALGAM/open-set-dev-01"
+        python -B "$AMALGAM/verify_linux_evidence.py" "$PARENTS" "$EXPECTED_CANDIDATE" \
+          "$RUNNER_TEMP/amalgam-portable-replay.json"
         git diff --exit-code af5c8162a6ee9d3b092b8a77409e31ea58312a6c HEAD -- \
           "$AMALGAM/outcome_probe.py" "$AMALGAM/outcome_probe_trial.py" \
           "$AMALGAM/outcome_probe_protocol.json"
         python -B "$AMALGAM/outcome_probe_audit.py" "$PARENTS" \
           "$AMALGAM/outcome_probe_protocol.json" "$AMALGAM/outcome-probe-dev-01"
         test -z "$(git status --porcelain)"
-    - name: Cold-replay every sealed descendant on this platform
+    - name: Cold-replay every sealed descendant on Windows
+      if: runner.os == 'Windows'
       shell: bash
       run: |
         set -euo pipefail
@@ -132,11 +139,6 @@ jobs:
         cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
-        git diff --exit-code 52a429cc40106b05857dcdf38338c5873c592c35 HEAD -- \
-          "$AMALGAM/selection_protocol_dev.json" "$AMALGAM/growth-result.json" \
-          "$AMALGAM/staged_retention_protocol.json" "$AMALGAM/staged-retention-dev-01" \
-          "$AMALGAM/causal_templates_protocol.json" "$AMALGAM/causal-templates-dev-01" \
-          "$AMALGAM/open_set_protocol.json" "$AMALGAM/open-set-dev-01"
         python -B "$AMALGAM/checkpoint_replay_parity.py" replay "$PARENTS" "$EXPECTED_CANDIDATE" \
           > "$RUNNER_TEMP/amalgam-portable-replay.json"
         test -z "$(git status --porcelain)"

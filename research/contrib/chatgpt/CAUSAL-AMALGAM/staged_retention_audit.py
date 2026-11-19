@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 CONTROLS = ("pinned", "fit_full", "fit_trailing", "fit_change_point")
 
 
-def check(checkpoints, override, result_directory):
+def check(checkpoints, override, result_directory, *, capture=None):
     started = monotonic()
     plan_raw = override.read_bytes()
     plan = json.loads(plan_raw)
@@ -87,6 +87,8 @@ def check(checkpoints, override, result_directory):
         new_steps = [b.steps-a.steps for a,b in zip(anchor._heads,trained._heads,strict=True)]
         if new_steps != [3*len(trail)] * 4 or new_steps != case["head_steps"]:
             raise ValueError("Specialist continuation counts failed cold replay")
+        if capture is not None:
+            capture(case["seed"], trained, case["trace_sha256"])
         validated.append(dict(seed=case["seed"], joint_sha256=case["full_joint_sha256"],
                               witnesses=len(cold), gradient_steps=new_steps))
     if ("DEV_GO" if all(primary_checks) else "DEV_NO_GO") != result["development"]:

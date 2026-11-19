@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 SCALE = 1_000_000
 
 
-def audit(checkpoints, plan_path, evidence):
+def audit(checkpoints, plan_path, evidence, *, capture=None):
     wall = monotonic()
     raw_plan = plan_path.read_bytes()
     plan = json.loads(raw_plan)
@@ -75,6 +75,8 @@ def audit(checkpoints, plan_path, evidence):
                           *(r["row"][key] for key in ("x1","s2","x2","y"))) for r in events)
         if replay != prefix+recorded or [b.steps-a.steps for a,b in zip(base._heads,restored._heads,strict=True)] != [3*len(events)]*4:
             raise ValueError("Cold state fails append-only witness or head continuation")
+        if capture is not None:
+            capture(seed, restored, replica["checkpoints"]["trace_sha256"])
         checks.append(dict(seed=seed,final_sha256=pin,count=len(replay)))
     if result["development"] != ("DEV_GO" if all(accepted) else "DEV_NO_GO"):
         raise ValueError("Final disposition mismatch")

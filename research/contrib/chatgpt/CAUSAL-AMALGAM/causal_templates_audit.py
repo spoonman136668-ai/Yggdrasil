@@ -16,7 +16,7 @@ HERE = Path(__file__).resolve().parent
 SCALE = 1_000_000
 
 
-def replay(checkpoints, manifest_path, outputs):
+def replay(checkpoints, manifest_path, outputs, *, capture=None):
     wall = monotonic()
     protocol = json.loads((HERE/"selection_protocol_dev.json").read_bytes())
     manifest_bytes = manifest_path.read_bytes()
@@ -75,6 +75,8 @@ def replay(checkpoints, manifest_path, outputs):
                         *(e["row"][k] for k in ("x1","s2","x2","y"))) for e in events)
         if witnessed != old+suffix or replica["head_steps"] != [3*len(events)]*4:
             raise ValueError("Model history or specialist continuation mismatch")
+        if capture is not None:
+            capture(seed, cold, replica["checkpoints"]["trace_sha256"])
         verified.append(dict(seed=seed,retained=len(old),total_witnesses=len(witnessed),joint_sha256=pin))
     return dict(models=verified, exact_cold=True, new_source_actions=0, wall_seconds=monotonic()-wall)
 
