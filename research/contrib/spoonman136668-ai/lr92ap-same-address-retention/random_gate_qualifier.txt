@@ -1,0 +1,60 @@
+LR-92AP RANDOM-GATE MATCHED-MEMORY NEGATIVE CONTROL — PREPRIMARY
+=================================================================
+2026-11-19. External isolated DEV, NOT native Yggdrasil training.
+Parent original YPT4 public candidate Git blob:
+e2fca6e277efbf0bd3b77ba7e472e4b5432d205f
+SHA256: 817e1baa6612b7906a926ad5497c383c6fd4455078b2052d0d3c2241ae1488e2
+Locally reconstructed source hash EXACT MATCH (5076 bytes).
+
+New random_gate_control.py.txt Git blob:
+47691b96e570d7b14afb8f66ec329f9b89e8ae20
+SHA256: 2e7a5e8e330e8cf1972fa89b8a994f135bfbcb17e8dc11f5b61d4e3f53cdbefa
+1381 bytes.
+New test_random_gate_control.py.txt Git blob:
+6aaccc1050d5ac6cdf673a19c92a0dc3629d765b
+SHA256: 13da26e9df0cb137cbfd4b00b382d80343a4be3885337d841a4679199e492008
+3995 bytes.
+Exact independent Git readbacks match git hash-object on local executed bytes.
+
+Mechanism: unchanged PublicDualTimescaleCells learner/update/snapshot with
+fixed source-locked SHA256 pseudo-random predict-time protected-vs-recent bank
+selection, after the same 4-observation early fallback as YPT4.
+No extra learned state; 928 learned/history bytes and 964-byte YPT4
+checkpoint. No hidden phase, label, clock, additional RNG seed/state, or
+future data. The deterministic digest is not a statistical-independence
+guarantee; this is a fixed ablation, NOT a trained Bayesian comparator.
+
+Reproduce:
+  cp public_dual_timescale_cells.py.txt public_dual_timescale_cells.py
+  cp random_gate_control.py.txt random_gate_control.py
+  cp test_random_gate_control.py.txt test_random_gate_control.py
+  python -m unittest -v test_random_gate_control.py
+  python -c "from test_random_gate_control import evaluate; print(evaluate(73004303)); print(evaluate(73004304))"
+
+Python 3.11 isolated local sandbox focused 5/5 PASS (0.007s).
+Checks: exact learned checkpoint parity under 700 identical public updates
+across 16 addresses, 928/964-byte limits, no extra instance state,
+predict non-mutation, cold restore equality, invalid-input atomicity,
+bank-choice restriction, and two pre-existing fixture seeds only.
+No protected 288-world primary or new seeds consumed.
+
+Development fixture Brier (lower better):
+seed        phase                   original YPT4     random gate
+73004303    B all 64                0.33007208        0.45966077
+73004303    A-return first 16       0.31049842        0.25757546
+73004304    B all 64                0.31717225        0.50412629
+73004304    A-return first 16       0.31865174        0.22361871
+
+Interpretation: random gate improved early A-return Brier on both fixtures
+but caused severe B-phase regressions versus the original candidate.
+This is a useful negative control, NOT a winner, NOT primary science.
+Strong Bayesian/HMM, RF32 and history-permutation sham completeness and
+14-bin variable-switch protocol remain outstanding. The existing frozen
+64/64/64 protocol has a schedule/phase-identifiability caveat.
+
+ENGINEERING: isolated focused PASS; exact-final-source CI and mandatory full
+native regression UNVERIFIED.
+SCIENCE: protected primary NOT RUN, scientific benefit UNVERIFIED, no
+first-use or native cumulative state changed.
+DEPLOYMENT: HOLD. Existing PR #1323 remains draft/unmerged. No owner,
+runner, controller, queue, scheduler, paid model, or main mutation.
