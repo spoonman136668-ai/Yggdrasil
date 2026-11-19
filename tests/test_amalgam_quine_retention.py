@@ -58,6 +58,32 @@ class FakeSystem:
         return FakeSystem(self.events + (candidate,), self.changes)
 
 
+class FakeSelector:
+    """Source-free mock of a selectable policy, NOT a scientific predictor."""
+
+    def __init__(self, system, evidence=None, *, minimum_gain=Fraction(1, 100)):
+        self.system = system
+        self.window = 16
+        self.minimum_count = 4
+        self.minimum_gain = minimum_gain
+        self.enable_reward = False
+        self._evidence = {} if evidence is None else dict(evidence)
+
+    def forecast(self, views, first, *terminal):
+        key = (views[0][0], first, *terminal)
+        if key in self._evidence:
+            # Changes policy routing without changing the native predictor.
+            return Fraction(9, 10)
+        return self.system.native.experience_context_forecast(views[0], first, *terminal)
+
+    def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256):
+        updated = self.system.observe_experience(
+            identifier, views, row, source_sha256=source_sha256,
+            packet_sha256=packet_sha256)
+        return self if updated is self.system else FakeSelector(
+            updated, self._evidence, minimum_gain=self.minimum_gain)
+
+
 class QuineRetentionTests(unittest.TestCase):
     def setUp(self):
         self.anchor = FakeSystem(evidence())
@@ -161,6 +187,65 @@ class QuineRetentionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exactly one"):
             QUINE.assess_update(self.anchor, self.current, two,
                                 self.manifest, self.pin)
+
+    def test_selector_only_old_world_regression_vetoes_unchanged_native(self):
+        anchor = FakeSelector(self.anchor)
+        manifest = QUINE.select_quines(anchor, self.windows)
+        pin = digest(canonical(manifest))
+        native_candidate = self.proposal()
+        changed = {(0, 0): ((Fraction(1, 2), Fraction(0)),)}
+        candidate = FakeSelector(native_candidate, changed)
+        chosen, report = QUINE.assess_update(
+            anchor, anchor, candidate, manifest, pin)
+        self.assertIs(chosen, anchor)
+        self.assertEqual(report["status"], "VETO_SHARED_STATE_OVERWRITE")
+        self.assertGreater(report["largest_single_quine_delta"], .02)
+        self.assertEqual(self.anchor.forecast((0, 0), 0),
+                         candidate.system.forecast((0, 0), 0))
+
+    def test_selector_mode_bypass_and_config_drift_fail_closed(self):
+        anchor = FakeSelector(self.anchor)
+        manifest = QUINE.select_quines(anchor, self.windows)
+        pin = digest(canonical(manifest))
+        raw = self.proposal()
+        with self.assertRaisesRegex(ValueError, "bypass"):
+            QUINE.assess_update(anchor, anchor, raw, manifest, pin)
+        with self.assertRaisesRegex(ValueError, "bypass"):
+            QUINE.assess_update(self.anchor, anchor, FakeSelector(raw),
+                                self.manifest, self.pin)
+        with self.assertRaisesRegex(ValueError, "configuration changed"):
+            QUINE.assess_update(
+                anchor, anchor,
+                FakeSelector(raw, minimum_gain=Fraction(1, 20)),
+                manifest, pin)
+
+    def test_selector_replay_custody_detects_routing_divergence(self):
+        evidence = {(0, 0): ((Fraction(1, 2), Fraction(0)),)}
+        original = FakeSelector(self.anchor, evidence)
+        restored = FakeSelector(FakeSystem(evidence_all := self.anchor.events),
+                                evidence.copy())
+        report = QUINE.verify_selector_replay(original, restored)
+        self.assertEqual(report["readout_witnesses"], len(evidence_all))
+        self.assertEqual(report["source_actions"], 0)
+        with self.assertRaisesRegex(ValueError, "custody differs"):
+            QUINE.verify_selector_replay(original, FakeSelector(self.anchor))
+        with self.assertRaisesRegex(ValueError, "requires active selectors"):
+            QUINE.verify_selector_replay(self.anchor, FakeSystem(self.anchor.events))
+
+    def test_selector_guarded_observe_stays_single_shared_state(self):
+        anchor = FakeSelector(self.anchor)
+        manifest = QUINE.select_quines(anchor, self.windows)
+        pin = digest(canonical(manifest))
+        identifier, views, first, state, second, reward = self.next_event
+        row = {"s1": views[0][0], "x1": first, "s2": state,
+               "x2": second, "y": reward}
+        packet = digest(canonical([identifier, views, row]))
+        selected, result = QUINE.guarded_observe(
+            anchor, anchor, manifest, pin, identifier, views, row,
+            source_sha256="pinned-fixture", packet_sha256=packet)
+        self.assertEqual(result["status"], "ADMIT_RESEARCH_CANDIDATE")
+        self.assertEqual(len(selected.system.events), 25)
+        self.assertEqual(len(anchor.system.events), 24)
 
     def test_atomic_guarded_observe_and_idempotent_replay(self):
         identifier, views, first, state, second, reward = self.next_event

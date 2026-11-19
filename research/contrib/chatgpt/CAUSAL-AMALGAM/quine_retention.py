@@ -8,7 +8,7 @@ from fractions import Fraction
 
 from yggdrasil.native_context_basis import canonical, digest
 
-SCHEMA = "yggdrasil.amalgam.quine-retention.v1"
+SCHEMA = "yggdrasil.amalgam.quine-retention.v2"
 SCALE = 1_000_000
 TOLERANCE = Fraction(1, 50)
 
@@ -21,8 +21,76 @@ def _ledger(value):
     return _system(value).native._episode_reader()._ledger
 
 
+def _selector(value):
+    return hasattr(value, "system")
+
+
+def _selector_receipt(value):
+    """Canonical active-selector custody; a native checkpoint alone omits routing."""
+    if (not callable(getattr(value, "forecast", None))
+            or type(getattr(value, "window", None)) is not int
+            or type(getattr(value, "minimum_count", None)) is not int
+            or not isinstance(getattr(value, "minimum_gain", None), Fraction)
+            or type(getattr(value, "enable_reward", None)) is not bool
+            or type(getattr(value, "_evidence", None)) is not dict):
+        raise ValueError("Quine selector custody unavailable")
+    if (not 1 <= value.minimum_count <= value.window
+            or not 0 < value.minimum_gain <= 1):
+        raise ValueError("Quine selector configuration invalid")
+    records = []
+    for key, history in sorted(value._evidence.items()):
+        if (type(key) is not tuple or len(key) not in (2, 4)
+                or any(type(x) is not int or x not in (0, 1) for x in key)
+                or type(history) is not tuple or len(history) > value.window):
+            raise ValueError("Quine selector evidence shape invalid")
+        encoded = []
+        for pair in history:
+            if (type(pair) is not tuple or len(pair) != 2
+                    or any(not isinstance(x, Fraction) for x in pair)):
+                raise ValueError("Quine selector evidence value invalid")
+            encoded.append([str(pair[0]), str(pair[1])])
+        records.append([list(key), encoded])
+    return {
+        "config": [value.window, value.minimum_count,
+                   str(value.minimum_gain), value.enable_reward],
+        "evidence": records,
+    }
+
+
 def _checkpoint(value):
-    return _system(value).checkpoint()
+    joint = _system(value).checkpoint()
+    if not _selector(value):
+        return joint
+    return canonical({"schema": "yggdrasil.amalgam.active-policy-custody.v1",
+                      "joint_sha256": digest(joint),
+                      "selector": _selector_receipt(value)})
+
+
+def _require_policy_modes(*values):
+    modes = tuple(_selector(value) for value in values)
+    if len(set(modes)) != 1:
+        raise ValueError("Quine active-policy/native bypass mismatch")
+    if modes[0]:
+        configurations = [_selector_receipt(value)["config"] for value in values]
+        if any(config != configurations[0] for config in configurations[1:]):
+            raise ValueError("Quine active-selector configuration changed")
+
+
+def verify_selector_replay(expected, restored):
+    """Read-only comparison; caller must perform actual authenticated cold restore."""
+    _require_policy_modes(expected, restored)
+    if not _selector(expected):
+        raise ValueError("Quine selector replay requires active selectors")
+    if _ledger(expected) != _ledger(restored):
+        raise ValueError("Quine restored witness ledger differs")
+    if _checkpoint(expected) != _checkpoint(restored):
+        raise ValueError("Quine restored active-policy custody differs")
+    for event in _ledger(expected):
+        if _loss(expected, event) != _loss(restored, event):
+            raise ValueError("Quine restored functional readout differs")
+    return {"policy_sha256": digest(_checkpoint(restored)),
+            "readout_witnesses": len(_ledger(restored)),
+            "source_actions": 0, "scientific_pass": False}
 
 
 def _loss(value, event):
@@ -30,9 +98,14 @@ def _loss(value, event):
     _, views, first, state, second, reward = event
     if type(state) is not int or state not in (0, 1) or type(reward) is not int or reward not in (0, 1):
         raise ValueError("Quine witness has nonbinary labels")
-    forecast = _system(value).native.experience_context_forecast
-    transition = forecast(views[0], first)
-    terminal = forecast(views[0], first, state, second)
+    if _selector(value):
+        forecast = value.forecast
+        transition = forecast(views, first)
+        terminal = forecast(views, first, state, second)
+    else:
+        forecast = value.native.experience_context_forecast
+        transition = forecast(views[0], first)
+        terminal = forecast(views[0], first, state, second)
     if not (0 <= transition <= 1 and 0 <= terminal <= 1):
         raise ValueError("Quine prediction outside unit interval")
     return ((round(SCALE * transition) - SCALE * state) ** 2,
@@ -48,6 +121,7 @@ def select_quines(anchor, regime_windows, *, count=8):
     A binary terminal reward is a signed proxy (+1/-1), NOT a measured cost.
     """
     events = _ledger(anchor)
+    _checkpoint(anchor)  # Fail closed when active selector custody cannot be sealed.
     if type(regime_windows) is not dict or not regime_windows:
         raise ValueError("Explicit qualified regime windows required")
     if type(count) is not int or not 5 <= count <= 10:
@@ -106,6 +180,7 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
         raise ValueError("Frozen Quine drift gate is exactly 1/50")
     if digest(canonical(quines)) != quine_sha256 or quines.get("schema") != SCHEMA:
         raise ValueError("Quine manifest pin mismatch")
+    _require_policy_modes(anchor, current, proposed)
     old, prior, after = _ledger(anchor), _ledger(current), _ledger(proposed)
     if (quines.get("anchor_checkpoint_sha256") != digest(_checkpoint(anchor))
             or quines.get("anchor_ledger_sha256") != digest(canonical(old))
@@ -194,6 +269,7 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
 def guarded_observe(anchor, current, quines, quine_sha256, identifier, views, row, *,
                     source_sha256, packet_sha256, max_brier_drift=TOLERANCE):
     """Wrap the existing single shared-witness transaction, no second learner."""
+    _require_policy_modes(anchor, current)
     before = digest(_checkpoint(current))
     anchor_before = digest(_checkpoint(anchor))
     proposed = current.observe_experience(

@@ -27,3 +27,27 @@
 - **Not now:** context-specialist speciation, nullspace projection, action-ID-free role binding (P3, PR #1327), and SCDR/H1 variable minting (CKAD41–49, PR #1320). Read-only diagnosis can proceed independently, but do not promote these before basic functional retention.
 
 **Status (2026-11-19):** Engineering PASS at pinned candidate `d0f1b0a382f16ee119c464a434f79f18e2603cc9`; experimental checkpoint artifact integrity PASS; owner cold restore UNVERIFIED; real mastered Quines UNVERIFIED; functional retention/transfer scientific gain UNVERIFIED; accepted deployment NONE.
+
+
+## Source-interface correction (2026-11-19; engineering candidate only)
+
+The P0 guard now checks **the effective selected policy** when all three
+inputs are the same active-selector type. For a native-only path it retains
+its original native forecasting behavior. Mixed native/selector inputs fail
+closed: a caller cannot pass an active policy in one position and raw native
+weights in another to bypass the policy-level veto.
+
+The selector checkpoint receipt separately binds the complete joint-state
+digest, frozen selector configuration, and all matched prequential routing
+evidence. A candidate cannot silently change that configuration during one
+witness update. The read-only \`verify_selector_replay(expected, restored)\`
+checks the complete active-policy custody and old historical functional
+forecasts after the existing native + JEPA cold-restore/selector-replay route.
+It does **not** itself instantiate a fresh operating-system process, authenticate
+an owner runner, or qualify the archived P0 as accepted science.
+
+Synthetic negative controls cover selector-only degradation with unchanged
+native probabilities, selector/native bypass, config drift, routing-state
+cold-replay divergence, and single shared-witness admission. Exact changed-
+candidate dual-platform full regression is still required; no real mastered
+regime, owner cold restore, or protected new source use is claimed.
