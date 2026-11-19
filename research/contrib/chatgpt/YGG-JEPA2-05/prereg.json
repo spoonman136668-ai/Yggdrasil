@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.jepa2-05.rehearsal-first-use-fence.prereg.v1",
+  "id": "YGG-JEPA2-05",
+  "parent": {
+    "pr": 1292,
+    "sha": "84bb01dc6b8cfe0a729db30f8637265aa38fd97e",
+    "pr_status": "draft/unmerged",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Can source-addressed old-witness rehearsal during continued native multi-horizon JEPA training improve unfamiliar causal A/B/A prediction and cold old-readout retention over equal-update new-only training and fully fitted conventional baselines?",
+  "hypothesis": "Experience-addressed latent replay prevents drift of learned causal future representations by interleaving one original observed window with each newly witnessed three-event future window, preserving previously acquired weights instead of restarting the native model.",
+  "initial_sources": [
+    {
+      "old_seed": 14071,
+      "existing_native_episodes": 1006,
+      "blob": "e2912ca930ad99ed23bfee4ce18d1e3945f6780a",
+      "native_model_sha256": "c9bd78d4636d9b71e5bca42a3cf52afcfb9a58267d83c3e7727deceab667e690"
+    },
+    {
+      "old_seed": 14072,
+      "existing_native_episodes": 981,
+      "blob": "3f076a393a15911769c0a40d37ccafc06dfaf2b7",
+      "native_model_sha256": "724cc155863d2ac88265ddb3006a90702049ed54a53e52881939f063c002a31b"
+    }
+  ],
+  "new_sources": {
+    "mode": "synthetic source-bound development ONLY",
+    "fresh_seeds": [
+      99231,
+      99247
+    ],
+    "two_distinct_causal_families": true,
+    "events_per_seed": 16,
+    "worlds_per_seed": 1,
+    "exogenous_intervention_actions_preannounced": true,
+    "phases": "A 0-5 / B 6-10 / A-return 11-15; phase labels evaluator only",
+    "first_use_science": false,
+    "old_ledger_never_retrained_native": true
+  },
+  "design": {
+    "model": "one existing NativeFutureStateLearner checkpoint per replica; preserve native + four existing independently trained temporal heads + two future-state heads; same native witness update once per intervention; train existing two future heads on 14 newly completed 3-step windows",
+    "forecast": "scores prequentially at first observed state with actions for current and next two interventions preannounced; conditional native reward marginalized over unseen s2; no future outcome available to predictor",
+    "memory": "immutable original witnessed source ledger; future windows reconstructed only from previously observed source and JEPA2-04 legacy old-window contract; retrieve nearest prior 3-step window by public pre-intervention observation, announced actions and earlier witnessed history; no labels from hidden phases or evaluation",
+    "rehearsal": "one new-head gradient training call on each newly completed observed future, plus one old-witness training call retrieved by fixed public-feature distance; original native and four old heads observe new event exactly once",
+    "matched_new": "clone of original future-head parameters; on each completed new window, train twice on same new observed target, equal JEPA gradient steps",
+    "plain_new": "clone original future-head parameters; train once per completed new window",
+    "mispaired": "clone original future-head parameters; train on new outcome once plus same public retrieved old window but target from a different fixed historical window",
+    "frozen": "byte-preserved initially trained future heads, no gradient updates",
+    "controls": "fully fitted same-public-information DirectLogistic and Beta full/window24/window48/discount95, baseline native marginal forecast, fixed chance; all controls score prior to outcome and only update after full three-step future is witnessed",
+    "audit": "old prior 32 authenticated consumed historical 3-step windows measured as read-only recall diagnostics; never treated as held science. No parent source weights reset. Check full native prefix, 16 new unique witnesses, four original heads continue learning, two candidate heads update 28 windows each (new+replay), cold checkpoint exact, source SHA pins, duplicate/forged tamper rejection, two OS independent parity"
+  },
+  "cohorts": {
+    "new_horizon_starts": 14,
+    "primary_late_starts": "6..13 inclusive; exactly 8 per seed",
+    "old_historical_readonly": 32
+  },
+  "frozen_success": {
+    "benefit": "on each of both development seeds, rehearsal pooled-late 6-bit Brier <= matched-new - 0.005 AND <= best independently fitted conventional Beta/DirectLogistic - 0.005 AND <= mispaired - 0.01",
+    "retention": "old read-only 32-window rehearsal Brier <= initially inherited head Brier + 0.03, and <= equal-compute matched-new Brier - 0.005",
+    "custody": "source prefix exact, original model old weights preserved before intervention, clone/frozen initial exact, no fresh labels leaked, full 14 new windows trained, 16 native new episodes and 4 prior heads trained, original cold checkpoint exact; deterministic independent Linux/Windows metrics agree to 1e-8 absolute",
+    "stop": "one fixed paired development pass on 99231/99247, never retune or replay scored seeds; any failure = DEVELOPMENT_NO_GO"
+  },
+  "bounds": {
+    "native_max_episodes": 1024,
+    "native_new_max": 16,
+    "cap_headroom_after_seed_14071": 2,
+    "cap_headroom_after_seed_14072": 27,
+    "max_cpu_seconds_per_seed": 180,
+    "original_scored_data_immutable": true,
+    "no_new_scheduled_task": true,
+    "github_hosted_only": true,
+    "paid_api": false,
+    "merge": false,
+    "promotion": false,
+    "deployment": false,
+    "owner_science_first_use": false,
+    "all_research_draft": true
+  },
+  "outcomes": {
+    "engineering": "UNVERIFIED",
+    "development": "UNVERIFIED",
+    "science_pass": false,
+    "deployment": "NONE"
+  }
+}
