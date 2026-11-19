@@ -1,0 +1,62 @@
+"""LR-92AQ design contract; these tests never access a protected cohort."""
+import hashlib
+import json
+import unittest
+from pathlib import Path
+from lr92aq_variable_switch_dev import (
+    development_manifest, development_world, DEVELOPMENT_SEEDS, FAMILIES,
+    WORLDS_PER_SEED_FAMILY, FORBIDDEN_PRIOR_PRIMARY
+)
+
+PROTO = Path(__file__).with_name('lr92aq_protocol_draft.json.txt')
+
+
+class DesignFenceTests(unittest.TestCase):
+    def setUp(self):
+        self.raw = PROTO.read_bytes()
+        self.p = json.loads(self.raw)
+
+    def test_explicitly_not_scientific_first_use(self):
+        self.assertEqual(self.p['status'], 'DEVELOPMENT_ONLY_NOT_FROZEN_FOR_PRIMARY')
+        primary=self.p['prospective_primary']
+        self.assertEqual(primary['primary_seeds'],[])
+        self.assertIsNone(primary['primary_world_count'])
+        self.assertFalse(primary['source_birth_committed'])
+        self.assertFalse(primary['official_scientific_first_use_authorized'])
+
+    def test_old_cohort_protected_and_no_cross_contamination(self):
+        self.assertEqual(self.p['parent_frozen_protocol']['experiment_id'],'LR-92AP')
+        self.assertEqual(self.p['parent_frozen_protocol']['prereg_git_blob'],
+                         '828c84f3505d6362dfa4f6c40c0a7dd83f447bc9')
+        self.assertNotIn(tuple(FORBIDDEN_PRIOR_PRIMARY),[tuple(self.p['developer_fixtures']['seeds'])])
+        self.assertEqual(self.p['developer_fixtures']['seeds'],list(DEVELOPMENT_SEEDS))
+
+    def test_generator_summary_exact_manifest(self):
+        rows=development_manifest()
+        raw=json.dumps(rows,sort_keys=True,separators=(',',':')).encode()
+        self.assertEqual(self.p['developer_fixtures']['manifest_sha256'],hashlib.sha256(raw).hexdigest())
+        self.assertEqual(len(rows),self.p['developer_fixtures']['total_worlds'])
+        self.assertEqual(sum(sum(row['lengths']) for row in rows),
+                         self.p['developer_fixtures']['unprotected_label_events'])
+
+    def test_public_interface_metadata_is_forbidden(self):
+        self.assertEqual(self.p['developer_fixtures']['public_interface'],
+                         ['index','episode_start','action','outcome_after_prediction'])
+        for forbidden in ('phase','switch_times','relation_table','potential_outcomes'):
+            self.assertIn(forbidden,self.p['developer_fixtures']['hidden_only'])
+
+    def test_controls_and_approvals_fail_closed(self):
+        for key,value in self.p['change_permissions'].items():self.assertIs(value,False)
+        for necessary in ('source_lock_required','custodian_or_owner_approval_required'):
+            self.assertIs(self.p['prospective_primary'][necessary],True)
+        self.assertGreaterEqual(len(self.p['planned_comparators']),7)
+
+    def test_development_cold_twin_not_oracle_classification(self):
+        text=self.p['developer_fixtures']['counterfactual_cold_twin']
+        self.assertIn('same public history',text)
+        endpoints=self.p['proposed_endpoints_not_locked_for_primary']
+        self.assertIn('NOT an oracle-aware',endpoints['initial_unannounced_return'])
+        self.assertIn('counterfactual',endpoints['cold_retention'])
+
+
+if __name__=='__main__':unittest.main()
