@@ -27,7 +27,9 @@ def trace():
         for mode in ("full","short"):
             p=relation.transition.predict(i_t,mode)
             q=relation.terminal.predict(i_y,mode)
-            loss=((p-next_state)**2+(q-reward)**2)/2
+            et=p-next_state
+            ey=q-reward
+            loss=(et*et+ey*ey)*.5
             factor=M._portable_exp(-M.ETA*loss)
             operands.extend((p.hex(),q.hex(),loss.hex(),factor.hex()))
         before=tuple(v.hex() for v in relation.hedge)
