@@ -1,0 +1,40 @@
+{
+  "schema": "yggdrasil.ckad17.qualified-backoff-integration.prereg.v1",
+  "experiment_id": "CKAD-17",
+  "exact_parent_sha": "95004026301863239ee50ae62e29aec2eced0471",
+  "parent_tree": "4a53b206b403a2ac0e0a675a6185c3b594bf6c8a",
+  "purpose": "Integrate the already-qualified NKR21 fixed4-strength hierarchical readout into the same trained checkpoint, explicitly opt-in. This is known-method reuse, not new learning, tuning, native novelty or scientific confirmation.",
+  "prior_outcome_known": "NKR21 original history-backoff pooled Brier147509914254743/831720950060000 =0.17735505429327192. Original NKR21 HIERARCHICAL_VALUE_NOT_ESTABLISHED criteria remain valid; do not reinterpret that failure.",
+  "initial_checkpoint": "CKAD16/seed-101-dtr-192.json exact pin1705aca1ea9fba2a6ef1ac81e642c6e180649c47b75fad0890416a55f1c0b1e6",
+  "algorithm": "From the existing history-bank counts only: p_parent=(success_child0+success_child1+1)/(total_child0+total_child1+2); q=(success_current+4*p_parent)/(total_current+4). Fixed strength4 comes from NKR21, not new data selection. Preserve legacy methods and all learned bytes.",
+  "source": "Exact already-consumed NKR20 cache e994f6adb0733c05eeae8dd19b0a4a36bb13946e1090b241023630b468276d1f; held public rows24..30,56 target forecasts. No training update, new source action, original-source import/reset/do or policy rollout.",
+  "controls": [
+    "Independent fully fitted exact hierarchical4-strength table, must tie every probability",
+    "Legacy history Beta0.18821936445989476, preserved",
+    "Existing current-state Beta0.18306255304168106"
+  ],
+  "success": "All56 new readouts match the existing qualified formula/result exactly, Brier improvement>=0.005 over legacy, every legacy deterministic/MDP/DTR readout and full checkpoint bytes unchanged, cold readout without source/solver, full final Linux/Windows regression and independent audit.",
+  "negative_controls": [
+    "invalid input types rejected even without trained history",
+    "new readout never calls observe or mutates checkpoint",
+    "untrained readout stays1/2",
+    "tampered source cache denied in evaluation custody"
+  ],
+  "budget": {
+    "whole_wall_seconds": 120,
+    "new_observations": 0,
+    "training_updates": 0,
+    "new_original_source_actions": 0,
+    "paid_apis": 0
+  },
+  "allowed_paths": [
+    "yggdrasil/native_stochastic_history.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_stochastic_history.py",
+    "tests/test_native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-17/**",
+    ".github/workflows/ckad17-qualified-backoff-integration.yml",
+    ".ice/code-atlas.*"
+  ],
+  "classification": "Engineering/readout-integration only; scientific_pass=false, accepted_native=false, deployment=NONE. Existing PR1207 only; no merge, owner/controller/scheduler change or source-first-use."
+}

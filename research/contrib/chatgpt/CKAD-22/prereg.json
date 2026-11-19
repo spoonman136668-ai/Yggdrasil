@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.ckad22.novel-context-candidate.prereg.v1",
+  "parent": "392f6c5d66adfff3b79d6a6a2910b6557dfccbdc",
+  "parent_tree": "5cb964eab7abea21852b6fd05bd82381c54ae089",
+  "hypothesis": "Adding an evidence-trained candidate to the retained-context tournament improves adaptation to unfamiliar causal combinations while recovering prior worlds. All observations and hypotheses remain inside the existing cumulative native learner.",
+  "parent_pins": {
+    "101": "c2471608288a2a5f638e8fd93035e9c28f0080a81d60f586ae5af19d673a9994",
+    "202": "af1662ed9abcd5a6d552e44e3529a5bc5ee35d4695ed85733c4647f7d2f62a5b",
+    "303": "4ce0787aef5f315b0d60f77704c462974057de87857d4c7af045f7792942af08"
+  },
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_seed_offset": 7000,
+  "sessions": [
+    {
+      "family": "terminal_switch",
+      "regime": 0
+    },
+    {
+      "family": "invariant",
+      "regime": 1
+    },
+    {
+      "family": "terminal_switch",
+      "regime": 0
+    },
+    {
+      "family": "invariant",
+      "regime": 0
+    }
+  ],
+  "algorithm": "Keep CKAD21 retained native window hypotheses and exact conditional mixture. At public begin_context(novel=True), allocate total prior7/8 uniformly to frozen consecutive32-witness block hypotheses (final partial if>=8) and1/8 to an empty candidate using identical PublicCausalCells and paired-view/structure-selection rules. For each actual probe receipt compute each prequential joint S2,Y likelihood, normalize context weights, then train only the new candidate with that actual receipt. Global native episode statistics and append-only ledger continue as before. Old candidate weights/banks are not refitted within a context. Conditional S2 weights govern terminal forecasts/plans. New candidate hypotheses use observed targets only. Legacy novel=False behavior stays exact.",
+  "permissions": "Four public sessions,32 probe episodes per acquisition arm/session,96 held episodes/session. Source episode seed parent_seed+7000. Cohorts ckad22-probe-{session}, ckad22-held-{session}, indices0..31/95. Same exogenous draw per arm. Family/regime remain evaluator-side. Active action maximizes weighted disagreement then uncertainty then0. Random probe arm fixed SHA-derived uniforms.32-probe contract differs from CKAD21's16 and all controls receive matched feedback or opportunities. No held training, original-source actor or protected first-use.",
+  "controls": [
+    "Independent exact online mixture with identical candidate structure, prior, action policy and feedback; exact probability and decision parity required.",
+    "Native context retrieval novel=False on the exact novel-active receipts.",
+    "Matched random probing with novel=True and identical budgets.",
+    "Original native pooled episode readout on the exact active receipts.",
+    "Fully trained full-history Beta and trailing64 MLE from all original320 plus active probe rows.",
+    "Frozen qualified CKAD21 planner as descriptive zero-adaptation baseline."
+  ],
+  "metrics": "Executed held terminal reward, matched-action transition and terminal Brier, live novel weights/model selection, old evidence retention, full/cold continuation, probe/action count, runtime/CPU/checkpoint resources. Confident-error claims require explicit calibration, not inferred from Brier.",
+  "success": {
+    "engineering": "All factual receipt/source checks, legacy v1/v2 byte roundtrip, append-only full320 parent prefix, exact independent online-mixture parity, deterministic Linux/Windows, final full root/NKR05 regression and independent raw/G29 audits. Keep failed thresholds.",
+    "development": "On unfamiliar sessions0&1 averaged across seeds, novel native reward >= retrieval_only+0.05 and >= trailing64MLE. Returning newly learned session2 reward>=0.80. Returning prior-world session3 reward>=0.80 and >=retrieval_only-0.05. All must pass for DEVELOPMENT_GO. Same-method exact mixture tie gives no scientific superiority; scientific_pass=false."
+  },
+  "budgets": {
+    "sessions": 4,
+    "probe_episodes_per_session_per_acquisition_arm": 32,
+    "held_episodes_per_session": 96,
+    "max_wall_seconds": 900,
+    "max_ledger_episodes": 1024,
+    "original_source_actions": 0,
+    "protected_first_use": 0,
+    "held_updates": 0,
+    "paid_apis": 0
+  },
+  "allowed_paths": [
+    "yggdrasil/native_episode_experience.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-22/**",
+    ".github/workflows/ckad22-novel-context.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Existing draftPR1207 only. No merge, accepted-state promotion, deployment, owner/controller/scheduler mutations or competing consumers. Earlier CKAD20/21 negatives preserved. Synthetic development permissions only."
+}
