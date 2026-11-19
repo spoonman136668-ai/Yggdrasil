@@ -219,3 +219,41 @@ the learner can never capture previous-action history. Fitted controls,
 fixed-feature representation, and model/observation context confounds
 remain possible. Under the current sole-coordinator boundary, no
 canonical Yggdrasil integration or model-owner action is authorized.
+
+
+## RD04 — prospectively frozen recent-history router trial
+
+The complete RD04 *synthetic-only* research method, the new source
+identities, windows, thresholds, negative controls and costs were
+fixed **before implementation** in
+`RD04-FROZEN-ROUTER-EXPERIMENT.md`, commit
+`53109f580867c6be95690357fb869e4754143cf3`.
+
+`PredictiveStateSplit(reward_mode="direct",routing_mode="recent32")`
+is a strictly opt-in existing-class mechanism: choose one of four existing
+source-derived history features using only the previous 32 prequential
+log-likelihood gains (fixed gate 2.5, minimum 16 witnessed examples).
+All earlier XOR, direct cumulative, and old v1/v2 checkpoint bytes,
+original preregistration and trained native state remain unchanged. The
+new recent32 schema has its own exact replay and rejects cross-mode
+reinterpretation.
+
+`rd04_engineering.py` generates only the two frozen, deterministic,
+source-free identities, 256 actual public interventions each. It
+measures original old A -> hidden B with independently hashed public
+actions/sensor and two distinct actual-history dependencies -> old A
+again, compared with old direct, XOR, recent32 sham and six existing
+independently fitted conventional baselines. Each prequential score
+precedes its label admission. A separate A anchor and post-B/return
+read-only old-knowledge probe tests retention. The report includes
+SHA256-verified source, qualified cold checkpoint states, every
+frozen pass/fail clause and machine-readable numerical outcomes.
+It also emits measured wall-clock engineering-run cost.
+
+`RD04_ENGINEERING_NO_GO` is the required outcome if any frozen
+margin/retention/sham/history-activation criterion fails. An invalid
+source-identifiability setup is `RD04_ENGINEERING_INVALID`, not an
+excuse to replace the source or re-register new seeds. This is not
+original-world first-use, scientifically accepted learning, or canonical
+Yggdrasil model integration. The sole Amalgam coordinator controls
+any future qualified native adoption.
