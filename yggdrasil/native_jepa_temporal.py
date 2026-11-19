@@ -16,14 +16,14 @@ from yggdrasil.native_jepa2_multilearner import (
     NativeMultiLearner, ActionLatentSpecialist, STEPS as OLD_STEPS,
     _bit, _views,
 )
-from yggdrasil.native_episode_experience import NativeEpisodeExperience
+from yggdrasil.native_episode_experience import NativeEpisodeExperience, MAX_EPISODES as NATIVE_MAX_EPISODES
 
 SCHEMA = "yggdrasil.ckad.native-temporal-multilearner.v1"
 HISTORY, HIDDEN, LATENT = 8, 8, 2
 LR, STEPS, CLIP = 0.06, 3, 5.0
 BASE_BLEND, TEMPORAL_BLEND = 0.90, 0.10
 MAX_BYTES = 1048576
-MAX_EPISODES = 1000
+MAX_EPISODES = NATIVE_MAX_EPISODES
 
 
 def _sigmoid(x):
