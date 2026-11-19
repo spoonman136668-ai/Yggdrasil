@@ -1,0 +1,148 @@
+"""LR-92AR one-shot, disjoint, preregistered DEVELOPMENT comparison.
+
+No native training, primary first-use or PR promotion. Public labels arrive
+only after each learner forecasts. Latent dwell times are evaluator-only.
+Full result rows and negative outcomes must be preserved unaltered.
+"""
+import csv
+import hashlib
+import json
+import time
+from pathlib import Path
+from causal_hypothesis_retriever import CausalHypothesisRetriever, FixedHalfBlend
+from lr92ar_disjoint_dev import SEEDS, FAMILIES, INSTANCES, world, manifest
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from two_regime_hmm_control import TwoRegimeHMM
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+from matched_tabular_controls import FullHistory14, FixedWindow14
+
+ARMS={
+    'CHR_candidate': (CausalHypothesisRetriever,928),
+    'CHR_fixed_half': (FixedHalfBlend,928),
+    'HMM_MAP_928': (TwoRegimeHMM,928),
+    'BOCPD_896': (BoundedRunLengthBOCPD14,896),
+    'Full14_480': (FullHistory14,480),
+    'Window32_832': (FixedWindow14,832),
+    'YPT4_negative': (PublicDualTimescaleCells,928),
+}
+CONVENTIONAL=('HMM_MAP_928','BOCPD_896','Full14_480','Window32_832')
+EXPECTED_SOURCE_SHA={
+    'causal_hypothesis_retriever.py':'2755988f1f18b0297e899cb08df7987554fff2be',
+    'lr92ar_disjoint_dev.py':'ecc7e1f5bfa6b099b96149ed49abd6b495755b7e',
+    'frozen_disjoint_dev_plan.json':'c670759040f4dee7d2c97ae991881ab90c5890b8',
+    'two_regime_hmm_control.py':'41f3adcb8c12d540f3042ae03a6a9dbdd4d6e6f0',
+    'bounded_runlength_bocpd.py':'96bb94e608d2062fb4cc488ed010f150b8325787',
+    'matched_tabular_controls.py':'7a223f6b097eb6e461853685195ba4b89af2f2b6',
+    'public_dual_timescale_cells.py':'e2fca6e277efbf0bd3b77ba7e472e4b5432d205f',
+}
+
+def local_git_blob_hash(path):
+    data=Path(path).read_bytes()
+    return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+
+def verify_exact_sources():
+    return {name:local_git_blob_hash(Path(__file__).with_name(name)) for name in EXPECTED_SOURCE_SHA}
+
+def score_one(w,cls,state_bytes):
+    model=cls();tick=time.perf_counter()
+    assert len(model.snapshot())==state_bytes+36
+    p=[];pre_return=None;first_archived=None;arch_loss=None
+    cutoff=sum(w.dwell[:2]);b_start=w.dwell[0]
+    for obs in w.public:
+        if obs.reset:model.end_episode()
+        if obs.index==cutoff:pre_return=model.snapshot()
+        before=model.snapshot() if obs.index in (0,b_start,cutoff,len(w.public)-1) else None
+        pred=model.predict(0,obs.action)
+        if not 0<=pred<=1:raise AssertionError('NONFINITE_FORECAST')
+        if before is not None:
+            assert before==model.snapshot(), 'PREDICT_MUTATED_LEARNER'
+        if obs.index==cutoff:
+            assert pred==cls.restore(pre_return).predict(0,obs.action)
+            if hasattr(model,'predict_archived'):
+                first_archived=model.predict_archived(0,obs.action)
+            elif hasattr(model,'predict_protected'):
+                first_archived=model.predict_protected(0,obs.action)
+            if first_archived is not None:
+                arch_loss=(first_archived-obs.outcome)**2
+        p.append((pred-obs.outcome)**2)
+        model.observe_step(0,obs.action,obs.outcome)
+    final=model.snapshot()
+    assert cls.restore(final).snapshot()==final
+    a,b,c=w.dwell
+    mean=lambda s:sum(s)/len(s)
+    return {'A':mean(p[:a]),'B':mean(p[a:a+b]),
+            'A_return_early16':mean(p[a+b:a+b+16]),
+            'A_return_first':p[a+b],
+            'A_return_late':mean(p[a+b+16:]),
+            'A_return_all':mean(p[a+b:]),
+            'all':mean(p),
+            'cold_archived_first_posthoc':arch_loss,
+            'final_snapshot_sha256':hashlib.sha256(final).hexdigest(),
+            'pre_return_snapshot_sha256':hashlib.sha256(pre_return).hexdigest(),
+            'learned_bytes':state_bytes,'checkpoint_bytes':len(final),
+            'updates':len(w.public),'elapsed_seconds':time.perf_counter()-tick}
+
+def summarize(rows):
+    metrics=('A','B','A_return_early16','A_return_first','A_return_late','A_return_all','all')
+    def avg(vals):return sum(vals)/len(vals)
+    def segment(model,matching):return {k:avg([r['models'][model][k] for r in matching]) for k in metrics}
+    summary={name:{'macro':segment(name,rows),'by_seed':{str(seed):segment(name,[r for r in rows if r['seed']==seed]) for seed in SEEDS},
+                   'by_family':{fam:segment(name,[r for r in rows if r['family']==fam]) for fam in FAMILIES},
+                   'seconds':sum(r['models'][name]['elapsed_seconds'] for r in rows),
+                   'learned_bytes':budget}
+             for name,(_,budget) in ARMS.items()}
+    winner={}
+    for seed in SEEDS:
+        key=str(seed)
+        best_return=min(summary[x]['by_seed'][key]['A_return_early16'] for x in CONVENTIONAL)
+        best_B=min(summary[x]['by_seed'][key]['B'] for x in CONVENTIONAL)
+        ours=summary['CHR_candidate']['by_seed'][key]
+        winner[key]={'candidate_return_advantage_vs_best_conventional':best_return-ours['A_return_early16'],
+                     'candidate_B_regression_vs_best_conventional':ours['B']-best_B,
+                     'best_conventional_return':best_return,'best_conventional_B':best_B}
+    ours=summary['CHR_candidate']['macro']
+    fixed=summary['CHR_fixed_half']['macro']
+    gate_return_benefit=fixed['A_return_early16']-ours['A_return_early16']
+    gate_B_regression=ours['B']-fixed['B']
+    gain=all(v['candidate_return_advantage_vs_best_conventional']>=.01 and
+             v['candidate_B_regression_vs_best_conventional']<=.01 for v in winner.values())
+    gate=gate_return_benefit>=.005 and gate_B_regression<=.01
+    return {'models':summary,'decision':{
+        'seedwise':winner,'evidence_gate_return_gain_over_fixed_half':gate_return_benefit,
+        'evidence_gate_B_regression_vs_fixed_half':gate_B_regression,
+        'go_dev':gain and gate,
+        'decision':'LR92AR_DEVELOPMENT_GO_DIAGNOSTIC_ONLY' if gain and gate else 'LR92AR_DEVELOPMENT_NO_GO',
+        'scientific_pass_claimable':False,'native_training_run':False,'primary_used':False}}
+
+def run_all():
+    verified=verify_exact_sources()
+    assert verified==EXPECTED_SOURCE_SHA, ('SOURCE_DRIFT',verified)
+    plan=json.loads(Path(__file__).with_name('frozen_disjoint_dev_plan.json').read_text())
+    assert plan['development_seed_scope']==list(SEEDS) and plan['total_dev_worlds']==24
+    assert not plan['protected_primary']['used'] and not plan['protected_primary']['first_use_authorized']
+    began=time.perf_counter()
+    records=[];raw_manifest=manifest()
+    for seed in SEEDS:
+        for family in FAMILIES:
+            for index in range(INSTANCES):
+                w=world(seed,family,index)
+                m={'seed':seed,'family':family,'index':index,'dwell':list(w.dwell),
+                   'coverage':w.context_coverage,'input_sha256':w.digest(),'models':{}}
+                for name,(cls,budget) in ARMS.items():m['models'][name]=score_one(w,cls,budget)
+                records.append(m)
+    assert len(records)==24
+    assert sum(sum(r['dwell']) for r in records)==sum(sum(m['dwell']) for m in raw_manifest)
+    for r in records:
+        assert r['input_sha256']==next(x['digest'] for x in raw_manifest if x['seed']==r['seed'] and x['family']==r['family'] and x['index']==r['index'])
+        assert all(r['models'][name]['updates']==sum(r['dwell']) for name in ARMS)
+        assert r['models']['CHR_candidate']['final_snapshot_sha256']==r['models']['CHR_fixed_half']['final_snapshot_sha256']
+    return {'experiment':'LR-92AR','status':'DISJOINT_DEVELOPMENT_ONLY',
+            'manifest_sha256':hashlib.sha256(json.dumps(raw_manifest,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+            'worlds':len(records),'events_per_model':sum(sum(r['dwell']) for r in records),
+            'exact_source_git_blobs':verified,
+            'total_process_seconds':time.perf_counter()-began,
+            'summary':summarize(records),'world_rows':records}
+
+if __name__=='__main__':
+    result=run_all()
+    print(json.dumps(result,indent=2,sort_keys=True))
