@@ -55,10 +55,41 @@ class BOCPDTests(unittest.TestCase):
         m=Learner()
         m.end_episode();m.observe_step(0,1,1)
         m.end_episode()
-        self.assertAlmostEqual(m.predict(0,1),2/3)
+        self.assertAlmostEqual(m.predict(0,1),m.HAZARD*0.5+(1-m.HAZARD)*2/3)
         self.assertAlmostEqual(m.predict(0,0),1/2)
         self.assertEqual(m._posterior[1],255)
         self.assertEqual(m._posterior[0],0)
+
+    def test_independent_short_tape_partition_enumeration(self):
+        # Independent exact Beta-Bernoulli partition marginalization; the
+        # quantized posterior is expected to agree only approximately.
+        import math
+        tape=((0,1),(1,0),(0,0),(1,1),(1,1),(0,1))
+        h=Learner.HAZARD
+        model=Learner()
+        for n in range(len(tape)+1):
+            for requested in (0,1):
+                if n==0:
+                    expected=0.5
+                else:
+                    weights=[];means=[]
+                    for mask in range(1<<(n-1)):
+                        boundaries=[0]+[j for j in range(1,n) if mask & (1<<(j-1))]+[n]
+                        switches=len(boundaries)-2
+                        mass=h**switches*(1-h)**((n-1)-switches)
+                        for lo,hi in zip(boundaries[:-1],boundaries[1:]):
+                            for act in (0,1):
+                                ys=[y for a,y in tape[lo:hi] if a==act]
+                                pos=sum(ys);neg=len(ys)-pos
+                                mass*=math.exp(math.lgamma(pos+1)+math.lgamma(neg+1)-math.lgamma(len(ys)+2))
+                        recent=[y for a,y in tape[boundaries[-2]:n] if a==requested]
+                        means.append((1+sum(recent))/(2+len(recent)))
+                        weights.append(mass)
+                    expected=h*0.5+(1-h)*sum(w*v for w,v in zip(weights,means))/sum(weights)
+                model.end_episode()
+                self.assertAlmostEqual(model.predict(0,requested),expected,delta=0.015)
+            if n<len(tape):
+                a,y=tape[n];model.end_episode();model.observe_step(0,a,y)
 
     def test_posterior_support_memory_and_mutation_free_predict(self):
         m=Learner()
