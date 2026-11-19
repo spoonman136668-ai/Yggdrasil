@@ -1,8 +1,8 @@
-name: YGG CAP04 integrated prospective exact-source final regression (NO first use)
+name: YGG CAP04 clock-only baseline exact-source full regression (NO first use)
 'on':
   push:
     branches:
-      - research/ygg-cap04-prospective-integration-exact-verify-20261119
+      - research/ygg-cap04-clock-controls-exact-verify-20261119
     paths:
       - '.github/workflows/ygg-cap03-verify.yml'
 permissions:
@@ -28,7 +28,7 @@ jobs:
         run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: b648a56f0d9c90f52b78412f11542a371bbfaf86
+          ref: 7be3892b75268035e09ec1d6c4d26bffecca0331
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -41,11 +41,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = b648a56f0d9c90f52b78412f11542a371bbfaf86
-          test "$(git rev-parse HEAD^{tree})" = f55dad6d7210b46eb1f2a248d73a6789b1a28c33
+          test "$(git rev-parse HEAD)" = 7be3892b75268035e09ec1d6c4d26bffecca0331
+          test "$(git rev-parse HEAD^{tree})" = 7fedf076b0ae1ee6ac27cd9480410c30b58cd3c3
           git diff --exit-code f9c5e6d69827e76df27239c421aed01d4229d51b HEAD -- research/contrib/chatgpt/YGG-CAP03/prereg.json
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
-          test "$(git rev-parse HEAD^)" = 2e960ced80fa3b6f20719dfe39f6ee1f26d036b7
+          test "$(git rev-parse HEAD^)" = 5707a07c1bbf57ddae91613776c71b728bdeb262
           test "$(git diff-tree --no-commit-id --name-only -r HEAD | LC_ALL=C sort | tr '\n' '|')" = ".ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json|"
           git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
           test -f research/contrib/chatgpt/YGG-CAP04/prereg.json
@@ -55,8 +55,12 @@ jobs:
           test -f tests/test_native_predictive_state_source_fixture.py
           test -f research/contrib/chatgpt/YGG-CAP04/prospective_source.py
           test -f tests/test_cap04_prospective_source_contract.py
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = 28240be43e7981e1d47100a3a886d04da3c09304
-          test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = 56a883f7203afccc37a81ddcff46ae1e1da04491
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
+          test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = cd3065a30edf5c08ec92eccc9eec1776d4570da4
+          test -f research/contrib/chatgpt/YGG-CAP04/clock_controls.py
+          test -f tests/test_cap04_clock_only_controls.py
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/clock_controls.py)" = 9f23fdd3ace32695b3f753bb8b37e869641cdd48
+          test "$(git rev-parse HEAD:tests/test_cap04_clock_only_controls.py)" = 1c3bebccba505941de55a5419eb28d099a8626bc
           test -f tests/test_native_predictive_state_cumulative.py
           test ! -f research/contrib/chatgpt/YGG-CAP04/source.py
           test -f research/contrib/chatgpt/YGG-CAP03/original/linux/seed-14071-state.json
