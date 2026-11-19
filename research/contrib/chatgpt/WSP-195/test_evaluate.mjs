@@ -10,7 +10,7 @@ assert.throws(()=>evaluateWSP195("incorrect "+("z".repeat(200))),/ORIGINAL_11_CO
 assert.throws(()=>evaluateWSP195(header+"\nVDGA\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"+padding),/HD_WT_DISAGREEMENT/);
 assert.throws(()=>evaluateWSP195(header+"\n?DGV\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"+padding),/MUTANT_ALPHABET_OR_LENGTH/);
 assert.throws(()=>evaluateWSP195(header+"\nVDGV\t0\t20\t1\t1\t1\t1\t-3\t1\tNA\t1\n"+padding),/INVALID_FITNESS_VALUE/);
-assert.throws(()=>evaluateWSP195(header+"\nVDGV\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"),/SOURCE_MEASURED_HD_COHORT_MINIMUM/);
+assert.throws(()=>evaluateWSP195(header+"\nVDGV\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"+padding),/SOURCE_MEASURED_HD_COHORT_MINIMUM/);
 if(process.argv.includes("--full-fixture")) {
  const A="ACDEFGHIKLMNPQRSTVWY",W="VDGV",lines=[header];
  for(let a=0;a<20;a++)for(let b=0;b<20;b++)for(let c=0;c<20;c++)for(let d=0;d<20;d++){
