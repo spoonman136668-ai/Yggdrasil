@@ -22,6 +22,27 @@ class SourceFixtureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "BUDGET"):
             fixture.generate(n=0)
 
+    def test_actual_historical_cause_is_not_a_current_action_alias(self):
+        for name in fixture.FIXTURE_IDS:
+            events = fixture.generate(name)
+            self.assertEqual(len(fixture.ACTION_CYCLE), 16)
+            # These are engineering fixtures; 16 reachable consecutive
+            # action-pair combinations are necessary for an independent
+            # preceding-action relation, not proof the learner discovered one.
+            for start, stop in ((1, 32), (32, 72), (72, 96)):
+                pairs = {(events[i - 1]["action"], events[i]["action"])
+                         for i in range(start, stop)}
+                self.assertEqual(len(pairs), 16)
+                for current in fixture.ARMS:
+                    self.assertEqual({previous for previous, observed in pairs
+                                      if observed == current}, set(fixture.ARMS))
+            # Historical fixture schedule made previous action a deterministic
+            # function of current action: exactly four supported ordered pairs.
+            old = [fixture.ARMS[(i + int(name == fixture.FIXTURE_IDS[1])) % 4]
+                   for i in range(96)]
+            self.assertEqual(len({(old[i - 1], old[i])
+                                  for i in range(32, 72)}), 4)
+
     def test_chronology_and_two_stage_real_witness_clock(self):
         for name in fixture.FIXTURE_IDS:
             events = fixture.generate(name)
@@ -36,7 +57,8 @@ class SourceFixtureTests(unittest.TestCase):
                 if i:
                     last = events[i - 1]["post"]
                     self.assertEqual(row["views"], ((last[0], last[1]), (last[1], last[2])))
-                self.assertEqual(row["action"], fixture.ARMS[(i + (name == fixture.FIXTURE_IDS[1])) % 4])
+                self.assertEqual(row["action"], fixture.ARMS[
+                    fixture.ACTION_CYCLE[(i + int(name == fixture.FIXTURE_IDS[1])) % 16]])
                 self.assertEqual(row["post"][1], row["s2"])
                 native.forecast(row["views"], row["action"], "transition")
                 controls.forecast(row["views"], row["action"], "transition")

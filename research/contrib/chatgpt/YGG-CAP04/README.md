@@ -34,3 +34,30 @@ No prospective source generator, registered cohort scoring, native train continu
 ### Six-field historical native records and missingness
 
 The original native ledger contains six fields per witnessed episode, lacking a full public post-state triple; the newest segmented continuation stores seven fields, including an actually witnessed post. This is a source-data format distinction, **not** a 1,118-event loss of original training. Both candidate and fully fitted conventional controls now import the full 1,118/1,093-event historical chronology, with `post=None` for older observations where no post triple was witnessed. It is never fabricated from the next sensor view. Missingness is explicit in ridge features, source-only conditional keys, and cold-replay receipts. The source-exact integration test must verify both original learned checkpoints and all archived readouts are unchanged. These checks are engineering, not scientific efficacy.
+
+
+## Engineering-fixture identifiability repair (2026-11-19)
+
+**Finding:** The earlier four-action fixture used a fixed four-step cyclic
+action order. For every novel-stage observation after the first, the current
+action identified the preceding action exactly. Thus the purported
+"previous-action-dependent" transition/reward could be learned as a
+current-action-only function. The original engineering fixture did *not* test
+independent historical causal-state discovery.
+
+**Source-free correction:** The two existing **engineering-only** fixtures
+now use a fixed 16-symbol de Bruijn action cycle over the same four actions.
+For each current action, *all four possible previous actions* appear within
+each 16 observations. Both the 32-observation familiar acquisition stage,
+40-observation novel stage, and 24-observation familiar-return stage cover
+all 16 ordered prior/current action pairs. The action schedule is fixed
+before outcomes, independent of the labels, and remains public-action only.
+This supplies a necessary variation for history identifiability, not proof
+of causal discovery or statistical sufficiency conditional on all sensors.
+A focused negative test explicitly rejects the old four-pair confound.
+
+The original `prereg.json`, registered seeds, original CAP03 native model
+checkpoint/JEPA heads and scientific source-first-use prohibition remain
+unchanged. Previous two fixture identities now generate new *engineering*
+rows; do not relabel earlier fixture scores as fresh science. The source
+actor and registered DEV/pilot/primary cohorts are still absent.

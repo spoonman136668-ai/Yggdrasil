@@ -10,6 +10,10 @@ import hashlib
 FIXTURE_IDS = ("engineering-history-01", "engineering-history-02")
 MAX_FIXTURE_EVENTS = 96
 ARMS = ((0, 0), (0, 1), (1, 0), (1, 1))
+# Four-symbol order-two de Bruijn cycle: each preceding/current action pair
+# occurs exactly once in each 16-step cycle. Engineered source only, no owner
+# scientific first-use or inferred causal relation labels.
+ACTION_CYCLE = (0, 0, 1, 0, 2, 0, 3, 1, 1, 2, 1, 3, 2, 2, 3, 3)
 RESERVED_SCIENTIFIC_SEEDS = (99917, 99931, 100017, 100031, 100117, 100131, 100151)
 
 
@@ -31,8 +35,10 @@ def generate(fixture_id="engineering-history-01", n=96):
     records = []
     for t in range(n):
         views = ((u, v), (v, w))
-        # Uniform intervention identity coverage in each consecutive block.
-        action = ARMS[(t + (1 if fixture_id == FIXTURE_IDS[1] else 0)) % 4]
+        # Current action no longer uniquely determines its predecessor. Every
+        # action follows all four possible predecessors in each 16-step cycle.
+        shift = int(fixture_id == FIXTURE_IDS[1])
+        action = ARMS[ACTION_CYCLE[(t + shift) % len(ACTION_CYCLE)]]
         # A/B/A drift is a KNOWN construction of fixtures, not science evidence.
         mode = "novel" if 32 <= t < 72 else "familiar"
         disturbed = bit(f"{fixture_id}/{t}/disturb") & bit(f"{fixture_id}/{t}/rare")
