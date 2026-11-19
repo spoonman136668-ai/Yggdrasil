@@ -1,0 +1,216 @@
+{
+  "best_conventional_name": "softmax_memory",
+  "by_family": {
+    "novel_composition": {
+      "best_snapshot": 0.2240262368707134,
+      "energy_consensus": 0.23540649340722242,
+      "last_snapshot": 5.133281035363783,
+      "pooled_elasticnet": 3.14446410699335,
+      "pooled_krr": 3.735088170916899,
+      "random_snapshot": 4.168414146592706,
+      "recent_elasticnet": 3.5047966501624686,
+      "shuffled_probes": 3.9463931265947596,
+      "softmax_memory": 0.23825445747564075
+    },
+    "return_middle": {
+      "best_snapshot": 0.03611720700153162,
+      "energy_consensus": 0.036066922946056346,
+      "last_snapshot": 2.4086742178236245,
+      "pooled_elasticnet": 1.3676987783739998,
+      "pooled_krr": 2.778034003577311,
+      "random_snapshot": 2.0665978231299236,
+      "recent_elasticnet": 1.290863959476777,
+      "shuffled_probes": 2.2812912966683787,
+      "softmax_memory": 0.04370968565809727
+    },
+    "return_old": {
+      "best_snapshot": 0.15119230380258783,
+      "energy_consensus": 0.14970634585008394,
+      "last_snapshot": 1.4830768877981853,
+      "pooled_elasticnet": 1.494543423665848,
+      "pooled_krr": 2.0003608667717936,
+      "random_snapshot": 2.1842548614500408,
+      "recent_elasticnet": 1.3737561475327391,
+      "shuffled_probes": 2.2376717441046483,
+      "softmax_memory": 0.06357253359360272
+    }
+  },
+  "by_seed": {
+    "101101": {
+      "best_snapshot": 0.030684805347323436,
+      "energy_consensus": 0.04206198566829576,
+      "last_snapshot": 2.8392254280114133,
+      "pooled_elasticnet": 2.0068382356923644,
+      "pooled_krr": 2.754108925680274,
+      "random_snapshot": 2.519686881207385,
+      "recent_elasticnet": 2.0657644872605703,
+      "shuffled_probes": 2.686196602764394,
+      "softmax_memory": 0.05550401741164581
+    },
+    "101119": {
+      "best_snapshot": 0.10489289496947125,
+      "energy_consensus": 0.10422538495548735,
+      "last_snapshot": 3.030403308829969,
+      "pooled_elasticnet": 2.022169063701723,
+      "pooled_krr": 2.8397799897278704,
+      "random_snapshot": 3.102653025820482,
+      "recent_elasticnet": 2.096912182070404,
+      "shuffled_probes": 2.809686931308959,
+      "softmax_memory": 0.12895376952046134
+    },
+    "101141": {
+      "best_snapshot": 0.27575804735803816,
+      "energy_consensus": 0.27489239157957956,
+      "last_snapshot": 3.1554034041442125,
+      "pooled_elasticnet": 1.9776990096391112,
+      "pooled_krr": 2.919594125857859,
+      "random_snapshot": 2.7969269241448047,
+      "recent_elasticnet": 2.0067400878410098,
+      "shuffled_probes": 2.9694726332944343,
+      "softmax_memory": 0.16107888979523352
+    }
+  },
+  "candidate_delta_vs_best_snapshot_percent": 2.393182353874046,
+  "candidate_delta_vs_strongest_conventional_percent": 21.891477973468866,
+  "classification": "DEVELOPMENT_NO_GO",
+  "consensus_accepted_queries": 79,
+  "deterministic_semantic_replay": {
+    "byte_count": 2796859,
+    "primary_sha256_timing_free": "99d91e7aa0ae77d0deefaece48fec604a855fde85456e09b24f09ca972dc4dfc",
+    "replay_sha256_timing_free": "99d91e7aa0ae77d0deefaece48fec604a855fde85456e09b24f09ca972dc4dfc",
+    "status": "PASS",
+    "timing_fields_ignored": [
+      "elapsed_seconds",
+      "cases[].fit.elapsed_fit_predict_seconds"
+    ],
+    "unchanged_frozen_source": true
+  },
+  "evaluated_held_actions_per_arm": 6912,
+  "experiment": "ENERGY-59",
+  "external_synthetic_only": true,
+  "families": [
+    "return_old",
+    "return_middle",
+    "novel_composition"
+  ],
+  "fresh_process_restore": {
+    "fresh_process": true,
+    "maximum_absolute_diff": 0.0,
+    "predictions_checked": 6912,
+    "status": "PASS",
+    "worlds": 36
+  },
+  "gates": {
+    "cold_C_vs_matched_best_5pct": {
+      "status": "FAIL"
+    },
+    "consensus_exercised_10pct": {
+      "status": "PASS"
+    },
+    "family_non_degradation_10pct": {
+      "status": "PASS"
+    },
+    "old_query_noninferiority_5pct": {
+      "status": "PASS"
+    },
+    "old_query_retention_vs_last_20pct": {
+      "status": "PASS"
+    },
+    "overall_vs_matched_best_5pct": {
+      "status": "FAIL"
+    },
+    "overall_vs_strongest_other_5pct": {
+      "status": "FAIL"
+    },
+    "seed_stability_2of3": {
+      "status": "FAIL"
+    },
+    "serializer_refit_audit": {
+      "status": "PASS"
+    },
+    "shuffle_query_negative_20pct": {
+      "status": "PASS"
+    }
+  },
+  "gates_passed": 6,
+  "gates_total": 10,
+  "independent_audit_checks": 369674,
+  "independent_audit_status": "PASS",
+  "limitations": [
+    "Predictors use an authored pair/triple parity feature bank, not arbitrary causal grammar discovery.",
+    "Training stream has no episode tags but query sessions supply 12 labelled calibration outcomes; not zero-shot.",
+    "Checkpoint holds multiple historical sparse predictor snapshots in one persisted memory object; not a single undifferentiated learned representation.",
+    "Auditor independently refits predictions but uses generator truth stored in scorer output and same sklearn/NumPy solvers; not complete independent generator replication.",
+    "No native Yggdrasil learning, official scientific acceptance, physical energy measurement, or deployment."
+  ],
+  "per_context_mean_mse": {
+    "best_snapshot": {
+      "A": 0.0393571130020019,
+      "B": 0.26781832984668824,
+      "C": 0.10416030482614264
+    },
+    "energy_consensus": {
+      "A": 0.03939492969687165,
+      "B": 0.267938867414453,
+      "C": 0.11384596509203807
+    },
+    "last_snapshot": {
+      "A": 4.14219610061942,
+      "B": 4.294791438795036,
+      "C": 0.5880446015711375
+    },
+    "pooled_elasticnet": {
+      "A": 2.1222145325151995,
+      "B": 2.06285816379275,
+      "C": 1.8216336127252484
+    },
+    "pooled_krr": {
+      "A": 2.1349758444982645,
+      "B": 3.4606204433285,
+      "C": 2.9178867534392383
+    },
+    "random_snapshot": {
+      "A": 2.871692573976437,
+      "B": 2.682085434925268,
+      "C": 2.865488822270966
+    },
+    "recent_elasticnet": {
+      "A": 3.0523041141910077,
+      "B": 2.815813668632901,
+      "C": 0.3012989743480771
+    },
+    "shuffled_probes": {
+      "A": 2.647387126704199,
+      "B": 3.098138675824022,
+      "C": 2.7198303648395665
+    },
+    "softmax_memory": {
+      "A": 0.043951324281690934,
+      "B": 0.1669913892859337,
+      "C": 0.13459396315971606
+    }
+  },
+  "pooled_mean_held_mse": {
+    "best_snapshot": 0.13711191589161092,
+    "energy_consensus": 0.14039325406778758,
+    "last_snapshot": 3.008344046995198,
+    "pooled_elasticnet": 2.0022354363443995,
+    "pooled_krr": 2.837827680422001,
+    "random_snapshot": 2.806422277057557,
+    "recent_elasticnet": 2.056472252390662,
+    "shuffled_probes": 2.8217853891225957,
+    "softmax_memory": 0.11517889224244689
+  },
+  "prereg_before_primary_commit": "fa6fb59fc796a6bc3a151165f5338e5b0dc2e019",
+  "query_count": 108,
+  "seeds": [
+    101101,
+    101119,
+    101141
+  ],
+  "source_auditor_sha256": "faf60818fe29b3a2cdfcec0583a31e819cfe22ca58f3d33fb8af909589dd2c62",
+  "source_freeze_commit": "7563eb7471f97a0da2bbff4d1302905c8985fa8b",
+  "source_scorer_sha256": "7bc7bbb204a058a424313a3562a48fda824e3cdebbea00e671f7fa5f5bb8138c",
+  "source_tar_sha256": "999fc5bc1bfcc892af3bf9d16e0dca990fb1da6b535e48d452336f7f054b5205",
+  "worlds": 36
+}
