@@ -1,0 +1,185 @@
+{
+  "schema": "lr92al.external-development-result.v2",
+  "classification": "DEVELOPMENT_SUPPORTED_BY_FROZEN_CRITERIA",
+  "scientific_classification": "UNVERIFIED_DO_NOT_PROMOTE",
+  "native_training": false,
+  "experiment": {
+    "worlds": 240,
+    "seeds": [
+      929205201,
+      929205202,
+      929205203
+    ],
+    "family_worlds": {
+      "static": 81,
+      "lag1": 81,
+      "lag2": 78
+    },
+    "flip_noise": 0.35,
+    "initial_context0": 112,
+    "context1_interventions": 64,
+    "heldout_context1": 256,
+    "cold_retention_context0": 256,
+    "single_valid_primary": true,
+    "valid_primary_wall_seconds": 21.257
+  },
+  "invalid_previous_attempt": {
+    "seeds_retired": [
+      929205101,
+      929205102,
+      929205103
+    ],
+    "outcome": "INVALID_INFRASTRUCTURE",
+    "reason": "NumPy boolean serialization failure after computing but before writing raw result; no scores inspected or published",
+    "source_sha256": "a7f02f9d75b5728f2c397a892b396d830e65b0d2b5060b8d77284e8a03007ce3"
+  },
+  "pre_scoring_custody": {
+    "prereg_commit": "4a61031d785a942a13c856452ea5438905c56523",
+    "original_source_commit": "0938657cebcca092a73cd9c9a14c80dc6497b18b",
+    "amendment_commit": "f4cf6448bef4fa456708c762cd18292b0963bb39",
+    "v2_patch_commit": "fc96d6af6e7433bb4716e3128733c87e8080dc95",
+    "reconstructed_v2_sha256": "7e09232cc6edff27ea611ed2f785bfa7778e48553f5af6905dcd9c03486009bb",
+    "fixture": "13 checks PASS before v2 scoring",
+    "no_metric_tuning": true
+  },
+  "arms": [
+    "protected",
+    "original_gate",
+    "first_same_tape",
+    "first_eig",
+    "ungated",
+    "sham",
+    "balanced",
+    "rf32"
+  ],
+  "accuracy_q1": {
+    "static": [
+      0.6317997685185185,
+      0.6318479938271605,
+      0.6325713734567902,
+      0.6332465277777778,
+      0.6322337962962963,
+      0.6322337962962963,
+      0.6376350308641975,
+      0.5861304012345679
+    ],
+    "lag1": [
+      0.632764274691358,
+      0.6328125,
+      0.6327160493827161,
+      0.6375385802469136,
+      0.6303047839506173,
+      0.6303047839506173,
+      0.6223958333333334,
+      0.5910976080246914
+    ],
+    "lag2": [
+      0.6407752403846154,
+      0.6407752403846154,
+      0.4999499198717949,
+      0.5024038461538461,
+      0.6419270833333334,
+      0.6419270833333334,
+      0.6212940705128205,
+      0.5899939903846154
+    ]
+  },
+  "accuracy_cold_q0_all_240": [
+    0.646337890625,
+    0.6463053385416667,
+    0.6005045572916666,
+    0.60126953125,
+    0.6469889322916667,
+    0.6469889322916667,
+    0.6398274739583333,
+    0.612939453125
+  ],
+  "family_map_confusion": [
+    [
+      79,
+      0,
+      2
+    ],
+    [
+      0,
+      79,
+      2
+    ],
+    [
+      1,
+      1,
+      76
+    ]
+  ],
+  "frozen_checks": {
+    "lag1_preservation": true,
+    "lag2_gain": true,
+    "static_preservation": true,
+    "cold_q0_retention": true,
+    "complete_cohort": true,
+    "equal_fitting_budget": true
+  },
+  "paired_comparisons": {
+    "lag1_protected_minus_same_tape_first_pp": 0.004822530864197531,
+    "lag2_protected_minus_same_tape_first_pp": 14.082532051282051,
+    "lag2_protected_minus_original_gate_pp": 0,
+    "lag1_protected_minus_original_gate_pp": -0.004822530864197531,
+    "lag2_protected_minus_sham_pp": -0.115184,
+    "lag1_bootstrap_95pp": [
+      0,
+      0.014467592592592591
+    ],
+    "lag2_bootstrap_95pp": [
+      12.935697115384615,
+      15.179412059294869
+    ],
+    "bootstrap_method": "5000 paired world resamples stratified by the 3 frozen seeds, seed 929205901; descriptive only",
+    "lag2_per_seed_gain_pp": [
+      12.6953125,
+      14.212740384615385,
+      15.339543269230768
+    ]
+  },
+  "critical_negative_controls": {
+    "new_policy_does_not_beat_original_gate": true,
+    "sham_history_bit_inversion_is_reparameterization": true,
+    "reason": "For mask 1 or 2, flipping the binary historical action and swapping masks 1<->2 leaves the predictor exactly equivalent. Sham therefore cannot test causal-history necessity.",
+    "unchanged_matched_gate_lag2_accuracy": 0.6407752403846154,
+    "sham_lag2_accuracy": 0.6419270833333334
+  },
+  "audit": {
+    "status": "PASS_WITH_NUMERICAL_TIE_ENVELOPES",
+    "independent_checks": 1602048,
+    "worlds": 240,
+    "non_tie_reconstruction_disagreements": 0,
+    "numeric_tie_ambiguous_world_score_cells": 7,
+    "posterior_log_vs_chronological_max_absolute_error": 7.327471962526033e-15,
+    "auditor_decoded_sha256": "eeee76f9abf8516073e6ab551dbaadb98ed38df3a081b3c9b6d421980ea24733",
+    "receipt_sha256": "f2e015c4bc5cb2b7bbb3714cba83bd98c4c43e1412ce9e4ce82526737d4eeab4"
+  },
+  "data_custody": {
+    "primary_raw_json_bytes": 941946,
+    "primary_raw_json_sha256": "a7de273090149e01dae461e37b1390b59476ca4446c68d37997ed770d31b6626",
+    "full_raw_json_uploaded_to_github": false,
+    "score_ledger_all_240_worlds_8_arms_uploaded_to_github": true,
+    "score_ledger_decoded_sha256": "ec54c36d957a14d00c4ee0d796e43716645f2e0e8fa3b095861260e709f5ebc9",
+    "score_ledger_file": "all_arms_ledger.bin.zlib.b64",
+    "exact_runner_and_auditor_source_uploaded_to_github": true
+  },
+  "qualification_limits": [
+    "Independent from-scratch 80-state synthetic grammar, NOT original LR-92AJ executable-source-continuous replication.",
+    "No out-of-family or unfamiliar structural extrapolation: all tested families are within the programmed hypothesis class.",
+    "No cross-world accumulated weights or native Yggdrasil training.",
+    "Sham negative control mathematically equivalent to a mask relabeling, making it scientifically uninformative.",
+    "No new performance improvement versus frozen original family gate.",
+    "Only original raw SHA and exact reproducer published; original full observation tape not in GitHub.",
+    "RF32 sees identical within-world labels but has different inductive bias and compute.",
+    "CI G29, native full regression and cross-platform scientific reproduction separately assessed."
+  ],
+  "authority": {
+    "promotion": "HOLD",
+    "merged": false,
+    "controller_changed": false,
+    "protected_scientific_first_use": false
+  }
+}
