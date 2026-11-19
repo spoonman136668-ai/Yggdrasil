@@ -29,3 +29,7 @@ PYTHONPATH=. python -B research/contrib/chatgpt/CKAD-42-ENG/fixtures.py
 ```
 
 If the frozen fixture digests differ across systems, the engineering repair is **NOT QUALIFIED** and evidence should be retained without promotion. CI job completion alone does not confer scientific acceptance.
+
+## Engineering qualification caveat
+
+The first candidate CI attempt found a real incompatibility with the original CKAD42 fixture's **bit-exact restored forecast equality**. The new checkpoint is deliberately 12-significant-digit serialization, so restoring it may change forecast output by a few ulps. The engineering fork now enforces the **predeclared maximum absolute cold-forecast error of 1e-8**, and still requires exact checksum and byte-for-byte checkpoint round-trip. The original scientific PR/test and its prior native checkpoint stay untouched. This is not a qualification for the old bit-exact API contract: any future adoption of lossy portable serialization requires explicit compatibility and downstream interface review.
