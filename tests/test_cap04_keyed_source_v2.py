@@ -40,10 +40,10 @@ class V2ProtectedSourceTests(unittest.TestCase):
                     ValueError, "PRIVATE_256BIT_ENTROPY_REQUIRED"):
                 m.engineering_fixture(m.ENGINEERING_FIXTURES[0], bad)
         with self.assertRaisesRegex(ValueError, "PRIVATE_KEY_ROLE"):
-            m._key(TEST_A, b"bad-role")
+            m._key(TEST_A, b"bad-role", m.ENGINEERING_FIXTURES[0])
         for bad in (-1, 96, True, 1.5, "1"):
             with self.assertRaisesRegex(ValueError, "ACTION_INDEX"):
-                m.action_at(TEST_A, bad)
+                m.action_at(m.ENGINEERING_FIXTURES[0], TEST_A, bad)
 
     def test_public_rows_are_keyed_opaque_and_strictly_sequential(self):
         a, b = [(identity, m.engineering_fixture(identity, key))
