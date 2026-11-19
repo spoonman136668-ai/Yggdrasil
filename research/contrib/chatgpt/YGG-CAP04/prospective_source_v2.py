@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import re
 
 SCHEMA = "yggdrasil.cap04.prospective-source-keyed.v2"
 ENGINEERING_FIXTURES = ("cap04-v2-engineering-a", "cap04-v2-engineering-b")
@@ -31,17 +32,42 @@ def _validate_entropy(entropy: bytes) -> None:
     _require(type(entropy) is bytes and len(entropy) == 32, "PRIVATE_256BIT_ENTROPY_REQUIRED")
 
 
-def _key(entropy: bytes, role: bytes) -> bytes:
+def _source_id_bytes(source_label: str) -> bytes:
+    _require(type(source_label) is str and
+             source_label in ENGINEERING_FIXTURES,
+             "REGISTERED_FIRST_USE_FORBIDDEN")
+    return source_label.encode("ascii")
+
+
+def _hex_sha(text: str) -> bytes:
+    _require(type(text) is str and re.fullmatch(r"[0-9a-f]{40}", text)
+             is not None, "PINNED_GIT_SHA_REQUIRED")
+    return text.encode("ascii")
+
+
+def _key(entropy: bytes, role: bytes, source_label: str) -> bytes:
     _validate_entropy(entropy)
     _require(type(role) is bytes and role in
              (b"action", b"witness", b"world"), "PRIVATE_KEY_ROLE")
-    return hmac.new(entropy, b"YGG-CAP04/v2/" + role, hashlib.sha256).digest()
+    return hmac.new(entropy, b"YGG-CAP04/v2/" + role + b"/" +
+                    _source_id_bytes(source_label), hashlib.sha256).digest()
 
 
-def commitment(entropy: bytes) -> str:
-    """Publish only after source owner verifies CSPRNG custody, before first use."""
+def commitment(entropy: bytes, source_label: str,
+               source_tree_sha: str, prereg_blob_sha: str) -> str:
+    """Opaque commitment binds source identity, qualified Git tree and prereg.
+
+    This does not validate CSPRNG quality, custody, or the selected Git refs.
+    An authorized source owner must verify those independently and retain a
+    private uniqueness ledger before any protected scientific first-use.
+    """
     _validate_entropy(entropy)
-    return hashlib.sha256(b"YGG-CAP04/v2/secret-commitment\x00" + entropy).hexdigest()
+    label = _source_id_bytes(source_label)
+    tree = _hex_sha(source_tree_sha)
+    prereg = _hex_sha(prereg_blob_sha)
+    material = (b"YGG-CAP04/v2/source-bound-commitment\x00" + label +
+                b"\x00" + tree + b"\x00" + prereg + b"\x00" + entropy)
+    return hashlib.sha256(material).hexdigest()
 
 
 def _word(key: bytes, domain: bytes, t: int, index: int = 0) -> bytes:
@@ -63,24 +89,24 @@ def _uniform_below(key: bytes, block: int, step: int, width: int) -> int:
     raise ValueError("CAP04_V2_SHUFFLE_REJECTION_OVERFLOW")
 
 
-def action_at(entropy: bytes, t: int) -> tuple[int, int]:
+def action_at(source_label: str, entropy: bytes, t: int) -> tuple[int, int]:
     """Action is exogenous, before outcome; no hidden state, phase, or ID input."""
     _validate_entropy(entropy)
     _require(type(t) is int and 0 <= t < EPISODES, "ACTION_INDEX")
     block = t // 4
     perm = list(ACTIONS)
-    key = _key(entropy, b"action")
+    key = _key(entropy, b"action", source_label)
     for step in range(3, 0, -1):
         j = _uniform_below(key, block, step, step + 1)
         perm[step], perm[j] = perm[j], perm[step]
     return perm[t % 4]
 
 
-def witness_id(entropy: bytes, t: int) -> str:
+def witness_id(source_label: str, entropy: bytes, t: int) -> str:
     """Opaque public event ID; no source-label/seed/clock substring exposed."""
     _validate_entropy(entropy)
     _require(type(t) is int and 0 <= t < EPISODES, "WITNESS_INDEX")
-    return _word(_key(entropy, b"witness"), b"witness-id/", t).hex()
+    return _word(_key(entropy, b"witness", source_label), b"witness-id/", t).hex()
 
 
 def _bit(key: bytes, t: int, label: str) -> int:
@@ -92,13 +118,13 @@ def engineering_fixture(source_label: str, entropy: bytes) -> tuple[dict, ...]:
     _require(type(source_label) is str and
              source_label in ENGINEERING_FIXTURES, "REGISTERED_FIRST_USE_FORBIDDEN")
     _validate_entropy(entropy)
-    world_key = _key(entropy, b"world")
+    world_key = _key(entropy, b"world", source_label)
     u, v, w = (_bit(world_key, -1, "initial-" + str(i)) for i in range(3))
     latent = _bit(world_key, -1, "private-initial")
     previous_action = (0, 0)
     tape = []
     for t in range(EPISODES):
-        a, b = action_at(entropy, t)
+        a, b = action_at(source_label, entropy, t)
         novel = 32 <= t < 72
         disturbance = (_bit(world_key, t, "noise0") &
                        _bit(world_key, t, "noise1") &
@@ -111,7 +137,7 @@ def engineering_fixture(source_label: str, entropy: bytes) -> tuple[dict, ...]:
             s2 = u ^ (a & v) ^ (b & w) ^ (latent & u) ^ disturbance
             reward = s2 ^ b ^ (u & v) ^ (latent & w)
         post = (v ^ a, s2, w ^ b)
-        tape.append({"id": witness_id(entropy, t),
+        tape.append({"id": witness_id(source_label, entropy, t),
                      "views": ((u, v), (v, w)), "action": (a, b),
                      "s2": s2, "y": reward, "post": post})
         latent ^= (a & w) ^ (b & u)

@@ -53,7 +53,9 @@ class V2ProtectedSourceTests(unittest.TestCase):
         self.assertEqual(rows_a, m.engineering_fixture(a[0], TEST_A))
         self.assertEqual(rows_b, m.engineering_fixture(b[0], TEST_B))
         self.assertEqual(m.SCHEMA, "yggdrasil.cap04.prospective-source-keyed.v2")
-        self.assertNotEqual(m.commitment(TEST_A), m.commitment(TEST_B))
+        self.assertNotEqual(
+            m.commitment(TEST_A, a[0], "a"*40, "b"*40),
+            m.commitment(TEST_B, b[0], "a"*40, "b"*40))
         self.assertEqual(len(rows_a), len(rows_b), 96)
         self.assertFalse(set(r["id"] for r in rows_a) &
                          set(r["id"] for r in rows_b))
@@ -62,9 +64,9 @@ class V2ProtectedSourceTests(unittest.TestCase):
             for t, row in enumerate(rows):
                 self.assertEqual(set(row),
                                  {"id", "views", "action", "s2", "y", "post"})
-                self.assertEqual(row["id"], m.witness_id(key, t))
+                self.assertEqual(row["id"], m.witness_id(identity, key, t))
                 self.assertEqual(len(row["id"]), 64)
-                self.assertEqual(row["action"], m.action_at(key, t))
+                self.assertEqual(row["action"], m.action_at(identity, key, t))
                 # Public witness IDs have no unkeyed, enumeratable source tag.
                 old = hashlib.sha256(
                     f"YGG-CAP04/public-witness-v1/{identity}/{t}/observed"
@@ -97,6 +99,36 @@ class V2ProtectedSourceTests(unittest.TestCase):
         self.assertTrue(all("entropy" not in row and "identity" not in row
                             and "seed" not in row and "phase" not in row
                             for row in left + right))
+
+    def test_same_entropy_is_source_bound_and_reuse_detectable(self):
+        # Reproduce the original bug: two different source identities
+        # receiving identical entropy MUST NOT yield identical histories.
+        left, right = [m.engineering_fixture(label, TEST_A)
+                       for label in m.ENGINEERING_FIXTURES]
+        self.assertNotEqual(left, right)
+        self.assertTrue(set(r["id"] for r in left).isdisjoint(
+                        r["id"] for r in right))
+        self.assertTrue(any(a["action"] != b["action"]
+                            for a, b in zip(left, right)))
+        for role in (b"action", b"witness", b"world"):
+            self.assertNotEqual(m._key(TEST_A, role, m.ENGINEERING_FIXTURES[0]),
+                                m._key(TEST_A, role, m.ENGINEERING_FIXTURES[1]))
+        first = m.commitment(TEST_A, m.ENGINEERING_FIXTURES[0],
+                             "a"*40, "b"*40)
+        self.assertEqual(first, m.commitment(
+            TEST_A, m.ENGINEERING_FIXTURES[0], "a"*40, "b"*40))
+        self.assertNotEqual(first, m.commitment(
+            TEST_A, m.ENGINEERING_FIXTURES[1], "a"*40, "b"*40))
+        self.assertNotEqual(first, m.commitment(
+            TEST_A, m.ENGINEERING_FIXTURES[0], "c"*40, "b"*40))
+        self.assertNotEqual(first, m.commitment(
+            TEST_A, m.ENGINEERING_FIXTURES[0], "a"*40, "c"*40))
+        for invalid in (None, "nope", "A"*40, "0"*39, "x"*40):
+            with self.assertRaisesRegex(ValueError, "PINNED_GIT_SHA_REQUIRED"):
+                m.commitment(TEST_A, m.ENGINEERING_FIXTURES[0],
+                             invalid, "b"*40)
+        with self.assertRaisesRegex(ValueError, "REGISTERED_FIRST_USE_FORBIDDEN"):
+            m.commitment(TEST_A, "99917", "a"*40, "b"*40)
 
 
 if __name__ == "__main__":
