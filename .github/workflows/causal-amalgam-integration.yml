@@ -72,12 +72,6 @@ jobs:
     - name: Install the pinned native solver dependencies
       run: >-
         python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
-    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-      with:
-        name: CKAD26-refresh-primary
-        run-id: 44391641043
-        github-token: ${{ github.token }}
-        path: ${{ runner.temp }}/amalgam-ckad26
     - name: Original checkpoint compatibility, cold growth and exact final regression
       shell: bash
       run: |
@@ -86,13 +80,18 @@ jobs:
         git rev-parse HEAD HEAD^{tree}
         AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
         DONORS="$RUNNER_TEMP/amalgam-specialists"
-        mkdir -p "$DONORS"
+        NATIVE="$RUNNER_TEMP/amalgam-ckad26"
+        mkdir -p "$DONORS" "$NATIVE"
+        # These sealed checkpoint blobs match the original CI artifact byte for byte.
+        for seed in 101 202 303; do
+          git show "bd55239c5c7785b8fce7fd39a6a0321f597a3530:research/contrib/chatgpt/CKAD-26/seed-$seed-refresh-native.json" > "$NATIVE/seed-$seed-refresh-native.json"
+        done
         for seed in 14071 14072; do
           git show "eee9ab7719f52c1c67ce30b142e8f07f36454dd1:research/contrib/chatgpt/YGG-JEPA2-03/seed-$seed-state.json" > "$DONORS/seed-$seed-state.json"
         done
-        python -B "$AMALGAM/shadow_preflight.py" "$RUNNER_TEMP/amalgam-ckad26" "$DONORS" > "$RUNNER_TEMP/amalgam-shadow.json"
-        python -B "$AMALGAM/growth_preflight.py" "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" > "$RUNNER_TEMP/amalgam-growth.json"
-        python -B "$AMALGAM/joint_update_preflight.py" "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$DONORS/seed-14071-state.json" --checkpoint-out "$RUNNER_TEMP/amalgam-joint-state.json" > "$RUNNER_TEMP/amalgam-joint.json"
+        python -B "$AMALGAM/shadow_preflight.py" "$NATIVE" "$DONORS" > "$RUNNER_TEMP/amalgam-shadow.json"
+        python -B "$AMALGAM/growth_preflight.py" "$NATIVE/seed-101-refresh-native.json" > "$RUNNER_TEMP/amalgam-growth.json"
+        python -B "$AMALGAM/joint_update_preflight.py" "$NATIVE/seed-101-refresh-native.json" "$DONORS/seed-14071-state.json" --checkpoint-out "$RUNNER_TEMP/amalgam-joint-state.json" > "$RUNNER_TEMP/amalgam-joint.json"
         python -B "$AMALGAM/verify_preflight.py" "$RUNNER_TEMP/amalgam-shadow.json" "$RUNNER_TEMP/amalgam-growth.json" "$RUNNER_TEMP/amalgam-joint.json"
         python -B -m unittest discover -s tests -p 'test_*.py'
         for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
