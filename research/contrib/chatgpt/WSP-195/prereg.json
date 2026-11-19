@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-195",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "disjoint-public-original-source-compositional-development",
+  "accepted_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "hypothesis": "A tokenless, directly programmed hierarchy of retained single-site, low-rank pair-site, and shared triple-subset weights predicts fourth-order GB1 combinations better than the strongest fully fitted conventional order<=3 categorical ridge model.",
+  "source": {
+    "repo": "wchnicholas/ProteinGFourMutants",
+    "sha": "dbdd7639187e0b8f22359f404ce4d1d950fcc8a9",
+    "path": "result/Mutfit",
+    "blob": "3bf094f1b5c8bd84a35e04ae9c23bcf97c2bfa89",
+    "bytes": 13837211,
+    "method": "script/Mapper5_NW.py",
+    "method_blob": "e2daffa1e00d53d81f36a4ff75faac4e02d982da",
+    "paper": "Wu et al. 2016 eLife 5:e16965; GB1 4-site mutation landscape V39/D40/G41/V54",
+    "before_prereg_numeric_rows_seen": false,
+    "licensing": "Published historical original source, derived data terms not verified for redistribution; no data bytes will be committed",
+    "primary": "I20fitRaw",
+    "secondary": [
+      "I10fit",
+      "I90fit"
+    ],
+    "forbidden": [
+      "AOfit",
+      "I20fit",
+      "inferred regression_missing values"
+    ]
+  },
+  "admission": {
+    "format": "11-tab-column original Mutcount+Mapper5 output, exactly: mut HD Input IGG10 IGG20 IGG90 I10fit I20fitRaw I90fit AOfit I20fit",
+    "genotype": "4 uppercase standard amino acids; unique; Hamming distance from VDGV equals HD",
+    "minimum_measured_primary": {
+      "all": 140000,
+      "hd0": 1,
+      "hd1": 65,
+      "hd2": 1600,
+      "hd3": 18000,
+      "hd4": 100000
+    },
+    "missing": "NA or unmeasured excluded, never imputed",
+    "outcome_transform": "log1p(I20fitRaw), FIT-only normalization; nonnegative finite unadjusted fitness only",
+    "max_bytes": 14000000
+  },
+  "frozen_split": {
+    "train": "All source-admitted HD<=2, plus HD3 genotypes with SHA256('WSP195-GB1-HD3-FIT-v1\\0'+mut) first 64 bits modulo 100<70",
+    "valid": "Other source-admitted HD3 genotypes",
+    "dev": "All source-admitted HD4 genotypes, scored once after all selection",
+    "grouping": "Full genotype identity, no numeric-outcome split or salt search"
+  },
+  "candidate": {
+    "stages": "Program HD1 site-state effects from FIT; HD2 residual cross-site pair matrices from FIT; low-rank deterministic matrix factorization using bounded 20-step power iteration; HD3 residual-motif weights from FIT to compose each HD4 from shared HD3 subsets; no gradient-based updates to programmed weights",
+    "ranks": [
+      2,
+      4,
+      8,
+      "full"
+    ],
+    "alpha": [
+      0.5,
+      1,
+      2
+    ],
+    "beta": [
+      0,
+      0.5,
+      1
+    ],
+    "selection": "Lowest VALID-HD3 normalized RMSE, deterministic tie-break smaller rank/abs(beta)",
+    "retention": "Freeze and serialize HD1/HD2 representation before and after HD3 learning, require exact restored historical predictions; otherwise INVALID",
+    "source_free_ablations": [
+      "no pair or triple corrections",
+      "full pair matrix",
+      "shuffled FIT HD3 residual identity seed 19521"
+    ],
+    "capacity": "Report scalar state bytes and fitted dimensions, not presume parity with conventional controls"
+  },
+  "controls": {
+    "models": [
+      "FIT-only mean",
+      "fully fitted additive ridge",
+      "fully fitted additive+pair ridge",
+      "fully fitted additive+pair+triple categorical ridge"
+    ],
+    "lambdas": [
+      0.1,
+      1,
+      10
+    ],
+    "solver": "Sparse coordinate descent, deterministic, <=250 passes, max coefficient delta <=1e-4",
+    "fitting": "Same FIT labels/features/source and HD4 exclusion; VALID-HD3 hyperparameter/model selection; strongest fully converged conventional",
+    "negative": "If no converged full degree3 model, mark INVALID rather than claiming scientific superiority"
+  },
+  "evaluation": {
+    "primary": "Equal-HD4-genotype normalized RMSE candidate vs strongest VALID-selected converged conventional model",
+    "uncertainty": "1000 HD4 genotype-level bootstrap resamples seed 19531 of relative RMSE gain",
+    "requirements": "At least 5% relative lower RMSE and bootstrap 95% lower bound positive, with restored historical readout retention, no leakage for PUBLIC_DEV_SUPPORTED; otherwise PUBLIC_DEV_NO_GO",
+    "secondary": "Top 1% affinity ranking and other assays exploratory only; no after-DEV tuning",
+    "limit": "Public historical same protein, not a virgin unfamiliar-world causal intervention or native Yggdrasil learning"
+  },
+  "budgets": {
+    "source_bytes_max": 14000000,
+    "solver_passes_max": 250,
+    "power_iterations": 20,
+    "bootstrap": 1000,
+    "primary_dev_scores": 1,
+    "seeds": [
+      19521,
+      19531
+    ],
+    "paid_apis": 0
+  },
+  "failure_rules": {
+    "negative": "Preserve one DEV negative, no retune",
+    "invalid": "Source bytes unavailable/format/count failure, leakage, convergence/retention failure: INVALID, never call science loss"
+  },
+  "authority": {
+    "research_only": true,
+    "protected_original_first_use": false,
+    "merge": false,
+    "accepted_state_mutation": false,
+    "scheduler_dispatch": false,
+    "native_model_integration": false
+  }
+}
