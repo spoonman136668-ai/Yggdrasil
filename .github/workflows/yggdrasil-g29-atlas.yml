@@ -78,8 +78,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
-          test "$(git rev-parse HEAD^)" = 9e160d29a2cc62d06a02fe688ba71533af9347ce
-          test "$(git diff --name-only 9e160d29a2cc62d06a02fe688ba71533af9347ce HEAD | LC_ALL=C sort | tr '\n' '|')" = ".github/workflows/yggdrasil-g29-atlas.yml|research/contrib/chatgpt/YGG-CAP04/README.md|tests/test_native_predictive_state_controls.py|tests/test_native_predictive_state_cumulative.py|yggdrasil/native_predictive_state_controls.py|yggdrasil/native_predictive_state_split.py|"
+          test "$(git rev-parse HEAD^)" = b8565c623927f4c62739c2dae79708a109f275b7
+          test "$(git diff --name-only b8565c623927f4c62739c2dae79708a109f275b7 HEAD)" = ".github/workflows/yggdrasil-g29-atlas.yml"
           test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
           git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
