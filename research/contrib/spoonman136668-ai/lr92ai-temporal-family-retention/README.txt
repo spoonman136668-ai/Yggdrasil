@@ -119,8 +119,9 @@ Yggdrasil speed evidence.
 
 HOW TO REPRODUCE, CLEAN THROWAWAY DIRECTORY
 -------------------------------------------
-Download the seven *.zlib.b64 artifacts (runner, protocol, test, auditor,
-result summary/ledger, and frozen parent sources) from this research folder.
+Download the nine *.zlib.b64 artifacts (runner, protocol, test, auditor,
+result summary, ledger, audit receipt, and both frozen parent sources)
+from this research folder.
 Decode each archive with the same command (examples below):
 
   python -c "import pathlib,zlib,base64,sys;p=pathlib.Path(sys.argv[1]);pathlib.Path(str(p).removesuffix('.zlib.b64')).write_bytes(zlib.decompress(base64.b64decode(p.read_bytes())))" prereg.json.zlib.b64
