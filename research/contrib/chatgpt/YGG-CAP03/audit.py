@@ -76,7 +76,7 @@ class IndependentLinear:
         self.G=np.eye(16,dtype=float)*4.
         self.H=np.zeros((16,2),dtype=float)
         for _,views,a,s,b,y in history:
-            self.observe(state_of(views),(a,b),s,y)
+            self.observe((views[0][0],views[0][1],views[1][1]),(a,b),s,y)
     def observe(self,st,arm,s,y):
         z=xvector(st,arm)
         self.G=self.G+np.outer(z,z)
@@ -91,7 +91,7 @@ class IndependentExactCounts:
     def __init__(self,history):
         self.rows=[]
         for _,views,a,s,b,y in history:
-            self.observe(state_of(views),(a,b),s,y)
+            self.observe((views[0][0],views[0][1],views[1][1]),(a,b),s,y)
     def observe(self,st,arm,s,y):
         self.rows.append((st,arm,s,y))
     def forecast(self,st,arm,stage,s2=None,pooled=False):

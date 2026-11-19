@@ -79,7 +79,7 @@ class FittedRidge:
         self.rhs=np.zeros((FEATURES,2),dtype=np.float64)
         self.examples=0
         for _,views,a,s,b,y in prior_ledger:
-            self.learn(public_state(views),(a,b),s,y)
+            self.learn((views[0][0],views[0][1],views[1][1]),(a,b),s,y)
     def learn(self,st,action,s2,y):
         x=features(st,action)
         self.gram+=np.outer(x,x)
@@ -96,7 +96,7 @@ class FullBeta:
     def __init__(self,prior):
         self.rows=[]
         for _,views,a,s,b,y in prior:
-            self.learn(public_state(views),(a,b),s,y)
+            self.learn((views[0][0],views[0][1],views[1][1]),(a,b),s,y)
     def learn(self,st,action,s2,y):
         self.rows.append((st,action,s2,y))
     def forecast(self,st,action,stage,s2=None,pooled=False):
