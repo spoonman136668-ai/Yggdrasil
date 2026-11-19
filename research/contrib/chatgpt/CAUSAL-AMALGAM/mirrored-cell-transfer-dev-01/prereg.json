@@ -1,0 +1,72 @@
+{
+  "schema": "yggdrasil.amalgam.local-evidence-development.v1",
+  "id": "amalgam-mirrored-cell-transfer-dev-01",
+  "owner_scope": "Isolated synthetic development only. No data or effects from the protected original-world source.",
+  "parent_joint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [
+    993701,
+    993727,
+    993751
+  ],
+  "shifts": [
+    [],
+    [
+      0
+    ],
+    [
+      3
+    ],
+    [
+      0,
+      3
+    ]
+  ],
+  "fit_per_seed": 60,
+  "prefix_per_phase": 8,
+  "scored_per_phase": 32,
+  "wall_budget_seconds": 480,
+  "min_transition_gain": 0.005,
+  "max_retention_drift": 0.02,
+  "hypothesis": "Learn whether mirrored cells agree, complement or are independent from the fully observed familiar FIT. Transfer shifted peer evidence to a withheld target only with sufficient posterior support. Correct transfer should improve prediction on the unseen target while preserving familiar and unmatched cases.",
+  "schedule": "64 familiar and 60 shifted FIT episodes. Shifted FIT excludes target address (1,1) entirely. Evaluate no shift, donor-only shift, target-only shift and both shift. Fixed balanced eight-episode anonymous evidence prefixes with disjoint 32-episode scoring. Familiar return without reset. No prospective policy action optimization.",
+  "arms": [
+    "anchor",
+    "continued",
+    "shared",
+    "local",
+    "fit_full",
+    "fit_trailing",
+    "fit_change_point",
+    "fixed_endpoint",
+    "all_to_alternative",
+    "routed",
+    "dual_fixed",
+    "dual_fitted",
+    "independent_unseen",
+    "structure_soft",
+    "structure"
+  ],
+  "rule": "Development signal requires pooled gain at least 0.005 over the strongest aggregate matched control per seed on shifted target Brier and worst drift at most 0.02 across all unchanged and return addresses on every seed. Unsupported or ambiguous relations use original forecast. Exact Bayesian model-averaged transfer and an independent online target are included. No scientific superiority or promotion follows.",
+  "scoring_precision": "Existing staged readout scale of 1000000, applied to frozen snapshot forecasts and final transition and reward scores. Cache each immutable public forecast for its scope. Report the strongest aggregate matched control per seed.",
+  "prior_attempt": "3eb631afae5c475bcf3bc1e87c1057cc5d9caf20",
+  "candidate": "structure",
+  "candidate_parameters": "Existing native NOVEL_PRIOR and REFRESH_RATE. Relation hypothesis prior uniform with exact Beta(1,1) integrated likelihood. Confidence 4/5. No tuning. All inferred endpoints are shadow-only and never count as witnesses.",
+  "familiar_fit_per_seed": 64,
+  "shifted_fit_cells": [
+    0,
+    1,
+    2
+  ],
+  "structure": {
+    "target": [
+      1,
+      1
+    ],
+    "peer": [
+      0,
+      0
+    ],
+    "confidence": "4/5"
+  }
+}

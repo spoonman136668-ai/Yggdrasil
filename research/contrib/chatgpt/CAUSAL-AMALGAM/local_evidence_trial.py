@@ -16,6 +16,7 @@ from regime_forecast import RegimeForecast, fitted_old_readout
 from selection_trial import source_module
 from shadow_preflight import checked_bytes, require
 from staged_retention import Controls, keys, SCALE
+from structured_cell_prior import transfer_priors
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_cumulative_learner import experience_packet_sha256
@@ -27,9 +28,11 @@ PLAN = HERE / "local-evidence-dev-02" / "prereg.json"
 
 def evidence(source, plan, seed, split, shift, size):
     cohort = f"{plan['id']}-{split}"
+    cells = plan.get("shifted_fit_cells", range(4)) if split == "fit" else range(4)
     for index in range(size):
-        context, action = divmod(index % 4, 2)
-        second = (index // 4) % 2
+        cell = cells[index % len(cells)]
+        context, action = divmod(cell, 2)
+        second = (index // len(cells)) % 2
         for attempt in range(64):
             episode = source.make_episode(cohort=cohort, seed=seed, index=64 * index + attempt,
                                           family="invariant", regime=0)
@@ -38,7 +41,7 @@ def evidence(source, plan, seed, split, shift, size):
         else:
             raise RuntimeError("Could not draw the scheduled public context")
         views = source.public_views(episode)
-        state = episode.transition(action) ^ int(index % 4 in shift)
+        state = episode.transition(action) ^ int(cell in shift)
         row = dict(s1=context, x1=action, s2=state, x2=second,
                    y=episode._reward(action, state, second))
         yield [digest(canonical([cohort, seed, index])), views, row]
@@ -93,12 +96,24 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
     assignments = (("fixed_endpoint", old, "fixed"), ("all_to_alternative", old, "all"),
                    ("routed", old, "posterior"), ("dual_fixed", old_fitted, "fixed"),
                    ("dual_fitted", old_fitted, "posterior"))
+    structural = plan.get("structure")
+    relation = None
+    if structural:
+        target = tuple(structural["target"])
+        peer = tuple(structural["peer"])
+        hard, soft, relation = transfer_priors(
+            familiar, fit, target, peer, Fraction(structural["confidence"]))
+        extra = (("independent_unseen", {target: (1, 1)}, "all"),
+                 ("structure_soft", soft, "fixed"), ("structure", hard, "fixed"))
     for index, shift in enumerate(plan["shifts"]):
         baseline = deepcopy(control)
         local = EvidenceReadout(old, new, local=True)
         shared = EvidenceReadout(old, new, local=False)
         routed = {name: RegimeForecast(original, fit, assignment=mode)
                   for name, original, mode in assignments if name in plan["arms"]}
+        if structural:
+            routed.update((name, RegimeForecast(old, fit, assignment=mode, extra_priors=prior))
+                          for name, prior, mode in extra)
         for phase, active in (("shift", shift), ("return", [])):
             block = f"{index}-{phase}"
             prefix = list(evidence(source, plan, seed, f"{block}-prefix", active,
@@ -134,9 +149,12 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
                 for cell in range(4)]))
     ids = [row[0] for rows in trace.values() for row in rows]
     require(len(ids) == len(set(ids)) and not (initial_ids & set(ids)), "CELL_LOCAL_TRACE_JOIN")
-    return dict(seed=seed, actions=2 * len(ids), fit_episodes=fit_count, head_steps=steps,
+    record = dict(seed=seed, actions=2 * len(ids), fit_episodes=fit_count, head_steps=steps,
                 checkpoint=digest(raw), native_checkpoint=digest(restored.native.checkpoint()),
                 trace_sha256=digest(canonical(trace)), evaluations=evaluations)
+    if structural:
+        record["relation"] = None if relation is None else [float(p) for p in relation]
+    return record
 
 
 def run(inputs, protocol=PLAN):
@@ -154,11 +172,18 @@ def run(inputs, protocol=PLAN):
                           wall + plan["wall_budget_seconds"]) for seed in plan["seeds"]]
     gains, retained = [], []
     candidate = plan.get("candidate", "local")
+    target_index = None
+    if "structure" in plan:
+        context, first = plan["structure"]["target"]
+        target_index = 2 * context + first
     for item in replicas:
         changed, unchanged = [], []
         for evaluation in item["evaluations"]:
             for cell, loss in enumerate(evaluation["cells"]):
-                (changed if cell in evaluation["shifted_cells"] else unchanged).append(loss)
+                if cell not in evaluation["shifted_cells"]:
+                    unchanged.append(loss)
+                elif target_index is None or cell == target_index:
+                    changed.append(loss)
         mean_losses = {arm: sum(row[arm][0] for row in changed) / len(changed)
                        for arm in plan["arms"]}
         gains.append(min(score for arm, score in mean_losses.items() if arm != candidate)

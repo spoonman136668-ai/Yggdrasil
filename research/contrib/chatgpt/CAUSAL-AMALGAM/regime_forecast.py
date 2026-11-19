@@ -26,7 +26,7 @@ def fitted_old_readout(anchor, fit):
 class RegimeForecast:
     """Maintain an immutable old readout and one fitted alternative per cell."""
 
-    def __init__(self, anchor, fit, *, assignment):
+    def __init__(self, anchor, fit, *, assignment, extra_priors=None):
         if assignment not in ("fixed", "all", "posterior"):
             raise ValueError("Unknown assignment mode")
         self._anchor = anchor
@@ -36,6 +36,11 @@ class RegimeForecast:
             key = self._key(views[0], row["x1"])
             observed = PublicCausalCells._bit(row["s2"], "S2")
             self._cells.setdefault(key, [1.0, 1.0, float(NOVEL_PRIOR)])[observed] += 1
+        if extra_priors:
+            for key, (zeros, ones) in extra_priors.items():
+                if key in self._cells or min(zeros, ones) <= 0:
+                    raise ValueError("Extra priors require a fresh cell and positive support")
+                self._cells[key] = [float(zeros), float(ones), float(NOVEL_PRIOR)]
 
     @staticmethod
     def _key(view, first):
