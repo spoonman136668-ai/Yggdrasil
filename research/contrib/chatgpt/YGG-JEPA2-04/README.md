@@ -1,19 +1,46 @@
-# YGG-JEPA2-04 — three-step learned future-state representation, native Yggdrasil continuation
+# YGG-JEPA2-04 — Native cumulative three-step JEPA-style future states
 
-**Frozen preregistration** `6d113f776697a3709b46f1c616d2eb66c6e0e857` from exact qualified prior Yggdrasil JEPA2-03 source `eee9ab7719f52c1c67ce30b142e8f07f36454dd1`.
+**ACTUAL training**, preserving original native causal knowledge and
+all 4 previously learned JEPA-style experts, plus two new separate
+trainable three-step future state latent experts. A trainable future
+observation encoder, decoder, and EMA stop-gradient target teach
+each action-conditioned predictor a **multi-variable future representation**.
 
-This is an **opt-in real cumulative native Yggdrasil training candidate**: existing `NativeTemporalMultiLearner` and its original native knowledge and FOUR existing learned specialist heads are carried forward. Two NEW separately parameterized multi-step future-state learners predict a three-intervention horizon: **nine future public sensor bits** and **three future reward bits**, using a nonlinear action-conditioned encoder and a separately learned multi-step future embedding with a slowly updated stop-gradient teacher. Unlike old binary JEPA2-03, this is a trained representation of several future states and consequences, not one binary label per prediction.
+This is NOT Meta's pretrained V-JEPA2 video model. All new source
+episodes are disjoint synthetic Yggdrasil DEVELOPMENT worlds, not
+an independent real-world scientific test or protected first-use.
 
-All intervention plans for three steps are exogenously fixed and publicly announced BEFORE outcomes occur; forecasting happens before the current action consequence is revealed. Model/controls train only after all three relevant future public outcomes are actually witnessed. Source worlds use two structurally different 3-variable+delayed-mediator causal families with regime reversal. New development seed/world pairs: (95413,0/1), (95429,0/1), 120 witnessed episodes per world. Original learned native model is never reset. Two original fully trained seeds start from saved JEPA2-03 `state_ascii` with exact source SHA checks.
+Preregistered before source/training: 6d113f776697a3709b46f1c616d2eb66c6e0e857
+Previous five-component source: eee9ab7719f52c1c67ce30b142e8f07f36454dd1
+Frozen source execution commit: 5b803b0c27585c866d5827673e7791e4f7910890
+Dual-platform original source training/audit: 44431580888
 
-The paired source is **synthetic development**, not human/physical-world independent science and not original owner first-use. It is a different multivariate source family from CKAD37; still not evidence of unrestricted causal generalization. `SCIENTIFIC_PASS=false` by construction.
+## Late B and A-return 3-horizon six-outcome Brier (lower better)
 
-Falsifiable controls (same announced actions and source information): original native context predictor with marginalized unobserved outcome, fully trained online 12-bit logistic predictor, full/window24/window48/discount95 conditional Beta, deliberately mismatched future-target JEPA of equal capacity and updates, no-history and no-action ablations, and sham. Primary six native-compatible future outcomes have preregistered >=0.005 improvement versus BOTH original native and best conventional on BOTH seeds, plus anti-collapse variance, pairing, ablation and old-knowledge-retention guards; otherwise **DEVELOPMENT_NO_GO**. Post-result hyperparameter or source-seed tuning prohibited.
+| Old seed → new dev seed | Native | Future JEPA | Fully fitted direct | Best conventional | Mispaired | Verdict |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 14071 → 95413 | 0.271125513 | 0.250015830 | 0.275094387 | 0.245850296 | 0.247899029 | DEVELOPMENT_NO_GO |
+| 14072 → 95429 | 0.278454108 | 0.253411899 | 0.275917499 | 0.250900902 | 0.255559885 | DEVELOPMENT_NO_GO |
 
-Evidence files and original source code stay in this repository rather than chat attachments. The source-locked GitHub workflow checks focused native negatives on Linux and Windows before original developmental training, independently audits exact original receipts, seals negative or positive evidence, reanchors G29, and executes mandatory complete final regression on both platforms on exact candidate SHA. This branch is **draft/unmerged**; it does not authorize accepted `main`, model promotion, new controller, scheduling or deployment.
+Frozen development verdict: NO_GO
+SCIENTIFIC_PASS=false. ACCEPTED_NATIVE=false. DEPLOYMENT=NONE.
 
-**Status:** source and implementation committed; CI engineering preflight selected. No original 04 source training has occurred at time of writing.
+Only actually revealed public future states/outcomes enter gradient
+updates, at least three action-consequence observations later.
+Three future intervention actions are announced BEFORE their
+outcomes. Strong direct logistic/online Beta, no-history, no-action
+and matched-update mismatched-target controls were trained too.
 
-## Frozen source preflight receipt
+Cumulative native source prefix, original four trained heads,
+full 12-bit future observation forecasts, source IDs, numeric
+EMA teacher weights, exact source-code pins, and two-seed
+unambiguous negative/positive receipts are saved in this folder.
 
-Source-only preflight run [#44431413687](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44431413687) completed **SUCCESS on Linux and Windows**, with **17/17 focused tests per platform** (6 new multi-step/anti-leak tests, 6 prior temporal native tests, 5 original multi-learner tests); exact original JEPA2-03 checkpoint Git blob pins and prereg boundaries passed. All model/source/control code and numerical settings are unchanged from the just-qualified source. The next source-only documentation commit authorizes the one frozen pair of disjoint synthetic development cohorts, Linux and Windows independently; no scientific first-use or accepted-reference work.
+Original Linux and Windows artifacts were audited separately and
+then compared without a fresh repeat of scored development data.
+Exact final full Linux/Windows native regressions and G29 run on
+the post-evidence Atlas SHA.
+
+**DRAFT/UNMERGED.** No accepted main/controller modifications,
+owner first-use, additional scheduled task, external deployment,
+paid API, or scientifically proven transfer claims.
