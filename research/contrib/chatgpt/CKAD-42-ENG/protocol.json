@@ -1,0 +1,31 @@
+{
+  "schema": "yggdrasil.ckad42.engineering-checkpoint-fixture.v1",
+  "date": "2026-11-19",
+  "parent_exact_sha": "e8e1905d069f8fce092b71279a5bbc40aabfe33e",
+  "source_exact_sha": "290b9a7f0ccd351b62e1bfb8f1de762601663bf2",
+  "goal": "Repair cross-platform learned causal-weight checkpoint serialization without replaying consumed CKAD42 scientific data or changing original CKAD42 PR #1293, main, native learner, or research owner",
+  "observed_problem": {
+    "ci_run": 44445368631,
+    "drift_seed": "42111",
+    "drift_world": 0,
+    "only_affected": "NativeInterventionRelations checkpoint SHA",
+    "original_native_cold_sha_equal": true,
+    "phase_brier_equal": true,
+    "cause": "UNVERIFIED possible accumulated floating-point platform rounding differences"
+  },
+  "intervention": "Engineering-fork only: canonicalize floating learned scores and Hedge weights to 12 significant decimal digits at checkpoint serialization, retaining all original in-memory learning/forecast operations; reject nonfinite floats. The restoration API remains source-checksummed and canonical-byte exact. This is a precision change at persistence boundary, not evidence for predictive scientific gains.",
+  "fixtures": [
+    "synthetic deterministic event-only coordinate cycles",
+    "synthetic deterministic long-run structural switches",
+    "synthetic deterministic action-interaction variety",
+    "explicit one-ULP low-bit float perturbation negative control"
+  ],
+  "forbidden": "No C.generator(seed) for any original CKAD42/CKAD41 DEV/pilot/primary, no direct pilot/primary scoring; no scheduled tasks, paid services, owner first-use, controller or main mutations.",
+  "acceptance": "Linux and Windows on SAME exact source SHA independently pass all original CKAD42 fixture unit tests plus engineering-specific tests; stable fixture checkpoint hash and component digests identical across OS on each separate fixture; exact cold restore, conflict/idempotence/source preservation, bounded checkpoint dimensions, forecast before/after cold restore error <=1e-8; one-ULP deliberate perturbation gives identical stable checkpoint; raw snapshot difference only a diagnostic not failure. No claim full regression or original cohort requalification.",
+  "scope_paths": [
+    "research/contrib/chatgpt/CKAD-42/campaign.py (engineering fork only)",
+    "research/contrib/chatgpt/CKAD-42-ENG/*",
+    ".github/workflows/ckad42-eng-checkpoint-fixtures.yml"
+  ],
+  "status": "engineering qualification only; scientific data and results frozen and untouched"
+}
