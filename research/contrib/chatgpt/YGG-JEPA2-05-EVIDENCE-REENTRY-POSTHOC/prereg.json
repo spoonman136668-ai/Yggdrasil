@@ -1,0 +1,109 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC",
+  "contributor": "ChatGPT independent causal retention research contributor",
+  "contribution_class": "falsification",
+  "scientific_status": "UNPREREGISTERED_POSTHOC. Both original archived development sources, reset events, and old-world scores were already inspected before proposing this gate. No scientific first use or confirmatory gain is claimed.",
+  "question": "Can a single frozen native old-context readout and the unchanged adaptively resetting native readout be combined by fixed-share Bayesian evidence from previously witnessed public outcomes, without sacrificing new-law adaptation? Does the gate beat an unadapted half-mixture and both single-readout baselines on these already consumed cases?",
+  "hypothesis": "A small deterministic history-driven gate can change weights after observed causal outcomes, reducing the retention-adaptation conflict of naive reset suppression. Its test may fail; no hyperparameters adjusted after running.",
+  "exact_parent_sha": "594c553d2d6033598d37859d81b9ee25481ec4c6",
+  "original_jepa2_parent": "7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+  "original_native_reset_qualified": "6cef0688a2c70cee2c60f38a2774f83661c7e3ef",
+  "prerequisite_evidence": [
+    "Original JEPA2-05 DEV_NO_GO, PR #1298 at 7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+    "Reset-only archival effect PASS two OS, run 44629351965, posthoc +0.044890314/+0.080409588 old Brier after reset",
+    "Reset-suppression tradeoff PASS two OS, run 44631935621, posthoc old-Brier lower but later prequential higher",
+    "P0 historic member retrieval vs fully pooled history retrospective no clear gain, PR #1329 comment #7024237726. This contribution tests a DIFFERENT matched JEPA2 native original-vs-current policy pair and cannot be treated as independent scientific source."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/prereg.json",
+    "research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/gate.py",
+    "research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/README.md",
+    ".github/workflows/ygg-jepa2-05-evidence-reentry-posthoc.yml",
+    ".ice/code-atlas.json,.ice/code-atlas.ice,.ice/code-atlas.html (automatically generated source-only final seal)"
+  ],
+  "inputs": [
+    {
+      "type": "original_cold_snapshot",
+      "path": "research/contrib/chatgpt/YGG-RET01/seed-{14071,14072}-state.json",
+      "git_blobs": [
+        "e2912ca930ad99ed23bfee4ce18d1e3945f6780a",
+        "3f076a393a15911769c0a40d37ccafc06dfaf2b7"
+      ]
+    },
+    {
+      "type": "original_continued_six_head_archive",
+      "path": "research/contrib/chatgpt/YGG-JEPA2-05/original/{linux,windows}/seed-{14071,14072}-state.json",
+      "git_blobs": [
+        "33b648ef36e381a2eb753094f930a4722570b448",
+        "5b9df452e45a1ebc3faadb265ceeffbc580ed7bf",
+        "57c89a43764b9a35cec24ef9133a606b4939292a",
+        "a753d9c3caa36e6983d1478693cf1db566d449c6"
+      ]
+    },
+    {
+      "type": "original_retention_baselines",
+      "path": "research/contrib/chatgpt/YGG-JEPA2-05/result.json",
+      "git_blob": "3db6647b6eb89624e2ca4ff990b2c48cb95b5a4b"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      99231,
+      99247
+    ],
+    "old_to_new": {
+      "14071": 99231,
+      "14072": 99247
+    },
+    "source_scope": "exact 16 previous development episodes after 1006 or 981 original native observations; zero fresh source actions, no new tests invoking source.py or original campaign.py",
+    "probe_scope": "same previously consumed last 32 old-world native episodes used by frozen JEPA2-05 old-score diagnostic",
+    "actions": "exact original observed intervention decisions, matched across all controls; no new action selection",
+    "capacity": "ONE active native learner as the only learner, ONE immutable read-only pre-continuation native snapshot (not a trainer), fixed scalar Bayesian weight. No new hidden models or extra source actions.",
+    "prequential_forecasts": "For each of the 16 continuation episodes, compute predictions from unchanged active native and frozen anchor BEFORE observe. For each policy, score 0.5*(transition Brier+conditional terminal Brier). After each complete witnessed event, use action consequence likelihood to update gate weight; no label or phase inputs.",
+    "weight_mechanism": "fixed-share prior w_old=0.5, share_alpha=1/8 after normalized likelihood Bayes update; likelihood of episode = P(s2 observed|view,x1)*P(y observed|view,x1,s2,x2), full observation. Gate terminal forecast conditions old-vs-active expert weights on observed s2, so two-stage predictions remain probabilistically coherent.",
+    "controls": [
+      "Original source-exact adaptive native readout",
+      "original frozen native old-readout anchor",
+      "exact unchanging 50:50 mixture with correct conditional-terminal mixture",
+      "fixed-share Bayesian evidence gate alpha=1/8; prequential previous public outcomes only",
+      "source-exact sham native replay for original checkpoint equality",
+      "no-reset previous qualified run 44631935621, contextual comparison only, not mixed into scoring"
+    ],
+    "phase_roster": "A_initial new indices 0-5, B_change 6-10, A_return 11-15 for evaluation only, never readout or gate input; all 16 witness forecasts prequential",
+    "negative_controls": [
+      "Fixed 50:50 prior mixture prevents attributing gains merely to access to old readout",
+      "Cold immutable anchor SHA and unmodified final native checkpoint SHA verified",
+      "Run same exact 16 outcomes on both independent OS, check prequential/old-probe numerical parity"
+    ],
+    "no_post_selection": "No retuning share_alpha, prior, variants, scoring, phase boundaries or retention thresholds after first outcome.",
+    "budget": "At most 2 archived seeds x 16 observed steps, no source actions, <=15 min source-evaluation per OS plus <=40 min mandatory full original cross-platform regression",
+    "cpu_profile": true
+  },
+  "metrics": [
+    "Prequential whole-16 and phase-specific Brier for adaptive, frozen anchor, constant half mixture, fixed-share gate",
+    "Last-32 old-probe Brier for same four readouts with final gate posterior",
+    "Gate old expert weight before/after each already observed event and after all 16, posterior range and cold-source pins",
+    "Relative prequential Brier compared with both single readouts and fixed half mixture",
+    "Per-seed archived source replay PASS, no changed native or source data, two-platform exact numeric parity",
+    "CPU process seconds"
+  ],
+  "classification_rules": {
+    "posthoc_promising": "ARCHIVED_DIAGNOSTIC_ONLY if on BOTH seeds gate prequential whole-16 Brier does not exceed adaptive+0.005 AND gate final historical old Brier <= original(old)+0.03, plus exact source controls and two-OS parity. This is NOT a scientific pass or integration permission.",
+    "posthoc_negative": "ARCHIVED_NEGATIVE if either seed fails both retrospective criteria, or gate is weakly worse than constant-half on both full-16 prequential scores. Preserve full result and don't retune.",
+    "posthoc_mixed": "ARCHIVED_MIXED if some metrics improve but either seed breaches the combined strict posthoc promising criteria.",
+    "invalid": "REPRODUCTION_FAIL on any original/final archived cold source SHA mismatch, old-probe published Brier error>1e-10, nonfinite weights/prediction, source/phase leakage, active-model state mismatch, changed source file, new source action, wrong original 16 witness suffix or missing exact atlas.",
+    "science_pass": "False for all outcomes: this data and gate design are posthoc and do not qualify unseen transfer, statistically independent improvement or official model promotion."
+  },
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "production_authority": false,
+    "promotion_authority": false,
+    "scientific_first_use": false,
+    "controller_or_scheduler_authority": false,
+    "model_owner": "Unified Causal Intelligence Amalgam Work chat only",
+    "native_model_training_state_mutation": false
+  }
+}
