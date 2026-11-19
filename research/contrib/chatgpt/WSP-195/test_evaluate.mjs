@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 const header="mut\tHD\tInput\tIGG10\tIGG20\tIGG90\tI10fit\tI20fitRaw\tI90fit\tAOfit\tI20fit";
 assert.throws(()=>evaluateWSP195(""),/SOURCE_BYTES_INVALID/);
 assert.throws(()=>evaluateWSP195("incorrect "+("z".repeat(200))),/ORIGINAL_11_COLUMN_HEADER_MISMATCH/);
-assert.throws(()=>evaluateWSP195(header+"\nNOOO\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"),/HD_WT_DISAGREEMENT/);
+assert.throws(()=>evaluateWSP195(header+"\nVDGA\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"),/HD_WT_DISAGREEMENT/);
 assert.throws(()=>evaluateWSP195(header+"\n?DGV\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"),/MUTANT_ALPHABET_OR_LENGTH/);
 assert.throws(()=>evaluateWSP195(header+"\nVDGV\t0\t20\t1\t1\t1\t1\t-3\t1\tNA\t1\n"),/INVALID_FITNESS_VALUE/);
 assert.throws(()=>evaluateWSP195(header+"\nVDGV\t0\t20\t1\t1\t1\t1\t1\t1\tNA\t1\n"),/SOURCE_MEASURED_HD_COHORT_MINIMUM/);
