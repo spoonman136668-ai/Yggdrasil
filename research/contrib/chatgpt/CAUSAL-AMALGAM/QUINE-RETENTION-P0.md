@@ -85,3 +85,11 @@ A source-free negative test supplies a wrong manifest pin, altered manifest,
 changed tolerance, and stale anchor to the idempotent route. This is only
 research-branch integrity hardening: owner custody, fresh learning,
 scientific benefit, and accepted deployment remain UNVERIFIED.
+
+## Integrated continuation envelope (research candidate, November 19, 2026)
+
+The pure cumulative_checkpoint.py codec bundles the exact pre-existing native+four-JEPA-head checkpoint bytes with a separately pinned Quine manifest, trained selector routing configuration and evidence, rejected charged-witness receipts, historical functional readout hashes, and an explicit owner-supplied continuation cursor. Anchor and active core bytes are preserved without mutation, retraining or conversion. Identical veto receipts deduplicate; conflicting IDs, accepted/veto overlap, altered packets, forged weights and selector evidence fail closed on restore.
+
+The caller must use the existing source-pinned native/Jepa restore route and reconstruct the policy from its saved evidence. This research-only bundle does not modify NativeCausalAmalgam v1, authorize scientific first-use, or prove durable owner custody. An independently authorized owner must atomically save this envelope together with its full charged receipt store, verify readback and crash recovery, and authenticate the cursor and lease before using it for cumulative training. The separate six-head JEPA2 research architecture is not implicitly fused into this four-head Amalgam.
+
+Synthetic integration tests alone cannot prove original learned-model cold restore or scientific efficacy.
