@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-192",
+  "contributor": "chatgpt",
+  "contribution_class": "disjoint-replication",
+  "question": "Does gradient-free, directly programmed residual composition from public observed gene-pair fitness outperform fully fitted same-information additive and bilinear controls on previously excluded historical gene pairs?",
+  "hypothesis": "Local two-hop residual effect programming yields lower held pair RMSE than the strongest matched conventional control without accessing held pair outcomes before scoring.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "WSP-190 PR #1284 frozen developmental NO_GO; do not reuse its light DEV",
+    "WSP-191 isolated raw GEO source-admission branch at d63c6cdbb23f1aa793ed88860843ae7519715a39; no raw GEO data available; this is a distinct outcome and separate branch"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSP-192/"
+  ],
+  "inputs": [
+    {
+      "name": "Original author gene-averaged phenotype fitness matrix",
+      "git_blob_sha1": "c3609fe77b10e8b18d61bde816743528e42a0533",
+      "source": "thomasmaxwellnorman/Perturbseq_GI@3b25109aeb9c0c2026bd70abd50304a0ad4e5395/final_emaps/processed_fitnesses.csv",
+      "transformation": "Original author's GI_generate_populations.ipynb groups independent guide-level fitness phenotype matrix by gene along both axes; replicate-average source, NOT raw transcriptomic cell expression; only CSV header/identity blob seen before prereg",
+      "license": "public research read-only, no copying original data into contribution repo, no license grant claimed"
+    }
+  ],
+  "source_usage": {
+    "data_custody": "Author source and exact Git blob, not GEO publisher raw checksum",
+    "observed_outcomes_at_prereg": false,
+    "biological_design": "Historical K562 genetic-interaction growth fitness, previously published and analyzed in original author's papers, not virgin experimental condition or model-generated world",
+    "disallowed": [
+      "raw GEO cell matrices",
+      "author-precomputed processed_emap interaction predictions or scores",
+      "full-matrix preprocessing using VALID/DEV outcomes",
+      "unseen perfect do or causal direction claims",
+      "training with author's published matrix-completion fits",
+      "source first-use owner issue #426 protected original-world actions"
+    ]
+  },
+  "frozen_design": {
+    "seeds": [
+      19207,
+      19211,
+      19219
+    ],
+    "split": "Canonical unordered gene pairs i<j restricted to intersection of row/column names; exclude 'negative' and any NegCtrl-prefixed row/column. If both directed measurements finite, use arithmetic mean, else use sole finite; never use diagonal. Hash SHA256('WSP192-ORIGINAL-GENE-FITNESS-v1\\0'+gene_i+'\\0'+gene_j); use first eight bytes big-endian modulo 100: FIT 0-69, VALID 70-84, DEV 85-99. Do not rebalance salt or pair groups after examining numeric outcomes.",
+    "ordering": "Sort pair names ascending lexicographically before split and fitting; deterministic number arithmetic; DATA always parsed from exact Git blob, not a revised checkout.",
+    "data_budget": "Only the complete specified ~236kB original author CSV; no other numeric source or private original-world action; require >=70 distinct genes, >=1000 observed unordered non-diagonal pairs, >=650 FIT, >=100 VALID, >=100 DEV. Failure stops gate.",
+    "compute_budget": "One preregistered primary scoring pass after code commit; 4 additive ridge lambdas; 6 bilinear ranks/regularizations; 7 candidate beta scalars; 2 negative controls; at most 200 deterministic ALS sweeps per rank; 2000 pair bootstrap samples. No tuning after DEV.",
+    "capacity": "Direct program: one scalar additive bias per gene, observed FIT-only pair residual entries, one scalar beta; no learned hidden architecture outside specified residual-memory footprint. Conventional bilinear: U and V each n x rank (rank 2,4,8) and same additive biases; matched FIT labels, more capacity than candidate low-order program.",
+    "evaluator": "Normalize all target fitness values by FIT-only mean and sample-scale SD; pair-equal-weighted RMSE on VALID and separately held DEV. Strongest fully trained conventional selected by minimum VALID RMSE. Candidate beta selected on VALID. CI via 2000 pair-resampled bootstrap DEV RMSE gains, seed 19219; include full PROCESS wall time and internal target counts.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "FIT-only mean predictor 0 after normalization",
+    "FIT-only additive main-effect ridge regression (4 lambdas [0.001,0.01,0.1,1]) by convergence-stopped coordinate descent",
+    "FIT-only conventional bilinear low-rank regularized matrix completion rank [2,4,8] lambda [0.1,1] via deterministic 200-sweep ALS, VALID-ranked; same observed FIT pair values",
+    "FIT pair residual label-permutation null computed with fixed seed 19211, candidate beta chosen VALID only",
+    "Candidate beta=0/no-composition ablation"
+  ],
+  "candidate_algorithm": "FIT-only additive biases b_i estimated by ridge coordinate descent; direct FIT residual memory R(i,k)=y(i,k)-bias(i)-bias(k) from observed FIT edges, absent edges zero and unavailable. For unobserved pair (i,j), q(i,j)=sum over shared FIT neighbors k of R(i,k)*R(j,k)/(shared_count+5), using neither VALID nor DEV pair labels or scores. Predict additive(i,j)+beta*q(i,j), beta in [-2,-1,-0.5,0,0.5,1,2] chosen min VALID RMSE. This is a non-gradient two-hop residual program; analogous classical kernel/collaborative filtering and NOT proven novel.",
+  "classification_rules": {
+    "supported": "At least 5% lower held DEV RMSE than strongest VALID-selected fully fitted conventional control, 2000-replicate pair-level 95% bootstrap lower gain bound >0, all original-source engineering/custody gates PASS, no source leakage and conventional optimizer convergence qualified. Remains PUBLIC_DEV not SCIENTIFIC_PASS.",
+    "mixed": "Candidate improves some held metrics or costs but misses statistical/fair conventional thresholds; preserve result and no promotion.",
+    "negative": "Candidate held RMSE ties or loses to strongest control or no validated held gain; DEVELOPMENT_NO_GO; preserve negative and no post-DEV tuning.",
+    "invalid": "Source not exact Git blob, source shape/data-count infeasible, nonfinite input, duplicate gene labels, split leakage, code drift after first held score, optimizer/convergence or resource accounting invalid. Do not turn a scientific loss into infrastructure failure."
+  },
+  "prohibited_after_primary_run": [
+    "source replacement",
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "merge or native model integration based on public DEV"
+  ],
+  "authority": {
+    "research_only": true,
+    "protected_first_use_allowed": false,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit prereg FIRST before fetching target value rows or running any predictor; source-free coding and test allowed; train/DEV only after exact source freeze."
+}
