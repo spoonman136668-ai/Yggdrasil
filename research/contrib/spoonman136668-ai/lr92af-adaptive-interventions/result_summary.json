@@ -1,0 +1,155 @@
+{
+  "schema": "lr92af.external-development-summary.v1",
+  "experiment_id": "LR-92AF",
+  "classification": "DEVELOPMENT_NO_GO",
+  "science": "NO_GO",
+  "engineering_local_audit": "PASS",
+  "native_training": false,
+  "first_use_consumed": 0,
+  "prereg_commit": "5f273a9a9d8171de95c81f501bc31c979784a978",
+  "runner_commit": "0db333045a125ea0b7f3e9fd295ebb93495f248b",
+  "parent_pr": 1272,
+  "parent_raw_sha256": "7b94587fafbf9ce2fcc4de84c594b1a02c9137a7c9cead39d928c30dbe0676b0",
+  "prereg_sha256": "eed5a93f70828565f25ce0f582a50e544f378dab5c39afef902eecdd86a86880",
+  "source_sha256": "02ac5e7a51a46a97a18791a85298fd27d11bdd0b64cb8506018e31291827e098",
+  "raw_result_sha256": "dcdddb974dbc0148a2f0550b19b1549cda3f2b803968adce7be7a90a0d6cb950",
+  "raw_result_bytes": 5796201,
+  "cohort": {
+    "worlds": 240,
+    "seen_mode": 192,
+    "unseen_mode": 48,
+    "seeds": [
+      929200611,
+      929200612,
+      929200613
+    ],
+    "fit_context0": 112,
+    "fit_context1": 64,
+    "heldout_validation": 256,
+    "noise": 0.35,
+    "model_hypothesis_states": 256,
+    "all_policies_same_prior": true,
+    "environment_potential_outcome_tape_shared": true
+  },
+  "arms": {
+    "eig": {
+      "exact_seen": 37,
+      "exact_unseen": 6,
+      "false_seen": 1,
+      "false_unseen": 1,
+      "accuracy": 0.6362467447916667,
+      "ece": 0.0521063045154328,
+      "action_counts": [
+        4248,
+        3736,
+        3695,
+        3681
+      ]
+    },
+    "balanced": {
+      "exact_seen": 12,
+      "exact_unseen": 1,
+      "false_seen": 0,
+      "false_unseen": 0,
+      "accuracy": 0.631201171875,
+      "ece": 0.06799202893320044,
+      "action_counts": [
+        3840,
+        3840,
+        3840,
+        3840
+      ]
+    },
+    "random": {
+      "exact_seen": 8,
+      "exact_unseen": 3,
+      "false_seen": 1,
+      "false_unseen": 0,
+      "accuracy": 0.6304850260416667,
+      "ece": 0.08520340246203871,
+      "action_counts": [
+        3816,
+        3893,
+        3879,
+        3772
+      ]
+    },
+    "top2": {
+      "exact_seen": 37,
+      "exact_unseen": 6,
+      "false_seen": 1,
+      "false_unseen": 1,
+      "accuracy": 0.6366373697916666,
+      "ece": 0.05615567730581084,
+      "action_counts": [
+        4259,
+        3742,
+        3696,
+        3663
+      ]
+    },
+    "stale_eig": {
+      "exact_seen": 0,
+      "exact_unseen": 0,
+      "false_seen": 0,
+      "false_unseen": 0,
+      "accuracy": 0.631884765625,
+      "ece": 0.4639466375683133,
+      "action_counts": [
+        8512,
+        1088,
+        4160,
+        1600
+      ]
+    }
+  },
+  "preregistered_checks": {
+    "exact_vs_balanced": true,
+    "exact_vs_random": true,
+    "false_seen_safe": true,
+    "false_unseen_safe": false,
+    "accuracy_gain": true,
+    "calibration": true,
+    "cold_restore": true,
+    "equal_action_budget": true
+  },
+  "per_seed_seen_exact_gain_over_balanced": [
+    10,
+    10,
+    5
+  ],
+  "exploratory_paired_seed_world_bootstrap_count_gain_ci_95": [
+    16,
+    34
+  ],
+  "unseen_false_case": {
+    "seed": 929200612,
+    "world_id": 41,
+    "base_id": 14,
+    "posterior_confidence": 0.934794375491219,
+    "map_index": 126
+  },
+  "audit": {
+    "independent_assertions": 170471,
+    "policy_world_action_decisions": 76800,
+    "audit_source_sha256": "1dd51f801ea88ec35f91629296f1b215d4a7a809fc64d374c1453fdb00c2162f",
+    "audit_receipt_sha256": "26ba9f603d21e80b2b972846ff053f28c737006f1e9876100d5942505cd73267"
+  },
+  "data_custody": {
+    "source_uploaded": true,
+    "prereg_uploaded": true,
+    "auditor_uploaded": true,
+    "compact_scored_ledger_uploaded": true,
+    "original_5796201_byte_observation_record_uploaded": false,
+    "original_raw_sha_recorded": true,
+    "ledger_decoded_sha256": "e7a4e50196da76c596bfd1f00f407ca6e7345a530910646ec73d12796c342210"
+  },
+  "limits": [
+    "Synthetic predefined 256-state Boolean grammar, NOT native Yggdrasil learning",
+    "The informative selection gain is developer evidence, not matched scientific cross-environment qualification",
+    "One unfamiliar-mode false construction violated preregistered safety requirement",
+    "Original 5.80 MB raw observations not uploaded; exact frozen runner/seed can regenerate and local raw SHA recorded",
+    "Auditor adjusted sequence accumulation for tie resolution; primary result unchanged",
+    "No full native regression, no owner first-use, no merge or promotion"
+  ]
+}
