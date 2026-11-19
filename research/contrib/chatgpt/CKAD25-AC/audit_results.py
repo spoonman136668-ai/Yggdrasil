@@ -47,7 +47,7 @@ def law(weight,mask):
 
 
 def batch(weight,ids,fault=None):
-    return [[k&7,k>>3,law(weight,k)^(k==fault) for k in ids]
+    return [[k&7,k>>3,law(weight,k)^(k==fault)] for k in ids]
 
 
 def source_split(seed):
