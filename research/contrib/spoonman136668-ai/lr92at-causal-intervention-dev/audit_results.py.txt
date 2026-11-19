@@ -1,0 +1,107 @@
+"""Independent read-only audit: do not train or tune LR-92AT learners here."""
+from __future__ import annotations
+from collections import defaultdict
+from pathlib import Path
+import csv
+import hashlib
+import json
+import math
+import statistics
+
+from causal_programs import ACTIONS,NOISE,TABLES,OOD_TABLES
+from intervention_worlds import DEV_SEEDS,development_worlds,source_manifest
+from evaluate import ARMS,BASELINES
+
+
+def read_and_audit(result_path='results.json', protocol_path='frozen_dev_protocol.json'):
+    raw=Path(result_path).read_bytes()
+    results=json.loads(raw)
+    plan=json.loads(Path(protocol_path).read_bytes())
+    assert plan['status']=='FROZEN_DEVELOPMENT_ONLY_PRIMARY_UNDEFINED'
+    assert plan['authority']['official_scientific_first_use'] is False
+    assert plan['development']['total_worlds']==60
+    assert plan['development']['new_seeds']==list(DEV_SEEDS)
+    assert results['worlds']==60 and len(results['rows'])==60
+    assert results['training_updates_per_arm']==480 and results['heldout_query_points_per_arm']==480
+    assert results['decision']['scientific_pass_claimable'] is False
+    assert results['decision']['prospective_primary_defined'] is False
+    for name,digest in plan['frozen_source_sha256'].items():
+        assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest, name
+    manifests=json.dumps(source_manifest(),sort_keys=True,separators=(',',':')).encode()
+    assert results['manifest_sha256']==hashlib.sha256(manifests).hexdigest()
+    assert tuple(results['summaries'])==tuple(sorted(ARMS)) or set(results['summaries'])==set(ARMS)
+    worlds={(w.seed,w.hidden_mechanism,w.repetition):w for w in development_worlds()}
+    encountered=set()
+    recalc=defaultdict(list)
+    rows=[]
+    for item in results['rows']:
+        key=(item['seed'],item['mechanism'],item['rep'])
+        assert key not in encountered and key in worlds
+        encountered.add(key)
+        w=worlds[key]
+        assert item['ood']==w.ood
+        assert set(item['results'])==set(ARMS)
+        truth=(TABLES+OOD_TABLES)[item['mechanism']]
+        out={'seed':item['seed'],'mechanism':item['mechanism'], 'repetition':item['rep'], 'ood':int(w.ood)}
+        for arm, arm_result in item['results'].items():
+            actions=arm_result['actions']
+            obs=arm_result['observed']
+            assert len(actions)==len(obs)==8
+            assert arm_result['training_interventions']==8
+            assert arm_result['unique_actions']==len(set(actions))
+            assert arm_result['checkpoint_bytes'] in (101,68)
+            assert arm_result['state_bytes'] in (64,32)
+            assert all(a in ACTIONS for a in actions)
+            assert all(obs[t] == w.outcome(actions[t],t) for t in range(8))
+            assert all(isinstance(p,float) and math.isfinite(p) and 0<p<1 for p in arm_result['probe_forecasts'])
+            forecasts=arm_result['probe_forecasts']
+            p_expected=sum(((NOISE+(1-2*NOISE)*truth[a])*(1-f)**2+
+                           (1-(NOISE+(1-2*NOISE)*truth[a]))*f*f)
+                         for a,f in enumerate(forecasts))/8
+            p_empirical=sum((f-y)**2 for f,y in zip(forecasts,w.probe_labels))/8
+            assert abs(p_expected-arm_result['expected_probe_brier'])<1e-12
+            assert abs(p_empirical-arm_result['observed_probe_brier'])<1e-12
+            assert len(arm_result['checkpoint_sha256'])==64
+            assert arm_result['seconds_including_planning']>=0
+            recalc[(arm,'in' if not w.ood else 'ood',w.seed)].append(p_expected)
+            out[f'{arm}_expected_brier']=format(p_expected,'.12f')
+            out[f'{arm}_observed_brier']=format(p_empirical,'.12f')
+            out[f'{arm}_actions']=''.join(map(str,actions))
+        rows.append(out)
+    assert len(encountered)==60
+    seed_deltas={}
+    for seed in DEV_SEEDS:
+        ca=statistics.mean(recalc[('CausalLookahead2','in',seed)])
+        best=min(statistics.mean(recalc[(arm,'in',seed)]) for arm in BASELINES)
+        seed_deltas[str(seed)]=best-ca
+        for arm in ARMS:
+            expect=statistics.mean(recalc[(arm,'in',seed)])
+            assert abs(expect-results['summaries'][arm]['by_seed'][str(seed)])<1e-12
+    best_ood=min(statistics.mean(x for s in DEV_SEEDS for x in recalc[(a,'ood',s)])
+                 for a in BASELINES)
+    candidate_ood=statistics.mean(x for s in DEV_SEEDS for x in recalc[('CausalLookahead2','ood',s)])
+    fast=min(results['summaries'][a]['total_seconds'] for a in BASELINES)
+    candidate_time=results['summaries']['CausalLookahead2']['total_seconds']
+    decision=(all(d>=.01 for d in seed_deltas.values()) and candidate_ood<=best_ood+.01
+              and candidate_time<=2*fast)
+    assert decision==results['decision']['candidate_dev_go'] is False
+    assert all(abs(seed_deltas[s]-results['decision']['seedwise_advantage_vs_best_control'][s])<1e-12 for s in seed_deltas)
+    return {'status':'PASS','source_protocol':'LR92AT_FROZEN_DEV','results_sha256':hashlib.sha256(raw).hexdigest(),
+            'rows':len(rows),'training_observations_per_arm':480,'heldout_queries_per_arm':480,
+            'seedwise_candidate_advantage':seed_deltas,'candidate_ood_expected_brier':candidate_ood,
+            'best_conventional_ood_expected_brier':best_ood,
+            'candidate_wall_s':candidate_time,'fastest_conventional_wall_s':fast,
+            'relative_planning_time':candidate_time/fast,'development_go':False,
+            'scientific_pass_claimable':False},rows
+
+
+def write_csv(rows,path):
+    with open(path,'w',newline='') as stream:
+        writer=csv.DictWriter(stream,fieldnames=list(rows[0]),lineterminator='\n')
+        writer.writeheader();writer.writerows(rows)
+
+if __name__=='__main__':
+    receipt,rows=read_and_audit()
+    Path('audit_receipt.json').write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+    write_csv(rows,'per_world_metrics.csv')
+    print(json.dumps(receipt,indent=2,sort_keys=True))
