@@ -1,0 +1,59 @@
+name: CKAD42 engineering-only portable checkpoint fixture parity
+on:
+  push:
+    branches:
+      - research/ckad42-eng-portable-checkpoint-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  fixture:
+    if: "github.event.head_commit.message == 'ci(ckad42-eng): qualify portable checkpoint fixtures on both OS'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Avoid platform-dependent checkout rewriting
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source, protocol and no-science-first-use preflight
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 30700bf17c75f1ef18354b82169f3b03c18c7b95 HEAD
+          git merge-base --is-ancestor e8e1905d069f8fce092b71279a5bbc40aabfe33e HEAD
+          test ! -e research/contrib/chatgpt/CKAD-42-ENG/scientific_pilot.json
+          test ! -e research/contrib/chatgpt/CKAD-42-ENG/scientific_primary.json
+          python -B -c "import ast,pathlib; p=pathlib.Path('research/contrib/chatgpt/CKAD-42-ENG'); [ast.parse(f.read_text()) for f in p.glob('*.py')]; ast.parse(pathlib.Path('research/contrib/chatgpt/CKAD-42/campaign.py').read_text())"
+      - name: Original CKAD42 fixture unit tests (no DEV seeds scored)
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-42 -p test_ckad42.py -v
+      - name: Engineering-only negative controls and restoration tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-42-ENG -p test_portable_checkpoint.py -v
+      - name: Three fixed engineering fixtures with SHA and precision receipts
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-42-ENG/fixtures.py
+          test -z "$(git status --porcelain)"

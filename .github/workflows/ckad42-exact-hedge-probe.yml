@@ -1,0 +1,39 @@
+name: CKAD42 EXACT bounded Hedge divergence probe (fixtures only)
+on:
+  push:
+    branches:
+      - research/ckad42-eng-portable-checkpoint-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+jobs:
+  trace:
+    if: "github.event.head_commit.message == 'ci(ckad42-exact): probe first cross-OS Hedge drift'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Only pinned disjoint engineering fixture; no experimental cohort
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 091e366fe804a2c71944df87f7e1ecebe64a023b HEAD
+          python -B research/contrib/chatgpt/CKAD-42-EXACT/trace_hedge.py

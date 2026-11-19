@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.ckad42.engineering-exact-cold-restore.v1",
+  "parent": "6550ee5a5a23c82e27995bf618506fbfaaf445dc",
+  "predecessor_pr": 1296,
+  "predecessor_losy_qualified_sha": "012365eb16fadb19c2d5f5e48fd5c1ad5a185c08",
+  "goal": "Retain CKAD42 exact same-platform cold forecast and exact snapshot bytes on restoration, while making fixture-only cross-platform learned weight snapshots agree without rounding learned state.",
+  "method": "Remove 12-significant-digit checkpoint quantization. Pin the four log-likelihood source constants using exact IEEE binary64 fromhex literals; replace native causal basis and Hedge uses of platform-dependent libm exp with decimal.Context.exp from exact binary64 source values (context precision 42, rounding half even), converted once to binary64 and cached. Do not change Boolean grammar, learner update schedule, discounted short-memory factor 0.93, source IDs, outcome budgets or any original accepted model.",
+  "root_cause_hypothesis": "Cross-platform libm log/exp last-bit differences propagate into learned state and serialized hashes. Raw mismatch in six of nine fixture samples, original CKAD42 one of four science checkpoints; hypothesis not yet proven.",
+  "frozen_fixture_sources": [
+    "cycle",
+    "rule_shift",
+    "action_interactions"
+  ],
+  "checkpoints": [
+    160,
+    320,
+    480
+  ],
+  "no_scientific_first_use": true,
+  "original_ckad42_science_dev_seeds_consumed_no_replay": [
+    42111,
+    42112
+  ],
+  "reserved_pilot_and_primary_unconsumed": [
+    42211,
+    42212,
+    42311,
+    42312,
+    42313
+  ],
+  "qualification": [
+    "Existing original seven CKAD42 fixture-only tests with exact (not approximate) cold-read forecast equality restored, plus separate exact-engineering negative controls",
+    "Three synthetic fixture families x three source-trained checkpoints; 9/9 exact serialized SHA-256 parity Linux/Windows on identical source tree; 9/9 source receipts and all component checks parity",
+    "Every sample checkpoint() exactly identical after cold restoration on each OS; all tested forecasts identical with == (zero loss), no serialization quantization or mutation at checkpoint time",
+    "Check duplicate, contradiction atomicity, read purity, source ID integrity, no unregistered science cohort scoring, nonfinite fail-closed",
+    "Record performance and root cause diagnosis from pinned libm and exp improvements; no scientific gain claim",
+    "Run full final repo regression only if and when scientific successor has a qualified candidate and explicit acceptance; this is an isolated research diagnostic."
+  ],
+  "failure_policy": "If any exact restoration or cross-OS fixture SHA differs, mark engineering not qualified, preserve logs, no weakening to approximate equality, no re-running original consumed DEV or first-use.",
+  "work_scope": [
+    "research/contrib/chatgpt/CKAD-42/campaign.py",
+    "research/contrib/chatgpt/CKAD-42/test_ckad42.py",
+    "research/contrib/chatgpt/CKAD-42-ENG/fixtures.py",
+    "research/contrib/chatgpt/CKAD-42-ENG/test_portable_checkpoint.py",
+    "research/contrib/chatgpt/CKAD-42-EXACT/*",
+    ".github/workflows/ckad42-eng-exact-checkpoint.yml"
+  ],
+  "authority": {
+    "read_only_owner": true,
+    "allowed_external_research_fixture_writes": true,
+    "no_merge": true,
+    "no_controller": true,
+    "no_scheduled_tasks": true,
+    "no_paid_api": true,
+    "no_science_first_use": true
+  }
+}

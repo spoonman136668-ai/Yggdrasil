@@ -1,0 +1,343 @@
+{
+  "schema": "yggdrasil.ckad42.exact-lossless-checkpoint-evidence.v1",
+  "experiment_id": "CKAD42-EXACT",
+  "decision": "ENGINEERING_EXACT_FIXTURE_PASS",
+  "scientific_decision": "CKAD42 original SCIENTIFIC_DEV_NO_GO unchanged",
+  "original_scientific_parent_pr": 1293,
+  "engineering_pr": 1296,
+  "prereg_protocol_commit": "091e366fe804a2c71944df87f7e1ecebe64a023b",
+  "prior_losy_fixture_qualification_source": "012365eb16fadb19c2d5f5e48fd5c1ad5a185c08",
+  "original_science_exact_source": "290b9a7f0ccd351b62e1bfb8f1de762601663bf2",
+  "exact_source_qualified_commit": "973150f940e0302bb9ca7e6bc5493b704aab545d",
+  "exact_source_qualified_tree": "437b5b62c82726437b091aa9fb70740b2687784c",
+  "source_blobs": {
+    "research/contrib/chatgpt/CKAD-42/campaign.py": "a0f567460b6c9b6d76359e18ff2167c0682bf0b2",
+    "research/contrib/chatgpt/CKAD-42/test_ckad42.py": "f67fb0ab321eea50e9aa8bcea2975cfb1f9ed160",
+    "research/contrib/chatgpt/CKAD-42-ENG/fixtures.py": "73a021947fc18128274d35195712f439d9613941",
+    "research/contrib/chatgpt/CKAD-42-EXACT/protocol.json": "7bea4be71e2a0b49b967e3941b15c5cf58027f35",
+    "research/contrib/chatgpt/CKAD-42-EXACT/test_exact_restore.py": "f8f3f42474edcc8b36c67bf4d4b45831c6e5275b",
+    "research/contrib/chatgpt/CKAD-42-EXACT/trace_hedge.py": "f01441438c376c177060be3b6b5dbc761df6c007",
+    ".github/workflows/ckad42-eng-exact-checkpoint.yml": "e9b7b44d35d8fdcc3ee7e3c9293b1313392be823",
+    ".github/workflows/ckad42-exact-hedge-probe.yml": "f2a8382272d675bb12e722880405ea0454534dba"
+  },
+  "ci": {
+    "run_id": 44493087197,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44493087197",
+    "conclusion": "success",
+    "head_sha": "973150f940e0302bb9ca7e6bc5493b704aab545d",
+    "platforms": [
+      {
+        "os": "ubuntu-latest",
+        "job_id": 135453377695,
+        "original_unit_tests_pass": 7,
+        "exact_negative_tests_pass": 7,
+        "fixture_elapsed_seconds": [
+          {
+            "fixture": "cycle",
+            "elapsed_wall_seconds": 3.239609
+          },
+          {
+            "fixture": "rule_shift",
+            "elapsed_wall_seconds": 3.225588
+          },
+          {
+            "fixture": "action_interactions",
+            "elapsed_wall_seconds": 3.164539
+          }
+        ]
+      },
+      {
+        "os": "windows-2022",
+        "job_id": 135453378242,
+        "original_unit_tests_pass": 7,
+        "exact_negative_tests_pass": 7,
+        "fixture_elapsed_seconds": [
+          {
+            "fixture": "cycle",
+            "elapsed_wall_seconds": 5.505528
+          },
+          {
+            "fixture": "rule_shift",
+            "elapsed_wall_seconds": 5.49564
+          },
+          {
+            "fixture": "action_interactions",
+            "elapsed_wall_seconds": 5.429859
+          }
+        ]
+      }
+    ],
+    "separate_CKB_proxy_failure_is_unrelated": true
+  },
+  "source_fixture": {
+    "families": [
+      "cycle",
+      "rule_shift",
+      "action_interactions"
+    ],
+    "events_per_fixture": 480,
+    "checkpoints_at": [
+      160,
+      320,
+      480
+    ],
+    "total_distinct_authentic_synthetic_fixture_source_events": 1440,
+    "not_original_scientific_data": true,
+    "original_consumed_dev_seeds_replayed": false,
+    "original_pilot_seeds_scored": false,
+    "original_primary_seeds_scored": false
+  },
+  "qualification_metrics": {
+    "two_platform_original_tests_passed_per_os": 7,
+    "two_platform_new_tests_passed_per_os": 7,
+    "checkpoint_pairs_total": 9,
+    "cross_os_full_checkpoint_sha_equal": 9,
+    "cross_os_component_sha_equal": 54,
+    "full_cold_restoration_forecast_error": 0,
+    "lossless_native_full_weight_snapshots": true,
+    "no_source_row_replays_or_scheduled_tasks": true,
+    "per_checkpoint": [
+      {
+        "fixture": "cycle",
+        "events": 160,
+        "ubuntu_sha256": "090e0e64126e709a8de33b67215edfe3dffe1989cccfa4c913c80060ffc98bdb",
+        "windows_sha256": "090e0e64126e709a8de33b67215edfe3dffe1989cccfa4c913c80060ffc98bdb",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "5b9cf332450358c68977d29bd670862c37ce1d2b6d1d5e878833777fd74114f6",
+          "mask_terminal": "c5550ff676e29c72104a5798f77e747ae4a24745c140f7228ec3d083b48c5d1f",
+          "mask_transition": "e6e1e283b1d5b9031dfd8f675eb801bfba7bd2fde58b640794f123475ce7b7d5",
+          "receipts": "1930d398c6455d7e9b94bec0909e191e25263ce0fe1ee57ceec11f4d1bbd436a",
+          "terminal": "39a82c0b368cde985ab6d59dadc9fc694c4dbb500ae10d09012d38ced9f7453f",
+          "transition": "6130c54bbdec380751ceaee81f39a7eb439befaf11626cd36fa2aab25a18a5ec"
+        },
+        "ubuntu_checkpoint_bytes": 56053,
+        "windows_checkpoint_bytes": 56053,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "cycle",
+        "events": 320,
+        "ubuntu_sha256": "e826ac279c4934c97f24ec017db25814eb847da5e98e1e3a003e89b553dad848",
+        "windows_sha256": "e826ac279c4934c97f24ec017db25814eb847da5e98e1e3a003e89b553dad848",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "439bf0f86eca4b05d2c6a6541d4ec9a1c464570f19b08e62d834a53fb186281b",
+          "mask_terminal": "d75238fab020153e89c8ec06cd0aa82d49b92eecca75ce45899bd7bad5fbaa1b",
+          "mask_transition": "319331348c9d9d9ff841525297d6d962fada7a22dc1ce9d0d810ab261ae9f798",
+          "receipts": "c777d5bc0a44e460c913365beb8f34f97c7b8e6aeb046d544071e81ac75e4203",
+          "terminal": "98f1aa34e1afd9f33b7456bc0a3ecde29c86f8ec836fe5657f75ccde785215ab",
+          "transition": "c57bdf3aa41cf8e42cb1f3e38d8a405e52f9a3dfc3ea59cf7053faa8ff2e879a"
+        },
+        "ubuntu_checkpoint_bytes": 76783,
+        "windows_checkpoint_bytes": 76783,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "cycle",
+        "events": 480,
+        "ubuntu_sha256": "b3c637ae98b9777e6be9173f25f8df97c818789192b4fe236375381b2e702310",
+        "windows_sha256": "b3c637ae98b9777e6be9173f25f8df97c818789192b4fe236375381b2e702310",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "132af82a39b3e35cd104aeab096a147816a7677a7c13eb516f590bd8a59b76a9",
+          "mask_terminal": "b6ee5e8d7c69bb4a5103e4827703bfa42a3f92202c64f3e7ba66c0ba41b01184",
+          "mask_transition": "150162fcbdb80c95d5527656dca5f6c2d4967900b91801d5d810346dcb55b7d6",
+          "receipts": "aeb65fae0db27e9086d61b464fb4687c208c05f36c298cddaaa8bed92f027703",
+          "terminal": "0e689fcbc9d4e937ef053d1afe74d3758af42057a92b799aa61c846adf4827e1",
+          "transition": "bd58d9f2b252c5a56fefd07b115a7c497122c90d7c310e8f488547b494d52da3"
+        },
+        "ubuntu_checkpoint_bytes": 97762,
+        "windows_checkpoint_bytes": 97762,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "rule_shift",
+        "events": 160,
+        "ubuntu_sha256": "22c6ef9e955e42b8e7754f2ae0518c118d04aab91d8cae2ab10dec28734a791e",
+        "windows_sha256": "22c6ef9e955e42b8e7754f2ae0518c118d04aab91d8cae2ab10dec28734a791e",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "963cac17d72b888fe832fd5d4da5aa429b81b473b68981ede1d01e38c538c4db",
+          "mask_terminal": "adc724b16260a6d3e55fa708be15ca33bcefcc10ae4679fc1cc431be54d220d1",
+          "mask_transition": "197ca44ba1f315ac7a70233c15bcc74d7abac9c64c89e1842693b728407a8552",
+          "receipts": "047ea76bfd3474fcd8c0d9220d6cc1d2b31476ed986eb936ed672b306f1486a7",
+          "terminal": "148e21c7282b9c88aca718730310cd7172d045718b7d141f0af499a818d8afc1",
+          "transition": "5d86f49ec5f1a1a90b4c6aa7c10801c0f6df3a31e70ee6561c883a2f371e444a"
+        },
+        "ubuntu_checkpoint_bytes": 56064,
+        "windows_checkpoint_bytes": 56064,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "rule_shift",
+        "events": 320,
+        "ubuntu_sha256": "7ccfaa7b7db81f0ef427c7d0d18e0a34d678e5c17d755c58fa4a98d36c9c0471",
+        "windows_sha256": "7ccfaa7b7db81f0ef427c7d0d18e0a34d678e5c17d755c58fa4a98d36c9c0471",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "d573860c98d54b70b27244e60d037005dc732ab7796c8299dc537e69265632f1",
+          "mask_terminal": "0a192204bceda7012ebdaf7de379e5404348897078f01d078b20f9da9c82c2d2",
+          "mask_transition": "9221a5e43b41ba7827652905d4c9dccbfbc42a08fccfb8bdace144f6b2d55024",
+          "receipts": "15466c89a6ba1d34222cfadc821170b435aa8c8bdf8568b81f50a9658b0fd9ca",
+          "terminal": "65e58524512105f0ee40ddc997332cb7cf1fc64eb6a1c26fca252526ce69e7ab",
+          "transition": "b83fa82067dfbfd22f46651c79a7bb445b59bcad2c56307a9a0d43f235d217e7"
+        },
+        "ubuntu_checkpoint_bytes": 76996,
+        "windows_checkpoint_bytes": 76996,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "rule_shift",
+        "events": 480,
+        "ubuntu_sha256": "de0fad3de1c8fd03d3df22e60116ff828e6358d208ca4a88403adf80169a7a24",
+        "windows_sha256": "de0fad3de1c8fd03d3df22e60116ff828e6358d208ca4a88403adf80169a7a24",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "d7409add69ee9db2f2abf82e8b7eda2c8cfcd6fca34161d35122083a97e4a3dc",
+          "mask_terminal": "38cace15be49922d096262db22d39c1ed0f86ac5044df836153903ce23b7a75d",
+          "mask_transition": "4f0de7b58aee7d2b6bd8257e8fcfa48d64323feb9a74702746cc05cfb5759862",
+          "receipts": "d77bae89c813a7409dd3666be73db70448e654d3b2d59c7944f9fea08c58fd30",
+          "terminal": "b3cfc43c7a39ed588840f7e8a4d2b0c2b8fe259749f3b61b531078a1bfa4a122",
+          "transition": "bb52c490a213a908219e58f2bf0ba417512078ba80335142174d68095e254b6d"
+        },
+        "ubuntu_checkpoint_bytes": 97648,
+        "windows_checkpoint_bytes": 97648,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "action_interactions",
+        "events": 160,
+        "ubuntu_sha256": "34956207f406a22415e03821f64c7356b02c8d13d7a07b738f025cb12ec67e33",
+        "windows_sha256": "34956207f406a22415e03821f64c7356b02c8d13d7a07b738f025cb12ec67e33",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "2ab22248e8888ed90f7eaf519b75f22b5b04e1eaf0202710637f725898ff4c58",
+          "mask_terminal": "fa464ada6b42a104d4d1eb335c2dbf0f0b1ef498fca208e791eae760a462e245",
+          "mask_transition": "54bee73769c960c3850f2aa6a1eea82e13d7afceb07f3ed210de499205601f44",
+          "receipts": "05a6e43405e1e03ae59cc74fc28d938d4e249f316ce5ce68965f1e3bd872e972",
+          "terminal": "f8229973481b9c55c3a9a0f1e3474469a7632d0cff9fe9790a8bdead1f81fd25",
+          "transition": "547ce3be5b6b578bae44b26077d7bf3af3575e798ea367457fcdd460ad3e6e9d"
+        },
+        "ubuntu_checkpoint_bytes": 56379,
+        "windows_checkpoint_bytes": 56379,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "action_interactions",
+        "events": 320,
+        "ubuntu_sha256": "7a06c2d959f7e47588df34287be9d217d332bb85d1242f3fff037c07a6900985",
+        "windows_sha256": "7a06c2d959f7e47588df34287be9d217d332bb85d1242f3fff037c07a6900985",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "220d59293760684e6721b13c9691b5379d85ba484b256b8b51862efdfad6f100",
+          "mask_terminal": "75a12bb7c8b91b8d6af3c3ad1a0564b8f48cb7b6d1501ec651df50e964a3f823",
+          "mask_transition": "e07a1e6d8358f4d0b861fbce4879239e426e8c0aa51baeb6b4122abbd5808e0a",
+          "receipts": "affa9da1d2326752feb9880a2a41cd0fa1cabfea66936f8df45fef13093e58e0",
+          "terminal": "89ad24db4279478106492917219362519b53fd5000dcf062c6a782f80de36a11",
+          "transition": "7ada1afa6677da0666d260dc96fd9277925ea63ed9f568f50be027d2321b5f2f"
+        },
+        "ubuntu_checkpoint_bytes": 77081,
+        "windows_checkpoint_bytes": 77081,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      },
+      {
+        "fixture": "action_interactions",
+        "events": 480,
+        "ubuntu_sha256": "1355ece3dca93135d272e4e828a3c50f20aa276e8ed5f4c37afb6edc7dfb503a",
+        "windows_sha256": "1355ece3dca93135d272e4e828a3c50f20aa276e8ed5f4c37afb6edc7dfb503a",
+        "full_snapshot_exact": true,
+        "source_component_sha256_match": true,
+        "component_sha256": {
+          "hedge": "f8b04f4ceb0f08417935a264f8070ef77bf3a1fa93fc484ec57b7814cafae4bc",
+          "mask_terminal": "a88c4b1eb3bf1c8e296788687eabcca0436fa67a39ac2f56e2eba91d370bb2fe",
+          "mask_transition": "d43347b4863a486b13d5a4455601fd30488d4f8c2a976add2c03690cffde34ab",
+          "receipts": "40537ea44c33bae6fec5d9162bf97ce0e56cb2267bd15d3955ccb4c2422e0145",
+          "terminal": "3b03e27df8398dc86ff9dfefb1f13cd6bd37c591970a2a771e89fe07f4b1062e",
+          "transition": "5cc9a8dae1334c0555dd7caf99008ffddd7558339fcd00c2561224ad93ae5de3"
+        },
+        "ubuntu_checkpoint_bytes": 97496,
+        "windows_checkpoint_bytes": 97496,
+        "no_checkpoint_rounding": true,
+        "cold_readout_exact": true,
+        "per_os_original_in_memory_lossless": true
+      }
+    ]
+  },
+  "diagnosis": {
+    "initial_exact_source": "973150f940e0302bb9ca7e6bc5493b704aab545d",
+    "first_exact_candidate_run": 44492264866,
+    "initial_candidate_checkpoint_sha_parity": "6 of 9; only Hedge disagreed for action_interactions",
+    "bounded_two_OS_trace_run": 44492689617,
+    "first_divergence_fixture": "action_interactions",
+    "first_divergence_zero_based_event": 74,
+    "observed_mismatch": "Prequential discounted squared residual differed by one binary64 ULP despite exact prior Hedge and exact full/short forecasts; caused next Hedge factor and later checkpoint drift.",
+    "bounded_implemented_fix": "Replace float **2 with ordered binary64 multiplication error*error in Hedge loss, preserve exact checkpoint; pin fixed likelihood logs and Decimal exp to avoid libc differences.",
+    "evidence_class": "ENGINEERING_FIXTURE_HYPOTHESIS_SUPPORTED; not proof of all unknown platform environments"
+  },
+  "performance": {
+    "previous_losy_fixture_wall_seconds": {
+      "ubuntu-latest": [
+        2.055033,
+        2.042416,
+        2.049762
+      ],
+      "windows-2022": [
+        1.357606,
+        1.344764,
+        1.33393
+      ]
+    },
+    "exact_final_fixture_wall_seconds": [
+      {
+        "os": "ubuntu-latest",
+        "per_fixture": [
+          3.239609,
+          3.225588,
+          3.164539
+        ]
+      },
+      {
+        "os": "windows-2022",
+        "per_fixture": [
+          5.505528,
+          5.49564,
+          5.429859
+        ]
+      }
+    ],
+    "interpretation": "Wall-clock observations are from separate unpaired hosted jobs and cannot establish controlled per-op slowdown or speedup; Decimal-based exponentials may cost more compute. No speedup claim."
+  },
+  "guardrails": [
+    "Original CKAD42 seven tests retain bit-exact restoration; none of the prior lossy approach is used by the final exact source.",
+    "All 9 exact full checkpoint SHA-256s match across the two OS; all 54 native-source component digests match; checkpoint roundtrip exact without lossy digit truncation.",
+    "Unit fixture outputs do not establish scientific causal transfer or early-return learning; original CKAD42 was scientific DEV_NO_GO.",
+    "Mandatory full final repo regression on candidate SHA and owner acceptance NOT performed; experimental PR remains draft and unmerged; accepted main unchanged.",
+    "No scientific original development seed replay, pilot first-use or primary evaluation; no owner/controller, scheduled task, paid API, deployment changes."
+  ],
+  "next": "Keep lossless fix in the existing draft PR #1296, preserve original negative science and previous lossy experimental evidence. Independent performance/compatibility full regression before any merge; separately preregister held-unfamiliar causal rule-change/return science using disjoint seeds and owner authority."
+}

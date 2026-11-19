@@ -1,0 +1,60 @@
+name: CKAD42 exact-cold fixture qualification (lossless binary64)
+on:
+  push:
+    branches:
+      - research/ckad42-eng-portable-checkpoint-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  exact-fixture:
+    if: "github.event.head_commit.message == 'ci(ckad42-exact): qualify lossless deterministic cold snapshots'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Disable cross-platform line-ending rewriting
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Check exact source, original test, and disjoint fixture boundary
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 091e366fe804a2c71944df87f7e1ecebe64a023b HEAD
+          git merge-base --is-ancestor 6550ee5a5a23c82e27995bf618506fbfaaf445dc HEAD
+          test ! -e research/contrib/chatgpt/CKAD-42-EXACT/scientific_pilot.json
+          test ! -e research/contrib/chatgpt/CKAD-42-EXACT/scientific_primary.json
+          python -B -c "import ast,pathlib; paths=[pathlib.Path('research/contrib/chatgpt/CKAD-42/campaign.py'),pathlib.Path('research/contrib/chatgpt/CKAD-42/test_ckad42.py')]+list(pathlib.Path('research/contrib/chatgpt/CKAD-42-EXACT').glob('*.py'))+[pathlib.Path('research/contrib/chatgpt/CKAD-42-ENG/fixtures.py')]; [ast.parse(p.read_text()) for p in paths]"
+          python -B research/contrib/chatgpt/CKAD-42/campaign.py --mode preflight
+      - name: Reinstated original CKAD42 exact cold-readout tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-42 -p test_ckad42.py -v
+      - name: Exact serialization and binary64-source negative controls
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-42-EXACT -p test_exact_restore.py -v
+      - name: Nine fixed checkpoint fixtures; no scientific seed first-use
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-42-ENG/fixtures.py
+          test -z "$(git status --porcelain)"
