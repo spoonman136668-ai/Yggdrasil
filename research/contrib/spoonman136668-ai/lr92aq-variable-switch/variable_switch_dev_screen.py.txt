@@ -76,9 +76,9 @@ def prequential(world, factory):
             score["return_after_16"].append(loss)
         m.observe_step(0, obs.action, obs.outcome)
         updates += 1
-        if i == start-1:
-            # Byte-identical cold restoration at the true B/A boundary
-            # for EVALUATOR parity only; no cue or label reaches the model.
+        if i == 32:
+            # Byte-identical cold restoration at a public fixed pre-switch
+            # time, NOT a hidden phase boundary or change cue.
             frozen = m.snapshot()
             restored = type(m).restore(frozen)
             if restored.snapshot() != frozen:
