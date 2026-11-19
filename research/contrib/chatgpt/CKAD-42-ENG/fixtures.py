@@ -123,8 +123,8 @@ def fixture_case(kind):
             if frozen.checkpoint()!=raw or frozen.n!=model.n:
                 raise AssertionError("CKAD42_ENG_COLD_NOT_EXACT")
             error=_max_forecast_error(forecast_grid(model),forecast_grid(frozen))
-            if error>1e-8:
-                raise AssertionError("CKAD42_ENG_PRECISION_LOSS")
+            if error!=0.0:
+                raise AssertionError("CKAD42_EXACT_COLD_FORECAST_CHANGED")
             samples.append({"observed_events":t+1,
                 "portable_checkpoint_sha256":digest(raw),
                 "raw_float_checkpoint_sha256":digest(_raw_state(model)),
@@ -153,7 +153,7 @@ def fixture_case(kind):
             "original_empty_sha256":digest(initial_identity),
             "samples":samples,"source_only":True,
             "duplicate_idempotent":True,"conflict_atomic":True,
-            "checkpoint_precision_error_at_most":1e-8,
+            "checkpoint_precision_error_at_most":0.0,
             "elapsed_wall_seconds":round(time.perf_counter()-started,6)}
 
 
