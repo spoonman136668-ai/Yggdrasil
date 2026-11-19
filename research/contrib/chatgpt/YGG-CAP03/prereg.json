@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.cap03.native-causal-contrast-development-prereg.v1",
+  "id": "YGG-CAP03",
+  "date": "2026-11-19",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1315,
+    "sha": "23429ef8145e88ce3005d5c5df6e87443a3c7dec",
+    "tree": "e838887af9a1ccfd2102647d798162af705e8aed",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "known_falsification": "CAP02 source 99721/99739 evidence key posterior underperformed full matched Bayesian control and even ungated mixture on both. Do not retune or score as novel.",
+  "hypothesis": "Native matched intervention contrasts from witnessed branch-reset counterfactual forks may form an action effect representation that generalizes across public states better than pooled/fitted controls, while preserving old native memories during cumulative learning.",
+  "source": {
+    "seeds": [
+      99811,
+      99829
+    ],
+    "start": "exact last public post from sealed per-OS CAP02 1086/1061 trained checkpoint",
+    "episodes_per_seed": 32,
+    "actions": "at every public state, precommit all four (a,b) interventions, execute each from same synthetic frozen state, witness all four causal consequences, and follow one precommitted primary branch to next state; never treat the other three as sequential native events",
+    "phase": "A 0-11; B 12-21; A-return 22-31 evaluator-only",
+    "family": "two independent deterministic causal equations; actions not retrofitted to results",
+    "hidden": "latent and phase evaluator-only; never inputs",
+    "new_source_first_use": "development-synthetic-only"
+  },
+  "model": {
+    "original": "cold restore entire CAP02 seven-component 1086/1061 cumulative native plus all six heads, source verified; preserve prior prefix and immutable native archive",
+    "native": "only precommitted primary branch of each episode updates native and six heads once, 32 total new episodes each seed",
+    "contrast": "additional native causal-contrast representation uses paired effects against (a=0,b=0) anchor for each public 3-bit state; separate frozen original, per-state anchor Beta and globally learned arm deltas; no LLM/no tokens",
+    "controls": "Bayesian exact state/arm full-history counts, Beta pooled action across states, fully refitted regularized 16-feature linear ridge model on exact same witnessed four fork labels each step, unpaired/shuffled contrast ablation, frozen original native and continuous native descriptive readouts",
+    "forecast_clock": "score every fork action before exposing any of its outcomes, then update all contrast and conventional arms once, update seven-component native only on the precommitted chosen branch",
+    "protection": "exclude all private state/phase/seed from predictors; preserve original source checkpoint bytes and old historical readout exactly",
+    "cold": "roundtrip original and new causal contrast with witnessed-fork tape canonical SHA; fail closed on altered source IDs, different effects, event count and action schedule"
+  },
+  "qualifier": {
+    "primary": "prequential mean two-output Brier on all 4 action forks over the final 10 A-return steps, separately per source seed; lower better",
+    "development_go": "paired native contrast beats the STRONGEST of exact-state Beta, pooled-arm Beta, fully fitted 16-feature ridge, and shuffled-contrast negative by at least 0.005 Brier on BOTH seeds, with post-training original immutable native/JEPA readout byte-exact and cold evidence audit PASS",
+    "secondary": "action ranking correctness vs held branch outcomes, conditional effect absolute error, resource timings; descriptive, not automatic pass",
+    "stopping": "score once per original frozen development source per OS, both are replicas not independent new scientific populations, no after-result tuning on these seeds; FAIL/NO_GO if any primary condition fails"
+  },
+  "budget": {
+    "cpu_seconds_per_seed": 180,
+    "max_new_native": 32,
+    "max_fork_witnesses": 128,
+    "max_checkpoint_bytes": 2097152,
+    "no_paid_apis": true,
+    "no_new_runners": true,
+    "no_scheduled_tasks": true
+  },
+  "authority": {
+    "repo_isolated_branch_only": true,
+    "draft": true,
+    "main_unchanged": true,
+    "no_merge": true,
+    "no_deployment": true,
+    "no_external_first_use": true,
+    "no_scientific_pass": true,
+    "no_forge_controller_integration": true
+  }
+}
