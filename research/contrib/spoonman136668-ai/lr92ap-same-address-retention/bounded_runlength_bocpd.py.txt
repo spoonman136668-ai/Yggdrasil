@@ -109,7 +109,8 @@ class BoundedRunLengthBOCPD14:
         target = self._context(slot, self._bit(action))
         probs = self._likelihoods(slot, target)
         start = slot*32
-        return sum(self._posterior[start+r] * probs[r] for r in range(32))/255.0
+        return self.HAZARD*0.5 + (1.0-self.HAZARD)*sum(
+            self._posterior[start+r] * probs[r] for r in range(32))/255.0
 
     def observe_step(self, address, action, public_outcome, *, retained=False):
         # Reject all externally invalid inputs before any mutation.
