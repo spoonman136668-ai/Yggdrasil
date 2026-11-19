@@ -1,0 +1,11 @@
+# CAP04 shortcut-control audit — isolated engineering-only instrument
+
+This source-locked branch inherits candidate `52eed12adb6187bb881e45ae30574c4714adb3fa` (tree `2d5139594481826bf1de25f9713e377a6086aff6`) and **does not update PR #1324 or train any registered Yggdrasil cohort**.
+
+The additional `shortcut_controls.py` produces a deterministic *engineering-only* diagnostic receipt from the two already-established source fixtures. It fits eight independently updated prequential Beta count arms to precisely the same 96 witnessed observations per fixture. The first forecast precedes witnessing the current intermediate sensor, and the terminal forecast follows witnessing the intermediate sensor but precedes the reward. All recorded events are genuine sequential observations, never counterfactual labels.
+
+Controls: action-only, clock-only modulo 16, clock+current action, current public state+action, actual previous action, intentionally misaligned action from two steps ago, plus **two explicitly disallowed source-ID oracles**. The source-ID controls use fixture metadata unavailable to a legitimate learner and must not be counted as valid comparator evidence. Pooled, novel, and cold-return fixture Brier values are diagnostics, **not** scientific assessment.
+
+Crucial structural finding: the old fixed four-action source allowed previous action to be exactly recovered from current action. The current per-source block-shuffle alternative provides varied predecessors at the same action/public context and sometimes differs for identical clock/current action across the two engineering worlds, but **fixture identity + absolute clock still recovers its action tape by construction**. This is not enough to certify an unknown-source causal transfer study. Actual first-use requires independent control review, evidence that fixture/source identifiers cannot leak, and qualified comparison against the already fitted strongest conventional causal controls.
+
+No existing scientific thresholds, episode histories, training weights, native/JEPA checkpoints, owner runtime, scheduled task, external research controller or accepted ref changes. DEV 99917/99931 and every pilot/primary source remain locked. Source alternative `1c312d6aed3e960d912d7e09120375cb8b987155` from an independent contributor stays a separate comparator and is not silently incorporated.
