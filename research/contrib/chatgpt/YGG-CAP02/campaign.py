@@ -19,7 +19,7 @@ ROOT=Path(__file__).resolve().parents[4]
 sys.path.insert(0,str(ROOT))
 from yggdrasil.native_context_basis import canonical,digest
 from yggdrasil.native_segmented_continuation import SegmentedNativeJEPA
-from yggdrasil.native_evidence_recall import EvidenceRecall
+from yggdrasil.native_evidence_recall import EvidenceRecall,restore_original_sealed_native
 HERE=Path(__file__).resolve().parent
 PLATFORM="windows" if sys.platform=="win32" else "linux"
 PRIOR=HERE.parent/"YGG-CAP01"/"original"/PLATFORM
@@ -87,7 +87,7 @@ def run_seed(old_seed,source):
     d=json.loads(p.read_bytes())
     root=d["continued_ascii"].encode("ascii")
     check(digest(root)==sha==d["continued_sha256"],"TRAINED_CAP01_PIN")
-    model=SegmentedNativeJEPA.restore(root,sha)
+    model=restore_original_sealed_native(root,sha)
     check(model.total_count==n and model._source.checkpoint()==
           model._archive_raw,"ORIGINAL_CUMULATIVE_MODEL")
     parent_ledger=model._history()
@@ -193,7 +193,7 @@ def run_seed(old_seed,source):
           EvidenceRecall.restore(sham_raw,digest(sham_raw)).checkpoint()==
           sham_raw,"GATE_COLD_EVIDENCE_PROVENANCE")
     model_raw=model.checkpoint()
-    check(SegmentedNativeJEPA.restore(model_raw,digest(model_raw)).checkpoint()
+    check(restore_original_sealed_native(model_raw,digest(model_raw)).checkpoint()
           ==model_raw,"MODEL_COLD_SOURCE_PROVENANCE")
     late=trace[22:]
     means={arm:brier([r["brier"][arm] for r in late])
