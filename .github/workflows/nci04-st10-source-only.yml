@@ -132,7 +132,34 @@ jobs:
           set -euo pipefail
           git rev-parse HEAD 'HEAD^{tree}'
           test "$(git rev-parse HEAD:research/nci04_st9/native_repair.py)" = 8409f7e3352aabb6a5937a6a7443f2dc4a82f07a
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            python -B - <<'PY'
+          from pathlib import Path
+          import importlib.util
+          import unittest
+          forbidden = {
+              "test_free_fanout_sidecar.py",
+              "test_nci04g6_native_credit.py",
+              "test_nci04g7_source_producer.py",
+              "test_nci04g7a_environment.py",
+          }
+          assert importlib.util.find_spec("resource") is None
+          names = {p.name for p in Path("tests").glob("test_*.py")}
+          assert forbidden <= names, (forbidden - names)
+          loader = unittest.TestLoader()
+          suite = unittest.TestSuite()
+          for name in sorted(names - forbidden):
+              suite.addTests(loader.discover(start_dir="tests", pattern=name))
+          print("ST10_WINDOWS_RESOURCE_ONLY_MODULE_EXCLUSIONS=" +
+                ",".join(sorted(forbidden)), flush=True)
+          print("ST10_WINDOWS_RUNNABLE_TESTS=" + str(suite.countTestCases()), flush=True)
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          if not result.wasSuccessful():
+              raise SystemExit(1)
+          PY
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+          fi
           python -B scripts/build_code_atlas.py --check-if-present
           python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
           test -z "$(git status --porcelain)"
