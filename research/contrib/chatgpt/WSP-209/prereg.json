@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-209",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "phase": "FROZEN_BEFORE_NEW_SYNTHETIC_COHORT_OUTCOMES",
+  "frozen_at": "2026-11-19",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "sha": "937e96fd8adffb26fac2b9683f958715e1ddf5b0",
+    "tree": "bcf8c7ad9d4616e4149d81431540fc43676a1b82",
+    "prerequisite_draft_pr": 1325
+  },
+  "motivation": {
+    "prior_finding": "WSP-208 synthetic B0 witness MSE after B3 candidate 1.000 vs full-refit rank4 0.0629285; candidate B0 prediction drift near zero vs control 0.5612; held scores roughly zero-readout. Synthetic dev only.",
+    "question": "Did contradiction-gated direct writes suppress useful cumulative learning, or did both methods lack identifiable information under lambda10?",
+    "rule": "Never reinterpret WSP-200; report new source-free diagnosis, preserve all negatives."
+  },
+  "cohort": {
+    "identity": "Independent synthetic-only generated worlds; prefix FABRICATED_WSP209; exact synthetic digest f repeated 64; no original GFP.",
+    "worlds": [
+      {
+        "seed": 20911,
+        "topology": "hub"
+      },
+      {
+        "seed": 20912,
+        "topology": "hub"
+      },
+      {
+        "seed": 20913,
+        "topology": "complete"
+      },
+      {
+        "seed": 20914,
+        "topology": "complete"
+      }
+    ],
+    "generator": "Deterministic latent rank4 coordinates from sin/cos(seed, site, alternate); target=dot of two coordinate vectors. Hub graph: sites1..72 with pairs(1,j), plus bridge pairs(j,j+1) for even j=2..70. Complete graph: sites1..18 all unordered pairs. Two synthetic double alleles C/C and D/D for each site pair, A as native source. No protected measured labels.",
+    "split": "Frozen WSP200 salted SHA256 whole-site-pair FIT[0..64], VALID[65..79], PUBLIC_DEV[80..89], RESERVED_UNTOUCHED[90..99]; FIT stage 0..3 from frozen SHA256 stream.",
+    "limits": "<=5000 generated doubles across 4 worlds; one independent evaluation per world; never access RESERVED values, no original-data first use.",
+    "independence": "Four constructed worlds are NOT independent biological replicates or evidence of general intelligence."
+  },
+  "protocol": {
+    "arms": [
+      "contradiction_r4 exact WSP200",
+      "always_r4 exact WSP200",
+      "full_refit_r4 exact WSP200",
+      "no_update_r4 exact WSP200"
+    ],
+    "parity": "Identical FIT and future-label boundaries, same cumulative B0..B3 observation sets, rank4, lambda10, hash init and B0 scaling; no post-label adjustments.",
+    "outcomes": "Per-world per-arm B0 witness MSE at stage0,1,2,3; B0 drift; writes/solves; held PUBLIC_DEV group-equal RMSE and zero readout; warm full-refit convergence, exact cold restore, CPU/wall and checkpoint bytes.",
+    "classification": {
+      "UPDATE_SUPPRESSION": "At least 3/4 worlds: full_refit B0 error improves >=20% from stage0 to B3; contradiction improves <5%; contradiction B1..B3 address writes <=10% of always.",
+      "INFORMATION_LIMIT": "At least 3/4 worlds: both full_refit and contradiction improve <20% from stage0 to B3.",
+      "CANDIDATE_SUPPORTED_DEV": "At least 3/4 worlds contradiction improves >=20% from stage0 to B3 and B3 B0 MSE <=1.05 * full_refit and held RMSE <=1.02 * full_refit (timing separate). Source-free development only.",
+      "MIXED": "Other valid outcomes, no forced positive narrative.",
+      "INVALID": "Missing B0/held, nonfinite values, source hash/identity mismatch, any held-leak, nonconverged full-refit control, incomplete or failed CI, unexpected genotype partition overlap."
+    },
+    "compute": "Python 3.12 stdlib only, max20m per CI OS, no paid APIs, private runners, network, new controllers or queues.",
+    "stop": "One frozen four-world diagnostic. Do not tune or rerun new seeds after seeing outcome; record negative. A revised mechanism requires another distinct pre-results protocol.",
+    "governance": {
+      "original_gfp_source_first_use": false,
+      "reserved_outcomes": false,
+      "native_yggdrasil_model_write": false,
+      "accepted_main": false,
+      "merge": false,
+      "owner_training": false,
+      "deployment": false
+    },
+    "evidence_class": "SOURCE_FREE_DEVELOPMENT_ONLY_NO_SCIENTIFIC_PROMOTION"
+  }
+}
