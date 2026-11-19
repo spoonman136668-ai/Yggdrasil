@@ -16,7 +16,7 @@ ROOT=Path(__file__).resolve().parents[4]
 sys.path.insert(0,str(ROOT))
 from yggdrasil.native_context_basis import canonical,digest
 from yggdrasil.native_segmented_continuation import SegmentedNativeJEPA
-from yggdrasil.native_evidence_recall import EvidenceRecall
+from yggdrasil.native_evidence_recall import EvidenceRecall,restore_original_sealed_native
 
 HERE=Path(__file__).resolve().parent
 PLATFORM="windows" if sys.platform=="win32" else "linux"
@@ -91,7 +91,7 @@ def audit(root):
         d=json.loads(prior_path.read_bytes())
         raw=d["continued_ascii"].encode("ascii")
         check(digest(raw)==parent_sha,"PRIOR_PARENT_SHA")
-        prior=SegmentedNativeJEPA.restore(raw,parent_sha)
+        prior=restore_original_sealed_native(raw,parent_sha)
         check(prior.total_count==n,"TRAINED_PARENT_COUNT")
         r=result["replicas"][j]
         check((r["seed"],r["old_seed"],r["original_total"],
@@ -105,7 +105,7 @@ def audit(root):
               r["continued_checkpoint_sha256"] and
               state["old_sha256"]==parent_sha,
               "TRAINED_MODEL_SHA")
-        model=SegmentedNativeJEPA.restore(learned,digest(learned))
+        model=restore_original_sealed_native(learned,digest(learned))
         check(model._events[:32]==prior._events and
               model._source.checkpoint()==prior._source.checkpoint() and
               model.total_count==n+32,"NO_PARENT_EVIDENCE_DELETION")
