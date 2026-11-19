@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "study_id": "ENERGY-52",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "date": "2026-11-19",
+  "source_commit_sha": "a5d87e5b96ea1e7585a9215c60af1ed5b9959f57",
+  "provenance": {
+    "original_parent": "73664df0440b1d8e8f017d7ba417c7ceb5c77d90",
+    "source_blob": "cc5af0968a9ed749fd2b02c256b7f17c55a77bc8",
+    "source_archive_sha256": "b0b7406281f61df50ed0c3427cb3e32ac0c2876e35c35b597bdbb72d8ce3b32b",
+    "experiment_py_sha256": "1e80168f86d65e2ccd250e6975ed5df414653f064812007e723109d3178348c9",
+    "audit_py_sha256": "1ac95760f049a04ddc745491857ced76404dea9bc45a454170214054ffe8fbe7",
+    "exclusion": "Exploratory smoke seeds 99991 and 99997 tested before source freeze. Their existing outcomes are disclosed separately, never treated as preregistered validation. No primary run before this prereg commit."
+  },
+  "hypothesis": "Validation-gated sparse Fourier correction should reject harmful new-context updates while preserving the old model; its cold-shift prediction error should improve meaningfully on two unseen seed cohorts over fully trained ElasticNet and ungated sparse correction, with no gain from sham labels.",
+  "study_design": {
+    "fresh_screen_seeds": [
+      99973,
+      99979
+    ],
+    "held_back_primary_seeds": [
+      9419,
+      9431,
+      9449
+    ],
+    "families": [
+      "parity45",
+      "threshold",
+      "conditional_mod"
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "worlds_per_seed": 12,
+    "screen_worlds": 24,
+    "per_world_assignments": 360,
+    "train_old": 72,
+    "train_new_fit": 48,
+    "train_new_validation": 24,
+    "held_old": 72,
+    "held_new": 72,
+    "held_cold": 72,
+    "negative": "new consequences shuffled in corrective-learning control",
+    "methods": [
+      "gate_energy",
+      "ungated_energy",
+      "no_adapt",
+      "enet_new",
+      "omp_new",
+      "gate_enet",
+      "shuffled_gate"
+    ],
+    "sample_parity": "All real methods observe identical 72 old and 72 new factual labels; gate uses validation partition 24 of new outcomes before final refit on all 72 new; all held consequences inaccessible during any decision.",
+    "architecture": "Authored 12-bit feature dictionary with parity order1..5, 1585 terms. The gate is predictive-error reduction on NEW validation, not an independently identified causal contradiction. Two observed nuisance bits shift old/new/cold contexts. Native model not trained.",
+    "cost": "CPU Python3.13.5 NumPy2.3.5 sklearn1.8.0 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1. One exact-source 2-seed screen (24 worlds) plus deterministic replay and source-sharing refit audit. No GPU/paid API.",
+    "metrics": [
+      "mean of per-world squared prediction error on old/new/cold disjoint held worlds",
+      "per-seed acceptance rate",
+      "relative gain over conventional and ungated controls",
+      "world-level losses and source/assignment receipts",
+      "source-sharing refit auditor checks"
+    ]
+  },
+  "frozen_screen_gates": {
+    "cold_vs_enet_each": "Gated energy cold MSE must be ≤95% of fully trained separate-context ElasticNet cold MSE on BOTH prospectively held screen seeds.",
+    "cold_vs_ungated_pooled": "Pooled gated energy cold MSE must be ≤97% of ungated energy cold MSE; underperforms if rejects beneficial updates.",
+    "new_vs_enet_pooled": "Pooled gated energy new held MSE must be ≤105% of fully trained ElasticNet new held MSE.",
+    "old_checkpoint_exact": "Mean old held MSE for gated energy equals no-adaptation old predictor exactly within 1e-10 on EACH seed.",
+    "shuffled_negative_pooled": "Pooled gated energy cold held MSE must be ≤80% of shuffled-label gated correction cold MSE.",
+    "no_adapt_pooled": "Pooled gated energy cold held MSE must be ≤90% of old frozen no-adaptation cold MSE.",
+    "audit": "Both independent-seed score receipts and source-sharing refit audits pass; audit reuses the generator and sklearn estimators but re-derives saved losses and interventions.",
+    "meaningful_gate": "At least one accepted and one rejected correction across 24 worlds; otherwise gate has not been exercised."
+  },
+  "classification": {
+    "SCREEN_PROMISING": "Both independent seeds satisfy cold-vs-ElasticNet and pooled gate-vs-ungated, and at least 6/8 gates PASS, with all audit source gates PASS. Only then eligible for the reserved 36-world primary. This is screening, never SCIENTIFIC_PASS.",
+    "SCREEN_NO_GO": "Both independent seeds are ≥10% WORSE than ElasticNet cold and the pooled gate has no positive >=3% gain over ungated energy, OR ≥4 of 6 quantitative candidate gates FAIL across the two prospective screens. Preserve negative outcomes; no primary scoring/tuning on reserved seeds.",
+    "SCREEN_INCONCLUSIVE": "All other combinations. Do not claim a positive; preserve results and stop this candidate unless a separately preregistered disjoint experiment is constructed.",
+    "INVALID": "Any leak of held labels, missing controls, source SHA/protocol drift, missing full audit, mismatched action count, consumed prospective seeds before this commit. Do not label scientific no-go if invalid.",
+    "primary_scope": "Primary seeds [9419,9431,9449] run only if SCREEN_PROMISING and separately verified source/prereg frozen. No native acceptance or deployment under any outcome."
+  },
+  "after_score_prohibitions": [
+    "No threshold changes or extra tune passes on consumed seeds",
+    "No retrospective relabeling of exploratories as prereg",
+    "No source changes after freeze",
+    "No Yggdrasil native model/checkpoint/accepted-ref writes",
+    "No runner/controller/scheduler/queue changes, merge, deployment or protected first-use"
+  ],
+  "standing_authority": "Independent contributor research on draft branch only. Does not authorize native scientific acceptance.",
+  "prespec_status": "Source commit precedes this prereg; prospective screening seeds were not evaluated as of this commit."
+}
