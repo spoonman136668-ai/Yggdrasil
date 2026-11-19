@@ -1,0 +1,63 @@
+import hashlib
+import unittest
+from history_alignment_sham import (
+    DEV_SEEDS, LAG, WARMUP, TAPE_LENGTH, public_tape,
+    surrogate_prior_actions, run,
+)
+from matched_tabular_controls import FullHistory14
+
+
+class HistoryAlignmentShamTests(unittest.TestCase):
+    def test_public_tape_binary_and_deterministic(self):
+        for seed in DEV_SEEDS:
+            a=list(public_tape(seed, 50))
+            self.assertEqual(a, list(public_tape(seed, 50)))
+            self.assertEqual(len(a),50)
+            self.assertTrue(all(x in (0,1) and y in (0,1) for x,y in a))
+
+    def test_sham_history_uses_only_older_public_actions(self):
+        seen=[(i*i+i//7)%2 for i in range(200)]
+        self.assertEqual(surrogate_prior_actions(seen[:LAG+1]), (2,2))
+        for n in range(LAG+2, len(seen)):
+            self.assertEqual(surrogate_prior_actions(seen[:n]), (seen[n-LAG], seen[n-LAG-1]))
+
+    def test_prefix_causal_no_future_dependency(self):
+        # Mutating hypothetical later actions cannot change a past sham prior.
+        prefix=[0,1,0,1,1,0,1,0,0,1,0,1,1,0]
+        frozen=surrogate_prior_actions(prefix)
+        for future in ([0]*50,[1]*50,list(range(50))):
+            self.assertEqual(surrogate_prior_actions((prefix+future)[:len(prefix)]),frozen)
+        m=FullHistory14()
+        for a in prefix:
+            m.observe_step(0,a,a)
+        sham_history=surrogate_prior_actions(prefix)
+        m._history[:2]=bytes(sham_history)
+        before=m.snapshot()
+        forecast=m.predict(0,0)
+        self.assertEqual(m.snapshot(),before)
+        self.assertEqual(forecast,FullHistory14.restore(before).predict(0,0))
+
+    def test_same_event_digest_and_replay(self):
+        for seed in DEV_SEEDS:
+            out=run(seed)
+            self.assertEqual(out,run(seed))
+            tape=bytes(item for event in public_tape(seed) for item in event)
+            self.assertEqual(out.action_outcome_sha256, hashlib.sha256(tape).hexdigest())
+            self.assertEqual(out.events,TAPE_LENGTH)
+            self.assertEqual(out.score_events,TAPE_LENGTH-WARMUP)
+            self.assertGreater(out.different_histories,TAPE_LENGTH//3)
+
+    def test_context_alignment_brier_negative_control(self):
+        for seed in DEV_SEEDS:
+            score=run(seed)
+            self.assertLess(score.aligned_brier,score.lagged_brier)
+            self.assertLess(score.aligned_brier,0.18)
+            self.assertGreater(score.lagged_brier,0.21)
+
+    def test_invalid_fixture_never_runs(self):
+        for bad in (929209101,929209102,929209103):
+            with self.assertRaises(ValueError):run(bad)
+        with self.assertRaises(ValueError):run(DEV_SEEDS[0],10,10)
+        with self.assertRaises(ValueError):run(DEV_SEEDS[0],10,-1)
+
+if __name__=='__main__':unittest.main()
