@@ -1,0 +1,162 @@
+name: YGG-RET02 source-only temporal native learning engineering
+'on':
+  push:
+    branches:
+      - research/ygg-ret02-temporal-context-20261118
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  focused:
+    name: RET02 focused original native + temporal contract (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 24
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Preserve raw source semantics on both OS
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Same pinned original native CPU numerical dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Freeze original RET01 training/prereg and previous checkpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f3b906c03730f7f3efb64683d77e00ba631dd409 HEAD
+          git merge-base --is-ancestor a8face01c23fcc661ba59cb192fdca97dc2dc411 HEAD
+          test "$(git rev-parse HEAD:yggdrasil/native_readout_retention.py)" = 6e8c6d599ee2e7df04d2edb960774bea9de8405f
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-RET01/prereg.json)" = 67d0b165b559cc83e9b24d6d7a44c59032d01d30
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-RET01/result.json)" = 645e3e9c565ccfc10212c1c3c87c959f500d8718
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-RET02/frozen_protocol.json)" = "$(git rev-parse a8face01c23fcc661ba59cb192fdca97dc2dc411:research/contrib/chatgpt/YGG-RET02/frozen_protocol.json)"
+      - name: Run new and inherited native focused contracts with no source-world action
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_native_temporal_context.py' -v
+          python -B -m unittest discover -s tests -p 'test_native_readout_retention.py' -v
+          test -z "$(git status --porcelain)"
+          echo YGG_RET02_FOCUSED_SOURCE_ONLY_PASS
+
+  atlas:
+    name: Bounded generated-only source-pinned G29 companion
+    if: "github.event.head_commit.message == 'engineering(ret02): source-pinned G29 atlas companion'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Assert bounded branch and generate only three original derived source atlas files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/research/ygg-ret02-temporal-context-20261118
+          git merge-base --is-ancestor a8face01c23fcc661ba59cb192fdca97dc2dc411 HEAD
+          test "$(git rev-parse HEAD:yggdrasil/native_readout_retention.py)" = 6e8c6d599ee2e7df04d2edb960774bea9de8405f
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          python -B - <<'PY'
+          import subprocess
+          actual=set(subprocess.check_output(
+              ["git","diff","--name-only"],text=True).splitlines())
+          wanted={".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}
+          assert actual==wanted,(actual,wanted)
+          print("RET02_G29_ONLY_GENERATED_FILES_PASS",flush=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- .ice/code-atlas.json .ice/code-atlas.ice .ice/code-atlas.html
+          git commit -m 'docs(ret02): source-pinned generated-only G29 atlas'
+          git push origin HEAD:refs/heads/research/ygg-ret02-temporal-context-20261118
+
+  full:
+    name: RET02 exact-SHA mandatory complete native regression + G29 (${{ matrix.os }})
+    if: "github.event.head_commit.message == 'qualify(ret02): final exact-source dual-OS G29'"
+    needs: focused
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned native dependencies
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0 psutil==6.1.1
+      - name: Full native regression including original causal suites with exact G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD 'HEAD^{tree}'
+          test "$(git rev-parse HEAD:yggdrasil/native_readout_retention.py)" = 6e8c6d599ee2e7df04d2edb960774bea9de8405f
+          if [ "$RUNNER_OS" = Windows ]; then
+            python -B - <<'PY'
+          import unittest
+          from pathlib import Path
+          forbidden={
+              'test_free_fanout_sidecar.py',
+              'test_nci04g6_native_credit.py',
+              'test_nci04g7_source_producer.py',
+              'test_nci04g7a_environment.py'
+          }
+          names={p.name for p in Path('tests').glob('test_*.py')}
+          assert forbidden<=names,forbidden-names
+          loader=unittest.TestLoader()
+          suite=unittest.TestSuite()
+          for n in sorted(names-forbidden):
+              suite.addTests(loader.discover(start_dir='tests',pattern=n))
+          print('RET02_WINDOWS_POSIX_ONLY_EXCLUDED='+','.join(sorted(forbidden)))
+          print('RET02_WINDOWS_FULL_NATIVE_COUNT='+str(suite.countTestCases()))
+          if not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():
+              raise SystemExit(1)
+          PY
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py' -v
+          fi
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+          test -z "$(git status --porcelain)"
+          echo YGG_RET02_FULL_FINAL_SOURCE_G29_PASS
