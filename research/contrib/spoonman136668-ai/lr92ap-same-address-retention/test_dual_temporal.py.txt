@@ -1,0 +1,54 @@
+import unittest
+from lr92ap_dual_temporal import PublicDualTimescaleCells as P
+
+class PublicDualTimescaleCellsFixtureTests(unittest.TestCase):
+    def test_empty_and_checkpoint_exact(self):
+        x=P();self.assertEqual(x.predict(0,0),0.5)
+        self.assertEqual(len(x.snapshot()),964)
+        self.assertEqual(P.restore(x.snapshot()).snapshot(),x.snapshot())
+    def test_invalid_observation_does_not_mutate(self):
+        x=P();initial=x.snapshot()
+        for bad in [(7,0,0,False),(0,2,0,False),(0,1,2,False),(0,1,1,1)]:
+            with self.assertRaises(ValueError):x.observe_step(*bad[:3],retained=bad[3])
+            self.assertEqual(x.snapshot(),initial)
+    def test_history_and_episode_reset(self):
+        x=P();x.observe_step(0,0,1);x.observe_step(0,1,0)
+        old=x.snapshot();y=P.restore(old)
+        self.assertEqual(y.snapshot(),old)
+        y.end_episode()
+        self.assertNotEqual(y.snapshot(),old)
+        self.assertGreater(y.predict(0,0),0.5)
+    def test_legacy_checkpoint_rejected(self):
+        with self.assertRaises(ValueError):P.restore(b'YPC1'+bytes(160))
+    def test_corruption_and_history_rejected(self):
+        x=P();wrong=bytearray(x.snapshot());wrong[10]^=1
+        with self.assertRaises(ValueError):P.restore(bytes(wrong))
+        wrong=bytearray(x.snapshot());wrong[900]=2;wrong[901]=0
+        import hashlib
+        wrong[-32:]=hashlib.sha256(wrong[:-32]).digest()
+        with self.assertRaises(ValueError):P.restore(bytes(wrong))
+    def test_retained_isolation(self):
+        x=P()
+        for _ in range(10):
+            x.end_episode();x.observe_step(0,0,1,retained=True)
+            x.end_episode();x.observe_step(0,0,0)
+        x.end_episode()
+        self.assertGreater(x.predict_protected(0,0,retained=True),0.5)
+        self.assertLess(x.predict_protected(0,0),0.5)
+    def test_protected_survives_same_address_reversal(self):
+        x=P()
+        for _ in range(64):
+            x.end_episode();x.observe_step(0,0,1)
+        x.end_episode()
+        p_before=x.predict_protected(0,0)
+        for _ in range(64):
+            x.end_episode();x.observe_step(0,0,0)
+        x.end_episode()
+        self.assertEqual(p_before,x.predict_protected(0,0))
+        self.assertEqual(P.restore(x.snapshot()).snapshot(),x.snapshot())
+    def test_prediction_readonly(self):
+        x=P();original=x.snapshot()
+        for _ in range(10):x.predict(0,0);x.predict_protected(0,1)
+        self.assertEqual(original,x.snapshot())
+
+if __name__ == '__main__': unittest.main()
