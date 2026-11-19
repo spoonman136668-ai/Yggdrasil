@@ -82,5 +82,6 @@ jobs:
             python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
           done
           python -B research/contrib/chatgpt/YGG-CAP04/fixture_audit.py
+          python -B research/contrib/chatgpt/YGG-CAP04/rd02_engineering.py
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"

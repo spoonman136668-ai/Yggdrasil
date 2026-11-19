@@ -157,3 +157,38 @@ is not demonstrated to discover a new real causal law, retain an older native
 skill, beat exact controls, or improve whole-process efficiency. No claim of
 qualified scientific benefit or permission to integrate into the accepted
 single Yggdrasil learner follows from this opt-in engineering PASS.
+
+
+## RD02 independent A→B→A source-free engineering falsifier
+
+Protocol frozen in commit \`157a52827b8898b33bc2de58d9eb031f429b8e67\`
+at \`RD02-FROZEN-ENGINEERING.md\`, **before** generating or scoring any
+RD02 outcomes. This does **not** alter the original CAP04 preregistration.
+
+The read-only scientific-method test driver \`rd02_engineering.py\` uses
+two predetermined synthetic, unregistered-source identities, 256 real
+chronological observed public interventions each, and one fixed
+A (reward=s2) → B (reward=previous action bit 0 AND s2) → A schedule.
+It compares the opt-in direct-reward history candidate, old XOR
+candidate, misaligned-history direct sham and six existing independently
+fitted conventional controls, all with identical public actions and
+consequences. Scores are computed **prequentially** at both stages;
+the unknown B law and phase labels are not supplied to predictors.
+
+The frozen test records familiar A anchor, B endpoint and A-return
+fixed A-readout probes, each exact-cold-restored without overwriting the
+original model, and separately reports novel, return and pooled Brier.
+Its one-shot output lines \`CAP04_RD02_ENGINEERING=...\` carry the two
+source identities, receipt/source hashes, each strongest named
+conventional control, candidate-minus-control and every failed gate
+criterion. Both registered source IDs must satisfy every preset
+gain/retention/sham condition to classify as
+\`RD02_ENGINEERING_FEASIBLE\`; otherwise preserve
+\`RD02_ENGINEERING_NO_GO\` and its exact negative clauses.
+The code supports no alternative registered scientific seeds.
+
+This **cannot** by itself prove native cumulative intelligence or
+admit a new checkpoint into the accepted owner. Zero original-world
+first-use, zero fresh protected CAP04 scientific cohort, zero model
+owner/runner/queue/Forge involvement. Central Amalgam chat is the only
+candidate integration coordinator.
