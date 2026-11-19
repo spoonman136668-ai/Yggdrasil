@@ -86,12 +86,6 @@ def evaluate(*, disjoint):
             for a in (0, 1)
         ]
         baseline[n] = int(probabilities[1] > probabilities[0])
-    native_actions = {
-        n: int(native_plans[n]["second_actions"][0][0])
-        if type(native_plans[n]["second_actions"][0]) in (list, tuple)
-        else None
-        for n in (0, 1)
-    }
     # second_actions is ordered by first action then by observed next-state.
     # The original law always has next-state=0 and first action is immaterial.
     native_actions = {
