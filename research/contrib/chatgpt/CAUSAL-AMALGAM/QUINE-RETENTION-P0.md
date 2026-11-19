@@ -52,6 +52,26 @@ cold-replay divergence, and single shared-witness admission. Exact changed-
 candidate dual-platform full regression is still required; no real mastered
 regime, owner cold restore, or protected new source use is claimed.
 
+## Charged-veto receipt contract (engineering only)
+
+A vetoed witness is absent from the admitted active checkpoint. The optional
+`on_veto(receipt_bytes, receipt_sha256)` callback on `guarded_observe` must
+acknowledge the canonical witnessed-event receipt with source packet,
+original actions/outcomes, and rejected proposal/active checkpoint pins.
+If the callback is missing or does not acknowledge the expected SHA-256, the
+guard **raises instead of returning a silent veto**. The qualified independent
+owner must ensure its storage is append-only, durable, crash-safe and
+idempotent for identical event identities; a SHA-256 acknowledgement by itself
+does **not** establish those properties. `assess_update` is a proposal-only
+checker, **not** the owner witness-ingestion interface.
+
+This changes no native state, accepted model, research source, owner,
+controller or scheduler. Rejected evidence is externally retained for later
+qualified learning but not trained into the current checkpoint. The source-free
+test covers successful acknowledgement, missing/false acknowledgement,
+unchanged active state, and repeated identical receipt. Actual owner durable
+custody and scientific learning benefit remain UNVERIFIED.
+
 ## Frozen-input validation on idempotent replay (2026-11-19)
 
 The opt-in `guarded_observe` now checks the unchanged frozen Quine manifest
