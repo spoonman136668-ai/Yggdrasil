@@ -99,6 +99,24 @@ jobs:
         done
         python -B scripts/build_code_atlas.py --check-if-present
         test -z "$(git status --porcelain)"
+    - name: Verify sealed research receipts on the Linux producer platform
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euo pipefail
+        AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+        PARENTS="$RUNNER_TEMP/amalgam-replay-parents"
+        mkdir -p "$PARENTS"
+        cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
+        cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
+        cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
+        python -B "$AMALGAM/staged_retention_audit.py" "$PARENTS" \
+          "$AMALGAM/staged_retention_protocol.json" "$AMALGAM/staged-retention-dev-01"
+        python -B "$AMALGAM/causal_templates_audit.py" "$PARENTS" \
+          "$AMALGAM/causal_templates_protocol.json" "$AMALGAM/causal-templates-dev-01"
+        python -B "$AMALGAM/open_set_audit.py" "$PARENTS" \
+          "$AMALGAM/open_set_protocol.json" "$AMALGAM/open-set-dev-01"
+        test -z "$(git status --porcelain)"
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: Amalgam-shared-consequence-${{ matrix.os }}
