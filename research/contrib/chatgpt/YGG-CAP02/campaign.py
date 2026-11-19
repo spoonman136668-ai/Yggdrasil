@@ -23,6 +23,8 @@ from yggdrasil.native_segmented_continuation import SegmentedNativeJEPA
 from yggdrasil.native_causal_rule_memory import CausalMemory,CausalPosterior,_features
 
 HERE=Path(__file__).resolve().parent
+sys.path.insert(0,str(HERE))
+from pinned_restore import load_pinned_cap01,restore_continued_from_pinned_parent
 PREREG_SHA="d07b9ac4448b4c23288f4f9a76aec7f2c69faa55"
 SOURCE_BLOB="bcae839c6f43ecf14fc1a1a2f3ce7ac813f501bf"
 PARENT_SHA="3770e660bc8b908218e6fe82e176bd4bf91158d9"
@@ -72,7 +74,7 @@ def pin_old(old_seed):
     raw=original["continued_ascii"].encode("ascii")
     require(digest(raw)==original["continued_sha256"]==pin["sha"],
             "PLATFORM_ORIGINAL_SOURCE")
-    model=SegmentedNativeJEPA.restore(raw,pin["sha"])
+    model,_prior_roundoff=load_pinned_cap01(raw,pin["sha"])
     require(model.total_count==OLD[old_seed]["full_count"] and
             model.new_count==32 and model.checkpoint()==raw,
             "PLATFORM_COLD_MODEL_ORIGINAL")
@@ -135,6 +137,7 @@ def run_seed(old_seed,src,cap01):
     pin=OLD[old_seed]
     seed=pin["seed"]
     model,old_raw=pin_old(old_seed)
+    initial_model=model
     old_prefix=model._events
     memory=CausalMemory.from_native(model)
     original_bank_sha=memory.prior_sha256
@@ -234,8 +237,9 @@ def run_seed(old_seed,src,cap01):
             "IMMUTABLE_OLDER_SEVEN_COMPONENT_ARCHIVE")
     model_raw=model.checkpoint()
     memory_raw=memory.checkpoint()
-    require(SegmentedNativeJEPA.restore(model_raw,digest(model_raw)).checkpoint()==
-            model_raw,"COLD_NATIVE_EXACT")
+    restored_native,_roundoff=restore_continued_from_pinned_parent(
+        model_raw,digest(model_raw),initial_model)
+    require(restored_native.checkpoint()==model_raw,"COLD_NATIVE_EXACT")
     require(CausalMemory.restore(memory_raw,digest(memory_raw),old_prefix).checkpoint()==
             memory_raw,"COLD_CAUSAL_MEMORY_EXACT")
     late_b={arm:sum(rows[i]["brier"][arm] for i in LATE_B)/len(LATE_B)
