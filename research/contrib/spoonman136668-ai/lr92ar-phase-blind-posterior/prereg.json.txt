@@ -1,0 +1,106 @@
+{
+  "schema": "lr92ar.phase-blind-posterior-engineering-prereg.v1",
+  "experiment_id": "LR-92AR",
+  "status": "ENGINEERING_ONLY_NO_SCIENTIFIC_FIRST_USE",
+  "date": "2026-11-19",
+  "source": {
+    "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "research_candidate": "LR92AP YPT4",
+    "research_candidate_git_blob": "e2fca6e277efbf0bd3b77ba7e472e4b5432d205f",
+    "negative_development_evidence": "LR92AQ 24 disclosed development worlds, YPT4 B-phase score 0.39014360 versus bounded BOCPD 0.21613044",
+    "negative_evidence_pr": 1323,
+    "frozen_variable_switch_protocol_pr": 1328,
+    "owner_custody_audit_pr": 1322
+  },
+  "mechanism_hypothesis": "A compressed phase-blind posterior over a preserved early A predictor and a bounded recent predictor may select the right archived hypothesis from public evidence without oracle switch times. This is not evidence of any gain until fresh independent qualifying evaluation.",
+  "frozen_implementation": {
+    "architecture": "Tokenless, action-consequence, 16 address slots, two 14-history/action-bin Beta(1,1) count banks, public-only phase-blind Bayesian evidence routing",
+    "persistent_learned_bytes": 928,
+    "component_bytes": {
+      "early_A_bank": 448,
+      "recent_bank": 448,
+      "encoded_two_action_history": 16,
+      "quantized_posterior": 16
+    },
+    "checkpoint_format": {
+      "magic": "LRA1",
+      "checksum": "SHA256 over magic and 928 persistent bytes",
+      "total_bytes": 964,
+      "legacy_compatible": false
+    },
+    "history_encoding": "seven exact public last-two-action patterns: (2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1); reset only on public episode boundary",
+    "early_bank_stop_after_public_observations_per_slot": 48,
+    "recent_per_bin_window_cap": 32,
+    "recent_saturation_rule": "When same per-context/action bin has count>=32 before admission, replace both counts by ceil(count/2), then increment the witnessed outcome count",
+    "posterior_initial_q8": 128,
+    "switch_hazard_per_public_observation": "1/64",
+    "posterior_prior": "q_prior = q*(1-h)+(1-q)*h; q=stored_Q8/255",
+    "likelihood": "P(y|bank)=(count_y+1)/(count_zero+count_one+2)",
+    "prequential_forecast": "q_prior*P(y=1|early)+(1-q_prior)*P(y=1|recent), before outcome",
+    "posterior_update": "q_post = q_prior*P(y_observed|early)/(q_prior*P(y_observed|early)+(1-q_prior)*P(y_observed|recent))",
+    "posterior_quantization": "round to nearest integer 0..255, Python tie-to-even; deterministic",
+    "mutation_order": "validate address, action, public outcome; compute posterior from prior, unmodified banks, historical action context; update frozen early bank (if under48), recent bank; shift public history; store posterior",
+    "world_transition": "new independent candidate object for a new world. End_episode only resets two-action public history, never weights or posterior",
+    "model_inputs": [
+      "address",
+      "current_action",
+      "public_outcome_only_after_predict",
+      "public_episode_boundary"
+    ],
+    "forbidden_inputs": [
+      "hidden_A_B_A_phase",
+      "actual_private_switch_times",
+      "future_action",
+      "future_outcome",
+      "private_causal_table",
+      "oracle_selected_archive"
+    ],
+    "computational_profile": "O(1) model forecast/update per event; O(928) persistent model bytes; Python heap and process memory independently measured later"
+  },
+  "frozen_negative_tests": [
+    "no outcome-dependent forecast without prior public evidence",
+    "one contradictory public outcome shifts posterior in direction of higher likelihood",
+    "same public prefix, same next action under counterfactual hidden phases => identical next forecast",
+    "checkpoint deterministic, SHA tamper refusal and malformed semantic history refusal",
+    "first48 early memory freeze per address while recent bank keeps adapting",
+    "all16 addresses independent and same model size",
+    "invalid input atomic; no cross-address outcome use",
+    "exact public episode reset independent of learned/posterior state",
+    "no new primary source/world generator, no protected 288-world consumption, accepted main untouched"
+  ],
+  "evaluation_fence": {
+    "engineering_fixtures": "source-free unit probes and negative controls ONLY; no scored exposed LR92AP/AQ development worlds",
+    "all_original_lr92ap_protected_worlds_consumed": false,
+    "all_lr92aq_prospective_worlds_consumed": false,
+    "new_primary_worlds": null,
+    "new_science_seed_ids": [],
+    "new_dev_seed_ids": [],
+    "source_birth": "NOT_BORN",
+    "right_to_use_scientific_first_use": false,
+    "model_owner_checkpoint": "UNVERIFIED",
+    "new_source_prereg_required_before_prospective_outcomes": true,
+    "strong_controls_for_future": [
+      "fully_fitted_memory_matched_change_point",
+      "exact_14_context_history",
+      "fixed_window_14",
+      "hard_MAP_HMM",
+      "original_YPT4",
+      "random_gate_same_update",
+      "out_of_budget_RF32",
+      "out_of_budget_exact_BOCPD",
+      "null_hidden_phase/sham_action_history"
+    ],
+    "future_go": "Requires independent prospective source custody, matched info/actions/compute and retained old knowledge, Brier improvement >=0.01 over each strongest memory-matched fully fitted control on each independent seed stratum, B and unfamiliar 14-bin noninferiority <=+0.01, exact cold replay, whole-process cost, no first-step switch oracle, source and accepted owner authority",
+    "future_no_go": "Fail closed on any primary gate, preserve negative outcomes and never retune protected labels"
+  },
+  "restrictions": {
+    "no_owner_runner": true,
+    "no_new_controller": true,
+    "no_schedules": true,
+    "no_paid_api": true,
+    "no_merge_or_main": true,
+    "no_model_restarts": true,
+    "no_accepted_runtime": true,
+    "no_science_promotion": true
+  }
+}

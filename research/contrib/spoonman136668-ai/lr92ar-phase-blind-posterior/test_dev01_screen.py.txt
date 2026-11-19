@@ -1,0 +1,183 @@
+"""LR-92AR DEV01 independent-source negative controls and one-shot screener.
+
+Execute ONCE per platform after exact Git blobs and prereg-first custody
+check. No original protected LR92AP/LR92AQ scientific source or owner model.
+"""
+from __future__ import annotations
+import hashlib
+import json
+import math
+from pathlib import Path
+import sys
+import unittest
+from dataclasses import fields
+from dev01_worlds import (SEEDS,FAMILIES,WORLD_INDICES,PublicEvent,world,
+                          PATTERNS,PROTECTED_SEEDS,EPISODE_LENGTH)
+from dev01_screen import (BYTES,MODELS,METRICS,evaluate,summarize,decision,
+                          run_one,SCORING_CLASSIFICATION)
+from phase_blind_posterior import PhaseBlindEvidencePosterior
+
+
+class Dev01Tests(unittest.TestCase):
+    rows=None
+    summary=None
+
+    @classmethod
+    def setUpClass(cls):
+        # One and only one materialization of the 36 DEV worlds in this job.
+        cls.rows=evaluate()
+        cls.summary=summarize(cls.rows)
+
+    def test_frozen_source_first_protocol_before_dev_first_use(self):
+        p=json.loads(Path(__file__).with_name("dev01_prereg.json.txt").read_text())
+        self.assertEqual(p["schema"],"lr92ar.disjoint-development-only-prereg.v1")
+        self.assertEqual(p["status"],"FROZEN_BEFORE_DEV_SOURCE_BIRTH_DEV_SEEDS_NOT_USED")
+        self.assertEqual(p["candidate_source_git_blob"],
+                         "b53eba44cc5cdcdacfc65e2a9af282a7972ea497")
+        self.assertEqual(p["candidate_qualified_sha"],
+                         "2f8763bed46450115b1d9a384c82219c9cb95980")
+        self.assertEqual(p["source"]["seeds"],list(SEEDS))
+        self.assertEqual(p["source"]["families"],list(FAMILIES))
+        self.assertEqual(p["source"]["world_indices"],list(WORLD_INDICES))
+        self.assertEqual(p["source"]["worlds"],36)
+        self.assertEqual(p["source"]["events_per_world"],192)
+        self.assertEqual(p["source"]["noise_probability"],0.15)
+        self.assertEqual(p["source"]["public_episode"],
+                         "episode_start true iff index%11==0; independent of hidden switch; reset two-action history only")
+        self.assertTrue(p["authority"]["run_source_free_dev_only"])
+        self.assertFalse(p["authority"]["protected_scientific_first_use"])
+        self.assertFalse(p["authority"]["owner_native_training"])
+        self.assertFalse(p["authority"]["merge"])
+        self.assertEqual(SCORING_CLASSIFICATION,"DEV_ONLY_NOT_PROTECTED_OR_NATIVE")
+
+    def test_primary_seeds_never_materialized(self):
+        for seed in PROTECTED_SEEDS:
+            with self.assertRaisesRegex(ValueError,"SCOPE_VIOLATION"):
+                world(seed,"xor",0)
+        for bad in (0,73004303,73004304,True,73004514):
+            with self.assertRaises(ValueError):world(bad,"xor",0)
+        for bad in ("switchlabel","",None):
+            with self.assertRaises(ValueError):world(SEEDS[0],bad,0)
+        with self.assertRaises(ValueError):world(SEEDS[0],"xor",4)
+
+    def test_exact_36_unique_worlds_and_public_only_interface(self):
+        self.assertEqual(len(self.rows),36)
+        self.assertEqual({(r["seed"],r["family"],r["index"]) for r in self.rows},
+                         {(s,f,i) for s in SEEDS for f in FAMILIES for i in WORLD_INDICES})
+        self.assertEqual(tuple(f.name for f in fields(PublicEvent)),
+                         ("index","episode_start","action","outcome"))
+        self.assertEqual(sum(r["public_events"] for r in self.rows),6912)
+        self.assertTrue(all(len(r["input_digest"])==64 for r in self.rows))
+        self.assertEqual(len({r["input_digest"] for r in self.rows}),36)
+        self.assertTrue(all(48<=r["dwell"][0]<=80 and
+                            48<=r["dwell"][1]<=80 and
+                            32<=r["dwell"][2]<=96 and
+                            sum(r["dwell"])==192 for r in self.rows))
+
+    def test_public_episode_action_history_not_reset_at_hidden_switch(self):
+        for r in self.rows:
+            w=world(r["seed"],r["family"],r["index"])
+            self.assertEqual(r["input_digest"],w.public_digest())
+            prev=(2,2)
+            bins=set()
+            for t,e in enumerate(w.public):
+                self.assertEqual(e.episode_start,t%EPISODE_LENGTH==0)
+                if e.episode_start:
+                    prev=(2,2)
+                self.assertIn(prev,PATTERNS)
+                bins.add(2*PATTERNS.index(prev)+e.action)
+                self.assertEqual(e.index,t)
+                self.assertIn(e.action,(0,1))
+                self.assertIn(e.outcome,(0,1))
+                prev=(e.action,prev[0])
+            # All seven prior-action patterns are representable, but per-world
+            # rare cells may be absent naturally; do not repair by fixture tuning.
+            self.assertGreaterEqual(len(bins),10)
+
+    def test_development_replay_identical_public_tape(self):
+        for seed in SEEDS:
+            for family in FAMILIES:
+                for index in WORLD_INDICES:
+                    w=world(seed,family,index)
+                    self.assertEqual(w,world(seed,family,index))
+                    self.assertEqual(w.public_digest(),world(seed,family,index).public_digest())
+        self.assertEqual(len({(r["seed"],r["family"],r["index"])
+                              for r in self.rows}),36)
+
+    def test_same_public_prefix_no_oracle_next_step(self):
+        w=world(SEEDS[0],"random14",0)
+        stop=w.private.dwell_A+w.private.dwell_B
+        m=PhaseBlindEvidencePosterior()
+        for t,event in enumerate(w.public[:stop]):
+            if event.episode_start:m.end_episode()
+            m.predict(0,event.action)
+            m.observe_step(0,event.action,event.outcome)
+        b1=PhaseBlindEvidencePosterior.restore(m.snapshot())
+        b2=PhaseBlindEvidencePosterior.restore(m.snapshot())
+        next_event=w.public[stop]
+        if next_event.episode_start:b1.end_episode();b2.end_episode()
+        self.assertEqual(b1.predict(0,next_event.action),
+                         b2.predict(0,next_event.action))
+        self.assertEqual(b1.snapshot(),b2.snapshot())
+        b1.observe_step(0,next_event.action,1)
+        b2.observe_step(0,next_event.action,0)
+        self.assertNotEqual(b1.snapshot(),b2.snapshot())
+
+    def test_all_arms_equal_world_actions_charged_updates_and_budgets(self):
+        self.assertEqual(set(MODELS),set(BYTES))
+        self.assertEqual(len(MODELS),10)
+        for r in self.rows:
+            self.assertEqual(set(r["models"]),set(MODELS))
+            for name,out in r["models"].items():
+                self.assertEqual(out["events"],192)
+                self.assertEqual(set(out["metrics"]),set(METRICS))
+                self.assertEqual(len(out["snapshot_digest"]),64)
+                self.assertTrue(all(math.isfinite(v) and 0.0<=v<=1.0
+                                    for v in out["metrics"].values()))
+                expected=BYTES[name]
+                if expected is None:
+                    self.assertGreater(out["checkpoint_bytes"],964)
+                else:
+                    self.assertLessEqual(expected,928)
+                    self.assertEqual(out["checkpoint_bytes"],expected+36)
+
+    def test_YP4_random_gate_same_learned_state(self):
+        for r in self.rows:
+            self.assertEqual(r["models"]["YPT4_original"]["snapshot_digest"],
+                             r["models"]["RandomGate928"]["snapshot_digest"])
+
+    def test_first_step_hidden_return_not_primary(self):
+        self.assertEqual(len(METRICS),6)
+        self.assertIn("return_first1",METRICS)
+        self.assertEqual(self.summary["identity"],"LR92AR_DEV01")
+        self.assertFalse(self.summary["native_owner_checkpoint_used"])
+        self.assertFalse(self.summary["protected_primary_used"])
+        self.assertFalse(self.summary["scientific_pass"])
+
+    def test_frozen_decision_all_seed_strata_no_posthoc_exclusions(self):
+        x=decision(self.rows)
+        self.assertEqual(len(x["strata"]),3)
+        self.assertEqual({v["seed"] for v in x["strata"]},set(SEEDS))
+        self.assertIn(x["classification"],("DEV_NO_GO","DEV_SCREEN_GO_UNCONFIRMED"))
+        for v in x["strata"]:
+            self.assertEqual(v["GO"],v["worst_return_gain_vs_inbudget"]>=0.010 and
+                             v["worst_B_regression_vs_inbudget"]<=0.010 and
+                             v["worst_random14_return_regression"]<=0.010)
+        self.assertEqual(x["classification"],self.summary["screening"]["classification"])
+
+if __name__=="__main__":
+    tests=unittest.defaultTestLoader.loadTestsFromTestCase(Dev01Tests)
+    result=unittest.TextTestRunner(verbosity=2).run(tests)
+    if not result.wasSuccessful():
+        sys.exit(1)
+    # Bounded per-world transparent receipt lines; each model evaluated once.
+    for row in Dev01Tests.rows:
+        compact={k:{m:round(v,12) for m,v in value["metrics"].items()}
+                 for k,value in row["models"].items()}
+        print("LR92AR_DEV01_WORLD="+json.dumps({
+            "seed":row["seed"],"family":row["family"],"index":row["index"],
+            "public_sha256":row["input_digest"],"dwell":row["dwell"],
+            "scores":compact
+        },sort_keys=True,separators=(",",":")),flush=True)
+    print("LR92AR_DEV01_SUMMARY="+json.dumps(Dev01Tests.summary,
+          sort_keys=True,separators=(",",":")),flush=True)

@@ -1,0 +1,165 @@
+{
+  "schema": "lr92ar.disjoint-development-only-prereg.v1",
+  "experiment": "LR-92AR-DEV01",
+  "date": "2026-11-19",
+  "prior_immutable_engineering_prereg_git_blob": "9aa65a206e805f4975741836cb9a5e02158c597e",
+  "candidate_source_git_blob": "b53eba44cc5cdcdacfc65e2a9af282a7972ea497",
+  "candidate_qualified_sha": "2f8763bed46450115b1d9a384c82219c9cb95980",
+  "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "existing_lr92ap_public_control_sources_commit": "2d35cfd721e43abddac1e9a36ea557399c6aeb5a",
+  "status": "FROZEN_BEFORE_DEV_SOURCE_BIRTH_DEV_SEEDS_NOT_USED",
+  "authority": {
+    "run_source_free_dev_only": true,
+    "protected_scientific_first_use": false,
+    "original_lr92ap_288_worlds_unconsumed": true,
+    "lr92aq_288_reserved_worlds_unconsumed": true,
+    "owner_native_training": false,
+    "merge": false,
+    "model_promotion": false,
+    "new_controller": false,
+    "new_scheduler": false
+  },
+  "source": {
+    "dev_only": true,
+    "seeds": [
+      73004511,
+      73004512,
+      73004513
+    ],
+    "seed_collision_check": "Current Yggdrasil indexed code search for exact literal seed identifiers showed 0 results 2026-11-19; not a global consumed-seed audit or protected-clearance certificate",
+    "families": [
+      "xor",
+      "and",
+      "random14"
+    ],
+    "world_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "worlds": 36,
+    "events_per_world": 192,
+    "noise_probability": 0.15,
+    "dwell_A": {
+      "rng": "uniform_integer_inclusive",
+      "min": 48,
+      "max": 80
+    },
+    "dwell_B": {
+      "rng": "uniform_integer_inclusive",
+      "min": 48,
+      "max": 80
+    },
+    "dwell_return": "192-dwell_A-dwell_B, in [32,96]",
+    "switch_cues": "NEVER expose hidden switch clock, label or boundary event to models",
+    "public_episode": "episode_start true iff index%11==0; independent of hidden switch; reset two-action history only",
+    "public_contexts": "seven prior-two-action histories with sentinel 2 at world/episode start times current binary action, 14 total bins",
+    "underlying_A": "xor: action ^ priorA ^ priorB, sentinel encoded as 0; and: action & priorA & priorB with sentinel as 0; random14: private seeded 14-bit lookup",
+    "underlying_B": "bitwise complement of A for each of 14 cells; no clean potentials disclosed",
+    "action_rng": "random.Random(int.from_bytes(SHA256('LR92AR-DEV01|'+seed+'|'+family+'|'+index+'|action')[0:8],big))",
+    "other_rng_domains": [
+      "dwell",
+      "mask",
+      "noise"
+    ],
+    "rng_independence": "separate SHA256-domain-separated random.Random streams for action,dwell,mask,noise; action stream never conditional on phase length/family clean outcomes",
+    "data_birth": "NO WORLD OR OUTCOME CREATED AT PREREG COMMIT; creation only after all source/evaluator controls are frozen in same branch",
+    "scoring": "Each learner fresh per world, identical public chronological action/outcome sequence, forecast before feedback, one observation update per action",
+    "restore": "All learners exact checkpoint cold restored after public observation step 32 (a time guaranteed to be inside A), irrespective of later hidden changes; no switch-based checkpoint",
+    "input_manifest": "SHA256 per world of all 192 bytes triples (public episode_start,current action,observed consequence); concatenated digest source-independent",
+    "hidden_eval_metadata": "phase, dwell, family rule, clean outcomes and switch boundaries stored evaluator-only; never passed to learner"
+  },
+  "arms": [
+    {
+      "label": "LRA1_new_phase_blind",
+      "budget": 928,
+      "class_name": "PhaseBlindEvidencePosterior",
+      "source": "candidate"
+    },
+    {
+      "label": "YPT4_original",
+      "budget": 928,
+      "class_name": "PublicDualTimescaleCells",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "FullHistory14",
+      "budget": 480,
+      "class_name": "FullHistory14",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "FixedWindow14",
+      "budget": 832,
+      "class_name": "FixedWindow14",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "HardMAP_HMM",
+      "budget": 928,
+      "class_name": "TwoRegimeHMM",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "SoftHMM14",
+      "budget": 928,
+      "class_name": "SoftHMM14",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "ApproxCPD14",
+      "budget": 928,
+      "class_name": "ApproxBayesChangePoint14",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "BoundedBOCPD896",
+      "budget": 896,
+      "class_name": "BoundedRunLengthBOCPD14",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "RandomGate928",
+      "budget": 928,
+      "class_name": "RandomGateDualTimescaleCells",
+      "source": "pinned_LR92AP"
+    },
+    {
+      "label": "ExactBOCPD_overbudget",
+      "budget": null,
+      "class_name": "ExactRunLengthBOCPD14",
+      "source": "pinned_LR92AP_out_of_budget_reference"
+    }
+  ],
+  "primary_development_metric": "per-world prequential Brier A-return feedback observations indices 5..16 after second unannounced switch, macro averaged by seed/family; lower better",
+  "development_secondary": [
+    "B-phase full prequential Brier",
+    "A-return first1 no-cue Brier descriptive only",
+    "return first16 Brier",
+    "A-return after16 Brier",
+    "A-phase warm baseline",
+    "whole-process CPU wall and peak RSS on CI; not matched unless measured"
+  ],
+  "thresholds": {
+    "GO_if_all": [
+      "for each of three dev seeds, LRA1 return 5..16 macro improvement >=0.010 absolute versus EVERY in-budget control, including YPT4 and 896-byte BOCPD",
+      "for each of three dev seeds, LRA1 B-phase macro regression <=+0.010 absolute versus EVERY in-budget control",
+      "for every seed, random14 family return 5..16 regression <=+0.010 versus EVERY in-budget conventional control",
+      "all included models get exactly identical public data and one real update per outcome",
+      "LRA1 stays within 928 persistent learned/history bytes; cold replay and no hidden cue checks PASS",
+      "no protected cohort or original owned native checkpoint invoked"
+    ],
+    "NO_GO": "Failure of any GO condition => DEV_NO_GO. No hyperparameter retuning against the now-consumed dev seeds; archive every negative.",
+    "NOT_SCIENTIFIC_PASS": "Even GO is development-only; scientific first use/real native training requires independent frozen source, strongest fully fitted conventional baseline, matched whole-process cost, accepted owner checkpoint and independent owner permission."
+  },
+  "limitations": [
+    "HardMAP_HMM and SoftHMM are bounded/approximate, not complete fully-fitted Bayesian HMMs",
+    "ExactBOCPD is OUT OF BUDGET and its performance is a reference, not memory-matched",
+    "Family-specific XOR/AND/random14 structural priors are evaluator-only and were previously exposed in other development work; new disjoint action/outcome seeds are for independent DEV screening, not genuine unfamiliar-world scientific transfer",
+    "Fixed 11-event public episode cadence is an independent known clock but not correlated to the hidden dwell RNG; unannounced switches may happen to align coincidentally",
+    "No source-independent authenticity of simulated observations; no in-the-wild actions",
+    "Canonical native Yggdrasil checkpoint custody still unverified under LINEAGE01 #1322"
+  ],
+  "frozen_decision": "If DEV_NO_GO, retain source and final result without pursuing the same posterior with post-hoc hazard/gate tuning on the 36 worlds. Stop scientific first-use."
+}
