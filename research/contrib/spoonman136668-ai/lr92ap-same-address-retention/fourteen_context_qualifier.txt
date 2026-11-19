@@ -1,0 +1,105 @@
+LR-92AP — ALL-14-CONTEXT DEVELOPMENT SOURCE QUALIFIER
+=====================================================
+2026-11-19. External synthetic development ONLY, not owner-native Yggdrasil
+training and NOT protected LR-92AP scientific first-use. Existing draft PR
+#1323; unchanged accepted main baseline:
+5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+
+SOURCE AND EXECUTION
+--------------------
+fourteen_context_dev.py.txt = 6,297 bytes, Git blob
+e30a277dc57a4ddbaa11f5ae8699c58cda3edd98
+SHA256 718602895f005238ce3c3cdee5ddf1a2fc4a37d5a55af79f29a4c949a14c0271
+
+test_fourteen_context_dev.py.txt = 4,599 bytes, Git blob
+ae9ebf21eabe6ac8eb24200f2ee2fe771fd09bb0
+SHA256 ef3ec16416b0c50818663e2619b421740746fe2c89726890d685e4e09bd59649
+
+Both source and test Git blobs independently read back EXACTLY match the
+locally executed bytes. Existing imported candidate Git blob:
+e2fca6e277efbf0bd3b77ba7e472e4b5432d205f (YPT4).
+Existing bounded BOCPD Git blob:
+96bb94e608d2062fb4cc488ed010f150b8325787.
+
+Local Linux Python 3.13.5 standard library unit tests 7/7 PASS,
+compileall PASS; six deterministic fixture runs twice each. No CI run in
+this report qualified the source-in-.txt Python code on a GitHub runner.
+Reproduce offline in empty folder:
+  cp public_dual_timescale_cells.py.txt public_dual_timescale_cells.py
+  cp bounded_runlength_bocpd.py.txt bounded_runlength_bocpd.py
+  cp fourteen_context_dev.py.txt fourteen_context_dev.py
+  cp test_fourteen_context_dev.py.txt test_fourteen_context_dev.py
+  python -m unittest -v test_fourteen_context_dev.py
+  python fourteen_context_dev.py
+
+This fixture is a development screening aid, NOT a frozen primary source
+or a substitute for independent birth/first-use custody.
+
+DATA / SOURCE INTEGRITY
+-----------------------
+Two ALREADY DISCLOSED development seeds 73004303 and 73004304 only;
+the protected cohort seeds 929209101/929209102/929209103 are refused.
+Three families (XOR, AND, independently seeded random14 lookup). For each
+family and seed: exactly 192 public events, 64 A/64 opposite-B/64 A-return,
+noisy Bernoulli flip p=0.15. The 14 distinct reachable two-prior-action
+plus current-action temporal bins ALL appear across each 192-event tape.
+A new episode begins every eight public observations, with explicit
+end_episode() for ALL models. All A/B conditional cells conflict.
+The same current action/public outcome stream is supplied to each model,
+AFTER its prediction. Phase and clean potential outcomes are evaluator-only:
+not supplied as features or training inputs. The fixed 64/64/64 schedule
+and known public episode resets are DEV-only confounds; do not conceal them.
+
+SHA256 of bytes(episode_start, public_action, public_outcome):
+73004303 XOR      e300e4cddaa60857fe78db3d4daf30eed4cd5f8c4e80f4d54e82d3e54fa2caf8
+73004303 AND      a456633728fcde711df517dcdb2fd7704c79bddad9ded2b953082d8b6770f906
+73004303 random14 6ac24aef10f6260aa055c8f8d4c4043c0f5f3ffbec621edb0e58619b547490d5
+73004304 XOR      d3f9dc4a94fbcd38273ab00c5123495f62033f6847786539b97bb02a27bb4ae3
+73004304 AND      d3fdfb507f1c809b2679ff31851a5ff3528e85533caedf7e4bbdb02159358c8f
+73004304 random14 65ff9ae29f0295d706bc935e33e1acb2b0b1006368197c0e1e4f6c7f5e723550
+
+FIXTURE-ONLY BRIER (LOWER BETTER)
+----------------------------------
+                                   YPT4: B / A16     BOCPD: B / A16
+73004303 XOR                       .424203/.201498     .241508/.250061
+73004303 AND                       .361565/.304714     .220741/.256009
+73004303 random14                  .380678/.278483     .199806/.255160
+73004304 XOR                       .394187/.255518     .243864/.248478
+73004304 AND                       .417152/.188676     .195051/.299288
+73004304 random14                  .372945/.215408     .239773/.261187
+
+Six-stream arithmetic mean (DESCRIPTIVE, NOT independent statistical inference):
+YPT4 B .3917884; early A-return first16 .2407162.
+Bounded BOCPD14 B .2234573; early A-return first16 .2616972.
+An internal (NOT exact official) full14 count diagnostic B .3530742,
+A16 .2607462; sliding32 diagnostic B .2420533, A16 .3329575.
+Their Python diagnostic data structures do not qualify as memory-matched
+official baselines; rely on already-committed original controls for that.
+
+DEVELOPMENT NEGATIVE / GATE DECISION
+------------------------------------
+YPT4 is worse than bounded BOCPD14 on all SIX B-phase fixture streams;
+it outperforms BOCPD on early A-return in only three of six. It does NOT
+demonstrate jointly superior A-return and adaptation, so no development
+evidence justifies spending protected 288-world first-use now. More
+fixture-only tuning against these disclosed seeds is NOT recommended:
+candidate architecture should be reconsidered under an independently
+specified, new disjoint source before any confirmatory primary.
+The cold first-step return-to-A and continued-B hypotheses share the
+same observable history before any new feedback; absent a public cue their
+immediate predicted probabilities are necessarily identical. Existing
+fixed-schedule first-use confound still needs explicit review.
+
+COUNSEL FOR AUTHORIZED OWNER
+----------------------------
+The separate LINEAGE01 PR #1322 still does not establish an authenticated
+native-cumulative model checkpoint, authorized owner read-only evidence,
+source/parent ledger or prior-capability cold-restoration receipt. The
+accepted executor explicitly does not invoke a model unattended.
+This report does not alter native owners or close that custody blocker.
+
+ENGINEERING: source-in-.txt local fixture/tests PASS (7/7), exact blobs
+verified. Full native regression and dual-platform Python execution NOT RUN.
+SCIENTIFIC: experimental 288-world cohort UNCONSUMED, native cumulative
+learning, unfamiliar transfer and SCIENTIFIC_PASS UNVERIFIED.
+DEPLOYMENT/ACCEPTED: HOLD. Keep draft PR unmerged.
