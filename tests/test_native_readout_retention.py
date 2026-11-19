@@ -151,6 +151,23 @@ class RetentionTest(unittest.TestCase):
             POSTERIOR_FLOOR<=reader.negative_posterior<=POSTERIOR_CEIL)
 
 
+    def test_legacy_specialist_caps_follow_actual_native_1024_episode_contract(self):
+        from yggdrasil.native_episode_experience import MAX_EPISODES as CAP_NATIVE
+        from yggdrasil.native_jepa2_multilearner import (
+            ActionLatentSpecialist, MAX_EPISODES as CAP_OLD, STEPS as OLD_STEPS)
+        from yggdrasil.native_jepa_temporal import (
+            TemporalLatentSpecialist, MAX_EPISODES as CAP_TEMP, STEPS as TEMP_STEPS)
+        self.assertEqual(CAP_NATIVE,1024)
+        self.assertEqual((CAP_OLD,CAP_TEMP),(CAP_NATIVE,CAP_NATIVE))
+        for expert,steps in ((ActionLatentSpecialist("transition"),OLD_STEPS),
+                             (TemporalLatentSpecialist("transition"),TEMP_STEPS)):
+            expert.steps=1024*steps
+            expert._validate()
+            expert.steps+=1
+            with self.assertRaises(ValueError):
+                expert._validate()
+
+
 if __name__=="__main__":
     unittest.main()
 
