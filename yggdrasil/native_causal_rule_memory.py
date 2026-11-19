@@ -181,6 +181,7 @@ class CausalMemory:
         self._events=()
         self._banks=[]
         self._seen=set()
+        self._last=None
         for e in prior_events:
             require(type(e) is tuple and len(e)==7,
                     "CAP02_PRIOR_PUBLIC_TAPE")
@@ -263,7 +264,7 @@ class CausalMemory:
         identifier,views,a,s2,b,y,post=event
         require(identifier not in self._seen,
                 "CAP02_DUPLICATE_SOURCE_ID")
-        last=(self._prior+self._events)[-1] if self._seen else None
+        last=self._last
         if last is not None:
             target=(views[0][0],views[0][1],views[1][1])
             require(last[6]==target,"CAP02_PUBLIC_SEQUENCE_BREAK")
@@ -282,6 +283,7 @@ class CausalMemory:
                 -EVIDENCE_WINDOW:]
         self._banks[-1].learn(views,a,s2,b,y)
         self._seen.add(identifier)
+        self._last=event
 
     def observe(self,identifier,views,row,post):
         event=_event(identifier,views,row,post)
