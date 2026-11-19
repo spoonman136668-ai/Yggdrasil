@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-60",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "scope": "EXTERNAL SYNTHETIC EVIDENCE ONLY; no native first use, weights, accepted refs, runner, controller, queue, merge or deployment",
+  "source_parent": "c430f446ffef6326664a8719c6883422d19637c3",
+  "source_commit": "dff08e665d4851128e9e5bb0846dc1179ca196d1",
+  "source_archive": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-60/source.tar.bz2",
+  "source_archive_blob": "e01640ede048a4ce1b5c37ee8f8f07eee505c269",
+  "source_archive_sha256": "af7abf7b3d2e6a4586ba1a21ca9a458d8695eea3c30cf253bd6f57992a137120",
+  "scorer_sha256": "a7e94c276fd4c4b5ba17f1f239990572c3f0118b7720fab7d1ff340d1be2dc56",
+  "auditor_sha256": "5dd892881b35444e317260726c14151a4062d8dc516684012177865525d02b34",
+  "source_status": "Source and auditor committed to GitHub before this preregistration. Excluded dev seed 999701/ID 0, three families, evaluated previously for code validation only, PASS 35,102 independent refit checks. Screen seeds below unconsumed at freeze.",
+  "hypothesis": "A persistent learned prototype state plus empirical latent-transition prior and 12 factual query interventions can retain and recall historical causal functionality across unmarked regime changes more accurately than the strongest conventional calibrated softmax retrieval over exactly the same historical snapshots, including under unseen degree-4/5 causal mechanisms.",
+  "design": {
+    "screen_seeds": [997601, 997619],
+    "screen_world_ids": [0,1,2,3],
+    "families": ["return_old", "return_middle", "novel_threshold"],
+    "screen_worlds": 24,
+    "primary_seeds_reserved_unconsumed": [102101, 102119, 102137],
+    "primary_worlds_if_screen_promising": 36,
+    "generator": "E60:latent-state-outside-grammar:v1, own seeded source namespace 6001. 9 hidden causal bits plus 3 context-sensitive observed nuisance cues; shuffled unique causal interventions across stream, calibration and held; 3 unmarked chronological regimes A/B/C, 68..84 witnesses each; 12 factual probes each query; 52 distinct held each A/B/C; Gaussian observation noise sigma .16.",
+    "unseen_mechanisms": "Hidden 4-bit parity appended only to C for two return families and hidden 5-bit majority threshold appended to C in novel_threshold family; causal roles/weights hidden from fit; supplied learner basis contains only degree-2/3 Walsh terms on 12 observed bits, 286 terms, shared with conventional feature-based controls.",
+    "information_parity": "All arms get identical unmarked chronological raw (action,outcome) stream, same historical fitted OMP4 snapshots, then same 12 query-specific labeled consequences for each of A/B/C, and no held labels. Query session order A/B/C is visible to state-filter as sequence; hidden regime identity and true changepoints never passed to learner.",
+    "candidate": "Fit OMP4 snapshots over sliding 64-event windows stride16 on the supplied 286-term basis. Learn KMeans three-cluster prototypes from predictions on 40 fixed unlabeled action designs; cluster order canonical by first historical member. Learn Laplace-smoothed 3x3 transition matrix from successive overlapping snapshot clusters. Each query posterior is softmax(exp(-probe-MSE/.10)) times 0.2 uniform + 0.8(previous-query posterior x transition); predict prototype-weighted held outcomes. All fixed in source.",
+    "controls": [
+      "softmax_memory: ENERGY-59 conventional temperature .10 calibrated weights over identical OMP4 historical snapshots; decisive baseline",
+      "prototype_softmax: same learned KMeans prototypes, uniform state prior each query; direct isolation of temporal state filter",
+      "best_snapshot: lowest calibration error historical snapshot",
+      "last_snapshot: latest model without retrieval",
+      "pooled_elasticnet: fully trained alpha .035, l1 .85 on all stream+probe, same 286 dictionary",
+      "recent_elasticnet: fully trained same model on most recent 80 stream plus probe",
+      "pooled_krr: fully trained sklearn RBF kernel ridge alpha .20 gamma .20",
+      "random_snapshot and shuffled_probes: negative controls"
+    ],
+    "metrics": "Unweighted per-world and aggregate held MSE across A,B,C (52 withheld interventions each), per-seed and per-family splits, old A retention, cold C error, posterior transition effect; lower is better. Latent state is inferred from data but three clusters and source grammar fixed a priori, not unrestricted causal mechanism invention.",
+    "audit": "Independent source-free NumPy/sklearn refit of all snapshots, KMeans latent assignments, transition matrix, predictors/controls, queries and aggregation, unique causal IDs and disclosed true response functions. Audit does not import scorer but shares numerical dependencies and scored generator's random noise. Exact source replay excludes performance timer metadata.",
+    "environment": "Linux single-thread CPU Python 3.13.5 NumPy 2.3.5 scikit-learn 1.8.0 SciPy 1.17.0; OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1; no paid API/GPU/owner runner. Report runtime for 24 worlds, not power consumption."
+  },
+  "frozen_screen_gates": {
+    "pooled_gain5_vs_softmax": "state_filter pooled A/B/C MSE <=0.95 * softmax_memory pooled MSE",
+    "pooled_gain5_vs_prototype": "state_filter pooled MSE <=0.95 * prototype_softmax pooled MSE (isolates temporal effect)",
+    "cold_C_gain5_vs_softmax": "state_filter C held MSE <=0.95 * softmax_memory C held MSE",
+    "both_seed_positive_vs_softmax": "state_filter pooled held MSE strictly lower than softmax_memory for BOTH screen seeds",
+    "all_families_noninferior_10pct": "state_filter pooled MSE <=1.10x softmax_memory pooled MSE on EACH family",
+    "historical_A_noninferior_5pct": "state_filter held A MSE <=1.05x softmax_memory A held MSE",
+    "negative_shuffled_20pct": "state_filter pooled MSE <=0.80x shuffled_probes pooled MSE",
+    "last_snapshot_gain20pct": "state_filter pooled MSE <=0.80x last_snapshot pooled MSE",
+    "temporal_prior_exercised": "At least 10 percent of second/third query posterior vectors differ by >0.01 L1 from uniform-prior prototype posteriors",
+    "independent_audit": "Every world, latent memory snapshot, transition, all 10 trained predictors, held predictions and aggregate scores pass auditor; unchanged-source semantic replay matches."
+  },
+  "classification": {
+    "SCREEN_PROMISING": "All four critical gates (pooled_gain5_vs_softmax, pooled_gain5_vs_prototype, cold_C_gain5_vs_softmax, both_seed_positive_vs_softmax) PASS, at least 8/10 total PASS, and independent audit/replay PASS. Only then eligible for a separately verified 36-world primary on reserved seeds; not SCIENTIFIC_PASS.",
+    "SCREEN_NO_GO": "Any critical gate FAIL or fewer than 8/10 gates PASS with valid same-source evidence and independent audit. Preserve negative and stop without primary, no tuning consumed seeds.",
+    "INVALID": "Source/prereg not committed before screen; source hash drift, unique causal assignments invalid, labels leaked, missing baseline or audit mismatch. Do not relabel a validity failure as a scientific negative.",
+    "UNVERIFIED": "Run or audit incomplete, report no scientific conclusion."
+  },
+  "restriction": "One frozen 24-world screen, one unchanged-source replay, one independent audit. No changes to code, thresholds, seeds or capacity after the first score; no native Yggdrasil execution, acceptance, merge, deployment, scheduler or queue mutation."
+}
