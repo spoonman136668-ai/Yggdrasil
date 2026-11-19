@@ -1,0 +1,143 @@
+{
+  "schema": "yggdrasil.external-source-metadata-admission.v1",
+  "experiment_id": "WSP-199",
+  "status": "SOURCE_METADATA_VERIFIED_PREREG_NOT_YET_CREATED",
+  "admission_scope": "source identity, immutable full-byte hash, genotype-only structural support and licensing triage; no target parsing, fitting, or scoring",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "source_family": "2022 GFP fitness landscape across three experimentally observed GFP backgrounds",
+  "predecessor_public_dev_evidence": [
+    {
+      "experiment": "WSP-194",
+      "pr": 1305,
+      "result": "PUBLIC_DEV_NO_GO, held pair-coordinate overlap zero"
+    },
+    {
+      "experiment": "WSP-196",
+      "pr": 1311,
+      "result": "PUBLIC_DEV_NO_GO, direct HD4 failed against converged categorical ridge"
+    },
+    {
+      "experiment": "WSP-198",
+      "pr": 1321,
+      "head_sha": "6c96eea3066cbf5bdaaf8a4345ea7ed13ef2ceb9",
+      "result_git_blob": "5990c877b725a50f3814a71c71f0105d45a31972",
+      "result": "PUBLIC_DEV_NO_GO, rank2 direct spectral held RMSE .6912816 vs rank4 converged ALS .4643859"
+    }
+  ],
+  "current_accepted_main_at_admission": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "upstream": {
+    "repository": "aequorea238/Orthologous_GFP_Fitness_Peaks",
+    "pinned_commit": "799bd76889918bf1551c60016fb23278024cac73",
+    "paper": "Somermeyer et al., Heterogeneity of the GFP fitness landscape and data-driven protein design, eLife (2022)",
+    "doi": "10.7554/eLife.75842",
+    "root_readme_blob": "6cdfd613b7c9941b38703c300ff0d873560f084f",
+    "data_readme_blob": "176614ff075b716efcda337c25636775ca4690ec",
+    "license_file_blob": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+    "source_license_statement": "Root README states GNU GPL v3.0; original measurement-data republication permissions separately not conclusively established; no raw source bytes, tables, trained parameters or code copied into Yggdrasil.",
+    "primary_file": {
+      "path": "data/final_datasets/amacGFP_cgreGFP_ppluGFP2__final_aminoacid_genotypes_to_brightness.csv",
+      "git_blob_sha1": "ee1d9d885a36e2d88b049f92e3af7bf90833ddad",
+      "github_api_tree_size_bytes": 8069873,
+      "full_original_ascii_bytes_read_for_digest": 8069873,
+      "recomputed_sha256": "41eb96cbaba255e64f4d229b20f6e53bf2e512ba0953bc032697e7b82c6f3ca8",
+      "hash_selftest_abc": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      "genotype_record_count": 93925,
+      "header": [
+        "aa_genotype_pseudo",
+        "aa_genotype_native",
+        "gene",
+        "total_cell_count",
+        "n_replicates",
+        "replicates_mean_brightness"
+      ],
+      "genotype_columns_parsed": [
+        0,
+        1,
+        2
+      ],
+      "numeric_measurement_columns_parsed": [],
+      "rows_with_genotype_parse_error": 0,
+      "duplicated_gene_pseudo_genotype_keys": 0
+    },
+    "reference_sequences": {
+      "path": "data/alignments/avGFP_amacGFP_cgreGFP_ppluGFP2__protein_sequences.fasta",
+      "git_blob_sha1": "1b8f459eb35b400a6b8b3b3dd4e4f4b49cb6e382",
+      "github_api_tree_size_bytes": 971,
+      "independent_sha256": "NOT_COMPUTED",
+      "source_note": "includes avGFP reference in addition to the three new measured backgrounds; avGFP reformatted source is a separate 2016 study and was not included in the primary file admission"
+    }
+  },
+  "genotype_only_audit": {
+    "variant_field": "aa_genotype_pseudo; colon-delimited A<position>B mutations, wt is unmutated",
+    "accepted_identity_characters": "20 standard amino acid letters, positive/zero decimal positions; special stop symbols are excluded from strict metadata subset",
+    "per_gene": [
+      {
+        "gene": "amacGFP",
+        "rows": 35500,
+        "wt": 1,
+        "unfiltered_single_arity": 1215,
+        "unfiltered_double_arity": 11507,
+        "strict_standard_aa_doubles": 11260,
+        "strict_doubles_with_both_parent_singles": 10822,
+        "strict_doubles_with_missing_parent": 438,
+        "strict_double_position_pair_groups_with_parents": 7789,
+        "groups_ge2": 1917,
+        "groups_ge5": 165
+      },
+      {
+        "gene": "cgreGFP",
+        "rows": 26165,
+        "wt": 1,
+        "unfiltered_single_arity": 1188,
+        "unfiltered_double_arity": 10347,
+        "strict_standard_aa_doubles": 10148,
+        "strict_doubles_with_both_parent_singles": 9517,
+        "strict_doubles_with_missing_parent": 631,
+        "strict_double_position_pair_groups_with_parents": 7396,
+        "groups_ge2": 1707,
+        "groups_ge5": 9
+      },
+      {
+        "gene": "ppluGFP",
+        "rows": 32260,
+        "wt": 1,
+        "unfiltered_single_arity": 1163,
+        "unfiltered_double_arity": 16134,
+        "strict_standard_aa_doubles": 15992,
+        "strict_doubles_with_both_parent_singles": 15717,
+        "strict_doubles_with_missing_parent": 275,
+        "strict_double_position_pair_groups_with_parents": 10335,
+        "groups_ge2": 3736,
+        "groups_ge5": 84
+      }
+    ],
+    "aggregate_strict_double_with_parent_singles": 36056,
+    "aggregate_eligible_unordered_site_pair_groups": 25520,
+    "observation": "Whole-site-pair groups are numerous but often sparse; the three proteins are distinct sequence backgrounds from ONE published study, not three independently sourced worlds.",
+    "outcome_values_inspected_for_this_admission": false,
+    "original_file_raw_bytes_republished": false
+  },
+  "qualification_boundaries": {
+    "no_first_outcome_training_or_scoring": true,
+    "no_fit_valid_dev_partition_frozen_yet": true,
+    "source_copy_in_yggdrasil": false,
+    "independent_source_sha256_verified": true,
+    "reference_fasta_independent_sha256_verified": false,
+    "novel_world_qualification": false,
+    "authorized_model_or_owner_training": false,
+    "official_yggdrasil_owner_first_use": false,
+    "scientific_pass": false,
+    "complete_regression": false,
+    "license_assessment": "REVIEW_BEFORE_REDISTRIBUTION_OR_DERIVATIVE_RELEASE",
+    "needs_before_any_scientific_eval": [
+      "commit a separate WSP-199 primary preregistration BEFORE target-value access or model evaluation",
+      "define exact background/whole-site-pair split, reserved held data, leakage guard, model/update algorithm, seeds and budgets",
+      "compare same-information equal-capacity fully converged bilinear/ridge controls plus stronger capacity and sham/always/random update controls",
+      "record all-in resource costs and full-factor cold restoration, delayed retention, interference and unfamiliar-pair transfer",
+      "decide genotype-only exclusion of stop/invalid alleles and verify parents and reference alignment before any label parsing",
+      "confirm source-specific data rights; retain upstream bytes at upstream only and do not redistribute",
+      "maintain separate external contribution authority, no original protected action under Yggdrasil issue 426"
+    ]
+  }
+}
