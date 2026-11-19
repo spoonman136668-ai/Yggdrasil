@@ -1,0 +1,125 @@
+LR-92AP — 896-BYTE FITTED RUN-LENGTH BOCPD MEMORY-MATCHED CONTROL
+==================================================================
+Date 2026-11-19. Existing draft PR #1323, baseline main
+5e74f8db85b2f5839c42148c0dfba69a88b1a2c9. External fixture-only
+research. No native model training, source acceptance, first-use, merge,
+deployment, owner/runner/controller or scheduler change.
+
+WHY THIS CONTROL EXISTS
+-----------------------
+The independently developed exact untruncated Bayesian run-length model
+(bocpd_exact_reference.py.txt, PR head 061d7de62b) is sound as a conventional
+out-of-budget predictive reference, but its fully fitted 192-step checkpoint
+requires 13,428 bytes. RF32 is likewise out-of-budget. To complete a
+meaningful in-budget comparison, this gate builds a distinct 896-byte
+persistent-state BOCPD with 14 action-context bins, 16 isolated addresses,
+fixed hazard 1/32 and Beta(1,1) public-only Bernoulli emissions.
+
+SERIALIZED BUDGET AND LIMITATIONS
+---------------------------------
+For 16 addresses (7 active plus 9 retained):
+- actual prior-two-action history: 32 bytes
+- per-address last-32 event records in packed 5-bit 14-bin format: 320 bytes
+- occupied ring lengths and write heads: 16 + 16 bytes
+- 32 fixed-point posterior weights per address (Q8, sum 255): 512 bytes
+TOTAL PERSISTENT LEARNED/HISTORY STATE: 896 bytes (<928).
+Checkpoint magic 4 + state 896 + SHA256 32 = 932 bytes.
+The 932-byte serialized checkpoint is NOT the 896-byte learned-state budget.
+Python heap and transient posterior calculations are additional runtime costs,
+not hidden persistent model state. In-process memory and full-process resource
+parity against native Yggdrasil have not been measured.
+
+The generative prior assigns per-observation change hazard H=1/32 and
+predicts H*0.5+(1-H)*sum_r P(r)*p(y=1|recent r public observations).
+Per-bin Beta(1,1) conditional emission probabilities are fully fitted on
+past public counts. The run-length posterior is not fully exact: Q8
+quantization, a bounded 32-public-event tape, and a folded r>=31 tail are
+explicit approximations. Do NOT call it an exact or untruncated BOCPD.
+Its distinct LRB1 snapshot does not migrate/change original PYC1/YPT3 or
+other native formats. Hazard, precision and window were fixed prior to this
+gate's fixture scoring; no hyperparameter sweep or post-primary retuning.
+
+EXACT SOURCE CUSTODY AND REPRODUCIBILITY
+----------------------------------------
+Source bounded_runlength_bocpd.py.txt:
+  7189 UTF-8 bytes; Git blob 96bb94e608d2062fb4cc488ed010f150b8325787
+  SHA256 8dbbca45368136bc932ff77fb9d4a9b887ae27d346b6ce952952f72a7488a5de
+Tests test_bounded_runlength_bocpd.py.txt:
+  9028 UTF-8 bytes; Git blob 9e7c902a0d98a93acfa76ae50a6f0d93ae4d1a88
+  SHA256 db617cbfb9b1bc200e247060f4d5c48204eff5b9d70f9bbf16b88be060e2a12a
+Both GitHub source/test blob readbacks match the locally executed bytes.
+Python 3.13.5 Linux standard-library-only focused unit tests 11/11 PASS,
+including separate exhaustive short-tape change-partition enumeration
+(quantized model agreement tolerance 0.015), determinism, invalid input
+atomicity, SHA-corruption and even rehashed semantic invalidity, 16-address
+isolation, ring packing, temporal-history readout, prediction immutability,
+checkpoint restore parity, and forbidden primary-seed generator checks.
+
+Reproduce after verbatim copying the .txt files to these Python names in
+one isolated directory:
+  cp bounded_runlength_bocpd.py.txt bounded_runlength_bocpd.py
+  cp test_bounded_runlength_bocpd.py.txt test_bounded_runlength_bocpd.py
+  python -m unittest -v test_bounded_runlength_bocpd.py
+
+UNPROTECTED DEV FIXTURE ONLY (EXACT SAME ACTION/OUTCOME TAPE)
+------------------------------------------------------------
+Seeds 73004303 and 73004304 only. Each: 64 public A, 64 conflicting B,
+64 return-A, with two prior-action contexts reset every observation.
+Thus only ONE of the 14 patterns is exercised here; it is NOT independent
+native unfamiliar-structure transfer evaluation.
+Lower prequential Brier score is better. Outcomes read after prediction.
+B column scores all B 64 events; return column first 16 A-return events.
+
+                           B 64       Return-A first 16
+73004303, bounded BOCPD    0.205178254   0.253617902
+73004304, bounded BOCPD    0.149523702   0.238605175
+
+Previously committed exact BOCPD out-of-budget:
+73004303                   0.206162335   0.268902421
+73004304                   0.151023681   0.246632456
+Earlier hard MAP two-regime HMM (memory matched):
+73004303                   0.20204       0.22774
+73004304                   0.15312       0.20312
+Earlier LR-92AP original candidate YPT4:
+73004303                   0.3301        0.3105
+73004304                   0.3172        0.3187
+
+PUBLIC STREAM SHA256:
+73004303 d605576ab052303c93377c839b7d9b2c34b2f35bc319998f7c4ce2b85c4ad71c
+73004304 43f68d889adb443707319acb92c4e6961d39a72141fe770f4ba04068a6121b57
+FULL MODEL FINAL SNAPSHOT SHA256:
+73004303 4717c66d4d6b55b5c6a0722b2753f075bdf62f1d8a338488ab5ffa84857f81e3
+73004304 32699d01583d719a2ea67b0f2f65bdc1a7d61441c1b4f80e9e66afd1a109bdc2
+COLD PRE-A RETURN SNAPSHOT SHA256:
+73004303 647b1a1def8fb666cedb0a4a759d86b707bb57d4af58a20a67c0fe1b2373fdab
+73004304 be1fe955b45f228e0c96fafb6b12f4e020da3d5274f53f003212e61a8680efdd
+
+9? Timing remeasured as 11 independent complete 192-update fixture runs per
+seed on Python 3.13.5 Linux local host, initialization/predictions/updates/
+snapshot included: medians 0.00833 s and 0.00826 s. This is a local
+microbenchmark, not native/dual-OS cost qualification.
+
+DEVELOPMENT INTERPRETATION / STOP RULE
+--------------------------------------
+The 896-byte bounded Bayesian model beats the original YPT4 candidate
+on BOTH B and early A-return on these TWO disclosed development fixtures.
+It does not beat hard MAP HMM on early A-return in either, nor does it
+demonstrate universally strong cold recovery. This is negative evidence
+against the current YPT4 candidate's proposed mechanism, not a statistical
+primary result. Returning A is observationally indistinguishable from
+continuing B before new public evidence absent a cue; do not award oracle
+first-step return identification. None of these data supports science
+promotion, general intelligence or native cumulative learning.
+
+Do not use these fixture measurements to relabel the frozen 288-world
+cohort. The full 14-bin independent source, evidence-birth custody,
+pre-primary control completeness and authorized protected first-use
+remain unverified. All 288 protected worlds/primary seeds UNCONSUMED.
+No retuning against protected data.
+
+ENGINEERING: local focused 11/11 PASS, bytes verified on GitHub; G29
+atlas source-index is separate from .txt Python test execution. Full
+native regression / owner acceptance UNVERIFIED.
+SCIENTIFIC: no superior native learning, retention, transfer, or
+SCIENCE PASS established; protected primary NOT RUN.
+DEPLOYMENT / MERGE / ACCEPTED REFS: HOLD.
