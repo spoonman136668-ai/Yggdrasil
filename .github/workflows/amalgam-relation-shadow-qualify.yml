@@ -86,6 +86,10 @@ jobs:
           # This is NOT a source-owner first-use GO.
           git merge-base --is-ancestor 33da6416844492d60253c4b28b163823a639eb3f HEAD
           test "$(git rev-parse HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/action_identifiability_prereg.json)" = "f6b9a8d54b3ef7645ab091d796ce3a71301380f6"
+          # Separate hidden-family first-probe counterexample was frozen
+          # before this test implementation; preserve both design histories.
+          git merge-base --is-ancestor 4d0ab243c1eb7247e1643eb2ac1f756e2ee9921e HEAD
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/action_rank_blindness_freeze.md)" = "d48e5bdc958107e1761ad004fdf197304cefe052"
           python -B -m unittest discover -s tests -p 'test_*.py'
           for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
             python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
