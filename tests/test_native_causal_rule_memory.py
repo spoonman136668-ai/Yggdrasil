@@ -13,6 +13,8 @@ from yggdrasil.native_causal_rule_memory import (
 
 ROOT=Path(__file__).resolve().parents[1]
 DIR=ROOT/"research/contrib/chatgpt/YGG-CAP02"
+sys.path.insert(0,str(DIR))
+from pinned_restore import load_pinned_cap01
 ORIGINAL=ROOT/"research/contrib/chatgpt/YGG-CAP01/original"/("windows" if sys.platform=="win32" else "linux")
 SOURCES={
     14071:(99811,"2d08c7e2d6d4d80acfc53727cdd0880d3f632c0f44bdb405b78feffba405938e" if sys.platform=="win32" else "6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14"),
@@ -30,7 +32,7 @@ def model(old_seed):
     payload=json.loads((ORIGINAL/f"seed-{old_seed}-state.json").read_bytes())
     raw=payload["continued_ascii"].encode("ascii")
     assert digest(raw)==pin==payload["continued_sha256"]
-    return SegmentedNativeJEPA.restore(raw,pin)
+    return load_pinned_cap01(raw,pin)[0]
 
 class CAP02NativeMemoryTests(unittest.TestCase):
     def test_source_disjoint_two_old_models_and_public_chronology(self):
