@@ -2,6 +2,7 @@
 from __future__ import annotations
 import importlib.util
 import json
+import sys
 from pathlib import Path
 import unittest
 from yggdrasil.native_context_basis import canonical,digest
@@ -12,10 +13,10 @@ from yggdrasil.native_causal_rule_memory import (
 
 ROOT=Path(__file__).resolve().parents[1]
 DIR=ROOT/"research/contrib/chatgpt/YGG-CAP02"
-ORIGINAL=ROOT/"research/contrib/chatgpt/YGG-CAP01/original/linux"
+ORIGINAL=ROOT/"research/contrib/chatgpt/YGG-CAP01/original"/("windows" if sys.platform=="win32" else "linux")
 SOURCES={
-    14071:(99811,"6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14"),
-    14072:(99829,"c503ccf979f90d6d4954f0e8d42133fc177017d4b47de80ee64c9524b870d827"),
+    14071:(99811,"2d08c7e2d6d4d80acfc53727cdd0880d3f632c0f44bdb405b78feffba405938e" if sys.platform=="win32" else "6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14"),
+    14072:(99829,"e09b0cbbe47b95686f3ed3732baf080fe6b47301f0128c360437bf29bf9dfbfb" if sys.platform=="win32" else "c503ccf979f90d6d4954f0e8d42133fc177017d4b47de80ee64c9524b870d827"),
 }
 
 def source():
