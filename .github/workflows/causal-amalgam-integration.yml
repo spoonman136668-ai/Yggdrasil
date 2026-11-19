@@ -116,6 +116,11 @@ jobs:
           "$AMALGAM/causal_templates_protocol.json" "$AMALGAM/causal-templates-dev-01"
         python -B "$AMALGAM/open_set_audit.py" "$PARENTS" \
           "$AMALGAM/open_set_protocol.json" "$AMALGAM/open-set-dev-01"
+        git diff --exit-code af5c8162a6ee9d3b092b8a77409e31ea58312a6c HEAD -- \
+          "$AMALGAM/outcome_probe.py" "$AMALGAM/outcome_probe_trial.py" \
+          "$AMALGAM/outcome_probe_protocol.json"
+        python -B "$AMALGAM/outcome_probe_audit.py" "$PARENTS" \
+          "$AMALGAM/outcome_probe_protocol.json" "$AMALGAM/outcome-probe-dev-01"
         test -z "$(git status --porcelain)"
     - name: Cold-replay every sealed descendant on this platform
       shell: bash

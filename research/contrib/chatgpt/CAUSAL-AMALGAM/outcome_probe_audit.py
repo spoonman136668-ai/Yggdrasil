@@ -8,8 +8,9 @@ import sys
 from tempfile import TemporaryDirectory
 from time import monotonic
 
-from outcome_probe_trial import FIELDS, POLICIES, SCALE, SCENARIOS, SUPPORTED, admit
+from outcome_probe_trial import FIELDS, POLICIES, SCALE, SCENARIOS, SUPPORTED
 from selection_trial import restore
+from staged_public_readout import StagedPublicReadout
 from yggdrasil.native_context_basis import canonical, digest
 
 HERE = Path(__file__).resolve().parent
@@ -33,6 +34,7 @@ def audit(checkpoints, plan_path, evidence):
     safety = []
     held_quality = []
     restored = {}
+    staged_forecasts = 0
     source_actions = held_actions = 0
     for case in report["cases"]:
         seed, scenario = case["seed"], case["scenario"]
@@ -102,7 +104,12 @@ def audit(checkpoints, plan_path, evidence):
             identifier = digest(canonical([plan["id"]+"-"+scenario,seed,"native_probe",index]))
             views = tuple(tuple(view) for view in views)
             packet = dict(zip(FIELDS,row,strict=True))
-            trained = admit(trained,identifier,views,packet)
+            stage = StagedPublicReadout(trained, identifier, views)
+            stage.first_action(packet["x1"])
+            stage.observe_transition(packet["s2"])
+            stage.second_action(packet["x2"])
+            trained = stage.observe_reward(packet["y"])
+            staged_forecasts += 2
             observed.append((identifier,views,*(packet[k] for k in ("x1","s2","x2","y"))))
         state = trained.checkpoint()
         if digest(state) != case["candidate_sha256"]:
@@ -126,7 +133,7 @@ def audit(checkpoints, plan_path, evidence):
         raise ValueError("Independent classification or global action accounting differs")
     return dict(exact_audit=True, cold_descendants=restored,
                 recomputed_acquisition_actions=source_actions, recomputed_held_actions=held_actions,
-                new_source_actions=0,wall_seconds=monotonic()-wall)
+                staged_forecasts=staged_forecasts, new_source_actions=0,wall_seconds=monotonic()-wall)
 
 
 if __name__=="__main__":
