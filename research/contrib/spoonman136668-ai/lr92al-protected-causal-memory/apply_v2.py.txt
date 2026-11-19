@@ -1,0 +1,33 @@
+"""Deterministically reconstruct the pre-scoring LR-92AL v2 source from v1."""
+import base64, hashlib, pathlib, zlib
+
+src = zlib.decompress(base64.b64decode(pathlib.Path('run.py.zlib.b64').read_bytes()))
+expected_old = 'a7f02f9d75b5728f2c397a892b396d830e65b0d2b5060b8d77284e8a03007ce3'
+assert hashlib.sha256(src).hexdigest() == expected_old, 'frozen v1 source differs'
+s = src.decode('utf-8')
+changes = [
+ ('SEEDS = (929205101, 929205102, 929205103)',
+  'SEEDS = (929205201, 929205202, 929205203)'),
+ ("    print('FIXTURE PASS: 12 checks, 80 fixed hypotheses, no primary seeds')",
+  "    # Round-trip a complete independent fixture record, including NumPy booleans.\n"
+  "    sample = evaluate_world(23, 0)\n"
+  "    assert json.loads(json.dumps(sample, default=json_scalar))['family'] == 0\n"
+  "    print('FIXTURE PASS: 13 checks including full result serialization; no primary seeds')\n\n"
+  "\ndef json_scalar(x):\n"
+  "    if isinstance(x, np.generic):\n        return x.item()\n"
+  "    raise TypeError('Unexpected non-JSON scalar: ' + type(x).__name__)"),
+ ("encoded=(json.dumps(obj,sort_keys=True,separators=(',',':'))+'\\n').encode()",
+  "encoded=(json.dumps(obj,sort_keys=True,separators=(',',':'),default=json_scalar)+'\\n').encode()"),
+ ("'bytes':len(encoded),'summary':summary,'wall_seconds':obj['wall_seconds']},indent=2))",
+  "'bytes':len(encoded),'summary':summary,'wall_seconds':obj['wall_seconds']},indent=2,default=json_scalar))"),
+]
+for old, new in changes:
+    assert s.count(old) == 1, 'source changed or ambiguous replacement'
+    s = s.replace(old, new)
+blob = s.encode('utf-8')
+expected_new = '7e09232cc6edff27ea611ed2f785bfa7778e48553f5af6905dcd9c03486009bb'
+assert hashlib.sha256(blob).hexdigest() == expected_new, 'amended v2 source hash wrong'
+p = pathlib.Path('run_v2_rebuilt.py')
+assert not p.exists(), 'refuse overwrite'
+p.write_bytes(blob)
+print('PASS reconstructed', expected_new)
