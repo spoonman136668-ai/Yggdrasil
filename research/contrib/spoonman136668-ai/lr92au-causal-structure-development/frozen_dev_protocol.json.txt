@@ -1,0 +1,88 @@
+{
+  "authority": {
+    "merge": false,
+    "native_training": false,
+    "owner_or_controller_change": false,
+    "paid_APIs": false,
+    "promotion": false,
+    "runner_or_scheduler_change": false,
+    "scientific_first_use": false
+  },
+  "date": "2026-11-19",
+  "experiment": "LR-92AU",
+  "frozen": {
+    "complexity_prior": 0.65,
+    "controls": [
+      "ConstructiveCoverage same representation no information gain",
+      "FullTabularCoverage fully fitted 16 do-action Beta(1,1) counts",
+      "SlidingTabularCoverage fully fitted last 32 do-action Beta(1,1) counts"
+    ],
+    "cost": "all arms same number of observations per world, action policy may differ; report actual number of actions, learned+history state bytes, full process seconds",
+    "decision_go_all": [
+      "Each seed candidate A, B and Areturn expected Brier beats the BEST conventional/control comparator by >=0.01 absolute",
+      "Candidate pooled Areturn beats same-model coverage/no-info ablation by >=0.005",
+      "Candidate true A parent-subset MAP recovery >=0.50 across dev worlds",
+      "Candidate total measured wall time <= 5x fastest comparator"
+    ],
+    "default_on_any_failure": "DEVELOPMENT_NO_GO; preserve all negative outcomes; no retune on disclosed fixtures",
+    "dev_seeds": [
+      77033101,
+      77033102
+    ],
+    "exact_scoring": "Mean analytical expected Brier across all 16 do-actions after public A, B and Areturn training; prequential first eight Areturn observed labels scored separately; no heldout label feedback",
+    "families": [
+      "pair",
+      "triple",
+      "sparse_random"
+    ],
+    "forbidden_prior_seeds": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802,
+      76021921,
+      76021922,
+      929209101,
+      929209102,
+      929209103
+    ],
+    "intervention_info_exploration_bonus": 0.035,
+    "intervention_variables": 4,
+    "noise_probability": 0.15,
+    "phase_lengths": "Three private evaluator-only A/B/A durations independently uniform 20..28 inclusive, not exposed to policies",
+    "possible_interventions": 16,
+    "public_interfaces": "choose -> predict -> observe; no evaluator phase/mechanism/label used before choice or forecast",
+    "replications_per_seed_family": 4,
+    "source_sha256": {
+      "causal_structure.py": "646e0577765c0d4dc05ce5c1af7f4e00639c429cc1e157eeac1c2a29f3d9b9fc",
+      "compare.py": "0818ab580f7c4ddada6ca66af5540bd80ec7fe196ae7b34d6c041159e0b4679a",
+      "test_mechanism.py": "09944460df470c3c2ddd4894765761501cca14d58207abb99f605cfa0be00a72",
+      "worlds.py": "1b26333a41b72435b705a714507fd4c5d1a778b442697d9fcf00ec3d2740024d"
+    },
+    "state_window_events": 32,
+    "true_parent_count": [
+      2,
+      3
+    ],
+    "unknown_causal_table": "Random essential full truth-table for each parent subset; not drawn from previously enumerated eight-program catalog",
+    "worlds": 24
+  },
+  "interpretation": "Development-only synthetic causal-subset inference, not native intelligence or verified unfamiliar transfer.",
+  "lineage": {
+    "original_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_negative_commit": "7afd472a17e975bef5d57455ab0c0599be165c91",
+    "pr": 1323,
+    "prior_288_world_cohort": "UNCONSUMED"
+  },
+  "primary": {
+    "first_use_authorized": false,
+    "seeds": [],
+    "source_birth_locked": false,
+    "worlds": null
+  },
+  "reason": "LR92AT fixed 8-program catalog did not generalize; test dynamically inferred causal parent subsets, noncoded arbitrary conditional functions and public-intervention information gain with no phase/schedule oracle",
+  "schema": "lr92au.frozen-development-protocol.v1",
+  "status": "FROZEN_DEV_ONLY_PRIMARY_NOT_DEFINED"
+}

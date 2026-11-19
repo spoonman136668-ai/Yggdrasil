@@ -1,0 +1,88 @@
+"""Fresh development-only noncatalog causal mechanisms and potential outcomes."""
+from __future__ import annotations
+import hashlib, random
+from dataclasses import dataclass
+from causal_structure import ACTIONS,_compact,NOISE
+
+SEEDS=(77033101,77033102)  # NEVER use prior DEV or reserved scientific seeds
+FORBIDDEN=(73004303,73004304,74009171,74009172,75011801,75011802,
+           76021921,76021922,929209101,929209102,929209103)
+FAMILIES=('pair','triple','sparse_random')
+REPS=4
+
+
+def _seed(seed,family,rep,salt):
+    payload=f'LR92AU|{seed}|{family}|{rep}|{salt}'.encode()
+    return int.from_bytes(hashlib.sha256(payload).digest()[:8],'big')
+
+
+def _essential(table,k):
+    # Every designated parent changes the output for some held-other-inputs.
+    return all(any(table[j]!=table[j^(1<<b)] for j in range(1<<k)) for b in range(k))
+
+
+@dataclass(frozen=True)
+class Mechanism:
+    parents: int
+    table: tuple[int,...]
+
+    def clean(self,action):
+        return self.table[_compact(action,self.parents)]
+
+    def probability(self,action):
+        return NOISE+(1-2*NOISE)*self.clean(action)
+
+
+def _mechanism(rng,k):
+    parents=sum(1<<i for i in rng.sample(range(4),k))
+    while True:
+        table=tuple(rng.randrange(2) for _ in range(1<<k))
+        if _essential(table,k):return Mechanism(parents,table)
+
+
+@dataclass(frozen=True)
+class World:
+    seed:int
+    family:str
+    rep:int
+    A:Mechanism
+    B:Mechanism
+    lengths:tuple[int,int,int]
+    noise:tuple[float,...]  # evaluator only, never supplied to learner
+
+    def truth(self,phase,action):
+        if phase not in ('A','B','Areturn'):
+            raise ValueError('AU_HIDDEN_PHASE_FORBIDDEN')
+        return (self.B if phase=='B' else self.A).probability(action)
+
+    def observe(self,step,action):
+        # Evaluator only; learner receives an observed bit after action choice.
+        if type(step) is not int or not 0<=step<len(self.noise):
+            raise ValueError('AU_BAD_STEP')
+        if type(action) is not int or action not in ACTIONS:
+            raise ValueError('AU_BAD_ACTION')
+        a,b,c=self.lengths
+        mech=self.A if step<a or step>=a+b else self.B
+        return mech.clean(action)^int(self.noise[step]<NOISE)
+
+
+def development_world(seed,family,rep):
+    if (type(seed) is not int or seed not in SEEDS or
+        type(family) is not str or family not in FAMILIES or
+        type(rep) is not int or not 0<=rep<REPS):
+        raise ValueError('AU_DEV_SEED_SCOPE')
+    rng=random.Random(_seed(seed,family,rep,'mechanism'))
+    k={'pair':2,'triple':3,'sparse_random':rng.choice((2,3))}[family]
+    A=_mechanism(rng,k)
+    B=_mechanism(rng,k)
+    while B==A or all(A.clean(a)==B.clean(a) for a in ACTIONS):
+        B=_mechanism(rng,k)
+    timing=random.Random(_seed(seed,family,rep,'timing'))
+    lengths=tuple(timing.randint(20,28) for _ in range(3))
+    noise_rng=random.Random(_seed(seed,family,rep,'noise'))
+    return World(seed,family,rep,A,B,lengths,
+                 tuple(noise_rng.random() for _ in range(sum(lengths))))
+
+
+def development_worlds():
+    return tuple(development_world(s,f,i) for s in SEEDS for f in FAMILIES for i in range(REPS))

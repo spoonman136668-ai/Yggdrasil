@@ -1,0 +1,193 @@
+"""LR-92AU: construct causal parent sets and unprogrammed response tables.
+
+No catalog of truth tables; enumerates variable SUBSETS only, integrates over
+arbitrary conditional Bernoulli functions using public intervention records.
+This is a synthetic development comparator, not native Yggdrasil learning.
+"""
+from __future__ import annotations
+import hashlib, math, struct
+
+ACTIONS = tuple(range(16))
+MASKS = tuple(range(1,16))
+NOISE = .15
+WINDOW = 32
+
+
+def _check_action(action):
+    if type(action) is not int or action not in ACTIONS:
+        raise ValueError('AU_BAD_INTERVENTION')
+    return action
+
+
+def _check_bit(bit):
+    if type(bit) is not int or bit not in (0,1):
+        raise ValueError('AU_BAD_OUTCOME')
+    return bit
+
+
+def _compact(action, mask):
+    """Project 4-bit do-intervention onto selected parent bits."""
+    j=0; k=0
+    for i in range(4):
+        if mask & (1<<i):
+            j |= ((action>>i)&1)<<k
+            k+=1
+    return j
+
+
+def _binary_entropy(p):
+    return -p*math.log(p)-(1-p)*math.log(1-p) if 0<p<1 else 0.0
+
+
+class ParentHypotheses:
+    """Finite public-record memory, Bayesian constructible causal structures.
+
+    Learned state is a 32-event ring of 5-bit action+outcome observations;
+    posterior over all 15 possible parent sets and all unspecified response
+    tables is rederived on demand, never passed a pre-coded truth table.
+    """
+    MAGIC=b'AU01'
+    LEARNED_BYTES=34  # 32 bytes packed records + length + head
+    CHECKPOINT_BYTES=4+LEARNED_BYTES+32
+    COMPLEXITY_PRIOR=.65
+
+    def __init__(self):
+        self.records=bytearray(WINDOW)
+        self.length=0
+        self.head=0
+        self._cache=None  # derived read-only posterior, not learned/persisted state
+
+    def _observations(self):
+        if self.length<WINDOW:
+            return [(v>>1, v&1) for v in self.records[:self.length]]
+        return [(self.records[(self.head+i)%WINDOW]>>1,
+                 self.records[(self.head+i)%WINDOW]&1) for i in range(WINDOW)]
+
+    def _posterior(self):
+        if self._cache is not None:return self._cache
+        observations=self._observations()
+        logs=[]; predictions=[]
+        for mask in MASKS:
+            width=1<<mask.bit_count()
+            counts=[[0,0] for _ in range(width)]
+            for action,y in observations:
+                counts[_compact(action,mask)][y]+=1
+            # marginal likelihood with independent beta(1,1) emission cells
+            logp=math.log(self.COMPLEXITY_PRIOR)*mask.bit_count()
+            for n0,n1 in counts:
+                logp+=math.lgamma(n0+1)+math.lgamma(n1+1)-math.lgamma(n0+n1+2)
+            logs.append(logp)
+            predictions.append(tuple((counts[_compact(a,mask)][1]+1)/
+                                    (sum(counts[_compact(a,mask)])+2) for a in ACTIONS))
+        maximum=max(logs)
+        masses=[math.exp(x-maximum) for x in logs]
+        normalizer=sum(masses)
+        self._cache=(tuple(x/normalizer for x in masses),tuple(predictions))
+        return self._cache
+
+    def predict(self,action):
+        _check_action(action)
+        weights,means=self._posterior()
+        return sum(w*ps[action] for w,ps in zip(weights,means))
+
+    def parent_map(self):
+        weights,_=self._posterior()
+        return MASKS[max(range(len(MASKS)),key=lambda i:(weights[i],-MASKS[i]))]
+
+    def choose(self,policy='information'):
+        if policy not in ('information','coverage'):
+            raise ValueError('AU_BAD_POLICY')
+        counts=[0]*16
+        for action,y in self._observations():
+            counts[action]+=1
+        if policy=='coverage':
+            return min(ACTIONS,key=lambda a:(counts[a],a))
+        weights,means=self._posterior()
+        def value(a):
+            p=sum(w*ps[a] for w,ps in zip(weights,means))
+            info=_binary_entropy(p)-sum(w*_binary_entropy(ps[a]) for w,ps in zip(weights,means))
+            return info + .035/(1+counts[a])
+        return max(ACTIONS,key=lambda a:(value(a),-a))
+
+    def observe(self,action,outcome):
+        action=_check_action(action);y=_check_bit(outcome)
+        self.records[self.head]=action*2+y
+        self.head=(self.head+1)%WINDOW
+        self.length=min(WINDOW,self.length+1)
+        self._cache=None
+
+    def snapshot(self):
+        raw=self.MAGIC+bytes(self.records)+bytes((self.length,self.head))
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,blob):
+        if (type(blob) is not bytes or len(blob)!=cls.CHECKPOINT_BYTES or
+            blob[:4]!=cls.MAGIC or hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError('AU_CHECKPOINT_REJECTED')
+        obj=cls();obj.records[:]=blob[4:36]
+        obj.length,obj.head=blob[36:38]
+        if (obj.length>32 or obj.head>31 or
+            (obj.length<32 and obj.head!=obj.length) or
+            any(v>=32 for v in obj.records)):
+            raise ValueError('AU_CHECKPOINT_INVALID_STATE')
+        return obj
+
+
+class Tabular16:
+    """Fully trained per-do-action beta conventional control, optional window."""
+    def __init__(self,*,window=False):
+        self.window=bool(window)
+        self.records=[]
+        self.counts=[[0,0] for _ in ACTIONS]
+
+    def predict(self,action):
+        _check_action(action)
+        n0,n1=self.counts[action]
+        return (n1+1)/(n0+n1+2)
+
+    def choose(self,policy='coverage'):
+        if policy!='coverage':raise ValueError('AU_BAD_POLICY')
+        return min(ACTIONS,key=lambda a:(sum(self.counts[a]),a))
+
+    def observe(self,action,outcome):
+        action=_check_action(action);y=_check_bit(outcome)
+        if self.window:
+            self.records.append((action,y))
+        if self.counts[action][y]>=65535:
+            raise ValueError('AU_COUNT_OVERFLOW')
+        self.counts[action][y]+=1
+        if self.window and len(self.records)>WINDOW:
+            old_a,old_y=self.records.pop(0)
+            self.counts[old_a][old_y]-=1
+
+    @property
+    def learned_bytes(self):
+        return WINDOW+1 if self.window else 64
+
+    def snapshot(self):
+        if self.window:
+            raw=b'AUW1'+bytes((len(self.records),))+bytes(
+                [a*2+y for a,y in self.records]+[0]*(WINDOW-len(self.records)))
+        else:
+            raw=b'AUF1'+struct.pack('>32H',*(v for counts in self.counts for v in counts))
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,blob):
+        if (type(blob) is not bytes or blob[:4] not in (b'AUW1',b'AUF1') or
+            len(blob) not in (69,100) or hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError('AU_TAB_CHECKPOINT_REJECTED')
+        window=blob[:4]==b'AUW1'
+        if window and len(blob)!=69 or not window and len(blob)!=100:
+            raise ValueError('AU_TAB_CHECKPOINT_REJECTED')
+        out=cls(window=window)
+        if window:
+            n=blob[4]
+            if n>WINDOW or any(x>=32 for x in blob[5:5+n]) or any(blob[5+n:37]):
+                raise ValueError('AU_TAB_INVALID_RING')
+            for code in blob[5:5+n]:out.observe(code>>1,code&1)
+        else:
+            values=struct.unpack('>32H',blob[4:68])
+            out.counts=[list(values[i:i+2]) for i in range(0,32,2)]
+        return out
