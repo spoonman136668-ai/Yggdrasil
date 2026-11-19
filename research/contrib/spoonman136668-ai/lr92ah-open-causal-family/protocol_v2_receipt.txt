@@ -1,0 +1,52 @@
+{
+  "schema": "lr92ah.external-protocol-revision.v2",
+  "experiment_id": "LR-92AH",
+  "classification": "PREPRIMARY_INFRASTRUCTURE_ABORT_REPLACED_WITH_NEW_SEALED_COHORT",
+  "revision": "v2",
+  "revision_scope": "Seed modulo correction for sklearn RF32 and fresh primary seeds only. No changes to hypotheses, model priors, outcomes, noise, evaluation budget, controls, validation, thresholds or preregistered GO criteria.",
+  "prior_pre_registration_commit": "5e23e2f14b5f5656d95a7c6147db896cc40a1294",
+  "prior_source_commit": "a6f6135561ef09c2297adeae3e596d767220ffe2",
+  "prior_prereg_sha256": "edb1dc45f73f3580a9d79907b13bf78e86a13cd2a9b1db07316031e2c6e6cc95",
+  "prior_source_sha256": "f83872b8958bf832eca3d0cb2cf0d98fc7570fe5dfc72dda735e5e93a73605af",
+  "invalid_attempt": {
+    "reason": "RandomForestClassifier random_state 9292011010060 out of range [0,4294967295]",
+    "original_primary_seeds": [
+      929201101,
+      929201102,
+      929201103
+    ],
+    "primary_result_written": false,
+    "science_results_inspected": false,
+    "aborted_before_first_world_completed": true,
+    "classification": "INVALID_INFRASTRUCTURE",
+    "original_cohort_reused": false
+  },
+  "revised_seeds": [
+    929201201,
+    929201202,
+    929201203
+  ],
+  "revised_source_sha256": "0865118de9caef585c197600acee47a508c4dd2a467cfa5bf920b44f121a991b",
+  "revised_prereg_sha256": "8714764208a9db5031c5a389e1f89c838a852af6bb36d6d5251d6dcd4de964ba",
+  "revised_tests_sha256": "bf196738dcd88bd14850b1c75614c7c0ffdd0f1017f6c9f894190420d416eb58",
+  "patch_source_sha256": "2602b9978d7795e413bd91d291b4fe3929c03a820dbfa43de22fe0dfe245f2f3",
+  "patch_source_encoded_blob_sha1": "2ab75545ce213efef1eb32623b8d3deeeb677599",
+  "reconstruction": "Decode the three original GitHub .zlib.b64 files into lr92ah_run.py, prereg.json, test_preprimary.py, then decode and execute apply_v2.py on their directory. Script validates original sha256 and asserts all three reconstructed v2 hashes. Vendored original lr92af_frozen.py remains unchanged.",
+  "pre_primary_tests": "13/13 PASS, including RF32 high-seed control; fixture-only",
+  "scientific_first_use_effect": "Original primary seeds retired without scored result, new independent seeds not evaluated at time of amendment commit",
+  "budget": {
+    "worlds": 360,
+    "per_seed_each_family": 40,
+    "context0_fit": 112,
+    "context1_fit": 64,
+    "heldout_validation": 256,
+    "noise_flip": 0.35
+  },
+  "authority": {
+    "research_only": true,
+    "no_native_model_training": true,
+    "no_first_use_promotion": true,
+    "no_controller_mutation": true,
+    "no_merge": true
+  }
+}
