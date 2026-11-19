@@ -1,0 +1,166 @@
+{
+  "best_alternate_omp_cold_mse": 1.7992781459246192,
+  "best_alternate_policy": "d_optimal",
+  "candidate_selector_seconds": 1.124696836000112,
+  "ci_status": "PENDING_OR_NOT_YET_CHECKED",
+  "classification": "SCREEN_NO_GO",
+  "cold_mse": {
+    "d_optimal": {
+      "elasticnet": 2.265912933894,
+      "omp": 1.799278145925,
+      "ridge": 2.444057040229
+    },
+    "eig": {
+      "elasticnet": 2.656964803035,
+      "omp": 2.353115028329,
+      "ridge": 2.750235301743
+    },
+    "hamming": {
+      "elasticnet": 2.739404934513,
+      "omp": 2.093610655824,
+      "ridge": 2.651136813757
+    },
+    "random": {
+      "elasticnet": 3.346946126544,
+      "omp": 2.359322634062,
+      "ridge": 3.010695802977
+    },
+    "robust_eig": {
+      "elasticnet": 2.449470863408,
+      "omp": 2.162700225688,
+      "ridge": 2.5346939229
+    },
+    "tournament": {
+      "elasticnet": 2.533393261173,
+      "omp": 2.18389470628,
+      "ridge": 2.721742300792
+    }
+  },
+  "critical_gates": [
+    "gain5_vs_best_omp",
+    "gain5_vs_best_any",
+    "per_seed_strict_both"
+  ],
+  "date": "2026-11-19",
+  "deployment": "NONE",
+  "evidence_archive_sha256": "b22f6b81a5c9fbbb1fb6bed56f2da2f55f23135f712084ef40d70d05da841ef3",
+  "evidence_file_sha256": {
+    "case_receipts.csv": "a5555aa5745ebca095626c0f21ce834927cfdfba90f1a11aa2cf84b22208cb01",
+    "replay_result.json": "84275c5e998a9dd1340e249a037160720e11f91a27049b4519e407daf0749ce9",
+    "screen_audit.json": "0a62a9d4cb93fd3679f1d44a10f0981151d1005bd5226f06e4047696dd6cce5d",
+    "screen_console.json": "994b3f4ec68aa0928ad0d2278af596006c5137ffdcd80cf9ff592e8b4ca86c91",
+    "screen_replay.json": "92def5f3747b143bea1b9cd31eb09f6011dbf28454f38caba28568282e731e4c",
+    "screen_replay_console.json": "00d651068ef479d4a90615dba474ed42d896326ef600e6489e92532c2ca1a65e",
+    "screen_scored.json": "bb27add957d42caa60777f588a31549e152d65f1f24bcbb3814b4d667c8e2989",
+    "smoke.json": "5230c7de64835f4f7435ef0d70eee62577ebf825fb09188a061f0624f50655b2",
+    "smoke_audit.json": "6bccb16aa98e60dcc2b43f36a95886767cae59f04d6eb89472edbbf1f521752d"
+  },
+  "excluded_development_seed": 99839,
+  "experiment_id": "ENERGY-54",
+  "fallback_steps": 49,
+  "first_attempt_incident": "A nonowner shell invocation completed in memory but failed writing screen_scored.json due filesystem PermissionError. No artifact was produced or result inspected. One identical-source rerun was performed with write access, before independent audit. Synthetic data are reproducible and not protected first-use.",
+  "gates": {
+    "every_family_at_most10pct_worse": false,
+    "fallback_exercised": true,
+    "gain10_vs_random_omp": false,
+    "gain3_vs_tournament_omp": false,
+    "gain5_vs_best_any": false,
+    "gain5_vs_best_omp": false,
+    "old_predictions_exact": true,
+    "per_seed_strict_both": false,
+    "selection_compute_below8x_tournament": false
+  },
+  "gates_passed": 2,
+  "gates_total": 9,
+  "independent_audit": {
+    "checks": 2934,
+    "learners": 3,
+    "model_refit": "Independent estimator setup, shared sklearn",
+    "policies": 6,
+    "policy_reconstruction": "Independent chooser including scalar expected-information integration",
+    "schema": "energy54.independent_audit.v1",
+    "seeds": [
+      99851,
+      99863
+    ],
+    "source_generator_independent": false,
+    "status": "PASS",
+    "world_count": 24
+  },
+  "native_acceptance": "NOT_RUN",
+  "native_training": false,
+  "per_family": [
+    {
+      "best_other_omp": 0.5111454382339348,
+      "candidate": 0.7043545020801616,
+      "family": "bank_parity4"
+    },
+    {
+      "best_other_omp": 3.4140011921281417,
+      "candidate": 4.409037988926527,
+      "family": "novel_parity5"
+    },
+    {
+      "best_other_omp": 1.2563276587406478,
+      "candidate": 1.3747081860558823,
+      "family": "novel_conditional5"
+    }
+  ],
+  "per_seed": [
+    {
+      "best_other_any": 1.8442618720688098,
+      "best_other_omp": 1.8442618720688098,
+      "candidate": 2.292455498806503,
+      "seed": 99851
+    },
+    {
+      "best_other_any": 1.7542944197804282,
+      "best_other_omp": 1.7542944197804282,
+      "candidate": 2.032944952568544,
+      "seed": 99863
+    }
+  ],
+  "policy": "robust_eig",
+  "pre_scorer_source_commit": "66aec145d0ea97d2ed2d54ff1d48da14639f035f",
+  "predeclared_downstream_learner": "omp",
+  "preregistration_before_screen_commit": "ab267e84556a9bb7356d4818992fd88e5034bfbc",
+  "primary_candidate_cold_mse": 2.1627002256875234,
+  "primary_scored": false,
+  "relative_disadvantage_vs_best_omp": 0.2019821563364499,
+  "replay": {
+    "cases": 24,
+    "methods": 18,
+    "original_primary_sha256": "bb27add957d42caa60777f588a31549e152d65f1f24bcbb3814b4d667c8e2989",
+    "original_replay_sha256": "92def5f3747b143bea1b9cd31eb09f6011dbf28454f38caba28568282e731e4c",
+    "schema": "energy54.replay.v1",
+    "screen_seeds": [
+      99851,
+      99863
+    ],
+    "semantic_content_bytes": 187324,
+    "semantic_sha256": "16513017c3496e2015c643709159b3205704b71fbf3a9a8540aeacab58e762c7",
+    "source_changed": false,
+    "status": "PASS",
+    "timing_fields_excluded": [
+      "selection_s",
+      "fit_s",
+      "aggregate.selection_s",
+      "aggregate.fit_s"
+    ]
+  },
+  "reserved_primary_seeds_unscored": [
+    9719,
+    9733,
+    9749
+  ],
+  "schema": "yggdrasil.energy54.screen_disposition.v1",
+  "scientific_pass": false,
+  "screen_seeds": [
+    99851,
+    99863
+  ],
+  "screen_worlds": 24,
+  "selection_overhead_vs_tournament": 40.74505205660117,
+  "total_candidate_adaptive_decisions": 288,
+  "tournament_selector_seconds": 0.027603273998465738
+}
