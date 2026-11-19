@@ -285,6 +285,7 @@ def run_seed(oldseed,newseed,source):
                     "future_observed_public_rewards":rewards.astype(int).tolist(),
                     "target_native_s2_and_reward":expected.astype(int).tolist(),
                     "forecasts":{k:v.tolist() for k,v in entry["forecast"].items()},
+                    "full_future_forecast":entry["full_pred"].tolist(),
                     "brier":losses,
                     "full_future_brier":full_mse(entry["full_pred"],y),
                 })
