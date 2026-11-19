@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-193",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "class": "disjoint-research-public-fitness-development",
+  "parent_accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "isolation_branch": "research/wsp193-protein-fitness-weight-20261119",
+  "question": "Can deterministic direct pair-site weight programming on an independently published real protein fitness landscape predict previously unseen combinations better than a fully trained, same-information and same-feature-capacity pairwise ridge model, in each of two independently measured assays?",
+  "hypothesis": "Direct locally written pair weights from FIT residuals improve held combination fitness prediction over converged polynomial ridge main-plus-pair interactions in both assay endpoints.",
+  "source": {
+    "repository": "luo-group/SynFit",
+    "commit": "4a11c268b5719ea3c64459a5bb5b4f3a45f0b09a",
+    "path": "dataset/multi_fitness_data/SPG1_STRSG.csv",
+    "git_blob_sha1": "ee5df92d6c1e070c2876fbe7d27cf3a440c83e37",
+    "reported_compressed": false,
+    "expected_byte_limit": 850000,
+    "outcome_columns": [
+      "DMS_score_SPG1_STRSG_Olson_2014.csv",
+      "DMS_score_SPG1_STRSG_Wu_2016.csv"
+    ],
+    "input_columns": [
+      "mutant"
+    ],
+    "excluded_columns": [
+      "mutated_sequence",
+      "row_index"
+    ],
+    "prior_exposure": "Only CSV first header line inspected before this prereg commit. No experiment numeric data rows or mutant genotypes examined. Prior publications are publicly available, so held set is PUBLIC DEV not virgin blind.",
+    "lineage": "Protein G experimentally measured mutational effects in Olson 2014 and Wu 2016, collated by SynFit; verify normalization and assay differences after primary, no source redistributions.",
+    "licensing": "SynFit code MIT; exact underlying fitness-data redistribution terms UNVERIFIED, original source bytes read-only and NOT copied to Yggdrasil."
+  },
+  "frozen_source_admission": {
+    "csv": "UTF-8 simple unquoted CSV with exactly header columns above in stated order: blank index,mutant,mutated_sequence,two outcomes. Reject duplicates, blanks, non-finite numeric values (except NA/NaN/missing), unsuitable mutation IDs, and source drift. Check byte identity by Git blob SHA1 before any numeric parse.",
+    "genotype": "mutant is 'WT' or one or more exact [A-Z][1-9][0-9]*[A-Z] substitution identifiers separated by colon, comma, semicolon, +, /, or whitespace. Canonical sort by numeric position then mutated amino acid; no repeated site. Reject any annotation needing post-outcome adaptation.",
+    "features": "Directly addressable native site->state indicators; no transformer, tokenizer, or next-token prediction, no mutated_sequence feature usage. New genotype combinations are held as wholes. Distinguish assay environments; fit separately, no information from second assay used for first except genotype identifiers.",
+    "missing_value_policy": "Skip a row only in the assay lacking a numeric result; do not use that assay's other outcome or score for training, feature selection, hyperparameters or evaluation.",
+    "partition": "SHA256('WSP193-SPG1-FIT-v1'+NUL+canonical mutation string), first 64 digest bits modulo 100; FIT 0..69, VALID 70..84, DEV 85..99; no salt sweep, no random cell row split or after-score rebalancing.",
+    "minimum_counts": "At least 1500 distinct canonical observed genotypes overall, 350 FIT and 75 VALID and 75 DEV measured multi-mutants (>=2 substitutions) PER ASSAY, 20 unique mutation features among FIT, and >=10 distinct mutation sites in FIT. Otherwise STOP/no result.",
+    "measured_sets": "Score *only* multi-mutant (>=2 substitution) held VALID and DEV, with equal weight per exact genotype. If single-mutant validation/test exist, report separate cold-single diagnostic but no scientific memory retention claim."
+  },
+  "candidate": {
+    "description": "Train (by conventional coordinate descent) shared FIT-only additive main-effect scaffold. After freeze, program per-pair feature weight directly as FIT residual sum/(pair count + penalty), without gradients or iterative pair-label optimization. Predict scaffold plus beta times sum of programmed pair weights over genotype's unordered mutation pairs.",
+    "free_parameters": "One additive scalar per observed site-state, one direct pair scalar for each pair seen in FIT, one common beta and penalty. Direct memory capacity <= ridge with identical pair-feature coordinate set, except beta/penalty chosen VALID.",
+    "lambda_additive": [
+      0.1,
+      1,
+      10
+    ],
+    "penalty_pair": [
+      1,
+      10
+    ],
+    "beta": [
+      -1,
+      0,
+      0.5,
+      1,
+      2
+    ],
+    "selection": "Select additive lambda only on VALID multi-mutant fitness, then select direct beta/penalty only on VALID; keep FIT coefficients unchanged. Tie select simplest 0 beta.",
+    "iterations": "200 additive coordinate-descent sweeps (early stop if max delta <=1e-6) and one direct sum pass, per assay."
+  },
+  "strong_controls": {
+    "mean": "FIT-only normalized mean 0",
+    "ridge_additive": "Fully trained additive ridge lambda in [0.1,1,10], validation-selected, max 200 coordinate sweeps with convergence check <=1e-4.",
+    "ridge_pairwise": "Fully trained pairwise ridge on exact same FIT mutation one-hot pair features, additive scaffold fixed from selected FIT-only additive; lambda in [0.1,1,10], max 200 coordinate sweeps, convergence check <=1e-4. Validation-selected. Same available mutation pair features and FIT labels, no hidden capacity or outcome access.",
+    "ablation": "candidate beta=0",
+    "negative": "FIT pair-residual labels permuted by fixed xorshift32 seed 19311 (not original data resampling), beta and penalty selected on VALID.",
+    "winner": "Strongest VALID-selected converged baseline among mean, additive, pairwise ridge."
+  },
+  "metrics": {
+    "primary": "Held DEV pair-equal-weighted normalized RMSE candidate vs strongest validation-selected converged conventional baseline for each of the two assays.",
+    "secondary": "Per-assay additive and pair ridge RMSE, # observed pairs/features, rank-free model byte/weight footprint, wall-clock and peak resource if available; single-mutant held diagnostic. 1000 bootstrap pair-genotype-resampled DEV 95% CI for relative gain with seeds 19331 and 19341.",
+    "qualification": "Evidence of support only if both assays show ≥5% reduction in held DEV RMSE AND both paired bootstrap 95% lower CI > 0, all trained controls converged, source admitted, no label leakage. Otherwise PUBLIC_DEV_NO_GO or INVALID; never SCIENTIFIC_PASS without independent replication and native model qualification.",
+    "budget": "One frozen FIT/VALID selection and one primary DEV scoring per assay, no outcome-driven tuning or repeat. Bounded ~0.85MB original-source file, <=200 coordinate sweeps per lambda, 1000 bootstrap, no paid API or remote runner."
+  },
+  "failure_and_authority": {
+    "no_go": "Any failed primary threshold is a negative, not an infrastructure excuse; preserve primary result. No rerun or tuning of held DEV.",
+    "invalid": "Source incompatible/missing, under-sized cohort, missing assay, ill-conditioned/nonconverged critical controls, contamination or evaluator drift; no science result.",
+    "fences": "No original-world first-use actions, no change to main/accepted Yggdrasil or original owner #426; no agent controller, schedulers, native model integration, merger or deployed claims.",
+    "scope": "Contribution evidence only under research/contrib/chatgpt/WSP-193/"
+  }
+}
