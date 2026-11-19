@@ -1,0 +1,107 @@
+import hashlib
+import random
+import unittest
+from collections import deque
+from two_regime_hmm_control import TwoRegimeHMM
+
+
+def fixture(seed):
+    rng = random.Random(seed)
+    for phase in ("A", "B", "Areturn"):
+        for t in range(64):
+            action = rng.randrange(2)
+            y = int((action if phase != "B" else 1-action) ^ (rng.random() < 0.15))
+            yield phase, t, action, y
+
+
+def evaluate(seed):
+    hmm = TwoRegimeHMM()
+    full = [0] * 4
+    window = deque(maxlen=32)
+    scores = {p: {k: [] for k in ("hmm", "full", "window")}
+              for p in ("B", "Areturn")}
+    for phase, t, action, y in fixture(seed):
+        hmm.end_episode()
+        pred = hmm.predict(0, action)
+        p_full = (full[2*action+1]+1)/(sum(full[2*action:2*action+2])+2)
+        window_action = [v for a, v in window if a == action]
+        p_win = (sum(window_action)+1)/(len(window_action)+2)
+        if phase == "B" or (phase == "Areturn" and t < 16):
+            for name, p in (("hmm", pred), ("full", p_full), ("window", p_win)):
+                scores[phase][name].append((p-y)**2)
+        hmm.observe_step(0, action, y)
+        full[2*action+y] += 1
+        window.append((action, y))
+    return {phase: {k: sum(v)/len(v) for k,v in s.items()}
+            for phase,s in scores.items()}
+
+
+class TwoRegimeHMMTests(unittest.TestCase):
+    def test_state_and_restore_parity(self):
+        x = TwoRegimeHMM()
+        self.assertEqual(len(x.snapshot()), 964)
+        x.observe_step(0, 0, 1)
+        y = TwoRegimeHMM.restore(x.snapshot())
+        self.assertEqual(y.snapshot(), x.snapshot())
+        self.assertEqual(y.predict(0, 0), x.predict(0, 0))
+
+    def test_invalid_inputs_do_not_mutate(self):
+        x = TwoRegimeHMM()
+        old = x.snapshot()
+        for args in ((7, 0, 0, False), (0, 2, 0, False),
+                     (0, 1, 2, False), (0, 1, 0, 1)):
+            with self.assertRaises(ValueError):
+                x.observe_step(*args[:3], retained=args[3])
+            self.assertEqual(x.snapshot(), old)
+
+    def test_corrupt_restore_rejected(self):
+        x = TwoRegimeHMM()
+        y = bytearray(x.snapshot())
+        y[16] ^= 1
+        with self.assertRaises(ValueError):
+            TwoRegimeHMM.restore(bytes(y))
+        y = bytearray(x.snapshot())
+        y[900] = 7
+        y[-32:] = hashlib.sha256(y[:-32]).digest()
+        with self.assertRaises(ValueError):
+            TwoRegimeHMM.restore(bytes(y))
+
+    def test_predictions_do_not_mutate(self):
+        x = TwoRegimeHMM()
+        initial = x.snapshot()
+        for _ in range(100):
+            x.predict(0, 0)
+        self.assertEqual(initial, x.snapshot())
+
+    def test_cold_worlds_observationally_identical(self):
+        """A return vs B continues: same public prefix and next action."""
+        x = TwoRegimeHMM()
+        for phase, t, a, y in list(fixture(73004303))[:128]:
+            x.end_episode()
+            x.observe_step(0, a, y)
+        x.end_episode()
+        before = x.snapshot()
+        b_continues = TwoRegimeHMM.restore(before)
+        a_returns = TwoRegimeHMM.restore(before)
+        self.assertEqual(b_continues.predict(0, 0), a_returns.predict(0, 0))
+        self.assertEqual(b_continues.snapshot(), a_returns.snapshot())
+        self.assertAlmostEqual((0.85 - 0.15)**2 / 4, 0.1225)
+        # Equal-prior worst-case expected Brier: 0.25 vs an oracle 0.1275.
+        self.assertAlmostEqual(0.25-(0.15*0.85), 0.1225)
+
+    def test_exact_existing_fixture_reproduction(self):
+        actual = evaluate(73004303)
+        self.assertEqual({k: len(v) for k, v in actual.items()}, {"B": 3, "Areturn": 3})
+        for p in actual.values():
+            self.assertTrue(all(0 <= v <= 1 for v in p.values()))
+        # Same generator/tape as existing LR-92AP probe, guard against drift.
+        self.assertAlmostEqual(actual["B"]["full"], 0.3996, delta=0.00005)
+        self.assertAlmostEqual(actual["Areturn"]["window"], 0.4094, delta=0.00005)
+
+    def test_run_both_fixture_seeds(self):
+        for seed in (73004303, 73004304):
+            self.assertIn("Areturn", evaluate(seed))
+
+
+if __name__ == "__main__":
+    unittest.main()

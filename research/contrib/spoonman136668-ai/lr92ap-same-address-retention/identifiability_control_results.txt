@@ -1,0 +1,82 @@
+LR-92AP IDENTIFIABILITY + MATCHED-CAPACITY HMM CONTROL — FIXTURE ONLY
+==================================================================
+Date: 2026-11-19. Parent PR #1323 / original source f53ff41.
+This is PREPRIMARY external development; NOT native Yggdrasil training.
+
+QUESTION
+--------
+Can an online phase-blind, memory-matched conventional two-regime predictor
+outperform the incumbent protected/recent switch while recovering A after B?
+
+IMPLEMENTATION
+--------------
+two_regime_hmm_control.py.txt contains an online two-regime HMM filter with
+fixed transition hazard 1/32, Laplace-Beta per-action public outcome counts,
+quantized posterior regime probability, and hard MAP regime-assigned updates.
+This is an APPROXIMATE HMM, not a fully fitted Bayesian/HMM comparator.
+No phase labels, evaluator-only family, or future outcomes enter predictions.
+Neither the HMM nor the fixture has changed the LR-92AP primary protocol.
+
+Learned state = 896 bytes of outcome counts + 16 history-code bytes +
+16 posterior-weight bytes = 928. Explicit checkpoint LRH1 = 4 + 928 +
+32 SHA256 bytes = 964. No native YPT3/YPT4 compatibility change.
+Two-seed fixture uses the exact same generator/action/outcome sequence as
+existing fixture_probe.py.txt; reference full-history and 32-window scores
+match the prior README to within 0.00005.
+
+Reproduce with Python 3.13.5:
+  cp two_regime_hmm_control.py.txt two_regime_hmm_control.py
+  cp test_two_regime_hmm_control.py.txt test_two_regime_hmm_control.py
+  python -m unittest -v test_two_regime_hmm_control.py
+  python -c "from test_two_regime_hmm_control import evaluate; print(evaluate(73004303)); print(evaluate(73004304))"
+
+LOCAL RESULTS — 7/7 focused tests PASS (not full final regression)
+------------------------------------------------------------------
+Seed        Phase                    HMM/MAP     Full counts   Window32   Original candidate
+73004303    B, all 64                0.20204     0.39964       0.22058    0.3301
+73004303    A-return, first 16       0.22774     0.20853       0.40939    0.3105
+73004304    B, all 64                0.15312     0.37017       0.18553    0.3172
+73004304    A-return, first 16       0.20312     0.26933       0.42545    0.3187
+
+The original-candidate values are from the previous published README, not a
+rerun of YPT4 in this new test. All other values above are same-tape local runs.
+HMM/MAP beats Window32 on B in both fixtures; beats original YPT4 on all 4
+reported cells, but loses to full-history counting on return-A in seed 73004303.
+The prior original candidate and this HMM are DEVELOPMENT ONLY; the two
+fixtures cannot establish a winner or justify tuning/search after observation.
+
+IDENTIFIABILITY CONTROL
+-----------------------
+After exactly the same public A->B prefix, two possible worlds can have
+identical memory, history, public action and past observations, with either
+B continuing or A returning on the next step. A phase-blind predictor MUST
+give the same next forecast in both. For action=0, the Bernoulli targets
+are p_A=0.15 and p_B=0.85. Under equal odds and no public switch cue,
+the optimum shared prediction p=0.5 has expected Brier 0.25 in each
+world, whereas an oracle informed of the phase has expected Brier 0.1275.
+Irreducible excess = 0.1225 for that single cold forecast. This is a
+conditional indistinguishability result, not a blanket impossibility of
+recovery after further observations, nor a result if the scheduled phase
+boundary or another cue is visible to the agent.
+
+CRITICAL PROTOCOL CONFOUND
+--------------------------
+The preregistration uses a fixed 64/64/64 phase schedule. If an algorithm is
+allowed to know the global timestep and that schedule, it can infer the
+switch without causal evidence. A future genuinely unseen switch test must
+withhold or randomize regime boundaries with verified evaluator-only metadata
+and match time information across controls. Do NOT retroactively alter or
+consume the frozen LR-92AP 288-world cohort. Record the identifiability
+limit and decide before protected first-use whether the current protocol is
+appropriate for its intended causal-recognition claim.
+
+VERDICT
+-------
+ENGINEERING: Local Python 3.13.5 focused 7/7 PASS; runner full regression
+and Windows source execution NOT VERIFIED.
+SCIENCE: Evidence favors adding a proper two-regime conventional control;
+no primary first-use; scientific improvement UNVERIFIED. A truly fitted
+HMM/change-point/Bayesian control and remaining prereg controls are still
+required before source lock and first-use.
+DEPLOYMENT: HOLD. No main/accepted ref, runner, controller, or live
+training modification. Preserve PR #1323 as draft.
