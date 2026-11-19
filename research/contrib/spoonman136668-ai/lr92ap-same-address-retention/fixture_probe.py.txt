@@ -1,0 +1,25 @@
+import random
+from lr92ap_dual_temporal import PublicDualTimescaleCells as P
+from collections import deque
+
+for seed in (73004303,73004304):
+ r=random.Random(seed)
+ m=P(); single=[0,0,0,0]; window=deque(maxlen=32)
+ s={'Areturn':{'candidate':[],'single':[],'window':[]},'B':{'candidate':[],'single':[],'window':[]}}
+ for phase in ('A','B','Areturn'):
+  for t in range(64):
+   m.end_episode()
+   a=r.randrange(2)
+   y=int((a if phase!='B' else 1-a) ^ (r.random()<0.15))
+   p_c=m.predict(0,a)
+   p_s=(single[2*a+1]+1)/(sum(single[2*a:2*a+2])+2)
+   wa=[q for action,q in window if action==a]
+   p_w=(sum(wa)+1)/(len(wa)+2)
+   if phase=='B' or (phase=='Areturn' and t<16):
+    key='B' if phase=='B' else 'Areturn'
+    for k,p in (('candidate',p_c),('single',p_s),('window',p_w)):s[key][k].append((p-y)**2)
+   m.observe_step(0,a,y)
+   single[2*a+y]+=1
+   window.append((a,y))
+ for phase in ('B','Areturn'):
+  print('seed',seed,phase,{k:round(sum(v)/len(v),4) for k,v in s[phase].items()})
