@@ -31,14 +31,14 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${{ github.sha }}"
-          test "$(git rev-parse HEAD^)" = 62e66d7ad03d1ed2f329435191e44285c356dad9
+          test "$(git rev-parse HEAD^)" = 1b3f4eadfa2cf11bb335929cb9f0c619fd5f6ea0
           test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/ygg-cap04-v2-protocol-reanchor.yml"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
           test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = cd3065a30edf5c08ec92eccc9eec1776d4570da4
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/shortcut_controls.py)" = 1b08cb9d3efe6ae8b9c7c390a034477e4c8885fb
           test "$(git rev-parse HEAD:tests/test_cap04_shortcut_controls.py)" = 1a27efdb6dcdf99e6f906e5bc3b907f425003667
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source_v2.py)" = 038c781598aaccce524af1db08048e112fcc95d1
-          test "$(git rev-parse HEAD:tests/test_cap04_keyed_source_v2.py)" = 931893dc2086f09c610a7bd95b498529f9d046e4
+          test "$(git rev-parse HEAD:tests/test_cap04_keyed_source_v2.py)" = e0562de51b74bf6fa65b84898e5a09016d4b378b
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
           git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
           test ! -f research/contrib/chatgpt/YGG-CAP04/source.py
