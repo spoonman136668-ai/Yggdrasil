@@ -53,6 +53,12 @@ for seed,pin in OLD_SHA.items():
             "s2":e["state"],"x2":e["second"],"y":e["reward"],
         },post)
     actual=model.checkpoint()
+    try:
+        restored=SegmentedNativeJEPA.restore(raw,pin)
+        restore_result=("PASS",restored.checkpoint()==raw)
+    except ValueError as exc:
+        restore_result=("FAIL",str(exc),repr(exc.__cause__))
+    print("CAP02_RESTORE_DIAGNOSTIC",seed,restore_result,flush=True)
     d=difference(expected,json.loads(actual))
     nums=[v for v in d if v[1]=="numeric"]
     structural=[v for v in d if v[1] not in ("numeric","nested-ascii")]
