@@ -1,0 +1,57 @@
+name: CAP04 source-pinned shortcut engineering diagnostic receipt
+'on':
+  push:
+    branches:
+      - research/ygg-cap04-shortcut-exact-verify-20261119
+    paths:
+      - '.github/workflows/ygg-cap04-shortcut-engineering-receipt.yml'
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+jobs:
+  fixture-only-receipt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Preserve byte exactness
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 35c7aef38386f69988458b180d390a70b1315979
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Emit source-pinned diagnostic receipts; registered seeds prohibited
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 35c7aef38386f69988458b180d390a70b1315979
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/shortcut_controls.py)" = 1b08cb9d3efe6ae8b9c7c390a034477e4c8885fb
+          test "$(git rev-parse HEAD:tests/test_cap04_shortcut_controls.py)" = 1a27efdb6dcdf99e6f906e5bc3b907f425003667
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
+          git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
+          python -B - <<'PY'
+          import hashlib
+          import importlib.util
+          import json
+          from pathlib import Path
+          base = Path("research/contrib/chatgpt/YGG-CAP04")
+          spec = importlib.util.spec_from_file_location("cap04_read_only_shortcut", base / "shortcut_controls.py")
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          receipt = module.audit_engineering_fixtures()
+          assert receipt["evidence_class"] == "ENGINEERING_FIXTURE_DIAGNOSTIC_ONLY"
+          assert receipt["fitted_events"] == {key: 96 for key in module.FIXTURES}
+          assert set(receipt["invalid_oracle_arms"]) == set(module.DIAGNOSTIC_ORACLES)
+          data = json.dumps(receipt, sort_keys=True, separators=(",", ":"), allow_nan=False)
+          print("CAP04_SHORTCUT_ENGINEERING_RECEIPT_SHA256=" + hashlib.sha256(data.encode("ascii")).hexdigest())
+          print("CAP04_SHORTCUT_ENGINEERING_RECEIPT=" + data)
+          print("CAP04_SHORTCUT_SOURCE_ONLY_PASS")
+          PY
+          test -z "$(git status --porcelain)"
