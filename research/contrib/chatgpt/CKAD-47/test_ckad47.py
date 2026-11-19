@@ -97,8 +97,10 @@ class CKAD47FixtureTests(unittest.TestCase):
                     joint+=weight*p1*p2*(successes+1)/(failures+successes+2)
         self.assertAlmostEqual(probs,joint,delta=1e-14)
         self.assertTrue(0<probs<1)
-        self.assertEqual(m.checkpoint(),D.QuadCausalLearner.restore(
-            m.checkpoint(),D._sha(m.checkpoint())).checkpoint())
+        # This math-only fixture modifies reward counts without genuine
+        # source witnesses, so it MUST NOT masquerade as a restorable
+        # trained checkpoint. Source-qualified cold restore is tested above.
+        self.assertEqual(sum(m.weights),1.0)
 
     def test_nonxor_negative_falsifies_state_invariance(self):
         # A genuine state-dependent effect is OUTSIDE the proposed XOR
