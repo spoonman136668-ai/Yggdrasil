@@ -62,13 +62,16 @@ seed           phase       candidate    single      window
 73004304       A return*   0.3187       0.2693      0.4255
 *First sixteen A-return predictions before their respective updates.
 
-VERDICT: DEVELOPMENT FIXTURE NEGATIVE against best strong conventional
-arm. Candidate is worse than the 32-window control during B and worse
-than the full-history control during early A restoration. It does preserve
-explicit pre-B protected archive readouts across B; that narrow retention
-fixture is PASS, not recovery of autonomous prediction after interference.
-An exploratory protected/recent fixed-mixture diagnostic did not solve
-both phase objectives. These fixtures do not license a scientific positive.
+VERDICT: DEVELOPMENT WARNING; NO EVIDENCE OF SUPERIORITY ON THIS
+TWO-SEED FIXTURE. The 32-window control beats candidate during B; the
+full-history control beats it during early A restoration. These are
+DIFFERENT controls per phase, not an implementable phase-aware oracle
+predictor, and not a frozen composite significance test. The candidate
+does preserve the archived pre-B protected readout; that narrow cold
+retention fixture is PASS, not autonomous prediction repair. An
+exploratory protected/recent fixed-mixture diagnostic did not solve
+both phase objectives. These fixtures license neither a scientific
+positive nor a formal primary scientific negative.
 
 NEXT AUTHORIZED BOUNDARY
 ------------------------
