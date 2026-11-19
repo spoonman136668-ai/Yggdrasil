@@ -36,6 +36,28 @@ def _word(identity: str, t: int, label: str) -> str:
     return hashlib.sha256(material.encode("ascii")).hexdigest()
 
 
+def exogenous_action(identity: str, t: int) -> tuple[int, int]:
+    """A balanced exogenous block shuffle, independently drawn per source.
+
+    The action tape is fixed by source identity and block number *before*
+    outcomes, latent state, learner predictions, and A/B/A phase are known.
+    Every four successive steps contain each intervention exactly once.
+    Unlike a repeating four-action cycle, prior action is not a function
+    of the currently selected action or shared timestep across worlds.
+    """
+    _require(type(identity) is str and identity in ENGINEERING_FIXTURES,
+             "REGISTERED_FIRST_USE_FORBIDDEN")
+    _require(type(t) is int and 0 <= t < EPISODES, "ACTION_INDEX")
+    tape = list(ACTIONS)
+    digest = hashlib.sha256(
+        f"YGG-CAP04/exogenous-action-v2/{identity}/{t // 4}".encode("ascii")
+    ).digest()
+    for k in range(3, 0, -1):
+        j = digest[3 - k] % (k + 1)
+        tape[k], tape[j] = tape[j], tape[k]
+    return tape[t % 4]
+
+
 def _simulate_fixture(identity: str) -> tuple[dict, ...]:
     """Run only allowlisted engineering identities; never registered seeds."""
     _require(type(identity) is str and identity in ENGINEERING_FIXTURES,
@@ -43,11 +65,9 @@ def _simulate_fixture(identity: str) -> tuple[dict, ...]:
     u, v, w = (_bit(identity, -1, f"initial-{i}") for i in range(3))
     latent = _bit(identity, -1, "initial-private-latent")
     previous_action = (0, 0)
-    rotation = _bit(identity, -1, "action-rotation-0") + 2 * _bit(
-        identity, -1, "action-rotation-1")
     tape = []
     for t in range(EPISODES):
-        a, b = ACTIONS[(t + rotation) % len(ACTIONS)]
+        a, b = exogenous_action(identity, t)
         # Fixed phase boundaries are visible here only to the source builder;
         # the returned learner observation has no phase, latent or family key.
         novel = 32 <= t < 72
