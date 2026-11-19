@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YGG-JEPA2-05-RESET-TRADEOFF-POSTHOC",
+  "contributor": "ChatGPT independent research contributor",
+  "contribution_class": "ablation",
+  "scientific_evidence_class": "UNPREREGISTERED_POSTHOC (already viewed both original development seeds, reset events and old Brier values; not prospective, not first-use)",
+  "exact_parent_sha": "6cef0688a2c70cee2c60f38a2774f83661c7e3ef",
+  "parent_original_jePA2_SHA": "7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+  "question": "Does suppressing just the already-observed native context reset in an archived continued native model preserve its old-world predictions at the expense of prequential predictions on subsequent observed consequences?",
+  "hypothesis": "The same-event reset suppression should improve old-world historical readout but may impair new-world adaptation; this must be measured on precisely the same already-consumed subsequent witnesses, with full native source-based replay, before proposing a new memory mechanism.",
+  "controls": [
+    "Unmodified NativeEpisodeExperience source-exact replay of each original prefix plus 16 original already-consumed JEPA2-05 episodes",
+    "A second exact no-intervention clone replay for deterministic negative control",
+    "Single reset-suppressed clone: _append and _update_context on the reset event in the prior context mixture instead of _load_context, with normal unmodified .observe continuation afterward"
+  ],
+  "inputs": [
+    {
+      "name": "JEPA2-05 archival source, original code and checkpoints",
+      "source_ref": "research/jepa2-05-context-reset-readonly-20261119@6cef0688a2c70cee2c60f38a2774f83661c7e3ef",
+      "provenance": "This prior candidate was independently qualified Linux/Windows run 44629351965 (3/3) and includes prereg/diagnose source and exact G29 atlas"
+    },
+    {
+      "name": "original parent frozen source",
+      "source_ref": "spoonman136668-ai/Yggdrasil@7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+      "provenance": "JEPA2-05 actual consumed development archives; no fresh source calls"
+    }
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YGG-JEPA2-05-RESET-TRADEOFF-POSTHOC/prereg.json",
+    "research/contrib/chatgpt/YGG-JEPA2-05-RESET-TRADEOFF-POSTHOC/tradeoff.py",
+    "research/contrib/chatgpt/YGG-JEPA2-05-RESET-TRADEOFF-POSTHOC/README.md",
+    ".github/workflows/ygg-jepa2-05-reset-tradeoff-posthoc.yml",
+    ".ice/code-atlas.* (G29 source-only generated seal, in separate final commit)"
+  ],
+  "frozen_design": {
+    "seeds": [
+      99231,
+      99247
+    ],
+    "native_original_seed_map": {
+      "99231": 14071,
+      "99247": 14072
+    },
+    "source": "Already archived native original/continued checkpoint bytes; exact historical 16-event suffix in each; no generator/model API/network/simulator",
+    "data_budget": "16 consumed additional native witnesses per seed; 32 consumed prior old-world probes per seed; no new actions",
+    "order": "Original unique episode ordered prefix + the exact 16 consumed suffix. Evaluate each postreset suffix event prequentially before model .observe using only preceding witnessed history; phase tags *not* exposed to predictor.",
+    "split": "Original JEPA2-05 A positions 0..5, B 6..10, A-return 11..15, for evaluation labels only; reset at pre-observed ordinal 11/5.",
+    "compute_budget": "<= 20 min per OS source-exact read-only replay, plus mandatory original inherited full regression <= 40 min per OS",
+    "evaluator": "Mean of transition Brier + conditional terminal Brier over 2 for each postreset prequential witness; fixed 32 historical probes old-world native Brier using the existing native_old() definition.",
+    "capacity": "One existing native model, plus source-equivalent disposable diagnostic clones; no extra experts, weights, sources, trainable policy, controller or checkpoint owner",
+    "deterministic_expected": true
+  },
+  "metrics": [
+    "Exact reproduction of source's original and final native state and published old historical Brier under tolerance 1e-10",
+    "Negative sham checkpoint byte-equivalence at every same-event replay step",
+    "Baseline and reset-suppressed postreset suffix prequential Brier, split phase A/B/A-return where observations exist",
+    "Actual and reset-suppressed final Brier on exactly the identical original 32 old probes",
+    "Count and ordinals of subsequent resets in reset-suppressed branch",
+    "CPU wall-process seconds and cross-OS metric agreement <=1e-10"
+  ],
+  "classification_rules": {
+    "supported": "Retrospective source-exact mechanism/tradeoff audit only if independent checkpoint and published native Brier reproducibility, exact known reset ordinal, sham parity, original observed episode identities, no data leakage and phase/accounting controls all pass. Report full metrics irrespective of sign, never interpret as prospective science.",
+    "mixed": "Retrospective mixed if one original seed shows better retention but worse adaptation or divergent phase sensitivity; neither no-reset nor actual claimed superior",
+    "negative": "Retrospective negative if reset suppression fails to preserve old readout or worsens subsequent prequential Brier on both seeds, still retain full results",
+    "invalid": "Reproduction fail on missing source file, source hash or identity mismatch, original/final Brier mismatch >1e-10, sham drift, unaccounted reset, nonfinite metric, unobserved source, extra action, or tree/atlas inconsistency"
+  },
+  "prohibited_after_primary_run": [
+    "scientific threshold tuning",
+    "additional fresh seed trials",
+    "unmatched action budgets",
+    "another owner or learner",
+    "preregistered score reinterpretation",
+    "restart canonical training",
+    "merge/promotion",
+    "scheduler/controller changes"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "official_integration_owner": "Unified Causal Intelligence Amalgam Work chat"
+  }
+}
