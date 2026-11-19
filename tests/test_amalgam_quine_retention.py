@@ -141,6 +141,10 @@ class QuineRetentionTests(unittest.TestCase):
 
     def test_rejects_tampering_overlap_omission_and_multi_witness_jump(self):
         candidate = self.proposal()
+        with self.assertRaisesRegex(ValueError, "exactly 1/50"):
+            QUINE.assess_update(self.anchor, self.current, candidate,
+                                self.manifest, self.pin,
+                                max_brier_drift=Fraction(1, 2))
         with self.assertRaisesRegex(ValueError, "pin mismatch"):
             QUINE.assess_update(self.anchor, self.current, candidate,
                                 self.manifest, "0" * 64)
