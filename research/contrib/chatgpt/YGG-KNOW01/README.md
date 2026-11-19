@@ -64,3 +64,30 @@ Local code-only unit qualification **9/9 PASS** (negative controls include false
 **ENGINEERING:** archived facts directly inspected + bounded reproducible audit PASS locally; final cross-platform qualification tracked separately.  
 **SCIENTIFIC:** no new run, no new knowledge learned, original Amalgam DEV_NO_GO remains, `SCIENTIFIC_PASS=false`.  
 **DEPLOYMENT:** none; no merge, accepted or active owner mutation, paid API, new scheduler, or source-first-use.
+
+
+## KNOW02 — independent read-only factual-to-native readout seam
+
+**Role:** independent knowledge-acquisition research contributor. The Unified Causal Intelligence Amalgam Work chat remains the *sole integration coordinator*; no accepted training state, checkpoint owner, executor, or scheduler is changed.
+
+**Exact source contracts (read-only inspection, no branch blending):**
+
+- Native Amalgam implementation: `spoonman136668-ai/Yggdrasil` PR #1278 SHA `86264b41a08d49f558418c0fba367f3a2636befa`; `NativeCausalAmalgam.checkpoint`, `.plan`, `.restore`. The historical read-only Amalgam checkpoints (Linux joint SHA `576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8`, Windows `65b22e284b94fe022fb6345757e364e1a44f8156edf7f081e1b7420e5561f454`) **are experimental**, not canonical or accepted.
+- Native factual memory: NKR-08 draft PR #1135 SHA `e0ed615e2f65ba3a2b20cc700398675d58f5e73b`: `yggdrasil/native_cumulative_facts.py::CumulativeNativeFacts.fact/hypothesize/checkpoint`. Inherited NKR-06 `NativeKnowledgeSession` serves the separately verified historical 21,343,681 Q/P/Q TRAIN rows, with immutable manifest SHA `aa2d56e72284a042aee72587028642110327307b483de667586f105f018ebe8f` and train SHA `2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a`. The NKR-08 delta accepts **synthetic engineering fixtures only** and is not part of accepted Yggdrasil.
+
+### Implemented interface
+
+`typed_readout_bridge.py::TypedFactualReadoutBridge(native, facts, native_checkpoint_sha256=..., facts_checkpoint_sha256=...)` accepts caller-restored existing instances and two caller-supplied SHA pins. It does not import, download, install, instantiate, or train a model. It validates pinned, canonical checkpoint envelopes and the unaccepted source/custody flags. It checks both full checkpoint digests before and after each call. Never derive the expected pin from the artifact being authenticated in an owner-acceptance gate.
+
+- `.fact(Q,P,Q)` returns `HISTORICAL_STORED_QPQ`, `SYNTHETIC_ENGINEERING_QPQ`, or `UNSUPPORTED_ABSTAIN`. The output never presents a Q/P/Q lookup as native causal evidence. The historical source is **TRAIN-only, historical/not-current**; source hashes do not establish freshness or truth.
+- `.hypotheses(Q,P,P)` uses the existing NKR-08 two-hop method, labels all candidates `UNVERIFIED_COMPOSED_PATH_HYPOTHESES`, and cannot promote them into direct facts.
+- `.independent_native_plan(public_view)` calls *only* the caller-supplied native planner with its original numeric public view. There is intentionally no Q/P/Q → native feature map and no model policy influence from factual readout.
+- `.stage` and `.observe_experience` deny writes. The pre/post integrity check fails if either companion checkpoint changes during readout.
+
+This is a **typed retrieval interface and protected no-write integration seam, not trained model usage of the information**. It has no actual original-source/owner-custody authority, no accepted checkpoint, no new learned knowledge, and no scientific advantage. The two source modules must be brought together only by the authorized Amalgam owner/integration coordinator and separately qualified on exact combined source before acceptance.
+
+### Engineering tests and result
+
+`test_typed_readout_bridge.py`: 18 source-free contract/negative tests, including historical-vs-dev-vs-abstain classification, unverified path isolation, no learning, rejected owner-promotion flags, invalid numeric IDs, forged source hashes, duplicate JSON keys, denied causal writes, and mutated checkpoint detection. Together with nine previously qualified KNOW01 fixture tests: **27/27 local PASS**. In this read-only session, the bridge also parsed *both* recovered 2,921,047-byte Amalgam checkpoint envelopes without mismatched format or SHA; the factual counterpart in that check was a constructed fixture, **not the actual installed 21M historical image**. Full Linux/Windows regression and source-atlas qualification are performed by existing `.github/workflows/ygg-know01.yml` on the candidate SHA (do not call them PASS until checked).
+
+**Scientific next condition:** obtain real, owner-qualified source-to-native grounding/mapping plus an owner-authenticated canonical model checkpoint before any factual evidence can affect predictions, native learning or action selection. Freeze a genuine disjoint knowledge batch, scored factual/causal tasks, old-task A→B→A retention and matched fully trained conventional + exact symbolic controls before protected first-use. Issue #426 currently prohibits new protected original-world first-use. Preserve NKR-08 full-source image and existing Amalgam native/specialist checkpoints byte-identically until qualification; do not repeat consumed historical science as fresh evidence.
