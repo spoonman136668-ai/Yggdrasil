@@ -1,0 +1,96 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-196",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "versioned-metadata-only-source-repair-of-frozen-original-world-development",
+  "same_isolated_branch": "research/wsp195-original-gb1-composition-20261119",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "original_prereg": "WSP-195:3af4c3e0bcbedd0416d8c3d2955eec0ca89df8f7",
+  "original_evaluator": "WSP-195:ba7b7847dce0b2522e195734cc8e6b52b0d30273",
+  "original_evaluator_blob": "19b3d9ef5ef870e1c888687173147a106353afb3",
+  "original_invalid_result_commit": "88fed22f6f3476bc3745f7d27ada9a742d601105",
+  "original_invalid_result": "INVALID, MUTANT_ALPHABET_OR_LENGTH; no authentic weight fitting or DEV scoring",
+  "independent_source_only_diagnostic_commit": "22110264bc55adbaeef4e992925a425f26d4ac83",
+  "metadata_proof": {
+    "source_sha": "dbdd7639187e0b8f22359f404ce4d1d950fcc8a9",
+    "source_blob": "3bf094f1b5c8bd84a35e04ae9c23bcf97c2bfa89",
+    "original_rows": 191157,
+    "standard_aminoacid_rows": 158570,
+    "placeholder_containing_rows": 32587,
+    "standard_measured_primary_flags": 149361,
+    "original_primary_numeric_values_inspected": false
+  },
+  "only_permitted_evaluator_change": "When scanning 11-column Mutfit data, skip rows with exactly four genotype characters chosen from the 20-standard-AA alphabet plus underscore, with at least one underscore. Keep counts of skipped rows. Every other malformed source, duplicate standard genotype, HD mismatch, unmeasured source label or changed source SHA fails closed. Require exactly 32587 skipped source rows because the original immutable source is pinned.",
+  "frozen_hypothesis": "Identical to WSP-195: directly programmed hierarchical site/low-rank pair/conditional triple motif parameters from HD<=3 FIT, versus fully converged conventional degree<=3 ridge on same source, predicting original HD4 GB1 fitness.",
+  "frozen_source": "wchnicholas/ProteinGFourMutants@dbdd7639187e0b8f22359f404ce4d1d950fcc8a9:result/Mutfit; exact Git blob 3bf094f1b5c8bd84a35e04ae9c23bcf97c2bfa89, 13837211 bytes",
+  "frozen_source_minimums": {
+    "all_measured": 140000,
+    "hd0": 1,
+    "hd1": 65,
+    "hd2": 1600,
+    "hd3": 18000,
+    "hd4": 100000
+  },
+  "frozen_fit_valid_dev": "HD0/1/2 FIT, HD3 SHA256(WSP195-GB1-HD3-FIT-v1 NUL genotype) first 8 bytes %100 <70 FIT else VALID, all HD4 DEV; no changed salt or observed fitness split",
+  "frozen_outcome": "log1p(I20fitRaw), FIT-only z-score, no original AOfit or adjusted I20fit leakage",
+  "frozen_candidate": {
+    "ranks": [
+      2,
+      4,
+      8,
+      "full"
+    ],
+    "pair_multipliers": [
+      0.5,
+      1,
+      2
+    ],
+    "triple_multipliers": [
+      0,
+      0.5,
+      1
+    ],
+    "power_iterations": 20,
+    "local_weight_programming_only": true,
+    "validation_choice": "Minimum VALID HD3 RMSE"
+  },
+  "frozen_conventional": {
+    "families": [
+      "additive",
+      "additive+pairwise",
+      "additive+pairwise+third-order"
+    ],
+    "ridge_lambdas": [
+      0.1,
+      1,
+      10
+    ],
+    "max_coordinate_passes": 250,
+    "tol": 0.0001,
+    "source_labels_identical": true,
+    "degree3_convergence_required": true
+  },
+  "frozen_science_rule": "Single HD4 DEV scoring pass, ≥5% lower RMSE than strongest VALID-selected converged conventional and bootstrap 95% lower improvement >0, historical HD1/2 serialization/restore error <=1e-12. No promotion without independent qualification.",
+  "frozen_bootstrap": {
+    "reps": 1000,
+    "seed": 19531,
+    "unit": "distinct HD4 genotype"
+  },
+  "engineering_first": "Exact WSP-196 evaluator source blob and source-free negative controls must be committed and tested before examining any original source numeric outcomes.",
+  "prior_exposure_note": "Only original genome-ID strings and NA/non-NA missingness flags were inspected after WSP-195 invalid; no numeric fitness scores were parsed, fitted or selected. A published paper and WSP195 source-access metadata were known. This is a versioned pre-science source-format correction, not re-evaluation of an unfavorable held result.",
+  "stop_rules": [
+    "Do not edit WSP-195 evaluator or INVALID result",
+    "No post-DEV reruns, capacity adjustment, model choice or source replacement",
+    "If WSP-196 fails new admission/convergence, record INVALID and stop without new fallback",
+    "No acceptance or native Yggdrasil first-use authority"
+  ],
+  "authority": {
+    "independent_external_research": true,
+    "accepted_main_unchanged": true,
+    "protected_original_first_use": false,
+    "no_merges": true,
+    "no_runners_or_controller": true,
+    "native_model_training": false
+  }
+}
