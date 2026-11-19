@@ -1,0 +1,107 @@
+LR-92AP: ONLINE BAYESIAN CHANGE-POINT + TWO-REGIME SOFT HMM CONTROLS
+======================================================================
+2026-11-19; isolated external synthetic development, NOT native Yggdrasil
+training. Original frozen prereg PR #1323 preserved unchanged.
+Parent branch head: a8994b0b3f12786a1f5013352c626d66ef660041
+Baseline main: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+
+EXACT SOURCE AND REPRODUCTION
+-----------------------------
+bounded_bayesian_controls.py.txt Git blob:
+aafba29564433827ba0477d32b999a050571b9f9
+SHA256: fbd014ad8ca914746021da8a21f6b5f0a1c5b86afebc22366b0fcb2c53343846
+5747 bytes.
+test_bounded_bayesian_controls.py.txt Git blob:
+5369267ae02caa00333c43ecb0f47cd88c81cd58
+SHA256: ec5b989fb0f4fbcc38e53e0b48c63be5ebfe5d8e554ba682836beb50a58d6b5c
+4429 bytes.
+
+Reproduce after verbatim copy from .txt to .py:
+  python -m unittest -v test_bounded_bayesian_controls.py
+  python -c "from test_bounded_bayesian_controls import evaluate; print(evaluate(73004303)); print(evaluate(73004304))"
+Local host Python 3.13.5 Linux, focused 8/8 PASS.
+These are exact locally tested byte hashes verified by independent Git blob SHAs,
+not mere proposed code. Full mandatory native regression is NOT run.
+
+MODEL DESIGN AND PRECOMMITTED FIXTURE SCOPE
+-------------------------------------------
+1) SoftHMM14: two-regime fixed-hazard online HMM with symmetric transition
+   hazard 1/32. Posterior is updated with observed Bernoulli likelihood; two
+   regime emission banks receive posterior-weighted Q4 expected-count updates.
+   Uses fixed 14 reachable (two-prior-action, current-action) bin patterns.
+2) ApproxBayesChangePoint14: finite two-hypothesis filter with change hazard
+   1/64, online soft-count updates, and changepoint alarm when old regime's
+   posterior falls below 1/8; challenger copied to current on alarm. This
+   is an explicit APPROXIMATION, NOT exact/untruncated Bayesian Online
+   Changepoint Detection and NOT a fully fitted broad conventional control.
+
+Each stores 2*448 outcome bytes + 16 prior-history-code bytes +
+16 posterior bytes = 928 persistent learned/history bytes across 16 addresses,
+7 active + 9 retained; no hidden phase labels, no future labels, no explicit
+phase-clock/schedule. Snapshot is 964 bytes: version 4, state 928, SHA256 32.
+Both emit forecasts before observing labels, with atomic invalid-step
+rejection; 16-address isolation, deterministic replay, checkpoint parity,
+corruption/wrong-format rejection, read-only forecasts and unannounced
+switch indistinguishability are included in the eight local tests.
+
+DEVELOPMENT FIXTURE MEASUREMENTS (NOT PROTECTED PRIMARY)
+--------------------------------------------------------
+Exact same two previously released fixture seeds and action/outcome generator
+as PR #1323; 192 public outcomes per world, 64 A + 64 B + 64 A return.
+Each resets history between observations, so the fixture exercises only the
+single (2,2) history bin, NOT the complete 14-bin native temporal task.
+Brier lower better. A return is first 16 public forecasts, then updates.
+
+seed       phase                  soft HMM14      approx CPD14
+73004303   B 64                   0.24518833      0.21929904
+73004303   A-return first 16       0.21248483      0.26188951
+73004304   B 64                   0.24115583      0.17686934
+73004304   A-return first 16       0.20323808      0.41832303
+
+Previously recorded same-fixture references (prior PR source, not rerun here):
+seed       phase          original YPT4  hard MAP-HMM  window32   full count
+73004303   B              0.3301         0.20204      0.22058    0.39964
+73004303   A-return       0.3105         0.22774      0.40939    0.20853
+73004304   B              0.3172         0.15312      0.18553    0.37017
+73004304   A-return       0.3187         0.20312      0.42545    0.26933
+
+INTERPRETATION AND NEGATIVE EVIDENCE
+------------------------------------
+Soft HMM improves early A return relative to the prior hard-MAP comparator in
+seed 73004303, but loses to it on B in BOTH fixtures and is slightly worse
+on early A return in seed 73004304. Approx CPD loses much of its retained A
+capability in seed 73004304 (Brier 0.4183), an important development negative.
+None establishes superiority over the strongest matched conventional control.
+There has been NO fixture hyperparameter search or post-primary adaptation.
+
+Precision caveat: Q4-count posterior-weighted online updating is a bounded
+approximate Bayesian filter, NOT exact posterior marginalization over model
+parameter uncertainty and run lengths. Additional fully trained/fitted
+Bayesian and regime-mixture baselines may be required by the original protocol.
+
+Local same-host 21-trial timing (192 predict+update pairs, includes history
+resets, model initialization; Python 3.13.5 Linux):
+SoftHMM14 median 0.582990 ms; ApproxCPD14 median 0.607326 ms.
+These are local microbenchmark measurements only, not an independently
+reproduced end-to-end or CPU/GPU/native performance claim.
+
+IDENTIFIABILITY / SOURCE FENCES
+-------------------------------
+When A returns with no public change cue, its first forecast is identical to
+the forecast of a world in which B continues after the same observed prefix;
+first-step causal-regime identification is impossible without new information.
+Original prereg's 64/64/64 schedule is fixed and may leak time if supplied,
+whereas these controls do not receive a schedule. Do not reinterpret cold
+memory retrieval as spontaneous detection of an unseen return-to-A event.
+
+No primary seeds [929209101, 929209102, 929209103] were touched; all 288
+protected worlds UNRUN; source-birth custody and independent scientific
+first-use remain UNVERIFIED. Missing original controls: fully fitted general
+Bayesian run-length/control, RF32 out-of-budget reference, random gate,
+history permutation sham as a scientific control, and true 14-bin distribution
+source. Do NOT promote with an incomplete conventional-controls suite.
+
+ENGINEERING: local focused 8/8 PASS, new exact-head GitHub CI pending.
+SCIENTIFIC: no developmental GO, SCIENTIFIC_PASS UNVERIFIED.
+DEPLOYMENT: HOLD; no native source, main/ref acceptance, controller,
+runner, scheduled task, queue, model training, or first-use changed.

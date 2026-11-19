@@ -1,0 +1,108 @@
+"""Conventional-control fixture tests. Do not import protected primary sources."""
+import hashlib
+import math
+import random
+import unittest
+from bounded_bayesian_controls import SoftHMM14, ApproxBayesChangePoint14
+
+CONTROLS=(SoftHMM14, ApproxBayesChangePoint14)
+
+
+def fixture(seed):
+    randomizer=random.Random(seed)
+    for phase in ('A','B','Areturn'):
+        for t in range(64):
+            a=randomizer.randrange(2)
+            y=int((a if phase!='B' else 1-a) ^ (randomizer.random()<0.15))
+            yield phase,t,a,y
+
+
+def evaluate(seed):
+    scores={}
+    for cls in CONTROLS:
+        model=cls(); phases={'B':[], 'Areturn':[]}
+        for phase,t,a,y in fixture(seed):
+            model.end_episode()
+            p=model.predict(0,a)
+            if phase=='B' or phase=='Areturn' and t<16:
+                phases[phase].append((p-y)**2)
+            model.observe_step(0,a,y)
+        scores[cls.__name__]={k:sum(v)/len(v) for k,v in phases.items()}
+    return scores
+
+
+class BoundedBayesianTests(unittest.TestCase):
+    def test_budget_empty_roundtrip_and_chance(self):
+        for cls in CONTROLS:
+            m=cls()
+            self.assertEqual(m.LEARNED_BYTES,928)
+            self.assertEqual(len(m.snapshot()),964)
+            self.assertEqual(m.snapshot(),cls.restore(m.snapshot()).snapshot())
+            self.assertAlmostEqual(m.predict(0,1),.5)
+
+    def test_public_invalid_is_atomic(self):
+        for cls in CONTROLS:
+            m=cls();state=m.snapshot()
+            for a,b,y,r in ((7,0,0,False),(0,2,0,False),(0,1,3,False),
+                            (9,1,0,True),(0,0,1,1),(True,0,0,False)):
+                with self.assertRaises(ValueError):
+                    m.observe_step(a,b,y,retained=r)
+                self.assertEqual(m.snapshot(),state)
+
+    def test_predict_never_mutates(self):
+        for cls in CONTROLS:
+            m=cls()
+            for i in range(11):m.observe_step(0,0,i%2)
+            old=m.snapshot()
+            for _ in range(30):m.predict(0,0);m.predict(0,1)
+            self.assertEqual(m.snapshot(),old)
+
+    def test_checkpoint_corruption_and_wrong_magic(self):
+        for cls in CONTROLS:
+            m=cls(); raw=bytearray(m.snapshot()); raw[20]^=1
+            with self.assertRaises(ValueError):cls.restore(bytes(raw))
+            raw=bytearray(m.snapshot());raw[900]=8
+            raw[-32:]=hashlib.sha256(raw[:-32]).digest()
+            with self.assertRaises(ValueError):cls.restore(bytes(raw))
+        with self.assertRaises(ValueError):SoftHMM14.restore(ApproxBayesChangePoint14().snapshot())
+
+    def test_all_addresses_isolated_and_checkpoint(self):
+        for cls in CONTROLS:
+            m=cls()
+            for i in range(16):
+                retained=i>=7; a=i if not retained else i-7
+                for t in range(45):
+                    m.end_episode();m.observe_step(a,t%2,(t+i)%2,retained=retained)
+            x=m.snapshot();restored=cls.restore(x)
+            self.assertEqual(restored.snapshot(),x)
+            for i in range(16):
+                retained=i>=7;a=i if not retained else i-7
+                self.assertEqual(m.predict(a,0,retained=retained),restored.predict(a,0,retained=retained))
+
+    def test_deterministic_replay(self):
+        for cls in CONTROLS:
+            a=cls();b=cls()
+            for i in range(330):
+                action=(i*17+i//9)%2;y=(i*3+i//14)%2
+                if i%11==0:a.end_episode();b.end_episode()
+                self.assertEqual(a.predict(0,action),b.predict(0,action))
+                a.observe_step(0,action,y);b.observe_step(0,action,y)
+            self.assertEqual(a.snapshot(),b.snapshot())
+
+    def test_unannounced_switch_unidentifiable(self):
+        for cls in CONTROLS:
+            m=cls()
+            for phase,t,a,y in list(fixture(73004303))[:128]:
+                m.end_episode();m.observe_step(0,a,y)
+            m.end_episode();raw=m.snapshot()
+            continuing=cls.restore(raw);returned=cls.restore(raw)
+            self.assertEqual(continuing.predict(0,0),returned.predict(0,0))
+            self.assertAlmostEqual(.25-.15*.85,.1225)
+
+    def test_fixture_scores_finite_not_primary(self):
+        for seed in (73004303,73004304):
+            for name,scores in evaluate(seed).items():
+                self.assertEqual(set(scores),{'B','Areturn'})
+                for v in scores.values():self.assertTrue(math.isfinite(v) and 0<=v<=1)
+
+if __name__=='__main__':unittest.main()

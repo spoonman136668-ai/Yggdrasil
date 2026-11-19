@@ -1,0 +1,150 @@
+"""LR-92AP: bounded online-fitted conventional Bayesian controls (fixture-only).
+
+Soft two-regime HMM and approximate Bayesian change-point filter. Both use
+public action-consequence observations and two prior public actions only.
+These are finite-precision filters, not exact BOCPD over all run lengths.
+Not integrated with native Yggdrasil; reserved primary sources are untouched.
+"""
+from __future__ import annotations
+import hashlib
+
+
+class _TwoRegimeBase:
+    PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+    LEARNED_BYTES = 928
+    CHECKPOINT_BYTES = 964
+    SCALE = 16  # Q4 pseudo-observation increments; precise byte accounting.
+    HAZARD = None
+    MAGIC = None
+
+    def __init__(self):
+        self._banks = (bytearray(448), bytearray(448))
+        self._history = bytearray(16)  # 0 encodes the (2,2) episode beginning.
+        self._posterior0 = bytearray([255] * 16)
+
+    @staticmethod
+    def _slot(address, retained):
+        if type(retained) is not bool or type(address) is not int:
+            raise ValueError('LRC_INVALID_ADDRESS')
+        if not 0 <= address < (9 if retained else 7):
+            raise ValueError('LRC_INVALID_ADDRESS')
+        return address + (7 if retained else 0)
+
+    @staticmethod
+    def _bit(value):
+        if type(value) is not int or value not in (0, 1):
+            raise ValueError('LRC_INVALID_BIT')
+        return value
+
+    def _cell(self, slot, action):
+        h = self._history[slot]
+        if h >= len(self.PATTERNS):
+            raise ValueError('LRC_INVALID_HISTORY')
+        return slot * 28 + h * 4 + action * 2
+
+    def _prior0(self, slot):
+        raise NotImplementedError
+
+    def _prediction_pair(self, pos):
+        means = []
+        for bank in self._banks:
+            n0, n1 = bank[pos], bank[pos + 1]
+            means.append((n1 + self.SCALE) / (n0 + n1 + 2*self.SCALE))
+        return means
+
+    def predict(self, address, action, *, retained=False):
+        slot = self._slot(address, retained)
+        pos = self._cell(slot, self._bit(action))
+        p0, p1 = self._prediction_pair(pos)
+        w0 = self._prior0(slot)
+        return w0 * p0 + (1.0 - w0) * p1
+
+    def _after_update(self, slot, posterior0):
+        self._posterior0[slot] = min(255, max(0, round(posterior0*255)))
+
+    def observe_step(self, address, action, public_outcome, *, retained=False):
+        # Validation is complete before any learned or historical mutation.
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        y = self._bit(public_outcome)
+        pos = self._cell(slot, action)
+        pred0, pred1 = self._prediction_pair(pos)
+        prior0 = self._prior0(slot)
+        l0 = pred0 if y else (1.0 - pred0)
+        l1 = pred1 if y else (1.0 - pred1)
+        a, b = prior0*l0, (1.0-prior0)*l1
+        weight0 = a/(a+b)
+        # Online soft expected sufficient statistics, bounded by Q4 uint8.
+        for bank, fraction in zip(self._banks, (weight0, 1.0-weight0)):
+            delta = round(self.SCALE*fraction)
+            target = pos + y
+            if bank[target] + delta > 255:
+                bank[pos] = (bank[pos] + 1)//2
+                bank[pos+1] = (bank[pos+1] + 1)//2
+            bank[target] = min(255, bank[target] + delta)
+        self._after_update(slot, weight0)
+        previous, _ = self.PATTERNS[self._history[slot]]
+        self._history[slot] = self.PATTERNS.index((action, previous))
+
+    def end_episode(self):
+        self._history[:] = bytes(16)
+
+    def snapshot(self):
+        raw = (self.MAGIC + bytes(self._banks[0]) + bytes(self._banks[1])
+               + bytes(self._history) + bytes(self._posterior0))
+        assert len(raw) == self.CHECKPOINT_BYTES - 32
+        return raw + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob):
+        if (type(blob) is not bytes or len(blob) != cls.CHECKPOINT_BYTES or
+                blob[:4] != cls.MAGIC or
+                hashlib.sha256(blob[:-32]).digest() != blob[-32:]):
+            raise ValueError('LRC_CHECKPOINT_REJECTED')
+        if any(x >= len(cls.PATTERNS) for x in blob[900:916]):
+            raise ValueError('LRC_INVALID_HISTORY')
+        obj = cls()
+        obj._banks[0][:] = blob[4:452]
+        obj._banks[1][:] = blob[452:900]
+        obj._history[:] = blob[900:916]
+        obj._posterior0[:] = blob[916:932]
+        return obj
+
+
+class SoftHMM14(_TwoRegimeBase):
+    """Online two-regime HMM filter with symmetric fixed-hazard transitions.
+
+    Emission parameters receive posterior-weighted expected sufficient-stat
+    updates, not evaluator labels or hard MAP regime assignment.
+    """
+    MAGIC = b'LRS1'
+    HAZARD = 1.0/32.0
+
+    def _prior0(self, slot):
+        p = self._posterior0[slot]/255.0
+        return (1.0-self.HAZARD)*p + self.HAZARD*(1.0-p)
+
+
+class ApproxBayesChangePoint14(_TwoRegimeBase):
+    """Two-hypothesis Bayesian change-point filter, approximate and bounded.
+
+    The original regime competes with a fresh challenger. Change hazard is
+    per public event; challenger becomes the new regime after posterior alarm.
+    This is *not* untruncated run-length BOCPD; it is an explicit finite
+    comparator that can be rejected against stronger conventional controls.
+    """
+    MAGIC = b'LRC3'
+    HAZARD = 1.0/64.0
+    ALARM = 1.0/8.0
+
+    def _prior0(self, slot):
+        return (1.0-self.HAZARD)*(self._posterior0[slot]/255.0)
+
+    def _after_update(self, slot, posterior0):
+        if posterior0 < self.ALARM:
+            start, end = slot*28, (slot+1)*28
+            self._banks[0][start:end] = self._banks[1][start:end]
+            self._banks[1][start:end] = bytes(28)
+            self._posterior0[slot] = 255
+        else:
+            super()._after_update(slot, posterior0)
