@@ -44,3 +44,10 @@ Verification took 171.23 seconds with reuse versus 307.40 seconds with a
 separate replay (44.3% lower, 1.80x faster for this component). Both used
 the same checkpoint bytes, source protocols and recorded witnesses.
 See evidence-reuse-measurement.json for wall and CPU measurements.
+
+The separate Windows replay splits the same pinned witness archives across
+two processes on the existing runner. Both reconstruct their own immutable
+anchor, and any worker error fails qualification. In a same-host Linux
+benchmark using the Windows-compatible spawn method, replay time decreased
+from 144.32 to 92.73 seconds (1.56x). Serial and split runs produced exactly
+the same ten model outputs. The Linux timing is a local component measurement.

@@ -1,6 +1,9 @@
 """Check dual-platform checkpoint custody for sealed Amalgam witness traces."""
 
 from argparse import ArgumentParser
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import get_context
+from os import cpu_count
 from itertools import product
 import json
 from math import isfinite
@@ -102,7 +105,36 @@ def summary(model, raw, trace_sha):
     }
 
 
-def replay(case_directory, candidate):
+def replay_shard(raw, material, cases, verify_linux_bytes):
+    live = NativeCausalAmalgam.restore(raw, digest(raw), **material)
+    return replay_cases(live, material, cases, verify_linux_bytes)
+
+
+def replay_cases(live, material, cases, verify_linux_bytes):
+    models = {}
+    historic = live.native._episode_reader()._ledger
+    for label, (trace_sha, expected_linux_sha), records in cases:
+        trained = live
+        for identifier, views, row in records:
+            trained = admit(trained, identifier, views, row)
+        transcript = trained.checkpoint()
+        sha = digest(transcript)
+        if verify_linux_bytes and sha != expected_linux_sha:
+            raise ValueError(f"Linux producer digest differs for {label}")
+        saved = NativeCausalAmalgam.restore(transcript, sha, **material)
+        suffix = tuple((identifier, views, *(row[key] for key in ("x1", "s2", "x2", "y")))
+                       for identifier, views, row in records)
+        actual = saved.native._episode_reader()._ledger
+        if actual != historic + suffix or saved.checkpoint() != transcript:
+            raise ValueError(f"Cold reconstruction differs for {label}")
+        deltas = [b.steps - a.steps for a, b in zip(live._heads, saved._heads, strict=True)]
+        if deltas != [3 * len(records)] * 4:
+            raise ValueError(f"Specialist step counts differ for {label}")
+        models[label] = summary(saved, transcript, trace_sha)
+    return models
+
+
+def replay(case_directory, candidate, *, workers=1):
     started = monotonic()
     if len(candidate) != 40 or not all(
             ch in "0123456789abcdef" for ch in candidate):
@@ -121,25 +153,17 @@ def replay(case_directory, candidate):
     if verify_linux_bytes and anchor_sha != spec["joint_sha256"]:
         raise ValueError("Linux producer checkpoint does not match the sealed anchor")
     models = {"anchor": summary(live, raw, None)}
-    historic = live.native._episode_reader()._ledger
-    for label, (trace_sha, expected_linux_sha), records in archive():
-        trained = live
-        for identifier, views, row in records:
-            trained = admit(trained, identifier, views, row)
-        transcript = trained.checkpoint()
-        sha = digest(transcript)
-        if verify_linux_bytes and sha != expected_linux_sha:
-            raise ValueError(f"Linux producer digest differs for {label}")
-        saved = NativeCausalAmalgam.restore(transcript, sha, **material)
-        suffix = tuple((identifier, views, *(row[key] for key in ("x1", "s2", "x2", "y")))
-                       for identifier, views, row in records)
-        actual = saved.native._episode_reader()._ledger
-        if actual != historic + suffix or saved.checkpoint() != transcript:
-            raise ValueError(f"Cold reconstruction differs for {label}")
-        deltas = [b.steps - a.steps for a, b in zip(live._heads, saved._heads, strict=True)]
-        if deltas != [3 * len(records)] * 4:
-            raise ValueError(f"Specialist step counts differ for {label}")
-        models[label] = summary(saved, transcript, trace_sha)
+    cases = list(archive())
+    workers = min(workers, cpu_count() or 1)
+    if workers == 1:
+        models.update(replay_cases(live, material, cases, verify_linux_bytes))
+    else:
+        shards = (cases[::2], cases[1::2])
+        with ProcessPoolExecutor(max_workers=2, mp_context=get_context("spawn")) as executor:
+            tasks = [executor.submit(replay_shard, raw, material, shard, verify_linux_bytes)
+                     for shard in shards]
+            for operation in tasks:
+                models.update(operation.result())
     if len(models) != 10:
         raise ValueError("Expected the anchor and all nine sealed descendants")
     return {"schema": SCHEMA, "candidate": candidate, "platform": operating_system,
@@ -200,13 +224,14 @@ def main():
     capture = subparsers.add_parser("replay")
     capture.add_argument("directory", type=Path)
     capture.add_argument("candidate")
+    capture.add_argument("--workers", type=int, choices=(1, 2), default=1)
     verify = subparsers.add_parser("compare")
     verify.add_argument("linux", type=Path)
     verify.add_argument("windows", type=Path)
     verify.add_argument("candidate")
     args = parser.parse_args()
     if args.verb == "replay":
-        report = replay(args.directory, args.candidate)
+        report = replay(args.directory, args.candidate, workers=args.workers)
     else:
         report = compare(json.loads(args.linux.read_bytes()), json.loads(args.windows.read_bytes()),
                          args.candidate)

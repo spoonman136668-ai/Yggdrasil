@@ -139,7 +139,7 @@ jobs:
         cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
-        python -B "$AMALGAM/checkpoint_replay_parity.py" replay "$PARENTS" "$EXPECTED_CANDIDATE" \
+        python -B "$AMALGAM/checkpoint_replay_parity.py" replay "$PARENTS" "$EXPECTED_CANDIDATE" --workers 2 \
           > "$RUNNER_TEMP/amalgam-portable-replay.json"
         test -z "$(git status --porcelain)"
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
