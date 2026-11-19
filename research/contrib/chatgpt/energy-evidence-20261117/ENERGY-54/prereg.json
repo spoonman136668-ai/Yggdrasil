@@ -1,0 +1,111 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-54",
+  "date": "2026-11-19",
+  "contribution_class": "falsification",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "source_parent": "28dbf51e4f664a2a5475ba19b9b540f7b8aa747e",
+  "source_commit_sha": "66aec145d0ea97d2ed2d54ff1d48da14639f035f",
+  "source": {
+    "archive": "source.tar.bz2",
+    "git_blob": "e1ed540bfd7c40ef2c23ac9b342ac147aa9a0eda",
+    "archive_sha256": "e9bbeb9dd4fa1517b47a1f7dbf5b0b5605e02a22094cfc1a5c22163f2c86918e",
+    "experiment_sha256": "56381c7cec6c33383c803e0ec5a97dc13b5fb9f4b47f3ba9faac6f53d1b90a17",
+    "auditor_sha256": "1c74960f91479066eb791c7c30cf607fa2ec941e53ee5aa7f4e1b3854009fb1e",
+    "predecessor_unmodified_source_sha256": "c1566f297a01c774d5b50b787f297cd7df31be6a4b51eb3876b603c4626f4851",
+    "excluded_pre_freeze_development_seed": 99839,
+    "dev_worlds": 3,
+    "dev_audit_pass_checks": 414,
+    "dev_result": "Unpromising: 3/9 nominal gates, ~57x tournament acquisition time. Development-only; not frozen evidence."
+  },
+  "question": "Can explicit expected causal-hypothesis information gain with a precommitted single-hypothesis model-mismatch fallback to conventional D-optimal acquisition outperform predictive-disagreement tournament, D-optimal, and random controls reliably across both known-bank and out-of-bank causal mechanisms?",
+  "hypothesis": "A robust expected-KL selector conditioned ONLY on observed consequences selects interventions that improve unseen cold-consequence MSE at least 5% over every alternative OMP acquisition policy and 5% over any conventional policy/learner pair, with strictly positive per-seed margins and bounded total acquisition compute.",
+  "generator": {
+    "kind": "synthetic randomized do-intervention; no protected dataset or Yggdrasil weights",
+    "families": [
+      "bank_parity4",
+      "novel_parity5",
+      "novel_conditional5"
+    ],
+    "worlds_per_seed": 12,
+    "seed_specific_world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "causal_bits": 9,
+    "nuisance_bits": 2,
+    "unique_causal_assignments_per_world": 320,
+    "old_label_budget": 80,
+    "unlabeled_new_pool": 96,
+    "common_new_anchor_labels": 4,
+    "adaptive_new_label_budget": 12,
+    "total_new_labels": 16,
+    "held_old": 48,
+    "held_new": 48,
+    "held_cold": 48,
+    "noise_stddev": 0.2,
+    "latent": "4 old shared lower-order signed mechanisms, one new-only 4 or 5-way causal factor; hidden factor identity withheld. Source family banks known only to 24-term candidate grammar; novel parity5/conditional5 not representable by any single bank feature. All model families have 2 nuisance cues with old/new/cold shifts.",
+    "source_note": "Finite authored bank, source-free synthetic worlds; not arbitrary operator discovery or native tokenless cognition."
+  },
+  "methods": {
+    "primary_candidate": "robust_eig acquisition + OMP3 residual learner",
+    "candidate_policy": "After 4 common NEW anchors, each step computes posterior weights of 24 one-factor residual hypotheses fitted on already observed NEW outcomes. Candidate action maximizes 5-point Gauss-Hermite approximation to mutual information I(hypothesis; outcome). If min per-hypothesis SSE divided by observed residual energy exceeds 0.55, fallback to conventional regularized D-optimal for that step. Hypothetical outcome likelihood Gaussian sigma .45, integrator 5 nodes; deterministic tie break. Model fit uses only seen labels, never held labels.",
+    "policies": [
+      "robust_eig",
+      "eig",
+      "tournament",
+      "d_optimal",
+      "hamming",
+      "random"
+    ],
+    "learners": [
+      "OMP3 primary",
+      "ElasticNet alpha .045 l1_ratio .8",
+      "Ridge alpha1"
+    ],
+    "strong_controls": "Unconditional expected-KL EIG ablation, existing ENERGY-53 predictive-variance tournament, conventional D-optimal, Hamming diversity, random. Same information, action budget, shared old OMP4 checkpoint and 24 candidate factors. All 3 downstream refits from actual selected labels.",
+    "budget": "One prospective 24-world screen on exact seeds 99851 and 99863, one identical-source semantic replay, source-sharing reimplementation of selection and all 18 model refits. No hyperparameter tuning after scoring. 36-world reserved primary only if screen passes.",
+    "environment": "Linux CPU Python 3.13.5 NumPy 2.3.5 SciPy 1.17.0 scikit-learn 1.8.0, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1, no GPU/paid API.",
+    "timing": "Acquisition wall seconds measured separately per policy, model-fit seconds separately, not physical power/Joules or complete process cost.",
+    "independence": "Auditor reimplements EIG posterior integration and all selectors/learner constructors; shares synthetic generator, NumPy/sklearn and source bank so not fully independent science."
+  },
+  "prospective_screen_seeds": [
+    99851,
+    99863
+  ],
+  "reserved_primary_seeds": [
+    9719,
+    9733,
+    9749
+  ],
+  "screen_worlds": 24,
+  "frozen_screen_gates": {
+    "gain5_vs_best_omp": "robust_eig+OMP aggregate cold MSE <=0.95 × best pooled cold MSE among 5 other acquisition policies+OMP",
+    "gain5_vs_best_any": "robust_eig+OMP aggregate cold MSE <=0.95 × best pooled cold MSE among 5 other policies ×3 fully trained downstream learners",
+    "gain10_vs_random_omp": "robust_eig+OMP cold MSE <=0.90 × random+OMP cold MSE",
+    "gain3_vs_tournament_omp": "robust_eig+OMP cold MSE <=0.97 × original tournament+OMP cold MSE",
+    "per_seed_strict_both": "robust_eig+OMP strictly better cold MSE than best other+OMP separately in BOTH 99851 and 99863 (critical)",
+    "every_family_at_most10pct_worse": "robust_eig+OMP pooled cold MSE no more than 1.10 × best other OMP acquisition separately for EACH bank_parity4,novel_parity5,novel_conditional5",
+    "old_predictions_exact": "robust_eig held OLD MSE exactly equals frozen old OMP4 checkpoint in each case",
+    "fallback_exercised": "fallback_count >0 and <12×number_of_worlds across screen, not all D-opt and not never",
+    "selection_compute_below8x_tournament": "robust_eig sum selection seconds <=8× conventional predictor-variance tournament selection seconds on same local CPU (not total process cost)"
+  },
+  "screen_decision": {
+    "SCREEN_PROMISING": "Requires all three critical gates gain5_vs_best_omp, gain5_vs_best_any, per_seed_strict_both PASS AND ≥8/9 gates PASS AND independent full audit PASS; only then eligible for separately authorized reserved primary.",
+    "SCREEN_NO_GO": "Any of 3 critical gates fail or fewer than 8 gates pass, with valid source and auditor PASS. Stop, no primary, no postscore tuning.",
+    "INVALID": "Any prereg run order violation, source SHA drift, hidden/held leakage, wrong split, unequal labels, missing controls, audit score discrepancy or silent code changes. Infrastructure CI separately classified."
+  },
+  "reproducible": {
+    "preprimary": "Source, three included Python originals and auditor committed at 66aec145d0ea97d2ed2d54ff1d48da14639f035f before prereg; only excluded development seed 99839 scored so far.",
+    "seeds_frozen": true,
+    "source_frozen": true,
+    "compute_frozen": true,
+    "protected_first_use": false
+  },
+  "prohibitions": [
+    "No additional score or thresholds on consumed seeds, no promotion to native Yggdrasil without independent qualification, no accepted ref/main/loop/controller/runner/queue/scheduler mutation, no merge/deployment, no paid APIs."
+  ]
+}
