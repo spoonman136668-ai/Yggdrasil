@@ -1,0 +1,208 @@
+"""LR-92AR source-only negative controls; NOT scientific training."""
+from __future__ import annotations
+import hashlib
+import inspect
+import json
+import math
+from pathlib import Path
+import unittest
+
+from phase_blind_posterior import PhaseBlindEvidencePosterior as Model
+
+
+def force_two_public_predictors():
+    """Test emissions without fabricating a phase or scored world."""
+    m=Model()
+    # p_early=0.9 and p_recent=0.1 for one empty-history/action cell.
+    m._early[1]=8
+    m._recent[0]=8
+    return m
+
+
+class EvidencePosteriorTests(unittest.TestCase):
+    def test_prereg_custody_and_no_science_first_use(self):
+        p=json.loads(Path(__file__).with_name("prereg.json.txt").read_text())
+        self.assertEqual(p["schema"],
+                         "lr92ar.phase-blind-posterior-engineering-prereg.v1")
+        self.assertEqual(p["status"],"ENGINEERING_ONLY_NO_SCIENTIFIC_FIRST_USE")
+        f=p["frozen_implementation"]
+        self.assertEqual(f["persistent_learned_bytes"],928)
+        self.assertEqual(sum(f["component_bytes"].values()),928)
+        self.assertEqual(f["posterior_initial_q8"],128)
+        self.assertEqual(f["early_bank_stop_after_public_observations_per_slot"],48)
+        self.assertEqual(f["recent_per_bin_window_cap"],32)
+        self.assertEqual(f["switch_hazard_per_public_observation"],"1/64")
+        e=p["evaluation_fence"]
+        self.assertFalse(e["all_original_lr92ap_protected_worlds_consumed"])
+        self.assertFalse(e["all_lr92aq_prospective_worlds_consumed"])
+        self.assertFalse(e["right_to_use_scientific_first_use"])
+        self.assertEqual(e["new_science_seed_ids"],[])
+        self.assertEqual(e["new_dev_seed_ids"],[])
+        self.assertEqual(e["source_birth"],"NOT_BORN")
+
+    def test_exact_state_and_checkpoint_budget(self):
+        m=Model()
+        self.assertEqual((len(m._early),len(m._recent),len(m._history),
+                          len(m._posterior)),(448,448,16,16))
+        self.assertEqual(Model.LEARNED_AND_HISTORY_BYTES,928)
+        self.assertEqual(Model.CHECKPOINT_BYTES,964)
+        self.assertEqual(len(m.snapshot()),964)
+        self.assertEqual(Model.restore(m.snapshot()).snapshot(),m.snapshot())
+        self.assertEqual(m.snapshot()[:4],b"LRA1")
+        self.assertEqual(set(m._posterior),{128})
+
+    def test_initial_phase_blind_forecast_neutral(self):
+        m=Model()
+        for address in range(7):
+            self.assertEqual(m.predict(address,0),0.5)
+            self.assertEqual(m.predict(address,1),0.5)
+        for address in range(9):
+            self.assertEqual(m.predict(address,0,retained=True),0.5)
+        self.assertNotIn("phase",inspect.signature(m.predict).parameters)
+        self.assertNotIn("phase",inspect.signature(m.observe_step).parameters)
+
+    def test_public_evidence_updates_likelihood_before_counts(self):
+        x=force_two_public_predictors()
+        y=Model.restore(x.snapshot())
+        before=x.predict(0,0)
+        self.assertEqual(before,y.predict(0,0))
+        self.assertAlmostEqual(before,0.5,delta=0.002)
+        self.assertEqual(x._posterior[0],128)
+        x.observe_step(0,0,1)
+        y.observe_step(0,0,0)
+        self.assertGreater(x._posterior[0],128)
+        self.assertLess(y._posterior[0],128)
+        self.assertNotEqual(x.snapshot(),y.snapshot())
+
+    def test_counterfactual_identical_prefix_cannot_reveal_transition(self):
+        model=Model()
+        for i in range(120):
+            if i%9==0:model.end_episode()
+            action=(i//3)&1
+            outcome=(i//13)&1
+            _=model.predict(0,action)
+            model.observe_step(0,action,outcome)
+        hidden_return=Model.restore(model.snapshot())
+        hidden_continued=Model.restore(model.snapshot())
+        next_action=1
+        self.assertEqual(hidden_return.predict(0,next_action),
+                         hidden_continued.predict(0,next_action))
+        self.assertEqual(hidden_return.snapshot(),hidden_continued.snapshot())
+        # Labels arrive only after the same first prediction, which cannot
+        # have had oracle foreknowledge of A vs continuing B.
+        hidden_return.observe_step(0,next_action,1)
+        hidden_continued.observe_step(0,next_action,0)
+        self.assertNotEqual(hidden_return.snapshot(),
+                            hidden_continued.snapshot())
+
+    def test_archive_freezes_at_first_48_public_updates(self):
+        m=Model()
+        for i in range(48):
+            m.end_episode()
+            m.observe_step(0,i&1,(i//3)&1)
+        bank_before=bytes(m._early)
+        self.assertEqual(sum(bank_before[:28]),48)
+        for i in range(200):
+            m.end_episode()
+            m.observe_step(0,i&1,(i//11)&1)
+        self.assertEqual(bank_before,bytes(m._early))
+        self.assertGreater(sum(m._recent[:28]),0)
+        self.assertLessEqual(max(m._recent),255)
+
+    def test_posterior_and_archive_survive_public_episode_boundary(self):
+        m=force_two_public_predictors()
+        m.observe_step(0,0,1)
+        early=bytes(m._early);recent=bytes(m._recent)
+        posterior=bytes(m._posterior)
+        m.end_episode()
+        self.assertEqual(m._history,bytes(16))
+        self.assertEqual(early,bytes(m._early))
+        self.assertEqual(recent,bytes(m._recent))
+        self.assertEqual(posterior,bytes(m._posterior))
+
+    def test_all_16_address_slots_independent(self):
+        m=Model()
+        for s in range(16):
+            retained=s>=7;addr=s-7 if retained else s
+            for i in range(35):
+                m.observe_step(addr,i&1,s&1,retained=retained)
+        snap=m.snapshot()
+        self.assertEqual(Model.restore(snap).snapshot(),snap)
+        for s in range(16):
+            retained=s>=7;addr=s-7 if retained else s
+            for act in (0,1):
+                self.assertEqual(m.predict(addr,act,retained=retained),
+                                 Model.restore(snap).predict(addr,act,
+                                                          retained=retained))
+        before=Model.restore(snap)
+        saved_other=[before.predict(s-7 if s>=7 else s,0,retained=s>=7)
+                     for s in range(1,16)]
+        before.observe_step(0,1,1)
+        self.assertEqual(saved_other,
+            [before.predict(s-7 if s>=7 else s,0,retained=s>=7)
+             for s in range(1,16)])
+
+    def test_invalid_external_inputs_atomic(self):
+        m=Model()
+        prior=m.snapshot()
+        for address,act,y,retained in (
+            (-1,0,0,False),(7,0,0,False),(9,0,0,True),
+            (0,2,0,False),(0,0,2,False),(0,0,-1,False),
+            (True,0,0,False),(0,True,0,False),(0,0,False,False),
+            (0,0,0,1),(0,0,0,None)):
+            with self.assertRaises(ValueError):
+                m.observe_step(address,act,y,retained=retained)
+            self.assertEqual(m.snapshot(),prior)
+        for address,act,retained in ((7,0,False),(0,2,False),
+                                     (0,0,None),(False,0,True)):
+            with self.assertRaises(ValueError):m.predict(address,act,retained=retained)
+            self.assertEqual(m.snapshot(),prior)
+
+    def test_cold_restore_and_replay_parity_with_no_science_seed(self):
+        events=[((i//5)%2,(i*7+i//17)%2) for i in range(250)]
+        a=Model();b=Model()
+        for i,(action,outcome) in enumerate(events):
+            if i%11==0:a.end_episode();b.end_episode()
+            before=a.snapshot()
+            self.assertEqual(a.predict(0,action),b.predict(0,action))
+            self.assertEqual(a.diagnostic_early(0,action),
+                             b.diagnostic_early(0,action))
+            self.assertEqual(a.snapshot(),before)
+            a.observe_step(0,action,outcome)
+            b.observe_step(0,action,outcome)
+            if i in (12,59,111,199):
+                b=Model.restore(b.snapshot())
+        self.assertEqual(a.snapshot(),b.snapshot())
+        self.assertTrue(all(0<=a.predict(0,x)<=1 for x in (0,1)))
+
+    def test_checkpoint_rejects_wrong_format_and_byte_corruption(self):
+        m=Model();m.observe_step(0,1,1)
+        original=m.snapshot()
+        wrong=bytearray(original);wrong[0]^=3
+        with self.assertRaisesRegex(ValueError,"CHECKPOINT_REJECTED"):
+            Model.restore(bytes(wrong))
+        wrong=bytearray(original);wrong[15]^=1
+        with self.assertRaisesRegex(ValueError,"CHECKPOINT_REJECTED"):
+            Model.restore(bytes(wrong))
+        wrong=bytearray(original);wrong[900]=255
+        wrong[-32:]=hashlib.sha256(wrong[:-32]).digest()
+        with self.assertRaisesRegex(ValueError,"INVALID_HISTORY"):
+            Model.restore(bytes(wrong))
+        for bad in (original[:-1],original+b"x",bytearray(original),
+                    b"YPT4"+original[4:]):
+            with self.assertRaises(ValueError):Model.restore(bad)
+
+    def test_posterior_is_bounded_under_conflicting_public_feedback(self):
+        m=Model()
+        for i in range(800):
+            if i%8==0:m.end_episode()
+            act=(i*3+(i//13))&1
+            y=((i//41)+act)&1
+            p=m.predict(0,act)
+            self.assertTrue(math.isfinite(p) and 0.0<=p<=1.0)
+            m.observe_step(0,act,y)
+            self.assertTrue(0<=m._posterior[0]<=255)
+        self.assertEqual(m.snapshot(),Model.restore(m.snapshot()).snapshot())
+
+if __name__=="__main__":
+    unittest.main()
