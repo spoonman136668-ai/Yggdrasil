@@ -1,0 +1,122 @@
+{
+  "schema": "lr92aj.external-development-summary.v1",
+  "experiment_id": "LR-92AJ",
+  "classification": "DEVELOPMENT_NO_GO",
+  "frozen_checks_pass": 9,
+  "frozen_checks_total": 10,
+  "pinned_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_pr": 1289,
+  "parent_sha": "6ec321ad4150e461788e0b07341104328e22440b",
+  "prereg_commit": "eb99bb10168a2115c8aacdceaa19e866c33c5fb1",
+  "source_commit": "4f716b6cc96d2b6d2eb68fd61906d2d5689ae039",
+  "prereg_sha256": "90103119d7c69478f42cd2a547b885b7215589b03dd21413bd0214dcce4ee6e6",
+  "source_sha256": "ea3e2a616234ba9e74ec28b60273a237c7cdadb05658717064e6ca88e1ace526",
+  "audit_sha256": "b514737308d45d59698cbe22b243b27562cec6677b9e99bed10e58576aaac143",
+  "audit_receipt_sha256": "d0c689e2d8b1f0ac8c28ee448aa416353398749fe859fe58b8b26ea9041381ed",
+  "scored_ledger_decoded_sha256": "404c35a82958afcb95f52c9ed2ce2b4ab97459774c195b2b2367a5417f1a861b",
+  "raw_primary_sha256": "7c9a4f524d749d36def10a5da8611fd566af7fe608e4b33b3f3201703746b4a9",
+  "raw_primary_bytes": 1206291,
+  "cohort": {
+    "worlds": 240,
+    "seeds": [
+      929203101,
+      929203102,
+      929203103
+    ],
+    "family_worlds": {
+      "static": 81,
+      "lag1": 81,
+      "lag2": 78
+    },
+    "context0_fit": 112,
+    "context1_fit": 64,
+    "validation": 256,
+    "flip_noise": 0.35,
+    "primary_trials": 1,
+    "postscore_tuning_passes": 0
+  },
+  "threshold": 0.55,
+  "threshold_selected_using": "PR #1289 240 already scored predecessor worlds (retrospective DEV calibration; not fresh cohort)",
+  "arms_order": [
+    "gate_eig",
+    "gate_balanced",
+    "gate_sham",
+    "mix_eig",
+    "no_fallback",
+    "old_lag_eig",
+    "old_static_eig",
+    "rf32"
+  ],
+  "accuracy_by_family": {
+    "static": [
+      0.643374,
+      0.635995,
+      0.643036,
+      0.643374,
+      0.643904,
+      0.642458,
+      0.648438,
+      0.598187
+    ],
+    "lag1": [
+      0.556279,
+      0.563513,
+      0.533083,
+      0.549286,
+      0.547984,
+      0.569155,
+      0.507523,
+      0.535397
+    ],
+    "lag2": [
+      0.564353,
+      0.545974,
+      0.510517,
+      0.565555,
+      0.569411,
+      0.514223,
+      0.498548,
+      0.531751
+    ]
+  },
+  "go_checks": {
+    "lag1_retention_vs_original_at_most_0p5pp_loss": false,
+    "static_retention_vs_original_at_most_1pp_loss": true,
+    "lag2_gain_over_old_lag_at_least_3pp": true,
+    "lag2_preserves_mix_within_1pp": true,
+    "lag2_better_than_shuffled_history_by_1p5pp": true,
+    "lag2_better_than_fitted_rf32_by_0p5pp": true,
+    "gate_and_ablations_same_observed_actions": true,
+    "exact_64_action_budget": true,
+    "cold_historical_prior_bit_exact": true,
+    "gate_no_new_mechanism_acceptance": true
+  },
+  "audit": {
+    "status": "PASS",
+    "read_only_assertions": 146426,
+    "independent_grouped_likelihoods": true,
+    "potential_outcome_tapes_verified": true,
+    "primary_mutated": false,
+    "original_auditor_bug": "A standalone audit's previous-action rolling-state update was corrected before PASS; primary code and data unchanged"
+  },
+  "custody": {
+    "all_sealed_code_on_github": true,
+    "parents_on_github": true,
+    "raw_primary_on_github": false,
+    "raw_hash_published": true,
+    "all_240_paired_score_rows_on_github": true
+  },
+  "limits": [
+    "The gate is prediction-only; it cannot accept new mechanisms or demonstrate exact causal discovery.",
+    "Posterior family choices arise within a programmed 31-family hypothesis grammar.",
+    "Retrospective 55% threshold chosen from LR-92AI worlds; independent new synthetic worlds only offer DEV validation.",
+    "Full original 1.206MB observation-level raw result remains local, not on GitHub.",
+    "RF32 receives same fitting labels but not the historical frozen DELTA prior; equal historical-information science comparison not established.",
+    "Full native regression/Windows scientific reproduction/owner first-use have not been performed."
+  ],
+  "native_training": false,
+  "official_science": "UNVERIFIED",
+  "merge": false,
+  "deployment": false,
+  "first_use_consumed": false
+}
