@@ -105,3 +105,103 @@ class EvidenceRecall:
             return result
         except (KeyError,ValueError,TypeError,IndexError,UnicodeError) as exc:
             raise ValueError("CAP02_RECALL_COLD_REJECTED") from exc
+
+
+def restore_original_sealed_native(raw, expected_sha):
+    """Accept the exact original CAP01 learned weights, source-audited.
+
+    The historical CAP01 replay contract demands identical floating-point
+    serialization after retraining across machines; that is too strict for
+    libm/NumPy last-ULP platform differences. Preserve the ORIGINAL weights
+    byte-exactly. Independently replay the complete previously witnessed
+    source to verify that all expert weights agree numerically within 1e-8,
+    while source IDs, native banks, old archive, step counts and metadata
+    must match exactly. Never generate a second development outcome.
+    """
+    from yggdrasil.native_segmented_continuation import (
+        SegmentedNativeJEPA, EVENT_FIELDS, SCHEMA as NATIVE_SCHEMA,
+        MAX_CHECKPOINT_BYTES, MAX_SHARDS, MAX_SHARD,
+    )
+    from yggdrasil.native_episode_experience import NativeEpisodeExperience
+    from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist
+    from yggdrasil.native_jepa_temporal import TemporalLatentSpecialist
+    from yggdrasil.native_jepa_future import FutureStateHead
+    check(type(raw) is bytes and len(raw) <= MAX_CHECKPOINT_BYTES and
+          pin(expected_sha) and digest(raw)==expected_sha,
+          "PORTABLE_SOURCE_SHA")
+    try:
+        d=json.loads(raw.decode("ascii"))
+        check(type(d) is dict and set(d)=={
+            "schema","archive_sha256","archive_ascii","original_count",
+            "total_count","segments","events","offsets","one",
+            "temporal","future",
+        } and d["schema"]==NATIVE_SCHEMA and canonical(d)==raw,
+              "PORTABLE_SCHEMA")
+        archive=d["archive_ascii"].encode("ascii")
+        base=SegmentedNativeJEPA.from_archive(archive,d["archive_sha256"])
+        check(type(d["events"]) is list and
+              len(d["events"])<=MAX_SHARDS*MAX_SHARD,
+              "PORTABLE_EVENT_CAP")
+        episodes=[]
+        for item in d["events"]:
+            check(type(item) is dict and set(item)==set(EVENT_FIELDS),
+                  "PORTABLE_EVENT_FIELDS")
+            episodes.append((
+                item["identifier"],
+                tuple(tuple(x) for x in item["views"]),
+                item["first"],item["state"],item["second"],item["reward"],
+                tuple(item["post"]),
+            ))
+        shards=[]
+        for item in d["segments"]:
+            check(type(item) is dict and set(item)=={"ascii","sha256"},
+                  "PORTABLE_SHARD_FIELDS")
+            blob=item["ascii"].encode("ascii")
+            shards.append(NativeEpisodeExperience.restore(blob,item["sha256"]))
+        check(len(shards) in range(1,MAX_SHARDS+1),
+              "PORTABLE_SHARD_COUNT")
+        one=(ActionLatentSpecialist.from_data(d["one"][0],"transition"),
+             ActionLatentSpecialist.from_data(d["one"][1],"reward"))
+        temporal=(TemporalLatentSpecialist.from_data(
+                      d["temporal"][0],"transition"),
+                  TemporalLatentSpecialist.from_data(
+                      d["temporal"][1],"reward"))
+        future=tuple(FutureStateHead.restore(v) for v in d["future"])
+        offsets=tuple(tuple(v) for v in d["offsets"])
+        original=SegmentedNativeJEPA(
+            archive,base._source,tuple(shards),tuple(episodes),
+            one,temporal,future,offsets
+        )
+        check(original.total_count==d["total_count"] and
+              original.original_count==d["original_count"] and
+              original.checkpoint()==raw,
+              "PORTABLE_RAW_BYTES")
+        # Replay original actual witnessed source for independent weight
+        # provenance; this DOES NOT change the returned original weights.
+        replay=SegmentedNativeJEPA.from_archive(
+            archive,d["archive_sha256"])
+        for source_id,views,a,s,b,y,post in episodes:
+            replay=replay.observe(source_id,views,{
+                "s1":views[0][0],"x1":a,"s2":s,"x2":b,"y":y
+            },post)
+        expected=json.loads(replay.checkpoint())
+        def equivalent(x,y,path="$"):
+            check(type(x) is type(y),"PORTABLE_NUMERIC_TYPE_"+path)
+            if type(x) is dict:
+                check(set(x)==set(y),"PORTABLE_FIELD_"+path)
+                for key in sorted(x):
+                    equivalent(x[key],y[key],path+"."+key)
+            elif type(x) is list:
+                check(len(x)==len(y),"PORTABLE_LENGTH_"+path)
+                for i,(a,b) in enumerate(zip(x,y)):
+                    equivalent(a,b,path+"["+str(i)+"]")
+            elif type(x) is float:
+                check(abs(x-y)<=1e-8,
+                      "PORTABLE_TOLERANCE_"+path)
+            else:
+                check(x==y,"PORTABLE_CUSTODY_"+path)
+        equivalent(d,expected)
+        return original
+    except (TypeError,ValueError,KeyError,AttributeError,IndexError,
+            UnicodeError,OverflowError,RecursionError) as exc:
+        raise ValueError("YGG_CAP02_PORTABLE_REPLAY_REJECTED") from exc
