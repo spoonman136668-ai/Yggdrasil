@@ -1,0 +1,125 @@
+{
+  "schema": "yggdrasil.ckad40.dev-screen-evidence.v1",
+  "experiment_id": "CKAD40",
+  "decision": "ARCHIVE_COVERAGE_GAP",
+  "secondary_finding": "PHASE_LABELLED_ORACLE_NOT_USEFULLY_SUPERIOR",
+  "science_pass": false,
+  "status": "RESEARCH_DEV_NEGATIVE_RETAINED",
+  "prereg_commit": "d38ba4e7c438b0a2eb89bf08cd5f54e6ff0fe2e3",
+  "source_parent": "feef03a15ec68a8e3da073e9d78d197acf656ea8",
+  "ci_exact_source_commit": "6f358a96eb53215acc09eca02c670c925a9c34a9",
+  "ci_source_tree": "NOT_CAPTURED",
+  "source_blobs": {
+    "research/contrib/chatgpt/CKAD-40/prereg.json": "d41928b6fc3853ae7d8ad80d295406c6fcd0d142",
+    "research/contrib/chatgpt/CKAD-40/diagnostic.py": "52280fd7450ee5181484297a844ba79576b89c2c",
+    "research/contrib/chatgpt/CKAD-40/test_ckad40.py": "399c22f3f460364b3667e6b9121a848291a4fcca",
+    "research/contrib/chatgpt/CKAD-40/screen_dev.py": "eaaa2a0eb2cc2f1d1c49ba41f4022321618e9824",
+    ".github/workflows/ckad40-native-archive-identifiability.yml": "ac5546bb22acc1053b994f7d5104769fec23087b"
+  },
+  "github_actions": {
+    "run_id": 44439944216,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44439944216",
+    "jobs": [
+      {
+        "job_id": 135277985470,
+        "platform": "ubuntu-latest",
+        "conclusion": "success",
+        "unit_tests": 7,
+        "decision": "ARCHIVE_COVERAGE_GAP",
+        "observed_episode_digest_integrity": true
+      },
+      {
+        "job_id": 135277985264,
+        "platform": "windows-2022",
+        "conclusion": "success",
+        "unit_tests": 7,
+        "decision": "ARCHIVE_COVERAGE_GAP",
+        "observed_episode_digest_integrity": true
+      }
+    ],
+    "source_sha_matched": true,
+    "metrics_matched_excluding_elapsed_time": true,
+    "scope": "Exact-source preflight, DEV-only tests, 2 fresh DEV seeds, checkpoint/source checks. No final full repo regression or unfamiliar held first-use."
+  },
+  "dev_seeds_consumed": [
+    40811,
+    40812
+  ],
+  "future_unconsumed": [
+    41811,
+    41812,
+    42811,
+    42812,
+    42813
+  ],
+  "authentic_synthetic_episodes": 920,
+  "authentic_synthetic_observed_consequences": 1840,
+  "read_only_native_checkpoint_checks": 197,
+  "world_count": 4,
+  "metrics": [
+    {
+      "seed": 40811,
+      "worlds": 2,
+      "episodes": 460,
+      "late_episodes": 170,
+      "archive_eligible_episodes": 80,
+      "archive_coverage": 0.47058823529411764,
+      "late_B_eligible": 0,
+      "late_B_total": 90,
+      "late_return_A_eligible": 80,
+      "late_return_A_total": 80,
+      "conditioned_identification_correct": 80,
+      "conditioned_identification_total": 80,
+      "conditioned_identification_accuracy": 1,
+      "native_brier": 0.1442498687804651,
+      "evaluator_phase_oracle_brier": 0.13625704061802602,
+      "strongest_fitted_conventional_arm": "beta_full",
+      "strongest_fitted_conventional_brier": 0.150933966481807,
+      "oracle_gain_vs_native": 0.007992828162439097,
+      "oracle_gain_vs_conventional": 0.014676925863780999,
+      "checkpoint_integrity": true,
+      "archive_read_only": true
+    },
+    {
+      "seed": 40812,
+      "worlds": 2,
+      "episodes": 460,
+      "late_episodes": 164,
+      "archive_eligible_episodes": 117,
+      "archive_coverage": 0.7134146341463414,
+      "late_B_eligible": 37,
+      "late_B_total": 84,
+      "late_return_A_eligible": 80,
+      "late_return_A_total": 80,
+      "conditioned_identification_correct": 117,
+      "conditioned_identification_total": 117,
+      "conditioned_identification_accuracy": 1,
+      "native_brier": 0.13884399715251394,
+      "evaluator_phase_oracle_brier": 0.16227715553232072,
+      "strongest_fitted_conventional_arm": "beta_window24",
+      "strongest_fitted_conventional_brier": 0.14295617541497285,
+      "oracle_gain_vs_native": -0.02343315837980678,
+      "oracle_gain_vs_conventional": -0.01932098011734787,
+      "checkpoint_integrity": true,
+      "archive_read_only": true
+    }
+  ],
+  "frozen_thresholds": {
+    "min_covered_late_episodes_each_seed": 64,
+    "min_covered_fraction_each_seed": 0.5,
+    "min_conditional_accuracy_each_seed": 0.65,
+    "min_oracle_gain_vs_native_each_seed": 0.015,
+    "min_oracle_gain_vs_best_conventional_each_seed": 0.015
+  },
+  "decision_rationale": "DEV seed 40811 has 80/170 (47.06%) class-pure A+B archived source coverage across late B/return, below frozen 50% requirement; 0/90 of late B episodes have A+B archived options under the 16-event disjointness constraint. In seed 40812, oracle phase-selected archival forecasts worsen vs native stream by 0.02343 Brier. Even the privileged oracle ceiling does not establish a useful native archive.",
+  "scientific_limits": [
+    "Regime class grouping (A/B) and chosen oracle source are evaluator-only labels. Apparent 100% conditional discrimination is not a deployable unsupervised recognition result and holds only on covered events.",
+    "Source models finishing within the previous 16-event evidence window are excluded to prevent in-sample evidence leakage.",
+    "Only two DEV seeds from reused binary synthetic families; not independent unfamiliar-world transfer, real-world knowledge or general intelligence.",
+    "Source code's field source_model_count counts source episodes per seed, NOT distinct archive models; do not interpret that mislabeled field as trained-model cardinality.",
+    "Runtime wall time differs by OS; only deterministically scored metrics and checkpoint/source digests are compared.",
+    "Negative DEV gate means full final regression, pilot and primary first-use intentionally STOPPED, not passed.",
+    "Separate proxy-fanout workflow failures are infrastructure/orchestration context and are not evidence of this diagnostic's native scientific effect."
+  ],
+  "next_executable_research": "New preregistered experiment should test whether native archive is forming distinct rule-relevant blocks before retrieval; use developmental intervention diversity and source-block formation metrics under matched data/actions and stop early. No CKAD40 seed tuning or promotion."
+}
