@@ -206,7 +206,12 @@ def audit_candidate(candidate, prereg=None):
         "declared_mechanical_design_suitable": True,
         "declared_changed_families": len(kinds["TRANSFER_CHANGED"]),
         "declared_unchanged_controls": len(kinds["TRANSFER_UNCHANGED"]),
+        # Oracle/source-law rank reversal is not evidence a learner can see
+        # the relevant family before acting.  See action_rank_blindness.py.
         "both_actions_need_conditional_selection": True,
+        "action_information_rank_scope": "PRIVILEGED_EVALUATOR_ONLY",
+        "public_predecision_family_identifiability_verified": False,
+        "matched_source_blind_policy_advantage_established": False,
         "declared_action_budget_sum_per_arm_not_approval": budget,
         "declared_control_arms": len(arms),
         "declared_total_action_budget_all_arms_not_approval": total_budget,
