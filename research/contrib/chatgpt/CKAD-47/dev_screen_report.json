@@ -1,0 +1,1219 @@
+{
+  "schema": "yggdrasil.ckad47.frozen-dev-evidence.v1",
+  "experiment_id": "CKAD47",
+  "engineering_qualification": "DEV_SCOPE_PASS",
+  "scientific_qualification": "DEV_NO_GO",
+  "scientific_pass": false,
+  "parent": "754e7fd1daf4e99f4949fa649eccd26863622a7b",
+  "preregistration_before_all_code": "b0d71e48848a92d10ed78019d40dffb7af0f505c",
+  "scored_original_source": "dc99602f8f9665e7e2bbf40d0ba5422869c1b309",
+  "scored_original_tree": "71daa9ad4b73767ceecbec84b3015e72961edca1",
+  "scored_source_blobs": {
+    "research/contrib/chatgpt/CKAD-47/prereg.json": "e63d25be88531a159f86086c266ea46e3f973b41",
+    "research/contrib/chatgpt/CKAD-47/campaign.py": "33eaa2ae0e0d50aa8f7cc1884d2b9eb17d7145e2",
+    "research/contrib/chatgpt/CKAD-47/test_ckad47.py": "4bf53bbc9a33f6b171923271a255fad89168ffbe",
+    "research/contrib/chatgpt/CKAD-47/screen_dev.py": "1aec36440b6afa4cb7d263a321a052f6775456bf",
+    "research/contrib/chatgpt/CKAD-47/README.md": "f302ce32a0847f3a9b9307eb4394cfad74bc92fd",
+    ".github/workflows/ckad47-native-fourway-effects.yml": "4f5a33d21c9142559960798664ceff29ea149d71"
+  },
+  "ci": {
+    "run_id": 44507998278,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44507998278",
+    "head_sha": "dc99602f8f9665e7e2bbf40d0ba5422869c1b309",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "os": "ubuntu-latest",
+        "job_id": 135504530509,
+        "fixture_unit_tests_passed": 8,
+        "frozen_dev_decision": "DEV_NO_GO"
+      },
+      {
+        "os": "windows-2022",
+        "job_id": 135504529955,
+        "fixture_unit_tests_passed": 8,
+        "frozen_dev_decision": "DEV_NO_GO"
+      }
+    ],
+    "exact_all_phase_expected_brier_parity": true,
+    "native_exact_tabular_checkpoint_sha_parity": true,
+    "all_original_source_ledger_hash_parity": true,
+    "scientific_approval": false,
+    "full_final_repo_regression": false,
+    "other_unrelated_proxy_fanout_failed": true
+  },
+  "cohorts": {
+    "dev_seeds_consumed": [
+      47111,
+      47112
+    ],
+    "pilot_seeds_reserved_unconsumed": [
+      47211,
+      47212
+    ],
+    "primary_seeds_reserved_unconsumed": [
+      47311,
+      47312,
+      47313
+    ],
+    "world_variants": 2,
+    "arms": 4,
+    "real_public_episode_count": 960,
+    "witnessed_genuine_state_transition_plus_reward_count": 2880,
+    "exhaustive_grid_records": 144,
+    "common_grid_queries_per_record": 64
+  },
+  "hypothesis_and_controls": {
+    "candidate": "Direct four-way learned action-to-XOR-delta counts with four-state terminal consequence predictions; two-action composition from learned effect and reward distributions. Independent action effects, not a binary alias.",
+    "strongest_control": "Fully trained exact posterior over all 24 possible one-to-one action->XOR-delta hidden permutations, correct source transition noise .9 and shared latent mapping for both intervention actions; same witnessed public transitions and fitted terminal-state Beta reward.",
+    "conventional_control": "Fully trained unrestricted state/action Dirichlet(.25) categorical next-state transitions, 16 state/action conditional cells, plus same fitted reward Beta.",
+    "sham": "Uniform terminal .5 reward; evaluation-only negative.",
+    "structural_hypothesis": "Within XOR group with 4 distinct action effects. Does not generalize to arbitrary state-dependent mechanics.",
+    "nonxor_negative_fixture": "Explicit true state-dependent action effect lies outside XOR grammar; eight fixture tests include a case in which tabular per-state control must outperform transport invariant by >.30 on witnessed rows."
+  },
+  "frozen_go": {
+    "both_seed_pass": true,
+    "max_pooled_expected_brier": 0.17,
+    "min_gain_over_fully_fitted_tabular": 0.01,
+    "max_worsening_over_exact_joint_bayesian": 0.006,
+    "max_early_novel_worsening_over_exact": 0.015,
+    "max_cold_return_worsening_over_exact": 0.008,
+    "source_cold_exact_and_four_action_coverage": true,
+    "decision": "Any fail -> DEV_NO_GO. No post-result tuning or reuse, no pilots or primaries."
+  },
+  "measurements": [
+    {
+      "seed": 47111,
+      "real_episodes": 480,
+      "actual_public_outcomes": 1440,
+      "exhaustive_grid_records": 72,
+      "exhaustive_grid_inputs_per_record": 64,
+      "cpu_seconds_ubuntu": 0.3008,
+      "wall_seconds_ubuntu": 0.30082,
+      "cpu_seconds_windows": 0.1875,
+      "wall_seconds_windows": 0.17068,
+      "pooled_late_and_return_brier": {
+        "exact_bijective_bayes": 0.15560702771863386,
+        "fully_fitted_tabular": 0.1567675533501891,
+        "native_fourway_effect": 0.15497209815925944,
+        "uniform_negative": 0.25
+      },
+      "native_fourway_gain_vs_fully_fitted_tabular": 0.0017954551909296623,
+      "native_fourway_gain_vs_exact_bayes": 0.0006349295593744142,
+      "novel_early_brier": {
+        "exact_bijective_bayes": 0.1624311960906912,
+        "fully_fitted_tabular": 0.1899065528411808,
+        "native_fourway_effect": 0.18519207538665944,
+        "uniform_negative": 0.25
+      },
+      "novel_late_brier": {
+        "exact_bijective_bayes": 0.1557133150440643,
+        "fully_fitted_tabular": 0.15741390201301772,
+        "native_fourway_effect": 0.15517327909877535,
+        "uniform_negative": 0.25
+      },
+      "cold_return_brier": {
+        "exact_bijective_bayes": 0.15550074039320344,
+        "fully_fitted_tabular": 0.1561212046873605,
+        "native_fourway_effect": 0.15477091721974354,
+        "uniform_negative": 0.25
+      },
+      "frozen_checks": {
+        "pooled_candidate_brier_at_most_017": true,
+        "candidate_gain_over_fullfit_tabular_at_least_001": false,
+        "candidate_worse_than_exact_no_more_than_0006": true,
+        "early_novel_worse_than_exact_no_more_than_0015": false,
+        "old_return_worse_than_exact_no_more_than_0008": true,
+        "all_prior_source_and_cold_exact": true,
+        "both_fourway_novel_actions_observed": true
+      },
+      "all_frozen_checks_pass": false,
+      "model_checkpoint_receipts": [
+        {
+          "action_counts": [
+            141,
+            147,
+            85,
+            107
+          ],
+          "checkpoint_bytes": 65780,
+          "checkpoint_sha256": "9189dfd9ba1ec1525dbcda5c3b7170825c32db970baa0b3da1e3ec8ed770ad46",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+          "mode": "native_fourway_effect",
+          "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 0
+        },
+        {
+          "action_counts": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "checkpoint_bytes": 65462,
+          "checkpoint_sha256": "d663005c79602829dda06aa0285d687eab9aa161ac9ca31d41c7bf6feb1e9c27",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+          "mode": "exact_bijective_bayes",
+          "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 0
+        },
+        {
+          "action_counts": [
+            141,
+            147,
+            85,
+            107
+          ],
+          "checkpoint_bytes": 65789,
+          "checkpoint_sha256": "8cc3f748a88e4aae535bfcbe745e1944801de70ba2cc1b3298e6081106fd9a52",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+          "mode": "fully_fitted_tabular",
+          "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 0
+        },
+        {
+          "action_counts": [
+            140,
+            148,
+            92,
+            100
+          ],
+          "checkpoint_bytes": 65782,
+          "checkpoint_sha256": "7f806e1286df5a636d55e2d5b3fba761d52cb2725627c5812afc4f8b80386840",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+          "mode": "native_fourway_effect",
+          "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 1
+        },
+        {
+          "action_counts": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "checkpoint_bytes": 65451,
+          "checkpoint_sha256": "aaa8edc303c485f624c1a3364c331e317cbaef618c91cf16b291a828ffb8e955",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+          "mode": "exact_bijective_bayes",
+          "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 1
+        },
+        {
+          "action_counts": [
+            140,
+            148,
+            92,
+            100
+          ],
+          "checkpoint_bytes": 65791,
+          "checkpoint_sha256": "cbcd1d013e6749a0f7dc1cbfd8d5d6e4255991db91ac3e91c8195bcded2a99d3",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+          "mode": "fully_fitted_tabular",
+          "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 1
+        }
+      ]
+    },
+    {
+      "seed": 47112,
+      "real_episodes": 480,
+      "actual_public_outcomes": 1440,
+      "exhaustive_grid_records": 72,
+      "exhaustive_grid_inputs_per_record": 64,
+      "cpu_seconds_ubuntu": 0.29981,
+      "wall_seconds_ubuntu": 0.29992,
+      "cpu_seconds_windows": 0.1875,
+      "wall_seconds_windows": 0.19047,
+      "pooled_late_and_return_brier": {
+        "exact_bijective_bayes": 0.15403276809302685,
+        "fully_fitted_tabular": 0.15632701332824733,
+        "native_fourway_effect": 0.1544788336316726,
+        "uniform_negative": 0.25
+      },
+      "native_fourway_gain_vs_fully_fitted_tabular": 0.00184817969657472,
+      "native_fourway_gain_vs_exact_bayes": -0.00044606553864576237,
+      "novel_early_brier": {
+        "exact_bijective_bayes": 0.1697583459037069,
+        "fully_fitted_tabular": 0.18852683976282825,
+        "native_fourway_effect": 0.18343328086664182,
+        "uniform_negative": 0.25
+      },
+      "novel_late_brier": {
+        "exact_bijective_bayes": 0.1544897191121701,
+        "fully_fitted_tabular": 0.15787247575862345,
+        "native_fourway_effect": 0.15538532058911822,
+        "uniform_negative": 0.25
+      },
+      "cold_return_brier": {
+        "exact_bijective_bayes": 0.15357581707388357,
+        "fully_fitted_tabular": 0.1547815508978712,
+        "native_fourway_effect": 0.15357234667422698,
+        "uniform_negative": 0.25
+      },
+      "frozen_checks": {
+        "pooled_candidate_brier_at_most_017": true,
+        "candidate_gain_over_fullfit_tabular_at_least_001": false,
+        "candidate_worse_than_exact_no_more_than_0006": true,
+        "early_novel_worse_than_exact_no_more_than_0015": true,
+        "old_return_worse_than_exact_no_more_than_0008": true,
+        "all_prior_source_and_cold_exact": true,
+        "both_fourway_novel_actions_observed": true
+      },
+      "all_frozen_checks_pass": false,
+      "model_checkpoint_receipts": [
+        {
+          "action_counts": [
+            144,
+            144,
+            105,
+            87
+          ],
+          "checkpoint_bytes": 65781,
+          "checkpoint_sha256": "fc82c7bacef3208b68308cac069935365df2679792d0335b5abf0855c4169e52",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+          "mode": "native_fourway_effect",
+          "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 0
+        },
+        {
+          "action_counts": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "checkpoint_bytes": 65430,
+          "checkpoint_sha256": "7ccee03c55a8ed41da14f6155e7f29f66d1ae09b9dcb9ea21ed5327c1fd4386f",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+          "mode": "exact_bijective_bayes",
+          "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 0
+        },
+        {
+          "action_counts": [
+            144,
+            144,
+            105,
+            87
+          ],
+          "checkpoint_bytes": 65790,
+          "checkpoint_sha256": "eb74e33340c9186dd721bd310ece09520926910d9e995ca66d065b3c20c95fb7",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+          "mode": "fully_fitted_tabular",
+          "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 0
+        },
+        {
+          "action_counts": [
+            144,
+            144,
+            102,
+            90
+          ],
+          "checkpoint_bytes": 65780,
+          "checkpoint_sha256": "239fe1adbb7422cdc23e59f2796188c33f6d43df26906a81fd86c6180427d92a",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+          "mode": "native_fourway_effect",
+          "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 1
+        },
+        {
+          "action_counts": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "checkpoint_bytes": 65461,
+          "checkpoint_sha256": "243f2d9c572fae484f55b0c0ec8e204c948f0d2b5888d8cb6ebcb3fe16207757",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+          "mode": "exact_bijective_bayes",
+          "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 1
+        },
+        {
+          "action_counts": [
+            144,
+            144,
+            102,
+            90
+          ],
+          "checkpoint_bytes": 65789,
+          "checkpoint_sha256": "21db36c60a676f42e85c4d156fa0295d2b711b6ae58b5a0b7d1fbd286738c5b4",
+          "cold_exact": true,
+          "conflict_atomic": true,
+          "duplicate_idempotent": true,
+          "first96_unchanged": true,
+          "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+          "mode": "fully_fitted_tabular",
+          "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+          "same_original_first96_as_at_source_time": true,
+          "source_count": 240,
+          "world": 1
+        }
+      ]
+    }
+  ],
+  "original_ubuntu_results": {
+    "cases": [
+      {
+        "cpu_seconds": 0.3008,
+        "groups": {
+          "cold_return": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15550074039320344,
+              "fully_fitted_tabular": 0.1561212046873605,
+              "native_fourway_effect": 0.15477091721974354,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_early": {
+            "common_grid_count": 16,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1624311960906912,
+              "fully_fitted_tabular": 0.1899065528411808,
+              "native_fourway_effect": 0.18519207538665944,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_late": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1557133150440643,
+              "fully_fitted_tabular": 0.15741390201301772,
+              "native_fourway_effect": 0.15517327909877535,
+              "uniform_negative": 0.25
+            }
+          },
+          "pooled_late_and_return": {
+            "common_grid_count": 48,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15560702771863386,
+              "fully_fitted_tabular": 0.1567675533501891,
+              "native_fourway_effect": 0.15497209815925944,
+              "uniform_negative": 0.25
+            }
+          }
+        },
+        "model_receipts": [
+          {
+            "action_counts": [
+              141,
+              147,
+              85,
+              107
+            ],
+            "checkpoint_bytes": 65780,
+            "checkpoint_sha256": "9189dfd9ba1ec1525dbcda5c3b7170825c32db970baa0b3da1e3ec8ed770ad46",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65462,
+            "checkpoint_sha256": "d663005c79602829dda06aa0285d687eab9aa161ac9ca31d41c7bf6feb1e9c27",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              141,
+              147,
+              85,
+              107
+            ],
+            "checkpoint_bytes": 65789,
+            "checkpoint_sha256": "8cc3f748a88e4aae535bfcbe745e1944801de70ba2cc1b3298e6081106fd9a52",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              140,
+              148,
+              92,
+              100
+            ],
+            "checkpoint_bytes": 65782,
+            "checkpoint_sha256": "7f806e1286df5a636d55e2d5b3fba761d52cb2725627c5812afc4f8b80386840",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65451,
+            "checkpoint_sha256": "aaa8edc303c485f624c1a3364c331e317cbaef618c91cf16b291a828ffb8e955",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              140,
+              148,
+              92,
+              100
+            ],
+            "checkpoint_bytes": 65791,
+            "checkpoint_sha256": "cbcd1d013e6749a0f7dc1cbfd8d5d6e4255991db91ac3e91c8195bcded2a99d3",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          }
+        ],
+        "probe_inputs_per_record": 64,
+        "probe_records": 72,
+        "real_observed_consequences": 1440,
+        "real_source_episodes": 480,
+        "seed": 47111,
+        "wall_seconds": 0.30082
+      },
+      {
+        "cpu_seconds": 0.29981,
+        "groups": {
+          "cold_return": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15357581707388357,
+              "fully_fitted_tabular": 0.1547815508978712,
+              "native_fourway_effect": 0.15357234667422698,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_early": {
+            "common_grid_count": 16,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1697583459037069,
+              "fully_fitted_tabular": 0.18852683976282825,
+              "native_fourway_effect": 0.18343328086664182,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_late": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1544897191121701,
+              "fully_fitted_tabular": 0.15787247575862345,
+              "native_fourway_effect": 0.15538532058911822,
+              "uniform_negative": 0.25
+            }
+          },
+          "pooled_late_and_return": {
+            "common_grid_count": 48,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15403276809302685,
+              "fully_fitted_tabular": 0.15632701332824733,
+              "native_fourway_effect": 0.1544788336316726,
+              "uniform_negative": 0.25
+            }
+          }
+        },
+        "model_receipts": [
+          {
+            "action_counts": [
+              144,
+              144,
+              105,
+              87
+            ],
+            "checkpoint_bytes": 65781,
+            "checkpoint_sha256": "fc82c7bacef3208b68308cac069935365df2679792d0335b5abf0855c4169e52",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65430,
+            "checkpoint_sha256": "7ccee03c55a8ed41da14f6155e7f29f66d1ae09b9dcb9ea21ed5327c1fd4386f",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              144,
+              144,
+              105,
+              87
+            ],
+            "checkpoint_bytes": 65790,
+            "checkpoint_sha256": "eb74e33340c9186dd721bd310ece09520926910d9e995ca66d065b3c20c95fb7",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              144,
+              144,
+              102,
+              90
+            ],
+            "checkpoint_bytes": 65780,
+            "checkpoint_sha256": "239fe1adbb7422cdc23e59f2796188c33f6d43df26906a81fd86c6180427d92a",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65461,
+            "checkpoint_sha256": "243f2d9c572fae484f55b0c0ec8e204c948f0d2b5888d8cb6ebcb3fe16207757",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              144,
+              144,
+              102,
+              90
+            ],
+            "checkpoint_bytes": 65789,
+            "checkpoint_sha256": "21db36c60a676f42e85c4d156fa0295d2b711b6ae58b5a0b7d1fbd286738c5b4",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          }
+        ],
+        "probe_inputs_per_record": 64,
+        "probe_records": 72,
+        "real_observed_consequences": 1440,
+        "real_source_episodes": 480,
+        "seed": 47112,
+        "wall_seconds": 0.29992
+      }
+    ],
+    "decision": "DEV_NO_GO",
+    "dev_seeds_consumed": [
+      47111,
+      47112
+    ],
+    "frozen_thresholds": {
+      "max_cold_return_worse_than_exact": 0.008,
+      "max_early_novel_worse_than_exact": 0.015,
+      "max_gap_to_exact_24_permutation_Bayes": 0.006,
+      "max_pooled_late_and_return_Brier": 0.17,
+      "min_gain_against_fullfit_tabular": 0.01,
+      "source_custody_and_2OS_checkpoint_hash_parity": true
+    },
+    "limits": "Development-only hand-specified XOR-action causal family, with newly independent action deltas but prior known 4-state XOR group. Not proof of open-world new physics, compositional general intelligence, production Yggdrasil acceptance, or efficiency. Extra exact Bayesian compute unmatched. No held first use, no full final repo regression, no merge.",
+    "prereg_commit": "b0d71e48848a92d10ed78019d40dffb7af0f505c",
+    "research_parent": "754e7fd1daf4e99f4949fa649eccd26863622a7b",
+    "reserved_pilots_untouched": [
+      47211,
+      47212
+    ],
+    "reserved_primaries_untouched": [
+      47311,
+      47312,
+      47313
+    ],
+    "schema": "yggdrasil.ckad47.dev-screen.v1",
+    "scientific_pass": false,
+    "source_specs": {
+      "expected_rewards_are_never_source_training": true,
+      "four_action_identifiers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "four_state_identifiers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "initial_old_action_episodes": 96,
+      "novel_primitive_boundary": 96,
+      "return_to_old_action_boundary": 192,
+      "total_episode_count_per_world": 240,
+      "true_hidden_permutation_never_given_to_models": true
+    }
+  },
+  "original_windows_results": {
+    "cases": [
+      {
+        "cpu_seconds": 0.1875,
+        "groups": {
+          "cold_return": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15550074039320344,
+              "fully_fitted_tabular": 0.1561212046873605,
+              "native_fourway_effect": 0.15477091721974354,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_early": {
+            "common_grid_count": 16,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1624311960906912,
+              "fully_fitted_tabular": 0.1899065528411808,
+              "native_fourway_effect": 0.18519207538665944,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_late": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1557133150440643,
+              "fully_fitted_tabular": 0.15741390201301772,
+              "native_fourway_effect": 0.15517327909877535,
+              "uniform_negative": 0.25
+            }
+          },
+          "pooled_late_and_return": {
+            "common_grid_count": 48,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15560702771863386,
+              "fully_fitted_tabular": 0.1567675533501891,
+              "native_fourway_effect": 0.15497209815925944,
+              "uniform_negative": 0.25
+            }
+          }
+        },
+        "model_receipts": [
+          {
+            "action_counts": [
+              141,
+              147,
+              85,
+              107
+            ],
+            "checkpoint_bytes": 65780,
+            "checkpoint_sha256": "9189dfd9ba1ec1525dbcda5c3b7170825c32db970baa0b3da1e3ec8ed770ad46",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65462,
+            "checkpoint_sha256": "d663005c79602829dda06aa0285d687eab9aa161ac9ca31d41c7bf6feb1e9c27",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              141,
+              147,
+              85,
+              107
+            ],
+            "checkpoint_bytes": 65789,
+            "checkpoint_sha256": "8cc3f748a88e4aae535bfcbe745e1944801de70ba2cc1b3298e6081106fd9a52",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "935f21188cd7357248105ff276297997c7a334eb2364c8f5d4c32e8375330fac",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "2c8d56d5d2974e0830e9d9ab02111591214fee91af7eeab7e24ac7f73e814519",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              140,
+              148,
+              92,
+              100
+            ],
+            "checkpoint_bytes": 65782,
+            "checkpoint_sha256": "7f806e1286df5a636d55e2d5b3fba761d52cb2725627c5812afc4f8b80386840",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65451,
+            "checkpoint_sha256": "aaa8edc303c485f624c1a3364c331e317cbaef618c91cf16b291a828ffb8e955",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              140,
+              148,
+              92,
+              100
+            ],
+            "checkpoint_bytes": 65791,
+            "checkpoint_sha256": "cbcd1d013e6749a0f7dc1cbfd8d5d6e4255991db91ac3e91c8195bcded2a99d3",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4ef87bee3707b51a5d9c46729d6d17ff0f6fca9d9eb3484628e6bd360179148c",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "d939bb1b6f654f46c8e584424b2ce399b46d750542448f29606775328706a210",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          }
+        ],
+        "probe_inputs_per_record": 64,
+        "probe_records": 72,
+        "real_observed_consequences": 1440,
+        "real_source_episodes": 480,
+        "seed": 47111,
+        "wall_seconds": 0.17068
+      },
+      {
+        "cpu_seconds": 0.1875,
+        "groups": {
+          "cold_return": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15357581707388357,
+              "fully_fitted_tabular": 0.1547815508978712,
+              "native_fourway_effect": 0.15357234667422698,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_early": {
+            "common_grid_count": 16,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1697583459037069,
+              "fully_fitted_tabular": 0.18852683976282825,
+              "native_fourway_effect": 0.18343328086664182,
+              "uniform_negative": 0.25
+            }
+          },
+          "novel_late": {
+            "common_grid_count": 24,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.1544897191121701,
+              "fully_fitted_tabular": 0.15787247575862345,
+              "native_fourway_effect": 0.15538532058911822,
+              "uniform_negative": 0.25
+            }
+          },
+          "pooled_late_and_return": {
+            "common_grid_count": 48,
+            "expected_brier": {
+              "exact_bijective_bayes": 0.15403276809302685,
+              "fully_fitted_tabular": 0.15632701332824733,
+              "native_fourway_effect": 0.1544788336316726,
+              "uniform_negative": 0.25
+            }
+          }
+        },
+        "model_receipts": [
+          {
+            "action_counts": [
+              144,
+              144,
+              105,
+              87
+            ],
+            "checkpoint_bytes": 65781,
+            "checkpoint_sha256": "fc82c7bacef3208b68308cac069935365df2679792d0335b5abf0855c4169e52",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65430,
+            "checkpoint_sha256": "7ccee03c55a8ed41da14f6155e7f29f66d1ae09b9dcb9ea21ed5327c1fd4386f",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              144,
+              144,
+              105,
+              87
+            ],
+            "checkpoint_bytes": 65790,
+            "checkpoint_sha256": "eb74e33340c9186dd721bd310ece09520926910d9e995ca66d065b3c20c95fb7",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "658a2ce57d68bd30351b3ad977cb3a77eac760d3d210581a7d9698fdcb36e19c",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "f8a2fa57eb63480a752f3fe2f8dfc911ff1bd7d6110b136b6f9aec23c1687c34",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 0
+          },
+          {
+            "action_counts": [
+              144,
+              144,
+              102,
+              90
+            ],
+            "checkpoint_bytes": 65780,
+            "checkpoint_sha256": "239fe1adbb7422cdc23e59f2796188c33f6d43df26906a81fd86c6180427d92a",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+            "mode": "native_fourway_effect",
+            "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "checkpoint_bytes": 65461,
+            "checkpoint_sha256": "243f2d9c572fae484f55b0c0ec8e204c948f0d2b5888d8cb6ebcb3fe16207757",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+            "mode": "exact_bijective_bayes",
+            "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          },
+          {
+            "action_counts": [
+              144,
+              144,
+              102,
+              90
+            ],
+            "checkpoint_bytes": 65789,
+            "checkpoint_sha256": "21db36c60a676f42e85c4d156fa0295d2b711b6ae58b5a0b7d1fbd286738c5b4",
+            "cold_exact": true,
+            "conflict_atomic": true,
+            "duplicate_idempotent": true,
+            "first96_unchanged": true,
+            "ledger_sha256": "4a5e05e8f5b5109e10d5229b38eeee9dde67e3478643a02f0a8f330f8e3aa762",
+            "mode": "fully_fitted_tabular",
+            "prior96_sha256": "f55022146d4d9c97eb6816e4aa0066197a47e0f8569e73ff98822a005e1abf01",
+            "same_original_first96_as_at_source_time": true,
+            "source_count": 240,
+            "world": 1
+          }
+        ],
+        "probe_inputs_per_record": 64,
+        "probe_records": 72,
+        "real_observed_consequences": 1440,
+        "real_source_episodes": 480,
+        "seed": 47112,
+        "wall_seconds": 0.19047
+      }
+    ],
+    "decision": "DEV_NO_GO",
+    "dev_seeds_consumed": [
+      47111,
+      47112
+    ],
+    "frozen_thresholds": {
+      "max_cold_return_worse_than_exact": 0.008,
+      "max_early_novel_worse_than_exact": 0.015,
+      "max_gap_to_exact_24_permutation_Bayes": 0.006,
+      "max_pooled_late_and_return_Brier": 0.17,
+      "min_gain_against_fullfit_tabular": 0.01,
+      "source_custody_and_2OS_checkpoint_hash_parity": true
+    },
+    "limits": "Development-only hand-specified XOR-action causal family, with newly independent action deltas but prior known 4-state XOR group. Not proof of open-world new physics, compositional general intelligence, production Yggdrasil acceptance, or efficiency. Extra exact Bayesian compute unmatched. No held first use, no full final repo regression, no merge.",
+    "prereg_commit": "b0d71e48848a92d10ed78019d40dffb7af0f505c",
+    "research_parent": "754e7fd1daf4e99f4949fa649eccd26863622a7b",
+    "reserved_pilots_untouched": [
+      47211,
+      47212
+    ],
+    "reserved_primaries_untouched": [
+      47311,
+      47312,
+      47313
+    ],
+    "schema": "yggdrasil.ckad47.dev-screen.v1",
+    "scientific_pass": false,
+    "source_specs": {
+      "expected_rewards_are_never_source_training": true,
+      "four_action_identifiers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "four_state_identifiers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "initial_old_action_episodes": 96,
+      "novel_primitive_boundary": 96,
+      "return_to_old_action_boundary": 192,
+      "total_episode_count_per_world": 240,
+      "true_hidden_permutation_never_given_to_models": true
+    }
+  },
+  "interpretation": {
+    "positive": "The new 4-state and 4-action tokenless research learner receives real public four-valued action transitions directly without binary alias. It learns state-transportable action effects and composes two actions, with source-persistent cold checkpoints. It beat the fully trained unrestricted tabular control by 0.00180 and 0.00185 pooled late-and-return Brier, both OS identically.",
+    "negative": "Neither seed met preregistered 0.010 margin over fully trained conventional tabular control. DEV 47111 novel early Brier 0.18519 against exact Bayes 0.16243 violates 0.015 early-worsening cap. Strong exact structural posterior remains competitive / slightly stronger in one seed. This is scientific DEV_NO_GO.",
+    "architecture_progress": "Compared with binary action aliasing in CKAD46, CKAD47 genuinely represents 4 action effects and 4 states in its own learned source model; accepted Yggdrasil public native API remains limited to binary actions, with no production integration.",
+    "measured_cost_limits": "Whole-process CPU and wall qualified in CI; exact control has 24 mapping hypotheses; no matched compute or efficiency qualification. Per-model checkpoints include full episode evidence and are about 65 KB, not bare learned parameter footprint.",
+    "fixture_scope": "Non-XOR state-dependent negative verified; new mechanism's XOR invariant is an explicit prior rather than a proof of novel physics discovery.",
+    "source_privacy": "Private mapping and outcome family were evaluator/world data only. Probe truths from 64 action-state compositions were never model training data.",
+    "scientific_policy": "Do not retune original now-consumed 47111/47112. Preserve null; original pilots and primaries untouched."
+  },
+  "limits": [
+    "Research-only standalone learner, NOT modified accepted native binary Yggdrasil source or autonomously trainable model.",
+    "Two hand-specified stochastic XOR worlds are synthetic and share known 2-bit XOR structure; no broad unfamiliar world or novel unknown physical state representation proof.",
+    "Observed 0/1 familiar interventions, 2/3 newly introduced distinct XOR effects, 0/1 cold return: action IDs new relative to prior binary API, but true action physics were within a precommitted XOR family.",
+    "No matched compute, independent held pilot/primary first-use, full repo regression, accepted integration, deployment, controller, scheduled task or paid API.",
+    "A positive structural transfer trend versus a conventional tabular source-trained control is much smaller than the preregistered scientific threshold and must not be called a scientific pass."
+  ],
+  "next": "Stop CKAD47 scientific promotion. Engineering implementation is verified in draft. Next research should compare model families that infer when XOR/state-invariance fails and can learn novel state-dependent action operators from source, with exact symbolic and trained tabular controls on genuinely disjoint causal families; no postscore tuning of 47111/47112."
+}
