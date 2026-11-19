@@ -1,0 +1,69 @@
+{
+  "kind": "Retrospective analytic feasibility bound. No new simulated actions, draws, training, or thresholds.",
+  "source_commit": "efcd3a93dd6540515a346add7fcf58677147e23e",
+  "comparison_result_commit": "9fb06ccd40dc8984cc31759e1d30eaaec8572fe0",
+  "model": "Two independent equally likely local law flips. The evaluator knows the two affected addresses and both transition probabilities at each. Each prefix is stable and the sampling schedule is fixed.",
+  "cells": [
+    {
+      "context": 0,
+      "first": 0,
+      "p_original": "5/32",
+      "p_flipped": "27/32"
+    },
+    {
+      "context": 1,
+      "first": 1,
+      "p_original": "25/32",
+      "p_flipped": "7/32"
+    }
+  ],
+  "formula": "For n trials and k ones, compute likelihoods a and b from the original and flipped Bernoulli parameters, with Binomial(n,k) multiplicity. Exact classification accuracy adds half the larger mass at each k; excess Brier adds Binomial(n,k) * a*b/(2*(a+b)) * (p_original-p_flipped)^2. Multiply the two classification accuracies for joint recovery. The two other cells supply zero information in this idealized model.",
+  "rows": [
+    {
+      "affected_probes": [
+        2,
+        2
+      ],
+      "unconditional_changed_cell_excess_brier": 0.04169493506196428,
+      "all_four_cells_excess_brier": 0.02084746753098214,
+      "exact_joint_shift_recovery": 0.6591796875
+    },
+    {
+      "affected_probes": [
+        4,
+        4
+      ],
+      "unconditional_changed_cell_excess_brier": 0.02133335863121901,
+      "all_four_cells_excess_brier": 0.010666679315609506,
+      "exact_joint_shift_recovery": 0.8198129944503307
+    },
+    {
+      "affected_probes": [
+        0,
+        8
+      ],
+      "unconditional_changed_cell_excess_brier": 0.06372472876418729,
+      "all_four_cells_excess_brier": 0.031862364382093646,
+      "exact_joint_shift_recovery": 0.4773710315930657
+    },
+    {
+      "affected_probes": [
+        3,
+        5
+      ],
+      "unconditional_changed_cell_excess_brier": 0.022578635356188967,
+      "all_four_cells_excess_brier": 0.011289317678094483,
+      "exact_joint_shift_recovery": 0.8658648198434094
+    },
+    {
+      "affected_probes": [
+        6,
+        6
+      ],
+      "unconditional_changed_cell_excess_brier": 0.01168678737718529,
+      "all_four_cells_excess_brier": 0.005843393688592645,
+      "exact_joint_shift_recovery": 0.8990836850020223
+    }
+  ],
+  "interpretation": "At the same eight-action budget, shifting from the trial's balanced schedule (2,2 informative) to privileged targeted coverage (4,4 informative) raises exact joint recovery from 65.92% to 81.98% and reduces expected excess Brier across four cells from 0.020847 to 0.010667. This justifies a fixed targeted diagnostic comparator in a fresh trial. The endpoint-control deficit in the executed experiment separately supports improving the continued forecast itself. These numbers do not identify the performance of a learned action selector."
+}
