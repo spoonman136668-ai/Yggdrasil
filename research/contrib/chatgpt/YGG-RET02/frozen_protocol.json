@@ -1,0 +1,61 @@
+{
+  "schema": "yggdrasil.ret02.native-temporal-context.source-only-engineering.v1",
+  "frozen_at": "2026-11-18",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1285,
+    "sha": "f3b906c03730f7f3efb64683d77e00ba631dd409",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "claim": "An opt-in causal-context readout that derives state only from previous witnessed action/consequence events, learns small numeric temporal readout parameters from post-reveal predictive error, and retains the sole existing cumulative native model exactly, can be constructed and replayed without reading source-hidden domains, reward oracle, protected worlds, or modifying RET01 original frozen science.",
+  "status": "ENGINEERING_HYPOTHESIS_ONLY; SCIENTIFIC_PASS_FALSE",
+  "model": {
+    "base": "unchanged existing ArchivedEvidenceReadout with original native seven-component continuation",
+    "features": "bias, four current public view bits, two public intervention bits, two most recently witnessed action/state/reward quadruplets, and archive/live forecast disagreement in first and second public outcomes; no current outcome/truth, no evaluator phase, source identity, epoch, seed, or private state",
+    "feature_count": 17,
+    "history_events": 2,
+    "learned_weights": 17,
+    "initial_archive_weight": 0.125,
+    "learning_rate": 0.12,
+    "regularization": 0.001,
+    "max_events": 64,
+    "output": "read-only temporal mixture forecast; no change to original native intervention policy; original archive/live and frozen gate remain retrievable",
+    "training": "after validated native witness admission only, one deterministic bounded Brier gradient step against the revealed public consequences, with source-id de-duplication and exact checkpoint cold replay; reward targets not read by forecast feature builder",
+    "checkpoint_cap_bytes": 3000000,
+    "no_observed_labels_before_prediction": true
+  },
+  "qualification": {
+    "mechanical": [
+      "no current-outcome/hidden-phase/identity feature leak",
+      "two prior witnessed events affect temporal features after source admission",
+      "new original native and archived checkpoints preserved",
+      "duplicate idempotence, conflicting event fails atomically",
+      "cold snapshot byte-identical with independent replay from old source",
+      "fraudulent rehashed weight/current state rejected",
+      "64-event budget and bounded weights",
+      "ablation zeroes prior history features without leaking current row"
+    ],
+    "two_platform_focused": true,
+    "exact_source_full_regression": true,
+    "strict_G29": true,
+    "negative_controls": [
+      "no_history",
+      "frozen_untrained_readout",
+      "mispaired_history_future_science_only"
+    ],
+    "scientific_use": false,
+    "science_first_use": false,
+    "protected_actions": 0,
+    "source_owner_admission_issue": 426,
+    "no_new_scheduler": true,
+    "no_controller_change": true,
+    "no_accepted_model_change": true,
+    "no_merge": true
+  },
+  "prospective_science_if_owner_admitted": {
+    "require": "new separately authenticated unfamiliar action consequence source; source-owner signed cohort and actor lease before first action",
+    "metrics": "prequential 2-outcome Brier; >=0.005 improvement against strongest of equally fitted history-aware Beta, bounded RNN, and symbolic causal learner on EACH replica; no old readout regression >0.005; cold retention, causal action/phase ablations and whole-process runtime/memory/bytes",
+    "split": "disjoint original TRAIN/VALID/HELD/TRANSFER; FIT-only hyperparameters; never reuse scored RET01 cohort",
+    "stop": "one prespecified development screen, <=2 FIT-only revisions only if signal, no HELD retuning"
+  }
+}
