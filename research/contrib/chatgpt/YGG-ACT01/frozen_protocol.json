@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.act01.native-four-action-outcome-cells.source-only.v1",
+  "date": "2026-11-19",
+  "source": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "parent_pr": 1307,
+    "parent_sha": "c3813176b5058c29b082d110dce918bd6dae1bd9",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "problem": "Existing PublicCausalCells and actual native cumulative source interface accept only binary 0/1 actions and outcomes; interpreting unfamiliar four-valued actions via binary mapping previously lost vs exact fitted Bayesian control CKAD46.",
+  "hypothesis": "A backward-compatible v2 native-cell memory can preserve every original PYC1 binary counter and its exact immutable checkpoint while admitting native (not token-coded) four-valued public action/outcome identities directly, without claiming an inferred shared mechanism, privileged grounding, or external action execution.",
+  "source_only_engineering": true,
+  "protected_source_owner_issue": 426,
+  "first_use_allowed": false,
+  "model_scope": "Opt-in native cell extension in same original PublicCausalCells module, not a new source actor, not replacing original Yggdrasil NativeEpisodeExperience, no modification of RET05 or accepted main.",
+  "representation": {
+    "slots": "7 active +9 retained, unchanged original addressing",
+    "actions": "int 0..3, separate witnessed action identities, no binary oracle relabeling",
+    "outcomes": "int 0..3; no action language tokens",
+    "counts": "16 addresses *4 actions*4 outcome categories*uint16 count = 512 bytes saturated at 65535",
+    "immutable_binary_origin": "exact 164-byte PYC1 snapshot embedded on migration",
+    "new_witnesses": "source_id = 64 lowercase hex digest identity, 256 event max; idempotent exact duplicate, same-id conflicting public row rejected",
+    "snapshot": "version YAC2 + embedded original PYC1 or zero sentinel + uint16 witnessed count + dense counts + append-only 36-byte source ledger + SHA256; byte-exact cold replays from legacy PYC1 plus each append event"
+  },
+  "control": "Conventional Dirichlet(1) 4-class conditional distribution for observed arms, rational scored counts for choose; no novel intelligence or advantage claim.",
+  "guards": [
+    "invalid bits/booleans, action/outcome 4, addresses, source ID rejected before mutation",
+    "no source reuse/conflict, source budget hard",
+    "checkpoint reordered tamper despite rehash fails only if ledger/count mismatch; fully forged consistent source history still cannot be source-owner authenticated",
+    "original PYC1 bytes and source-count prefix unchanged after migration",
+    "cold old-rule access after new action observations with non-overlapping active/retained address",
+    "no hidden phase labels, simulator, owner actor or retained source replay"
+  ],
+  "tests": [
+    "native four-valued actions/outcomes learned and chosen from actual witnessed public events",
+    "migrated legacy 164-byte checkpoint and binary original count preservation",
+    "exact cold restoration and same subsequent native memory",
+    "native action/outcome no forced binary mapping",
+    "source IDs idempotent/conflict/append-only and max 256",
+    "checksum, rehashed reordered/corrupted count, altered legacy rejected",
+    "abstain unobserved and ties",
+    "original public 2-action cells byte/timing/regression identical"
+  ],
+  "qualification": {
+    "focused_linux_windows": true,
+    "exact_final_full_linux_windows": true,
+    "strict_G29": true,
+    "same_parent_native_source_sha": true,
+    "source_only_mechanical_tests": true,
+    "scientific_pass": false
+  },
+  "science_future": {
+    "preregister_new_owner_signed_source": true,
+    "strong_controls": "fully fitted multicategorical Dirichlet/Bayesian, symbolic, recurrent plus single-action and binary-projected negative, matched same action/observation/compute",
+    "requirements": "unfamiliar physical mechanics, full cross-world cold retention/interference, action identity transfer and whole-process resource cost, source-owner first use approval"
+  },
+  "stop": "No source-first-use, science, autonomous controller, scheduler, paid API, merge, deployment, model promotion."
+}
