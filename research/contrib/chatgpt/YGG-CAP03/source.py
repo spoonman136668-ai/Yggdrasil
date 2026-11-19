@@ -35,13 +35,13 @@ def fork(family,world,latent,a,b,shift,noise):
     u,v,w=world
     ae=a^shift
     if family==0:
-        nv=u^(ae&v)^(b&w)^(latent&u)^noise
+        nv=u^(ae&v)^(w&latent)^(latent&u)^noise
         y=nv^(ae&w)^b^(latent&v)
         nu=v^(ae&u)^(latent&b)
         nw=w^(ae&latent)^(b&u)
         next_latent=latent^(a&w)^(b&v)
     else:
-        nv=w^(ae&u)^b^(latent&v)^noise
+        nv=w^(ae&u)^(latent&v)^noise
         y=(nv&ae)^u^b^(latent&w)
         nu=u^(b&v)^(ae&latent)
         nw=v^(ae&w)^(b&u)
