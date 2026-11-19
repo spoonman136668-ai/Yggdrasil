@@ -23,7 +23,7 @@ from yggdrasil.native_evidence_recall import EvidenceRecall
 HERE=Path(__file__).resolve().parent
 PRIOR=HERE.parent/"YGG-CAP01"/"original"/"linux"
 PREREG="99ec70e48d09df724a32fa0384c3aa5ef18c0b2e"
-SOURCE_BLOB="SET_SOURCE_BLOB"
+SOURCE_BLOB="881df9ae85f3737a3ce2c8a83cd934ec0bde5cde"
 PARENT_SHA="3770e660bc8b908218e6fe82e176bd4bf91158d9"
 PINS={
  14071:(99721,1054,"f4568f284605556f970d7f2cc4733577f09de244",
@@ -121,7 +121,7 @@ def run_seed(old_seed,source):
             # Negative: evidence is stored on a deliberately WRONG public
             # context using the complement of the first public view bit.
             wrong_view=(1-view[0],view[1])
-            wrong=sham.predict(stage,wrong_view,a,pa,pn,state,second)
+            wrong=sham.predict(stage,view,a,pa,pn,state,second)
             pb=beta.probability(stage,view,a,state,second)
             pr=beta.probability(stage,view,a,state,second,32)
             values={"gate":lookup["prob"],"archive":pa,
