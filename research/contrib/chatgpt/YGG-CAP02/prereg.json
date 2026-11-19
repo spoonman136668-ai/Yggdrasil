@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.cap02.evidence-gated-native-memory-recall.prereg.v1",
+  "id": "YGG-CAP02",
+  "classification": "prospective synthetic development efficacy, NOT protected scientific first-use",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1303,
+    "sha": "3770e660bc8b908218e6fe82e176bd4bf91158d9",
+    "tree": "9e09ed59afa9d404d2873a3d93859697ad6356a9",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "original_checkpoint": [
+    {
+      "prior_seed": 14071,
+      "cap01_new_seed": 99601,
+      "episode_count": 1054,
+      "model_sha256": "6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14",
+      "git_blob": "f4568f284605556f970d7f2cc4733577f09de244"
+    },
+    {
+      "prior_seed": 14072,
+      "cap01_new_seed": 99603,
+      "episode_count": 1029,
+      "model_sha256": "c503ccf979f90d6d4954f0e8d42133fc177017d4b47de80ee64c9524b870d827",
+      "git_blob": "371afb1e830d6790b948ceda06f8260e7070260b"
+    }
+  ],
+  "question": "Can a public action- and stage-conditional causal evidence posterior retrieve appropriate immutable old/native-new memory during continued cumulative Yggdrasil training, beating strong conventional and ablated controls on disjoint A/B/A worlds without interfering with original knowledge?",
+  "hypothesis": "Stage-conditional evidence of witnessed action consequences can route forecasts between immutable original causal context memory and newly learned native memory; the key must be public-only, and no post-outcome gate updates may affect the current prediction.",
+  "design": {
+    "fresh_seeds": [
+      99721,
+      99739
+    ],
+    "new_episode_count": 32,
+    "new_causal_families": 2,
+    "phase_boundaries": "A 0-11, B 12-21, A-return 22-31 (evaluator-only)",
+    "initial_public_state": "exact last witnessed post from previous immutable CAP01 checkpoint; preserve continuity",
+    "matched_actions": "two intervention action bits independently precommitted by seed and index, same tape for all arms; no adaptive policy differences",
+    "trained_model": "cold restore exact CAP01 learned seven-component+native-shard checkpoint; continue 32 genuinely new native witnessed episodes in the existing shard, preserving immutable original pre-CAP01 archive bytes and prior prefix",
+    "forecast": "first stage P(s2) before observing s2 or y; second P(y) after witnessed s2 and announced x2, before observed y; no hidden regime id or future label",
+    "selector": "3 experts: frozen archive native, cumulative new-shard native, and fully fitted public-history Beta count forecast; the retrieval policy uses only archive vs new-shard, with stage- and context-specific log-likelihood posterior and fixed prior (1/2,1/2). Backoff on insufficient context observations (<4 witnessed same-context stage) to equal fixed 50/50 blend. Fully fitted Beta-full/recent32 and ungated 50/50 are scored controls, not accepted policy.",
+    "context": "transition key is (public paired-view first state bit, first action); terminal key is (first public state bit, first action, witnessed s2, second action). No hidden phase/source family/time or private initial-state inputs.",
+    "posterior": "Prequential evidence update AFTER realized consequence only, via capped probability in [0.05,0.95] and exact Bayesian likelihood of each expert; evidence per keyed context stored as nonnegative 2-component positive products initialized to 1. Posterior weight computed at read using previous evidence. Do not mutate trained weights in selector.",
+    "negatives": "mismatched stage, duplicate source id, forged/cold state, outcome-shuffled posterior, fixed 50/50, full/recent beta, archive-only, segment-only, no-action ablation",
+    "cold": "Persist selector evidence ledger and CAP01 model checkpoints with exact original hash and replay from witnessed public sequence, reject tampered source/outcomes even if rehashed",
+    "budgets": {
+      "new_max": 32,
+      "prior_native_cap": 1024,
+      "max_new_native": 256,
+      "max_cpu_seconds_per_seed": 220,
+      "no_paid_api": true,
+      "no_runner_change": true,
+      "no_scheduler_change": true
+    }
+  },
+  "frozen_outcomes": {
+    "late": "last 10 new first+second stage outcomes, pooled Brier each of 2 separate new-world seeds",
+    "success": "per-seed gated Brier at least 0.005 lower than BOTH fully fitted Beta full, Beta recent32, ungated 50/50, archived native, active native and shuffled-history sham, plus at least 0.005 Brier gain on old A-return phase vs ungated and Beta full; all evidence and cold source custody PASS",
+    "retention": "exact immutable old archive checkpoint and old already-consumed readout unchanged BEFORE/AFTER, and full original 1054/1029 episode ledger prefix unchanged after 32 further updates",
+    "stop": "one paired original source-bound development scoring pass each seed, NO post-result retuning or replay of scored seed as new first-use; if any metric fails classify DEVELOPMENT_NO_GO; no scientific first-use or promotion"
+  },
+  "authority": {
+    "branch_only": true,
+    "draft": true,
+    "merge": false,
+    "main_mutation": false,
+    "science_pass": false,
+    "deployment": "NONE",
+    "no_controller_or_forge_changes": true,
+    "no_paid_api": true,
+    "no_scheduled_tasks": true
+  }
+}
