@@ -1,9 +1,12 @@
 """ST11 source-only public-shaped mechanics, NOT new world/held science."""
 from hashlib import sha256
+from itertools import combinations
 import json
 import unittest
+from unittest.mock import patch
 
-from research.nci04_st9.native_repair import NativeRepair8, roll
+from research.nci04_st9.native_repair import NativeRepair8, roll, features
+from research.nci04_st10.adaptive_actor import choose_intervention
 from research.nci04_st11.public_probe_preference import (
     NativeProbePreference, canonical,
 )
@@ -151,6 +154,84 @@ class ObservedPreferenceContract(unittest.TestCase):
         self.assertIsNone(bank.propose(native))
         self.assertFalse(json.loads(bank.snapshot())["scientific_pass"])
         self.assertFalse(json.loads(bank.snapshot())["accepted_native"])
+
+
+
+class RankProxyNegativeControl(unittest.TestCase):
+    """Pure feature algebra, not original-world training or source actions."""
+
+    @staticmethod
+    def rank(vectors):
+        pivots = {}
+        for vector in vectors:
+            while vector:
+                p = vector.bit_length() - 1
+                if p in pivots:
+                    vector ^= pivots[p]
+                else:
+                    pivots[p] = vector
+                    break
+        return len(pivots)
+
+    def test_exhaustive_public_action_rank_counts(self):
+        rank = self.rank
+        seen, linear, challenge, quadratic = 0, 0, 0, 0
+        for n in range(8):
+            for prior in combinations(range(1, 16), n):
+                seen += 1
+                r1 = rank([features(b, 1) for b in prior])
+                r2 = rank([features(b, 2) for b in prior])
+                for action in sorted(set(range(1, 16)) - set(prior)):
+                    new1 = rank([features(b, 1) for b in (*prior, action)])
+                    new2 = rank([features(b, 2) for b in (*prior, action)])
+                    if r1 < 4 and new1 > r1:
+                        self.assertEqual(new1, r1 + 1)
+                        linear += 1
+                    if r1 == 4 and features(action, 2) >> 4 and new2 > r2:
+                        self.assertEqual(new1, r1)
+                        challenge += 1
+                    if new2 > r2:
+                        self.assertEqual(new2, r2 + 1)
+                        quadratic += 1
+        self.assertEqual((seen, linear, challenge, quadratic),
+                         (16384, 12945, 64161, 118164))
+
+    def test_256_public_effects_do_not_change_independent_rank_gain(self):
+        for degree in (1, 2):
+            for effect in range(256):
+                native = NativeRepair8()
+                if degree == 2:
+                    native.degree = 2
+                    native.rows = [0] * 8
+                self.assertEqual(native._insert(1, 0), "NEW")
+                rank_before = native.rank
+                self.assertEqual(native._insert(2, effect), "NEW")
+                self.assertEqual(native.rank, rank_before + 1)
+
+    def test_shadow_values_cannot_select_admitted_action(self):
+        native = NativeRepair8()
+        bank = NativeProbePreference(native)
+        for n in range(5):
+            bank, _ = public_shape_cycle(native, bank, source_index=100 + n)
+        native.reset_episode()
+        neutral = roll(X, 1)
+        native.observe(bits(X), 0, bits(X ^ neutral), bits(neutral),
+                       train=False)
+        old_native = native.snapshot()
+        old_bank = bank.snapshot()
+        expected = choose_intervention(native)
+        with patch.object(NativeProbePreference, "posterior",
+                          side_effect=AssertionError("shadow score leaked")):
+            self.assertEqual(bank.propose(native), expected)
+            cold = NativeProbePreference.restore(
+                old_bank, NativeRepair8.restore(old_native))
+            self.assertEqual(cold.propose(native), expected)
+        self.assertEqual(native.snapshot(), old_native)
+        self.assertEqual(bank.snapshot(), old_bank)
+        shadow = bank.shadow_candidate(native)
+        self.assertTrue(shadow is None or 2 <= shadow <= 16)
+        self.assertEqual(bank.snapshot(), old_bank)
+        self.assertEqual(native.snapshot(), old_native)
 
 
 if __name__ == "__main__":
