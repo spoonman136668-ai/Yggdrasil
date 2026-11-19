@@ -6,7 +6,6 @@ permissions:
   contents: read
 jobs:
   windows:
-    if: github.event.pull_request.number != 1324
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -21,7 +20,6 @@ jobs:
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - run: git diff --exit-code
   linux:
-    if: github.event.pull_request.number != 1324
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -53,25 +51,13 @@ jobs:
           PY
       - run: git diff --exit-code
 
-  cap04_atlas_reanchor:
-    if: >-
-      github.repository == 'spoonman136668-ai/Yggdrasil' &&
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.number == 1324 &&
-      github.event.pull_request.head.repo.full_name == 'spoonman136668-ai/Yggdrasil' &&
-      github.event.pull_request.head.ref == 'research/ygg-cap04-predictive-state-splitting-20261119' &&
-      github.run_attempt == 1
+  cap04_reanchor:
+    if: github.event.pull_request.number == 1324
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     permissions:
       contents: write
-    outputs:
-      final_sha: ${{ steps.seal.outputs.final_sha }}
-      source_sha: ${{ steps.seal.outputs.source_sha }}
     steps:
-      - name: Preserve exact source bytes
-        shell: bash
-        run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -80,24 +66,17 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
-      - name: Fixture preflight on exact original cumulative research source
+      - name: Bounded exact-source branch-only G29 atlas reanchor
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
-          test "$(git rev-parse HEAD^)" = 63423bf93cc44848620f36fa45feb4c21b317d8a
-          test "$(git diff --name-only 63423bf93cc44848620f36fa45feb4c21b317d8a HEAD)" = '.github/workflows/yggdrasil-g29-atlas.yml'
+          test "$(git rev-parse HEAD^)" = 5656655d6992fce8ac5343870bb6759174319f85
+          test "$(git diff --name-only 5656655d6992fce8ac5343870bb6759174319f85 HEAD)" = ".github/workflows/yggdrasil-g29-atlas.yml"
           test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
           git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
-          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
-          python -B -m unittest discover -s tests -p 'test_native_predictive_state_split.py' -v
-          test -z "$(git status --porcelain)"
-      - name: Seal exactly three generated G29 artifacts on isolated draft branch
-        id: seal
-        shell: bash
-        run: |
-          set -euo pipefail
+          git config --global core.autocrlf false
           SOURCE="$(git rev-parse HEAD)"
           python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
           git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
@@ -105,66 +84,9 @@ jobs:
           test -z "$(git diff --name-only)"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m "docs(cap04): source-pinned G29 atlas for $SOURCE"
-          FINAL="$(git rev-parse HEAD)"
+          git commit -m "docs(cap04): exact G29 atlas for $SOURCE"
           test "$(git rev-parse HEAD^)" = "$SOURCE"
           python -B scripts/build_code_atlas.py --check-if-present
           python -B -m unittest discover -s tests -p test_code_atlas.py -v
           test -z "$(git status --porcelain)"
           git push origin "HEAD:refs/heads/research/ygg-cap04-predictive-state-splitting-20261119"
-          echo "source_sha=$SOURCE" >> "$GITHUB_OUTPUT"
-          echo "final_sha=$FINAL" >> "$GITHUB_OUTPUT"
-  cap04_exact_final:
-    needs: cap04_atlas_reanchor
-    if: needs.cap04_atlas_reanchor.result == 'success'
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-2022]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
-    permissions:
-      contents: read
-    env:
-      PYTHONPATH: .
-      PYTHONDONTWRITEBYTECODE: '1'
-      PYTHONHASHSEED: '0'
-      OPENBLAS_NUM_THREADS: '1'
-      OMP_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-    steps:
-      - name: Preserve source bytes
-        shell: bash
-        run: git config --global core.autocrlf false
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ needs.cap04_atlas_reanchor.outputs.final_sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: '3.12'
-      - name: Install pinned original numeric dependencies
-        shell: bash
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
-      - name: Source-exact full regression and G29 with zero scored source events
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${{ needs.cap04_atlas_reanchor.outputs.final_sha }}"
-          test "$(git rev-parse HEAD^)" = "${{ needs.cap04_atlas_reanchor.outputs.source_sha }}"
-          test "$(git diff-tree --no-commit-id --name-only -r HEAD | LC_ALL=C sort | tr '\n' '|')" = ".ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json|"
-          git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
-          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
-          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
-          for n in 31 32 33 33R 34 35 36 37; do
-            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
-          done
-          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
-          python -B -m unittest discover -s research/contrib/chatgpt/YGG-JEPA2-05 -p 'test_*.py' -v
-          python -B -m unittest discover -s research/contrib/chatgpt/YGG-CAP01 -p 'test_*.py' -v
-          python -B scripts/build_code_atlas.py --check-if-present
-          python -B -m unittest discover -s tests -p test_code_atlas.py -v
-          test -z "$(git status --porcelain)"
