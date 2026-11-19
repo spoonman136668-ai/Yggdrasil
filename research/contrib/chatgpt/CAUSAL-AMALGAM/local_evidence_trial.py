@@ -3,6 +3,7 @@
 from collections import defaultdict
 from copy import deepcopy
 from fractions import Fraction
+from functools import lru_cache
 import json
 from pathlib import Path
 import resource
@@ -13,14 +14,14 @@ from external_receipt_preflight import anchor_material
 from local_evidence_readout import EvidenceReadout
 from selection_trial import source_module
 from shadow_preflight import checked_bytes, require
-from staged_retention import Controls, keys
+from staged_retention import Controls, keys, SCALE
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_cumulative_learner import experience_packet_sha256
 
 
 HERE = Path(__file__).resolve().parent
-PLAN = HERE / "local-evidence-dev-01" / "prereg.json"
+PLAN = HERE / "local-evidence-dev-02" / "prereg.json"
 
 
 def evidence(source, plan, seed, split, shift, size):
@@ -47,6 +48,14 @@ def forecasts(read, view, row):
     return read(view, first), read(view, first, state, second)
 
 
+def bounded_forecasts(model):
+    @lru_cache(maxsize=None)
+    def read(view, *public):
+        probability = model.native.experience_context_forecast(view, *public)
+        return Fraction(round(probability * SCALE), SCALE)
+    return read
+
+
 def replicate(parent, material, source, plan, source_pin, seed, deadline):
     base = parent.native._episode_reader()._ledger
     fit = list(evidence(source, plan, seed, "fit", (0, 3), plan["fit_per_seed"]))
@@ -69,8 +78,8 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
             "CELL_LOCAL_PREFIX")
     steps = [b.steps - a.steps for a, b in zip(parent._heads, restored._heads, strict=True)]
     require(steps == [3 * len(fit)] * 4, "CELL_LOCAL_HEAD_UPDATES")
-    old = parent.native.experience_context_forecast
-    new = restored.native.experience_context_forecast
+    old = bounded_forecasts(parent)
+    new = bounded_forecasts(restored)
     trace = {"fit": fit}
     initial_ids = {row[0] for row in base}
     evaluations = []
@@ -102,10 +111,10 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
                 for arm, (transition, reward) in zip(plan["arms"], values, strict=True):
                     total = totals[cell, arm]
                     total[0] += 1
-                    total[1] += (Fraction(transition) - row["s2"]) ** 2
-                    total[2] += (Fraction(reward) - row["y"]) ** 2
+                    total[1] += (round(transition * SCALE) - row["s2"] * SCALE) ** 2
+                    total[2] += (round(reward * SCALE) - row["y"] * SCALE) ** 2
             evaluations.append(dict(phase=phase, shifted_cells=active, cells=[
-                {arm: [float(err / n) for err in errors]
+                {arm: [float(err / (n * SCALE**2)) for err in errors]
                  for arm in plan["arms"] for n, *errors in [totals[cell, arm]]}
                 for cell in range(4)]))
     ids = [row[0] for rows in trace.values() for row in rows]
@@ -134,8 +143,10 @@ def run(inputs):
         for evaluation in item["evaluations"]:
             for cell, loss in enumerate(evaluation["cells"]):
                 (changed if cell in evaluation["shifted_cells"] else unchanged).append(loss)
-        gains.append(sum(min(v[0] for name, v in row.items() if name != "local") - row["local"][0]
-                         for row in changed) / len(changed))
+        mean_losses = {arm: sum(row[arm][0] for row in changed) / len(changed)
+                       for arm in plan["arms"]}
+        gains.append(min(score for arm, score in mean_losses.items() if arm != "local")
+                     - mean_losses["local"])
         retained.append(max(new - old for row in unchanged for new, old in
                             zip(row["local"], row["anchor"], strict=True)))
     success = (sum(gains) / len(gains) >= plan["min_transition_gain"] and

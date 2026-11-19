@@ -1,0 +1,41 @@
+{
+  "schema": "yggdrasil.amalgam.circuit-intake-design.v1",
+  "status": "DESIGN_ONLY",
+  "producer": {
+    "repository": "YosysHQ/yosys",
+    "commit": "28ba3cb926fe376fa05ebfc1b921747d011d4557",
+    "cells": "techlibs/common/simcells.v",
+    "license": "ISC",
+    "license_file": "COPYING",
+    "evidence_kind": "simulated published digital-logic relationships"
+  },
+  "stage_ports": {
+    "one_input_transition": ["s1"],
+    "two_input_transition": ["s1", "x1"],
+    "two_input_reward": ["s2", "x2"],
+    "mux_reward": ["s2", "x1", "x2"],
+    "three_input_reward": ["s2", "x2", "s1"],
+    "four_input_reward": ["s2", "x2", "s1", "x1"]
+  },
+  "circuits": [
+    ["BUF", "MUX", "ANDNOT"],
+    ["NOT", "NMUX", "AOI4"],
+    ["AND", "ORNOT", "OAI4"],
+    ["NAND", "AOI3", "MUX"],
+    ["OR", "ANDNOT", "AOI3"],
+    ["NOR", "OAI3", "NMUX"],
+    ["XOR", "AOI4", "ORNOT"],
+    ["XNOR", "OAI4", "OAI3"]
+  ],
+  "triples_order": ["s1", "x1", "x2"],
+  "fit_triples": ["000", "001", "010", "011", "100", "101", "110", "111"],
+  "eval_prefix_triples": ["000", "010", "011", "100", "101", "110"],
+  "eval_scored_triples": ["001", "111"],
+  "base_action_budget": {
+    "fit": 128,
+    "probe": 192,
+    "score": 64
+  },
+  "admission": "Only the separate frozen FIT receipt manifest can authorize simulation admission. This design grants no source, training, or policy authority. Probe and scored rows stay outside the durable ledger.",
+  "required_before_intake": "Verify published gate formulas and the two-stage adapter, freeze exact producer and experiment hashes and opaque disjoint rosters, qualify old-law retention and local regime separation."
+}
