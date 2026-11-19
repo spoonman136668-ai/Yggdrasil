@@ -1,0 +1,122 @@
+"""LR-92AP RF32 reference tests; forbidden primary seeds are never used."""
+import hashlib
+import math
+import random
+import unittest
+
+from rf32_reference import RF32Reference
+
+DEV_SEEDS = (73004303, 73004304)
+PROTECTED_SEEDS = (929209101, 929209102, 929209103)
+
+
+def fixture(seed):
+    if seed not in DEV_SEEDS:
+        raise ValueError('RF32_PRIMARY_FORBIDDEN')
+    r = random.Random(seed)
+    for phase in ('A', 'B', 'Areturn'):
+        for i in range(64):
+            a = r.randrange(2)
+            y = int((a if phase != 'B' else 1-a) ^ (r.random() < 0.15))
+            yield phase, i, a, y
+
+
+def evaluate(seed):
+    model = RF32Reference()
+    loss = {'B': [], 'Areturn': []}
+    digest = hashlib.sha256()
+    for phase, i, a, y in fixture(seed):
+        model.end_episode()  # same single-context fixture as prior controls
+        p = model.predict(0, a)
+        assert 0 <= p <= 1 and math.isfinite(p)
+        digest.update(bytes((a, y)))
+        if phase == 'B' or (phase == 'Areturn' and i < 16):
+            loss[phase].append((p-y)**2)
+        model.observe_step(0, a, y)
+    return {k:sum(s)/len(s) for k,s in loss.items()}, digest.hexdigest(), model
+
+
+class RF32ReferenceTests(unittest.TestCase):
+    def test_empty_checkpoint_and_untrained_forecast(self):
+        m = RF32Reference()
+        self.assertEqual(m.N_TREES, 32)
+        self.assertEqual(m.training_rows, 0)
+        self.assertEqual(m.fitted_trees, 0)
+        self.assertEqual(m.predict(0, 1), 0.5)
+        self.assertEqual(m.snapshot(), RF32Reference.restore(m.snapshot()).snapshot())
+
+    def test_invalid_inputs_are_atomic(self):
+        m = RF32Reference()
+        prior = m.snapshot()
+        for addr, a, y, retained in ((7,0,0,False),(0,2,0,False),
+                                    (0,0,3,False),(9,1,0,True),
+                                    (0,0,1,1),(True,0,0,False)):
+            with self.assertRaises(ValueError):
+                m.observe_step(addr,a,y,retained=retained)
+            self.assertEqual(m.snapshot(), prior)
+
+    def test_prequential_and_read_only_prediction(self):
+        m = RF32Reference()
+        before = m.snapshot()
+        for _ in range(10):
+            self.assertEqual(m.predict(0, 0), 0.5)
+        self.assertEqual(before, m.snapshot())
+        m.observe_step(0, 0, 1)
+        self.assertEqual(m.predict(0, 0), 1.0)
+        self.assertEqual(m.training_rows, 1)
+        self.assertEqual(m.fitted_trees, 32)
+
+    def test_per_address_isolation(self):
+        m=RF32Reference()
+        for _ in range(6):
+            m.end_episode()
+            m.observe_step(0,0,1)
+            m.end_episode()
+            m.observe_step(0,0,0,retained=True)
+        m.end_episode()
+        self.assertEqual(m.predict(0,0),1.0)
+        self.assertEqual(m.predict(0,0,retained=True),0.0)
+        self.assertEqual(m.predict(1,0),0.5)
+        self.assertEqual(m.training_rows,12)
+
+    def test_replay_checkpoint_and_corruption(self):
+        models=[RF32Reference(),RF32Reference()]
+        for i in range(14):
+            a=(i*7+i//4)%2
+            y=(i*3+i//2)%2
+            for m in models:
+                if i%7==0:m.end_episode()
+                m.observe_step(0,a,y)
+        self.assertEqual(models[0].snapshot(),models[1].snapshot())
+        blob=models[0].snapshot()
+        clone=RF32Reference.restore(blob)
+        self.assertEqual(clone.snapshot(),blob)
+        for a in (0,1):
+            self.assertEqual(clone.predict(0,a),models[0].predict(0,a))
+        corrupt=bytearray(blob);corrupt[-40]^=1
+        with self.assertRaisesRegex(ValueError,'RF32_CHECKPOINT_REJECTED'):
+            RF32Reference.restore(bytes(corrupt))
+
+    def test_dev_tape_only_and_no_schedule_feature(self):
+        for s in PROTECTED_SEEDS:
+            with self.assertRaisesRegex(ValueError,'RF32_PRIMARY_FORBIDDEN'):
+                list(fixture(s))
+        self.assertEqual(RF32Reference.FEATURE_ORDER,
+                         ('action','previous_action','second_previous_action'))
+        a=list(fixture(DEV_SEEDS[0]))
+        self.assertEqual(a,list(fixture(DEV_SEEDS[0])))
+        self.assertEqual(len(a),192)
+
+    def test_fixture_prequential_finite_and_deterministic(self):
+        seed=DEV_SEEDS[0]
+        score,digest,model=evaluate(seed)
+        self.assertEqual(set(score),{'B','Areturn'})
+        self.assertTrue(all(0<=v<=1 and math.isfinite(v) for v in score.values()))
+        self.assertEqual(model.training_rows,192)
+        self.assertEqual(model.fitted_trees,32)
+        self.assertEqual(model.snapshot(), RF32Reference.restore(model.snapshot()).snapshot())
+        self.assertEqual(digest,hashlib.sha256(bytes(z for _,_,a,y in fixture(seed)
+                                                 for z in (a,y))).hexdigest())
+
+if __name__ == '__main__':
+    unittest.main()

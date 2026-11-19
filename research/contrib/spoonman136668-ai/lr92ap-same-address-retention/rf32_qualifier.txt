@@ -1,0 +1,101 @@
+LR-92AP — FULLY REFITTED 32-TREE RANDOM FOREST PREDICTIVE REFERENCE
+=================================================================
+2026-11-19. External synthetic development only. Draft PR #1323.
+No native Yggdrasil training, scientific first-use, acceptance or promotion.
+
+PURPOSE AND FAIRNESS
+--------------------
+Supply preregistered RF32 as a conventional predictive *reference*, NOT as a
+memory-matched control. It is a standard scikit-learn RandomForestClassifier
+with n_estimators=32, criterion=gini, bootstrap=True, no depth restriction,
+min_samples_leaf=1, max_features=None (all three input features), fixed
+random_state=73004300+address slot, n_jobs=1. Each public observation fully
+refits the forest for that address on *all preceding observed* examples;
+there is no warm_start or partial training. Predictions occur BEFORE the
+current outcome is provided; refits occur AFTER the public outcome arrives.
+
+The only predictors are the current public action and two *previous* public
+actions (including episode-initial sentinel 2). No phase identity, phase
+schedule, hidden outcome, unobserved counterfactual, future input, test label
+or cross-address information is a feature. Each of the 16 active/retained
+address slots has isolated training data and a fitted forest. End-episode
+resets context but not learned examples. Exactly the same public tape as all
+previous LR-92AP fixture controls is used (seeds 73004303/73004304 only).
+Protected primary seeds 929209101/102/103 are never evaluated.
+
+IMPORTANT BUDGET CAVEAT
+-----------------------
+Compiled 32-tree estimator with 192 samples serializes to 17,888 bytes in a
+trusted local pickle diagnostic at each of the two fixture seeds, even though
+its public tape-only restore envelope is 868 bytes. Thus the fully fitted
+forest *exceeds the 928-byte candidate budget*. The 868-byte envelope omits
+the compiled forest and is NOT a valid accounting trick to classify RF32 as
+memory-matched. Report RF32 as out-of-budget predictive context only; NEVER
+place it in the strongest *memory-matched* control set or declare native
+resource superiority based on this reference.
+
+No pickle data is loaded or used as a model checkpoint. SHA256-checked custom
+snapshot stores learned public event rows plus 16 two-action contexts, and
+restore refits the complete forest from those rows; deterministic replay and
+single-address isolation are tested. No approximate gain claim.
+
+EXACT LOCAL SOURCE / TEST QUALIFICATION
+---------------------------------------
+Source: rf32_reference.py.txt, 6490 bytes, SHA256
+  38c9535e62421b1c3d0e3a0014cd17509e5f8f63896c93d2837acc88215f7cff
+Tests: test_rf32_reference.py.txt, 4779 bytes, SHA256
+  1c864cd9da66206c7a3a03cd26d40885b3376b4dbc15b7a2c59942f0c7a91ed2
+Local isolated environment: Python 3.13.5, scikit-learn 1.8.0,
+NumPy 2.3.5, SciPy 1.17.0, Linux x86_64. Reproduce by copying *.py.txt
+files verbatim to their corresponding *.py names in an empty test directory,
+then run:
+  python -m unittest -v test_rf32_reference.py
+7/7 focused unit tests PASS in 6.206 seconds, local host. Covers 16-slot
+isolation, no update on predictions, public-only features, invalid input
+atomicity, consistent deterministic replay, tampered checkpoint rejection,
+restore/refit exact parity, and forbidden protected-seed generator input.
+Native full regression and dual-platform execution of .txt source NOT RUN.
+
+DEVELOPMENT FIXTURE (PREQUENTIALLY SCORED; NOT PRIMARY)
+------------------------------------------------------
+Each seed 64 A + 64 B + 64 A return, 192 public action/outcome pairs;
+single context (history reset each sample) exactly as prior fixture controls.
+Identical random action policy and 15% noise, outcome label seen only after
+forecast. First-16 A return Brier and all-64 B Brier, lower is better:
+seed           RF32 B        RF32 Areturn-first16       wall-clock seconds
+73004303       0.414291507   0.207512053                 6.1401
+73004304       0.380555873   0.269750297                 5.6541
+Wall-clock times include initialization, every forecast, *every full 32-tree
+refit* and score collection; measured on the same local Python process with
+perf_counter. They are not independent cross-platform cost observations.
+The Linux Python process peak RSS during runs was around 165 MiB, including
+Python/scikit-learn/NumPy/SciPy runtime overhead (NOT attributable to the
+forest alone). The compiled estimator pickle size is the clearer
+out-of-budget lower-bound witness, not a reproducible footprint estimate.
+
+seed 73004303 public tape SHA256:
+ d605576ab052303c93377c839b7d9b2c34b2f35bc319998f7c4ce2b85c4ad71c
+seed 73004304 public tape SHA256:
+ 43f68d889adb443707319acb92c4e6961d39a72141fe770f4ba04068a6121b57
+seed 73004303 restored training tape snapshot SHA256:
+ 1a0acb185d9694355acffb9af710c65e6c9c1feaf4b685e755a01b087929e9be
+seed 73004304 restored training tape snapshot SHA256:
+ 12e756d403b2f14ddc5d7ce947c980f79fc38670f5f46a6fa4bc3c5fde4f15af
+
+NEGATIVE EVIDENCE / NEXT DEPENDENCIES
+-------------------------------------
+RF32 does NOT dominate earlier fixed-window, HMM and native-development
+candidate on both B and return-A. This is a meaningful additional
+conventional comparison, not proof of new native intelligence. The fixture
+has one repeated history bin and cannot test 14-bin unfamiliar transfer.
+The stronger fully fitted run-length Bayesian change-point comparator and
+complete frozen history-permutation sham are still not established; the
+A->B->A schedule has a first-switch identifiability limit. The original
+protected 288-world primary remains unconsumed and may not be evaluated
+until all controls, source-birth custody, native authority and full
+qualification are established. No source, thresholds, seeds or priors of the
+existing prereg were changed by this reference.
+
+ENGINEERING: Local RF32 7/7 PASS, GitHub CI for new head PENDING.
+SCIENTIFIC: DEVELOPMENT-ONLY negative/mixed, SCIENTIFIC_PASS UNVERIFIED.
+DEPLOYMENT: HOLD. PR remains DRAFT, merge unauthorized, no native training.
