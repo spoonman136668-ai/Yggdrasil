@@ -93,8 +93,12 @@ class ProspectiveActionIdentifiabilityTests(unittest.TestCase):
         self.assertFalse(result["novelty_independently_verified"])
         self.assertEqual(result["decision_authority"], "NONE_DESIGN_CHECK_ONLY")
 
-    def test_action_information_reversal_is_a_genuine_discrimination_test(self):
+    def test_oracle_action_rank_reversal_is_not_learner_information(self):
         x = AUDIT.audit_candidate(self.sample)
+        self.assertEqual(x["action_information_rank_scope"],
+                         "PRIVILEGED_EVALUATOR_ONLY")
+        self.assertFalse(x["public_predecision_family_identifiability_verified"])
+        self.assertFalse(x["matched_source_blind_policy_advantage_established"])
         kinds = x["cells"][:4]
         self.assertEqual([r["most_informative_action"] for r in kinds],
                          [0, 1, 0, 1])
