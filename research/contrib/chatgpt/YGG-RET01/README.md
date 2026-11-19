@@ -1,31 +1,46 @@
-# YGG-RET01 — evidence-bound readout retention in cumulative native Yggdrasil
+# YGG-RET01 — Pinned native causal readout + evidence-only retrieval
 
-**FROZEN BEFORE SOURCE/IMPLEMENTATION:** prereg commit `91100fa70086e5c1b2bc604da07c98dbe70af9e4`. Exact qualified prior native+six-head source: `65a69d2733c18910178e1b7443332fddfd6bab89` (JEPA2-04 PR #1280, dual-platform engineering PASS, development NO-GO). This draft does not merge or promote either source.
+Engineering: two-platform source-bound training, frozen original readout,
+independent exact public outcome replay, independent original-state
+cold continuation and evidence selector qualification.
 
-**Hypothesis:** a native causal learner can keep learning across domains **without forgetting the reliable original readout** if it retains an immutable cold-pinned readout archive and uses only witnessed public action-consequence likelihoods to arbitrate between archived and current contextual predictions.
+This development candidate stores an immutable archived context readout
+from an original native checkpoint while the existing, fully trained
+seven-component native+six-head model continues to observe witnessed
+public events (four earlier heads update, two future heads persist).
+A prior-1/8 evidence-only Bayesian selection weights the archived
+and live context readouts without hidden domain labels.
 
-The actual previously trained native state (942/917 causal episodes across two independent original cohorts) **continues** with 64 additional *new* public observed action-consequence episodes per cohort in two new disjoint synthetic development worlds. Its original native memory and four earlier trainable causal-predictive heads continue updating. Both separately trained 3-step future-head weights persist in the state unchanged, because this specific readout experiment does not furnish prospective 3-step target sequences. Original native source epochs and inherited learned weights remain intact.
+Frozen prereg FIRST: 91100fa70086e5c1b2bc604da07c98dbe70af9e4
+Qualified old source: 65a69d2733c18910178e1b7443332fddfd6bab89
+Frozen first training source: 57ae0eaff00867f8583adfb901d62359f7d76093
+Original independent two-OS audit run: 44435881875
 
-A pinned original native readout archive (702/677 episodes, prior JEPA2-03) receives **no** learning updates; the Bayesian reader begins with archive weight 1/8 and updates after each revealed observed transition+reward using only public evidence, without hidden A/B/A regime tags or evaluator labels. Old-source direct readout and live-context predictions are compared with fixed-half mixture, intentionally mispaired update, online full/window24/window32/discount95 Beta count controls, chance and gated readout.
+## New domain public evidence Brier (lower better)
 
-**Separate evaluation dimensions:** the new-source A/B/A prequential late/return-Brier measures actual development adaptation against the strongest fitted baseline. A separate 32-event **already-consumed** historical old-source diagnostic tests archival readout preservation and post-evidence model arbitration without retraining either learner on those examples. This second diagnostic **is not held science**. Pre-set Brier/margin/retention guards on BOTH original seed replicas make acceptance falsifiable. Failure is preserved without tuning or rerunning scored data.
+| Seed | Live native | Pinned archive | Evidence gate | Best fitted Beta | Mispaired gate | Verdict |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 97241 | 0.195504886 | 0.244762161 | 0.190004700 | 0.169593291 | 0.195016667 | DEVELOPMENT_NO_GO |
+| 97259 | 0.177697523 | 0.284305445 | 0.178533260 | 0.166370645 | 0.177675572 | DEVELOPMENT_NO_GO |
 
-Source hash and original trained-model Git blobs are pinned in `prereg.json`. Frozen source: `source.py`. Candidate: `yggdrasil/native_readout_retention.py`. Protocol: `campaign.py`, independent `audit.py` and `seal.py`. Results and full model checkpoints will be recorded under this folder, not as chat attachments.
+## Previously consumed historical return diagnostic (NOT fresh science)
 
-**Status:** source, model, tests and protocol committed to an isolated branch. Engineering preflight is the active gate; **neither source training nor science has been claimed**. No accepted `main`, Forge controller, paid API, scheduled task, owner's protected first-use, other model, or deployment is modified.
+| Original seed | Pinned old readout before | Pinned old readout after | Live readout | Evidence gate | Frozen qualifiers |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 14071 | 0.102777635 | 0.102777635 | 0.152813024 | 0.108045579 | FAIL: new_vs_best_beta |
+| 14072 | 0.135985634 | 0.135985634 | 0.283003043 | 0.162044317 | FAIL: new_vs_best_beta, new_vs_live |
 
-## Frozen two-platform preflight proof
+**Overall verdict: DEVELOPMENT_NO_GO**.
 
-[Run #44435011018](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44435011018) **COMPLETED SUCCESS, Linux and Windows original prior-source pins and all focused readout/JEPA compatibility and cold tamper tests passed**. No model code, original native state, source generation, training controls, frozen metrics, thresholds, seed identity or preregistration changed after this preflight. The next commit is a README-only trigger for the single original frozen development training comparison.
+Historical return examples were ALREADY consumed in original native
+training. Evaluating their known outcomes is a read-only diagnostic
+and proves neither truly held transfer nor scientific advantage.
+Even DEVELOPMENT_GO would not be SCIENTIFIC_PASS.
 
-## Requalified native JEPA capacity boundary
+Full 64 new source events/replica and 32 old witness diagnostic events
+are rederived, with prequential forecasts, numeric probabilities,
+retained original ledgers and exact final cold checkpoint SHA.
 
-Original execution [#44435255043](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44435255043): Linux and Windows BOTH passed source-pinned preflight and BOTH stopped during source continuation with the **same engineering incompatibility** `CKAD_NATIVE_JEPA2_MODEL_SHAPE`, before a finished first seed or any sealed score/state artifact existed. JEPA2/JEPA3 had separately hardcoded **1,000 episode caps**, while original `NativeEpisodeExperience.MAX_EPISODES` is **1,024** and previously saved JEPA2-04 source states already contained 942 and 917 events. Continuing 64 real witnessed source events crosses 1,000 for seed14071. This is an architectural/contract failure, **not** a scientific NO-GO.
-
-Smallest source correction: `native_jepa2_multilearner.py` and `native_jepa_temporal.py` now derive their specialist count and cold-restore capacity from the actual existing native `MAX_EPISODES=1024`, without changing gradient math, source seeds, outcomes, old learned parameters, source order, preregistered thresholds, matching controls, or owner permissions. A new negative boundary test checks 1,024*3 steps accepted but 1,024*3+1 steps rejected for both. The first failure remains a durable infrastructure receipt. The original synthetic development program is now requalified by this precise contract repair, not post-result tuning. No earlier scoring results were sealed or used to select a change.
-
-## Actual frozen training completed; auditor-only failure, original artifacts preserved
-
-Original corrected training run [#44435881875](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44435881875), source SHA `57ae0eaff00867f8583adfb901d62359f7d76093`, independently completed BOTH source-seed continuations (64 genuine new native witnesses per seed) and printed **DEVELOPMENT_NO_GO**. Both original Linux and Windows jobs then failed at the **same audit-only Python name shadowing bug**: the auditor's historical `state` local overwrote its loaded cold-state record with an integer `s2`. This was **not a source-training, negative-control, scientific, native checkpoint or acquisition failure**. Both original 7-file evidence sets survived as pinned GitHub Actions artifacts: Linux ID `14489197501`, ZIP digest `sha256:dcee886a55b44fe995c6cd60a47a594c7e530039feb0838298b544ce05f0c06b`; Windows ID `14489396666`, ZIP digest `sha256:46142514bc97df00015fae80a814c60bd3e412ae05a047623e0d1989757c3c4f`.
-
-Fix in `audit.py` is **name disambiguation only**, not an altered research outcome, source, model, seed, control or frozen threshold. The separate workflow `ygg-ret01-original-evidence.yml` downloads the SAME original artifacts and performs the complete source/score/cold replay on both operating systems, then seals exactly those original ZIP data files in GitHub and performs mandatory full post-G29 Linux/Windows regression. **No rerun or redrawing of scored cohorts.**
+**SCIENTIFIC_PASS=false. DEPLOYMENT=NONE. DRAFT/UNMERGED.**
+No accepted main, Forge controller, owner first-use, model promotion,
+extra scheduler, paid API or external trading effects.
