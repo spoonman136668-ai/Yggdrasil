@@ -70,3 +70,20 @@ for seed,pin in OLD_SHA.items():
           "structural_differences",len(structural),
           "first_structural",structural[:5],
           "first_numerical",nums[:6],flush=True)
+
+# Compare the EXACT unittest module import path in the same process.
+import importlib.util
+modpath=ROOT/"tests/test_native_causal_rule_memory.py"
+sp=importlib.util.spec_from_file_location("cap02_model_test_probe",modpath)
+module=importlib.util.module_from_spec(sp)
+sp.loader.exec_module(module)
+for old_seed in OLD_SHA:
+    try:
+        value=module.model(old_seed)
+        print("CAP02_UNITTEST_MODEL_IMPORT_PROBE",old_seed,"PASS",
+              value.checkpoint()==
+              json.loads((PARENT/f"seed-{old_seed}-state.json").read_bytes())["continued_ascii"].encode("ascii"),
+              flush=True)
+    except Exception as exc:
+        print("CAP02_UNITTEST_MODEL_IMPORT_PROBE",old_seed,"FAIL",
+              str(exc), repr(exc.__cause__),flush=True)
