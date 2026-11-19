@@ -47,15 +47,16 @@ def source_regime(phase):
 def eligible_archive(native, witnessed):
     """Return labelled immutable archive blocks, using EVALUATOR labels only.
 
-    The live novel hypothesis, mixed A/B blocks, and unobserved future source
-    ranges cannot enter a past-time forecast. Not a deployable selector.
+    The live novel hypothesis, mixed A/B blocks, unobserved future source
+    ranges, and sources overlapping the 16-event evidence window are excluded.
+    Not a deployable selector.
     """
     groups = {"A": [], "B": []}
     if native._context_start is None:
         return groups
     for start, stop, _, old_model in native._context_models:
         if not (stop > start and stop - start >= 8
-                and stop <= native._context_start and stop <= len(witnessed)):
+                and stop <= native._context_start and stop <= len(witnessed) - WINDOW):
             continue
         labels = {source_regime(witnessed[i][3]) for i in range(start, stop)}
         if len(labels) == 1:
