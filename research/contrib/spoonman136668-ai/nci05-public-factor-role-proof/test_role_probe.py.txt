@@ -1,0 +1,187 @@
+"""NCI-05 proof-only tests. These are not training or first-use experiments."""
+from __future__ import annotations
+import hashlib
+import json
+from pathlib import Path
+import unittest
+
+from role_probe import (FAMILY, CODES, PROBES, candidates, probe_masks,
+                        conditional_public_effect, exact_symbolic_control,
+                        infer_conditional_role)
+
+
+def public_rows(a, j, bias):
+    return [(m, conditional_public_effect(m, action_bit=a,
+                                         factor_bit=j, offset=bias))
+            for m in probe_masks(a)]
+
+
+class SourceFreeRoleWitnessTests(unittest.TestCase):
+    def test_01_first_commit_protocol_excludes_owner_and_protected_data(self):
+        p=json.loads(Path(__file__).with_name("prereg.json.txt").read_text())
+        self.assertEqual(p["schema"],"nci05.public-factor-role.sourcefree-proof.v1")
+        self.assertEqual(p["status"],
+                         "FROZEN_BEFORE_SOURCE_ONLY_IMPLEMENTATION_OR_PROOF")
+        self.assertEqual(p["public_contract"]["bits"],6)
+        self.assertFalse(p["authority"]["protected_original_first_use"])
+        self.assertFalse(p["authority"]["owner_model_or_checkpoint_access"])
+        self.assertFalse(p["authority"]["merge"])
+        self.assertFalse(p["authority"]["model_restart"])
+        self.assertFalse(p["authority"]["new_controller"])
+
+    def test_02_all_six_known_action_bit_permutations(self):
+        for a in range(6):
+            masks=probe_masks(a)
+            self.assertEqual(len(masks),5)
+            self.assertEqual(len(set(masks)),5)
+            self.assertEqual(masks[0],0)
+            self.assertEqual(masks[4],1<<a)
+            self.assertEqual(len(candidates(a)),5)
+            self.assertTrue(all((m>>a)&1==0 for m in masks[:4]))
+            self.assertTrue(all(0<=m<64 for m in masks))
+
+    def test_03_five_distinct_nonzero_factor_signatures(self):
+        self.assertEqual(CODES,(1,2,3,4,5))
+        for a in range(6):
+            masks=probe_masks(a)
+            bits=candidates(a)
+            signatures=tuple(sum(((masks[k+1]>>j)&1)<<k for k in range(3))
+                             for j in bits)
+            self.assertEqual(signatures,CODES)
+
+    def test_04_complete_60_factor_role_and_offset_witness_cases(self):
+        cases=0
+        for a in range(6):
+            for j in candidates(a):
+                for bias in (0,1):
+                    evidence=public_rows(a,j,bias)
+                    proposal=infer_conditional_role(a,evidence)
+                    self.assertIsNotNone(proposal)
+                    self.assertEqual((proposal.action_bit,proposal.factor_bit,
+                                      proposal.offset),(a,j,bias))
+                    self.assertEqual(proposal.public_effect_count,5)
+                    self.assertEqual(proposal.family,FAMILY)
+                    self.assertFalse(proposal.globally_certified)
+                    self.assertFalse(proposal.native_admission)
+                    self.assertFalse(proposal.scientific_pass)
+                    self.assertEqual(exact_symbolic_control(a,evidence),
+                                     ((j,bias),))
+                    for mask in range(64):
+                        self.assertEqual(proposal.predict_under_prior(mask),
+                            conditional_public_effect(mask,action_bit=a,
+                                                     factor_bit=j,offset=bias))
+                    cases+=1
+        self.assertEqual(cases,60)
+
+    def test_05_incomplete_evidence_refuses_conditional_role(self):
+        for a in range(6):
+            j=candidates(a)[0]
+            rows=public_rows(a,j,1)
+            for n in range(5):
+                self.assertIsNone(infer_conditional_role(a,rows[:n]))
+                self.assertGreaterEqual(len(exact_symbolic_control(a,rows[:n])),1)
+
+    def test_06_fifth_action_flip_exposes_action_independent_law(self):
+        for a in range(6):
+            for j in candidates(a):
+                rows=[(m,((m>>j)&1)^1) for m in probe_masks(a)]
+                self.assertIsNone(infer_conditional_role(a,rows))
+                self.assertEqual(exact_symbolic_control(a,rows),())
+
+    def test_07_missing_factor_and_constant_response_refuses(self):
+        for a in range(6):
+            masks=probe_masks(a)
+            rows=[(m,((m>>a)&1)) for m in masks]
+            self.assertIsNone(infer_conditional_role(a,rows))
+            self.assertEqual(exact_symbolic_control(a,rows),())
+
+    def test_08_unobserved_nonlinear_pair_is_indistinguishable(self):
+        for a in range(6):
+            bits=candidates(a)
+            j=bits[2]
+            p,q=bits[:2] # binary probe code 1 & 2 never overlap
+            masks=probe_masks(a)
+            base=public_rows(a,j,0)
+            adversarial=[(m,y^(((m>>p)&1)&((m>>q)&1))) for m,y in base]
+            self.assertEqual(adversarial,base)
+            proposal=infer_conditional_role(a,adversarial)
+            self.assertEqual(proposal.factor_bit,j)
+            self.assertFalse(proposal.globally_certified)
+            unseen=(1<<p)|(1<<q)
+            self.assertNotIn(unseen,masks)
+            baseline=proposal.predict_under_prior(unseen)
+            actual=conditional_public_effect(unseen,action_bit=a,
+                           factor_bit=j,offset=0)^1
+            self.assertNotEqual(baseline,actual)
+
+    def test_09_unknown_two_factor_parity_can_alias_one_factor(self):
+        for a in range(6):
+            p,q,j=candidates(a)[:3] # codes 1 xor 2 == 3
+            masks=probe_masks(a)
+            rows=[(m,((m>>a)&1)^((m>>p)&1)^((m>>q)&1))
+                  for m in masks]
+            proposal=infer_conditional_role(a,rows)
+            self.assertEqual(proposal.factor_bit,j)
+            self.assertFalse(proposal.globally_certified)
+            unseen=1<<j
+            self.assertNotIn(unseen,masks)
+            self.assertNotEqual(proposal.predict_under_prior(unseen),
+                                ((unseen>>a)&1)^((unseen>>p)&1)^((unseen>>q)&1))
+
+    def test_10_public_evidence_permutation_preserves_result_and_digest(self):
+        a=5;j=0
+        rows=public_rows(a,j,1)
+        front=infer_conditional_role(a,rows)
+        rev=infer_conditional_role(a,rows[::-1])
+        self.assertEqual(front,rev)
+        self.assertEqual(len(front.evidence_sha256),64)
+        self.assertEqual(exact_symbolic_control(a,rows),
+                         exact_symbolic_control(a,rows[::-1]))
+        changed=rows.copy()
+        changed[1]=(changed[1][0],changed[1][1]^1)
+        inferred=infer_conditional_role(a,changed)
+        self.assertTrue(inferred is None or
+                        inferred.evidence_sha256!=front.evidence_sha256)
+
+    def test_11_deny_invalid_public_fields_without_mutation(self):
+        for invalid in (-1,6,True,None,0.0,"0"):
+            with self.assertRaises(ValueError):probe_masks(invalid)
+            with self.assertRaises(ValueError):infer_conditional_role(invalid,[])
+        a=5;rows=public_rows(a,0,0)
+        for bad in (
+            None,{},rows+rows[:1],
+            [rows[0],rows[0]],
+            [(64,0)],[(True,0)],[(rows[0][0],True)],
+            [(rows[0][0],2)],[(rows[0][0],-1)],[(rows[0][0],None)],
+            [(-1,0)],[(1<<5|1<<4,0)],
+            [(rows[0][0],0,1)]):
+            with self.assertRaises(ValueError):
+                infer_conditional_role(a,bad)
+        good=infer_conditional_role(a,rows)
+        self.assertEqual((good.factor_bit,good.offset),(0,0))
+        for bad in (-1,64,True,False,6.0,None):
+            with self.assertRaises(ValueError):good.predict_under_prior(bad)
+
+    def test_12_exact_symbolic_control_stays_equally_informed(self):
+        a=5;j=1
+        rows=public_rows(a,j,0)
+        self.assertEqual(exact_symbolic_control(a,()),tuple(
+            (bit,offset) for bit in candidates(a) for offset in (0,1)))
+        self.assertEqual(exact_symbolic_control(a,rows),((j,0),))
+        for k in range(len(rows)+1):
+            options=exact_symbolic_control(a,rows[:k])
+            self.assertIn((j,0),options)
+
+    def test_13_source_only_no_interface_mutation_or_integration(self):
+        source=Path(__file__).with_name("role_probe.py").read_text()
+        self.assertNotIn("import yggdrasil",source)
+        self.assertNotIn("from yggdrasil",source)
+        self.assertNotIn("subprocess",source)
+        self.assertNotIn("requests",source)
+        self.assertNotIn("source_first_use=True",source)
+        self.assertFalse(hasattr(infer_conditional_role,"restore"))
+        self.assertEqual(PROBES,5)
+
+
+if __name__=="__main__":
+    unittest.main()
