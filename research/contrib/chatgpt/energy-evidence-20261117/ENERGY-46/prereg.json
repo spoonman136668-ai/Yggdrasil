@@ -1,0 +1,143 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-46",
+  "project": "Yggdrasil",
+  "class": "disjoint-replication-and-falsification",
+  "date": "2026-11-18",
+  "primary_scored_before_prereg": false,
+  "question": "Does ENERGY-45's contradiction-gated factor replacement retain strong old-context accuracy and generalize across three new causal families and disjoint seeds, better than fully trained conventional, equal-information hybrid and no-change controls?",
+  "prior": "ENERGY-45 archived at f2556ffca7dfefc0c026240b1694edbf34fdc2ec; 7/9 gates, aggregate candidate cold MSE .11163 but failures old relative accuracy and seed stability. No reuse of ENERGY-45 primary seeds or metric threshold tuning.",
+  "exact_parent": "f2556ffca7dfefc0c026240b1694edbf34fdc2ec",
+  "source_commit": "78dffbfecfa7616822514cf1e5414a1ae467de67",
+  "source_blob": "9ba90bf85d62020cea326132ebe86bb3c1984601",
+  "source_sha256": "2f3b1ac3e65340c6d3555ace51d6870f169dd72a01fa2917d2d7fd317855b8c9",
+  "scorer_original_sha256": "fa38237a02f5fd76b66406ef6dccfe9b35bd406a24697ca81642d7c1ef1e1698",
+  "auditor_original_sha256": "528509534942e2e18bb2880f411db2e1af2dc9b9128cfb8a024f6779d3858074",
+  "changed_path_prefix": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-46/",
+  "dataset": {
+    "generator": "independent SHA256-seeded synthetic additive factor consequence model. Planted 5 signed factors, 3 shared plus 1 old-only and 1 new-only; 1/4 worlds unchanged, only nuisance cues shift.",
+    "observable_action_bits": 12,
+    "candidate_known_grammar": "364 signed unary/two-bit/three-bit parity and two-bit conjunction features",
+    "causal_bits": 10,
+    "spurious_cue_bits": 2,
+    "train_labels_per_world": {
+      "old": 96,
+      "new": 96
+    },
+    "held_probes_per_world": {
+      "old": 128,
+      "new": 128,
+      "cold": 128
+    },
+    "training_labels_available_to_all_arms": 192,
+    "noise_sigma": 0.3,
+    "randomized_do_interventions": true,
+    "held_labels_never_used_for_training": true,
+    "true_supports_scoring_only": true
+  },
+  "frozen_cohort": {
+    "seeds": [
+      8909,
+      8923,
+      8933
+    ],
+    "excluded_smoke_seed": 99863,
+    "families": [
+      "parity2",
+      "parity3",
+      "mixed"
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "changed_worlds": 27,
+    "unchanged_worlds": 9,
+    "independent_worlds": 36
+  },
+  "candidate": {
+    "name": "replay_gated",
+    "old_context": "OMP4 trained on 96 old outcomes and *frozen* for old predictions",
+    "new_context": "Enumerate candidate delete-one/add-one supports, shortlisted by first 72 new training residual correlations, 24 new TRAIN consequences used for validation. Trigger if replacement lowers validation MSE by at least .12. Refit selected 4 supports on all 96 new witness outcomes; otherwise refit original 4 supports using all 96 new witnesses. Old model never changed.",
+    "capacity": "Four old and four new selected supports; known fixed grammar, no free-form operator discovery."
+  },
+  "comparison_arms": [
+    "unconditional_replay",
+    "hybrid_validation",
+    "stagewise_omp4",
+    "omp_structural_memory",
+    "omp_full7",
+    "elasticnet",
+    "ridge",
+    "forest",
+    "no_repair",
+    "shuffled_gate"
+  ],
+  "best_information_matched_controls": [
+    "hybrid_validation",
+    "stagewise_omp4",
+    "omp_structural_memory",
+    "omp_full7",
+    "elasticnet",
+    "ridge",
+    "forest"
+  ],
+  "negative_controls": [
+    "no_repair (frozen old support without any new adaptation)",
+    "shuffled_gate (new training labels shuffled before gate)",
+    "unconditional_replay (same feature replacement with no gate)"
+  ],
+  "frozen_gates": {
+    "cold_vs_best_10pct": "Candidate mean cold held MSE <=0.90 × minimum conventional aggregate cold MSE across seven fully trained matched controls.",
+    "cold_vs_matched_hybrid_5pct": "Candidate cold held MSE <=0.95 × conventional validation-selected hybrid old/new model cold MSE.",
+    "old_vs_best_1pct": "Candidate old held MSE <=1.01 × minimum conventional aggregate old MSE among the seven controls.",
+    "old_replay_retention_1pct": "Candidate old held MSE <=1.01 × unchanged no_repair old context model; no post-new training overwrite.",
+    "changed_correct_support_70pct": "In 27 changed worlds, at least 70% of gate triggers delete exact obsolete planted support and install exact new planted support.",
+    "nochange_false_edit_at_most_10pct": "On nine unchanged worlds, gate correctly declines replacement >=90%.",
+    "sham_new_20pct": "Candidate new held MSE <=0.80 × shuffled-new-label negative control new held MSE.",
+    "seed_wins_2of3": "Candidate mean cold MSE strictly below strongest conventional mean cold MSE separately in at least two of three independent seeds.",
+    "time_at_most_3x_memory": "Candidate measured local fit+old/new/cold inference wall seconds <=3 × full conventional structural-memory OMP7 measured total on the same 36 worlds."
+  },
+  "decision": {
+    "development_go": "All nine gates PASS and source-free independent all-arm refit audit PASS. Still external synthetic development only, not scientific native qualification.",
+    "development_no_go": "Any one frozen gate FAIL with source/controls/audit intact. No tuning consumed seeds.",
+    "invalid": "Any source/prereg/custody mismatch, primary evaluated before freeze, train/held label leak, unequal inputs, missing controls, broken exact scorer or independent audit.",
+    "mixed": "Report ALL gates and disjoint per-seed and per-family outcomes; do not choose favorable families post hoc."
+  },
+  "budget": {
+    "primary_evaluations": 1,
+    "primary_worlds": 36,
+    "allowed_exact_source_semantic_replay": 1,
+    "allowed_independent_all_arm_audit": 1,
+    "post_primary_retuning": false
+  },
+  "environment": {
+    "platform": "Linux CPU",
+    "python": "3.13.5",
+    "numpy": "2.3.5",
+    "sklearn": "1.8.0",
+    "blas": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1",
+    "gpu": false,
+    "paid_apis": false,
+    "measurement": "Python fit+prediction elapsed, not whole-host Joules or CI cost"
+  },
+  "preprimary_smoke": {
+    "excluded_seed": 99863,
+    "worlds": 6,
+    "independent_all_arm_audit": "PASS",
+    "checks": 25565,
+    "development_notes": "First development smoke identified a catastrophically weak cumulative old-memory head; before source freeze it was replaced by the frozen OMP4 old head. Second development smoke verified 6/9 eligible gates; redundant duplicate arm removed and final smoke audited. No primary seed examined."
+  },
+  "authority": {
+    "external_research_only": true,
+    "accepted_ref_change": false,
+    "scientific_first_use": false,
+    "native_yggdrasil_training": false,
+    "merge": false,
+    "controller_scheduler_runner": false,
+    "deployment": false
+  },
+  "note": "Source+auditor code committed before this preregistration at 78dffbfecfa7616822514cf1e5414a1ae467de67. Primary seeds 8909/8923/8933 have not been scored. Qualifying against no-change and strong conventional controls is mandatory."
+}
