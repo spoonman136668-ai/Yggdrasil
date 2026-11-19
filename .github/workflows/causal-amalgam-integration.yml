@@ -120,13 +120,31 @@ jobs:
         cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
         cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
-        python -B "$AMALGAM/verify_linux_evidence.py" "$PARENTS" "$EXPECTED_CANDIDATE" \
-          "$RUNNER_TEMP/amalgam-portable-replay.json"
         git diff --exit-code af5c8162a6ee9d3b092b8a77409e31ea58312a6c HEAD -- \
           "$AMALGAM/outcome_probe.py" "$AMALGAM/outcome_probe_trial.py" \
           "$AMALGAM/outcome_probe_protocol.json"
-        python -B "$AMALGAM/outcome_probe_audit.py" "$PARENTS" \
-          "$AMALGAM/outcome_probe_protocol.json" "$AMALGAM/outcome-probe-dev-01"
+        git diff --exit-code 23e3e042e443c256ee5dfe7e0b669f85bbd58502 HEAD -- \
+          "$AMALGAM/outcome-probe-dev-01"
+        archive_audit=(python -B "$AMALGAM/verify_linux_evidence.py" "$PARENTS"
+          "$EXPECTED_CANDIDATE" "$RUNNER_TEMP/amalgam-portable-replay.json")
+        probe_audit=(python -B "$AMALGAM/outcome_probe_audit.py" "$PARENTS"
+          "$AMALGAM/outcome_probe_protocol.json" "$AMALGAM/outcome-probe-dev-01")
+        if (( $(nproc) > 1 )); then
+          echo "Verifying the two independent Linux receipt groups concurrently"
+          "${archive_audit[@]}" > "$RUNNER_TEMP/amalgam-archive-audit.json" &
+          archive_pid=$!
+          "${probe_audit[@]}" > "$RUNNER_TEMP/amalgam-probe-audit.json" &
+          probe_pid=$!
+          audit_status=0
+          wait "$archive_pid" || audit_status=1
+          wait "$probe_pid" || audit_status=1
+          cat "$RUNNER_TEMP/amalgam-archive-audit.json" "$RUNNER_TEMP/amalgam-probe-audit.json"
+          test "$audit_status" -eq 0
+        else
+          echo "Verifying the two independent Linux receipt groups serially"
+          "${archive_audit[@]}"
+          "${probe_audit[@]}"
+        fi
         test -z "$(git status --porcelain)"
     - name: Cold-replay every sealed descendant on Windows
       if: runner.os == 'Windows'

@@ -45,6 +45,16 @@ separate replay (44.3% lower, 1.80x faster for this component). Both used
 the same checkpoint bytes, source protocols and recorded witnesses.
 See evidence-reuse-measurement.json for wall and CPU measurements.
 
+Linux also runs the sealed archive and intervention receipts concurrently when
+the runner reports at least two processors. Each process reads the same pinned
+parent files and writes its own report. Both audits must succeed. The serial
+fallback runs the same audits. In a matched Linux benchmark the combined phase
+took 228.92 seconds concurrently and 383.23 seconds serially (1.67x). CPU time
+increased from 383.02 to 419.09 seconds. The complete reports matched after
+excluding timings, including ten portability records, 18 cold descendant
+hashes and the count of 1,152 staged forecasts. The measurements exclude
+setup, full regression and the cross-platform comparison.
+
 The separate Windows replay splits the same pinned witness archives across
 two processes on the existing runner. Both reconstruct their own immutable
 anchor, and any worker error fails qualification. In a same-host Linux
