@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.ckad46.action-identity-grounding-prereg.v1",
+  "parent_exact_sha": "b9cdc894a7e499f8ba74fcbac64fbb824259daa7",
+  "reason": "NativeEpisodeExperience and PublicCausalCells reject action values other than 0/1. CKAD41-45 failed candidate superiority and CKAD45 used only familiar binary actions. Test an isolated native-action grounding adapter with genuinely unseen action SYMBOLS and hidden semantics inferred from authentic source outcomes, not given mapping.",
+  "hypothesis": "An online independent causal likelihood grounding of four new intervention symbols onto an already source-learned binary native causal representation improves cold-start and learned transfer beyond exact balanced-assignment Bayesian inference, fully trained independent per-symbol Beta and naive native identity-hash mapping; persistent anchors and old causal knowledge survive cold return.",
+  "source_world": {
+    "known_training": "96 episodes of genuinely observed context, canonical first/second actions 0/1, transition s2 and terminal y; native and exact CKAD42 causal basis trained on these witnessed source facts with no hidden source labels.",
+    "unseen_transfer": "144 episodes first and second action symbols 10/11/12/13, zero overlap with pretraining action identities. Per-stage independent private balanced mappings of 4 symbols to latent binary actuator 0 or1, randomly permuted per world/seed and never passed to any learner. No per-symbol latent bits/labels given during fitting. Equal explicit source policy and two observed interventions per episode.",
+    "cold_return": "48 subsequent episodes with known canonical actions 0/1; train/forecast continuously, check prior source ledger prefix retention and cold restoration.",
+    "world_mechanisms": "Two new post-CKAD45 hand-specified known-binary action transition/terminal families: W0 s2 bit c xor a, y bit (c and a) xor (s2 and b); W1 transition c and NOT a, terminal c xor (s2 or b). All candidate/controls get identical public context, actual action IDs and common exogenous per-event Bernoulli noise, but not hidden mapping.",
+    "outcome_noise": "Transition 0.85/0.15, terminal 0.9/0.1; independent common exogenous streams for all arms with a fixed source seed/world/stage.",
+    "hidden_mapping": "Balanced 4-token assignment; inference control may know this structural prior but never true per-token assignment. Exact posterior has 6 stage1 assignments times 6 stage2 assignments = 36 hypotheses.",
+    "phase": "Known 0..95, unseen 96..239, return 240..287; true per-world latent action mapping only evaluator and simulator; scored unseen early, unseen late and return. No A->B rule change in this test: only action identity shifts; cannot claim both change-rule and transfer solved."
+  },
+  "candidate": {
+    "name": "native_likelihood_grounding",
+    "mechanism": "Freeze a source-trained causal full/short prototype at exactly episode 96. For novel per-stage symbol, maintain independent log odds of latent primitive 1 vs 0. Each previously witnessed corresponding transition/reward contributes log(P(outcome|known prototype, latent 1)/P(...latent 0)), computed only after the outcome is observed. At prediction, marginalize over two possible primitives for each unknown token using its current posterior. After witnessed transition, first-symbol posterior can condition the terminal prediction on the observed transition without exposing unobserved terminal reward. All counters persist, no oracle mapping, no token vocabulary mapping. Continued native training source rows use pre-outcome grounded MAP bit; the original canonical source id is separately retained.",
+    "extra_learning": "Original native and exact causal learned weights persist and continue to update from real source consequences with pre-outcome inferred latent bits. They can differ between policies according to latent posterior. Source ledger stays chronological, no replay and no admission to main."
+  },
+  "strong_controls": {
+    "exact_bayes": "Enumerate all 36 balanced symbol->latent assignment hypotheses, equal prior and genuinely witnessed prequential likelihood updates from FROZEN learned anchor causal full prototype, with stagewise posterior conditioning on observed transition. No ground truth mapping. This exact posterior is stronger than candidate's independent symbol posteriors under balanced-mapping prior.",
+    "independent_beta": "Fully trained unstructured independent context x raw-action-ID Beta(1,1) for first-stage and (context, action1_ID, observed_state, action2_ID) for terminal; initialized only on actual observed events, no inferred mapping.",
+    "native_hash": "Unmodified NativeEpisodeExperience trained on known 0/1 source, then all unseen symbols projected to a deterministic identity hash bit; no hidden bits or privileged representation.",
+    "oracle_ceiling": "True hidden mapping scoring only (no learner may use this mapping for prediction or source update); reference for remaining uncertainty, not a fair trainable control.",
+    "refreshed_source_model": "Exact source-trained causal bank baseline with frozen anchor from first 96 public events, so all unknown symbols are treated as 0.5 mixture without learning a grounding; measures value of actual symbol grounding."
+  },
+  "frozen_dev_seeds": [
+    46111,
+    46112
+  ],
+  "reserved_pilots": [
+    46211,
+    46212
+  ],
+  "reserved_primary": [
+    46311,
+    46312,
+    46313
+  ],
+  "excluded_used_scientific_seeds": [
+    45111,
+    45112,
+    44111,
+    44112,
+    43111,
+    43112,
+    42111,
+    42112,
+    41101,
+    41102
+  ],
+  "evaluation": {
+    "metric": "Prequential paired transition/terminal Brier, averaged per staged epoch on same source rows and actions. All learnable arms have same observed action/outcome counts, frozen initial known source, source episode budget. Check exact cold restoration of full native and causal learned checkpoints and never convert evaluator-provided hidden bit into training.",
+    "primary": "Pooled early+late unseen symbols and cold return (unseen late plus return) source Brier versus strongest fully trained exact balanced-map Bayesian control and independent fitted conventional; original native hash as weaker context baseline.",
+    "thresholds": {
+      "both_seeds_required": true,
+      "unseen_late_plus_return_candidate_brier_at_most": 0.15,
+      "improvement_over_best_trainable_control_at_least": 0.015,
+      "early_unseen_candidate_not_worse_than_best_control_by_more_than": 0.015,
+      "cold_return_candidate_not_worse_than_original_native_hash_by_more_than": 0.005,
+      "held_mapping_coverage_4_symbols_each_stage": true,
+      "all_source_checkpoint_and_duplicate_controls": true,
+      "decision": "Any failure DEV_NO_GO. Even development success only DEV_FEASIBLE_NOT_SCIENTIFIC until independent unfamiliar families, held first-use, compute qualification and final full regression. No retuning on consumed DEV, no automatic pilots/primaries."
+    }
+  },
+  "engineering_first": "Pre-source prereg commit, then isolated code + fixture tests (no DEV scoring), then two-OS GitHub Actions frozen development qualification at exact source SHA. Run qualified only; no new runner, schedule, paid API or owner authority.",
+  "scope": "Only research/contrib/chatgpt/CKAD-46 and one dedicated GitHub workflow. Original binary NativeEpisodeExperience and PublicCausalCells untouched. No forge/controller/accepted Yggdrasil modification, main ref changes, merges or deployment.",
+  "known_limitations": "Binary latent actuator class is an explicit task assumption. Novel identities are genuinely unseen and their latent semantics hidden; this is not novel primitive invention, open-world language, or general intelligence. Shared outcome stream is stochastic synthetic. Exact Bayes control may dominate because its generative prior matches task."
+}

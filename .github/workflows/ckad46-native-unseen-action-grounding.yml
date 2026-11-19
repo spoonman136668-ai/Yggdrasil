@@ -1,0 +1,56 @@
+name: CKAD46 native unseen actuator symbol grounding DEV only
+on:
+  push:
+    branches:
+      - research/ckad46-unseen-action-grounding-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  dev:
+    if: "github.event.head_commit.message == 'ci(ckad46): frozen unseen-action native DEV screen'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Prevent platform checkout line-ending mutation
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pre-source prereg, parent and held cohort first-use fence
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 1fcd7e165e87561cc4f47ef7a0f71ebc3e1873ba HEAD
+          git merge-base --is-ancestor b9cdc894a7e499f8ba74fcbac64fbb824259daa7 HEAD
+          test ! -e research/contrib/chatgpt/CKAD-46/pilot_report.json
+          test ! -e research/contrib/chatgpt/CKAD-46/primary_report.json
+          python -B -c "import ast,pathlib; p=pathlib.Path('research/contrib/chatgpt/CKAD-46'); [ast.parse(f.read_text()) for f in p.glob('*.py')]"
+          python -B research/contrib/chatgpt/CKAD-46/campaign.py --mode preflight
+      - name: Fixture-only native source and negative tests, no scored scientific seed
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-46 -p test_ckad46.py -v
+      - name: Exactly two registered new DEV seeds, no pilot or primary
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-46/screen_dev.py
+          test -z "$(git status --porcelain)"
