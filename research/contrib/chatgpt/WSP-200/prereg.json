@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-200",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "phase": "PRE_OUTCOME_PROTOCOL_ONLY",
+  "frozen_at": "2026-11-19",
+  "question": "Does selective incremental no-gradient programming of persistent factor weights retain previously learned interaction structure and learn added real genotype consequences at lower total cost than cumulative full retraining, without loss of unseen-site-pair transfer?",
+  "reason_for_pivot": "WSP-194 direct unseen-pair coverage failure, WSP-196 HD4 conventional-control failure and WSP-198 direct spectral held-RMSE 0.6912816 vs converged rank4 ALS 0.4643859. Those frozen negative results are not re-scored or retuned.",
+  "hypothesis": "Against the same-rank converged cumulative factor refit, selective direct writes achieve >=2.0x lower summed end-to-end training/update time across four cumulative FIT stages; <=2% higher independently held DEV site-pair-equal-weighted RMSE; <=5% worse B0 witness error after three later learning stages; exact cold restoration. Also separately report whether higher-capacity rank8 full refit wins.",
+  "source": {
+    "admission": "WSP-199 research/wsp199-gfp-ortholog-source-admission-20261119 @19fbaa65d6abb49bcfe9a3e16196dd44e262424b",
+    "origin": "aequorea238/Orthologous_GFP_Fitness_Peaks@799bd76889918bf1551c60016fb23278024cac73",
+    "path": "data/final_datasets/amacGFP_cgreGFP_ppluGFP2__final_aminoacid_genotypes_to_brightness.csv",
+    "git_blob_sha1": "ee1d9d885a36e2d88b049f92e3af7bf90833ddad",
+    "full_sha256": "41eb96cbaba255e64f4d229b20f6e53bf2e512ba0953bc032697e7b82c6f3ca8",
+    "rows_metadata": 93925,
+    "backgrounds": [
+      "amacGFP",
+      "cgreGFP",
+      "ppluGFP"
+    ],
+    "strict_double_with_both_singles_metadata": 36056,
+    "unordered_site_pair_groups_metadata": 25520,
+    "source_rights": "Underlying measurement/derivative rights not independently resolved. No source bytes, model weights or outputs redistributed. Source-specific clearance required before consuming numeric outcomes."
+  },
+  "eligibility": {
+    "pre_label_only": "Parse source columns aa_genotype_pseudo, aa_genotype_native, gene; require known wt and both exactly matching native-background parent single-genotype rows; strict two unique standard-AA site substitutions; no duplicates. Fail closed on unknown reference, nonstandard/stop codes, missing parents or source hash drift. Exclude by genotype structure ONLY.",
+    "outcome": "Use measured replicates_mean_brightness as a finite numeric value for both WT/singles/doubles; no brightness-based row exclusion. Invalid/missing numeric values or changed admitted source stop the study; no opportunistic censoring.",
+    "target": "For each eligible double in background b, y=asinh(brightness_double)-asinh(brightness_single1)-asinh(brightness_single2)+asinh(brightness_wildtype). Read WT/single brightness as common predeclared auxiliary evidence to all methods; all held DOUBLE brightness fields remain unread until their own scored gate.",
+    "background_scope": "Analyze each background separately using the same algorithm/protocol. Three backgrounds from one publication are correlated, NOT three independent physical worlds."
+  },
+  "split": {
+    "unit": "whole (gene,min(mutated_position_i,mutated_position_j),max(...)) site-pair group across all alternate amino acids",
+    "digest": "SHA256(UTF8('WSP200-GFP-PAIR-v1\\u0000'+gene+'\\u0000'+decimal_min_position+'\\u0000'+decimal_max_position)), first 8 digest bytes big endian unsigned modulo 100",
+    "buckets": {
+      "FIT": "0..64",
+      "VALID": "65..79",
+      "PUBLIC_DEV": "80..89",
+      "RESERVED_UNTOUCHED": "90..99"
+    },
+    "minimum_per_background": {
+      "FIT_groups": 3500,
+      "VALID_groups": 650,
+      "PUBLIC_DEV_groups": 500,
+      "RESERVED_groups": 500
+    },
+    "stream": "For FIT-only site-pair groups define second SHA256 of UTF8('WSP200-FIT-STREAM-v1\\u0000'+gene+'\\u0000'+min_position+'\\u0000'+max_position), first 8 bytes modulo 4; reveal B0,B1,B2,B3 in index order. At each stage all arms see the identical cumulative FIT observations only.",
+    "no_leakage": "Never move/merge groups to satisfy thresholds, never use held groups in fitting/scaling, never use PUBLIC_DEV or RESERVED labels to choose algorithm, rank, gate, lambda, seeds, budget or model revisions.",
+    "scaling": "For each background compute mean and population SD of interaction target using only B0; fail if SD<=1e-12. Use (y-mean)/SD at all stages and arms without re-estimation."
+  },
+  "representation": {
+    "type": "Native non-token persistent factor weights; one address per (gene,mutation_site,source_aa,destination_aa) single-mutant identity; each observed double uses exactly two addresses; no genotype text embeddings or pretrained donor.",
+    "function": "predicted normalized interaction = dot(h_address1,h_address2); rank4 per-address float64 factors. Sign/order of factors have no semantic interpretation; predictions, not raw factors, measure cold retention.",
+    "init": "Each factor coordinate initialized to +0.01 or -0.01 from SHA256('WSP200-INIT-v1\\u0000'+address+'\\u0000'+coordinate) low bit; no future data used.",
+    "loss": "sum over observed cumulative FIT doubles of (yhat-y)^2 + lambda*sum over active addresses ||h||², lambda=10, rank=4; factor count and optimizer work tracked."
+  },
+  "candidate": {
+    "name": "bounded contradiction-gated direct ridge weight writes",
+    "initialization": "On B0 run exactly 16 deterministic full-address block-coordinate normal-equation passes, ascending address order; each address solves (X'X+10I) h = X'y with Cholesky; add deterministic 1e-9 diagonal jitter only on decomposition failure; failure after jitter invalidates candidate.",
+    "staged_update": "For B1..B3, predict newly witnessed batch from previous persistent weights BEFORE any write. For each address with at least 2 distinct new double-mutant observations, compute signed residuals (observed minus predicted). A contradiction candidate requires >=75% of nonzero residuals share a sign and abs(mean signed residual)>=1.0 B0-normalized units.",
+    "gate_budget": "Order eligible addresses by descending abs(mean signed residual) then ascending UTF8 address; update at most ceil(0.25*number_of_newly_observed_addresses). Unflagged address factors are unchanged. Two deterministic ascending-address closed-form ridge solve sweeps using all cumulative FIT pairs incident on flagged addresses; never SGD/gradient backprop.",
+    "persist": "Write every factor coordinate, source digest, consumed FIT-group identities, stage number, and deterministic stream cursor to versioned checkpoint; exact byte-preserving serialize/deserialize and idempotent duplicate-evidence rejection."
+  },
+  "controls": {
+    "same_capacity_full_refit": "rank4, lambda10, identical addresses/observations/feature map, deterministic block-coordinate ridge solves to relative objective improvement <=1e-6 for 3 successive full sweeps or max 100; if not converged => comparator INVALID, not candidate win. Warm-start from previous cumulative stage, plus independent cold-start diagnostic.",
+    "higher_capacity": "rank8, lambda10 fully converged same procedure; log 2x factor parameters, independent stronger-capacity comparator, not an equal-capacity victory.",
+    "always_update": "same rank4, same 2-sweep new-batch local solver but all newly observed addresses, not capped",
+    "surprise_gate": "same write count as contradiction gate, selected by descending mean(abs(new residual)) with same eligibility/count and address tie-break, rank4",
+    "random_gate": "same write count as contradiction gate, choose by SHA256('WSP200-RANDOM-v1\\u0000'+stage+'\\u0000'+address) ascending, rank4",
+    "no_update": "initial B0 programmed factors frozen throughout B1..B3",
+    "shuffled_negative": "FIT double interaction target shuffled within background and stream stage by fixed seed 20031, preserving addresses/groups; no held label use.",
+    "readout_only": "B0 additive/no-interaction zero residual predictor; reference negative."
+  },
+  "metrics": {
+    "primary_error": "At B3 compute each held PUBLIC_DEV site-pair's mean squared normalized interaction error then average groups equally within background and backgrounds equally; square-root for reported RMSE. Rank4 cumulative full refit is primary matched comparator.",
+    "cost": "Measure B0 initial programming plus B1..B3 updates, serialization/cold restore, data admission, selection, reads and source verification separately and combined; wall-clock monotonic and CPU-ms, peak resident memory, number of normal-equation solves, changed weight addresses and stored bytes. Claim speed only on full comparable end-to-end cost.",
+    "retention": "After B0, fix each B0 witnessed pair's prediction and squared error; score the same B0 pairs after B1,B2,B3 WITHOUT training replay from scratch. Compare final error ratio candidate vs matched full refit; distinguish retained bytes from retained prediction quality.",
+    "transfer": "Completely unseen PUBLIC_DEV whole-site-pair groups; report per-background and per site-pair-frequency stratum. Do not call this new protein/world transfer.",
+    "cold": "After each stage, serialize, restart a fresh process, restore exact state, verify hash/checkpoint version/consumed evidence; identical predictions for every B0 and fixed source-free sentinel, idempotent repeated receipt causes zero state changes.",
+    "uncertainty": "2000 stratified-by-background bootstrap resamples of PUBLIC_DEV whole site-pair groups, seed 20041, paired across methods; report 95% percentile CI for relative RMSE gain and full cost ratio. Never resample individual rows as independent.",
+    "gate": "SUPPORT only if source/fit/control valid, candidate all four stages, exact cold restore, no duplicated evidence, candidate vs rank4 full-refit end-to-end cumulative training/update cost ratio >=2.0, candidate held-RMSE <=1.02*rank4 RMSE, candidate B0-retention MSE <=1.05*rank4 B0-retention MSE. Record comparisons vs rank8 separately. Development support not SCIENTIFIC_PASS.",
+    "stop": "If a fully qualified original public DEV comparison misses any precommitted gate, record PUBLIC_DEV_NO_GO, do not tune against it. If source invalid, control unconverged, leakage, nonfinite values, or execution failure, record INVALID, not NO_GO; fix source-free faults before any future qualified first-use, not by replaying consumed labels."
+  },
+  "validation_and_authority": {
+    "source_free_before_any_outcome": "Implement tests with independently fabricated tiny genotype/source-free samples, exact partition/unit tests, duplicate/missing-parent/stop/altered digest negatives, normal-solver independent reference, idempotent cold restore and no future-label leakage.",
+    "qualification": "Require exact candidate SHA/tree, both Windows/Linux full final regression and separate source-index qualification before optional owner-authorized original first use. Engineering PASS does not license original labels.",
+    "first_use": "Not authorized under this contribution. Do not read numeric fluorescence targets, run original-data fitting/scoring, consume RESERVED cohort, dispatch a runner, touch protected Yggdrasil issue #426, or claim any data science until separate verified source-specific authority and licensing clearance.",
+    "permissions": {
+      "accepted_main": false,
+      "merge": false,
+      "native_model_write": false,
+      "owner_training": false,
+      "autonomous_loop": false,
+      "deployment": false,
+      "source_first_use": false
+    },
+    "independent_qualification": "The new three-background source is one independent published dataset, not independent replication; publish provenance and strict nulls, then seek another genuinely independent world for scientific support."
+  },
+  "state": "FROZEN_PREREG_ONLY_NO_MODEL_OR_OUTCOME"
+}
