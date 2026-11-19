@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 import math
+import random
 from statistics import fmean
 from typing import Iterable
 
@@ -19,7 +20,7 @@ PAIR_SALT = "WSP200-GFP-PAIR-v1"
 STREAM_SALT = "WSP200-FIT-STREAM-v1"
 INIT_SALT = "WSP200-INIT-v1"
 RANDOM_SALT = "WSP200-RANDOM-v1"
-MODES = frozenset({"contradiction", "full_refit", "always", "surprise", "random", "no_update"})
+MODES = frozenset({"contradiction", "full_refit", "always", "surprise", "random", "no_update", "shuffled_negative"})
 
 
 def _digest_int(*fields: object) -> int:
@@ -136,8 +137,8 @@ class Learner:
         self.convergence: list[dict[str, object]] = []
 
     def predict(self, left: str, right: str) -> float:
-        return _dot(self.weights.get(left, _initial(left, self.rank)),
-                    self.weights.get(right, _initial(right, self.rank)))
+        return _dot(self.weights[left] if left in self.weights else _initial(left, self.rank),
+                    self.weights[right] if right in self.weights else _initial(right, self.rank))
 
     def _objective(self) -> float:
         assert self.mean is not None and self.sd is not None
@@ -165,10 +166,11 @@ class Learner:
             self.weights[addr] = _solve_cholesky(mat, rhs)
             self.solves += 1
 
-    def _choose(self, new: list[Sample], stage: int) -> set[str]:
+    def _choose(self, new: list[Sample], stage: int,
+                reference_write_count: int | None) -> set[str]:
         if self.mode == "no_update":
             return set()
-        if self.mode == "full_refit":
+        if self.mode in ("full_refit", "shuffled_negative"):
             return set(self.weights)
         addresses = {s.left for s in new} | {s.right for s in new}
         if self.mode == "always":
@@ -193,6 +195,12 @@ class Learner:
         # The same qualifying-address pool and write count is shared by the gated arms.
         budget = (len(addresses) + 3)//4
         selected_count = min(budget, len(contradicted))
+        if self.mode in ("surprise", "random"):
+            if reference_write_count is None or not isinstance(reference_write_count, int):
+                raise ValueError("gated control requires candidate write count")
+            if reference_write_count < 0 or reference_write_count > min(budget, len(eligible)):
+                raise ValueError("gated control cannot match candidate write count")
+            selected_count = reference_write_count
         if self.mode == "contradiction":
             ordered = sorted(contradicted, key=lambda e: (-abs(e[1]), e[0].encode("utf-8")))
         elif self.mode == "surprise":
@@ -201,23 +209,31 @@ class Learner:
             ordered = sorted(eligible, key=lambda e: (hashlib.sha256(f"{RANDOM_SALT}\0{stage}\0{e[0]}".encode()).digest(), e[0].encode("utf-8")))
         return {a for a,_,_ in ordered[:selected_count]}
 
-    def advance(self, stage: int, batch: Iterable[Sample]) -> dict[str, object]:
+    def advance(self, stage: int, batch: Iterable[Sample],
+                *, reference_write_count: int | None = None) -> dict[str, object]:
         # Transactional: failures (including comparator nonconvergence) cannot
         # partially consume evidence or damage a recoverable checkpoint.
         proposed = self.restore(self.checkpoint(), self.source_digest)
-        receipt = proposed._advance_uncommitted(stage, batch)
+        receipt = proposed._advance_uncommitted(stage, batch, reference_write_count)
         self.__dict__.update(proposed.__dict__)
         return receipt
 
-    def _advance_uncommitted(self, stage: int, batch: Iterable[Sample]) -> dict[str, object]:
+    def _advance_uncommitted(self, stage: int, batch: Iterable[Sample],
+                             reference_write_count: int | None) -> dict[str, object]:
         if stage != self.stage + 1 or stage not in range(4):
             raise ValueError("stage order or replay invalid")
-        new = list(batch)
+        new = sorted(list(batch), key=lambda sample: sample.sample_id)
+        if reference_write_count is not None and (stage == 0 or self.mode not in ("surprise", "random")):
+            raise ValueError("reference write count only allowed on gated controls after B0")
         if not new:
             raise ValueError("empty stage")
         ids = [s.sample_id for s in new]
         if len(ids) != len(set(ids)) or set(ids) & self.receipts:
             raise ValueError("duplicate observation receipt")
+        identities = [(s.group, s.left, s.right) for s in new]
+        existing = {(s.group, s.left, s.right) for s in self.samples}
+        if len(identities) != len(set(identities)) or set(identities) & existing:
+            raise ValueError("duplicate genotype identity")
         for s in new:
             s.validate(stage)
         groups_new = {s.group for s in new}
@@ -225,6 +241,14 @@ class Learner:
             raise ValueError("cross-background pooling forbidden")
         if groups_new & {s.group for s in self.samples}:
             raise ValueError("site-pair group replay across stages")
+        if self.mode == "shuffled_negative":
+            seed = int.from_bytes(hashlib.sha256(
+                f"WSP200-SHUFFLE-v1\0{20031}\0{stage}\0{new[0].group.split(chr(0))[0]}".encode()
+            ).digest()[:8], "big")
+            values = [s.target for s in new]
+            random.Random(seed).shuffle(values)
+            new = [Sample(s.sample_id, s.group, s.left, s.right, y)
+                   for s, y in zip(new, values)]
         if stage == 0:
             self.mean = fmean(s.target for s in new)
             self.sd = math.sqrt(fmean((s.target-self.mean)**2 for s in new))
@@ -235,13 +259,13 @@ class Learner:
                 if a not in self.weights:
                     self.weights[a] = _initial(a, self.rank)
         # Gate on new observations *before* cumulative exposure or any factor writes.
-        active = self._choose(new, stage) if stage else set(self.weights)
+        active = self._choose(new, stage, reference_write_count) if stage else set(self.weights)
         self.samples.extend(new)
-        if stage == 0 and self.mode != "full_refit":
+        if stage == 0 and self.mode not in ("full_refit", "shuffled_negative"):
             for _ in range(16):
                 self._sweep(active)
             self.convergence.append({"stage":stage, "converged":None, "sweeps":16})
-        elif self.mode == "full_refit":
+        elif self.mode in ("full_refit", "shuffled_negative"):
             prev = self._objective()
             streak = 0
             for step in range(1, 101):
@@ -272,6 +296,8 @@ class Learner:
                  "weights":self.weights, "samples":[vars(s) for s in self.samples],
                  "receipts":sorted(self.receipts), "solves":self.solves,
                  "changed_by_stage":self.changed_by_stage, "convergence":self.convergence}
+        raw = json.dumps(state, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+        state["state_sha256"] = hashlib.sha256(raw).hexdigest()
         return json.dumps(state, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
     @classmethod
@@ -279,6 +305,10 @@ class Learner:
         obj = json.loads(data)
         if obj.get("schema") != VERSION or obj.get("source_digest") != expected_source_digest:
             raise ValueError("checkpoint version or source digest changed")
+        checksum = obj.pop("state_sha256", None)
+        raw = json.dumps(obj, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+        if checksum != hashlib.sha256(raw).hexdigest():
+            raise ValueError("checkpoint state hash mismatch")
         learned = cls(obj["source_digest"], obj["mode"], obj["rank"])
         learned.stage = obj["stage"]
         learned.mean, learned.sd = obj["mean"], obj["sd"]

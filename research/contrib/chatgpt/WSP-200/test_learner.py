@@ -1,6 +1,9 @@
 """Independent fabricated-data validation; no published experiment outcomes."""
 import hashlib
 import math
+import json
+import subprocess
+import sys
 import unittest
 
 from learner import Learner, Sample, pair_group, group_bucket, fit_stage, _solve_cholesky
@@ -79,18 +82,19 @@ class WSP200SourceFree(unittest.TestCase):
             Learner.restore(frozen.replace(b'wsp200.source-free.v1', b'unknown.schema.version'), DIGEST)
 
     def test_controls_and_no_update(self):
-        for mode, rank in (("full_refit",4),("full_refit",8),("always",4),
+        for mode, rank in (("full_refit",4),("full_refit",8),("shuffled_negative",4),("always",4),
                            ("surprise",4),("random",4),("no_update",4)):
             with self.subTest(mode=mode, rank=rank):
                 learner = Learner(DIGEST, mode, rank)
                 learner.advance(0, stage_fixture(0))
                 original = learner.weights[address(1, "B")][:]
-                learner.advance(1, stage_fixture(1))
+                learner.advance(1, stage_fixture(1), **(
+                    {"reference_write_count": 1} if mode in ("surprise", "random") else {}))
                 self.assertTrue(math.isfinite(learner.predict(address(1,"B"),address(4,"B"))))
                 if mode == "no_update":
                     self.assertEqual(original, learner.weights[address(1, "B")])
                     self.assertEqual([], learner.changed_by_stage[1])
-                elif mode == "full_refit":
+                elif mode in ("full_refit", "shuffled_negative"):
                     self.assertTrue(learner.convergence[1]["converged"])
 
     def test_reject_duplicate_nonfinite_and_future_leak(self):
@@ -118,6 +122,97 @@ class WSP200SourceFree(unittest.TestCase):
         model = Learner(DIGEST)
         self.assertEqual(model.checkpoint(), Learner.restore(model.checkpoint(), DIGEST).checkpoint())
         self.assertRaises(ValueError, Learner.restore, model.checkpoint()+b" ", DIGEST)
+
+    def test_gated_controls_share_candidate_write_budget(self):
+        candidate = Learner(DIGEST, "contradiction")
+        others = [Learner(DIGEST, "surprise"), Learner(DIGEST, "random")]
+        for model in (candidate, *others):
+            model.advance(0, stage_fixture(0))
+        for stage in range(1, 4):
+            batch = stage_fixture(stage)
+            candidate.advance(stage, batch)
+            count = len(candidate.changed_by_stage[-1])
+            for model in others:
+                model.advance(stage, batch, reference_write_count=count)
+                self.assertEqual(count, len(model.changed_by_stage[-1]))
+        self.assertTrue(candidate.changed_by_stage[-1])
+        extra = Learner(DIGEST, "surprise")
+        extra.advance(0, stage_fixture(0))
+        snapshot = extra.checkpoint()
+        for kwargs in ({}, {"reference_write_count":-1}, {"reference_write_count":100}):
+            with self.assertRaises(ValueError):
+                extra.advance(1, stage_fixture(1), **kwargs)
+            self.assertEqual(snapshot, extra.checkpoint())
+
+    def test_shuffled_negative_determinism_and_identity(self):
+        original = stage_fixture(0)
+        a = Learner(DIGEST, "shuffled_negative")
+        b = Learner(DIGEST, "shuffled_negative")
+        a.advance(0, original)
+        b.advance(0, list(reversed(original)))
+        self.assertEqual(a.checkpoint(), b.checkpoint())
+        self.assertEqual({s.sample_id for s in a.samples}, {s.sample_id for s in original})
+        self.assertCountEqual([s.target for s in a.samples], [s.target for s in original])
+        self.assertNotEqual([s.target for s in a.samples], [s.target for s in original])
+        for stage in range(1, 4):
+            a.advance(stage, stage_fixture(stage))
+            b.advance(stage, list(reversed(stage_fixture(stage))))
+        self.assertEqual(a.checkpoint(), b.checkpoint())
+
+    def test_hash_tampering_and_duplicate_genotype_identification(self):
+        model = Learner(DIGEST)
+        batch = stage_fixture(0)
+        duplicate = Sample("newreceipt", batch[0].group, batch[0].left,
+                           batch[0].right, batch[0].target)
+        with self.assertRaisesRegex(ValueError, "duplicate genotype"):
+            model.advance(0, batch + [duplicate])
+        model.advance(0, batch)
+        state = json.loads(model.checkpoint())
+        state["weights"][address(1, "B")][0] += .5
+        altered = json.dumps(state, separators=(",", ":"), sort_keys=True).encode()
+        with self.assertRaisesRegex(ValueError, "hash mismatch"):
+            Learner.restore(altered, DIGEST)
+
+    def test_fresh_interpreter_cold_restore(self):
+        model = Learner(DIGEST)
+        model.advance(0, stage_fixture(0))
+        first = stage_fixture(0)[0]
+        control = [model.predict(first.left, first.right), model.checkpoint().decode()]
+        code = ("import sys, json; from learner import Learner; "
+                "d=sys.stdin.buffer.read(); m=Learner.restore(d,'" + DIGEST + "'); "
+                "p=json.loads(sys.argv[1]); "
+                "print(json.dumps([m.predict(*p),m.checkpoint().decode()]))")
+        proc = subprocess.run([sys.executable, "-c", code,
+                               json.dumps([first.left, first.right])],
+                              input=model.checkpoint(), capture_output=True, check=True)
+        self.assertEqual(control, json.loads(proc.stdout))
+
+    def test_diagnostic_fixture_is_purely_fabricated_and_held(self):
+        from source_free_diagnostic import fixture, DIGEST as diagnostic_digest, GENE as diagnostic_gene
+        streams, held = fixture()
+        self.assertEqual("f" * 64, diagnostic_digest)
+        self.assertTrue(diagnostic_gene.startswith("FABRICATED"))
+        observed = set()
+        for stage, batch in streams.items():
+            for sample in batch:
+                self.assertEqual(stage, fit_stage(sample.group))
+                self.assertEqual("FIT", group_bucket(sample.group))
+                self.assertNotIn(sample.sample_id, observed)
+                observed.add(sample.sample_id)
+        self.assertTrue(all(group_bucket(s.group) == "PUBLIC_DEV" for s in held))
+        self.assertFalse(observed & {s.sample_id for s in held})
+
+    def test_batch_permutation_and_duplicate_receipts(self):
+        b0 = stage_fixture(0)
+        first, second = Learner(DIGEST), Learner(DIGEST)
+        first.advance(0, b0)
+        second.advance(0, list(reversed(b0)))
+        self.assertEqual(first.checkpoint(), second.checkpoint())
+        with self.assertRaises(ValueError):
+            first.advance(1, stage_fixture(1) + [stage_fixture(1)[0]])
+        with self.assertRaises(ValueError):
+            first.advance(1, stage_fixture(0))
+        self.assertEqual(first.checkpoint(), second.checkpoint())
 
 
 if __name__ == "__main__":
