@@ -160,6 +160,17 @@ jobs:
           > "$RUNNER_TEMP/amalgam-recall-evidence-bound.json"
         cmp "$AMALGAM/recall-evidence-bound.json" "$RUNNER_TEMP/amalgam-recall-evidence-bound.json"
         test -z "$(git status --porcelain)"
+    - name: Replay the frozen first curriculum increment
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euo pipefail
+        AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+        git diff --exit-code 2ecd431a98fe191c2697b62af809f5e426c71f3b HEAD -- \
+          "$AMALGAM/curriculum_start.py" "$AMALGAM/curriculum_start_protocol.json"
+        python -B "$AMALGAM/curriculum_start.py" "$RUNNER_TEMP/amalgam-replay-parents" \
+          "$AMALGAM/curriculum-start-dev-01" --replay
+        test -z "$(git status --porcelain)"
     - name: Cold-replay every sealed descendant on Windows
       if: runner.os == 'Windows'
       shell: bash
