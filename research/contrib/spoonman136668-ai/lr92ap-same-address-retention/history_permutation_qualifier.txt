@@ -1,0 +1,84 @@
+LR-92AP — ONLINE PAST-ONLY RANDOM HISTORY-PERMUTATION SHAM
+=================================================================
+Date: 2026-11-19. Development qualification, NOT protected Yggdrasil science.
+Existing draft PR #1323, parent c039db9d07ddf966d4b12c357425d4b9fc2ec067.
+Main base 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9; no native model, training owner, runner, or accepted ref mutated.
+
+REPRODUCTION / CUSTODY
+----------------------
+Baseline conventional FullHistory14 exact source:
+  matched_tabular_controls.py.txt
+  SHA256 2a6b73ba298646a5c955d5b9eb891af8daa0dfab72f52e2b39a6c27c86baca21
+  Git blob 7a223f6b097eb6e461853685195ba4b89af2f2b6
+New source history_permutation_sham.py.txt:
+  SHA256 8a5794c722289447e7865e0da9ae15f94fef3c4ea5ce01ca1db0eb3429e99a6f
+  Git blob 279c502f6e3520a391f8fa1efe77b2cea4d52821
+New tests test_history_permutation_sham.py.txt:
+  SHA256 55a1f98509b6e9cca2fabe72ff37e4635f1b4f792d71f640a63c0fdf79548394
+  Git blob f1a549b211b75439287e54c52139eb292de7896d
+Source/test Git blob hashes independently match local bytes executed under
+Python 3.13.5 Linux. To reproduce, copy all three .txt files to corresponding
+.py names in one directory, then:
+  python -m unittest -v test_history_permutation_sham.py
+  python history_permutation_sham.py
+
+PROSPECTIVE SHAM DESIGN
+-----------------------
+Fixtures are exactly the two ALREADY EXPOSED development seeds
+73004303 and 73004304; all protected primary seeds are explicitly rejected.
+For each seed, evaluate 1024 public action/outcome observations with 128
+warmup and 896 scored prequential predictions, separately under:
+1) history_xor: y = current action XOR previous action XOR second previous
+   action with Bernoulli(0.15) observation noise.
+2) action_only: y = current action with the same 0.15 observation-noise rate;
+   this is a null control for spurious temporal advantage.
+
+Both arms use the same FullHistory14 conventional model (480 persistent
+learned/history bytes, below the 928-byte cap); the exact public action/y
+tape and per-event update counts are identical within each pair.
+Aligned arm receives actual prior two public actions. Permutation arm draws
+two distinct prior POSITIONS from an online seeded shuffle of the preceding
+up-to-32 ACTUAL public actions, never any future action or hidden y.
+The randomizer is evaluator-side, seeded as fixture_seed XOR 0x34A7D19,
+independent of public labels. It does not add learned parameters or memory.
+This is a fixed randomized online history permutation, not label permutation,
+not every possible permutation, and not an original independent science run.
+
+DEVELOPMENT SCORES (BRIER LOWER BETTER)
+---------------------------------------
+family        seed       aligned       permuted       changed contexts / 1024
+history_xor   73004303   0.127772273   0.254894634    766
+history_xor   73004304   0.143632916   0.256659386    759
+action_only   73004303   0.126717620   0.126688852    766
+action_only   73004304   0.126208716   0.125116469    759
+Paired action/outcome SHA256 digests in the same row order:
+  6035d0da21d60942fabb951a7ffc1dbb8152754cf1ccd72879c284be273cb278
+  049aa7599e7469b4c4e7b53848412e62d18437caf4dbb6200cb3cce7845bda41
+  ed9f9913f4bd957b79d338565a8446e858b4c086f64af9f83aca1b79297a67ea
+  75fcbc02015c833d837d2967fd225212ddef3d37377ac4443439a3d6e6125dfb
+
+QUALIFICATION / LIMITATIONS
+---------------------------
+Exactly locally executed new tests: 7/7 PASS; repeat discovery 7/7 PASS;
+standard library compileall PASS. Deterministic replay, no protected seeds,
+past-only prefix invariance, permutation diversity, same input digest,
+positive history-dependent comparison, action-only null, and model-byte
+budget checked. 15 repeats of the four fixture evaluations: median 0.038634
+seconds (min 0.037887, max 0.040374) on this LOCAL Python/Linux host only,
+not a whole-process or cross-platform speed comparison.
+
+This is an effective falsification of accidental predictive benefit from
+misaligned historical actions in a constructed time-dependent XOR fixture.
+The null action-only cohort shows no systematic advantage to alignment.
+It is NOT evidence of novel causal reasoning, unfamiliar transfer, retention
+of A through same-address B interference, or native model training.
+Prior lagged-history sham is different and remains preserved.
+
+OUTSTANDING FROZEN PROTOCOL GATES
+--------------------------------
+Full Bayesian change-point/2-regime conventional controls, RF32 strongest
+reference, protected source-birth custody, and fixed 64/64/64 regime-schedule
+confound remain. This completes a reproducible online history-permutation
+ablation, but not all scientific controls. DO NOT consume protected primary
+before full source/owner authorization and native regression. 288 protected
+worlds UNRUN. SCIENTIFIC_PASS UNVERIFIED; MERGE/DEPLOYMENT HOLD.

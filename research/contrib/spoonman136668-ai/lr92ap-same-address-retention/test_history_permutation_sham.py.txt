@@ -1,0 +1,87 @@
+"""Frozen non-primary permutation sham qualification; standard-library only."""
+import hashlib
+import random
+import unittest
+from dataclasses import asdict
+from matched_tabular_controls import FullHistory14
+from history_permutation_sham import (
+    DEV_SEEDS, POOL, WARMUP, LENGTH, public_tape,
+    permuted_history, evaluate, fixture_summary,
+)
+
+
+class HistoryPermutationTests(unittest.TestCase):
+    def test_no_reserved_first_use_and_bad_inputs(self):
+        for reserved in (929209101, 929209102, 929209103):
+            with self.assertRaises(ValueError):
+                evaluate(reserved, 'history_xor')
+        for invalid in ('', 'phase_switch', 'Areturn'):
+            with self.assertRaises(ValueError):
+                evaluate(DEV_SEEDS[0], invalid)
+        for warm in (-1, LENGTH):
+            with self.assertRaises(ValueError):
+                evaluate(DEV_SEEDS[0], 'history_xor', warmup=warm)
+
+    def test_perm_is_past_only_and_never_uses_future(self):
+        observed = [int(i % 3 == 0) for i in range(100)]
+        for prefix_len in range(0, 95):
+            before = observed[:prefix_len]
+            future = observed[prefix_len:] + [1]*100
+            r0 = random.Random(42167)
+            r1 = random.Random(42167)
+            h0 = permuted_history(before, r0)
+            h1 = permuted_history((before + future)[:prefix_len], r1)
+            self.assertEqual(h0, h1)
+            self.assertTrue(all(bit in (0,1,2) for bit in h0))
+            if prefix_len >= 2:
+                self.assertNotIn(2, h0)
+                self.assertEqual(len(h0), 2)
+                self.assertIn(h0[0], before[-POOL:])
+                self.assertIn(h0[1], before[-POOL:])
+
+    def test_perm_has_diverse_picks_but_no_label_oracle(self):
+        past = [0,0,0,0,1,1,1,1,0,1]*4
+        picks = {permuted_history(past, random.Random(1000+i)) for i in range(200)}
+        self.assertEqual(picks, {(0,0), (0,1), (1,0), (1,1)})
+        a = list(public_tape(DEV_SEEDS[0], 'history_xor', 150))
+        b = list(public_tape(DEV_SEEDS[0], 'history_xor', 150))
+        self.assertEqual(a,b)
+
+    def test_same_tape_and_deterministic_cold_replay(self):
+        for family in ('history_xor', 'action_only'):
+            for seed in DEV_SEEDS:
+                a = evaluate(seed, family)
+                self.assertEqual(a, evaluate(seed, family))
+                self.assertEqual(a.n_observations, LENGTH)
+                self.assertEqual(a.n_scored, LENGTH-WARMUP)
+                self.assertGreater(a.n_different_histories, LENGTH//3)
+                tape = bytes(v for row in public_tape(seed, family) for v in row)
+                self.assertEqual(hashlib.sha256(tape).hexdigest(), a.action_outcome_sha256)
+
+    def test_history_sensitive_positive_control(self):
+        for seed in DEV_SEEDS:
+            res = evaluate(seed, 'history_xor')
+            self.assertLess(res.aligned_brier, res.permuted_brier)
+            self.assertLess(res.aligned_brier, 0.20)
+            self.assertGreater(res.permuted_brier, 0.22)
+
+    def test_action_only_null_and_both_arms_equal_budget(self):
+        for seed in DEV_SEEDS:
+            res = evaluate(seed,'action_only')
+            self.assertGreaterEqual(res.aligned_brier, 0)
+            self.assertGreaterEqual(res.permuted_brier, 0)
+            self.assertLess(res.aligned_brier,0.20)
+            self.assertLess(res.permuted_brier,0.20)
+        a=FullHistory14(); b=FullHistory14()
+        self.assertEqual(a.LEARNED_BYTES,b.LEARNED_BYTES)
+        self.assertEqual(a.CHECKPOINT_BYTES,b.CHECKPOINT_BYTES)
+        self.assertLessEqual(a.LEARNED_BYTES,928)
+
+    def test_no_shuffle_on_empty_single_history(self):
+        rng = random.Random(123)
+        self.assertEqual(permuted_history([],rng),(2,2))
+        self.assertEqual(permuted_history([1],rng),(1,2))
+
+
+if __name__=='__main__':
+    unittest.main()
