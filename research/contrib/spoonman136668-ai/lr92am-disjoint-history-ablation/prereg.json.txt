@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "LR-92AM",
+  "contributor": "spoonman136668-ai",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    {
+      "pr": 1302,
+      "head": "a0ce5bf75e9ad436844c42f23b58460a02a502bf",
+      "classification": "development-supported but sham invalid"
+    },
+    {
+      "pr": 1297,
+      "head": "c9c8abb260855b85cf3a4ca9a660e12f1cf66dc5",
+      "classification": "retrospective misrouting diagnostic"
+    }
+  ],
+  "question": "Does a causal-memory learner use temporally aligned intervention histories and generalize to unrepresented interaction mechanisms?",
+  "hypothesis": "Three action identities 0/1/2 (2=rest) anchor lag effects and prevent the binary inversion symmetry. Randomly permuting fit-only predecessor-history pairs breaks the real temporal association. Learned lag2 prediction should exceed the shuffled sham, but OOD AND/parity history may expose representation failures.",
+  "scope": "New independent synthetic Bayesian causal study. NOT native Yggdrasil training, exact predecessor replication, or authority for science/promotion.",
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92am-disjoint-history-ablation/"
+  ],
+  "inputs": [
+    {
+      "name": "new procedural synthetic worlds",
+      "source": "deterministic source committed before primary scoring; no external data",
+      "sha256": "source SHA recorded at source commit"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      929206101,
+      929206102,
+      929206103
+    ],
+    "families": [
+      "static",
+      "lag1",
+      "lag2",
+      "OOD_AND",
+      "OOD_XOR"
+    ],
+    "worlds_per_family_per_seed": 12,
+    "total_worlds": 180,
+    "capacity": "320 hypotheses = 64 base Boolean tables for (q=0/1,current action=0/1/2) × 5 temporal types (static,lag1 trigger 0/1,lag2 trigger 0/1). Priors .6 static, .1 each other subtype. First-order control uses static .75 and two lag1 types .125 each. No model capacity changes after results.",
+    "data_budget": "Each world exactly 32 context0 +64 context1 fit labels, then disjoint 256 context1 validation +128 cold context0 validation; observation bit flip probability .25; actions uniform 0/1/2 from frozen RNG; matched fit data for all policies.",
+    "controls": [
+      "same-tape first-order Bayesian learner",
+      "original winner-family gate at posterior threshold .55",
+      "ungated full Bayesian mixture",
+      "true history-destroying sham: independently permute previous-action pair records within q0 and q1 training splits, labels and current actions unchanged, evaluate on real heldout histories",
+      "fully fitted random forest with 32 trees and min_leaf=2 using same 96 fit rows and q,a,previous1,previous2 features"
+    ],
+    "metrics": [
+      "q1 heldout binary accuracy by family and arm",
+      "cold q0 retention accuracy",
+      "lag2 versus same-tape first-order and shuffled sham",
+      "pooled OOD performance vs fitted RF32",
+      "posterior family confusion",
+      "time cost"
+    ],
+    "evaluation": "Probability >=.5 predicts 1. Paired world scores, 5000 descriptive seed-stratified bootstrap draws with fixed seed 929206901, no postscore optimization. Exactly one complete primary on 180 worlds and one read-only audit.",
+    "budget": "Isolated CPU max 240 seconds, no paid APIs, no extra scored cohorts, no protected/native Yggdrasil runner."
+  },
+  "classification_rules": {
+    "supported": "All five criteria: lag1 gate >= first-order minus 1pp; lag2 gate - first-order >= +5pp; lag2 gate - permuted-fit-history sham >= +3pp; all-family cold q0 gate >= first-order minus 1.5pp; pooled OOD AND+XOR gate >= fully fitted RF32 minus 3pp; all integrity controls pass. Development only, not scientific acceptance.",
+    "mixed": "Exactly one criterion narrowly missed by <=1pp, all others pass and integrity holds.",
+    "negative": "Integrity holds but supported/mixed not met => DEVELOPMENT_NO_GO.",
+    "invalid": "Seed exposure before prereg, heldout leakage, invalid shuffle, unmatched fit observations, missing comparator, source drift, incomplete result, or forbidden native first-use. Poor performance alone is never infrastructure invalidity."
+  },
+  "prohibited_after_primary_run": [
+    "source/threshold/seed/split changes",
+    "family/capacity changes",
+    "extra primary cohorts",
+    "postscore policy selection",
+    "hidden label leakage",
+    "native/accepted-ref/controller/promotion changes"
+  ],
+  "authority": {
+    "research_only": true,
+    "native_training": false,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_scientific_first_use": false,
+    "merge": false
+  }
+}
