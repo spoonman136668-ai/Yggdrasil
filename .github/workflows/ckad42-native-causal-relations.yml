@@ -1,0 +1,56 @@
+name: CKAD42 native causal-intervention relations DEV only
+on:
+  push:
+    branches:
+      - research/ckad42-online-intervention-relations-20261118
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  dev:
+    if: "github.event.head_commit.message == 'ci(ckad42): frozen development-only source qualification'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Disable platform line-ending rewrites
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin prereg and reject any pilot or primary artifact
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 05f37a8675177b102b041741a1d3b678598a411e HEAD
+          git merge-base --is-ancestor c4aca6373211487f8cbe07ef0f64f88b937bd0f2 HEAD
+          test ! -e research/contrib/chatgpt/CKAD-42/pilot_screen_report.json
+          test ! -e research/contrib/chatgpt/CKAD-42/primary_report.json
+          python -B -c "import ast,pathlib; d=pathlib.Path('research/contrib/chatgpt/CKAD-42'); [ast.parse(p.read_text()) for p in d.glob('*.py')]"
+          python -B research/contrib/chatgpt/CKAD-42/campaign.py --mode preflight
+      - name: Frozen unit and negative-control tests (no scored DEV seeds)
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-42 -p test_ckad42.py -v
+      - name: Exactly two new DEV seeds trained; negative science does not fail engineering
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-42/screen_dev.py
+          test -z "$(git status --porcelain)"
