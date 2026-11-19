@@ -81,7 +81,9 @@ class ProspectiveActionIdentifiabilityTests(unittest.TestCase):
         self.assertEqual(result["declared_changed_families"], 4)
         self.assertEqual(result["declared_unchanged_controls"], 2)
         self.assertTrue(result["both_actions_need_conditional_selection"])
-        self.assertEqual(result["declared_action_budget_sum_not_approval"], 96)
+        self.assertEqual(result["declared_action_budget_sum_per_arm_not_approval"], 96)
+        self.assertEqual(result["declared_control_arms"], 10)
+        self.assertEqual(result["declared_total_action_budget_all_arms_not_approval"], 960)
         self.assertEqual(len(result["cells"]), 6)
         self.assertEqual(result["original_source_actions_performed"], 0)
         self.assertFalse(result["first_use_allowed"])
@@ -146,6 +148,29 @@ class ProspectiveActionIdentifiabilityTests(unittest.TestCase):
         self.sample["cells"][1]["mechanism_sha256"] = (
             self.sample["cells"][0]["mechanism_sha256"])
         self.rejects("SAME_MECHANISM_CLAIMED_AS_DIFFERENT_FAMILY")
+
+    def test_seed_reused_for_distinct_worlds_fails(self):
+        self.sample["cells"][1]["seed_id"] = self.sample["cells"][0]["seed_id"]
+        self.rejects("SEED_ASSIGNED_MULTIPLE_WORLDS")
+
+    def test_world_cannot_claim_two_families(self):
+        self.sample["cells"][1]["world_id"] = self.sample["cells"][0]["world_id"]
+        self.rejects("WORLD_COHORT_CONFLICT")
+
+    def test_total_budget_counts_all_matched_controls(self):
+        # This declaration consumes 128 actions * six worlds * ten arms,
+        # not merely the cost of one model.
+        for record in self.sample["cells"]:
+            record["per_arm_action_cap"] = 128
+        result = AUDIT.audit_candidate(self.sample)
+        self.assertEqual(result["declared_action_budget_sum_per_arm_not_approval"], 768)
+        self.assertEqual(result["declared_total_action_budget_all_arms_not_approval"], 7680)
+        self.assertFalse(result["first_use_allowed"])
+
+        config = json.loads(AUDIT.PROTOCOL.read_bytes())
+        config["proposed_science"]["budgets"]["total_source_action_ceiling_not_authorization"] = 7679
+        with self.assertRaisesRegex(ValueError, "ACTION_IDENTIFIABILITY_SOURCE_CEILING_EXCEEDED"):
+            AUDIT.audit_candidate(self.sample, prereg=config)
 
     def test_consumed_original_mdp_seed_fails(self):
         self.sample["cells"][0]["seed_id"] = 996100
