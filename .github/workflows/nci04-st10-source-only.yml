@@ -48,3 +48,50 @@ jobs:
         run: |
           git diff --exit-code
           test -z "$(git status --porcelain)"
+
+  atlas:
+    name: ST10 bounded generated-only G29 companion
+    if: "${{ !startsWith(github.event.head_commit.message, 'chore(g29):') }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Enforce exact ST9 ancestry and sole ST10 source delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/nci04-st10-evidence-gated-probes-20261118"
+          git merge-base --is-ancestor fa16e1a2ed2c18e8e4446d6703cee0b1fba86d95 HEAD
+          test "$(git rev-parse HEAD:research/nci04_st9/native_repair.py)" = 8409f7e3352aabb6a5937a6a7443f2dc4a82f07a
+          test "$(git rev-parse HEAD:research/nci04_st9/private_world.py)" = d1bdf67503bd797d79386406820679b70403e8bb
+      - name: Generate the three original source-pinned G29 artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python -B - <<'PY'
+          import subprocess
+          got=set(subprocess.check_output(
+              ["git","diff","--name-only"],text=True).splitlines())
+          expect={".ice/code-atlas.json",".ice/code-atlas.html",".ice/code-atlas.ice"}
+          assert got==expect,(got,expect)
+          print("ST10_G29_GENERATED_ONLY_DELTA=PASS")
+          PY
+      - name: Publish bounded derived-only companion to the same research branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --exit-code && exit 1 || true
+          git commit -m "chore(g29): generated-only ST10 source-pinned atlas"
+          git push origin "HEAD:refs/heads/research/nci04-st10-evidence-gated-probes-20261118"
