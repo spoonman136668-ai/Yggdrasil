@@ -1,0 +1,64 @@
+{
+  "schema": "nci05.uniform-null.false-confidence-bound.v1",
+  "date": "2026-11-19",
+  "type": "SOURCE_FREE_EXACT_NULL_AUDIT_NO_FIRST_USE",
+  "classification": "ENGINEERING_ONLY_ANALYTICAL_NOT_SCIENCE",
+  "parent_draft_pr": 1333,
+  "parent_sha": "46e7ac86c5978812effe4dfbab622fd1f909e6a1",
+  "prior_frozen_prereg_blobs": {
+    "initial": "4079bfa4ba2bd9394641dcc3bbd70726d5b204be",
+    "two_public_challenges": "5ba9503358d634c729c2220f9ce5c3e4b9cb6149"
+  },
+  "prior_source_blobs": {
+    "role_probe": "86a3e461dbd3bf0adc0e172321f087ceed4c0e51",
+    "challenge_guard": "d8e6f690a0e3c9acd46b23904b207e9d6a72f187",
+    "retrospective_fixed_audit": "8ba5fa10874ad261fc392ef378184a6dd5c50e09"
+  },
+  "hypothesis": "Under a fully unrestricted 64-output Boolean truth table sampled uniformly, seven distinct observed public consequences can accidentally be consistent with a supplied ten-law single-factor XOR grammar. Quantify conditional-support false assurance exactly, not just off-family toy rejection counts.",
+  "null_population": "All 2^64 Boolean functions over six public input bits, with uniformly independent fair public outcome bits at each 6-bit mask. This is an analytic distributional null, NOT any actual source-owned environment.",
+  "query_contract": {
+    "initial": "Five original public masks, fixed by the known action-bit role, selected before observing consequences.",
+    "challenge": "If and only if a unique role is proposed on all five outcomes, two distinct public challenges are selected from proposed factor and all-five mask; chosen before learning their outcomes.",
+    "no_proposal": "Stop/abstain, no challenges executed. For combinatorial probability denominator, the two unused uniform Bernoulli outcomes are mathematically integrated out, NOT actually requested.",
+    "action_positions": "All six known action-bit placements 0..5, with identical independent-null distribution.",
+    "conditioning": "No true factor-role labels and no oracle outcomes passed to proposal or challenge.",
+    "distinctness": "All seven actually queried masks must be distinct when candidate exists.",
+    "total_prefix_vectors": 32,
+    "candidate_prefix_vectors": 10,
+    "candidate_fraction": "10/32",
+    "continuation_null_vectors_per_candidate": 4,
+    "expected_conditional_support_vectors": 10,
+    "expected_rejected_vectors": 30,
+    "expected_abstain_vectors_with_two_unused_null_bits_integrated": 88,
+    "total_normalized_seven_bit_vectors": 128,
+    "unconditional_conditional_support_probability": "10/128=0.078125",
+    "conditional_support_given_candidate_probability": "1/4",
+    "exact_global_truth_conditional_support_probability_given_uniform_64_table": "1/2^57",
+    "full_table_unobserved_bits_after_seven": 57
+  },
+  "frozen_controls": [
+    "Independently enumerate all 2^5 initial outcome patterns and all 2^2 challenge outcome continuations, each action placement; no toy source co-generation or primary seeds.",
+    "Original infer_conditional_role and assess_public_challenges used byte-exact from parent PR; do not tune or change algorithms.",
+    "Independent 10-law exact symbolic control agrees on all unique five-query proposals.",
+    "All initial prefixes with no unique role abstain, including all four normalized unused-outcome continuations; actual public queries=5 only.",
+    "Of 40 normalized continuations from 10 initial candidate prefixes, exactly 10 support and 30 reject, subject to original two-query checks.",
+    "Given a matching observed seven-bit pattern there are 2^57 distinct unrestricted six-bit functions, just one equal to the resulting single-factor XOR over the entire space.",
+    "Unrestricted adversarial higher-order function agrees on seven queried masks and differs at one unseen mask, so globally_certified/native_admission/scientific_pass remain false.",
+    "Retrospective optimized fixed control from earlier 840 toy case sample cannot be treated as a prospectively validated advantage.",
+    "All six action-bit permutations produce same count and exact-source determinism on Windows and Linux.",
+    "No owner model access, protected scientific original first use, native training, new controller, scheduled tasks, code promotion or merge."
+  ],
+  "success": "Exact counts 10 support/30 reject/88 normalized-abstain out of 128, identical across 6 action positions and platforms; explicit 2^57 global-identifiability gap.",
+  "failure": "Any structural mismatch => ENGINEERING_FAIL; do not retune already exposed masks/grammar to force outputs.",
+  "interpretation": "This is a conditional-prior calibration and information-bound witness only, not a confidence calibration of actual natural causal worlds or proof of native learning.",
+  "authority": {
+    "original_first_use": false,
+    "owner_checkpoint": false,
+    "merges": false,
+    "accepted_model": false,
+    "scheduled_execution": false,
+    "new_controller": false,
+    "paid_api": false,
+    "deployment": false
+  }
+}

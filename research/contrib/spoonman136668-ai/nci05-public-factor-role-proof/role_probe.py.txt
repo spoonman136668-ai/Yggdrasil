@@ -1,0 +1,134 @@
+"""NCI-05 source-free conditional role probe; NOT a native learner.
+
+A public action-bit coordinate is known.  The unknown cause is one of five
+other bits, under an EXPLICIT SUPPLIED y=a XOR x[j] XOR bias family.
+Five real public interventions identify j and bias in this limited grammar.
+Never treat this as proof that no unobserved higher-order factor exists.
+No protected source, native model, oracle phase/role, or learned checkpoint.
+"""
+from __future__ import annotations
+from dataclasses import dataclass
+from hashlib import sha256
+import json
+
+FAMILY = "SINGLE_PUBLIC_BIT_XOR_WITH_UNKNOWN_OFFSET_SUPPLIED_PRIOR"
+CODES = (1, 2, 3, 4, 5)
+PUBLIC_BITS = 6
+PROBES = 5
+
+
+def _action(action_bit: int) -> int:
+    if type(action_bit) is not int or not 0 <= action_bit < PUBLIC_BITS:
+        raise ValueError("NCI05_ACTION_BIT_INVALID")
+    return action_bit
+
+
+def candidates(action_bit: int) -> tuple[int, ...]:
+    a = _action(action_bit)
+    return tuple(i for i in range(PUBLIC_BITS) if i != a)
+
+
+def probe_masks(action_bit: int) -> tuple[int, ...]:
+    """A committed, source-independent public 5-action intervention schedule."""
+    a = _action(action_bit)
+    bits = candidates(a)
+    masks = [0]
+    for k in range(3):
+        mask = sum(((CODES[j] >> k) & 1) << bits[j] for j in range(5))
+        masks.append(mask)
+    masks.append(1 << a)
+    assert len(masks) == PROBES and len(set(masks)) == PROBES
+    assert all(0 <= x < 64 for x in masks)
+    return tuple(masks)
+
+
+def _receipts(action_bit: int, observations) -> tuple[tuple[int, int], ...]:
+    """Only witnessed public (chosen-mask,outcome) pairs, no source role label."""
+    schedule = frozenset(probe_masks(action_bit))
+    if type(observations) not in (tuple, list):
+        raise ValueError("NCI05_BAD_PUBLIC_OBSERVATIONS")
+    if len(observations) > PROBES:
+        raise ValueError("NCI05_EXTRA_OR_UNPLANNED_EFFECT")
+    found = {}
+    for item in observations:
+        if (type(item) not in (tuple, list) or len(item) != 2
+                or type(item[0]) is not int or item[0] not in schedule
+                or type(item[1]) is not int or item[1] not in (0, 1)):
+            raise ValueError("NCI05_UNPLANNED_OR_NONPUBLIC_EFFECT")
+        mask, effect = item
+        if mask in found:
+            raise ValueError("NCI05_DUPLICATE_PUBLIC_INTERVENTION")
+        found[mask] = effect
+    return tuple(sorted(found.items()))
+
+
+@dataclass(frozen=True)
+class ConditionalRoleProposal:
+    """A hypothesis under a supplied family, never a source certificate."""
+    factor_bit: int
+    offset: int
+    action_bit: int
+    public_effect_count: int
+    evidence_sha256: str
+    family: str = FAMILY
+    globally_certified: bool = False
+    native_admission: bool = False
+    scientific_pass: bool = False
+
+    def predict_under_prior(self, public_sixbit_mask: int) -> int:
+        if (type(public_sixbit_mask) is not int
+                or not 0 <= public_sixbit_mask < 64):
+            raise ValueError("NCI05_PUBLIC_INPUT_INVALID")
+        return (self.offset
+                ^ ((public_sixbit_mask >> self.factor_bit) & 1)
+                ^ ((public_sixbit_mask >> self.action_bit) & 1))
+
+
+def infer_conditional_role(action_bit: int, observations) -> ConditionalRoleProposal | None:
+    """Propose only after all five actual public effects support the XOR prior.
+
+    None means missing/contradictory/unsupported; it is never a positive
+    proof about the absence of unseen nonlinear or hidden causes.
+    """
+    a = _action(action_bit)
+    rows = _receipts(a, observations)
+    if len(rows) != PROBES:
+        return None
+    observed = dict(rows)
+    masks = probe_masks(a)
+    baseline = observed[0]
+    if (baseline ^ observed[masks[4]]) != 1:
+        return None
+    signature = sum((baseline ^ observed[masks[k + 1]]) << k for k in range(3))
+    if signature not in CODES:
+        return None
+    j = CODES.index(signature)
+    evidence = json.dumps([a, [[m, v] for m, v in rows]], separators=(",", ":"))
+    return ConditionalRoleProposal(
+        factor_bit=candidates(a)[j], offset=baseline, action_bit=a,
+        public_effect_count=PROBES,
+        evidence_sha256=sha256(evidence.encode("ascii")).hexdigest())
+
+
+def exact_symbolic_control(action_bit: int, observations) -> tuple[tuple[int, int], ...]:
+    """Independently enumerate the 10 equally informed supplied-prior laws."""
+    a = _action(action_bit)
+    rows = _receipts(a, observations)
+    viable = []
+    for factor in candidates(a):
+        for offset in (0, 1):
+            if all((((mask >> a) & 1) ^ ((mask >> factor) & 1)
+                    ^ offset) == outcome for mask, outcome in rows):
+                viable.append((factor, offset))
+    return tuple(viable)
+
+
+def conditional_public_effect(mask: int, *, action_bit: int,
+                              factor_bit: int, offset: int) -> int:
+    """Pure source-free mathematical test witness, NOT a scored world."""
+    a = _action(action_bit)
+    if (type(mask) is not int or not 0 <= mask < 64
+            or type(factor_bit) is not int or factor_bit not in candidates(a)
+            or type(offset) is not int or offset not in (0, 1)):
+        raise ValueError("NCI05_TEST_WITNESS_INVALID")
+    return ((mask >> a) & 1) ^ ((mask >> factor_bit) & 1) ^ offset

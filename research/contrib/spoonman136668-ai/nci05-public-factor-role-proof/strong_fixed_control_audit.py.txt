@@ -1,0 +1,147 @@
+"""NCI-05F retrospective strong-control audit (exposed source-free laws).
+
+NOT a preregistered new experiment. No original source, owner checkpoint,
+trainer, world generator, or future accepted model is used.
+
+Question: after the original 5 public outcomes, does the alleged extra
+2-query adaptive detection gain remain against an *optimized fixed* same-
+budget control that knows only the public action bit and the supplied toy
+grammar, NOT the inferred role, hidden law or realized outcomes?
+
+Enumerate all 900 disclosed off-family toy Boolean laws, identify the 624
+which alias a unique 5-query in-prior role; then enumerate every unordered
+pair of unused 6-bit masks for each of six public action bit positions.
+The comparator is deliberately post-hoc grammar-aware (upper bound), not a
+new prospective precommitted empirical baseline or a native learner.
+"""
+from __future__ import annotations
+
+from itertools import combinations
+from hashlib import sha256
+import json
+
+from role_probe import candidates, probe_masks, infer_conditional_role
+from challenge_guard import fixed_budget_control_masks, challenge_masks
+
+FAMILIES = ("two_factor_parity", "two_factor_and", "single_xor_plus_pair_and")
+
+
+def supplied_offfamily_laws(action_bit):
+    """Yield each named, fully specified 6-bit truth table exactly once."""
+    factors = candidates(action_bit)
+    for bias in (0, 1):
+        for p, q in combinations(factors, 2):
+            for family in ("two_factor_parity", "two_factor_and"):
+                outcomes = []
+                for mask in range(64):
+                    action = (mask >> action_bit) & 1
+                    x, y = (mask >> p) & 1, (mask >> q) & 1
+                    interaction = x ^ y if family == "two_factor_parity" else x & y
+                    outcomes.append(bias ^ action ^ interaction)
+                yield family, tuple(outcomes)
+        for j in factors:
+            for p, q in combinations(factors, 2):
+                outcomes = []
+                for mask in range(64):
+                    action = (mask >> action_bit) & 1
+                    individual = (mask >> j) & 1
+                    pair = ((mask >> p) & 1) & ((mask >> q) & 1)
+                    outcomes.append(bias ^ action ^ individual ^ pair)
+                yield "single_xor_plus_pair_and", tuple(outcomes)
+
+
+def in_prior_public_prediction(action_bit, role, mask):
+    bit, offset = role
+    return ((mask >> action_bit) & 1) ^ ((mask >> bit) & 1) ^ offset
+
+
+def aliased_offfamily_cases(action_bit):
+    """All original exposed toy laws that yield a unique 5-query proposal."""
+    initial = probe_masks(action_bit)
+    examples = []
+    for family, truth in supplied_offfamily_laws(action_bit):
+        observations = [(mask, truth[mask]) for mask in initial]
+        proposal = infer_conditional_role(action_bit, observations)
+        if proposal is None:
+            continue
+        examples.append((family, (proposal.factor_bit, proposal.offset), truth))
+    return tuple(examples)
+
+
+def audit_action_bit(action_bit):
+    """Exhaustive exact symbolic fixed-mask upper control, no outcome sampling."""
+    aliases = aliased_offfamily_cases(action_bit)
+    if len(aliases) != 104:
+        raise AssertionError("NCI05_RESEARCH_INPUT_DRIFT")
+    forbidden = frozenset(probe_masks(action_bit))
+    allowed = tuple(mask for mask in range(64) if mask not in forbidden)
+    # Encode per-mask refutations of all 104 aliased hypotheses as a bitset.
+    rejects = {}
+    for mask in allowed:
+        bits = 0
+        for i, (_, role, truth) in enumerate(aliases):
+            if truth[mask] != in_prior_public_prediction(action_bit, role, mask):
+                bits |= 1 << i
+        rejects[mask] = bits
+    best_score = -1
+    best_pair = None
+    for m, n in combinations(allowed, 2):
+        hits = (rejects[m] | rejects[n]).bit_count()
+        if hits > best_score:
+            best_score, best_pair = hits, (m, n)
+    baseline = fixed_budget_control_masks(action_bit)
+    baseline_hits = (rejects[baseline[0]] | rejects[baseline[1]]).bit_count()
+    adaptive_hits = 0
+    for _, role, truth in aliases:
+        # This is the prior adaptive policy, conditioned on a 5-query role.
+        proposal_rows = [(m, truth[m]) for m in probe_masks(action_bit)]
+        proposal = infer_conditional_role(action_bit, proposal_rows)
+        masks = challenge_masks(proposal)
+        adaptive_hits += int(any(truth[m] != in_prior_public_prediction(
+            action_bit, role, m) for m in masks))
+    fam_count = {family: sum(row[0] == family for row in aliases)
+                 for family in FAMILIES}
+    return {
+        "action_bit": action_bit,
+        "all_supplied_offfamily_laws": 140,
+        "five_query_unique_role_aliases": len(aliases),
+        "aliases_by_family": fam_count,
+        "unused_public_masks": len(allowed),
+        "fixed_mask_pairs_exhaustively_checked": len(allowed)*(len(allowed)-1)//2,
+        "old_fixed_pair": list(baseline),
+        "old_fixed_rejections": baseline_hits,
+        "optimized_fixed_pair": list(best_pair),
+        "optimized_fixed_rejections": best_score,
+        "adaptive_pair_rejections": adaptive_hits,
+        "single_query_upper_rejections": max(v.bit_count() for v in rejects.values()),
+    }
+
+
+def audit_all():
+    rows = tuple(audit_action_bit(a) for a in range(6))
+    out = {
+        "identity": "NCI05F_POSTRESULT_SYNTAX_GRAMMAR_AWARE_STRONG_CONTROL_AUDIT",
+        "status": "RETROSPECTIVE_SOURCEFREE_NOT_PREREGISTERED_NOT_SCIENTIFIC",
+        "original_frozen_protocol_unmodified": True,
+        "fresh_scientific_first_use": False,
+        "owner_or_learner_touched": False,
+        "worlds_or_training_executed": False,
+        "strong_fixed_policy_is_posthoc_oracle_grammar_aware": True,
+        "per_action_bit": list(rows),
+        "aggregate": {
+            "offfamily_laws": sum(r["all_supplied_offfamily_laws"] for r in rows),
+            "five_query_unique_role_aliases": sum(r["five_query_unique_role_aliases"] for r in rows),
+            "adaptive_two_query_rejections": sum(r["adaptive_pair_rejections"] for r in rows),
+            "original_weak_fixed_two_query_rejections": sum(r["old_fixed_rejections"] for r in rows),
+            "optimized_fixed_two_query_rejections": sum(r["optimized_fixed_rejections"] for r in rows),
+            "single_query_upper_rejections": sum(r["single_query_upper_rejections"] for r in rows),
+            "fixed_pairs_exhaustively_checked": sum(r["fixed_mask_pairs_exhaustively_checked"] for r in rows)
+        },
+        "conclusion": "NO_UNIQUE_ADAPTIVE_BENEFIT_VS_POSTHOC_OPTIMIZED_EQUAL_BUDGET_FIXED_CONTROL",
+    }
+    return out
+
+
+if __name__ == "__main__":
+    print("NCI05F_STRONG_CONTROL_POSTHOC_AUDIT="+json.dumps(
+        audit_all(),sort_keys=True,separators=(",",":")))

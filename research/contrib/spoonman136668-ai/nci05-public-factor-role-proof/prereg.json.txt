@@ -1,0 +1,65 @@
+{
+  "schema": "nci05.public-factor-role.sourcefree-proof.v1",
+  "date": "2026-11-19",
+  "source_kind": "MATH_ONLY_PUBLIC_BINARY_INTERVENTIONS_NO_EXTERNAL_WORLD",
+  "status": "FROZEN_BEFORE_SOURCE_ONLY_IMPLEMENTATION_OR_PROOF",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessors": [
+    {
+      "pr": 1206,
+      "sha": "5c6b8d59847919f4bb629dc9dfeada481d25f1a8",
+      "frozen": "WSP156 declared nuisance role; independent 32-action projection capped at 8 of 16 contexts; no role inference"
+    },
+    {
+      "pr": 1187,
+      "sha": "bfd27e6d09bfc199a0b7e30dd0a97a9cc44ecd36",
+      "frozen": "WSP141 random32 future utility NO_GO"
+    },
+    {
+      "pr": 1330,
+      "sha": "81d0dcdcf0118be767edc49e8192d942e58df934",
+      "frozen": "LR92AR phase blind selector DEV_NO_GO"
+    }
+  ],
+  "hypothesis": "Given known public intervention/action-bit position and a separately declared one-active-bit XOR causal family (but NOT which factor is active or polarity), a 5-query non-adaptive public probe schedule identifies which of remaining 5 bits is causal and unknown XOR offset. A mandatory fifth action-flip probe tests action sensitivity. This is the strongest possible statement; never infer unrestricted new laws.",
+  "public_contract": {
+    "bits": 6,
+    "action_bit": "integer 0..5 known to public learner; not hidden",
+    "candidate_factor_bits": "other five bit positions, sorted",
+    "hypotheses": "10 exact single-factor XOR-with-offset laws: y=a XOR x_j XOR bias, j among 5, bias among {0,1}",
+    "factor_role_private": "learner never receives j, bias or hidden source truth",
+    "planned_queries": "baseline mask0, then three 0-action masks whose five candidate-bit column codes are [1,2,3,4,5], then action_only mask (1<<action_bit); 5 unique intervention masks total",
+    "informative_observations": "only actual public (mask, binary outcome) pairs supplied to candidate and independent exact version-space control",
+    "prediction_order": "no outcome generated before public action query; outputs do not depend on private family labels",
+    "source_data": "pure exhaustive algebraic public sourcefree cases: 6 action-bit locations x 5 unknown factors x 2 offset bits=60 cases; NO stochastic seed / protected world"
+  },
+  "frozen_controls": [
+    "independently enumerate all 10 supplied XOR hypotheses using ONLY same five public observed outcomes and require exact equality of resulting candidate hypotheses",
+    "for all 60 allowed toy laws, probe role must identify exact j and offset, return UNKNOWN on missing evidence",
+    "action-independent y=x_j XOR bias must FAIL mandatory fifth a=1 flip test",
+    "off-family deterministic AND nuisance interaction can agree with all five probes but disagree on an unqueried sixth: candidate MUST label result as conditional and NOT GLOBAL_CERTIFIED",
+    "public tampering, duplicate masks, out-of-domain bits and extra unqueried rows fail closed",
+    "full role permutation invariance over all six possible known action bit placements",
+    "no serialised learned checkpoint; this is a shadow-only research witness generator, not a native learner"
+  ],
+  "success": "all 60 bounded supplied-prior XOR roles uniquely identifiable with exact symbolic control agreement, every adversarial indistinguishability and invalid packet refusal passes. This is source-free engineering PASS only.",
+  "scientific_status": "NOT_SCIENTIFIC_PASS; no novel unsupplied operator or unfamiliar generalization; no trained conventional baseline",
+  "integration_interface": {
+    "observation": "read-only public do mask/outcome receipts; freeze proposed role and confidence as diagnostic",
+    "native_candidate": "WSP-156 stage_partial_sixbit_bundle REQUIRES caller-declared trusted role and source receipt; DO NOT forge, rewrite or submit a guessed role as owner-certified source",
+    "cumulative": "No NativeCausalAmalgam.observe_experience invocation; typed 6-bit/5-field event adapter absent and controlled by central integration coordinator",
+    "owner": "NONE"
+  },
+  "authority": {
+    "protected_original_first_use": false,
+    "owner_model_or_checkpoint_access": false,
+    "merge": false,
+    "model_restart": false,
+    "scheduler": false,
+    "new_controller": false,
+    "paid_api": false,
+    "deployment": false
+  },
+  "expected_known_limit": "For arbitrary six-input Boolean laws, any unqueried 6-bit action may have a differing consequence while agreeing on five observed actions; never issue global role certainty from finite witnesses alone.",
+  "stop_criterion": "Any mismatch or unexpected behavior => ENGINEERING_NO_GO, no retuning against exposed source-only examples."
+}
