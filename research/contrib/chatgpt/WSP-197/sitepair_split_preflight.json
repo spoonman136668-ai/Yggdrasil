@@ -1,0 +1,96 @@
+{
+  "schema": "yggdrasil.wsp197.site-pair-split-metadata-feasibility.v1",
+  "time": "2026-11-19",
+  "source": {
+    "repo": "lehner-lab/DMS2structure",
+    "sha": "3c1976b78a743d4d4c73921f047648500e671c8e",
+    "doubles_blob": "dc7ab871b69026fc5d7cb2f505cfe7f6dd36b950",
+    "doubles_bytes": 21721634,
+    "singles_blob": "de650d218e3a2aa339fa14f2849060293daa0338",
+    "previous_authentic_byte_custody_receipt": "WSP-197/original_source_receipt.json"
+  },
+  "new_observation": "Read-only genotype-only scan of authentic 21,721,634-character original doubles Git-blob data. Parsed only metadata positions 2 and 5 in each TSV row, not any numeric count/selection/fitness target. Separate read-only scan of original singles parsed position column, not numeric labels.",
+  "metadata": {
+    "original_double_genotype_rows": 535917,
+    "distinct_position_pairs": 1485,
+    "expected_position_pairs_55_choose_2": 1485,
+    "observed_position_range": "2..56",
+    "all_position_pairs_observed": true,
+    "min_mutant_genotypes_per_position_pair": 337,
+    "max_mutant_genotypes_per_position_pair": 361,
+    "site_pairs_with_less_than_361_genotypes": 45,
+    "missing_rows_vs_19x19_full_cartesian": 168,
+    "malformed_pair_metadata_rows": 0,
+    "singles_rows": 1045,
+    "single_mutant_features_per_site_min": 19,
+    "single_mutant_features_per_site_max": 19,
+    "unique_single_mutant_sites": 55
+  },
+  "wsp198_prereg": {
+    "branch": "research/wsp198-olson-factorized-transfer-20261119",
+    "first_source_prereg_blob": "d302ae414ea55959661cda40f583b449ffac5155",
+    "salt": "WSP198-OLSON55-SITEPAIR-v1",
+    "hash_input_rule": "SHA256(ASCII literal salt + NUL + decimal min site + NUL + decimal max site), first 8 digest bytes big-endian modulo 100",
+    "split_buckets": {
+      "FIT": "0..69",
+      "VALID": "70..84",
+      "DEV": "85..99"
+    }
+  },
+  "source_only_split_check": {
+    "algorithm": "Python stdlib hashlib.sha256 over 55 original single-position identities; no measured outcome values used",
+    "site_pair_groups": {
+      "FIT": 1060,
+      "VALID": 235,
+      "DEV": 190
+    },
+    "per_site_pair_genotype_bounds": [
+      337,
+      361
+    ],
+    "conservative_group_row_lower_bounds": {
+      "FIT": 357220,
+      "VALID": 79195,
+      "DEV": 64030
+    },
+    "conservative_group_row_upper_bounds": {
+      "FIT": 382660,
+      "VALID": 84835,
+      "DEV": 68590
+    },
+    "prereg_group_minima": {
+      "FIT": 700,
+      "VALID": 120,
+      "DEV": 120
+    },
+    "prereg_row_minima": {
+      "FIT": 180000,
+      "VALID": 25000,
+      "DEV": 25000
+    },
+    "group_and_row_minima_proven_from_metadata": true,
+    "minimum_mutation_site_degree": {
+      "FIT": 30,
+      "VALID": 3,
+      "DEV": 2
+    },
+    "maximum_mutation_site_degree": {
+      "FIT": 45,
+      "VALID": 15,
+      "DEV": 12
+    }
+  },
+  "limits": {
+    "numeric_input_selection_fitness_labels_parsed": false,
+    "original_held_targets_inspected": false,
+    "actual_row_by_hash_split_not_fully_materialized": "Conservative bounds prove minima; per-split exact row sums left uncomputed",
+    "label_eligibility_assumption": "Every original double mutation allele has an original measured single parental allele: original 55 x19 parent roster and 55-position pair coverage. Independent postlabel invalid source checks may still fail.",
+    "frozen_training_or_scoring_performed": false,
+    "source_science_prereg_modified": false,
+    "scientific_pass": false,
+    "protected_original_first_use_authorized": false,
+    "full_regression_not_run": true
+  },
+  "decision": "SOURCE_ONLY_SPLIT_FEASIBILITY_PASS: all WSP-198 source-level sitepair and genotype-count minima have ample conservative headroom, but this is NOT a training/baseline/held numerical science pass.",
+  "next": "Allow existing WSP-198 owner lane to continue its separate frozen evaluator development and independently authorized source-bound run, without duplicate parallel scores or modifying reserved prereg/held outcomes."
+}
