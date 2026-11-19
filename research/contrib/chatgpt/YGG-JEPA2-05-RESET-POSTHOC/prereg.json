@@ -1,0 +1,108 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YGG-JEPA2-05-RESET-POSTHOC",
+  "contributor": "ChatGPT independent JEPA research contributor",
+  "contribution_class": "ablation",
+  "question": "What portion of the original historical-native Brier change is due to the exact native context reset, versus the same next witnessed update without reset?",
+  "hypothesis": "Posthoc engineering hypothesis: resetting the mixture and reshuffling the original context blocks produces an immediate old-readout discontinuity that is separable from the underlying witnessed native update; no scientific prospective claim is made.",
+  "exact_parent_sha": "7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+  "scientific_evidence_class": "UNPREREGISTERED_POSTHOC: Both original 99231 and 99247 development scores and context reset events were already observed. This is explicitly not new confirmatory or protected source.",
+  "predecessor_evidence": [
+    "YGG-JEPA2-05 PR #1298 exact frozen consumed development; original DEV_NO_GO",
+    "Read-only source and block roster diagnostics PR #1298 comments 7023401268 and 7023581084",
+    "Native context mix reset source audit PR #1298 comment 7023728076"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/YGG-JEPA2-05-RESET-POSTHOC/prereg.json",
+    "research/contrib/chatgpt/YGG-JEPA2-05-RESET-POSTHOC/diagnose.py",
+    "research/contrib/chatgpt/YGG-JEPA2-05-RESET-POSTHOC/README.md",
+    ".github/workflows/ygg-jepa2-05-reset-posthoc.yml"
+  ],
+  "inputs": [
+    {
+      "name": "original old research checkpoints",
+      "git_blobs": [
+        "e2912ca930ad99ed23bfee4ce18d1e3945f6780a",
+        "3f076a393a15911769c0a40d37ccafc06dfaf2b7"
+      ],
+      "path": "research/contrib/chatgpt/YGG-RET01/seed-{14071,14072}-state.json"
+    },
+    {
+      "name": "original actual JEPA2-05 continued state archival",
+      "git_blobs": [
+        "33b648ef36e381a2eb753094f930a4722570b448",
+        "5b9df452e45a1ebc3faadb265ceeffbc580ed7bf",
+        "57c89a43764b9a35cec24ef9133a606b4939292a",
+        "a753d9c3caa36e6983d1478693cf1db566d449c6"
+      ],
+      "path": "research/contrib/chatgpt/YGG-JEPA2-05/original/{linux,windows}/seed-{14071,14072}-state.json"
+    },
+    {
+      "name": "immutable original result metrics",
+      "git_blob": "3db6647b6eb89624e2ca4ff990b2c48cb95b5a4b",
+      "path": "research/contrib/chatgpt/YGG-JEPA2-05/result.json"
+    },
+    {
+      "name": "exact code",
+      "git_blobs": {
+        "native_episode": "94b7e033aff18080e65d48b479a7ae4bb3aba1c8",
+        "future": "d5b557e2561428dcfb802b72a7cbba543f7b3db9",
+        "temporal": "4d3ac978e525f367daf5b80f7e29497b87c0faf7"
+      }
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      99231,
+      99247
+    ],
+    "past_seed_map": {
+      "99231": 14071,
+      "99247": 14072
+    },
+    "split": "original 32 old native episodes per seed, always the same fixed old-reference probes",
+    "ordering": "exact 16 already observed archived new events per seed in original receipt order; no access to new source",
+    "data_budget": "two already consumed archival states x 16 historical observed public consequences, zero new source actions",
+    "compute_budget": "<= 15 minutes per OS including real cold source replay and full regression",
+    "capacity": "same original native + four JEPA heads, two unused cloned future heads; no new learner",
+    "evaluator": "NativeEpisodeExperience.context_forecast on original 32 old episodes, mean of transition and conditional terminal Brier per episode; 64 scored probability observations per seed",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "original pinned cold restored model before any suffix",
+    "same post-update native state with old context as shadow, including old member weights and new event but excluding exactly the context reset",
+    "actual post-update native state including triggered context reset"
+  ],
+  "metrics": [
+    "published initial and final Brier reproduction to 1e-10 absolute",
+    "posthoc before/no-reset/after-reset Brier at every observed context-reset event",
+    "original native and 4 previous JEPA head full cold checkpoint source parity",
+    "same 32 old probes from unchanged prefix",
+    "per-platform CPU seconds and source/head/ledger hashes"
+  ],
+  "classification_rules": {
+    "supported": "POSTHOC_DIAGNOSTIC_ONLY when exact published old Brier and original learned checkpoint restore, pre/post old-native source identity and same source event replay all pass; record signed actual-minus-shadow reset effect without calling it prospective science",
+    "mixed": "POSTHOC_MIXED if source-compatible reproduction passes but one seed provides no identifiably isolated reset effect",
+    "negative": "POSTHOC_DIAGNOSTIC_NEGATIVE if source-compatible reproduction passes and signed reset effects are <=0 for both seeds",
+    "invalid": "REPRODUCTION_FAIL if any original/final published Brier differs by more than 1e-10, source/pin/provenance mismatch, original trained weights mutated, seed mismatch, unauthorized source call or replay control not exact"
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "fresh source actions",
+    "scheduled tasks",
+    "promotion/merge/model-owner mutation"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "central_coordinator": "Unified Causal Intelligence Amalgam Work chat",
+    "local_loop_must_not_run": true
+  }
+}
