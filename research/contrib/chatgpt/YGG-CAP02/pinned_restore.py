@@ -130,3 +130,68 @@ def load_pinned_cap01(raw,expected_sha):
                    original.checkpoint()==raw,
                    "EXACT_ORIGINAL_STORED_PARAMETERS")
     return original,measured
+
+
+def restore_continued_from_pinned_parent(raw,expected_sha,pinned_parent):
+    """Verify NEW witness tape using exact previously published fitted parent.
+
+    This makes a CAP02 research checkpoint reproducible without silently
+    re-training/replacing the pre-existing CAP01 learned weights. Every new
+    predicted parameter must result from source replay, with numerical ULP
+    tolerance allowed only in future/action/temporal learned tensors.
+    """
+    require_compat(type(raw) is bytes and 0<len(raw)<=MAX_CHECKPOINT_BYTES
+                   and digest(raw)==expected_sha,
+                   "CONTINUED_SHA")
+    require_compat(isinstance(pinned_parent,SegmentedNativeJEPA)
+                   and pinned_parent.new_count==32 and
+                   pinned_parent.total_count in (1054,1029),
+                   "EXACT_OLD_CONTINUATION")
+    original=pinned_parent.checkpoint()
+    require_compat(digest(original) in PINNED_ORIGINALS,
+                   "PINNED_OLD_SOURCE_NOT_REPLACED")
+    d=json.loads(raw.decode("ascii"))
+    require_compat(type(d) is dict and set(d)=={
+        "schema","archive_sha256","archive_ascii","original_count",
+        "total_count","segments","events","offsets","one","temporal","future",
+    } and d["schema"]==CAP01_SCHEMA and canonical(d)==raw,
+                   "CONTINUED_CANONICAL_SCHEMA")
+    require_compat(len(d["events"])==80 and
+                   d["original_count"]==pinned_parent.original_count and
+                   d["total_count"]==pinned_parent.total_count+48 and
+                   1<=len(d["segments"])<=MAX_SHARDS and
+                   d["archive_ascii"].encode("ascii")==pinned_parent._archive_raw
+                   and d["archive_sha256"]==pinned_parent.archive_sha256,
+                   "CONTINUED_CAPACITY_AND_ARCHIVE_PROTECTION")
+    retained=tuple(_public_event(e) for e in d["events"])
+    require_compat(retained[:32]==pinned_parent._events,
+                   "OLD_32_PUBLIC_WITNESSES_IMMUTABLE")
+    rebuilt=pinned_parent
+    for e in retained[32:]:
+        rebuilt=rebuilt.observe(e[0],e[1],{
+            "s1":e[1][0][0],"x1":e[2],"s2":e[3],
+            "x2":e[4],"y":e[5],
+        },e[6])
+    stat=compare(d,json.loads(rebuilt.checkpoint()))
+    # Restore ACTUAL source-trained parameter bytes, never the nearby
+    # platform replay floats. Also verify each independent native shard.
+    shards=[]
+    for item in d["segments"]:
+        require_compat(type(item) is dict and
+                       set(item)=={"sha256","ascii"},
+                       "NEW_NATIVE_SHARD_SCHEMA")
+        shards.append(NativeEpisodeExperience.restore(
+            item["ascii"].encode("ascii"),item["sha256"]))
+    one=tuple(ActionLatentSpecialist.from_data(z,k)
+              for z,k in zip(d["one"],("transition","reward")))
+    temporal=tuple(TemporalLatentSpecialist.from_data(z,k)
+                   for z,k in zip(d["temporal"],("transition","reward")))
+    future=tuple(FutureStateHead.restore(x) for x in d["future"])
+    offsets=tuple(tuple(x) for x in d["offsets"])
+    saved=SegmentedNativeJEPA(
+        pinned_parent._archive_raw,pinned_parent._source,
+        tuple(shards),retained,one,temporal,future,offsets)
+    require_compat(saved._validate_custody() and
+                   saved.checkpoint()==raw,
+                   "CONTINUED_EXACT_FITTED_WEIGHTS")
+    return saved,stat
