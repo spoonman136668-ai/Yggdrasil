@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "ENERGY-62",
+  "date": "2026-11-19",
+  "project": "Yggdrasil",
+  "class": "external synthethic falsification; no native Yggdrasil training or protected first use",
+  "source_parent": "b86d4b98ac933f3ae8411663c731c83dc3d08bd3",
+  "source_commit": "c46d94f3d7c07a578adfdf65c08995c34fa00661",
+  "source_archive_blob": "11e3315d492098f0657fcbdc7b1bc6a798a035d8",
+  "source_archive_sha256": "f50f0ae406c5e272fc2602fa30c568232a838b0a79c9221c21361e93ba89f4ef",
+  "scorer_sha256": "42e2bd671589e9f33ba766ba5f97c1f1a077bd2a9773f546351ccde1935d3771",
+  "independent_audit_sha256": "27a6bc44b31254e79589697ae8bd8376537b14c477ab8508a9f9b7e343936124",
+  "hypothesis": "Old-to-new persistence of learned AND/XOR primitive subexpressions improves unseen-cold causal consequence prediction at least 5 percent over conventional same-feature-bank nonlinear regressors and matched OMP softmax memory, on freshly generated five-variable compositional mechanisms.",
+  "excluded_development": {
+    "seed": 889811,
+    "world_ids": [
+      0
+    ],
+    "cases": 3,
+    "notes": "Development pilot scored BEFORE source freeze; scorer changed afterward to add softmax memory; source freeze and prereg preceded the new prospective seeds. Development data excluded."
+  },
+  "test": {
+    "screen_seeds": [
+      997711,
+      997733
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": [
+      "conditional5",
+      "nested_xor5",
+      "threshold5"
+    ],
+    "screen_worlds": 24,
+    "primary_reserved_unrun": [
+      104101,
+      104117,
+      104129
+    ],
+    "observation_data": "Each world has 8 randomized causal action bits and 2 nuisance observed bits with OLD/NEW correlations and independent COLD values; 7 hidden distinct causal role IDs. Actions are 224 unique eight-bit causal do assignments: 64 OLD train + 64 NEW train +32 held OLD +32 held NEW +32 held COLD; consequences contain a signed 2-bit XOR shared mechanism, another old or new nested 5-bit mechanism from author-designed conditional5/nested_xor5/threshold5, and Gaussian noise sigma .18. No roles or held labels enter fitting.",
+    "candidate": "Preserve old OMP5 head; learn 17 top correlated unary/pair AND/XOR primitives OLD and NEW; synthesize a NEW shared bank of unary/pair atoms plus AND/XOR pairs of non-overlapping selected primitive parents (using seven retained OLD and fourteen NEW parents); greedily fit 5-term NEW predictor with 1.12 bias to previously old-selected features. Only primitive operators supplied: no pre-listed five-bit generator high-level operators. Finite bounded search, not autonomous operator invention.",
+    "controls": [
+      "Fresh fully fitted conventional OMP5 on EXACT SAME synthesized feature bank",
+      "Fully fitted ElasticNet alpha=.025 l1_ratio=.85 on SAME feature bank",
+      "Fully fitted Ridge alpha=3 on SAME feature bank",
+      "Conventional temperature .10 softmax weighting of OLD and NEW fitted OMP5 using train NEW labels",
+      "Fully fitted RBF KernelRidge alpha=.3 gamma=.19",
+      "Fully fitted ExtraTrees n_estimators=48 max_depth=9 min_leaf=2",
+      "Primitive-only OMP5",
+      "Frozen old OMP5 no adaptation",
+      "Shuffled new training labels then same-bank OMP5"
+    ],
+    "information_parity": "All methods receive exactly the same witnessed 64 old and 64 new action/consequence observations, no extra selected actions, no evaluation truth or hidden roles; trained controls can differ in computational capacity but same-bank controls see exactly same constructed features.",
+    "evaluation": "Unweighted world-mean held prediction MSE for 32 OLD/NEW/COLD queries; per-seed and per-family cold MSE, composed-expression selection count, full per-world held prediction vectors and training labels retained for source-disjoint auditor. Audit independently implements generator and refits all arms, shares NumPy/sklearn third-party solvers.",
+    "budget": "24 new screening worlds, single-thread Linux CPU Python 3.13.5 NumPy 2.3.5 sklearn 1.8.0, one unchanged-source replay and independent audit. No API cost, privileged runner or physical Joule claim."
+  },
+  "frozen_gates": {
+    "cold_vs_strongest_conventional_5pct": "Candidate pooled COLD MSE <=0.95 times MINIMUM across fresh OMP, same-bank ElasticNet/Ridge, softmax memory, KernelRidge, ExtraTrees and primitive OMP pooled cold MSE.",
+    "cold_vs_same_bank_elasticnet_5pct": "Candidate pooled COLD MSE <=0.95x same-bank fully trained ElasticNet cold MSE.",
+    "cold_vs_softmax_memory_5pct": "Candidate pooled COLD MSE <=0.95x conventional OMP softmax memory cold MSE.",
+    "cold_vs_same_bank_omp_5pct": "Candidate pooled COLD MSE <=0.95x same bank fresh fully fitted OMP5 cold MSE.",
+    "win_each_screen_seed": "Candidate mean cold MSE < best conventional pooled seed cold MSE on BOTH prospective screen seeds.",
+    "family_noninferiority_10pct": "Candidate family cold MSE <=1.10x BEST same-bank conventional family cold MSE in ALL three families.",
+    "old_readout_frozen_exact": "Candidate OLD held MSE == old_no_update OLD held MSE within 1e-12 for all 24 worlds.",
+    "shuffled_negative_20pct": "Candidate pooled COLD MSE <=0.8x shuffled new outcome control COLD MSE.",
+    "composition_exercised_20pct": "At least ceil(0.20*24)=5 of the 24 worlds select at least one synthetically composed term (index>=100).",
+    "new_cold_vs_old_no_update_20pct": "Candidate pooled COLD MSE <=0.8x frozen OLD no-update predictor COLD MSE."
+  },
+  "decisions": {
+    "SCREEN_PROMISING": "All FIRST FOUR critical gates PASS, win_each_screen_seed PASS, >=8/10 gates PASS, complete independent model refit audit PASS. Only this permits separate 36-world primary with already reserved seeds, not automatic promotion.",
+    "SCREEN_NO_GO": "At least ONE critical gate or win_each_screen_seed FAIL or total PASS <8 (valid audit); archive result, halt reserved primary, do not retune consumed screens.",
+    "INVALID": "Prereg or source not present prior to first evaluation, mismatched source hash or training/held separation, incomplete source-independent audit, missing strong control, contaminated labels, or changed post-result seed/threshold",
+    "UNVERIFIED": "If runtime/CI/audit incomplete, no scientific pass/no go claim",
+    "SCIENTIFIC_PASS": "Not in scope; external screening cannot establish native learning, real operator invention or scientific acceptance."
+  },
+  "restrictions": [
+    "No postscore tuning and no reuse of consumed seed for promotion",
+    "No native Yggdrasil weights/accepted ref/merges",
+    "No controller, owner scheduler, runner or queue execution",
+    "No paid API or energy efficiency claim",
+    "Do not consume reserved primary if screen fails"
+  ]
+}
