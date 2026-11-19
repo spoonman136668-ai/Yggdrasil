@@ -1,0 +1,57 @@
+name: YGG-CAP02 pinned original causal-memory preflight
+'on':
+  push:
+    branches:
+      - research/ygg-cap02-evidence-causal-memory-20261119
+    paths:
+      - '.github/workflows/ygg-cap02.yml'
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve source line endings
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install pinned native numeric environment
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Source, freeze, and authentic cold causal-memory negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code d07b9ac4448b4c23288f4f9a76aec7f2c69faa55 HEAD -- research/contrib/chatgpt/YGG-CAP02/prereg.json
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP02/source.py)" = bcae839c6f43ecf14fc1a1a2f3ce7ac813f501bf
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/source.py)" = 9e34144de876778d8931b7dacce9b990bb36716a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14071-state.json)" = f4568f284605556f970d7f2cc4733577f09de244
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14072-state.json)" = 371afb1e830d6790b948ceda06f8260e7070260b
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/windows/seed-14071-state.json)" = db50019c5ae9d8e8e16a24792f01fc50a0414b29
+            test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/windows/seed-14072-state.json)" = 9e233e46a4fbc683c8a1388441791cad16b42f2a
+          fi
+          python -B -m unittest discover -s tests -p 'test_native_causal_rule_memory.py' -v
+          python -B research/contrib/chatgpt/YGG-CAP02/campaign.py --help
+          python -B research/contrib/chatgpt/YGG-CAP02/audit.py --help
+          test -z "$(git status --porcelain)"
