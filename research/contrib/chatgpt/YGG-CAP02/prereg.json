@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.cap02.causal-expert-memory.first-use-dev-prereg.v1",
+  "experiment": "YGG-CAP02",
+  "parent": {
+    "pr": 1303,
+    "exact_sha": "3770e660bc8b908218e6fe82e176bd4bf91158d9",
+    "tree": "9e09ed59afa9d404d2873a3d93859697ad6356a9",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "qualification_run": 44498888651,
+    "linux_tests": 456,
+    "windows_tests": 456
+  },
+  "old_models": [
+    {
+      "old_seed": 14071,
+      "parent_seed": 99601,
+      "original_native_plus_new": 1054,
+      "segment_new": 32,
+      "source_blob": "f4568f284605556f970d7f2cc4733577f09de244",
+      "checkpoint_sha256": "6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14"
+    },
+    {
+      "old_seed": 14072,
+      "parent_seed": 99603,
+      "original_native_plus_new": 1029,
+      "segment_new": 32,
+      "source_blob": "371afb1e830d6790b948ceda06f8260e7070260b",
+      "checkpoint_sha256": "c503ccf979f90d6d4954f0e8d42133fc177017d4b47de80ee64c9524b870d827"
+    }
+  ],
+  "question": "Can a native causal rule-memory bank trained on each witnessed public intervention and selected using only prior predictive evidence recover a previously learned mechanism after an intervening contradictory regime better than fitted all-history/recency controls without destroying cumulative native+six-JEPA training?",
+  "north_star": "independent tokenless causal memory and intervention-consequence learning, never conventional transformer/token prediction",
+  "unique_mechanism": {
+    "training": "Bayesian online updating of a frozen small library of predeclared Boolean causal rules (constant, atoms, negations, XOR/AND/OR pairs) separately for stage1 transition and stage2 reward; each bank trained ONLY on its own chronological 16 witnessed events, including 32 existing source-visible CAP01 events, and frozen when full; no hidden phase labels.",
+    "representation": "predeclared feature vectors: stage1 public sensor u,v,w, first action a; stage2 public sensor u,v,w, first action a, newly witnessed s2, second action b. No next state or later action in first-stage forecast; no y in second.",
+    "memory_selection": "prequential likelihood of public outcomes over the last six already witnessed episodes, applied to all frozen and current banks with fixed multiplicative source-aware evidence weighting; no phase oracle. Current bank counts update ONLY after outcomes, so source and inference chronology are auditable.",
+    "variants": "uniform frozen/current bank mix, last-current-bank only, pooled all-history same-rule learner, rolling24 same-rule learner, corrupted action mask negative, fully fitted Beta full/window24/discount95 controls, old archived native, new native and four short-horizon native JEPA readouts; oracle label source only a retrospective unreachable upper-bound diagnostic.",
+    "native": "Continue exact CAP01 segmented native learner from trained checkpoint; same original 7-component immutable archive and six cloned trained head weights; 48 new source events per seed, original CAP01 new episode prefix unchanged; 32→80 additive native events; original combined total 1054→1102 and 1029→1077; cross the 64-event native shard boundary with exact tape and checkpoint replay."
+  },
+  "prospective_source": {
+    "category": "synthetic development ONLY; original protected owner first-use blocked",
+    "new_seeds": [
+      99811,
+      99829
+    ],
+    "parent_seed_map": {
+      "99811": 99601,
+      "99829": 99603
+    },
+    "future_events_each": 48,
+    "phases": "A (0-15), B (16-31), A return (32-47); phase tags EVALUATOR ONLY; causal grammar mirrors parent CAP01 source, but action/shock trajectory disjoint",
+    "initial_state": "last observed public post-state from immutable CAP01 original source; private hidden mediator independently reconstructed from the parent source causal update for genuine source continuity and never passed to learner",
+    "new_interventions": "exogenously announced public action plan, deterministic registered SHA-256 source without paid API",
+    "observed_stage_order": "forecast P(s2) before s2; witness s2; forecast P(y) after s2, before y; witness y; then train native+rule experts and update likelihood; post-state public only after completion",
+    "new_events_max": 48,
+    "old_episodes_immutable": true
+  },
+  "frozen_scored_cohorts": {
+    "late_B_events": "24..31 inclusive (8 per seed)",
+    "late_A_return_events": "40..47 inclusive (8 per seed)",
+    "cold_old_read_only": "prior 32 authentic already-consumed sources per model, no scientific held status"
+  },
+  "success_dev": {
+    "primary": "For BOTH seeds: candidate mean two-stage Brier on late A return <= min(Beta-full, Beta-window24, Beta-discount95, all-history-rule, rolling24-rule, old archive native, newest-bank) - 0.010 AND <= action-masked negative - 0.010",
+    "contradiction": "For BOTH seeds: late B candidate mean two-stage Brier <= strongest same-exposure conventional control + 0.005; no regression of this magnitude",
+    "retained_native": "Original JEPA2-05 archive bytes exact, CAP01 original 32-event prefix exact, immutable old native readout over previously consumed 32 old witnesses exactly unchanged and full cold replay of >1024 event source tape; native + six specialist heads all continue to train",
+    "custody": "public source IDs unique, no change/replay of original scored sources, 48 witnessed interventions each, total source append 80, four original native JEPA heads +144 new optimizer steps each and 48 new 3-step future windows each, deterministic stage order and source-only evidence gate",
+    "parity": "independent Linux/Windows original fresh run, source provenance and science disposition exact, numeric scores tol <=1e-8, both original learned checkpoint SHA receipts maintained; on candidate SHA full Linux/Windows regression and G29",
+    "stop": "single fresh development source pass per seed, no tuning/repeat on consumed data; if fail, keep research NO-GO and original source evidence. May repair only independent auditor/portability defects without replaying scored training."
+  },
+  "budgets": {
+    "max_new_events": 48,
+    "original_new_capacity_total": 80,
+    "per_seed_cpu_seconds": 300,
+    "max_new_banks": 5,
+    "bank_size": 16,
+    "gate_window": 6,
+    "rule_label_noise": 0.075,
+    "rule_weights_min": 1e-20,
+    "github_hosted_only": true,
+    "no_paid_api": true,
+    "no_new_scheduled_task": true,
+    "no_controller_changes": true,
+    "no_excluded_studies_replayed": true
+  },
+  "authority": {
+    "scientific_pass": false,
+    "development_only": true,
+    "physical_world_first_use": false,
+    "runner": "existing hosted Github Actions",
+    "merge": false,
+    "main_mutation": false,
+    "pr_draft": true,
+    "forge_integration": false,
+    "deployment": "NONE"
+  },
+  "status": {
+    "engineering": "UNVERIFIED",
+    "development": "UNVERIFIED",
+    "science": "UNVERIFIED"
+  }
+}
