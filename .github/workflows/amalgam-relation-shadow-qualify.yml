@@ -100,6 +100,25 @@ jobs:
           python -B "$AMALGAM/growth_preflight.py" "$NATIVE/seed-101-refresh-native.json" > "$RUNNER_TEMP/amalgam-growth.json"
           python -B "$AMALGAM/joint_update_preflight.py" "$NATIVE/seed-101-refresh-native.json" "$DONORS/seed-14071-state.json" --checkpoint-out "$RUNNER_TEMP/amalgam-joint-state.json" > "$RUNNER_TEMP/amalgam-joint.json"
           python -B "$AMALGAM/verify_preflight.py" "$RUNNER_TEMP/amalgam-shadow.json" "$RUNNER_TEMP/amalgam-growth.json" "$RUNNER_TEMP/amalgam-joint.json"
+          # Consume only restored, pinned, already-admitted CKAD26 native witnesses.
+          # No source actions, native/JEPA updates, or scientific promotion.
+          python -B "$AMALGAM/relation_custody.py" "$NATIVE" > "$RUNNER_TEMP/amalgam-relation-custody.json"
+          python -B - "$RUNNER_TEMP/amalgam-relation-custody.json" <<'PY'
+          import json, sys
+          data = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert data["schema"] == "yggdrasil.amalgam.relation-custody.v1"
+          assert data["archive_count"] == 3 and len(data["archives"]) == 3
+          assert data["source_actions"] == 0 and data["checkpoint_updates"] == 0
+          assert data["scientific_pass"] is False and data["deployment"] == "NONE"
+          for receipt in data["archives"]:
+              assert receipt["retained_native_witnesses"] >= 1024
+              assert receipt["decision_authority"] == "NONE_SHADOW_ONLY"
+              assert receipt["source_actions"] == 0 and receipt["checkpoint_updates"] == 0
+              assert receipt["scientific_pass"] is False
+              assert all(row["decision_eligible"] is False
+                         for row in receipt["masked_readouts"])
+          print("AMALGAM_RELATION_PINNED_NATIVE_AUDIT_PASS")
+          PY
           test -z "$(git status --porcelain)"
       - name: Sealed source-safe receipt replay (Linux only)
         if: runner.os == 'Linux'
@@ -135,7 +154,9 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Amalgam-relation-portable-${{ matrix.os }}
-          path: ${{ runner.temp }}/amalgam-portable-replay.json
+          path: |
+            ${{ runner.temp }}/amalgam-portable-replay.json
+            ${{ runner.temp }}/amalgam-relation-custody.json
           if-no-files-found: error
           retention-days: 14
 
