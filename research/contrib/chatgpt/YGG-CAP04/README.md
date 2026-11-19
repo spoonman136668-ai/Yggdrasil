@@ -86,3 +86,39 @@ An exact frozen-source and dual-OS full test workflow emits the diagnostic
 to the GitHub Actions run. The archived engineering fixture metrics are
 exploratory and may motivate a distinct preregistered follow-up but must
 not be used to tune the existing reserved CAP04 scientific thresholds.
+
+## Structural expressivity falsifier — frozen reward XOR readout (2026-11-19)
+
+The CAP04 candidate's already-disclosed `residual=y XOR s2` design
+imposes a **hard anti-symmetry constraint**. For any *fixed* current public
+views/action and actual past history, it has a single fitted residual
+probability `p`, then forecasts `P(y=1|s2=0)=p` and
+`P(y=1|s2=1)=1-p`. It **cannot** express a genuine rule
+`y=0` (or `y=1`) regardless of witnessed `s2`, even if sufficient
+past data has established this fact.
+
+With balanced `s2=0/1`, the candidate's average stage-2 Brier for either
+constant reward obeys `(p²+(1-p)²)/2 >= 0.25` (same lower bound
+for always-one labels). An exact matched-information control already
+implemented in `MatchedHistoryControls` conditions direct terminal reward
+on the *witnessed* current `s2` and is **not** subject to this bound.
+
+The existing `tests/test_native_predictive_state_controls.py` now includes
+a pure engineering negative control with **128 actual chronological synthetic
+witnesses**, 64 for each sensor value, for both constant-zero and
+constant-one reward. It verifies the mathematical floor, fits the already
+available direct Beta control (expected stage-2 `P(y=1)` equal to
+`1/66` or `65/66` for each sensor, respectively), checks read-only
+forecasts and exact source-free cold replays. This case is deliberately
+outside CAP04's expected causal family and its original registered DEV
+source; **it is not a replacement scientific cohort, a change to
+preregistered thresholds, or an accepted-model training update**.
+
+**Research interpretation:** finite history-feature induction alone cannot
+resolve a misspecified terminal-reward factorization. If real novel
+relationships need sensor-independent or asymmetric direct reward, reuse the
+existing direct terminal-reward representation as a comparison/reference;
+do not add another learner or retrofit CAP04 to post hoc fit this example.
+A future different hypothesis must be prospectively preregistered, evaluated
+on genuinely fresh owner-qualified sources, and integrated only by the central
+Amalgam coordinator after independent scientific qualification.
