@@ -64,7 +64,7 @@ def _immutable_ref(root: Path, commit: str, path: str) -> str:
 
 def verify_source_references(root: Path, expected: FrozenRefs = FROZEN) -> dict:
     """Read-only immutable source audit; not a runtime/first-use approval."""
-    _require(type(root) is Path and root.is_dir(), "REPOSITORY_ROOT")
+    _require(isinstance(root, Path) and root.is_dir(), "REPOSITORY_ROOT")
     _require(type(expected) is FrozenRefs, "FROZEN_REFERENCE_TYPE")
     for sha in vars(expected).values():
         validate_sha(sha)
