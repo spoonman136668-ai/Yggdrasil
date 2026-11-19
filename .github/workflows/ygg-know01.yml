@@ -108,3 +108,84 @@ jobs:
           python -B scripts/build_code_atlas.py --check-if-present
           python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
           test -z "$(git status --porcelain)"
+
+real-source-compatibility:
+    needs: [atlas, full-final]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Stable source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Isolate NKR08 original source exactly; do not merge or execute model owner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          NKR=e0ed615e2f65ba3a2b20cc700398675d58f5e73b
+          git fetch --no-tags origin "$NKR"
+          mkdir -p "$RUNNER_TEMP/know03-source/yggdrasil"
+          touch "$RUNNER_TEMP/know03-source/yggdrasil/__init__.py"
+          for spec in             "native_cumulative_facts.py:37d8d88198292b165eee0570049d4d3286dd900b"             "native_knowledge_activation.py:76f543b639810b786e5c604795f1997972e9ac6a"             "native_factual_weights.py:65aea0cafbe7534f8c473d78f2e852a4752836e0"; do
+            f="${spec%%:*}"; blob="${spec#*:}"
+            test "$(git rev-parse "$NKR:yggdrasil/$f")" = "$blob"
+            git show "$NKR:yggdrasil/$f" > "$RUNNER_TEMP/know03-source/yggdrasil/$f"
+          done
+          test -z "$(git status --porcelain)"
+      - name: Read existing already-consumed source artifact identities
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14220169461" > "$RUNNER_TEMP/nkr05-meta.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14517860401" > "$RUNNER_TEMP/amalgam-meta.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          r=pathlib.Path(os.environ["RUNNER_TEMP"])
+          a=json.loads((r/"nkr05-meta.json").read_bytes())
+          b=json.loads((r/"amalgam-meta.json").read_bytes())
+          assert (a["id"], a["expired"],a["name"],a["workflow_run"]["id"],
+                  a["workflow_run"]["head_sha"]) == (
+             14220169461,False,"NKR05-21M-full-historical-TRAIN-native-factual-weights",
+             43856374741,"c4b4e97726f6541197913ad405a47d4c4019a3cf")
+          assert (b["id"], b["expired"],b["name"],b["workflow_run"]["id"],
+                  b["workflow_run"]["head_sha"]) == (
+             14517860401,False,"Amalgam-shared-consequence-ubuntu-latest",
+             44499793023,"e9aa921c57dca836c06c7125e52229cce728620a")
+          PY
+      - name: Reuse actual historical TRAIN image and recovered Amalgam joint bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/know03-nkr05" "$RUNNER_TEMP/know03-amalgam"
+          gh run download 43856374741 -R "$GITHUB_REPOSITORY" -n NKR05-21M-full-historical-TRAIN-native-factual-weights -D "$RUNNER_TEMP/know03-nkr05"
+          gh run download 44499793023 -R "$GITHUB_REPOSITORY" -n Amalgam-shared-consequence-ubuntu-latest -D "$RUNNER_TEMP/know03-amalgam"
+          test "$(stat -c %s "$RUNNER_TEMP/know03-nkr05/facts.uint32le")" = 256124172
+          test "$(stat -c %s "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json")" = 2921047
+          test "$(sha256sum "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" | cut -d' ' -f1)" = 576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8
+          PYTHONPATH="$RUNNER_TEMP/know03-source" python -B -m yggdrasil.native_knowledge_activation             --source "$RUNNER_TEMP/know03-nkr05" --destination-parent "$RUNNER_TEMP" --name know03-history-readonly             > "$RUNNER_TEMP/know03-install.json"
+          PYTHONPATH="$RUNNER_TEMP/know03-source" python -B research/contrib/chatgpt/YGG-KNOW01/real_image_pairing.py             --installed-session "$RUNNER_TEMP/know03-history-readonly"             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json"             --output "$RUNNER_TEMP/know03-pairing-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: Preserve only bounded readout receipts (not original image or checkpoints)
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW03-real-image-archived-amalgam-compatibility
+          path: |
+            ${{ runner.temp }}/know03-pairing-receipt.json
+          retention-days: 30
+          if-no-files-found: error
