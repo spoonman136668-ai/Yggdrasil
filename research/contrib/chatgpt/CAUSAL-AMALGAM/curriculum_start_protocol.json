@@ -1,0 +1,40 @@
+{
+  "gate": "Gradual beats shuffled and the per-seed best of fitted full-history, trailing-history and change-point controls by at least 0.005 pooled mean final changed transition Brier. Familiar transition and reward each stay within 0.02 of the starting readout on all three seeds.",
+  "held_per_phase": 64,
+  "id": "amalgam-contextual-failure-curriculum-dev-v1",
+  "max_familiar_drift": 0.02,
+  "min_gain": 0.005,
+  "phases": {
+    "changed": {
+      "family": "invariant",
+      "mask_by_context": true,
+      "regime": 0,
+      "swap": 0
+    },
+    "familiar": {
+      "family": "invariant",
+      "mask_by_context": false,
+      "regime": 0,
+      "swap": 0
+    }
+  },
+  "qualified_source": "ff2d0b85a7f5a1494cea123038339b033c5db517",
+  "scope": "Isolated public synthetic development from the existing four-head checkpoint. The fitted arms receive the same public action-consequence observations and the pinned native audit ledger. No protected source or policy action.",
+  "seeds": [
+    991301,
+    991333,
+    991369
+  ],
+  "source_files": {
+    "../../../../yggdrasil/native_causal_amalgam.py": "f4aab8d97973cda61b405b50207ad84f82fe2d6c4a8e15db322d5714d0fe53f6",
+    "../../../../yggdrasil/native_episode_experience.py": "96b474778a72dc75ee184a5fb963f10653594d4902bd4fa585c2fddc6a5109a9",
+    "../CKAD-20/synthetic_world.py": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+    "curriculum_start.py": "f7babbf8b0358d168401deb6affe0810885714a9f844bbaca19213c532e3dba6",
+    "selection_protocol_dev.json": "d7a879e944f2e554156cd874aa739b4b611ffa020b0b0a748b841f9c3649b2b5",
+    "selection_trial.py": "84b76e13174eb5c9d5b461532ea826fb89479d91740920f2179a74dfed0c1945",
+    "staged_retention.py": "a5c0f5872c27894caa018967e673fbb5421c382a3f665787c4d8b292940bffcc"
+  },
+  "stop": "One frozen run. Both native arms see the exact same witnesses in different orders. End after 64 per copy. Keep all results and hold the next complexity increment on any miss. This evaluates held-out trajectory prediction under a fixed action schedule.",
+  "train_per_phase": 32,
+  "wall_budget_seconds": 480
+}
