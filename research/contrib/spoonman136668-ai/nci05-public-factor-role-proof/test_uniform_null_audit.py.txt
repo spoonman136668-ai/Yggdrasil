@@ -1,0 +1,150 @@
+"""NCI-05H exact null falsification tests. No scientific source first-use."""
+from __future__ import annotations
+from itertools import product
+import hashlib
+import json
+from pathlib import Path
+import unittest
+
+from role_probe import (
+    candidates, conditional_public_effect, infer_conditional_role, probe_masks,
+    exact_symbolic_control)
+from challenge_guard import challenge_masks, assess_public_challenges
+from uniform_null_audit import (
+    audit_action_bit, audit_all, TOTAL_INPUT_MASKS,
+    GLOBAL_COMPLETE_FUNCTIONS_PER_SUPPORT)
+
+
+class ExactUniformNullTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.report=audit_all()
+
+    def test_01_source_first_and_no_science_authority(self):
+        p=json.loads(Path(__file__).with_name("uniform_null_prereg.json.txt")
+                     .read_text(encoding="utf8"))
+        self.assertEqual(p["schema"],"nci05.uniform-null.false-confidence-bound.v1")
+        self.assertEqual(p["type"],"SOURCE_FREE_EXACT_NULL_AUDIT_NO_FIRST_USE")
+        self.assertEqual(p["query_contract"]["expected_conditional_support_vectors"],10)
+        self.assertEqual(p["query_contract"]["total_normalized_seven_bit_vectors"],128)
+        self.assertFalse(p["authority"]["original_first_use"])
+        self.assertFalse(p["authority"]["owner_checkpoint"])
+        self.assertFalse(p["authority"]["new_controller"])
+        self.assertFalse(p["authority"]["scheduled_execution"])
+        self.assertFalse(self.report["source_first_use"])
+        self.assertFalse(self.report["owner_model_used"])
+
+    def test_02_6_action_role_permutations_same_exact_null_counts(self):
+        for a,row in enumerate(self.report["results_by_action_bit"]):
+            self.assertEqual(row["action_bit"],a)
+            self.assertEqual(row["initial_prefix_vectors"],32)
+            self.assertEqual(row["candidate_prefix_vectors"],10)
+            self.assertEqual(row["support"],10)
+            self.assertEqual(row["reject"],30)
+            self.assertEqual(row["abstain_normalized"],88)
+            self.assertEqual(row["normalized_outcome_vectors"],128)
+            self.assertEqual(row["actual_public_challenge_pairs"],40)
+            self.assertEqual(row["conditional_support_probability_exact"],"10/128")
+            self.assertEqual(row["support_given_candidate_probability_exact"],"1/4")
+            self.assertEqual(len(row["public_evidence_digest"]),64)
+            self.assertEqual(len(row["examples"]),10)
+
+    def test_03_aggregate_probability_is_7_8125_percent(self):
+        t=self.report["aggregate"]
+        self.assertEqual((t["normalized_7bit_pattern_count"],
+                          t["conditionally_supported_pattern_count"],
+                          t["rejected_pattern_count"],
+                          t["abstained_pattern_count"]), (768,60,180,528))
+        self.assertAlmostEqual(
+            t["conditionally_supported_pattern_count"]/
+            t["normalized_7bit_pattern_count"],0.078125,places=15)
+        self.assertEqual(t["uniform_null_spurious_support_fraction"],"10/128")
+
+    def test_04_independent_exact_symbolic_control_ties_all_proposals(self):
+        for a in range(6):
+            counts=0
+            masks=probe_masks(a)
+            for outcomes in product((0,1),repeat=5):
+                rows=list(zip(masks,outcomes))
+                proposal=infer_conditional_role(a,rows)
+                viable=exact_symbolic_control(a,rows)
+                self.assertEqual(len(viable)==1,proposal is not None)
+                if proposal is not None:
+                    self.assertEqual(viable,((proposal.factor_bit,proposal.offset),))
+                    counts+=1
+            self.assertEqual(counts,10)
+
+    def test_05_unobserved_global_truth_is_not_identified(self):
+        for a in range(6):
+            for j in candidates(a):
+                for offset in (0,1):
+                    base=[(m,conditional_public_effect(m,action_bit=a,
+                                         factor_bit=j,offset=offset))
+                          for m in probe_masks(a)]
+                    proposal=infer_conditional_role(a,base)
+                    self.assertIsNotNone(proposal)
+                    extras=challenge_masks(proposal)
+                    witnessed=set(m for m,_ in base)|set(extras)
+                    self.assertEqual(len(witnessed),7)
+                    missing=next(m for m in range(TOTAL_INPUT_MASKS) if m not in witnessed)
+                    base_truth=tuple(conditional_public_effect(m,action_bit=a,
+                        factor_bit=j,offset=offset) for m in range(64))
+                    alternative=tuple(y^int(m==missing)
+                                      for m,y in enumerate(base_truth))
+                    self.assertTrue(all(base_truth[m]==alternative[m]
+                                       for m in witnessed))
+                    result=assess_public_challenges(proposal,base,
+                                    [(m,alternative[m]) for m in extras])
+                    self.assertEqual(result.status,
+                                     "SUPPORTED_UNDER_SUPPLIED_GRAMMAR_ONLY")
+                    self.assertFalse(result.globally_certified)
+                    self.assertFalse(result.native_admission)
+                    self.assertFalse(result.scientific_pass)
+                    self.assertNotEqual(base_truth,alternative)
+        self.assertEqual(GLOBAL_COMPLETE_FUNCTIONS_PER_SUPPORT,2**57)
+        self.assertEqual(self.report["aggregate"]["global_truth_fraction_given_support"],
+                         "1/2^57")
+
+    def test_06_action_independent_functions_fail_public_action_flip(self):
+        for a in range(6):
+            for j in candidates(a):
+                for offset in (0,1):
+                    rows=[(m,((m>>j)&1)^offset) for m in probe_masks(a)]
+                    self.assertIsNone(infer_conditional_role(a,rows))
+                    self.assertEqual(exact_symbolic_control(a,rows),())
+
+    def test_07_degenerate_and_forged_missing_public_queries_abstain(self):
+        for a in range(6):
+            rows=[(m,0) for m in probe_masks(a)]
+            self.assertIsNone(infer_conditional_role(a,rows))
+            self.assertEqual(exact_symbolic_control(a,rows),())
+        a=5;j=0
+        base=[(m,conditional_public_effect(m,action_bit=a,factor_bit=j,offset=0))
+              for m in probe_masks(a)]
+        proposal=infer_conditional_role(a,base)
+        extra=challenge_masks(proposal)
+        self.assertEqual(assess_public_challenges(proposal,base,[]).status,
+                         "INCOMPLETE_ABSTAIN")
+        self.assertEqual(assess_public_challenges(proposal,base,
+                         [(extra[0],proposal.predict_under_prior(extra[0]))]).status,
+                         "INCOMPLETE_ABSTAIN")
+        with self.assertRaises(ValueError):
+            assess_public_challenges(proposal,base,[(extra[0],0),(extra[0],1)])
+
+    def test_08_source_free_pure_deterministic_no_private_owner_path(self):
+        source=Path(__file__).with_name("uniform_null_audit.py").read_text()
+        self.assertNotIn("import yggdrasil",source)
+        self.assertNotIn("subprocess",source)
+        self.assertNotIn("requests",source)
+        self.assertNotIn("source_first_use=True",source)
+        self.assertEqual(self.report,audit_all())
+        self.assertEqual(self.report["status"],
+                         "ENGINEERING_ONLY_NOT_NATIVE_SCIENCE_OR_FIRST_USE")
+        self.assertEqual(self.report["aggregate"]["global_boolean_table_completions_per_support"],
+                         str(2**57))
+        self.assertEqual(self.report["conclusion"],
+                         "NO_GLOBAL_CAUSAL_CONFIDENCE_FROM_SEVEN_RESTRICTED_PRIOR_WITNESSES")
+
+
+if __name__=="__main__":
+    unittest.main()
