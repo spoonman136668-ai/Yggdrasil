@@ -1,0 +1,237 @@
+{
+  "schema": "lr92ah.github-external-development-summary.v1",
+  "experiment_id": "LR-92AH",
+  "classification": "DEVELOPMENT_NO_GO",
+  "positive_subfinding": "one-step action-history prediction gain",
+  "official_science": "UNVERIFIED",
+  "native_yggdrasil_training": false,
+  "first_use_consumed": false,
+  "preregistered_source_before_primary": {
+    "original_protocol_commit": "5e23e2f14b5f5656d95a7c6147db896cc40a1294",
+    "original_runner_commit": "a6f6135561ef09c2297adeae3e596d767220ffe2",
+    "v2_patch_commit": "f5ade408f96a64d0408d3a04b6ea35d29802a2d5",
+    "v2_protocol_commit": "ca2daff1a729025fe90d7b3d933b235df824c6cf",
+    "v2_source_sha256": "0865118de9caef585c197600acee47a508c4dd2a467cfa5bf920b44f121a991b",
+    "v2_prereg_sha256": "8714764208a9db5031c5a389e1f89c838a852af6bb36d6d5251d6dcd4de964ba"
+  },
+  "invalid_attempt": {
+    "classification": "INVALID_INFRASTRUCTURE",
+    "original_seeds": [
+      929201101,
+      929201102,
+      929201103
+    ],
+    "failure": "RF32 random_state out of range before completion of first world",
+    "primary_record_written": false,
+    "old_seeds_discarded": true
+  },
+  "primary": {
+    "seeds": [
+      929201201,
+      929201202,
+      929201203
+    ],
+    "worlds": 360,
+    "per_family": 120,
+    "fit_context0": 112,
+    "fit_context1": 64,
+    "heldout": 256,
+    "flip_probability": 0.35,
+    "one_shot_wall_seconds": 15.503093217000242,
+    "raw_sha256": "0cf91997855d1ad2a1aa67155cf29033dba719ba1d74c680b4a3f12fb494127a",
+    "raw_bytes": 12883731
+  },
+  "arms": [
+    "static_eig",
+    "static_balanced",
+    "lag_eig",
+    "lag_balanced",
+    "lag_replay",
+    "lag_sham",
+    "rf32"
+  ],
+  "scores": {
+    "static": {
+      "static_eig": [
+        19494,
+        21,
+        1,
+        0
+      ],
+      "static_balanced": [
+        19142,
+        10,
+        0,
+        0
+      ],
+      "lag_eig": [
+        19361,
+        9,
+        0,
+        0
+      ],
+      "lag_balanced": [
+        19106,
+        7,
+        0,
+        1
+      ],
+      "lag_replay": [
+        19485,
+        11,
+        0,
+        0
+      ],
+      "lag_sham": [
+        19291,
+        10,
+        0,
+        1
+      ],
+      "rf32": [
+        17777,
+        null,
+        null,
+        null
+      ]
+    },
+    "lag1": {
+      "static_eig": [
+        15127,
+        0,
+        9,
+        0
+      ],
+      "static_balanced": [
+        16121,
+        0,
+        1,
+        0
+      ],
+      "lag_eig": [
+        17889,
+        0,
+        0,
+        55
+      ],
+      "lag_balanced": [
+        17766,
+        0,
+        0,
+        31
+      ],
+      "lag_replay": [
+        16260,
+        0,
+        0,
+        11
+      ],
+      "lag_sham": [
+        15864,
+        0,
+        0,
+        17
+      ],
+      "rf32": [
+        16462,
+        null,
+        null,
+        null
+      ]
+    },
+    "lag2": {
+      "static_eig": [
+        15572,
+        0,
+        3,
+        0
+      ],
+      "static_balanced": [
+        15782,
+        0,
+        0,
+        0
+      ],
+      "lag_eig": [
+        15593,
+        0,
+        1,
+        19
+      ],
+      "lag_balanced": [
+        16107,
+        0,
+        0,
+        10
+      ],
+      "lag_replay": [
+        15568,
+        0,
+        0,
+        9
+      ],
+      "lag_sham": [
+        15656,
+        0,
+        1,
+        14
+      ],
+      "rf32": [
+        16256,
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "score_columns": [
+    "validation_correct",
+    "exact_accepted",
+    "false_accepted",
+    "novelty_flags"
+  ],
+  "validation_denominator_per_family": 30720,
+  "frozen_checks": {
+    "lag1_pred_gain_ge_1p5pp_vs_static_eig": true,
+    "lag1_pred_gain_ge_0p5pp_vs_fully_trained_rf32": true,
+    "lag1_pred_gain_ge_1pp_vs_shuffled_previous_action": true,
+    "static_prediction_loss_no_worse_than_1pp": true,
+    "lag1_novelty_sensitivity_ge_50pct": false,
+    "static_novelty_false_alarm_le_10pct": true,
+    "lag2_wrong_mechanism_acceptance_le_3pct": true,
+    "cold_restored_historical_prior_bit_exact": true,
+    "equal_action_budgets": true
+  },
+  "audit": {
+    "status": "PASS",
+    "independent_readonly_checks": 452283,
+    "raw_primary_rerun": false,
+    "audit_source_sha256": "8f558599f75ee4c6742c37b58af2a57cce5bf374add48198fa1d6482dd18d996",
+    "audit_receipt_sha256": "2fd02291ee2c57ccc425492c8438350f0b5753b38628441ced4a29b296522d62",
+    "lag1_paired_gain": 0.08990885416666666,
+    "lag1_paired_bootstrap95_exploratory": [
+      0.07464192708333334,
+      0.10563232421875
+    ],
+    "per_seed_gain_correct_count": [
+      832,
+      924,
+      1006
+    ]
+  },
+  "caveats": [
+    "First-order lag feature is explicitly added to the model; this is not transfer to completely unspecified causal grammars.",
+    "Two-step lag family remains unrepresentable and near chance; no true two-step transfer established.",
+    "Candidate accepted ZERO exact full lag1 mechanisms at frozen 90% posterior threshold.",
+    "On familiar static worlds exact accepted mechanisms fell from static EIG 21 to lag EIG 9 although prediction accuracy remained nearly constant.",
+    "RF32 is fully fitted on all 176 within-world observations, but lacks earlier historical DELTA prior; cross-model information not fully matched.",
+    "Novelty sensitivity 55/120 failed frozen 60/120 threshold; do not revise after scoring.",
+    "No native Yggdrasil scientific first-use, whole-process compute matched qualification or deployment."
+  ],
+  "evidence_custody": {
+    "complete_raw_local": true,
+    "complete_raw_on_github": false,
+    "seeded_deterministic_reproduction": true,
+    "github_scored_ledger_pending": true
+  }
+}
