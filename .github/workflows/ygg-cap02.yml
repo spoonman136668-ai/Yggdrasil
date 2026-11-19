@@ -1,0 +1,197 @@
+name: YGG-CAP02 fresh public-native evidence recall qualification
+'on':
+  push:
+    branches:
+      - research/ygg-cap02-evidence-memory-recall-20261119
+    paths:
+      - '.github/workflows/ygg-cap02.yml'
+      - 'yggdrasil/native_evidence_recall.py'
+      - 'tests/test_native_evidence_recall.py'
+      - 'research/contrib/chatgpt/YGG-CAP02/prereg.json'
+      - 'research/contrib/chatgpt/YGG-CAP02/source.py'
+      - 'research/contrib/chatgpt/YGG-CAP02/campaign.py'
+      - 'research/contrib/chatgpt/YGG-CAP02/audit.py'
+      - 'research/contrib/chatgpt/YGG-CAP02/parity.py'
+      - 'research/contrib/chatgpt/YGG-CAP02/seal.py'
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve platform-independent source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact native numeric environment
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Frozen original-source protection and native test controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 99ec70e48d09df724a32fa0384c3aa5ef18c0b2e HEAD -- research/contrib/chatgpt/YGG-CAP02/prereg.json
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP02/source.py)" = 881df9ae85f3737a3ce2c8a83cd934ec0bde5cde
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14071-state.json)" = f4568f284605556f970d7f2cc4733577f09de244
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14072-state.json)" = 371afb1e830d6790b948ceda06f8260e7070260b
+          python -B -m unittest discover -s tests -p 'test_native_evidence_recall.py' -v
+          python -B research/contrib/chatgpt/YGG-CAP02/campaign.py --help
+          python -B research/contrib/chatgpt/YGG-CAP02/audit.py --help
+          test -z "$(git status --porcelain)"
+  train:
+    needs: preflight
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve platform-independent source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact native numeric environment
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Continue actual trained native beyond CAP01 and independently audit evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 99ec70e48d09df724a32fa0384c3aa5ef18c0b2e HEAD -- research/contrib/chatgpt/YGG-CAP02/prereg.json
+          mkdir -p "$RUNNER_TEMP/YGG-CAP02"
+          python -B research/contrib/chatgpt/YGG-CAP02/campaign.py --output "$RUNNER_TEMP/YGG-CAP02"
+          python -B research/contrib/chatgpt/YGG-CAP02/audit.py "$RUNNER_TEMP/YGG-CAP02" --output "$RUNNER_TEMP/YGG-CAP02/audit.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: YGG-CAP02-${{ matrix.os }}
+          path: ${{ runner.temp }}/YGG-CAP02/
+          if-no-files-found: warn
+          retention-days: 30
+  seal:
+    needs: train
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - name: Preserve platform-independent source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-CAP02-ubuntu-latest
+          path: ${{ runner.temp }}/CAP02-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-CAP02-windows-2022
+          path: ${{ runner.temp }}/CAP02-windows
+      - name: Seal exact two OS original evidence without a second scored training pass
+        id: seal
+        shell: bash
+        env:
+          CAP02_LINUX: ${{ runner.temp }}/CAP02-linux
+          CAP02_WINDOWS: ${{ runner.temp }}/CAP02-windows
+          CAP02_SOURCE_SHA: ${{ github.sha }}
+          CAP02_RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 99ec70e48d09df724a32fa0384c3aa5ef18c0b2e HEAD -- research/contrib/chatgpt/YGG-CAP02/prereg.json
+          python -B research/contrib/chatgpt/YGG-CAP02/seal.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/contrib/chatgpt/YGG-CAP02/
+          git commit -m 'research(cap02): seal original prospective native evidence and controls on two OS'
+          EVIDENCE_SHA="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$EVIDENCE_SHA"
+          git add .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m "docs(cap02): exact G29 atlas for $EVIDENCE_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ygg-cap02-evidence-memory-recall-20261119
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  final:
+    needs: seal
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Preserve platform-independent source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact native numeric environment
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Full mandatory exact SHA native regression including negative controls and G29
+        shell: bash
+        env:
+          EXACT_SHA: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_SHA"
+          git rev-parse HEAD 'HEAD^{tree}'
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-JEPA2-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-CAP01 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
