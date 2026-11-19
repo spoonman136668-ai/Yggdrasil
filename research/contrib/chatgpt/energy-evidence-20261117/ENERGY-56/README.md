@@ -1,0 +1,17 @@
+# ENERGY-56 — Compositional causal-factor learning
+
+**External synthetic evidence only.** No native Yggdrasil weights, scientific first-use, accepted state, controller, runner, queue, main, merge or deployment. Same existing draft PR #1210.
+
+This successor to ENERGY-55 tests whether a small *learned* basis of lower-order causal factors improves cold prediction when the learner explicitly composes old-stage factors rather than using them individually. Factor identities are **not supplied**. The operator vocabulary *is* supplied: parity monomials to degree 3 for the candidate and degree 6 for the fully trained conventional controls. This is not general mechanism/operator invention.
+
+Frozen scorer `experiment.py` and separately written auditor `audit.py` live in deterministic `source.tar.bz2`, Git blob `b4c0ce9608c4988dbec908913d144240b184cc65`, SHA256 `38e67516fbac0608e94b1b406cf6da6124e24ec79c0d3f7fe8079d52798c1958`. Scorer original SHA256 `8e5234659795898c30519269806b0f1b3ac1549c0fdf9f23a4efc4e91dd5075c`; independent auditor original SHA256 `d89eb38ab2a5825eb51882b40d5042efb0e94d397b1f7ff9d5af79dcf44ee04a`. Both require Python 3.13, NumPy 2.3.5, scikit-learn 1.8.0; CPU BLAS/OpenMP threads one.
+
+Each synthetic world has 10 causal intervention bits, 2 nuisance cues, 3 hidden groups of 3 causal factors plus one extra, nonlinear stage-linked consequences of the groups and their pairwise products, and shift in nuisance correlations. Every phase uses **unique underlying 10-bit causal assignment identities**; 128 old and 96 new witnessed actions, 96 held old/new/cold each. No learner sees held outputs or true group identities.
+
+Candidate learns a sparse old-stage 1..3-way parity basis (8 terms), creates only **disjoint triple-feature products**, shrinks them by factor .3, and refits stage-specific regularized coefficients on the same factual examples. No-composition ablation uses precisely the same learned old factors without products. Strong conventional controls use **all** 1..6-way parity features with OMP12, ElasticNet and Ridge, plus RBF kernel ridge and 64-tree ExtraTrees on raw actions; a shuffled-new-outcome composition is the negative control. All get 128 old plus 96 new labels; no truth leakage or paid API.
+
+**Prefreeze exploratory development:** seed 99903, two source IDs × three mechanism families = six worlds. The initial unconstrained composition had mean cold MSE 4.26546 vs 2.98985 without composition. One **prefreeze** bounded revision (disjoint triples and 0.3 shrink) reduced that to 4.18694, still losing vs 2.98985. Independent re-fit auditor PASS 17,239 checks on final development output. Those outcomes informed stopping/tuning and must not be counted as prospective confirmation. The source is now frozen; no more tuning.
+
+Next: separately commit **prereg.json** specifying a fresh **99917** six-world screen and stopping gates. Only if that screen passes the critical gates may frozen primary seeds **9911, 9923, 9941** be used, without code changes. A negative screen is a valid result; stop instead of repeatedly retuning. Performance at present is not a native Yggdrasil improvement.
+
+Reproduce after extracting the bundle: `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -B experiment.py --seeds 99917 --ids 0 1 --out screen.json`, then `python -B audit.py screen.json --out screen_audit.json`. Auditor refits independently but shares NumPy/sklearn numerical internals and receives original observed arrays (not fully independent generator).
