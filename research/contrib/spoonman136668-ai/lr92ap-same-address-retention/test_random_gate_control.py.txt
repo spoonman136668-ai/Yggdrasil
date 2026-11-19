@@ -1,0 +1,102 @@
+"""Frozen two-seed fixture only; never touch protected LR-92AP primary seeds."""
+import hashlib
+import random
+import unittest
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from random_gate_control import RandomGateDualTimescaleCells
+
+
+def fixture(seed):
+    rng = random.Random(seed)
+    for phase in ("A", "B", "Areturn"):
+        for t in range(64):
+            a = rng.randrange(2)
+            y = int((a if phase != "B" else 1-a) ^ (rng.random() < .15))
+            yield phase, t, a, y
+
+
+def evaluate(seed):
+    models = {"candidate": PublicDualTimescaleCells(),
+              "random_gate": RandomGateDualTimescaleCells()}
+    scores = {name: {"B": [], "Areturn": []} for name in models}
+    for phase, t, a, y in fixture(seed):
+        for name, m in models.items():
+            m.end_episode()
+            p = m.predict(0, a)
+            if phase == "B" or (phase == "Areturn" and t < 16):
+                scores[name][phase].append((p-y)**2)
+            m.observe_step(0, a, y)
+    return {name: {phase: sum(v)/len(v) for phase, v in d.items()}
+            for name, d in scores.items()}
+
+
+class RandomGateTests(unittest.TestCase):
+    def test_state_exactly_matches_candidate(self):
+        a = PublicDualTimescaleCells()
+        b = RandomGateDualTimescaleCells()
+        for i in range(700):
+            if i % 7 == 0:
+                a.end_episode(); b.end_episode()
+            slot = (i * 13) % 16
+            addr = slot if slot < 7 else slot - 7
+            retained = slot >= 7
+            x = (i + i//9) % 2
+            y = (i//5 + i//13) % 2
+            a.observe_step(addr, x, y, retained=retained)
+            b.observe_step(addr, x, y, retained=retained)
+        self.assertEqual(a.snapshot(), b.snapshot())
+        self.assertEqual(len(b.snapshot()), 964)
+        self.assertEqual(b.LEARNED_AND_HISTORY_BYTES, 928)
+        self.assertEqual(set(a.__dict__), set(b.__dict__))
+
+    def test_no_mutation_and_restore_parity(self):
+        m = RandomGateDualTimescaleCells()
+        for i in range(95):
+            m.end_episode()
+            m.observe_step(0, i % 2, (i // 4) % 2)
+        before = m.snapshot()
+        p = m.predict(0, 1)
+        for _ in range(50):
+            self.assertEqual(m.predict(0, 1), p)
+        self.assertEqual(m.snapshot(), before)
+        restored = RandomGateDualTimescaleCells.restore(before)
+        self.assertEqual(restored.predict(0, 1), p)
+        self.assertEqual(restored.snapshot(), before)
+
+    def test_invalid_inputs_atomic(self):
+        m = RandomGateDualTimescaleCells()
+        before = m.snapshot()
+        for addr, action, retained in ((7, 0, False), (0, 2, False),
+                                       (0, 0, 1), (True, 0, False)):
+            with self.assertRaises(ValueError):
+                m.predict(addr, action, retained=retained)
+            self.assertEqual(m.snapshot(), before)
+        for args in ((7, 1, 0, False), (0, 2, 0, False), (0, 1, 2, False)):
+            with self.assertRaises(ValueError):
+                m.observe_step(*args[:3], retained=args[3])
+            self.assertEqual(m.snapshot(), before)
+
+    def test_selection_is_from_banks_only(self):
+        m = RandomGateDualTimescaleCells()
+        picks = set()
+        for phase, t, a, y in fixture(73004303):
+            m.end_episode()
+            pos = m._offset(0, a)
+            p0 = m._p(m._protected, pos)
+            p1 = m._p(m._recent, pos)
+            p = m.predict(0, a)
+            self.assertTrue(p == p0 or p == p1)
+            if phase == "B" and abs(p0-p1) > .15:
+                picks.add("protected" if p == p0 else "recent")
+            m.observe_step(0, a, y)
+        self.assertEqual(picks, {"protected", "recent"})
+
+    def test_fixture_negative_not_primary(self):
+        for seed in (73004303, 73004304):
+            r = evaluate(seed)
+            for scores in r.values():
+                self.assertTrue(all(0 <= v <= 1 for v in scores.values()))
+
+
+if __name__ == "__main__":
+    unittest.main()
