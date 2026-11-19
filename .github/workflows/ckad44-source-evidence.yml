@@ -1,0 +1,56 @@
+name: CKAD44 source-driven causal-change evidence DEV only
+on:
+  push:
+    branches:
+      - research/ckad44-causal-change-evidence-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  dev:
+    if: "github.event.head_commit.message == 'ci(ckad44): frozen source-only two-OS DEV qualification'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Avoid platform line-ending rewrite
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Freeze source and first-use boundary
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 0c613f55a2e5d68d5bbc9ce21a5b8fbc8a84e0a7 HEAD
+          git merge-base --is-ancestor d11cb31d7fad45d917068703982c9ab4df85e2bc HEAD
+          test ! -e research/contrib/chatgpt/CKAD-44/pilot_screen_report.json
+          test ! -e research/contrib/chatgpt/CKAD-44/primary_report.json
+          python -B -c "import ast,pathlib; p=pathlib.Path('research/contrib/chatgpt/CKAD-44'); [ast.parse(f.read_text()) for f in p.glob('*.py')]"
+          python -B research/contrib/chatgpt/CKAD-44/campaign.py --mode preflight
+      - name: Fixture and negative controls only, never score frozen cohorts
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-44 -p test_ckad44.py -v
+      - name: Exactly two new DEV seeds, genuine source-only outcome learning
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-44/screen_dev.py
+          test -z "$(git status --porcelain)"

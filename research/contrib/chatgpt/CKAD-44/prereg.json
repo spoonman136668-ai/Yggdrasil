@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD44",
+  "kind": "independent source-only causal change evidence DEV",
+  "parent_source_sha": "d11cb31d7fad45d917068703982c9ab4df85e2bc",
+  "goal": "Falsify whether actual observed action-conditioned causal evidence can reactivate a retained initial learned causal model after a hidden A->B->A change, while beating a well-trained cumulative/discounted native causal model and a strong conventional Bayesian online changepoint model.",
+  "precommitted_warm_reference": "One CKAD42 exact NativeInterventionRelations is trained on first 64 authentic public events then frozen as A reference. The 64-episode calibration period is GIVEN as stable by the existing synthetic task's family; this is a structural task advantage, not unknown-boundary zero-shot transfer. Continual adaptive CKAD42 exact NativeInterventionRelations trains on ALL events. Neither uses true hidden phase labels or future consequences.",
+  "native_reference": "Unmodified Yggdrasil NativeEpisodeExperience(repair=True), 48 warm source events then begin_stream; trained on same real observed synthetic events throughout.",
+  "candidate": {
+    "mode": "source-conditioned Bayesian soft retrieval, no hard switch",
+    "mechanism": "At each public transition/terminal consequence, BEFORE training, record the log likelihood ratio that the previously frozen A source predicts this paired event against the continuously trained discount93 causal learner. Maintain previous 12 witnessed ratios; require observed variety in both first and second interventions (both binary values represented in the window), else use adaptive learner alone. At subsequent forecast, evidence w_A = logistic(clip(sum(last12 log(A_event_prob/adaptive_event_prob)), -8, 8)), with equal 1:1 prior odds. Blend stage-1 predictions with w_A. After observed transition but before terminal, condition mixture weight using each model's transition probability for that actually observed next_state, and blend terminal predictions using updated w_A. All evidence from previously witnessed actions and consequences, no private environment regime, label or future reward.",
+    "frozen_config": {
+      "reference_public_training_events": 64,
+      "history": 12,
+      "log_evidence_clip": 8,
+      "prior_odds_A_vs_adaptive": 1,
+      "need_distinct_first_actions": 2,
+      "need_distinct_second_actions": 2,
+      "trained_component": "source-based CKAD42 exact causal relations short discount=.93"
+    },
+    "ablations": [
+      "adaptive-only discount93 (strong causal control)",
+      "frozen learned-A only",
+      "uniform 50/50 frozen-vs-adaptive mixture",
+      "action-masked learned relations from same source"
+    ]
+  },
+  "conventional_bocpd": {
+    "hazard": 0.013888888888888888,
+    "run_length_cap": 48,
+    "prior": "independent Beta(1,1) binary transition and terminal outcome cells conditioned on observed (ctx, first_action) and (ctx, first_action, observed_next_state, second_action)",
+    "inference": "Bayesian online changepoint: previous run posterior with constant hazard; after observing each genuine public transition and terminal outcome, exact paired Bernoulli posterior predictive likelihood of that row updates each run-length state; growth and newly reset components updated on the same row; cap 48 states and renormalize. First-stage forecast averages over run posterior; terminal stage conditions run probabilities on actually observed next_state, not terminal reward. Independent fully trained source-only strong control.",
+    "no_oracle_actions": true
+  },
+  "additional_fitted_controls": [
+    "Original native context stream",
+    "CKAD42 causal full, short discount93 and prequential dual Hedge",
+    "original Beta full/window12/window24/window48/discount85/discount95 and fitted prequential Hedge",
+    "uniform frozen-A/adaptive mixture",
+    "learned frozen-A alone",
+    "action-masked causal relations",
+    "sham"
+  ],
+  "source_data": "Exact existing CKAD39 genuine stochastic A/B/A simulator with same public action draws for all arms and 2 worlds per seed; hidden labels only evaluator. No new causal family or genuinely unfamiliar action identity within DEV. A separate fixture-only action-symbol bijection test probes encoding equivariance, NOT unfamiliar action transfer.",
+  "dev_seeds": [
+    44111,
+    44112
+  ],
+  "reserved_pilot_unconsumed": [
+    44211,
+    44212
+  ],
+  "reserved_primary_unconsumed": [
+    44311,
+    44312,
+    44313
+  ],
+  "disallowed_consumed": [
+    43111,
+    43112,
+    42111,
+    42112,
+    41101,
+    41102,
+    40811,
+    40812,
+    38911,
+    38912
+  ],
+  "metrics": "Two-stage prequential combined Brier phase lateB, early_returnA, late_returnA and pooled lateB+lateReturn. Strict original source and learned snapshot identity, cold exactness, no future-stage mutation, no duplicate or conflicting source. Count no-diversity windows, within-window observed intervention diversity, evidence posterior and per-world update CPU/wall with extra work.",
+  "frozen_scientific_dev_stop": {
+    "both_dev_seeds": true,
+    "candidate_max_pooled_late_brier": 0.145,
+    "required_pooled_gain_vs_best_of_all_fitted_native_causal_beta_and_bocpd": 0.01,
+    "required_late_return_gain_vs_original_native": 0.02,
+    "max_early_return_worsening_vs_original_native": 0.005,
+    "max_late_B_worsening_vs_original_native": 0.005,
+    "required_gain_vs_action_masked_ablation": 0.015,
+    "required_reference_source_and_exact_cold": true,
+    "decision": "If ANY frozen threshold fails => DEV_NO_GO, stop. Otherwise DEV_FEASIBLE_NOT_SCIENTIFIC. No second tuning pass on scored original seeds. No automatic held pilot/primary first-use."
+  },
+  "authority_and_boundary": {
+    "research_only": true,
+    "source_only_synthetic": true,
+    "no_full_repo_regression_without_candidate": true,
+    "no_owner_or_forge_runtime": true,
+    "no_scheduler": true,
+    "no_paid_api": true,
+    "no_main_or_accepted_ref_edits": true,
+    "no_merge": true
+  },
+  "branch_paths": [
+    "research/contrib/chatgpt/CKAD-44/*",
+    ".github/workflows/ckad44-source-evidence.yml"
+  ],
+  "qualification": "First source commit preregisters hypothesis/seeds/constants/controls/stop. Then separately pure fixture unit tests, then ONE development cohort on two OS at exactly same source SHA; in-repo original receipts preserve negative outcomes, performance, checkpoint hashes, incomparable raw platform floats; no scientific pass without independent unfamiliar-family held first use and full repo final regression on owner accepted candidate."
+}
