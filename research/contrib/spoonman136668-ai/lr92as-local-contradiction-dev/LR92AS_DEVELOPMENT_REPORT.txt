@@ -1,0 +1,151 @@
+LR-92AS — DISJOINT PER-CONTEXT CAUSAL RETRIEVAL: FROZEN DEV NO-GO
+==================================================================
+2026-11-19. External isolated research, NOT native Yggdrasil training.
+Existing DRAFT Yggdrasil PR #1323. Baseline main:
+5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+
+SOURCE-BEFORE-SCORE CUSTODY
+--------------------------
+The test candidate, previously unexposed dev generator, exact comparisons,
+10 mechanism tests, and frozen continuation/failure rule were committed
+BEFORE seeing the development comparison outcome, at parent source lock
+f334cfab694ea682651e36259395efa8ea7ef347.
+The original YPT4/BOCPD/HMM/tabular baseline .py.txt artifacts were unchanged.
+Do not modify/hyperparameter-tune these sources on this consumed DEV cohort.
+Existing LR-92AP 288-world scientific cohort remains entirely UNCONSUMED;
+LR-92AQ/LR-92AR earlier development seeds and LR-92AP primary are rejected.
+
+Source lock files and independently verified Git blobs:
+  per_context_retriever.py.txt        27b4dfe54590fe0918c862df0edc277a80b52e2a
+  lr92as_disjoint_dev.py.txt          c2e2e78dbad5fdf64df7cac7d7d859aed6c1d1fe
+  lr92as_compare.py.txt               53cec520075b9e258d3ab50e91d01c939b93dae2
+  frozen_lr92as_dev_plan.json.txt     461267601aa554475d9fddc181949d6d5104497c
+  test_per_context_retriever.py.txt   20a4e884b9afb94305c84f29403d08263aa7e913
+
+MECHANISM / RESOURCE ACCOUNTING
+--------------------------------
+One 928-byte/16-address native-inspired, external tokenless prototype, not
+the native Yggdrasil learner. 14 reachable prior-two-action/current-action
+contexts per address, archive (448 bytes), adaptive local Bernoulli q8
+probabilities (224), local per-context Bayesian selection weights (224),
+and 2 previous actions per address (32): total 928 persistent bytes.
+Versioned explicit PCH1 checkpoint is 964 bytes including format magic (4)
+and SHA256 checksum (32). Archived per-address relationship stops updating
+after 48 PUBLIC observations, then local evidence weights compare old and
+adaptive predictions with symmetric hazard 1/16 and adaptive fraction 1/4.
+These were SOURCE LOCKED; no fixture-driven retuning.
+Both fixed-50/50 and active-only ablations update the EXACT SAME state as
+the per-context policy, with byte-identical saved checkpoints. Model inputs
+are ONLY public actions/outcomes and episode boundaries. No phase, schedule
+switch, future label, evaluator family, new scheduler, tokens or transformer.
+
+DATA DESIGN / EVIDENCE
+----------------------
+Two brand-new DEVELOPMENT seeds 75011801, 75011802 (NOT scientific primary),
+three fixed causal families (XOR, AND, random14), four worlds per family/seed,
+24 worlds total. Same-address A/B/A, private variable dwell lengths 48..88,
+15% label noise, independently fixed public episode resets every 7 actions;
+neither change coincides with a reset. All 14 contexts used in every world.
+No phase cue. Every learner starts untrained in each world, observes the SAME
+4,728 public actions/outcomes and produces 4,728 prequential predictions.
+Each outcome is disclosed only AFTER the associated forecast.
+Manifest SHA256, sorted/compact canonical JSON:
+c301bcbbca1414f5a2276b2f2b3e44aa4175c7b0214b435a0f4bf8b1993fbe6c
+
+METRICS: 24-WORLD MACRO PREQUENTIAL BRIER (LOWER IS BETTER)
+-----------------------------------------------------------
+Arm                        state  B-phase   A-return first16   A-return late
+PerContextRetriever PCH     928   .346382   .296713            .190517
+PCH fixed 50/50             928   .337415   .249214            .187703
+PCH active-only             928   .287713   .405130            .231916
+Two-regime HMM MAP          928   .222201   .236155            .172824
+BOCPD bounded               896   .213063   .279984            .195931
+Full-history 14-bin         480   .341836   .277747            .229994
+Sliding window 32           832   .234166   .374589            .197648
+Original YPT4               928   .381442   .237590            .210906
+
+The fixed 50/50 ablation beats PCH per-context evidence gating by 0.047499
+absolute Brier on early A-return, while also improving B by 0.008967.
+Thus per-context evidence gating itself FAILS the controlled ablation.
+Relative to the strongest conventional per-seed control, PCH B-phase
+regression is +0.129885 on 75011801 and +0.136752 on 75011802 (allowed
+maximum +0.01). Early return ADVANTAGE vs per-seed best conventional is
+NEGATIVE (-0.065152 and -0.055964), not the required >= +0.01.
+There is no combined development advantage, no native continual-learning
+gain, and no basis to spend protected scientific first-use here.
+Developing a new gate by tweaking its constants against these 24 exposed
+worlds would be invalid post-result tuning: STOP THIS MECHANISM.
+
+MEASURED RESOURCE / WHOLE-PROCESS LIMITS
+---------------------------------------
+Learner-level Python stopwatch sums during this ONE local pass (init,
+forecast, public update, checkpoint+final cold restore; source imports,
+generator and process initialization excluded):
+  PerContextRetriever ~0.0214 seconds for 4,728 public updates
+  Conventional BOCPD896 ~0.2248 seconds for 4,728 public updates
+  HMM MAP ~0.0156 seconds for 4,728 public updates
+Numbers are descriptive on Python 3.13.5 Linux; they are NOT reproducible
+cross-platform or full-native process/memory costs. Persistent state
+byte counts do NOT include Python heap or transient execution buffers.
+Do not claim a global efficiency benefit or scientific qualification.
+
+EVIDENCE AND INDEPENDENT RECEIPT
+---------------------------------
+Original local full results 172890 bytes, SHA256:
+  a3a00d9f6ad2ad1d8e99b92b38a27122b59714c4569bb8bc79564a127322aacd
+Stored as deterministic gzip (mtime=0) then Base64 UTF8 .txt:
+  full_results.json.gz.base64.txt
+  Git blob 5e562c8321c05a614041a5c15b931ff5688b0e49
+  SHA256 ade414575cbc678323e51dd04b57b670e39fe2184b5d1d2f72a82d3600b81405
+  Decode with: base64 -d full_results.json.gz.base64.txt | gzip -dc
+24-row world_metrics.csv:
+  Git blob dbccc22a598d9f42bcc6cee5f64740a356025471
+  SHA256 a5186cacf73224cd4f9e480039342b8725e34f606759c7626d846823a01b0c48
+Separate read-only audit_result.py.txt (NO learner imports/re-execution):
+  Git blob 2e9c87b94f9c75c3887d6826a81edcb78cecc3a3
+  SHA256 e8bb3d99b9c1aa20bd518cc05411b1dc1ee48d5b383f27577baa7514c952f700
+audit_receipt.json.txt:
+  Git blob d59ee3cd43436374ae9f038fe530d3340c89a384
+  SHA256 52221d76321b75de821a22706731ce9581ed6a0b3766ffe0ed11e035ab73e824
+Audit PASS: all 24 unique world records, exactly 4,728 updates per model,
+byte-state budgets, identical ablation state checkpoint SHA256, CSV/JSON
+numerical parity, new seed/family identity, and independently recomputed
+NO-GO criteria. This is independent read-only calculation from saved
+results, not third-party science qualification. Exact local source and
+test Git blobs match the committed source-lock bytes. Local unit tests
+10/10 PASS; all code compiled; original YPT4 and controls unchanged.
+Original SHA256 of raw compressed results verified after decompression.
+No re-evaluation on the new dev fixture after its initial scored pass.
+
+REPRODUCIBILITY
+---------------
+From GitHub PR #1323 at the source-lock SHA, copy the five new .py.txt
+files to corresponding .py names (rename frozen .json.txt -> .json).
+Copy previous matched conventional .py.txt controls into same folder.
+Then run:
+  python -m unittest -v test_per_context_retriever.py
+  python lr92as_compare.py evidence
+  python audit_result.py evidence/full_results.json evidence/world_metrics.csv
+A rerun should reproduce seeds, exact predicted scores and cold checkpoints;
+elapsed_seconds fields are non-deterministic. It is NOT a second authorized
+scientific first-use.
+
+INTERPRETATION AND NEXT DIRECTION
+---------------------------------
+This falsifies the proposed LOCAL evidence-gate's joint advantage in its
+specified external, synthetic DEVELOPMENT benchmark. Stored archived A may
+remain useful, but the chosen Bayesian weighting and fast local EMA cannot
+jointly match HMM early-return or BOCPD B adaptation. Do NOT further optimize
+the same YPT4/global/per-context gating family on exposed data. Preserve
+original negative and pivot to a materially different, falsifiable native
+causal representation/structural mechanism with independent unseen source,
+stronger fully fitted baselines, cold retention, action-consequence
+interventions, explicit trainable state custody and compute parity.
+No protected scientific primary defined for LR-92AS. No model acceptance.
+
+ENGINEERING: local mechanism tests PASS 10/10; read-only audit PASS;
+  exact-head GitHub G29 source-index CI separate, Python tests not CI.
+SCIENTIFIC: LR92AS DEVELOPMENT_NO_GO; no native Yggdrasil learning,
+  independent transfer, original protected primary or SCIENTIFIC_PASS.
+DEPLOYMENT: HOLD: no native source, accepted refs, merge, owner, runner,
+  controller, scheduling, deployment, paid API, or live training changed.
