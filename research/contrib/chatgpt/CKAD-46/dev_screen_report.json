@@ -1,0 +1,1347 @@
+{
+  "schema": "yggdrasil.ckad46.unseen-symbols-frozen-dev-evidence.v1",
+  "id": "CKAD46",
+  "engineering_decision": "DEV_SCOPE_PASS",
+  "scientific_decision": "DEV_NO_GO",
+  "scientific_pass": false,
+  "source_parent": "b9cdc894a7e499f8ba74fcbac64fbb824259daa7",
+  "original_prereg_first_commit": "1fcd7e165e87561cc4f47ef7a0f71ebc3e1873ba",
+  "exact_scored_source_sha": "49f52a79405e0713b9f62eaa3882b32d70fcc0ba",
+  "exact_scored_source_tree": "e073731e645a8231157b3d45396cd166d6741730",
+  "exact_source_blobs": {
+    "research/contrib/chatgpt/CKAD-46/prereg.json": "d3e81caa4aa268eff063bba3d248c70cb0bfae0d",
+    "research/contrib/chatgpt/CKAD-46/campaign.py": "f4c7d4894d90a6acad7eb8c3a1ae762d93a13db9",
+    "research/contrib/chatgpt/CKAD-46/test_ckad46.py": "4969106b64b353834173ff275877edf91d2648f7",
+    "research/contrib/chatgpt/CKAD-46/screen_dev.py": "e9b56077700e41f68f420c34f5399355122cf6d3",
+    "research/contrib/chatgpt/CKAD-46/README.md": "e24dbaa3857889dba340eb33983df9eb7d9a1d74",
+    ".github/workflows/ckad46-native-unseen-action-grounding.yml": "cfd595378d830c02b14b410133ab0b433119a870"
+  },
+  "ci": {
+    "run_id": 44504915242,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44504915242",
+    "source_sha": "49f52a79405e0713b9f62eaa3882b32d70fcc0ba",
+    "conclusion": "success",
+    "exact_6_fixture_tests_per_platform": true,
+    "jobs": [
+      {
+        "platform": "ubuntu-latest",
+        "job_id": 135493882771,
+        "unit_tests_passed": 6,
+        "decision": "DEV_NO_GO",
+        "wall_seconds_by_seed": [
+          {
+            "seed": 46111,
+            "time": 13.920175
+          },
+          {
+            "seed": 46112,
+            "time": 14.098803
+          }
+        ],
+        "cpu_seconds_by_seed": [
+          {
+            "seed": 46111,
+            "time": 13.920046
+          },
+          {
+            "seed": 46112,
+            "time": 14.098716
+          }
+        ]
+      },
+      {
+        "platform": "windows-2022",
+        "job_id": 135493882230,
+        "unit_tests_passed": 6,
+        "decision": "DEV_NO_GO",
+        "wall_seconds_by_seed": [
+          {
+            "seed": 46111,
+            "time": 19.292339
+          },
+          {
+            "seed": 46112,
+            "time": 19.623003
+          }
+        ],
+        "cpu_seconds_by_seed": [
+          {
+            "seed": 46111,
+            "time": 19.296875
+          },
+          {
+            "seed": 46112,
+            "time": 19.625
+          }
+        ]
+      }
+    ],
+    "per_phase_prequential_Brier_metrics_exact_across_OS": true,
+    "all_native_causal_raw_receipt_and_complete_checkpoint_SHA_equal": true,
+    "metric_diffs": [],
+    "checkpoint_diffs": [],
+    "full_final_repo_regression": false
+  },
+  "study": {
+    "consumed_new_dev_seeds": [
+      46111,
+      46112
+    ],
+    "reserved_pilots_untouched": [
+      46211,
+      46212
+    ],
+    "reserved_primaries_untouched": [
+      46311,
+      46312,
+      46313
+    ],
+    "native_episode_binary_interface_unchanged": true,
+    "pretraining_old_action_ids": [
+      0,
+      1
+    ],
+    "new_unseen_ids": [
+      10,
+      11,
+      12,
+      13
+    ],
+    "unknown_latent_binary_semantic_assignment_hidden_from_learners": true,
+    "exact_control_knows_balanced_mapping_prior_but_not_actual_class_assignment": true,
+    "two_independent_stages": true,
+    "world_count": 4,
+    "episodes_per_world": 288,
+    "known_action_source_episodes": 96,
+    "unknown_action_transfer_episodes": 144,
+    "old_action_cold_return_episodes": 48,
+    "original_public_world_events": 1152,
+    "original_public_witnessed_consequences": 2304,
+    "separately_trained_native_causal_adapter_arms": [
+      "native_likelihood_grounding",
+      "exact_balanced_mapping",
+      "native_hash"
+    ],
+    "raw_source_receipts_preserve_original_action_identity": true,
+    "source_native_and_exact_causal_learn_continuously": true
+  },
+  "frozen_qualifier": {
+    "pool_late_unknown_plus_return_candidate_max": 0.15,
+    "gain_vs_strongest_nonprivileged_fitted_control_min": 0.015,
+    "early_unknown_worsen_vs_best_max": 0.015,
+    "old_identity_cold_return_worsen_vs_native_hash_max": 0.005,
+    "every_unknown_symbol_seen_in_both_stages": true,
+    "both_dev_seeds_must_pass": true
+  },
+  "results": [
+    {
+      "seed": 46111,
+      "real_synthetic_public_episodes": 576,
+      "witnessed_transition_terminal_outcomes": 1152,
+      "ubuntu_wall_seconds": 13.920175,
+      "ubuntu_cpu_seconds": 13.920046,
+      "primary_pool": {
+        "candidate": 0.13849760877898337,
+        "best_nonprivileged_control_name": "exact_balanced_mapping",
+        "best_nonprivileged_control_brier": 0.12738701265035876,
+        "candidate_gain_over_best_control": -0.011110596128624611,
+        "exact_balanced_posterior_control": 0.12738701265035876,
+        "conventional_raw_id_beta": 0.14398351626985195,
+        "native_hash": 0.19539369699046227,
+        "frozen_uniform": 0.1915086576178757,
+        "oracle_privileged_ceiling": 0.1347235205214567
+      },
+      "new_identity_late_brier": {
+        "candidate": 0.1432639260403701,
+        "exact_balanced_bayes": 0.12739982954245288,
+        "fully_fitted_raw_symbol_beta": 0.15792031418826155,
+        "native_hash": 0.2116515774507195,
+        "candidate_gain_over_raw_beta": 0.014656388147891442
+      },
+      "new_identity_early_brier": {
+        "candidate": 0.2120160114712308,
+        "exact_balanced_bayes": 0.18904031333000976,
+        "strongest_control_name": "exact_balanced_mapping",
+        "strongest_control_brier": 0.18904031333000976,
+        "candidate_worsening_vs_strongest": 0.02297569814122105
+      },
+      "old_identity_cold_return_brier": {
+        "candidate": 0.12737620183574758,
+        "exact_balanced_bayes": 0.12735710656880586,
+        "fully_fitted_raw_symbol_beta": 0.11146432112689621,
+        "native_hash": 0.15745864258319545
+      },
+      "phase_metrics": {
+        "cold_return": {
+          "brier": {
+            "exact_balanced_mapping": 0.12735710656880586,
+            "frozen_uniform": 0.12798722769132442,
+            "independent_raw_beta": 0.11146432112689621,
+            "native_hash": 0.15745864258319545,
+            "native_likelihood_grounding": 0.12737620183574758,
+            "oracle_known_mapping": 0.12798722769132442
+          },
+          "episodes": 96
+        },
+        "unseen_early": {
+          "brier": {
+            "exact_balanced_mapping": 0.18904031333000976,
+            "frozen_uniform": 0.2395539159627183,
+            "independent_raw_beta": 0.21403784235048187,
+            "native_hash": 0.23042158551678807,
+            "native_likelihood_grounding": 0.2120160114712308,
+            "oracle_known_mapping": 0.15222905930989308
+          },
+          "episodes": 64
+        },
+        "unseen_late": {
+          "brier": {
+            "exact_balanced_mapping": 0.12739982954245288,
+            "frozen_uniform": 0.21873212758639765,
+            "independent_raw_beta": 0.15792031418826155,
+            "native_hash": 0.2116515774507195,
+            "native_likelihood_grounding": 0.1432639260403701,
+            "oracle_known_mapping": 0.13761050316294193
+          },
+          "episodes": 224
+        },
+        "unseen_late_plus_return": {
+          "brier": {
+            "exact_balanced_mapping": 0.12738701265035876,
+            "frozen_uniform": 0.1915086576178757,
+            "independent_raw_beta": 0.14398351626985195,
+            "native_hash": 0.19539369699046227,
+            "native_likelihood_grounding": 0.13849760877898337,
+            "oracle_known_mapping": 0.1347235205214567
+          },
+          "episodes": 320
+        }
+      },
+      "frozen_gate_checks": {
+        "pool_candidate_at_most_015": true,
+        "pool_beats_best_nonprivileged_by_at_least_0015": false,
+        "early_unseen_worsens_vs_best_by_no_more_than_0015": false,
+        "known_action_cold_return_worsens_vs_native_hash_by_no_more_than_0005": true,
+        "novel_symbol_count_each_stage_equals_four": true,
+        "native_and_causal_source_cold_complete": true
+      },
+      "all_frozen_gates_pass": false,
+      "source_model_receipts": [
+        {
+          "arm": "native_likelihood_grounding",
+          "causal_sha256": "9c84235438d40d380ad8a5cf1c86fe6caa7831556809723c21e9d3e810a121fc",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186460,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47721,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "d941e2ce56cb2a40e20781e74adec1c53180497c3cbc74c74093e41a14aa6a13",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "3586659c1aafc957af0367078b3388bad488ad70f539044b2609970966784e3e",
+          "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 0
+        },
+        {
+          "arm": "exact_balanced_mapping",
+          "causal_sha256": "f0426388addcd788539e609a3b05cb41f8d060423f5010fa25c95049e1338149",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186285,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47721,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "be275cdc17c65ae7065993c8af9f9ab172ff7818b77a97b0c765fdbfc160b870",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "763c97c38c633a02f847b913f1593567f1aa8a6563dac89666c436e9e550ddaf",
+          "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 0
+        },
+        {
+          "arm": "native_hash",
+          "causal_sha256": "a0750675c33e985176d8bfb59834ab33e3c960135d2f0c6b8f271a0602d38328",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186198,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 0,
+          "distinct_stage2_novel_symbols_witnessed": 0,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47721,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "4565e378606e6b459ce0dce8a8c694102ef2ae87ff359e0bd26723cd8adc4093",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "d2ab4d8d2975d4e083bd9367ae79a273c802d89718c68c458fdc4d97bfb7adc4",
+          "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 0
+        },
+        {
+          "arm": "native_likelihood_grounding",
+          "causal_sha256": "76576f64890e6674f43d59a16385ecb5ed3b1492ea2029fbe776d038d5905a8b",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186323,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47660,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "8e62c53e1db332ca14f85a96fda132fba9bb9ad7f216422e61f874b07027ce82",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "349b37122a3d204bfeb7b463049b37436343437647a636179f7d21969061f32b",
+          "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 1
+        },
+        {
+          "arm": "exact_balanced_mapping",
+          "causal_sha256": "366821e901c7fb0c11ca2f745f0e203ef78337fecce5dc32b1b6b4a8cf02a84c",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186177,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47660,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "cf5bcfe08e13bd73725b3cd609bbc1a2a2b2072fe69c83d75142c6606d62dcc7",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "f156fa4d082bdeebfccf0a58c1632bc100698146d4f089b2f510afc4cc364c38",
+          "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 1
+        },
+        {
+          "arm": "native_hash",
+          "causal_sha256": "c033812c3f9379f26438eb91e67fed97a6284f9711074be5a07364b1442fc02c",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186137,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 0,
+          "distinct_stage2_novel_symbols_witnessed": 0,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47660,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "ac224c945216f23aef83958bec6f77493d3cf6a56954e4b2aa5b2faee76ed8a5",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "2a20635ea1a97edb7da236aff6db638cac11179a4bf71ea03c0d78d2a8231770",
+          "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 1
+        }
+      ]
+    },
+    {
+      "seed": 46112,
+      "real_synthetic_public_episodes": 576,
+      "witnessed_transition_terminal_outcomes": 1152,
+      "ubuntu_wall_seconds": 14.098803,
+      "ubuntu_cpu_seconds": 14.098716,
+      "primary_pool": {
+        "candidate": 0.1199588408119245,
+        "best_nonprivileged_control_name": "exact_balanced_mapping",
+        "best_nonprivileged_control_brier": 0.117900416796315,
+        "candidate_gain_over_best_control": -0.002058424015609503,
+        "exact_balanced_posterior_control": 0.117900416796315,
+        "conventional_raw_id_beta": 0.13634116890009693,
+        "native_hash": 0.18783176084087955,
+        "frozen_uniform": 0.18150585440624373,
+        "oracle_privileged_ceiling": 0.1110332819462505
+      },
+      "new_identity_late_brier": {
+        "candidate": 0.11724744850977019,
+        "exact_balanced_bayes": 0.11430725412906699,
+        "fully_fitted_raw_symbol_beta": 0.14789514062589812,
+        "native_hash": 0.19991828909250547,
+        "candidate_gain_over_raw_beta": 0.03064769211612793
+      },
+      "new_identity_early_brier": {
+        "candidate": 0.2001307059731183,
+        "exact_balanced_bayes": 0.1784760741339378,
+        "strongest_control_name": "exact_balanced_mapping",
+        "strongest_control_brier": 0.1784760741339378,
+        "candidate_worsening_vs_strongest": 0.02165463183918051
+      },
+      "old_identity_cold_return_brier": {
+        "candidate": 0.12628542285028457,
+        "exact_balanced_bayes": 0.12628446301989368,
+        "fully_fitted_raw_symbol_beta": 0.1093819015398942,
+        "native_hash": 0.15962986158708578
+      },
+      "phase_metrics": {
+        "cold_return": {
+          "brier": {
+            "exact_balanced_mapping": 0.12628446301989368,
+            "frozen_uniform": 0.11674126633867364,
+            "independent_raw_beta": 0.1093819015398942,
+            "native_hash": 0.15962986158708578,
+            "native_likelihood_grounding": 0.12628542285028457,
+            "oracle_known_mapping": 0.11674126633867364
+          },
+          "episodes": 96
+        },
+        "unseen_early": {
+          "brier": {
+            "exact_balanced_mapping": 0.1784760741339378,
+            "frozen_uniform": 0.21264255755060943,
+            "independent_raw_beta": 0.2176888918906683,
+            "native_hash": 0.2615220916521145,
+            "native_likelihood_grounding": 0.2001307059731183,
+            "oracle_known_mapping": 0.13284263193726362
+          },
+          "episodes": 64
+        },
+        "unseen_late": {
+          "brier": {
+            "exact_balanced_mapping": 0.11430725412906699,
+            "frozen_uniform": 0.2092621064352023,
+            "independent_raw_beta": 0.14789514062589812,
+            "native_hash": 0.19991828909250547,
+            "native_likelihood_grounding": 0.11724744850977019,
+            "oracle_known_mapping": 0.10858700292092631
+          },
+          "episodes": 224
+        },
+        "unseen_late_plus_return": {
+          "brier": {
+            "exact_balanced_mapping": 0.117900416796315,
+            "frozen_uniform": 0.18150585440624373,
+            "independent_raw_beta": 0.13634116890009693,
+            "native_hash": 0.18783176084087955,
+            "native_likelihood_grounding": 0.1199588408119245,
+            "oracle_known_mapping": 0.1110332819462505
+          },
+          "episodes": 320
+        }
+      },
+      "frozen_gate_checks": {
+        "pool_candidate_at_most_015": true,
+        "pool_beats_best_nonprivileged_by_at_least_0015": false,
+        "early_unseen_worsens_vs_best_by_no_more_than_0015": false,
+        "known_action_cold_return_worsens_vs_native_hash_by_no_more_than_0005": true,
+        "novel_symbol_count_each_stage_equals_four": true,
+        "native_and_causal_source_cold_complete": true
+      },
+      "all_frozen_gates_pass": false,
+      "source_model_receipts": [
+        {
+          "arm": "native_likelihood_grounding",
+          "causal_sha256": "21d59cc677e600dc9c07d52152271619e655c625e66b19d64399dfa26afb2d13",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186037,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47382,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "1993fd08fd8a5c9466b08dfb18796684b3adcf51383e147bdc51a8f95490ba48",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "0de68c81313b68928c50c91a660925d68b5cfa89c5306c8c7c15696c340b12e4",
+          "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 0
+        },
+        {
+          "arm": "exact_balanced_mapping",
+          "causal_sha256": "c456253bf7625107b2e7a791a4291f39407eac9bb12c528a571c84dd27391fe5",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 185898,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47382,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "7eca8a739a8df742ec2cf706ebbc071678b01b8d2360604bd1d6be8d0dc14c4f",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "72bf2dad712bd9d4752a7968945b6aa408ec9554cfe79c8f58bde9b33bc0875b",
+          "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 0
+        },
+        {
+          "arm": "native_hash",
+          "causal_sha256": "f2242ad2a1402cb510ec73166dfaa34a244f4f092bfe5e2f85c160f141d57708",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 185779,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 0,
+          "distinct_stage2_novel_symbols_witnessed": 0,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47382,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "4b92504c853f1658f5d02a6b0147175d5bd034514fe3bb8a831a3afaea5d83ba",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "de474b577aa7e883f4229eabd26f5c0a569f369d995e26c6484ed3027e35af3d",
+          "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 0
+        },
+        {
+          "arm": "native_likelihood_grounding",
+          "causal_sha256": "e5de8103796498f0fc44540c9c3c542231463fd1135201636708898d62e5939e",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186479,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47984,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "849e68ee96c49de1f913ef6bc8165f31daf766793fd5bde4e6475675f44673e9",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "82f442d66ddf6e3372af9ac6be723040bd2d6bb9ff21f30ea5be4588cd3ea9bb",
+          "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 1
+        },
+        {
+          "arm": "exact_balanced_mapping",
+          "causal_sha256": "a7b334e22133346e86f442fdd6b21914da9f413995c50ad070ba68b2bea5e231",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186323,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 4,
+          "distinct_stage2_novel_symbols_witnessed": 4,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47984,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "7bfdf96e5f9e12b55437adcf52477a5844473e6840faff5c46f703cc751c4eb9",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "43ea13fa555e5157b9bb9ef489f1d0cc9905bc396a2c5eb575f6412ed7f129ac",
+          "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 1
+        },
+        {
+          "arm": "native_hash",
+          "causal_sha256": "9e747128b3f7c4ca60ba20ffc6a4dea0bd09716b6b720bdc6c5b440ca8529413",
+          "cold_exact": true,
+          "complete_checkpoint_bytes": 186240,
+          "conflict_atomic": true,
+          "distinct_stage1_novel_symbols_witnessed": 0,
+          "distinct_stage2_novel_symbols_witnessed": 0,
+          "duplicate_idempotent": true,
+          "frozen_checkpoint_bytes": 47984,
+          "frozen_source96_exact": true,
+          "full_checkpoint_sha256": "dc532c6a5bca42b5c02b4b68ff2d4497ee50305f7110054d5fe3bcea6622b0c4",
+          "native_and_causal_witnesses": 288,
+          "native_sha256": "1e58d0065e574e0370fd932fd69802506a31affea7c958f55b215e6221312f45",
+          "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+          "source_episodes": 288,
+          "source_prefix48_preserved": true,
+          "world": 1
+        }
+      ]
+    }
+  ],
+  "original_ubuntu_dev_report": {
+    "cases": [
+      {
+        "authentic_outcomes": 1152,
+        "cpu_seconds": 13.920046,
+        "groups": {
+          "cold_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.12735710656880586,
+              "frozen_uniform": 0.12798722769132442,
+              "independent_raw_beta": 0.11146432112689621,
+              "native_hash": 0.15745864258319545,
+              "native_likelihood_grounding": 0.12737620183574758,
+              "oracle_known_mapping": 0.12798722769132442
+            },
+            "episodes": 96
+          },
+          "unseen_early": {
+            "brier": {
+              "exact_balanced_mapping": 0.18904031333000976,
+              "frozen_uniform": 0.2395539159627183,
+              "independent_raw_beta": 0.21403784235048187,
+              "native_hash": 0.23042158551678807,
+              "native_likelihood_grounding": 0.2120160114712308,
+              "oracle_known_mapping": 0.15222905930989308
+            },
+            "episodes": 64
+          },
+          "unseen_late": {
+            "brier": {
+              "exact_balanced_mapping": 0.12739982954245288,
+              "frozen_uniform": 0.21873212758639765,
+              "independent_raw_beta": 0.15792031418826155,
+              "native_hash": 0.2116515774507195,
+              "native_likelihood_grounding": 0.1432639260403701,
+              "oracle_known_mapping": 0.13761050316294193
+            },
+            "episodes": 224
+          },
+          "unseen_late_plus_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.12738701265035876,
+              "frozen_uniform": 0.1915086576178757,
+              "independent_raw_beta": 0.14398351626985195,
+              "native_hash": 0.19539369699046227,
+              "native_likelihood_grounding": 0.13849760877898337,
+              "oracle_known_mapping": 0.1347235205214567
+            },
+            "episodes": 320
+          }
+        },
+        "seed": 46111,
+        "source_events_actual": 576,
+        "wall_seconds": 13.920175,
+        "worlds": [
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "9c84235438d40d380ad8a5cf1c86fe6caa7831556809723c21e9d3e810a121fc",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186460,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47721,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "d941e2ce56cb2a40e20781e74adec1c53180497c3cbc74c74093e41a14aa6a13",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "3586659c1aafc957af0367078b3388bad488ad70f539044b2609970966784e3e",
+            "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "f0426388addcd788539e609a3b05cb41f8d060423f5010fa25c95049e1338149",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186285,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47721,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "be275cdc17c65ae7065993c8af9f9ab172ff7818b77a97b0c765fdbfc160b870",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "763c97c38c633a02f847b913f1593567f1aa8a6563dac89666c436e9e550ddaf",
+            "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "a0750675c33e985176d8bfb59834ab33e3c960135d2f0c6b8f271a0602d38328",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186198,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47721,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "4565e378606e6b459ce0dce8a8c694102ef2ae87ff359e0bd26723cd8adc4093",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "d2ab4d8d2975d4e083bd9367ae79a273c802d89718c68c458fdc4d97bfb7adc4",
+            "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "76576f64890e6674f43d59a16385ecb5ed3b1492ea2029fbe776d038d5905a8b",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186323,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47660,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "8e62c53e1db332ca14f85a96fda132fba9bb9ad7f216422e61f874b07027ce82",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "349b37122a3d204bfeb7b463049b37436343437647a636179f7d21969061f32b",
+            "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "366821e901c7fb0c11ca2f745f0e203ef78337fecce5dc32b1b6b4a8cf02a84c",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186177,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47660,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "cf5bcfe08e13bd73725b3cd609bbc1a2a2b2072fe69c83d75142c6606d62dcc7",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "f156fa4d082bdeebfccf0a58c1632bc100698146d4f089b2f510afc4cc364c38",
+            "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "c033812c3f9379f26438eb91e67fed97a6284f9711074be5a07364b1442fc02c",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186137,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47660,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "ac224c945216f23aef83958bec6f77493d3cf6a56954e4b2aa5b2faee76ed8a5",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "2a20635ea1a97edb7da236aff6db638cac11179a4bf71ea03c0d78d2a8231770",
+            "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          }
+        ]
+      },
+      {
+        "authentic_outcomes": 1152,
+        "cpu_seconds": 14.098716,
+        "groups": {
+          "cold_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.12628446301989368,
+              "frozen_uniform": 0.11674126633867364,
+              "independent_raw_beta": 0.1093819015398942,
+              "native_hash": 0.15962986158708578,
+              "native_likelihood_grounding": 0.12628542285028457,
+              "oracle_known_mapping": 0.11674126633867364
+            },
+            "episodes": 96
+          },
+          "unseen_early": {
+            "brier": {
+              "exact_balanced_mapping": 0.1784760741339378,
+              "frozen_uniform": 0.21264255755060943,
+              "independent_raw_beta": 0.2176888918906683,
+              "native_hash": 0.2615220916521145,
+              "native_likelihood_grounding": 0.2001307059731183,
+              "oracle_known_mapping": 0.13284263193726362
+            },
+            "episodes": 64
+          },
+          "unseen_late": {
+            "brier": {
+              "exact_balanced_mapping": 0.11430725412906699,
+              "frozen_uniform": 0.2092621064352023,
+              "independent_raw_beta": 0.14789514062589812,
+              "native_hash": 0.19991828909250547,
+              "native_likelihood_grounding": 0.11724744850977019,
+              "oracle_known_mapping": 0.10858700292092631
+            },
+            "episodes": 224
+          },
+          "unseen_late_plus_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.117900416796315,
+              "frozen_uniform": 0.18150585440624373,
+              "independent_raw_beta": 0.13634116890009693,
+              "native_hash": 0.18783176084087955,
+              "native_likelihood_grounding": 0.1199588408119245,
+              "oracle_known_mapping": 0.1110332819462505
+            },
+            "episodes": 320
+          }
+        },
+        "seed": 46112,
+        "source_events_actual": 576,
+        "wall_seconds": 14.098803,
+        "worlds": [
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "21d59cc677e600dc9c07d52152271619e655c625e66b19d64399dfa26afb2d13",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186037,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47382,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "1993fd08fd8a5c9466b08dfb18796684b3adcf51383e147bdc51a8f95490ba48",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "0de68c81313b68928c50c91a660925d68b5cfa89c5306c8c7c15696c340b12e4",
+            "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "c456253bf7625107b2e7a791a4291f39407eac9bb12c528a571c84dd27391fe5",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 185898,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47382,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "7eca8a739a8df742ec2cf706ebbc071678b01b8d2360604bd1d6be8d0dc14c4f",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "72bf2dad712bd9d4752a7968945b6aa408ec9554cfe79c8f58bde9b33bc0875b",
+            "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "f2242ad2a1402cb510ec73166dfaa34a244f4f092bfe5e2f85c160f141d57708",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 185779,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47382,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "4b92504c853f1658f5d02a6b0147175d5bd034514fe3bb8a831a3afaea5d83ba",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "de474b577aa7e883f4229eabd26f5c0a569f369d995e26c6484ed3027e35af3d",
+            "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "e5de8103796498f0fc44540c9c3c542231463fd1135201636708898d62e5939e",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186479,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47984,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "849e68ee96c49de1f913ef6bc8165f31daf766793fd5bde4e6475675f44673e9",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "82f442d66ddf6e3372af9ac6be723040bd2d6bb9ff21f30ea5be4588cd3ea9bb",
+            "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "a7b334e22133346e86f442fdd6b21914da9f413995c50ad070ba68b2bea5e231",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186323,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47984,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "7bfdf96e5f9e12b55437adcf52477a5844473e6840faff5c46f703cc751c4eb9",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "43ea13fa555e5157b9bb9ef489f1d0cc9905bc396a2c5eb575f6412ed7f129ac",
+            "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "9e747128b3f7c4ca60ba20ffc6a4dea0bd09716b6b720bdc6c5b440ca8529413",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186240,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47984,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "dc532c6a5bca42b5c02b4b68ff2d4497ee50305f7110054d5fe3bcea6622b0c4",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "1e58d0065e574e0370fd932fd69802506a31affea7c958f55b215e6221312f45",
+            "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          }
+        ]
+      }
+    ],
+    "decision": "DEV_NO_GO",
+    "dev_first_uses_scored": [
+      46111,
+      46112
+    ],
+    "fixed_screen": {
+      "absolute_gain_vs_strongest_control_min": 0.015,
+      "exact_original_native_and_learned_causal_cold": true,
+      "max_early_transfer_worsening_vs_best_control": 0.015,
+      "max_old_action_return_worsening_vs_native_hash": 0.005,
+      "need_new_4_action_symbol_coverage_per_stage": true,
+      "pooled_late_transfer_cold_brier_max": 0.15
+    },
+    "limitations": "Latent binary actuator mapping assumption is explicitly part of task; genuinely unseen symbols but not novel underlying primitive semantics. This DEV screen does not prove general language grounding, unrestricted causal discovery, or scientific acceptance. Original Yggdrasil binary native API remains untouched. No original source seed replay or held first-use.",
+    "pilot_reserved_unconsumed": [
+      46211,
+      46212
+    ],
+    "preregistration_sha": "1fcd7e165e87561cc4f47ef7a0f71ebc3e1873ba",
+    "primary_reserved_unconsumed": [
+      46311,
+      46312,
+      46313
+    ],
+    "research_parent": "b9cdc894a7e499f8ba74fcbac64fbb824259daa7",
+    "schema": "yggdrasil.ckad46.unseen-actions-dev-screen.v1",
+    "scientific_pass": false,
+    "source_structure": {
+      "balanced_map_hypotheses": 36,
+      "canonical_action_ids": [
+        0,
+        1
+      ],
+      "conditional_episode_noise_observed_only": true,
+      "new_unseen_identity_ids": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "old_training_episodes_per_world": 96,
+      "source_episodes_per_world": 288,
+      "unknown_class_hidden": true,
+      "unseen_transfer_end": 240
+    }
+  },
+  "original_windows_dev_report": {
+    "cases": [
+      {
+        "authentic_outcomes": 1152,
+        "cpu_seconds": 19.296875,
+        "groups": {
+          "cold_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.12735710656880586,
+              "frozen_uniform": 0.12798722769132442,
+              "independent_raw_beta": 0.11146432112689621,
+              "native_hash": 0.15745864258319545,
+              "native_likelihood_grounding": 0.12737620183574758,
+              "oracle_known_mapping": 0.12798722769132442
+            },
+            "episodes": 96
+          },
+          "unseen_early": {
+            "brier": {
+              "exact_balanced_mapping": 0.18904031333000976,
+              "frozen_uniform": 0.2395539159627183,
+              "independent_raw_beta": 0.21403784235048187,
+              "native_hash": 0.23042158551678807,
+              "native_likelihood_grounding": 0.2120160114712308,
+              "oracle_known_mapping": 0.15222905930989308
+            },
+            "episodes": 64
+          },
+          "unseen_late": {
+            "brier": {
+              "exact_balanced_mapping": 0.12739982954245288,
+              "frozen_uniform": 0.21873212758639765,
+              "independent_raw_beta": 0.15792031418826155,
+              "native_hash": 0.2116515774507195,
+              "native_likelihood_grounding": 0.1432639260403701,
+              "oracle_known_mapping": 0.13761050316294193
+            },
+            "episodes": 224
+          },
+          "unseen_late_plus_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.12738701265035876,
+              "frozen_uniform": 0.1915086576178757,
+              "independent_raw_beta": 0.14398351626985195,
+              "native_hash": 0.19539369699046227,
+              "native_likelihood_grounding": 0.13849760877898337,
+              "oracle_known_mapping": 0.1347235205214567
+            },
+            "episodes": 320
+          }
+        },
+        "seed": 46111,
+        "source_events_actual": 576,
+        "wall_seconds": 19.292339,
+        "worlds": [
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "9c84235438d40d380ad8a5cf1c86fe6caa7831556809723c21e9d3e810a121fc",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186460,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47721,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "d941e2ce56cb2a40e20781e74adec1c53180497c3cbc74c74093e41a14aa6a13",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "3586659c1aafc957af0367078b3388bad488ad70f539044b2609970966784e3e",
+            "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "f0426388addcd788539e609a3b05cb41f8d060423f5010fa25c95049e1338149",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186285,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47721,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "be275cdc17c65ae7065993c8af9f9ab172ff7818b77a97b0c765fdbfc160b870",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "763c97c38c633a02f847b913f1593567f1aa8a6563dac89666c436e9e550ddaf",
+            "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "a0750675c33e985176d8bfb59834ab33e3c960135d2f0c6b8f271a0602d38328",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186198,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47721,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "4565e378606e6b459ce0dce8a8c694102ef2ae87ff359e0bd26723cd8adc4093",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "d2ab4d8d2975d4e083bd9367ae79a273c802d89718c68c458fdc4d97bfb7adc4",
+            "raw_receipt_sha256": "6a3595f71eea7fb0d4efb2fcd2452a9f128b72e5840bb47d5c76474984a4a9a2",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "76576f64890e6674f43d59a16385ecb5ed3b1492ea2029fbe776d038d5905a8b",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186323,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47660,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "8e62c53e1db332ca14f85a96fda132fba9bb9ad7f216422e61f874b07027ce82",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "349b37122a3d204bfeb7b463049b37436343437647a636179f7d21969061f32b",
+            "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "366821e901c7fb0c11ca2f745f0e203ef78337fecce5dc32b1b6b4a8cf02a84c",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186177,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47660,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "cf5bcfe08e13bd73725b3cd609bbc1a2a2b2072fe69c83d75142c6606d62dcc7",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "f156fa4d082bdeebfccf0a58c1632bc100698146d4f089b2f510afc4cc364c38",
+            "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "c033812c3f9379f26438eb91e67fed97a6284f9711074be5a07364b1442fc02c",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186137,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47660,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "ac224c945216f23aef83958bec6f77493d3cf6a56954e4b2aa5b2faee76ed8a5",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "2a20635ea1a97edb7da236aff6db638cac11179a4bf71ea03c0d78d2a8231770",
+            "raw_receipt_sha256": "d7012518d17536a5af7873664e01a1383f560c80fb11cb5ac7de62bcc3c9a471",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          }
+        ]
+      },
+      {
+        "authentic_outcomes": 1152,
+        "cpu_seconds": 19.625,
+        "groups": {
+          "cold_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.12628446301989368,
+              "frozen_uniform": 0.11674126633867364,
+              "independent_raw_beta": 0.1093819015398942,
+              "native_hash": 0.15962986158708578,
+              "native_likelihood_grounding": 0.12628542285028457,
+              "oracle_known_mapping": 0.11674126633867364
+            },
+            "episodes": 96
+          },
+          "unseen_early": {
+            "brier": {
+              "exact_balanced_mapping": 0.1784760741339378,
+              "frozen_uniform": 0.21264255755060943,
+              "independent_raw_beta": 0.2176888918906683,
+              "native_hash": 0.2615220916521145,
+              "native_likelihood_grounding": 0.2001307059731183,
+              "oracle_known_mapping": 0.13284263193726362
+            },
+            "episodes": 64
+          },
+          "unseen_late": {
+            "brier": {
+              "exact_balanced_mapping": 0.11430725412906699,
+              "frozen_uniform": 0.2092621064352023,
+              "independent_raw_beta": 0.14789514062589812,
+              "native_hash": 0.19991828909250547,
+              "native_likelihood_grounding": 0.11724744850977019,
+              "oracle_known_mapping": 0.10858700292092631
+            },
+            "episodes": 224
+          },
+          "unseen_late_plus_return": {
+            "brier": {
+              "exact_balanced_mapping": 0.117900416796315,
+              "frozen_uniform": 0.18150585440624373,
+              "independent_raw_beta": 0.13634116890009693,
+              "native_hash": 0.18783176084087955,
+              "native_likelihood_grounding": 0.1199588408119245,
+              "oracle_known_mapping": 0.1110332819462505
+            },
+            "episodes": 320
+          }
+        },
+        "seed": 46112,
+        "source_events_actual": 576,
+        "wall_seconds": 19.623003,
+        "worlds": [
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "21d59cc677e600dc9c07d52152271619e655c625e66b19d64399dfa26afb2d13",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186037,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47382,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "1993fd08fd8a5c9466b08dfb18796684b3adcf51383e147bdc51a8f95490ba48",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "0de68c81313b68928c50c91a660925d68b5cfa89c5306c8c7c15696c340b12e4",
+            "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "c456253bf7625107b2e7a791a4291f39407eac9bb12c528a571c84dd27391fe5",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 185898,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47382,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "7eca8a739a8df742ec2cf706ebbc071678b01b8d2360604bd1d6be8d0dc14c4f",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "72bf2dad712bd9d4752a7968945b6aa408ec9554cfe79c8f58bde9b33bc0875b",
+            "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "f2242ad2a1402cb510ec73166dfaa34a244f4f092bfe5e2f85c160f141d57708",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 185779,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47382,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "4b92504c853f1658f5d02a6b0147175d5bd034514fe3bb8a831a3afaea5d83ba",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "de474b577aa7e883f4229eabd26f5c0a569f369d995e26c6484ed3027e35af3d",
+            "raw_receipt_sha256": "9231f05ee7994b5ac6d1e66f0311222c50a08afcbd2a08e3f370d40060676e98",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 0
+          },
+          {
+            "arm": "native_likelihood_grounding",
+            "causal_sha256": "e5de8103796498f0fc44540c9c3c542231463fd1135201636708898d62e5939e",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186479,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47984,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "849e68ee96c49de1f913ef6bc8165f31daf766793fd5bde4e6475675f44673e9",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "82f442d66ddf6e3372af9ac6be723040bd2d6bb9ff21f30ea5be4588cd3ea9bb",
+            "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "exact_balanced_mapping",
+            "causal_sha256": "a7b334e22133346e86f442fdd6b21914da9f413995c50ad070ba68b2bea5e231",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186323,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 4,
+            "distinct_stage2_novel_symbols_witnessed": 4,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47984,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "7bfdf96e5f9e12b55437adcf52477a5844473e6840faff5c46f703cc751c4eb9",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "43ea13fa555e5157b9bb9ef489f1d0cc9905bc396a2c5eb575f6412ed7f129ac",
+            "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          },
+          {
+            "arm": "native_hash",
+            "causal_sha256": "9e747128b3f7c4ca60ba20ffc6a4dea0bd09716b6b720bdc6c5b440ca8529413",
+            "cold_exact": true,
+            "complete_checkpoint_bytes": 186240,
+            "conflict_atomic": true,
+            "distinct_stage1_novel_symbols_witnessed": 0,
+            "distinct_stage2_novel_symbols_witnessed": 0,
+            "duplicate_idempotent": true,
+            "frozen_checkpoint_bytes": 47984,
+            "frozen_source96_exact": true,
+            "full_checkpoint_sha256": "dc532c6a5bca42b5c02b4b68ff2d4497ee50305f7110054d5fe3bcea6622b0c4",
+            "native_and_causal_witnesses": 288,
+            "native_sha256": "1e58d0065e574e0370fd932fd69802506a31affea7c958f55b215e6221312f45",
+            "raw_receipt_sha256": "06ead2797543e0ecb459529cdf497a6330de8d8cd4ed4a5cef4294748ed665c0",
+            "source_episodes": 288,
+            "source_prefix48_preserved": true,
+            "world": 1
+          }
+        ]
+      }
+    ],
+    "decision": "DEV_NO_GO",
+    "dev_first_uses_scored": [
+      46111,
+      46112
+    ],
+    "fixed_screen": {
+      "absolute_gain_vs_strongest_control_min": 0.015,
+      "exact_original_native_and_learned_causal_cold": true,
+      "max_early_transfer_worsening_vs_best_control": 0.015,
+      "max_old_action_return_worsening_vs_native_hash": 0.005,
+      "need_new_4_action_symbol_coverage_per_stage": true,
+      "pooled_late_transfer_cold_brier_max": 0.15
+    },
+    "limitations": "Latent binary actuator mapping assumption is explicitly part of task; genuinely unseen symbols but not novel underlying primitive semantics. This DEV screen does not prove general language grounding, unrestricted causal discovery, or scientific acceptance. Original Yggdrasil binary native API remains untouched. No original source seed replay or held first-use.",
+    "pilot_reserved_unconsumed": [
+      46211,
+      46212
+    ],
+    "preregistration_sha": "1fcd7e165e87561cc4f47ef7a0f71ebc3e1873ba",
+    "primary_reserved_unconsumed": [
+      46311,
+      46312,
+      46313
+    ],
+    "research_parent": "b9cdc894a7e499f8ba74fcbac64fbb824259daa7",
+    "schema": "yggdrasil.ckad46.unseen-actions-dev-screen.v1",
+    "scientific_pass": false,
+    "source_structure": {
+      "balanced_map_hypotheses": 36,
+      "canonical_action_ids": [
+        0,
+        1
+      ],
+      "conditional_episode_noise_observed_only": true,
+      "new_unseen_identity_ids": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "old_training_episodes_per_world": 96,
+      "source_episodes_per_world": 288,
+      "unknown_class_hidden": true,
+      "unseen_transfer_end": 240
+    }
+  },
+  "interpretation": {
+    "positive": "Learned causal likelihood symbol grounding on genuinely unseen 4-valued public action IDs beat the fully trained independent raw-symbol Beta predictor and arbitrary identity-hash native source learner in late unknown-action adaptation, in both frozen DEV cohorts. This indicates some transferable, persistent learned binary intervention relation structure is being reused after novel identity introduction.",
+    "negative": "Exact Bayesian posterior over balanced 4-token to binary actuator assignments, using the SAME source-trained causal prototype and genuine source evidence, outperformed the independent per-token grounder in both DEV cohorts. Candidate early unfamiliar-action prediction was weaker than strongest exact control by approximately 0.02298 and 0.02165. Required >=.015 pooled superiority cannot be met, so scientific DEV_NO_GO.",
+    "cold_retention": "Original known action semantics returned for 48 episodes; native and source causal checkpoints remained source-persistent and exact restored; candidate cold-return Brier near 0.1274 and 0.1263 versus original native-hash control 0.15746 and 0.15963. This does NOT prove general cold retention on unrelated held task families.",
+    "fairness": "Candidate and exact Bayesian control trained on identical genuinely observed source outcomes and had the same native/causal source history budget, with both receiving the same 96 supervised-by-public known canonical actions, 144 entirely unseen symbols and 48 known-action return events. An exact balanced mapping prior is an explicit extra modeling assumption, not a source label. Training compute is NOT matched.",
+    "structural_caveat": "The new labels 10..13 are new, but each hides an underlying member of the PREEXISTING TWO actuator primitive classes; learner does not discover an entirely new action effect. It is a bounded semantic binding task, not open-world symbol semantics or all-action general intelligence.",
+    "strongest_control_nonoracle": "Privileged evaluator-only true mapping oracle ceiling never trains. The strongest eligible, nonprivileged fitted control is exact_balanced_mapping, not oracle_known_mapping."
+  },
+  "limits": [
+    "Synthetic stochastic binary causal worlds, two rule families; no genuinely novel physical primitive semantics or real-world grounding.",
+    "Original Yggdrasil accepted public API only supports 0/1 actions. CKAD46 is an isolated learned adapter; cannot be represented as native production capability.",
+    "No strong-control scientific qualification or independent held first use; consumed DEV 46111/46112 are not reusable as confirmatory evidence.",
+    "Absolute Brier gains versus some weaker conventional controls do not imply strong-control improvement.",
+    "No matched process compute; exact Bayesian mapping enumerates 36 hypotheses; no performance/efficiency superiority claim.",
+    "No full final regression, accepted owner integration, deployment, runner/scheduled task/controller change, merge or main alteration."
+  ],
+  "stop_and_next": "Stop CKAD46 (DEV_NO_GO). Preserve learned source and original receipts. Priority should be a bounded native action-schema proposal that can represent genuine higher-cardinality primitive semantics and compositional causal relations; then prequalify under unseen intervention families against exact posterior and fully trained conventional controls, not more symbol-ID approximations on consumed seeds."
+}
