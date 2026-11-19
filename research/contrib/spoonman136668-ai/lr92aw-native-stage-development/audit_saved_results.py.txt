@@ -1,0 +1,128 @@
+"""Independent read-only LR92AW evidence auditor. DOES NOT import experiment or learner.
+
+Inspects only frozen scored JSON, CSV and externally supplied expected raw SHA.
+Does not generate actions, perform model updates or touch private checkpoints.
+"""
+from __future__ import annotations
+import base64
+import csv
+import gzip
+import hashlib
+import io
+import json
+import math
+from pathlib import Path
+
+SEEDS=(88041001,88041002)
+FAMILIES=('mediated','direct','mixed')
+ARMS=('structure_bayes','tabular_full','tabular_window32','no_learning')
+RAW_SHA='12f510e109d276cb347fad3e6b466b94003f9029fa17205ad93545583fa17815'
+PINNED_SOURCE='aa18440359effbf5b56197c36f7cf89a7fadab72'
+PINNED_COMPARISON='0d76cfe257e12b9cd73168145eab41d23438bd4c'
+
+
+def require(ok,msg):
+    if not ok:raise ValueError('LR92AW_AUDIT_'+msg)
+
+
+def eq(a,b,msg):
+    require(math.isclose(a,b,rel_tol=0,abs_tol=1e-12),msg)
+
+
+def audit(raw:bytes,csv_raw:bytes):
+    require(hashlib.sha256(raw).hexdigest()==RAW_SHA,'FULL_JSON_SHA_DRIFT')
+    x=json.loads(raw)
+    require(x['schema']=='lr92aw.native-stage-result.v1' and x['development_only'] is True
+            and x['scientific_pass_claimable'] is False and x['protected_primary_consumed'] is False,
+            'NOT_DEVELOPMENT_ONLY')
+    require(x['meta']['source_locked_before_scoring_commit']==PINNED_SOURCE,'SOURCE_BIRTH_DRIFT')
+    require(set(x['models'])==set(ARMS) and len(x['rows'])==x['worlds']==24,'WORLD_OR_ARMS')
+    seen=set();events=0
+    phases=('A','B','A_return_early16','A_return_late','A_return_all','total')
+    for row in x['rows']:
+        identity=(row['seed'],row['family'],row['rep'])
+        require(row['seed'] in SEEDS and row['family'] in FAMILIES and
+                type(row['rep']) is int and 0<=row['rep']<4 and identity not in seen,
+                'IDENTITY_OR_REUSE')
+        seen.add(identity)
+        dw=row['dwell'];require(len(dw)==3 and all(type(a) is int and 48<=a<=80 for a in dw),'DWELL_DRIFT')
+        require(type(row['public_sha256']) is str and len(row['public_sha256'])==64,'NO_TAPE_HASH')
+        events+=sum(dw)
+        require(set(row['models'])==set(ARMS),'ARM_MISSING')
+        for name,z in row['models'].items():
+            require(z['updates']==sum(dw) and 0<z['max_checkpoint_bytes']<=32768,
+                    'UPDATE_OR_MEMORY_MISMATCH')
+            require(type(z['pre_return_snapshot_sha256']) is str and
+                    len(z['pre_return_snapshot_sha256'])==64,'MISSING_COLD_CHECKPOINT')
+            require(set(z['results'])==set(phases),'MISSING_PHASE')
+            expected={ 'A':dw[0], 'B':dw[1], 'A_return_early16':16,
+                'A_return_late':dw[2]-16, 'A_return_all':dw[2], 'total':sum(dw) }
+            for ph,part in z['results'].items():
+                require(part['count']==expected[ph],'BAD_PHASE_COUNT')
+                for key in ('terminal_observed_brier','terminal_expected_brier',
+                    'terminal_oracle_reference_brier','transition_observed_brier',
+                    'transition_expected_brier'):
+                    require(type(part[key]) in (int,float) and math.isfinite(part[key])
+                            and 0<=part[key]<=1,'BAD_BRIER')
+    require(len(seen)==24 and events==x['events_per_arm'],'EVENT_TOTAL')
+    for name,summary in x['models'].items():
+        require(summary['total_updates']==events,'ARM_UPDATE_COUNT')
+        for ph in phases:
+            for key in ('terminal_observed_brier','terminal_expected_brier',
+                'terminal_oracle_reference_brier','transition_observed_brier',
+                'transition_expected_brier'):
+                eq(summary['all'][ph][key],sum(r['models'][name]['results'][ph][key]
+                    for r in x['rows'])/24,'MACRO_AVERAGE')
+        for seed in SEEDS:
+            for ph in ('B','A_return_early16'):
+                for key in ('terminal_observed_brier','transition_observed_brier'):
+                    sub=[r['models'][name]['results'][ph][key] for r in x['rows'] if r['seed']==seed]
+                    require(len(sub)==12,'SEED_REPLICATES')
+                    eq(summary['by_seed'][str(seed)][ph][key],sum(sub)/12,'SEED_MEAN')
+    candidates=[]
+    for seed in SEEDS:
+        def val(n,p,key='terminal_observed_brier'):
+            return x['models'][n]['by_seed'][str(seed)][p][key]
+        cb=val('structure_bayes','B');cr=val('structure_bayes','A_return_early16')
+        bestb=min(val(n,'B') for n in ('tabular_full','tabular_window32'))
+        bestr=min(val(n,'A_return_early16') for n in ('tabular_full','tabular_window32'))
+        tc=val('structure_bayes','B','transition_observed_brier')
+        besttc=min(val(n,'B','transition_observed_brier') for n in ('tabular_full','tabular_window32'))
+        pass_seed=(cb<=bestb-.01 and cr<=bestr-.01 and tc<=besttc+.01)
+        for k,v in [('candidate_B',cb),('best_control_B',bestb),('candidate_return_early16',cr),
+                    ('best_control_return_early16',bestr),('candidate_transition_B',tc),
+                    ('best_control_transition_B',besttc)]:
+            eq(x['seed_decision'][str(seed)][k],v,'RECALCULATED_'+k)
+        require(x['seed_decision'][str(seed)]['passed'] is pass_seed,'INVALID_SEED_DECISION')
+        candidates.append(pass_seed)
+    require(x['status']==('DEV_GO' if all(candidates) else 'DEV_NO_GO'),'WRONG_DECISION')
+    reader=csv.DictReader(io.StringIO(csv_raw.decode()))
+    crows=list(reader)
+    require(len(crows)==96,'CSV_ROW_COUNT')
+    used=set()
+    for row in crows:
+        id=(int(row['seed']),row['family'],int(row['rep']),row['arm'])
+        require(id not in used,'CSV_DUPLICATE');used.add(id)
+        match=next((r for r in x['rows'] if (r['seed'],r['family'],r['rep'])==id[:3]),None)
+        require(match is not None and id[3] in ARMS,'CSV_ID_UNKNOWN')
+        v=match['models'][id[3]]
+        eq(float(row['terminal_B']),v['results']['B']['terminal_observed_brier'],'CSV_B')
+        eq(float(row['terminal_Areturn16']),v['results']['A_return_early16']['terminal_observed_brier'],'CSV_RETURN')
+        require(row['public_sha256']==match['public_sha256'],'CSV_PUBLIC_TAPE_DRIFT')
+    return {'schema':'lr92aw.saved-evidence-audit.v1','status':'PASS',
+        'source_lock_commit':PINNED_SOURCE,'comparison_lock_commit':PINNED_COMPARISON,
+        'scored_json_sha256':RAW_SHA,'csv_sha256':hashlib.sha256(csv_raw).hexdigest(),
+        'worlds':24,'events_per_arm':events,'arms':list(ARMS),
+        'per_world_rows':96,'decision':x['status'],'seed_pass':dict(zip(map(str,SEEDS),candidates)),
+        'protected_primary_consumed':False,'native_training_executed':False}
+
+
+def main():
+    directory=Path(__file__).parent
+    encoded=(directory/'full_results.json.gz.base64.txt').read_text().strip()
+    raw=gzip.decompress(base64.b64decode(encoded))
+    csv_raw=(directory/'per_world_metrics.csv').read_bytes()
+    report=audit(raw,csv_raw)
+    print(json.dumps(report,indent=2,sort_keys=True))
+
+if __name__=='__main__':main()
