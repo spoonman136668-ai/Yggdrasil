@@ -146,6 +146,17 @@ jobs:
           "${probe_audit[@]}"
         fi
         test -z "$(git status --porcelain)"
+    - name: Replay the sealed held-cell transfer curve
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euo pipefail
+        AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+        git diff --exit-code 5921018140dc5368632f3303a757c31f0d3e8b43 HEAD -- \
+          "$AMALGAM/transfer_curve.py" "$AMALGAM/transfer_curve_protocol.json"
+        python -B "$AMALGAM/transfer_curve.py" "$RUNNER_TEMP/amalgam-replay-parents" \
+          "$AMALGAM/transfer_curve_protocol.json" "$AMALGAM/transfer-curve-dev-01" --replay
+        test -z "$(git status --porcelain)"
     - name: Cold-replay every sealed descendant on Windows
       if: runner.os == 'Windows'
       shell: bash
