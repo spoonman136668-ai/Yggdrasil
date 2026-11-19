@@ -1,0 +1,106 @@
+"""LR-92AR DEV01 disjoint synthetic variable-switch public causal worlds.
+
+Protocol committed before generator source; all seeds are unprotected DEV only.
+Do not import or execute this module for Yggdrasil protected scientific first use.
+No accepted owner checkpoint, model replacement, or hidden-state features.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+import hashlib
+import random
+
+SEEDS=(73004511,73004512,73004513)
+FAMILIES=("xor","and","random14")
+WORLD_INDICES=(0,1,2,3)
+PATTERNS=((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1))
+TOTAL=192
+EPISODE_LENGTH=11
+NOISE=0.15
+PROTECTED_SEEDS=frozenset({929209101,929209102,929209103,
+                           929209501,929209502,929209503})
+
+
+@dataclass(frozen=True)
+class PublicEvent:
+    index:int
+    episode_start:bool
+    action:int
+    outcome:int
+
+
+@dataclass(frozen=True)
+class PrivateEvaluation:
+    family:str
+    dwell_A:int
+    dwell_B:int
+    dwell_return:int
+    ruleA_mask:int
+
+
+@dataclass(frozen=True)
+class PublicWorld:
+    public:tuple[PublicEvent,...]
+    private:PrivateEvaluation
+
+    def public_digest(self)->str:
+        return hashlib.sha256(bytes(v for event in self.public
+                                    for v in (int(event.episode_start),
+                                              event.action,event.outcome))).hexdigest()
+
+
+def _stream(seed:int,family:str,index:int,domain:str)->random.Random:
+    payload=f"LR92AR-DEV01|{seed}|{family}|{index}|{domain}".encode("ascii")
+    digest=hashlib.sha256(payload).digest()
+    return random.Random(int.from_bytes(digest[:8],"big"))
+
+
+def _a_truth(family:str,history:tuple[int,int],action:int,mask:int)->int:
+    prior0,prior1=history
+    prev0=prior0 if prior0!=2 else 0
+    prev1=prior1 if prior1!=2 else 0
+    if family=="xor":
+        return action ^ prev0 ^ prev1
+    if family=="and":
+        return action & prev0 & prev1
+    return (mask>>(2*PATTERNS.index(history)+action))&1
+
+
+def world(seed:int,family:str,index:int)->PublicWorld:
+    if (type(seed) is not int or seed not in SEEDS or family not in FAMILIES or
+        type(index) is not int or index not in WORLD_INDICES or
+        seed in PROTECTED_SEEDS):
+        raise ValueError("LR92AR_DEV_SCOPE_VIOLATION")
+    rng_dwell=_stream(seed,family,index,"dwell")
+    rng_action=_stream(seed,family,index,"action")
+    rng_mask=_stream(seed,family,index,"mask")
+    rng_noise=_stream(seed,family,index,"noise")
+    a=rng_dwell.randint(48,80)
+    b=rng_dwell.randint(48,80)
+    remaining=TOTAL-a-b
+    assert 32<=remaining<=96
+    mask=rng_mask.getrandbits(14)
+    prev=(2,2)
+    public=[]
+    for t in range(TOTAL):
+        episode_start=(t%EPISODE_LENGTH==0)
+        if episode_start:
+            prev=(2,2)
+        action=rng_action.randrange(2)
+        clean_a=_a_truth(family,prev,action,mask)
+        # Hidden regime is evaluator-only; neither actions nor episode
+        # boundaries depend on this branch, and no clean outcome is passed.
+        clean=clean_a ^ int(a<=t<a+b)
+        public_outcome=clean ^ int(rng_noise.random()<NOISE)
+        public.append(PublicEvent(t,episode_start,action,public_outcome))
+        prev=(action,prev[0])
+    return PublicWorld(tuple(public),PrivateEvaluation(family,a,b,remaining,mask))
+
+
+def all_worlds():
+    return tuple((seed,family,index,world(seed,family,index))
+                 for seed in SEEDS for family in FAMILIES for index in WORLD_INDICES)
+
+
+if __name__=="__main__":
+    raise SystemExit("LR92AR_DEV_ONLY_USE_EXPLICIT_SCORER; NO_PROTECTED_SOURCE")
