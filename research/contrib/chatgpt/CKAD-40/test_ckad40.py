@@ -105,7 +105,7 @@ class CKAD40Tests(unittest.TestCase):
         completed = subprocess.run(
             [sys.executable, "-B", str(HERE/"diagnostic.py"),
              "--mode", "dev", "--seed", str(D.RESERVED[0])],
-            capture_output=True, text=True, cwd=HERE.parents[2])
+            capture_output=True, text=True, cwd=HERE.parents[3])
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn("CKAD40_ONLY_REGISTERED_DEV", completed.stderr)
 
