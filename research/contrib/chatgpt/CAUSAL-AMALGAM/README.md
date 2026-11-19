@@ -44,12 +44,15 @@ weights and remains in its original source archive. The probe enumerates public
 input shapes, checks default native plan parity and checks both source
 checkpoints for byte changes. There is no scoring or source interaction.
 
-The linked CKAD26 snapshots are at the 1,024-episode capacity. Extending cumulative
-training requires a bounded growth qualification on the retained state. Preserve
-old witness bytes, ids, hypotheses, weight readouts, quarantine and source pins
-through the codec change. The inherited 1,024-capacity result remains a test for
-the frozen checkpoint format. Verify a cold descendant learns one authorized
-next receipt and matches warm continuation before any scored experiment.
+The linked CKAD26 snapshots are at the 1,024-episode capacity. A bounded,
+explicit opt-in v6 episode checkpoint adds 128 witness slots with no reset and
+no other state plane changes. The old v5 checkpoints retain their byte identity
+and original cap. The growth preflight provisions a v6 descendant, admits one
+disjoint synthetic engineering receipt, and verifies exact old-prefix and
+legacy-plane retention. A warm update and a fresh-process replay produce the
+same 1,025-witness bytes, and replay consolidation reproduces those bytes.
+Duplicate replay remains idempotent, and conflict and repeated growth are
+rejected. This fixture supplies no scientific performance evidence.
 
 ## First combination to qualify
 
@@ -73,6 +76,11 @@ interventions to reach threshold, prequential Brier, reward, transfer, confident
 errors and abstentions, familiar return, full-state restore, interference per
 seed, wall time and parent/child resource usage. Preserve failures in the same
 repository and qualify final source independently on Linux and Windows.
+
+Reproduce each preflight with `PYTHONPATH=.` from the repository root.
+Pass the extracted CKAD26 primary artifact directory and the two pinned JEPA2-03
+state files to `shadow_preflight.py`. Pass the pinned CKAD26 seed-101 state file
+by itself to `growth_preflight.py`. SHA-256 input pins are in `sources.json`.
 
 This is a draft native integration track. Wingless and TTT-Hybrid remain
 independent. Source authority and protected first-use stay with the existing

@@ -283,6 +283,13 @@ class NativeCumulativeLearner:
         candidate._experience = self._experience.enable_context_refresh()
         return candidate
 
+    def extend_experience_capacity(self):
+        """Continue the saturated refresh ledger without replacing its evidence."""
+        require(self._experience is not None, 'GROWTH_REQUIRES_EXPERIENCE')
+        candidate = self._copy()
+        candidate._experience = self._experience.extend_witness_capacity()
+        return candidate
+
     def experience_context_forecast(self, view, first, next_state=None, second=None):
         require(self._experience is not None, 'CONTEXT_REQUIRES_EXPERIENCE')
         return self._experience.context_forecast(view, first, next_state, second)
