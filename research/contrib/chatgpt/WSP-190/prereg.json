@@ -1,0 +1,86 @@
+{
+  "schema": "yggdrasil.wsp190.interventional-module-generalization-prereg.v1",
+  "experiment": "WSP190",
+  "source": "juangamella/causal-chamber@967d59a42956872f37463cc561ecf6e9ceab9364",
+  "dataset": "lt_interventions_standard_v1",
+  "source_readme_blob": "aab8c755fa0c4b371ba790aabc1cf51932d6922c",
+  "source_generator_blob": "76b18a97a558ed8457ce717809ef874ca7f29591",
+  "source_variables_blob": "e24224df12568ece5e88d5e3d218f4a05b4aa782",
+  "zip_url": "https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/lt_interventions_standard_v1.zip",
+  "published_md5": "476664d024f88e8b7640998bb5e9ee33",
+  "license": "CC BY 4.0 historical light-chamber physical sensor CSVs; Gamella/Peters/Buehlmann Nature Machine Intelligence 2025 DOI 10.1038/s42256-024-00964-x",
+  "intent": "NEW independent published physical intervention family, NOT another prediction-residual state or WSP189 DEV retune. Test whether a modular, sign/uncertainty-gated do-effect causal contrast learned from MID single-target original interventions generalizes to stronger unseen red/green/blue do-intensities better than fully trained labeled/data-matched controls.",
+  "shared_boundary": "Same underlying light-tunnel device as earlier WSP189 but distinct published source data and actual intervention protocols; NOT new independent causal mechanism family, native Yggdrasil, general reasoning or protected original-world first-use.",
+  "no_prior_model_fit_this_dataset": true,
+  "prior_context": "WSP189 real physical 2D latent residual memory failed superiority on all three light sensors in both public DEV conditions; freeze result and do not recycle its data.",
+  "cohorts": {
+    "FIT": {
+      "uniform_reference": "first 8000 original records exactly",
+      "uniform_red_mid": "first 1000",
+      "uniform_green_mid": "first 1000",
+      "uniform_blue_mid": "first 1000"
+    },
+    "VALID": {
+      "uniform_reference": "original records index 8000..9999 exactly 2000; no group label decision using public DEV"
+    },
+    "PUBLIC_DEV": {
+      "uniform_red_strong": "first 1000 original records",
+      "uniform_green_strong": "first 1000 original records",
+      "uniform_blue_strong": "first 1000 original records",
+      "uniform_pol_1_mid": "first 1000 original records, distinct held intervention target negative transfer control"
+    },
+    "admission": "Publisher ZIP MD5 and strict roster/CSV headers/finite values. For each selected published recording require AT LEAST exactly the prespecified minimum physical count; take the fixed deterministic FIRST N, record actual count even if larger. Refuse shorter/absent/malformed. This prefix policy is frozen before any source numeric values and avoids post-hoc sample-count changes."
+  },
+  "inputs": [
+    "red",
+    "green",
+    "blue",
+    "pol_1",
+    "pol_2",
+    "l_11",
+    "l_12",
+    "l_21",
+    "l_22",
+    "l_31",
+    "l_32"
+  ],
+  "outputs": [
+    "vis_1",
+    "vis_2",
+    "vis_3"
+  ],
+  "holdout": "No target sensor values, source filename, experimental label/flag, future state, timestamp or protected causal graph available to prediction. FIT intervention-group ID available to BOTH candidate and labeled conventional control; held outcomes scored only after model selected on VALID.",
+  "algorithm": {
+    "candidate": "From FIT reference and 3 genuine single-target MID physical interventions estimate a separately assigned direct do-effect RGB slope for each sensor using difference of original group means, with two-standard-error null-edge gate. Fit remaining 8 physical nuisance actuator coefficients from ALL FIT examples by ridge on residual after frozen RGB modules. No gradient, transformer or tokenization. Source intervention labels ONLY while learning cause modules, not at inference.",
+    "negative_control": "Permute final three intervention-attributed source-to-sensor slopes red=>green=>blue=>red; refit the nuisance coefficients on identical physical FIT observations. Same module count; must not outperform correctly attributed candidate on held strong aggregate.",
+    "strong_conventional_controls": [
+      "FULLY FIT pooled ridge using SAME 11 current observed actuator variables, FIT-only normalization",
+      "FULLY FIT pooled quadratic ridge with each input square and pairwise RGB interactions",
+      "FULLY FIT grouped/within-intervention centered ridge using original FIT labels, equal 11 inputs",
+      "FIT reference-output mean no-learning reference control"
+    ],
+    "ridge_lambda": 0.25,
+    "modules_gate_sigma": 2,
+    "causal_interpretation": "Real original randomized interventions support contrast-based effect estimation within same hardware, but source may contain unobserved confounding/hardware effects; it is a falsifiable predictive module, not proof of identified causal graph or do-calculus completeness.",
+    "matched_info": "All conventional controls see the exact same physical 11,000 FIT records, 11 public actuator columns, three target outcomes, and the grouped control may use the same FIT intervention labels. No held-group label as prediction input.",
+    "frozen_score": "FIT-reference normalized RMSE per vis_1,vis_2,vis_3, original real strong RGB interventions plus pol_1_mid holdout; full real observations, no held FIT/preprocessing/threshold changes.",
+    "development_success": "Aggregate across 3 strong RGB interventions and 3 sensors: >=5% improvement in mean normalized RMSE over BEST fully trained conventional control that is selected using VALID-only mean RMSE; >=0 in at least 2 of 3 strong groups; no single sensor/group worsens >5% vs that VALID-selected strong control; candidate also beats permuted-edge negative by >=5% aggregate. Pol_1_mid scores reported as novel intervention target OOD veto: cannot be >10% worse mean normalized RMSE than strongest VALID-selected conventional. If any condition fails DEVELOPMENT_NO_GO. Do not retune.",
+    "selection": "Select strongest conventional on VALID reference only; separately report oracle best scored per-sensor benchmark for transparency, but never choose model using public DEV.",
+    "max_development_attempts": 1,
+    "training_process_cost": "Record FIT and DEV process CPU and source byte count and exact SHA. Not equal to full physical acquisition cost; only limited algorithmic timing."
+  },
+  "fences": {
+    "source_owner_protected_first_use_allowed": false,
+    "original_physical_actions": 0,
+    "remote_lab_calls": 0,
+    "scientific_pass": false,
+    "production_integration": false,
+    "merge": false,
+    "deployment": false,
+    "accepted_main": false,
+    "controller": false,
+    "scheduled_tasks": false,
+    "paid_api": false
+  },
+  "status": "FROZEN_BEFORE_OPENING_NEW_LT_INTERVENTION_SOURCE_NUMERICAL_VALUES"
+}
