@@ -215,5 +215,29 @@ class WSP200SourceFree(unittest.TestCase):
         self.assertEqual(first.checkpoint(), second.checkpoint())
 
 
+    def test_dense_known_signal_excludes_universal_factor_collapse(self):
+        # Dense source-free signal is a diagnostic counterexample to the sparse
+        # fixture's near-zero factors, not evidence about GFP measurements.
+        gene = "FABRICATED_DENSE"
+        group = next(pair_group(gene, 1, p) for p in range(2, 500)
+                     if group_bucket(pair_group(gene, 1, p)) == "FIT"
+                     and fit_stage(pair_group(gene, 1, p)) == 0)
+        pos = int(group.rsplit("\0", 1)[1])
+        aas = "CDEFGHIKLMNPQRSTVWY"
+        batch = []
+        for i, a in enumerate(aas):
+            for j, b in enumerate(aas):
+                signal = float((1 if i % 2 else -1) * (1 if j % 2 else -1))
+                batch.append(Sample(f"dense_{i}_{j}", group,
+                                    f"{gene}\0{1}\0A\0{a}",
+                                    f"{gene}\0{pos}\0A\0{b}", signal))
+        for mode in ("contradiction", "full_refit"):
+            model = Learner(DIGEST, mode)
+            model.advance(0, batch)
+            mse = sum((model.predict(s.left, s.right) - (s.target-model.mean)/model.sd)**2
+                      for s in batch) / len(batch)
+            self.assertLess(mse, 0.5, f"{mode} failed to learn dense fabricated signal")
+
+
 if __name__ == "__main__":
     unittest.main()
