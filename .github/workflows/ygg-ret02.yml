@@ -1,0 +1,143 @@
+name: YGG-RET02 context-addressed retrospective qualification
+'on':
+  push:
+    branches:
+      - research/ygg-ret02-context-selector-screen-20261118
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  screen:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Read-only sealed-source preflight and deterministic prequential screen
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 651fb51d4b2d03b0a639af92978ee8903f367e2c HEAD -- research/contrib/chatgpt/YGG-RET02/prereg.json
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_screen.py' -v
+          mkdir -p "$RUNNER_TEMP/RET02"
+          python -B research/contrib/chatgpt/YGG-RET02/screen.py --output "$RUNNER_TEMP/RET02/result.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-RET02-${{ matrix.os }}
+          path: ${{ runner.temp }}/RET02/result.json
+          if-no-files-found: error
+          retention-days: 30
+  seal:
+    needs: screen
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-RET02-ubuntu-latest
+          path: ${{ runner.temp }}/ret02-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-RET02-windows-2022
+          path: ${{ runner.temp }}/ret02-windows
+      - name: Verify independent two-OS numerical parity, preserve negative and rebuild G29
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 651fb51d4b2d03b0a639af92978ee8903f367e2c HEAD -- research/contrib/chatgpt/YGG-RET02/prereg.json
+          cmp "$RUNNER_TEMP/ret02-linux/result.json" "$RUNNER_TEMP/ret02-windows/result.json"
+          python -B research/contrib/chatgpt/YGG-RET02/screen.py --output "$RUNNER_TEMP/ret02-local.json"
+          cmp "$RUNNER_TEMP/ret02-local.json" "$RUNNER_TEMP/ret02-linux/result.json"
+          cp "$RUNNER_TEMP/ret02-local.json" research/contrib/chatgpt/YGG-RET02/result.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/contrib/chatgpt/YGG-RET02/result.json
+          git commit -m 'research(ret02): seal retrospective original readout screen'
+          EVIDENCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$EVIDENCE"
+          git add .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m "docs(ret02): rebuild G29 source atlas at $EVIDENCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ygg-ret02-context-selector-screen-20261118
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  final:
+    needs: seal
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact existing original native numeric dependencies
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Mandatory full native regression and code atlas at exact candidate
+        shell: bash
+        env:
+          EXACT_CANDIDATE: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_CANDIDATE"
+          git rev-parse HEAD 'HEAD^{tree}'
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_screen.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
