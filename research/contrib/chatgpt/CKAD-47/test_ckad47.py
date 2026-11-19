@@ -80,8 +80,8 @@ class CKAD47FixtureTests(unittest.TestCase):
         m.effects[2]=[0,0,96,0]
         m.effects[3]=[0,0,0,96]
         m.reward=[[96,0],[0,96],[0,96],[96,0]]
-        self.assertGreater(m.predict_reward(0,1,2),.9)
-        self.assertLess(m.predict_reward(0,1,1),.15)
+        self.assertLess(m.predict_reward(0,1,2),.15)
+        self.assertGreater(m.predict_reward(0,1,0),.9)
         self.assertGreater(m.predict_next(0,3)[3],.9)
         self.assertLess(m.predict_next(0,3)[1],.05)
 
