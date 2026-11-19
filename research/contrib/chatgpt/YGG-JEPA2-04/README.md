@@ -13,3 +13,7 @@ Falsifiable controls (same announced actions and source information): original n
 Evidence files and original source code stay in this repository rather than chat attachments. The source-locked GitHub workflow checks focused native negatives on Linux and Windows before original developmental training, independently audits exact original receipts, seals negative or positive evidence, reanchors G29, and executes mandatory complete final regression on both platforms on exact candidate SHA. This branch is **draft/unmerged**; it does not authorize accepted `main`, model promotion, new controller, scheduling or deployment.
 
 **Status:** source and implementation committed; CI engineering preflight selected. No original 04 source training has occurred at time of writing.
+
+## Frozen source preflight receipt
+
+Source-only preflight run [#44431413687](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44431413687) completed **SUCCESS on Linux and Windows**, with **17/17 focused tests per platform** (6 new multi-step/anti-leak tests, 6 prior temporal native tests, 5 original multi-learner tests); exact original JEPA2-03 checkpoint Git blob pins and prereg boundaries passed. All model/source/control code and numerical settings are unchanged from the just-qualified source. The next source-only documentation commit authorizes the one frozen pair of disjoint synthetic development cohorts, Linux and Windows independently; no scientific first-use or accepted-reference work.
