@@ -1,0 +1,153 @@
+"""LR-92AP exact *untruncated* run-length BOCPD predictive reference.
+
+External development-only, not native Yggdrasil training. Public action and
+its two past actions form a 14-bin context per address. Observed Bernoulli
+outcomes update independent Beta(1,1) segment likelihoods. Every possible
+run-length (up to observed event count) remains represented: no MAP collapse,
+no hidden regime/phase label, no clock feature, and no future data.
+
+The full untruncated posterior and its counts require MORE than 928 bytes;
+this model is an *out-of-budget scientific reference*, not a memory-matched
+competitor. MAX_EVENTS bounds runtime only and prevents unbounded allocations.
+"""
+from __future__ import annotations
+import hashlib
+import math
+import struct
+
+
+class ExactRunLengthBOCPD14:
+    MAGIC = b'BCR1'
+    HAZARD = 1.0 / 64.0  # fixed prior transition probability per event
+    MAX_EVENTS = 512
+    SLOTS = 16
+    PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+    FEATURE_ORDER = ('action', 'previous_action', 'second_previous_action')
+    MATCHED_BUDGET_BYTES = 928  # informative only; exceeds this budget
+
+    def __init__(self):
+        # Each slot holds exact posterior alternatives (probability, 28 counts)
+        # for every possible last change point conditional on public history.
+        self._hyp = [[(1.0, [0] * 28)] for _ in range(self.SLOTS)]
+        self._history = bytearray(self.SLOTS)
+        self._events = [0] * self.SLOTS
+
+    @classmethod
+    def _slot(cls, address, retained):
+        if type(retained) is not bool or type(address) is not int or not 0 <= address < (9 if retained else 7):
+            raise ValueError('BCR_INVALID_ADDRESS')
+        return address + (7 if retained else 0)
+
+    @staticmethod
+    def _bit(value):
+        if type(value) is not int or value not in (0, 1):
+            raise ValueError('BCR_INVALID_BIT')
+        return value
+
+    @classmethod
+    def _pos(cls, code, action):
+        if not 0 <= code < len(cls.PATTERNS):
+            raise ValueError('BCR_INVALID_HISTORY')
+        return code * 4 + action * 2
+
+    @staticmethod
+    def _p(counts, pos):
+        n0, n1 = counts[pos], counts[pos + 1]
+        return (n1 + 1.0) / (n0 + n1 + 2.0)
+
+    def predict(self, address, action, *, retained=False):
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        pos = self._pos(self._history[slot], action)
+        pooled = sum(w * self._p(counts, pos) for w, counts in self._hyp[slot])
+        return self.HAZARD * 0.5 + (1.0 - self.HAZARD) * pooled
+
+    def observe_step(self, address, action, public_outcome, *, retained=False):
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        outcome = self._bit(public_outcome)
+        pos = self._pos(self._history[slot], action)
+        if self._events[slot] >= self.MAX_EVENTS:
+            raise ValueError('BCR_EVENT_LIMIT')
+        # New segment: integrate observation under Beta(1,1) prior = 1/2.
+        candidates = [(self.HAZARD * 0.5, self._fresh(pos + outcome))]
+        # Continuing segment: integrate observation under its exact, observed
+        # context-specific Beta posterior; retain EVERY previous hypothesis.
+        for mass, old_counts in self._hyp[slot]:
+            p = self._p(old_counts, pos)
+            likelihood = p if outcome else 1.0 - p
+            new_counts = old_counts.copy()
+            new_counts[pos + outcome] += 1
+            candidates.append((mass * (1.0 - self.HAZARD) * likelihood, new_counts))
+        normalizer = sum(weight for weight, _ in candidates)
+        if not normalizer > 0 or not math.isfinite(normalizer):
+            raise ArithmeticError('BCR_NONFINITE_EVIDENCE')
+        self._hyp[slot] = [(w / normalizer, counts) for w, counts in candidates]
+        prev, _ = self.PATTERNS[self._history[slot]]
+        self._history[slot] = self.PATTERNS.index((action, prev))
+        self._events[slot] += 1
+
+    @staticmethod
+    def _fresh(pos):
+        counts = [0] * 28
+        counts[pos] = 1
+        return counts
+
+    def end_episode(self):
+        self._history[:] = bytes(self.SLOTS)
+
+    def snapshot(self):
+        raw = bytearray(self.MAGIC)
+        raw.extend(self._history)
+        for slot in range(self.SLOTS):
+            entries = self._hyp[slot]
+            raw.extend(struct.pack('>HH', self._events[slot], len(entries)))
+            for w, counts in entries:
+                raw.extend(struct.pack('>d28H', w, *counts))
+        return bytes(raw) + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob):
+        if (type(blob) is not bytes or len(blob) < 4 + 16 + cls.SLOTS * 4 + 32 or
+                blob[:4] != cls.MAGIC or
+                hashlib.sha256(blob[:-32]).digest() != blob[-32:]):
+            raise ValueError('BCR_CHECKPOINT_REJECTED')
+        payload = memoryview(blob)[:-32]
+        if any(code >= len(cls.PATTERNS) for code in payload[4:20]):
+            raise ValueError('BCR_INVALID_HISTORY')
+        obj = cls()
+        obj._history[:] = payload[4:20]
+        offset = 20
+        for slot in range(cls.SLOTS):
+            if offset + 4 > len(payload):
+                raise ValueError('BCR_TRUNCATED')
+            events, n = struct.unpack_from('>HH', payload, offset)
+            offset += 4
+            if events > cls.MAX_EVENTS or n != events + 1:
+                raise ValueError('BCR_INVALID_HYPOTHESIS_COUNT')
+            need = n * 64
+            if offset + need > len(payload):
+                raise ValueError('BCR_TRUNCATED')
+            entries = []
+            for _ in range(n):
+                unpacked = struct.unpack_from('>d28H', payload, offset)
+                offset += 64
+                w, counts = unpacked[0], list(unpacked[1:])
+                if not math.isfinite(w) or not 0 <= w <= 1 or sum(counts) > events:
+                    raise ValueError('BCR_INVALID_HYPOTHESIS')
+                entries.append((w, counts))
+            if abs(sum(w for w, _ in entries) - 1.0) > 1e-10:
+                raise ValueError('BCR_INVALID_MASS')
+            obj._events[slot] = events
+            obj._hyp[slot] = entries
+        if offset != len(payload):
+            raise ValueError('BCR_TRAILING_DATA')
+        return obj
+
+    @property
+    def events_seen(self):
+        return sum(self._events)
+
+    @property
+    def hypothesis_count(self):
+        return sum(map(len, self._hyp))
