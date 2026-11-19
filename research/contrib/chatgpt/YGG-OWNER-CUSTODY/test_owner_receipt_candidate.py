@@ -144,7 +144,10 @@ class OwnerReceiptIntakeFixtures(unittest.TestCase):
     def test_reject_symlink_escape_and_nonregular(self):
         target=self.root/"prior_checkpoint"
         target.unlink()
-        target.symlink_to(self.root/"continued_checkpoint")
+        try:
+            target.symlink_to(self.root/"continued_checkpoint")
+        except (OSError,NotImplementedError):
+            self.skipTest("Host policy prohibits creating fixture symlinks")
         self.must_fail("SYMLINK_REJECTED")
 
 if __name__=="__main__":
