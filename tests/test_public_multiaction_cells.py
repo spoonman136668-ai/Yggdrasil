@@ -246,12 +246,12 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         c.observe(0, 1, 0)
         self.assertEqual(c.choose(0), 0)
         old = c.snapshot()
-        self.assertEqual(PublicCausalCells.restore(old, hashlib.sha256(old).hexdigest()).snapshot(), old)
+        self.assertEqual(PublicCausalCells.restore(old).snapshot(), old)
         n = Cells.migrate(old)
         n.observe(identity(340), 0, 3, 2)
         self.assertEqual(c.snapshot(), old)
         self.assertEqual(n.original_binary_snapshot(), old)
-        self.assertEqual(PublicCausalCells.restore(old, hashlib.sha256(old).hexdigest()).choose(0), 0)
+        self.assertEqual(PublicCausalCells.restore(old).choose(0), 0)
 
 
 if __name__ == "__main__":
