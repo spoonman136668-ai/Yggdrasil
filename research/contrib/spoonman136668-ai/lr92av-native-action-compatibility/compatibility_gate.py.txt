@@ -1,0 +1,64 @@
+"""LR-92AV source-locked, development-only interface alias falsifier.
+
+This checks two separate dimensions. LR-92AU's 16 four-bit do masks are
+ACTIONS, not contexts; the Amalgam's two binary actions admit only four
+sequences. Separately, paired two-bit views with a shared leading coordinate
+contain just eight possible pre-outcome public views. No model is executed.
+"""
+from itertools import product
+
+AMALGAM = '86264b41a08d49f558418c0fba367f3a2636befa'
+AMALGAM_BLOB = '287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952'
+EXPERIENCE_BLOB = '5a18b00a4c4131526e71f51d63dfd9eb9471c81e'
+LR92AU_ACTION_BLOB = '27391a0258287357472c689e88a2c94fa1346a09'
+LR92AU_WORLD_BLOB = '290eca5616190a0663f5946735c1cd5670ba5987'
+
+def paired_views():
+    return tuple(((a,b),(a,c)) for a,b,c in product((0,1),repeat=3))
+
+def binary_action_sequences():
+    return tuple(product((0,1),repeat=2))
+
+def encode_action(mask):
+    if type(mask) is not int or not 0 <= mask < 16:
+        raise ValueError('INVALID_FOUR_BIT_ACTION')
+    # Illustrative deliberately lossy map; NOT an integration adapter.
+    return mask & 1, (mask >> 1) & 1
+
+def action_groups():
+    groups = {key:[] for key in binary_action_sequences()}
+    for mask in range(16):
+        groups[encode_action(mask)].append(mask)
+    return tuple(tuple(group) for group in groups.values())
+
+def expected_brier(p, y):
+    return y*(1-p)**2+(1-y)*p*p
+
+def proof():
+    assert len(paired_views()) == 8
+    assert len(binary_action_sequences()) == 4
+    groups = action_groups()
+    assert len(groups) == 4 and all(len(g) == 4 for g in groups)
+    # Independent fourth/fifth action-bit effect: same native action code,
+    # two observed 0 and two observed 1 results per group.
+    collapsed = full_identity = 0.0
+    for group in groups:
+        outcomes = tuple((mask >> 2)&1 for mask in group)
+        assert sorted(outcomes) == [0,0,1,1]
+        p = sum(outcomes)/len(outcomes)
+        collapsed += sum(expected_brier(p,y) for y in outcomes)/16
+        full_identity += sum(expected_brier(y,y) for y in outcomes)/16
+    assert (collapsed, full_identity) == (.25,0.0)
+    return dict(original_atomic_actions=16, native_binary_action_pairs=4,
+                paired_native_public_views=8, alias_groups=4,
+                alias_expected_brier=collapsed,
+                distinct_action_expected_brier=full_identity,
+                mathematical_gap=collapsed-full_identity,
+                model_runs=0, protected_worlds_read=0,
+                owner_checkpoint_changed=False,
+                scope='illustrative equal-prior, single cold event; not a native score',
+                decision='NO_DIRECT_BINARY_AMALGAM_ADAPTER_FOR_LR92AU_ACTIONS')
+
+if __name__ == '__main__':
+    import json
+    print(json.dumps(proof(),indent=2,sort_keys=True))
