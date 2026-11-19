@@ -1,0 +1,125 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "LR-92AF",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "research_lane": "independent external synthetic; not native Yggdrasil",
+  "parent_repo_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_pr": 1272,
+  "parent_raw_sha256": "7b94587fafbf9ce2fcc4de84c594b1a02c9137a7c9cead39d928c30dbe0676b0",
+  "source_sha256": "02ac5e7a51a46a97a18791a85298fd27d11bdd0b64cb8506018e31291827e098",
+  "question": "At equal total context-1 intervention count, does greedy expected-information-gain action selection improve exact accepted causal rule identification relative to balanced and random actions?",
+  "hypothesis": "The frozen greedy information-gain policy improves accepted exact familiar causal mechanisms by >=8/192 over balanced, >=5/192 over random, without a meaningful false-acceptance or predictive-accuracy penalty.",
+  "seeds": [
+    929200611,
+    929200612,
+    929200613
+  ],
+  "cohort": {
+    "per_seed": {
+      "known_mode0": 32,
+      "known_mode1": 32,
+      "unseen_mode2": 16
+    },
+    "base_ids": "8..15, held out from earlier historical training base IDs 0..7",
+    "new_seeds_not_reused": true
+  },
+  "budgets": {
+    "context0_fit": 112,
+    "context1_fit": 64,
+    "validation": 256,
+    "worlds": 240,
+    "trial_count": 1
+  },
+  "frozen_generator": {
+    "latent_table_bits": 8,
+    "hypotheses": 256,
+    "noise": 0.35,
+    "modes": [
+      [
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        1
+      ]
+    ],
+    "context0": "112 balanced randomized actions",
+    "context1_tape": "64 pre-generated independent noisy potential outcomes per action (never exposed except sampled actions)",
+    "validation": "256 fresh heldout balanced across 8 context-actions"
+  },
+  "trained_weights": [
+    [
+      0.34980575829798577,
+      0.6971548075437095,
+      0.619757346226096,
+      0.29496525851367783
+    ],
+    [
+      0.6266126978076312,
+      0.2969780102822538,
+      0.3210916511044965,
+      0.3220646163047858
+    ]
+  ],
+  "trained_weights_source": "LR-92AD train-only q-conditioned learned context differences, fixed from PR #1267; no new training or lookahead",
+  "policies": [
+    "eig",
+    "balanced",
+    "random",
+    "stale_eig",
+    "top2"
+  ],
+  "policy_definition": {
+    "eig": "select action with maximum posterior predictive binary entropy; tie by least previous selections then action index",
+    "balanced": "fixed seeded randomized 4-action blocks",
+    "random": "independent frozen seeded uniform action choice",
+    "stale_eig": "repeat initial maximum-EIG action; sham non-adaptive",
+    "top2": "select action disagreeing between top two posterior hypotheses; fall back to EIG"
+  },
+  "controls": "Main comparison uses identical Bayesian 256-state model and frozen prior, confidence threshold and total 176 fitting and 256 validation labels across policies. The sole varying factor is the context1 intervention-selection policy.",
+  "acceptance": "Posterior max >= .90 AND fit-only binomial survival p> .01; no heldout labels influence fitting or action choice",
+  "go_checks": [
+    "eig exact_seen >= balanced exact_seen + 8",
+    "eig exact_seen >= random exact_seen + 5",
+    "eig false_seen <= balanced false_seen + 2",
+    "eig false_unseen <= balanced false_unseen",
+    "eig validation_accuracy >= balanced validation_accuracy + .003",
+    "eig ece <= .10",
+    "cold restored delta is bit exact",
+    "all arms use exactly 64 context1 actions"
+  ],
+  "metric_defs": "Exact accepted complete 8-bit mechanism on 192 known-mode worlds, 48 unseen-mode; false acceptance, heldout accuracy over 61,440 outcomes, 5-bin ECE of MAP confidence, CPU policy time and wall time. All policies use identical environmental potential-outcome tapes, with each action sequentially revealing its own unviewed outcomes.",
+  "classification": {
+    "DEVELOPMENT_GO": "all eight frozen GO checks true; independent synthetic signal only",
+    "DEVELOPMENT_NO_GO": "one or more checks false in valid execution; preserve full negative record",
+    "INVALID": "source/prereg mismatch, reused scored seeds, missing data, post-result tuning, leakage, or audit failure"
+  },
+  "postscore_tuning_passes": 0,
+  "paid_api_calls": 0,
+  "protected_first_use_consumed": false,
+  "native_training": false,
+  "promotion_authority": false,
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92af-adaptive-interventions/"
+  ],
+  "environment": {
+    "python": "3.13.5",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "sklearn": "1.8.0",
+    "cpu": "isolated Linux"
+  },
+  "pre_primary_structural_tests": "9/9 PASS on nonprimary fixture seeds (no registered seeds evaluated)"
+}
