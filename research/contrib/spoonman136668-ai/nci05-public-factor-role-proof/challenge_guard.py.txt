@@ -1,0 +1,86 @@
+"""NCI-05F: two genuinely public, bounded challenges to a conditional role.
+
+This is a source-free proof-only hypothesis guard. No unrestricted Boolean
+function can be globally certified by seven of 64 possible observations.
+The optional public-role diagnostic cannot be promoted to WSP-156 trusted
+source admission, native checkpoint, or accepted model.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from hashlib import sha256
+import json
+
+from role_probe import (ConditionalRoleProposal, candidates,
+                        infer_conditional_role, probe_masks)
+
+
+@dataclass(frozen=True)
+class PublicChallengeAssessment:
+    status: str
+    newly_witnessed_effects: int
+    public_evidence_sha256: str
+    globally_certified: bool = False
+    native_admission: bool = False
+    scientific_pass: bool = False
+
+
+def challenge_masks(proposal: ConditionalRoleProposal) -> tuple[int,int]:
+    """Select new public interventions from the prior five-effect proposal."""
+    if type(proposal) is not ConditionalRoleProposal:
+        raise ValueError("NCI05F_UNTRUSTED_PROPOSAL")
+    factors=candidates(proposal.action_bit)
+    if proposal.factor_bit not in factors or proposal.offset not in (0,1):
+        raise ValueError("NCI05F_INVALID_PROPOSED_ROLE")
+    masks=(1 << proposal.factor_bit, sum(1 << bit for bit in factors))
+    if len(set((*probe_masks(proposal.action_bit),*masks))) != 7:
+        raise ValueError("NCI05F_NOT_NEW_INTERVENTIONS")
+    return masks
+
+
+def fixed_budget_control_masks(action_bit:int) -> tuple[int,int]:
+    """Fixed equal-cost comparator, NOT chosen using the proposed factor."""
+    factors=candidates(action_bit)
+    return (1 << factors[0],sum(1 << bit for bit in factors))
+
+
+def assess_public_challenges(
+    proposal: ConditionalRoleProposal,
+    original_public_effects,
+    new_public_effects,
+) -> PublicChallengeAssessment:
+    """Fail-closed, only after checking five baseline + two public receipts.
+
+    This is a limited-prior consistency test, not a proof of global causal
+    sufficiency. The caller must separately authenticate real source receipts.
+    """
+    masks=challenge_masks(proposal)
+    if type(original_public_effects) not in (list,tuple):
+        raise ValueError("NCI05F_PUBLIC_HISTORY_REQUIRED")
+    expected=infer_conditional_role(proposal.action_bit,original_public_effects)
+    if expected is None or expected!=proposal:
+        raise ValueError("NCI05F_PROPOSAL_PUBLIC_HISTORY_MISMATCH")
+    if type(new_public_effects) not in (list,tuple) or len(new_public_effects)>2:
+        raise ValueError("NCI05F_BAD_PUBLIC_CHALLENGES")
+    seen={}
+    for row in new_public_effects:
+        if (type(row) not in (list,tuple) or len(row)!=2
+                or type(row[0]) is not int or row[0] not in masks
+                or type(row[1]) is not int or row[1] not in (0,1)
+                or row[0] in seen):
+            raise ValueError("NCI05F_FORGED_DUPLICATE_OR_UNPLANNED_EFFECT")
+        seen[row[0]]=row[1]
+    canonical=json.dumps([
+        proposal.action_bit,
+        proposal.evidence_sha256,
+        [[mask,seen[mask]] for mask in sorted(seen)]
+    ],separators=(",",":"))
+    evidence_digest=sha256(canonical.encode("ascii")).hexdigest()
+    if len(seen)<2:
+        return PublicChallengeAssessment(
+            "INCOMPLETE_ABSTAIN",len(seen),evidence_digest)
+    refuted=any(seen[mask]!=proposal.predict_under_prior(mask) for mask in masks)
+    return PublicChallengeAssessment(
+        "REJECTED_OFF_PRIOR_WITNESS" if refuted else
+        "SUPPORTED_UNDER_SUPPLIED_GRAMMAR_ONLY",
+        len(seen),evidence_digest)
