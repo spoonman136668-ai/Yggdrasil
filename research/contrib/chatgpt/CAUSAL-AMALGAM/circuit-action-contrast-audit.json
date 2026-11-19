@@ -1,0 +1,415 @@
+{
+  "status": "DESIGN_DIAGNOSTIC",
+  "source_commit": "28ba3cb926fe376fa05ebfc1b921747d011d4557",
+  "question": "How many disjoint reward-action contrasts remain identifiable if the two terminal actions at one public first-stage address are both held out?",
+  "method": "Train-free exact family menu. Leave the two triples sharing that address entirely out of the public prefix. Keep hypotheses matching both public transition and reward on all six other triples. Report a guaranteed action only when all compatible hypotheses share an optimal action.",
+  "source_actions": 0,
+  "witnesses_admitted": 0,
+  "analysis": [
+    {
+      "withheld": [
+        "000",
+        "001"
+      ],
+      "true_contrasts": 4,
+      "contrast_identifiable": 4,
+      "total_compatible_action": 8,
+      "compositions": [
+        {
+          "composition": [
+            "BUF",
+            "ANDNOT"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NOT",
+            "AOI4"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "AND",
+            "OAI4"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NAND",
+            "MUX"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "OR",
+            "AOI3"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NOR",
+            "NMUX"
+          ],
+          "models": 1,
+          "common_optimal": [
+            1
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "XOR",
+            "ORNOT"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "XNOR",
+            "OAI3"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        }
+      ]
+    },
+    {
+      "withheld": [
+        "010",
+        "011"
+      ],
+      "true_contrasts": 4,
+      "contrast_identifiable": 4,
+      "total_compatible_action": 8,
+      "compositions": [
+        {
+          "composition": [
+            "BUF",
+            "ANDNOT"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NOT",
+            "AOI4"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "AND",
+            "OAI4"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "NAND",
+            "MUX"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "OR",
+            "AOI3"
+          ],
+          "models": 6,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "NOR",
+            "NMUX"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "XOR",
+            "ORNOT"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "XNOR",
+            "OAI3"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": false
+        }
+      ]
+    },
+    {
+      "withheld": [
+        "100",
+        "101"
+      ],
+      "true_contrasts": 4,
+      "contrast_identifiable": 3,
+      "total_compatible_action": 7,
+      "compositions": [
+        {
+          "composition": [
+            "BUF",
+            "ANDNOT"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "NOT",
+            "AOI4"
+          ],
+          "models": 6,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "AND",
+            "OAI4"
+          ],
+          "models": 4,
+          "common_optimal": [],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "NAND",
+            "MUX"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "OR",
+            "AOI3"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NOR",
+            "NMUX"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "XOR",
+            "ORNOT"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "XNOR",
+            "OAI3"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        }
+      ]
+    },
+    {
+      "withheld": [
+        "110",
+        "111"
+      ],
+      "true_contrasts": 4,
+      "contrast_identifiable": 4,
+      "total_compatible_action": 8,
+      "compositions": [
+        {
+          "composition": [
+            "BUF",
+            "ANDNOT"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "NOT",
+            "AOI4"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "AND",
+            "OAI4"
+          ],
+          "models": 1,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NAND",
+            "MUX"
+          ],
+          "models": 1,
+          "common_optimal": [
+            1
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "OR",
+            "AOI3"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0,
+            1
+          ],
+          "true_action_contrast": false
+        },
+        {
+          "composition": [
+            "NOR",
+            "NMUX"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "XOR",
+            "ORNOT"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": true
+        },
+        {
+          "composition": [
+            "XNOR",
+            "OAI3"
+          ],
+          "models": 2,
+          "common_optimal": [
+            0
+          ],
+          "true_action_contrast": false
+        }
+      ]
+    }
+  ]
+}
