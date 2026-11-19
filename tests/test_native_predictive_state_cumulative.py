@@ -31,7 +31,10 @@ class NativeCumulativeCustodyTests(unittest.TestCase):
                 original_readouts = tuple((model.archived_forecast(e[1][0], e[2]),
                                            model.archived_forecast(e[1][0], e[2], e[3], e[4]))
                                           for e in model._events[-8:])
-                original_history = tuple(model._events)
+                original_recent = tuple(model._events)
+                original_history = (tuple(model._source.original.base.native._ledger)
+                                    + original_recent)
+                self.assertEqual(len(original_history), count)
                 archived_before = bytes(model._archive_raw)
                 head_before = tuple([h.as_data() for h in model._one] +
                                     [h.data() for h in model._temporal] +
@@ -40,7 +43,11 @@ class NativeCumulativeCustodyTests(unittest.TestCase):
                 controls = MatchedHistoryControls.from_native_events(original_history)
                 self.assertEqual((proposal.count, controls.count), (count, count))
                 self.assertEqual(model.checkpoint(), before)
-                self.assertEqual(tuple(model._events), original_history)
+                self.assertEqual(tuple(model._events), original_recent)
+                self.assertEqual(sum(e[5] is None for e in proposal._events),
+                                 model.original_count)
+                self.assertEqual(sum(e[5] is None for e in controls._events),
+                                 model.original_count)
                 self.assertEqual(model._archive_raw, archived_before)
                 self.assertEqual(tuple([h.as_data() for h in model._one] +
                                        [h.data() for h in model._temporal] +

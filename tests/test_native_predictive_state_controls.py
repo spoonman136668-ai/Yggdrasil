@@ -91,4 +91,23 @@ class MatchedControlFixtureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "COLD_REJECTED"):
             MatchedHistoryControls.restore(forged, digest(forged))
 
+# Engineering negative: old source rows lack a post triple. Never invent it.
+class HistoricalMissingPublicFieldsFixtureTests(unittest.TestCase):
+    def test_public_history_absent_post_is_explicitly_masked_and_cold(self):
+        old6 = ((uid(900), ((0,0),(1,0)), 1, 0, 0, 1),
+                (uid(901), ((0,1),(1,1)), 0, 1, 1, 0))
+        old7 = ((uid(902), ((0,0),(0,0)), 0, 1, 1, 0, (0,1,0)),)
+        combined = old6 + old7
+        for model_class in (MatchedHistoryControls, PredictiveStateSplit):
+            m = model_class.from_native_events(combined)
+            self.assertEqual(m.count, 3)
+            self.assertIsNone(m._events[0][5])
+            self.assertIsNone(m._events[1][5])
+            self.assertEqual(m._events[2][5], (0, 1, 0))
+            before = m.checkpoint()
+            self.assertEqual(model_class.restore(before, digest(before)).checkpoint(), before)
+            with self.assertRaisesRegex(ValueError, "MISSING_POST_NOT_LEGACY"):
+                m.observe(uid(903), VIEWS, (0,0), 1, 0, None)
+            self.assertEqual(m.checkpoint(), before)
+
 if __name__ == '__main__': unittest.main()

@@ -99,10 +99,10 @@ class MatchedHistoryControls:
         q = self._events[-2] if self.count >= 2 else None
         # Explicit missingness is available to every fitted arm.
         pa, pb = p[2] if p else (0, 0)
-        pu, pv, pw = p[5] if p else (0, 0, 0)
+        pu, pv, pw = p[5] if p and p[5] is not None else (0, 0, 0)
         py = p[4] if p else 0
         qa, qb = q[2] if q else (0, 0)
-        qu, qv, qw = q[5] if q else (0, 0, 0)
+        qu, qv, qw = q[5] if q and q[5] is not None else (0, 0, 0)
         qy = q[4] if q else 0
         u, v, w = st
         s = s2 if stage == "residual" else 0
@@ -111,7 +111,9 @@ class MatchedHistoryControls:
                pa, pb, pu, pv, pw, py, qa, qb, qu, qv, qw, qy,
                int(p is not None), int(q is not None),
                a*pa, b*pb, s*py, pa*pu, pb*pv, py*pa,
-               pa*qa, pb*qb, py*qy)
+               pa*qa, pb*qb, py*qy,
+               int(p is not None and p[5] is not None),
+               int(q is not None and q[5] is not None))
         return np.asarray(arr, dtype=np.float64)
 
     def _linear(self, stage, st, chosen, s2):
@@ -153,9 +155,12 @@ class MatchedHistoryControls:
         pair = arm(chosen)
         s2 = bit(s2)
         reward = bit(reward)
-        require(type(post) is tuple and len(post) == 3 and
-                all(type(x) is int and x in (0, 1) for x in post) and
-                post[1] == s2, "POST")
+        if post is None:
+            require(legacy, "MISSING_POST_NOT_LEGACY")
+        else:
+            require(type(post) is tuple and len(post) == 3 and
+                    all(type(x) is int and x in (0, 1) for x in post) and
+                    post[1] == s2, "POST")
         require(identifier not in self._seen, "DUPLICATE")
         require(self.count < MAX_RECORDS, "MAX_RECORDS")
         targets = {"transition": s2, "residual": reward}
@@ -185,7 +190,14 @@ class MatchedHistoryControls:
     @classmethod
     def from_native_events(cls, native_events):
         model = cls()
-        for ident, views, a, s2, b, reward, post in native_events:
+        for event in native_events:
+            require(type(event) is tuple and len(event) in (6, 7),
+                    "ORIGINAL_PUBLIC_ROW")
+            if len(event) == 6:
+                ident, views, a, s2, b, reward = event
+                post = None  # No invented old public post-state observation.
+            else:
+                ident, views, a, s2, b, reward, post = event
             model.observe(ident, views, (a, b), s2, reward, post, legacy=True)
         return model
 
@@ -204,7 +216,9 @@ class MatchedHistoryControls:
             obj = cls()
             for ident, st, chosen, s2, reward, post in doc["events"]:
                 views = ((st[0], st[1]), (st[1], st[2]))
-                obj.observe(ident, views, tuple(chosen), s2, reward, tuple(post))
+                obj.observe(ident, views, tuple(chosen), s2, reward,
+                            tuple(post) if post is not None else None,
+                            legacy=(post is None))
             require(obj.checkpoint() == raw, "COLD_REPLAY")
             return obj
         except (ValueError, TypeError, KeyError, IndexError, UnicodeError,

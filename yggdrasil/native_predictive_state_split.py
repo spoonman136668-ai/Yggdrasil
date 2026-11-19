@@ -114,7 +114,14 @@ class PredictiveStateSplit:
         The native original/checkpoint remains intact and separately pinned.
         """
         obj = cls(sham=sham)
-        for ident, views, a, s2, b, y, post in native_events:
+        for event in native_events:
+            require(type(event) is tuple and len(event) in (6, 7),
+                    "ORIGINAL_PUBLIC_ROW")
+            if len(event) == 6:
+                ident, views, a, s2, b, y = event
+                post = None  # Original native ledger did not witness a post triple.
+            else:
+                ident, views, a, s2, b, y, post = event
             obj.observe(ident, views, (a, b), s2, y, post, legacy=True)
         return obj
 
@@ -131,9 +138,12 @@ class PredictiveStateSplit:
         pair = arm(chosen)
         s2 = bit(s2)
         y = bit(y)
-        require(type(post) is tuple and len(post) == 3 and
-                all(type(x) is int and x in (0, 1) for x in post) and
-                post[1] == s2, "OBSERVED_POST")
+        if post is None:
+            require(legacy, "MISSING_POST_NOT_LEGACY")
+        else:
+            require(type(post) is tuple and len(post) == 3 and
+                    all(type(x) is int and x in (0, 1) for x in post) and
+                    post[1] == s2, "OBSERVED_POST")
         require(identifier not in self._seen, "DUPLICATE_OR_CONFLICT")
         require(self.count < MAX_EVENTS, "EVENT_CAPACITY")
         values = self._feature_values()
@@ -179,7 +189,9 @@ class PredictiveStateSplit:
             learner = cls(sham=doc["sham"])
             for ident, st, pair, s2, y, post in doc["events"]:
                 views = ((st[0], st[1]), (st[1], st[2]))
-                learner.observe(ident, views, tuple(pair), s2, y, tuple(post))
+                learner.observe(ident, views, tuple(pair), s2, y,
+                                tuple(post) if post is not None else None,
+                                legacy=(post is None))
             require(learner.checkpoint() == raw, "COLD_REPLAY")
             return learner
         except (KeyError, IndexError, TypeError, ValueError, OverflowError,
