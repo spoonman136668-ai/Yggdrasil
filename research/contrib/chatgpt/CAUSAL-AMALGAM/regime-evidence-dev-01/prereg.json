@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.amalgam.local-evidence-development.v1",
+  "id": "amalgam-regime-evidence-routing-dev-01",
+  "owner_scope": "Isolated synthetic development only. No data or effects from the protected original-world source.",
+  "parent_joint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [
+    993501,
+    993523,
+    993541
+  ],
+  "shifts": [
+    [],
+    [
+      0
+    ],
+    [
+      3
+    ],
+    [
+      0,
+      3
+    ]
+  ],
+  "fit_per_seed": 64,
+  "prefix_per_phase": 16,
+  "scored_per_phase": 32,
+  "wall_budget_seconds": 480,
+  "min_transition_gain": 0.005,
+  "max_retention_drift": 0.02,
+  "hypothesis": "Assigning each released transition fractional weight according to the local alternative's posterior improves adaptation to crossed shifts while retaining the old readout. Matched exact Beta(1,1) FIT endpoints are shared by the three new arms.",
+  "schedule": "64 FIT rows per seed plus four crossed-shift schedules. Reveal 16 balanced public prefix episodes per phase, four per cell, then score 32 disjoint rows. One return phase without reset. FIT is common, and scored rows are inaccessible to every update method.",
+  "arms": [
+    "anchor",
+    "continued",
+    "shared",
+    "local",
+    "fit_full",
+    "fit_trailing",
+    "fit_change_point",
+    "fixed_endpoint",
+    "all_to_alternative",
+    "routed"
+  ],
+  "rule": "DEV_SIGNAL requires mean changed-cell transition Brier gain at least 0.005 over the strongest aggregate matched comparator per seed, and worst unchanged or return drift at most 0.02 on every seed. Otherwise DEV_NO_GO. Terminal forecasts for the three new arms use the unchanged anchor. No active-policy claim.",
+  "scoring_precision": "Existing staged readout scale of 1000000, applied to frozen snapshot forecasts and final transition and reward scores. Cache each immutable public forecast for its scope. Report the strongest aggregate matched control per seed.",
+  "prior_attempt": "82d211b68d0620f6b038aeb792f4e7c36d121de3",
+  "candidate": "routed",
+  "candidate_parameters": "Existing native novel prior 1/8 and fixed-share rate 1/32. No tuning. Fractional updates use the posterior after observing the transition. Fixed endpoint and all-to-alternative arms share the same starting FIT counts and old forecast."
+}

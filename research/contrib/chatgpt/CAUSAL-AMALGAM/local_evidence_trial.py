@@ -12,6 +12,7 @@ from time import monotonic, process_time
 
 from external_receipt_preflight import anchor_material
 from local_evidence_readout import EvidenceReadout
+from regime_forecast import RegimeForecast
 from selection_trial import source_module
 from shadow_preflight import checked_bytes, require
 from staged_retention import Controls, keys, SCALE
@@ -83,10 +84,14 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
     trace = {"fit": fit}
     initial_ids = {row[0] for row in base}
     evaluations = []
+    assignments = (("fixed_endpoint", "fixed"), ("all_to_alternative", "all"),
+                   ("routed", "posterior"))
     for index, shift in enumerate(plan["shifts"]):
         baseline = deepcopy(control)
         local = EvidenceReadout(old, new, local=True)
         shared = EvidenceReadout(old, new, local=False)
+        routed = {name: RegimeForecast(old, fit, assignment=mode)
+                  for name, mode in assignments if name in plan["arms"]}
         for phase, active in (("shift", shift), ("return", [])):
             block = f"{index}-{phase}"
             prefix = list(evidence(source, plan, seed, f"{block}-prefix", active,
@@ -100,6 +105,8 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
                 local.observe(*public)
                 shared.observe(*public)
                 baseline.observe(views, row)
+                for model in routed.values():
+                    model.observe(*public[:3])
             totals = defaultdict(lambda: [0, Fraction(0), Fraction(0)])
             for _, views, row in held:
                 require(monotonic() < deadline, "CELL_LOCAL_WALL_BUDGET")
@@ -107,6 +114,7 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
                           for read in (old, new, shared.forecast, local.forecast)]
                 values.extend(zip(*(baseline.forecast(key) for key, _ in keys(views, row)),
                                   strict=True))
+                values.extend(forecasts(model.forecast, views[0], row) for model in routed.values())
                 cell = 2 * row["s1"] + row["x1"]
                 for arm, (transition, reward) in zip(plan["arms"], values, strict=True):
                     total = totals[cell, arm]
@@ -124,9 +132,9 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
                 trace_sha256=digest(canonical(trace)), evaluations=evaluations)
 
 
-def run(inputs):
+def run(inputs, protocol=PLAN):
     wall, cpu = monotonic(), process_time()
-    raw = PLAN.read_bytes()
+    raw = protocol.read_bytes()
     plan = json.loads(raw)
     proof, material = anchor_material(inputs)
     anchor = checked_bytes(inputs / proof["joint_name"], plan["parent_joint_sha256"])
@@ -138,6 +146,7 @@ def run(inputs):
     replicas = [replicate(model, material, source, plan, source_pin, seed,
                           wall + plan["wall_budget_seconds"]) for seed in plan["seeds"]]
     gains, retained = [], []
+    candidate = plan.get("candidate", "local")
     for item in replicas:
         changed, unchanged = [], []
         for evaluation in item["evaluations"]:
@@ -145,10 +154,10 @@ def run(inputs):
                 (changed if cell in evaluation["shifted_cells"] else unchanged).append(loss)
         mean_losses = {arm: sum(row[arm][0] for row in changed) / len(changed)
                        for arm in plan["arms"]}
-        gains.append(min(score for arm, score in mean_losses.items() if arm != "local")
-                     - mean_losses["local"])
+        gains.append(min(score for arm, score in mean_losses.items() if arm != candidate)
+                     - mean_losses[candidate])
         retained.append(max(new - old for row in unchanged for new, old in
-                            zip(row["local"], row["anchor"], strict=True)))
+                            zip(row[candidate], row["anchor"], strict=True)))
     success = (sum(gains) / len(gains) >= plan["min_transition_gain"] and
                all(drift <= plan["max_retention_drift"] for drift in retained))
     return dict(verdict="DEV_SIGNAL" if success else "DEV_NO_GO",
@@ -159,4 +168,5 @@ def run(inputs):
 
 
 if __name__ == "__main__":
-    print(json.dumps(run(Path(sys.argv[1])), indent=2, sort_keys=True))
+    protocol = Path(sys.argv[2]) if len(sys.argv) == 3 else PLAN
+    print(json.dumps(run(Path(sys.argv[1]), protocol), indent=2, sort_keys=True))
