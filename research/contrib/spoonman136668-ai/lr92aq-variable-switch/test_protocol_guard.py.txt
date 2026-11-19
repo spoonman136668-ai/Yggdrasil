@@ -1,0 +1,150 @@
+"""LR-92AQ prospective source-birth preflight; no outcomes/primary generator."""
+from __future__ import annotations
+from copy import deepcopy
+import json
+from pathlib import Path
+import unittest
+
+from protocol_guard import ProtocolError, phase, validate
+
+HERE = Path(__file__).parent
+
+
+def baseline():
+    return json.loads((HERE/"prereg.json.txt").read_text(encoding="utf-8"))
+
+
+class ProtocolTests(unittest.TestCase):
+    def test_frozen_protocol_is_blocked_before_data_birth(self):
+        report = validate(baseline())
+        self.assertEqual(report["classification"],
+                         "PROTOCOL_STRUCTURE_PASS_FIRST_USE_BLOCKED")
+        self.assertEqual(report["worlds"],288)
+        self.assertEqual(report["events_per_world"],192)
+        self.assertEqual(report["possible_dwell_pairs"],1089)
+        self.assertEqual(report["prospective_worlds_consumed"],0)
+
+    def test_variable_schedule_never_changes_fixed_event_budget(self):
+        pairs=0
+        for a in range(48,81):
+            for b in range(48,81):
+                pairs+=1
+                self.assertEqual(len([phase(a,b,t) for t in range(192)]),192)
+                self.assertEqual(sum(phase(a,b,t)=="A" for t in range(192)),a)
+                self.assertEqual(sum(phase(a,b,t)=="B" for t in range(192)),b)
+                self.assertEqual(sum(phase(a,b,t)=="A_return" for t in range(192)),192-a-b)
+        self.assertEqual(pairs,1089)
+
+    def test_exact_identical_prior_phase_history_but_distinct_next_phase(self):
+        # No model received realized switch time. Both schedules give the
+        # identical A64/B48 public phase prefix until the next step at 112.
+        first=tuple(phase(64,48,t) for t in range(112))
+        second=tuple(phase(64,64,t) for t in range(112))
+        self.assertEqual(first,second)
+        self.assertEqual(first.count("A"),64)
+        self.assertEqual(first.count("B"),48)
+        self.assertEqual(phase(64,48,112),"A_return")
+        self.assertEqual(phase(64,64,112),"B")
+
+    def test_frozen_64_64_64_leak_rejected(self):
+        d=baseline()
+        d["prospective_design"]["phase_lengths"]["A"]["min"]=64
+        d["prospective_design"]["phase_lengths"]["A"]["max"]=64
+        d["prospective_design"]["phase_lengths"]["B"]["min"]=64
+        d["prospective_design"]["phase_lengths"]["B"]["max"]=64
+        with self.assertRaisesRegex(ProtocolError,"FIXED_CLOCK_OR_DRIFT"):
+            validate(d)
+
+    def test_transition_reset_or_cue_rejected(self):
+        for key, value in (
+            ("episode_boundary","Reset at hidden phase switch"),
+            ("switch_knowledge","TRUE PHASE=YES"),
+            ("actions","derive action from current phase"),
+            ("streams","reseed everything per hidden phase"),
+        ):
+            d=baseline()
+            d["prospective_design"][key]=value
+            with self.assertRaises(ProtocolError):
+                validate(d)
+
+    def test_no_primary_first_use_even_if_user_flags_forged(self):
+        for key in ("official_scientific_first_use_authorized",
+                    "merge_authorized","deployment_authorized"):
+            d=baseline()
+            d["authority"][key]=True
+            with self.assertRaisesRegex(ProtocolError,"AUTHORITY_LEAK"):
+                validate(d)
+        d=baseline()
+        d["gates_before_primary"]["no_protected_primary_executed"]=False
+        with self.assertRaisesRegex(ProtocolError,"FIRST_USE_ALREADY_CONSUMED"):
+            validate(d)
+
+    def test_generator_or_custody_is_not_silently_assumed(self):
+        d=baseline()
+        d["prospective_design"]["source_status"]="worlds generated"
+        with self.assertRaisesRegex(ProtocolError,"SOURCE_ALREADY_MATERIALIZED"):
+            validate(d)
+        for key in ("native_owner_checkpoint_trust_receipt",
+                    "deterministic_generator_source_born",
+                    "source_sha256_and_tree_audited",
+                    "prospective_dataset_manifest_and_world_digests_born",
+                    "seed_collision_audit",
+                    "full_exact_candidate_sha_final_regression_linux_windows",
+                    "authority_for_scientific_first_use"):
+            d=baseline()
+            d["gates_before_primary"][key]=True
+            with self.assertRaisesRegex(ProtocolError,"PREPRIMARY_BARRIER"):
+                validate(d)
+
+    def test_no_seed_collision_with_predecessor_or_group_duplicates(self):
+        for target in (929209101,929209102,929209103,
+                       73004303,73004304,929209502,True):
+            d=baseline()
+            d["prospective_design"]["groups"][0]["seed"]=target
+            with self.assertRaises(ProtocolError):
+                validate(d)
+
+    def test_explicit_strong_controls_and_budget(self):
+        d=baseline()
+        d["controls"]=d["controls"][:-1]
+        with self.assertRaisesRegex(ProtocolError,"CONTROLS_INCOMPLETE"):
+            validate(d)
+        d=baseline()
+        d["controls"][-1]["budget"]="<=928"
+        with self.assertRaisesRegex(ProtocolError,"OVERBUDGET_REFERENCE_MISLABEL"):
+            validate(d)
+        d=baseline()
+        d["constraints"]["memory_cap_bytes"]=1024
+        with self.assertRaisesRegex(ProtocolError,"CAPACITY_DRIFT"):
+            validate(d)
+
+    def test_stable_identity_and_prospective_counts(self):
+        for change in ({"schema":"external-research-prereg.v1"},
+                       {"experiment_id":"LR-92AP"},
+                       {"status":"PRIMARY_RUN"}):
+            d=baseline(); d.update(change)
+            with self.assertRaises(ProtocolError):validate(d)
+        d=baseline(); d["prospective_design"]["groups"][0]["worlds_per_family"]=33
+        with self.assertRaisesRegex(ProtocolError,"GROUP_WORLD_BUDGET"):
+            validate(d)
+
+    def test_math_no_cue_bound_is_not_measured_model_science(self):
+        # Two equiprobable hypothetical next-step targets; each has 15%
+        # binary label flips. This is only a toy identifiability argument.
+        pa,pb=0.15,0.85
+        common=(pa+pb)/2
+        risk=lambda q,p: p*(1-q)**2+(1-p)*q*q
+        self.assertAlmostEqual((risk(common,pa)+risk(common,pb))/2,0.25)
+        self.assertAlmostEqual((risk(pa,pa)+risk(pb,pb))/2,0.1275)
+        self.assertAlmostEqual(0.25-0.1275,0.1225)
+
+    def test_phases_validate_rejects_wrong_clock_values(self):
+        for a,b,t in ((47,64,112),(81,64,112),(64,47,112),
+                      (64,81,112),(64,64,192),(64,64,-1),
+                      (True,64,112),(64,False,112),(64,64,True)):
+            with self.assertRaisesRegex(ProtocolError,"INVALID"):
+                phase(a,b,t)
+
+
+if __name__=="__main__":
+    unittest.main()
