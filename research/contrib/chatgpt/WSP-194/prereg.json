@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-194",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "new-real-protein-domain-public-development",
+  "parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "branch": "research/wsp194-kras-sequential-fitness-20261119",
+  "hypothesis": "Cumulative native site-state weight programming initialized from measured KRAS single mutations and updated with a one-pass pair-residual write predicts unseen multi-mutants more accurately than a fully fitted same-information pairwise ridge predictor, without changing previously learned single-mutant weights.",
+  "source": {
+    "author_repository": "luo-group/SynFit",
+    "commit": "4a11c268b5719ea3c64459a5bb5b4f3a45f0b09a",
+    "license_caveat": "MIT for code; underlying original assay-data redistribution terms not independently proven; do not copy original CSV into Yggdrasil",
+    "single": {
+      "path": "dataset/KRAS_data/KRAS_6_binding_single_mutation.csv",
+      "git_blob_sha1": "064c356b09ba9a951a9e635f78aecc9c8fd32c74",
+      "bytes": 764573
+    },
+    "multi": {
+      "path": "dataset/KRAS_data/KRAS_6_binding_multi_mutation.csv",
+      "git_blob_sha1": "13fadeb5ca181a041d7c432c2728df673153410c",
+      "bytes": 4226513
+    },
+    "expected_columns": [
+      "mutant",
+      "mutated_sequence",
+      "DMS_score_RAF",
+      "DMS_score_PI3",
+      "DMS_score_RAL",
+      "DMS_score_SOS",
+      "DMS_score_K27",
+      "DMS_score_K55"
+    ],
+    "source_usage": "Exact pinned original author-provided public historical KRAS binding assays, not a virgin novel physical world; GitHub file headers and repository directory listing known before this prereg, no original numeric outcomes read.",
+    "predecessors": [
+      "WSP-192 PUBLIC_DEV_NO_GO PR #1299, untouched",
+      "WSP-193 INVALID due frozen 1500 source-genotype threshold, untouched"
+    ],
+    "forbidden": [
+      "mutated_sequence-based supervised embedding from pretrained language models",
+      "test genotype labels in FIT",
+      "any held target or fitness in normalization",
+      "copy of historical source CSV",
+      "re-score WSP192 or WSP193 held outcomes",
+      "new original-world source action",
+      "cross-assay label sharing without baseline parity"
+    ]
+  },
+  "preprocessing": {
+    "source_byte_custody": "Verify exact Git blob SHA1, byte count, UTF-8, CSV header and row structural parse before numeric fits. Source only via read-only public GitHub author commit.",
+    "genotype": "Infer per-position reference sequence as majority amino-acid identity across only the single-mutation source's sequences, without reading assay values. Encode each mutant as a sorted set of changed position:observed-amino-acid features. Assays get identical feature vocabulary and variant splits.",
+    "independence": "Canonical complete mutant feature set forms a group; full genotype identical across source files is forbidden (no test leakage). Whole-genotype SHA256('WSP194-KRAS-v1'+NUL+features) first 8 bytes modulo 100: FIT 0..69; VALID 70..84; DEV 85..99. No reseed or balancing.",
+    "filtering": "Discard any unmeasured assay value only for that assay. No unknown sequence characters, duplicate genotypes, mixed sequence lengths, or more than 5% excluded malformed structural rows. Do not select rows based on effect size.",
+    "minimums": "Require >=50 distinct FIT measured single mutants in each attempted assay, >=1000 FIT multi-mutants and >=150 VALID and >=150 DEV multi-mutants in at least 3 assays; otherwise classified INVALID, no threshold change.",
+    "normalization": "Per assay standardize by FIT-only single-mutant mean and population SD. All controls see identical normalization, source single and multi labels, same features and same split; no other assay outcomes shared."
+  },
+  "design": {
+    "learning": "Stage 1 memorize/program persistent mutation weights from FIT single-mutant measured normalized effects using ridge shrink λ=[0.01,0.1,1] chosen by VALID singles. Stage 2 freeze singles and optionally apply one-pass FIT multi pair-residual direct writes.",
+    "direct_candidate": "From each FIT multi-mutant residual y - sum(single mutation weights), write to each pair-feature a local residual average with denominator support_count+penalty; use direct interaction coefficient beta * sum(pair weights), beta=[-1,0,0.5,1,2], penalty=[1,10] selected by VALID multi-mutant RMSE.",
+    "strong_control": "Converged coordinate-descent pairwise ridge regression on the exact same FIT multi-mutant residuals and SAME observed pair feature dictionary, regularization λ=[0.1,1,10], 250 sweeps maximum and convergence <=1e-4. Select strongest mean/additive/pairwise on VALID multi-mutants.",
+    "negative_controls": [
+      "candidate beta=0 no pair updates",
+      "fixed seeded shuffle of FIT residual labels across genotypes before one-pass direct pair writes"
+    ],
+    "frozen_seeds": {
+      "shuffle": 19411,
+      "bootstrap": [
+        19431,
+        19437,
+        19441,
+        19447,
+        19453,
+        19459
+      ]
+    },
+    "validation": "Select candidate beta/penalty and conventional ridge λ by VALID only; fixed tie rules prefer zero beta and larger regularization.",
+    "held_eval": "Single DEV multi-mutant per-assay RMSE against strongest VALID-selected converged conventional, before/after single-mutant retention RMSE and 1000 pair-genotype-level bootstrap resamples for CI, six assays reported independently.",
+    "support_rule": "Public development support only if >=4 assays available and at least 4/6 show >=5% lower held multi-genotype RMSE and bootstrap lower gain >0, with no >3% regression for any admitted assay and zero single-mutant retained weight drift. No independent SCIENTIFIC_PASS from public data.",
+    "negative_rule": "If admitted data and qualified controls but primary held gain threshold fails, mark PUBLIC_DEV_NO_GO. Do not repick controls, salt, variants, lambdas or experimental family after outcomes.",
+    "invalid_rule": "Missing/malformed source bytes, insufficient FIT/VALID/DEV, uncontrolled leakage, missing necessary convergence, or inability to fetch complete original files: INVALID/UNVERIFIED; do not treat as scientific result.",
+    "resource_budget": "Original source max 5.5MB + 1MB, six independent assay computations, at most 250 ridge coordinate sweeps per lambda, 1000 bootstrap samples/assay; zero paid APIs and no GPU/runner dispatch.",
+    "capacity": "Candidate and pairwise ridge share identical set of mutation-pair coordinates, with one extra global candidate beta/penalty; report stored parameters per assay and whole process time separately from source acquisition.",
+    "science_limit": "This tests public retrospective within-KRAS variant generalization and trivial structural cold retention of frozen weights, not a new intervention action, unfamiliar-world transfer, causal discovery, or native Yggdrasil trained model."
+  },
+  "authority": {
+    "research_contribution_only": true,
+    "no_native_owner_actions": true,
+    "no_protected_first_use": true,
+    "no_accepted_ref_edit": true,
+    "no_runner_queue_or_scheduler": true,
+    "no_merge_promotion_or_deployment": true
+  },
+  "allowed_files": [
+    "research/contrib/chatgpt/WSP-194/*"
+  ],
+  "primary_result_policy": "One first primary DEV score (if admitted) after this commit and frozen evaluator/test code; preserve NEGATIVE or INVALID. No post-result tuning."
+}
