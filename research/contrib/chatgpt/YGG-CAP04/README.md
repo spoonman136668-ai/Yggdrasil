@@ -192,3 +192,30 @@ admit a new checkpoint into the accepted owner. Zero original-world
 first-use, zero fresh protected CAP04 scientific cohort, zero model
 owner/runner/queue/Forge involvement. Central Amalgam chat is the only
 candidate integration coordinator.
+
+
+## RD03 read-only history feature diagnostic
+
+The source and analysis contract are frozen in `RD03-RETROSPECTIVE-DIAGNOSTIC.md`
+at commit `632039c1ac480cd05012c94ffda5e395722cf026` **before
+implementing the instrument**. `rd03_diagnostic.py` only replays the already
+evaluated RD02 engineering sources; no fresh source identity, scientific
+cohort, owner action or new learner is introduced.
+
+The instrument records `selected_feature("residual")`, per-stage
+selection counts, existing unmodified cumulative selector evidence, and
+read-only pooled and forced previous-pair reward forecasts prior to each
+actual synthetic event. It compares historical A/B/A windows and checks
+that the prior published B-terminal Brier is reproduced at its original
+exact fixed source SHA. Existing opt-in `direct` and sham models receive
+identical witnesses. The forced-feature counterfactual is **only a
+retrospective diagnostic, not a trained new arm or evidence of gain**.
+The independent replay auditor checks source, score, selected-feature,
+evidence and tampering. Preserve RD02 NO_GO and all old experimental
+negative findings regardless of new diagnostic observations.
+
+A feature not being selected is a mechanism hypothesis, not proof that
+the learner can never capture previous-action history. Fitted controls,
+fixed-feature representation, and model/observation context confounds
+remain possible. Under the current sole-coordinator boundary, no
+canonical Yggdrasil integration or model-owner action is authorized.
