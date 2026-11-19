@@ -90,6 +90,75 @@ def metadata_counts(path: Path, delimiter: str, has_header: bool) -> dict:
             "expanded_metadata_bytes": expanded}
 
 
+
+def validate_cell_identity_join(root: Path) -> dict:
+    """Validate public barcode-to-guide assignment metadata without reading outcomes.
+
+    Filtered Cell Ranger barcodes are matrix column identities. The author's
+    reader accepts cell BC/cell_BC/cell_barcode and joins guide identities on
+    that key. No per-cell barcode or guide label is returned in the receipt.
+    """
+    barcode_path = root / "GSE133344_filtered_barcodes.tsv.gz"
+    identity_path = root / "GSE133344_filtered_cell_identities.csv.gz"
+    barcodes = set()
+    with gzip.open(barcode_path, "rt", encoding="utf-8-sig", newline="") as stream:
+        for line in stream:
+            fields = next(csv.reader([line], delimiter="\t"))
+            if len(fields) != 1 or not fields[0]:
+                raise AdmissionError("BAD_BARCODE_COLUMN")
+            barcode = fields[0]
+            if barcode in barcodes:
+                raise AdmissionError("DUPLICATE_MATRIX_BARCODE")
+            barcodes.add(barcode)
+    if not barcodes:
+        raise AdmissionError("NO_MATRIX_BARCODES")
+
+    with gzip.open(identity_path, "rt", encoding="utf-8-sig", newline="") as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames is None or len(reader.fieldnames) != len(set(reader.fieldnames)):
+            raise AdmissionError("IDENTITY_HEADER_INVALID")
+        aliases = ("cell_barcode", "cell_BC", "cell BC")
+        chosen = [name for name in aliases if name in reader.fieldnames]
+        if len(chosen) != 1 or "guide_identity" not in reader.fieldnames:
+            raise AdmissionError("IDENTITY_KEYS_MISSING_OR_AMBIGUOUS")
+        identity_key = chosen[0]
+        matched = set()
+        orphan = 0
+        assigned = 0
+        unassigned = 0
+        count = 0
+        for row in reader:
+            if None in row or any(value is None for value in row.values()):
+                raise AdmissionError("MALFORMED_IDENTITY_ROW")
+            barcode = row[identity_key]
+            if not barcode:
+                raise AdmissionError("EMPTY_IDENTITY_BARCODE")
+            if barcode in matched:
+                raise AdmissionError("DUPLICATE_IDENTITY_BARCODE")
+            matched.add(barcode)
+            count += 1
+            if barcode not in barcodes:
+                orphan += 1
+            if row["guide_identity"] and row["guide_identity"] != "*":
+                assigned += 1
+            else:
+                unassigned += 1
+        if not count or not (matched & barcodes):
+            raise AdmissionError("NO_JOINED_IDENTITIES")
+        # Identity rows not present in the filtered matrix are not valid
+        # supervision and may indicate a mismatched batch/source release.
+        if orphan:
+            raise AdmissionError("ORPHAN_IDENTITY_BARCODES")
+        if not assigned:
+            raise AdmissionError("NO_ASSIGNED_GUIDES")
+
+    return {"matrix_barcodes": len(barcodes), "identity_rows": count,
+            "joined_identity_rows": len(matched),
+            "matrix_barcodes_without_identity": len(barcodes - matched),
+            "assigned_guide_rows": assigned, "unassigned_guide_rows": unassigned,
+            "guide_labels_exposed_in_receipt": False}
+
+
 def matrix_dimensions(path: Path) -> dict:
     """Read ONLY MatrixMarket header+dimension tuple, never numeric entries."""
     with gzip.open(path, "rt", encoding="ascii") as stream:
@@ -116,6 +185,14 @@ def matrix_dimensions(path: Path) -> dict:
 def verify(root: Path, spec: dict = FILE_SPEC) -> dict:
     if not root.is_dir() or root.is_symlink():
         raise AdmissionError("SOURCE_DIRECTORY_INVALID")
+    # Freeze physical file identity during digest and metadata access: a
+    # concurrent dataset replacement must not combine two source versions.
+    def fingerprint(path):
+        if path.is_symlink() or not path.is_file():
+            raise AdmissionError(f"MISSING_OR_SYMLINK:{path.name}")
+        stat = path.stat()
+        return (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+    fingerprints = {name: fingerprint(root / name) for name in spec}
     entries = {}
     # All four compressed files must match before opening any metadata stream.
     for name, (expected, limit) in spec.items():
@@ -131,12 +208,20 @@ def verify(root: Path, spec: dict = FILE_SPEC) -> dict:
         raise AdmissionError("GENES_SHAPE_MISMATCH")
     if entries["GSE133344_filtered_barcodes.tsv.gz"]["metadata_rows"] != shape["cells"]:
         raise AdmissionError("BARCODES_SHAPE_MISMATCH")
+    join = validate_cell_identity_join(root)
+    if join["matrix_barcodes"] != shape["cells"]:
+        raise AdmissionError("IDENTITY_MATRIX_SHAPE_MISMATCH")
+    if join["identity_rows"] != entries["GSE133344_filtered_cell_identities.csv.gz"]["metadata_rows"]:
+        raise AdmissionError("IDENTITY_METADATA_COUNT_DRIFT")
+    if any(fingerprint(root / name) != fingerprints[name] for name in spec):
+        raise AdmissionError("SOURCE_DRIFT_BETWEEN_HASH_AND_METADATA")
     return {"schema": SCHEMA, "source": SOURCE,
             "third_party_manifest": THIRD_PARTY_MANIFEST,
             "manifest_git_blob": MANIFEST_BLOB,
             "byte_digest_and_metadata_shape_gate": "PASS",
             "original_geo_publisher_signature_verified": False,
-            "identity_to_barcode_join_verified": False,
+            "identity_to_barcode_join_verified": True,
+            "identity_join": join,
             "gene_pair_cohort_admitted": False,
             "held_expression_labels_inspected": False,
             "training_performed": False,
