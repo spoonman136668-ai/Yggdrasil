@@ -44,7 +44,11 @@ class FixtureAuditTests(unittest.TestCase):
         self.mutate(lambda x: x["rows"][4].update({"id": x["rows"][5]["id"]}))
         self.mutate(lambda x: x["rows"][4].update({"t": 8}))
         self.mutate(lambda x: x["rows"][4].update({"private_phase": "B"}))
-        self.mutate(lambda x: x["rows"][5]["action"].reverse())
+        # Choose a known asymmetric action: reversing (0,0) or (1,1)
+        # would be a no-op and would not test receipt tampering.
+        self.assertNotEqual(self.parsed["rows"][2]["action"][0],
+                            self.parsed["rows"][2]["action"][1])
+        self.mutate(lambda x: x["rows"][2]["action"].reverse())
 
     def test_forecast_and_brier_forgery_rejected(self):
         arm = "predictive_state_split"
