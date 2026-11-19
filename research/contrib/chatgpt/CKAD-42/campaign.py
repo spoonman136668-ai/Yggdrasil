@@ -78,6 +78,20 @@ def bit_index(context,first,next_state=None,second=None):
     return context | (first<<1) | (next_state<<2) | (second<<3)
 
 
+def _canonical_learning_float(value):
+    """Portable 12-significant-digit *checkpoint* representation only.
+
+    Training and prediction retain their exact pre-existing in-memory floats.
+    This removes nonsemantic sub-ULP/libm drift from serialized snapshots;
+    no quantization happens when learning or reading a forecast.
+    """
+    if type(value) is not float or not math.isfinite(value):
+        raise ValueError("CKAD42_NONFINITE_CHECKPOINT_LEARNING_WEIGHT")
+    if value == 0.0:
+        return 0.0
+    return float(format(value, ".12g"))
+
+
 class LearnedCausalBasis:
     """Source-trained finite numeric relation weights, cumulative and recent."""
     def __init__(self,bits):
@@ -122,8 +136,10 @@ class LearnedCausalBasis:
         self.n+=1
 
     def checkpoint(self):
-        return {"bits":self.bits,"full":self.full.copy(),
-                "short":self.short.copy(),"n":self.n}
+        return {"bits":self.bits,
+                "full":[_canonical_learning_float(v) for v in self.full],
+                "short":[_canonical_learning_float(v) for v in self.short],
+                "n":self.n}
 
     @classmethod
     def restore(cls,data):
@@ -224,7 +240,8 @@ class NativeInterventionRelations:
                  "terminal":self.terminal.checkpoint(),
                  "mask_transition":self.mask_transition.checkpoint(),
                  "mask_terminal":self.mask_terminal.checkpoint(),
-                 "hedge":self.hedge,"n":self.n,
+                 "hedge":[_canonical_learning_float(v) for v in self.hedge],
+                 "n":self.n,
                  "receipts":self.receipts})
 
     @classmethod
