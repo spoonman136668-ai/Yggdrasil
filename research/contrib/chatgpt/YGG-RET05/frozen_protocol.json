@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.ret05.staged-gradient-native-readout.development-source-only.v1",
+  "date": "2026-11-19",
+  "source_parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1300,
+    "sha": "6b684b7bd3c228333d4efdfd66614124917f0c86",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "hypothesis": "The opt-in 17-float native temporal readout can be updated from the two actually issued stage-ordered forecasts rather than a post-reveal complete-row reconstruction, while the same native + six specialist original learner remains unchanged, past observations are retained, and source-identical cold replay works deterministically.",
+  "source": "No fresh scored or original protected source: only hand-constructed public-shaped mechanical fixtures for engineering. Preserve RET01-04 consumed training/evidence.",
+  "algorithm": {
+    "w_init": "identical original RET02 archive readout prior",
+    "features": "RET02 same 17-number features x1 at begin using chosen action2=0 (unknown); x2 after observed s2 plus chosen actual action2; both captured before corresponding outcomes",
+    "loss": "( (p_transition(s2)-s2)^2 + (p_reward(y)-y)^2 )/2, where each p is the actually issued archived/live mixture prior to its outcome",
+    "gradient": "for each float weight i, sum over staged j=1,2 [ (issued_temporal_j - observed_bit_j)*(issued_archive_j-issued_live_j)*issued_archive_weight_j*(1-issued_archive_weight_j)*stage_features_ji ], plus DECAY*old_weight_i for i>0; update old_weight_i - LR*gradient and clip to [-MAX_WEIGHT,MAX_WEIGHT]",
+    "admission": "original RET03 complete admits source to original native first; at same terminal, overwrite ONLY opt-in 17-float readout update, no further native/source learner calls; strict idempotence and stage chronology",
+    "finite_clip": true,
+    "parameters": "Original RET02 same LR, DECAY, MAX_WEIGHT and 17 widths, no tuned hyperparameters",
+    "no_history_mode": "proposed prospective ablation only, no leakage labels"
+  },
+  "mechanical_tests": [
+    "verified stage forecasts/feature snapshots never use unobserved s2 or y",
+    "independently reproduce exact two-clock gradient and differentiate from RET02 post-reveal gradient",
+    "compare complete original underlying native causal ledger & six specialists after each new public witness",
+    "cold exact checkpoint replay at every stage and after terminal with source receipts",
+    "fail-closed duplicate conflicting source and forged weight/score rehash",
+    "cumulative history affects future forecast but no model restart",
+    "native capacity/custody budget enforced before terminal and readout weight bounded",
+    "no original protected actions or scored RET01-04 replay"
+  ],
+  "qualification": {
+    "focused_os": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "mandatory_full_os": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "strict_G29": true,
+    "exact_source": true,
+    "negative_hypothesis": "Engineering only, scientific efficacy UNVERIFIED; do not count construction tests as unfamiliar-source training"
+  },
+  "authority": {
+    "source_owner_issue": 426,
+    "protected_first_use": false,
+    "actor": false,
+    "model_acceptance": false,
+    "merge": false,
+    "controller": false,
+    "scheduler": false,
+    "deployment": false,
+    "paid_api": false
+  },
+  "if_source_owner_permits_future_science": {
+    "frozen_metric": "new independent prequential staged Brier vs strongest fully fitted same-information and action-history conventional controls; each new replica >=0.005 better, cold prior-context retention no regression >0.005; negative history-shuffle/mispair",
+    "prereqs": "virgin source families owner signed TRAIN VALID HELD TRANSFER; actor effect receipts/action budgets and matched controls prereg BEFORE actions; preserve consumed cohorts"
+  }
+}
