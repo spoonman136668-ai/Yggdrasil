@@ -63,6 +63,33 @@ def record(parent_mod,weight,mask_list,changed=None):
             for k in mask_list]
 
 
+def uniform_hidden_role_mapping_marginal(history,candidate_masks,source_weight,parent_mod):
+    """Exact 24-bijection conventional Bayesian risk, no role ID supplied."""
+    from itertools import permutations
+    counts={x:0 for x in candidate_masks}
+    mismatches={x:0 for x in candidate_masks}
+    for packet in history:
+        for c,a,y in packet:
+            k=c|(a<<3)
+            must(k in counts,"ROLE_HISTORY_NOT_PUBLIC")
+            counts[k]+=1
+            mismatches[k]+=int(y!=parent_mod.truth(source_weight,k))
+    # Deliberately smooth evidence about latent fault roles. Even if this
+    # prior is nonuniform, a completely fresh uniform hidden permutation
+    # makes the new VISIBLE address risk identical: no transfer signal.
+    unscaled={x:Fraction(1+mismatches[x],2+counts[x]) for x in candidate_masks}
+    total=sum(unscaled.values(),Fraction(0,1))
+    must(total>0,"ROLE_PRIOR_EMPTY")
+    probs={x:unscaled[x]/total for x in candidate_masks}
+    result={x:Fraction(0,1) for x in candidate_masks}
+    for mapped in permutations(candidate_masks):
+        for old,new in zip(candidate_masks,mapped):
+            result[new]+=probs[old]/24
+    must(all(z==Fraction(1,4) for z in result.values()),
+         "UNOBSERVED_MAPPING_CANNOT_TRANSFER")
+    return result
+
+
 def metric(p,truth):
     assert len(p)==len(truth)==2
     q=[float(x) for x in p]
@@ -121,6 +148,8 @@ def run(seeds=PRIMARY):
         raw_selected=[c|(a<<3) for c,a in native.propose_source_change_witnesses(
             3,(12,13,14),[[x&7,x>>3] for x in candidates])]
         conventional=ab.conventional_history_policy(history,learned["C"],candidates)
+        identity_blind=uniform_hidden_role_mapping_marginal(
+            history,candidates,weight["C"],ab)
         must(raw_selected==conventional,"STRONG_EXACT_CONVENTIONAL_PARITY")
         world=[]
         for stage in range(8):
@@ -181,7 +210,7 @@ def run(seeds=PRIMARY):
                         "evaluator_only_role":role,
                         "evaluator_only_visible_fault":fault,
                         "source_inference_slot":source_slot,
-                        "source_inference_status":status if False else "RECALLED",
+                        "source_inference_status":"RECALLED",
                         "actual_four_source_sha256":digest(canonical(current)),
                         "actual_two_interventions_sha256":digest(canonical(observed)),
                         "selected_visible_masks":selected,
@@ -208,6 +237,9 @@ def run(seeds=PRIMARY):
             "native_causal_committee_sha256":[digest(x) for x in trained],
             "native_beta_selected":raw_selected,
             "conventional_beta_selected":conventional,
+            "identity_blind_marginal":[[k,identity_blind[k].numerator,
+                                          identity_blind[k].denominator]
+                                         for k in sorted(identity_blind)],
             "evaluator_only_hotspot":hotspot,
             "hotspot_actually_witnessed":naturally,
             "worlds_evaluator_only":world
