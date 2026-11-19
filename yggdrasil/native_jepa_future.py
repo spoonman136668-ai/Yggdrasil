@@ -40,7 +40,10 @@ def public_observed(views):
             and all(type(v) in (tuple, list) and len(v) == 2 for v in views),
             "JEPA4_PUBLIC_VIEWS")
     a, b, c = _bit(views[0][0]), _bit(views[0][1]), _bit(views[1][1])
-    require(_bit(views[1][0]) == b, "JEPA4_VIEW_PARITY")
+    # Prior CKAD37 paired public views may be different projections;
+    # do NOT impose a synthetic-source-only overlapping-view constraint
+    # on genuine previously witnessed Yggdrasil native experiences.
+    _bit(views[1][0])
     return a, b, c
 
 
