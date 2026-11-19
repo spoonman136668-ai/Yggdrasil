@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.wsp191.source-gated-intervention-composition-preflight.v1",
+  "status": "CONDITIONAL_DESIGN_ONLY_SOURCE_NOT_ADMITTED",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/wsp191-geo-source-admission-20261118",
+  "predecessor": {
+    "id": "WSP-190",
+    "pr": 1284,
+    "sha": "6c4c82f4ef4a56c6d4f6231a1d7836ab24766a16",
+    "decision": "DEVELOPMENT_NO_GO",
+    "unchanged": true
+  },
+  "source": {
+    "original": "NCBI GEO GSE133344, Norman et al. Science 2019",
+    "original_research_code": "thomasmaxwellnorman/Perturbseq_GI@3b25109aeb9c0c2026bd70abd50304a0ad4e5395",
+    "third_party_manifest": "datasets-mila/datasets--perturbseq--perturbseq_2019@6cf272024e0bf47010880b2660a10f092e57752e",
+    "manifest_git_blob": "c12edbb4f4afd9ad0ff70fac7be9cca0a925e3d6",
+    "source_bytes_admitted": false,
+    "original_publisher_signature_verified": false,
+    "original_source_first_use_authorized": false,
+    "real_data_numeric_outcomes_inspected_for_this_protocol": false,
+    "data_use_license": "REQUIRES_INDEPENDENT_CONFIRMATION"
+  },
+  "objective": "On distinct previously unseen two-gene perturbation identities within the same published K562 biological system, test whether persistent directly editable native causal-effect weights compose better than strong same-information fully fitted conventional predictors, while retaining prior single-gene effects.",
+  "north_star": "tokenless causal weight programming with cumulative retention, not a transformer or next-token foundation",
+  "design_stage": "metadata-only split executable; training model, training pipeline and final confirmatory prereg NOT YET IMPLEMENTED",
+  "cohort": {
+    "metadata_fields_allowed": [
+      "cell_barcode",
+      "guide_identity",
+      "gem_group when present",
+      "number_of_cells when present",
+      "good_coverage when present"
+    ],
+    "metadata_fields_forbidden": [
+      "bulk_fitness",
+      "expression_matrix_values",
+      "gene_interaction_class",
+      "downstream_effect_score",
+      "held_phenotype"
+    ],
+    "parser": "guide_identity.split('__',1)[0].split('_'); exactly two gene/control tokens; original author RHOXF2 -> RHOXF2B correction",
+    "negative_control_pattern": "NegCtrl[0-9]+",
+    "canonical_pair": "two distinct non-control genes sorted lexicographically; only when each parent has observed single-gene cohort",
+    "split_source": "sha256(b'WSP191-NORMAN-GSE133344-PAIR-SPLIT-v1' + b'\\x00' + geneA + b'\\x00' + geneB); first 8 bytes big-endian modulo 100",
+    "split_thresholds": {
+      "FIT": [
+        0,
+        69
+      ],
+      "VALID": [
+        70,
+        84
+      ],
+      "DEV": [
+        85,
+        99
+      ]
+    },
+    "min_unique_pair_groups": {
+      "FIT": 40,
+      "VALID": 8,
+      "DEV": 8
+    },
+    "unit_of_independence": "whole canonical gene-pair identity; never individual cell",
+    "holdout_gate": "If minimum split sizes or parent singles not present, STOP without rebalancing, choosing alternative salt or scoring any expression outcome.",
+    "known_public_data_limitation": "Public cohort and prior published pair results are not virgin blinded scientific holdout.",
+    "cold_single_retention": "Independent single-cell/guide/batch holdout required; if no independent retained single source, mark behavior retention UNVERIFIED."
+  },
+  "planned_comparison": {
+    "candidate": "Evidence-gated local direct-weight single-gene effect modules and shared pair-composition operator, with bounded localized updates; train only on FIT and select using VALID.",
+    "controls": [
+      "fully fitted same-FIT-data additive parent-effect estimator",
+      "regularized pair-interaction low-rank/bilinear learner fully trained on same FIT pairs",
+      "converged independent MLP treatment-effect predictor with matched information and training budget",
+      "original physical/study-relevant strong predictor if reproducible without hidden test or pretrained label access"
+    ],
+    "negative_controls": [
+      "no-composition direct-weight ablation",
+      "shuffled FIT pair identities, same training budget",
+      "no-updates single weights"
+    ],
+    "preprocessing": "Fit gene normalization, controls, gene vocabulary/feature selection and hyperparameters on FIT; select control and model using VALID only; hold DEV pair cells and effects sealed.",
+    "metrics": [
+      "equal-pair-weighted normalized RMSE on held pair treatment-effect vectors",
+      "paired pair-level bootstrap confidence interval of relative improvement",
+      "old single-gene cold-retention error after pair learning",
+      "total FIT/VALID/DEV independent pair counts",
+      "source bytes and wall/cpu/rss/serialized model bytes"
+    ],
+    "development_rule": "Candidate at least 5% lower held mean pair-normalized RMSE than strongest validation-selected fully converged matched control and paired bootstrap 95% lower CI on relative gain > 0, without >3% relative old-single retained error increase (when independent retention cohort exists).",
+    "failure_rule": "Insufficient verified source controls, no independent holdout batches, missing matched baseline convergence, data leakage, unqualified compute, negative gate, or unsupported transfer: stop/no-go; preserve actual result and do not retune held DEV.",
+    "qualifier_budget": "One pre-frozen public DEV scoring pass after engineering qualification; at most two predeclared FIT-only exploratory qualification passes and no post-DEV hyperparameter tuning.",
+    "science_boundaries": "Development on known K562 pair combinations is not new-world transfer, causal graph identifiability, action-consequence policy learning, native Yggdrasil training, or SCIENTIFIC_PASS."
+  },
+  "before_experiment_remaining": [
+    "verify all four authentic GEO filtered bytes against third-party manifest and independently recorded SHA256",
+    "validate identity-to-barcode mapping and author-defined control/single/pair semantics against actual metadata",
+    "examine contamination, batch and biological replicate counts WITHOUT expression outcomes, prove source license",
+    "resolve whether per-pair independent batches and single retention test are feasible",
+    "freeze exact learner capacity/ranks, conventional baseline convergence criteria, seeds and evaluation environment BEFORE inspecting results",
+    "complete Windows and Linux mandatory final candidate regression in an authorized route",
+    "obtain separate project owner acceptance authority for native Yggdrasil integration if justified"
+  ],
+  "authority": {
+    "research_contribution_only": true,
+    "protected_first_use_allowed": false,
+    "source_owner_issue": 426,
+    "accepted_main_mutation": false,
+    "runner_dispatch": false,
+    "experiment_executed": false,
+    "scientific_pass": false,
+    "merge": false,
+    "deployment": false
+  }
+}
