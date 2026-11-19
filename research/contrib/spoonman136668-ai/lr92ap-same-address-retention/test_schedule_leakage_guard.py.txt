@@ -1,0 +1,89 @@
+import hashlib
+import json
+import unittest
+from schedule_leakage_guard import (
+    NOISE, audit, brier_expectation, indistinguishable_first_step,
+    one_probability, phase_from_known_clock,
+)
+
+
+def dummy_protocol():
+    return {
+        'schema': 'external-research-prereg.v1', 'experiment_id': 'LR-92AP',
+        'disjoint_data': {
+            'primary_seeds': [929209101,929209102,929209103],
+            'phase_schedule': '64 public A outcomes, 64 contradicting B outcomes, then 64 public A-return outcomes',
+            'action_policy': 'every comparator receives identical action/time/outcome evidence'
+        }
+    }
+
+
+class LeakageGuardTests(unittest.TestCase):
+    def test_fixed_phase_boundaries_from_public_count(self):
+        for t, phase in ((0,'A'),(63,'A'),(64,'B'),(127,'B'),(128,'A'),(191,'A')):
+            self.assertEqual(phase_from_known_clock(t), phase)
+
+    def test_twin_public_prefix_has_no_hidden_phase_information(self):
+        public_prefix = tuple((i%2,(i//5)%2) for i in range(128))
+        a = 0
+        self.assertEqual((public_prefix,a), (public_prefix,a))
+        self.assertNotEqual(one_probability('A',a), one_probability('B',a))
+
+    def test_opposite_noisy_causal_laws(self):
+        self.assertEqual((one_probability('A',0),one_probability('B',0)),(.15,.85))
+        self.assertEqual((one_probability('A',1),one_probability('B',1)),(.85,.15))
+
+    def test_expected_brier_formula(self):
+        self.assertAlmostEqual(brier_expectation(.5,.15),.25)
+        self.assertAlmostEqual(brier_expectation(.85,.85),.1275)
+
+    def test_exact_identifiability_bound(self):
+        blind,oracle,excess=indistinguishable_first_step()
+        self.assertAlmostEqual(blind,.25)
+        self.assertAlmostEqual(oracle,.1275)
+        self.assertAlmostEqual(excess,.1225)
+
+    def test_same_index_different_hidden_schedule(self):
+        self.assertEqual(phase_from_known_clock(128,(64,64,64)), 'A')
+        self.assertEqual(phase_from_known_clock(128,(64,128,64)), 'B')
+
+    def test_symmetry_over_current_action(self):
+        for action in (0,1):
+            a,b=one_probability('A',action),one_probability('B',action)
+            neutral=(a+b)/2
+            blind=(brier_expectation(neutral,a)+brier_expectation(neutral,b))/2
+            oracle=(brier_expectation(a,a)+brier_expectation(b,b))/2
+            self.assertAlmostEqual(blind-oracle,.1225)
+
+    def test_frozen_protocol_is_blocked_with_checksum(self):
+        p=dummy_protocol();raw=json.dumps(p,sort_keys=True).encode()
+        decision=audit(p,raw)
+        self.assertEqual(decision.status, 'BLOCKED_FIXED_SCHEDULE_PHASE_LEAKAGE')
+        self.assertEqual(decision.first_return_index,128)
+        self.assertEqual(decision.protected_worlds_read,0)
+        self.assertEqual(decision.protocol_sha256,hashlib.sha256(raw).hexdigest())
+
+    def test_fail_closed_for_modified_seeds_schedule_or_id(self):
+        for path,value in (('primary_seeds',[73004303]),('phase_schedule','unannounced variable'),('experiment_id','LR-92AQ')):
+            p=dummy_protocol()
+            if path=='experiment_id':p[path]=value
+            else:p['disjoint_data'][path]=value
+            with self.assertRaises(ValueError):audit(p,b'{}')
+
+    def test_clock_validation(self):
+        for n in (-1,192,True,.5):
+            with self.assertRaises(ValueError):phase_from_known_clock(n)
+
+    def test_probability_validation(self):
+        for n in (-.1,1.1,None):
+            with self.assertRaises(ValueError):brier_expectation(n,.5)
+
+    def test_seed_and_history_independent_of_oracle(self):
+        p=dummy_protocol();raw=json.dumps(p).encode()
+        before=raw[:]
+        self.assertEqual(audit(p,raw),audit(p,raw))
+        self.assertEqual(before,raw)
+        self.assertNotIn('history', audit(p,raw).__dict__)
+
+
+if __name__=='__main__':unittest.main()

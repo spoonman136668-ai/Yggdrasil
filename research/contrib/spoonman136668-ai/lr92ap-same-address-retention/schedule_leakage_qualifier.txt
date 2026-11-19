@@ -1,0 +1,103 @@
+LR-92AP — FIXED-SCHEDULE PHASE-INFORMATION LEAKAGE PREFLIGHT
+================================================================
+Date 2026-11-19. Existing isolated draft Yggdrasil PR #1323.
+Parent HEAD before change: 234d4adbcfd661f51d9b739691b4fba6b609365c
+Baseline protected main: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+No native source, owner, runner, controller, paid model, or protected world changed.
+
+FROZEN ORIGINAL PROTOCOL EXAMINED (READ-ONLY)
+---------------------------------------------
+Original prereg.json.txt at the pinned parent HEAD, Git blob
+828c84f3505d6362dfa4f6c40c0a7dd83f447bc9.
+Its action policy says comparators receive identical action/time/outcome evidence.
+Its fixed, known phase schedule says 64 public A then 64 contradictory B then
+64 return-to-A at the same address. The original 288 worlds are UNRUN.
+The original prereg text, seeds, thresholds and validation gates were
+NOT modified to conceal or retroactively reclassify this issue.
+
+OBSERVABLE CLOCK CONFOUND
+------------------------
+A learner able to count public observations (or infer the 64/64/64 schedule
+over repeated worlds) can infer the evaluator's switch positions 64 and 128
+without distinguishing causal hypotheses from observed interventions.
+This creates a possible shortcut for a phase-aware predictor. A learner
+that does not receive/retain the clock might not exploit the shortcut.
+This is a PROTOCOL-VALIDITY RISK; it is not a measured native-model cheat,
+not a scientific negative of the trained model, and not a proof that every
+causal-memory comparison becomes worthless.
+
+EXACT TWO-WORLD INDISTINGUISHABILITY CONTROL
+--------------------------------------------
+Construct two possible futures after the identical observed 128-step prefix
+with the same current public action a=0. One latent world B continues:
+p(Y=1)=0.85. In the other, A returns without an observable cue:
+p(Y=1)=0.15. Both Bernoulli targets include independent 15% label noise.
+A phase-blind model seeing exactly the same prefix and action must issue the
+SAME forecast in both, regardless of architecture or intelligence.
+Under equal prior over the worlds, Brier-optimal common forecast is 0.5,
+expected score 0.2500. A hypothetical oracle with forbidden true-regime
+knowledge has expected Brier 0.1275, difference +0.1225 at this single
+first cold forecast. The bound is conditional on equal prior, this toy
+action-consequence law, and no public switch cue. It is NOT a measured
+0.1225 Brier improvement by any implemented model and does not limit
+recovery after additional public observations.
+At t=128 known schedule (64,64,64) says A, while equally valid hidden
+schedule (64,128,64) says B; current public prefix alone cannot select one.
+
+SOURCE, TESTS AND REPRODUCIBILITY
+---------------------------------
+Read-only guard schedule_leakage_guard.py.txt:
+  exact Git blob bf42776963a9c98d507eb6ff6cbcf9b91fa70301
+  SHA256 7b73e24adff38c09ebcb4c90ca080c475157b2c30a7ed8b020cfd4f841a3fb76
+  local UTF8 source length 3109 bytes
+Tests test_schedule_leakage_guard.py.txt:
+  exact Git blob e61b76b0faa53e52bfd18ea20d881f838889f3c6
+  SHA256 348db7988de98045c41b19e82971c0da35b869e819c914c4f5c6b61ff5741887
+  local UTF8 source length 3829 bytes
+Verified with Python 3.13.5 Linux (container): 12/12 focused tests PASS
+twice, compileall PASS, local git hash-object parity with GitHub blobs.
+Tests cover exact schedule clock lookup, two-world public-prefix identity,
+opposite action laws, exact Brier bound, alternate hidden schedule, action
+symmetry, frozen-preflight decision, seed/schedule drift rejection, bad
+clock/probability, and source read-only behavior.
+The actual GitHub prereg was separately fetched at exact SHA and its
+schema, experiment ID, primary seeds and exact schedule/action clauses
+were verified via read-only connector; Python's CLI guard was NOT executed
+on those exact GitHub file bytes because the private execution container
+has no GitHub network access. The CLI path remains reproducible after
+checking out/copying prereg.json.txt verbatim.
+
+Developer-only reproduction after copying original text files to .py:
+  python -m unittest -v test_schedule_leakage_guard.py
+  python -m compileall -q schedule_leakage_guard.py test_schedule_leakage_guard.py
+  python schedule_leakage_guard.py prereg.json.txt
+The guard's strict decision is BLOCKED_FIXED_SCHEDULE_PHASE_LEAKAGE.
+That status protects the original scientific first-use, rather than
+altering or consuming its source. It requires protocol repair or owner
+determination before scientifically interpreting schedule-assisted results.
+
+RECOMMENDED NEW PROSPECTIVE DESIGN (NOT RUN)
+--------------------------------------------
+Preserve the original LR-92AP frozen 288-world prereg untouched. For a
+distinct, independently preregistered LR-92AQ:
+- evaluator-only variable A and B dwell lengths (new source/seed birth);
+  do NOT provide phase labels or exact switch times to any policy;
+- all methods receive the same public action, outcome, and information about
+  the switch-hazard prior; count is permitted but cannot deterministically
+  reveal the actual switch;
+- preserve public continuity at the phase switch (no episode-reset cue),
+  identical interventions across models, same 14-bin temporal histories;
+- score first-step cold return with an honest uncertainty bound separately
+  from return adaptation after observed contradictory labels and storage of
+  archived A; matched hazard-aware Bayes/HMM, tabular, RF32 (over-budget
+  reference), random gate and sham controls;
+- preregister exact novel worlds, source hashes, compute/byte caps, seeds,
+  thresholds, abort criteria and owner first-use *before* any protected run.
+An observable switch-cue arm could separately test retrieval given a valid
+cue, but must not be conflated with autonomous no-cue recognition.
+
+ENGINEERING: exact source/test 12/12 local focused PASS; full native
+regression and cross-OS source-in-.txt Python execution UNVERIFIED.
+SCIENTIFIC: LR-92AP interpretation blocked pending fixed-clock confound
+resolution; no original science first-use or new prospective run.
+DEPLOYMENT/ACCEPTED STATE: HOLD, PR remains draft and unmerged.
