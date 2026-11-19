@@ -1,0 +1,53 @@
+{
+  "id": "amalgam-joint-uncertainty-probe-allocation-dev-01",
+  "parent_diagnostic": "f07a463c6ff6bccee8a1b33ff4826fbc4b6cf0e",
+  "seeds": [
+    994201,
+    994227,
+    994251
+  ],
+  "families": {
+    "weak_both": [
+      [
+        0.33,
+        0.67
+      ],
+      [
+        0.66,
+        0.34
+      ]
+    ],
+    "stronger_donor": [
+      [
+        0.11,
+        0.89
+      ],
+      [
+        0.63,
+        0.37
+      ]
+    ]
+  },
+  "fit_worlds": 32,
+  "fit_probes_per_cell": 4,
+  "held_worlds": 96,
+  "probes": 8,
+  "budget_actions": 89280,
+  "min_correlated_gain": 0.005,
+  "max_null_drift": 0.002,
+  "score": "Mean correlated gain versus the best held fixed allocation in each replica. Worst independent drift versus target-only. The known-law allocation and forecast are evaluator references.",
+  "controls": [
+    "target only",
+    "balanced",
+    "donor only",
+    "point fitted allocation",
+    "known-law oracle"
+  ],
+  "method": "Unlabeled calibration assigns weights to a discrete joint grid of donor contrast, target contrast and shift agreement. A cohort chooses its allocation by Bayes expected Brier gain under the full posterior. All nonoracle arms use the same joint predictor. Known-law arm is evaluator-only. Fresh seeds and simulator families; equal eight-probe budget; one target outcome scored and kept out of training. This diagnostic makes no native or scientific superiority claim.",
+  "joint_margins": [
+    0.12,
+    0.22,
+    0.32,
+    0.42
+  ]
+}

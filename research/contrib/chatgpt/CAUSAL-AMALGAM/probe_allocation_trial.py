@@ -6,8 +6,10 @@ import json
 from pathlib import Path
 from random import Random
 from statistics import mean
+import sys
 from time import monotonic
 
+from joint_probe_model import JointProbeModel
 from matched_probe_bound import gain
 from shift_dependence_trial import fit_marginal_contrast, likelihood, observe_fit, worlds
 
@@ -40,6 +42,10 @@ def replicate(plan, family, true_laws, seed, truth):
     agreement = sum(h * w for h, w in zip(hypotheses, weights, strict=True))
     choices = dict(target=0, balanced=n // 2, donor=n, learned=allocation(laws, agreement, n),
                    oracle=allocation(true_laws, truth, n))
+    joint = None
+    if "joint_margins" in plan:
+        joint = JointProbeModel(fit, plan["fit_probes_per_cell"], plan["joint_margins"], hypotheses)
+        choices["joint"] = joint.allocation(n)
     digest = sha256()
     digest.update(json.dumps(fit, separators=(",", ":")).encode("ascii"))
     square = dict.fromkeys(choices, 0.)
@@ -55,8 +61,12 @@ def replicate(plan, family, true_laws, seed, truth):
         for name, count in choices.items():
             pair = source_d[:count], source_t[:n - count]
             observations[name] = pair
-            forecast = receive(*pair, true_laws, truth) if name == "oracle" else receive(
-                *pair, laws, agreement)
+            if name == "oracle":
+                forecast = receive(*pair, true_laws, truth)
+            elif joint is not None:
+                forecast = joint.predict(*pair)
+            else:
+                forecast = receive(*pair, laws, agreement)
             square[name] += (forecast - held)**2
         digest.update(json.dumps([observations, held], separators=(",", ":")).encode("ascii"))
     return dict(family=family, agreement=truth, seed=seed, donor_probes=choices,
@@ -66,17 +76,18 @@ def replicate(plan, family, true_laws, seed, truth):
                 trace_sha256=digest.hexdigest())
 
 
-def run():
+def run(protocol=PLAN):
     started = monotonic()
-    raw = PLAN.read_bytes()
+    raw = protocol.read_bytes()
     plan = json.loads(raw)
     rows = [replicate(plan, family, laws, seed, truth)
             for family, laws in plan["families"].items()
             for seed in plan["seeds"] for truth in (.1, .5, .9)]
     comparisons = ("target", "balanced", "donor")
-    delta = mean(min(r["brier"][n] for n in comparisons) - r["brier"]["learned"]
+    selected = "joint" if "joint_margins" in plan else "learned"
+    delta = mean(min(r["brier"][n] for n in comparisons) - r["brier"][selected]
                  for r in rows if r["agreement"] != .5)
-    drift = max(r["brier"]["learned"] - r["brier"]["target"]
+    drift = max(r["brier"][selected] - r["brier"]["target"]
                 for r in rows if r["agreement"] == .5)
     actions = sum(r["actions"] for r in rows)
     if actions != plan["budget_actions"]:
@@ -89,4 +100,5 @@ def run():
 
 
 if __name__ == "__main__":
-    print(json.dumps(run(), indent=2, sort_keys=True))
+    protocol = Path(sys.argv[1]) if len(sys.argv) == 2 else PLAN
+    print(json.dumps(run(protocol), indent=2, sort_keys=True))
