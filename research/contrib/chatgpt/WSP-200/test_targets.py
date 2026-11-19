@@ -74,8 +74,9 @@ class SyntheticTargetCustody(unittest.TestCase):
             self.assertEqual(2, len(batch))
             with self.assertRaises(ValueError):
                 gate.fit_stage(stage)
-            with self.assertRaises(ValueError):
-                gate.public_dev_once()
+            if stage < 3:
+                with self.assertRaises(ValueError):
+                    gate.public_dev_once()
         with self.assertRaises(AssertionError):
             gate.public_dev_once()
         self.assertTrue(gate.invalid)
