@@ -68,7 +68,8 @@ export function evaluateWSP198(singlesText,doublesText,wildText,fastaText){
  let total=0,excluded=0,dh=null;
  const dit=lines(doublesText);dh=dit.next().value?.split("\t");
  if(!dh||dh.length!==18||dh.slice(0,6).join("\t")!=="Mut1 WT amino acid\tMut1 Position\tMut1 Mutation\tMut2 WT amino acid\tMut2 Position\tMut2 Mutation")throw Error("DOUBLES_SCHEMA");
- const seen=new Set(),seenSites=[new Set(),new Set(),new Set()],countSplit=[0,0,0],fitN=0,sum=0,sumsq=0;
+ const seen=new Set(),seenSites=[new Set(),new Set(),new Set()],countSplit=[0,0,0];
+ let fitN=0,sum=0,sumsq=0;
  for(const line of dit){
   const f=line.split("\t");if(f.length!==18)throw Error("DOUBLE_ROW_WIDTH");
   const a=validAllele(f,0),b=validAllele(f,3);if(a.site===b.site)throw Error("SAME_SITE_DOUBLE");
