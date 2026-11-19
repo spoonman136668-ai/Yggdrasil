@@ -1,0 +1,228 @@
+name: WSP189 new 20k-record light-tunnel FIT/VALID learned-state real data evaluation
+on:
+  push:
+    branches: [research/wsp189-light-20k-cohort-20261118]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify isolated source-frozen scope and prior prereg
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 9b23ba258d3c76aed87b4e531ce221acc1821c0a HEAD
+          test "$(git rev-parse 0c65996f282fd0949f4117410965ee93da889072^)" = "9b23ba258d3c76aed87b4e531ce221acc1821c0a"
+          test "$(git diff-tree --no-commit-id --name-only -r 0c65996f282fd0949f4117410965ee93da889072)" = "research/contrib/chatgpt/WSP-189/prereg.json"
+          git diff --exit-code 0c65996f282fd0949f4117410965ee93da889072 HEAD -- research/contrib/chatgpt/WSP-189/prereg.json
+          git diff --exit-code 9b23ba258d3c76aed87b4e531ce221acc1821c0a HEAD -- research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/WSP-164 research/contrib/chatgpt/WSP-165 research/contrib/chatgpt/WSP-166 research/contrib/chatgpt/WSP-167 research/contrib/chatgpt/WSP-168 yggdrasil research/contrib/chatgpt/CKAD-18 research/contrib/chatgpt/WSP-182 research/contrib/chatgpt/WSP-183 research/contrib/chatgpt/WSP-184 research/contrib/chatgpt/WSP-185 research/contrib/chatgpt/WSP-186 research/contrib/chatgpt/WSP-187 research/contrib/chatgpt/WSP-188
+          test ! -e research/contrib/chatgpt/WSP-182/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-182/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-183/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-183/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-184/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-184/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-185/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-185/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-186/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-186/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-187/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-187/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-189/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-189/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Source-free structural and inherited WSP regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-161 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-162 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-163 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-164 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-165 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-166 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-167 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-168 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-182 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-183 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-184 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-185 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-186 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-187 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-188 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-189 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo WSP189_SOURCEFREE_FOCUSED_PASS
+
+  atlas-once:
+    needs: [focused]
+    if: "github.event.head_commit.message == 'ci(wsp189): activate verified light 20k source training' && github.run_attempt == 1 && needs.focused.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: wsp189-single-derived-atlas
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exactly three G29 atlas-derived files
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$SOURCE"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wsp189): pin G29 source atlas at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/wsp189-light-20k-cohort-20261118
+
+  full-final:
+    needs: [focused]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp189): pin G29 source atlas at ') && github.run_attempt == 1 && needs.focused.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - name: Preserve exact git bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Mandatory exact final regression and G29 check
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 9b23ba258d3c76aed87b4e531ce221acc1821c0a HEAD
+          test "$(git rev-parse 0c65996f282fd0949f4117410965ee93da889072^)" = "9b23ba258d3c76aed87b4e531ce221acc1821c0a"
+          test "$(git diff-tree --no-commit-id --name-only -r 0c65996f282fd0949f4117410965ee93da889072)" = "research/contrib/chatgpt/WSP-189/prereg.json"
+          git diff --exit-code 0c65996f282fd0949f4117410965ee93da889072 HEAD -- research/contrib/chatgpt/WSP-189/prereg.json
+          git diff --exit-code 9b23ba258d3c76aed87b4e531ce221acc1821c0a HEAD -- research/contrib/chatgpt/WSP-159 research/contrib/chatgpt/WSP-160 research/contrib/chatgpt/WSP-161 research/contrib/chatgpt/WSP-162 research/contrib/chatgpt/WSP-163 research/contrib/chatgpt/WSP-164 research/contrib/chatgpt/WSP-165 research/contrib/chatgpt/WSP-166 research/contrib/chatgpt/WSP-167 research/contrib/chatgpt/WSP-168 yggdrasil research/contrib/chatgpt/CKAD-18 research/contrib/chatgpt/WSP-182 research/contrib/chatgpt/WSP-183 research/contrib/chatgpt/WSP-184 research/contrib/chatgpt/WSP-185 research/contrib/chatgpt/WSP-186 research/contrib/chatgpt/WSP-187 research/contrib/chatgpt/WSP-188
+          test ! -e research/contrib/chatgpt/WSP-182/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-182/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-183/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-183/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-184/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-184/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-185/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-185/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-186/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-186/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-187/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-187/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-189/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-189/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-159 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-160 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-161 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-162 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-163 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-164 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-165 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-166 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-167 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-168 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-182 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-183 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-184 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-185 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-186 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-187 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-188 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/WSP-189 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo WSP189_FULL_FINAL_SOURCEFREE_PASS
+
+  public-physical-light-20k-dev:
+    needs: [full-final]
+    if: "startsWith(github.event.head_commit.message, 'docs(wsp189): pin G29 source atlas at ') && github.run_attempt == 1 && needs.full-final.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen source-metadata protocol and read-only scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 0c65996f282fd0949f4117410965ee93da889072 HEAD -- research/contrib/chatgpt/WSP-189/prereg.json
+          git diff --exit-code 9b23ba258d3c76aed87b4e531ce221acc1821c0a HEAD -- research/contrib/chatgpt/WSP-184 research/contrib/chatgpt/WSP-185 research/contrib/chatgpt/WSP-186 research/contrib/chatgpt/WSP-187 research/contrib/chatgpt/WSP-188
+          test ! -e research/contrib/chatgpt/WSP-185/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-185/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-186/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-186/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-187/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-187/SCIENTIFIC_PASS.json
+          test ! -e research/contrib/chatgpt/WSP-189/source_first_use_authority.json
+          test ! -e research/contrib/chatgpt/WSP-189/SCIENTIFIC_PASS.json
+          test -z "$(git status --porcelain)"
+      - name: Download full-original-light-20k recording and fit/score frozen model ONCE
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCHIVE="$RUNNER_TEMP/lt_walks_v1.zip"
+          curl --fail --silent --show-error --location --retry 2 --connect-timeout 12 --max-time 540 --output "$ARCHIVE" 'https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/lt_walks_v1.zip'
+          python -B research/contrib/chatgpt/WSP-189/light_original.py --archive "$ARCHIVE"
+          test -z "$(git status --porcelain)"
+          echo WSP189_PUBLIC_PHYSICAL_DEV_ONLY_PASS
