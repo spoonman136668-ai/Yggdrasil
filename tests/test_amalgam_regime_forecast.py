@@ -6,7 +6,7 @@ import unittest
 
 AMALGAM = Path(__file__).resolve().parents[1] / "research/contrib/chatgpt/CAUSAL-AMALGAM"
 sys.path.insert(0, str(AMALGAM))
-from regime_forecast import RegimeForecast
+from regime_forecast import RegimeForecast, fitted_old_readout
 sys.path.remove(str(AMALGAM))
 
 
@@ -44,3 +44,9 @@ class RegimeForecastTests(unittest.TestCase):
         for _ in range(8):
             model.observe((1, 0), 1, 0)
         self.assertLess(model.forecast((1, 0), 1), 0.35)
+
+    def test_old_refit_matches_exact_counter_and_uses_anchor_for_unseen_arms(self):
+        fitted = fitted_old_readout(old, self.fit)
+        self.assertAlmostEqual(fitted((1, 0), 1), 9 / 10)
+        self.assertEqual(fitted((1, 0), 0), old((1, 0), 0))
+        self.assertEqual(fitted((1, 0), 1, 1, 0), old((1, 0), 1, 1, 0))

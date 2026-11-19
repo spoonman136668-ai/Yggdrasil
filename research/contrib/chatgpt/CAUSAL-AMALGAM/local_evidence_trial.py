@@ -12,7 +12,7 @@ from time import monotonic, process_time
 
 from external_receipt_preflight import anchor_material
 from local_evidence_readout import EvidenceReadout
-from regime_forecast import RegimeForecast
+from regime_forecast import RegimeForecast, fitted_old_readout
 from selection_trial import source_module
 from shadow_preflight import checked_bytes, require
 from staged_retention import Controls, keys, SCALE
@@ -60,11 +60,13 @@ def bounded_forecasts(model):
 def replicate(parent, material, source, plan, source_pin, seed, deadline):
     base = parent.native._episode_reader()._ledger
     fit = list(evidence(source, plan, seed, "fit", (0, 3), plan["fit_per_seed"]))
+    familiar = list(evidence(source, plan, seed, "familiar-fit", (),
+                             plan.get("familiar_fit_per_seed", 0)))
     control = Controls()
     for _, views, first, state, second, reward in base:
         control.observe(views, dict(x1=first, s2=state, x2=second, y=reward))
     candidate = parent
-    for identifier, views, row in fit:
+    for identifier, views, row in familiar + fit:
         require(monotonic() < deadline, "CELL_LOCAL_WALL_BUDGET")
         candidate = candidate.observe_experience(
             identifier, views, row, source_sha256=source_pin, external_source_sha256=source_pin,
@@ -75,23 +77,28 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
     restored = NativeCausalAmalgam.restore(raw, digest(raw), external_source_sha256=source_pin,
                                            **material)
     ledger = restored.native._episode_reader()._ledger
-    require(ledger[:len(base)] == base and len(ledger) == len(base) + len(fit),
+    fit_count = len(familiar) + len(fit)
+    require(ledger[:len(base)] == base and len(ledger) == len(base) + fit_count,
             "CELL_LOCAL_PREFIX")
     steps = [b.steps - a.steps for a, b in zip(parent._heads, restored._heads, strict=True)]
-    require(steps == [3 * len(fit)] * 4, "CELL_LOCAL_HEAD_UPDATES")
+    require(steps == [3 * fit_count] * 4, "CELL_LOCAL_HEAD_UPDATES")
     old = bounded_forecasts(parent)
     new = bounded_forecasts(restored)
     trace = {"fit": fit}
+    if familiar:
+        trace["familiar_fit"] = familiar
+    old_fitted = fitted_old_readout(old, familiar)
     initial_ids = {row[0] for row in base}
     evaluations = []
-    assignments = (("fixed_endpoint", "fixed"), ("all_to_alternative", "all"),
-                   ("routed", "posterior"))
+    assignments = (("fixed_endpoint", old, "fixed"), ("all_to_alternative", old, "all"),
+                   ("routed", old, "posterior"), ("dual_fixed", old_fitted, "fixed"),
+                   ("dual_fitted", old_fitted, "posterior"))
     for index, shift in enumerate(plan["shifts"]):
         baseline = deepcopy(control)
         local = EvidenceReadout(old, new, local=True)
         shared = EvidenceReadout(old, new, local=False)
-        routed = {name: RegimeForecast(old, fit, assignment=mode)
-                  for name, mode in assignments if name in plan["arms"]}
+        routed = {name: RegimeForecast(original, fit, assignment=mode)
+                  for name, original, mode in assignments if name in plan["arms"]}
         for phase, active in (("shift", shift), ("return", [])):
             block = f"{index}-{phase}"
             prefix = list(evidence(source, plan, seed, f"{block}-prefix", active,
@@ -127,7 +134,7 @@ def replicate(parent, material, source, plan, source_pin, seed, deadline):
                 for cell in range(4)]))
     ids = [row[0] for rows in trace.values() for row in rows]
     require(len(ids) == len(set(ids)) and not (initial_ids & set(ids)), "CELL_LOCAL_TRACE_JOIN")
-    return dict(seed=seed, actions=2 * len(ids), fit_episodes=len(fit), head_steps=steps,
+    return dict(seed=seed, actions=2 * len(ids), fit_episodes=fit_count, head_steps=steps,
                 checkpoint=digest(raw), native_checkpoint=digest(restored.native.checkpoint()),
                 trace_sha256=digest(canonical(trace)), evaluations=evaluations)
 

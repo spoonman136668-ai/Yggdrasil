@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.amalgam.local-evidence-development.v1",
+  "id": "amalgam-paired-regime-fit-dev-01",
+  "owner_scope": "Isolated synthetic development only. No data or effects from the protected original-world source.",
+  "parent_joint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [
+    993601,
+    993623,
+    993641
+  ],
+  "shifts": [
+    [],
+    [
+      0
+    ],
+    [
+      3
+    ],
+    [
+      0,
+      3
+    ]
+  ],
+  "fit_per_seed": 48,
+  "prefix_per_phase": 16,
+  "scored_per_phase": 32,
+  "wall_budget_seconds": 480,
+  "min_transition_gain": 0.005,
+  "max_retention_drift": 0.02,
+  "hypothesis": "Fitting both known FIT regimes reduces forecast misspecification relative to anchoring to the historical old forecast. Dual fixed is the independently conventional equivalent without fractional updates. This is a localization diagnostic, with no native superiority claim.",
+  "schedule": "48 familiar and 48 shifted shared FIT episodes. Both labeled FIT partitions available to every arm. All trajectories use the same sealed anchor. Evaluation regimes are anonymous. Four balanced prefix episodes per cell and phase, a disjoint scored roster, and no reset on return. Baseline counter and change-point arms consume the common ordered FIT stream.",
+  "arms": [
+    "anchor",
+    "continued",
+    "shared",
+    "local",
+    "fit_full",
+    "fit_trailing",
+    "fit_change_point",
+    "fixed_endpoint",
+    "all_to_alternative",
+    "routed",
+    "dual_fixed",
+    "dual_fitted"
+  ],
+  "rule": "DEV_SIGNAL requires mean changed-cell transition Brier gain at least 0.005 over the strongest aggregate matched comparator per seed, and worst unchanged or return drift at most 0.02 on every seed. Otherwise DEV_NO_GO. Terminal forecasts for the three new arms use the unchanged anchor. No active-policy claim.",
+  "scoring_precision": "Existing staged readout scale of 1000000, applied to frozen snapshot forecasts and final transition and reward scores. Cache each immutable public forecast for its scope. Report the strongest aggregate matched control per seed.",
+  "prior_attempt": "f8db3434c1b337e498a61672edc451724db8b577",
+  "candidate": "dual_fitted",
+  "candidate_parameters": "Existing native novel prior 1/8 and fixed-share rate 1/32. No tuning. Fractional updates use the posterior after observing the transition. Fixed endpoint and all-to-alternative arms share the same starting FIT counts and old forecast.",
+  "familiar_fit_per_seed": 48
+}

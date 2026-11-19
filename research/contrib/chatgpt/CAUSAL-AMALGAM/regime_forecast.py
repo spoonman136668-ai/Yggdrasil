@@ -4,6 +4,25 @@ from yggdrasil.native_episode_experience import NOVEL_PRIOR, REFRESH_RATE, _view
 from yggdrasil.public_causal_cells import PublicCausalCells
 
 
+def fitted_old_readout(anchor, fit):
+    """Fit the old transition law within established support, keeping fallback."""
+    cells = PublicCausalCells()
+    support = set()
+    for _, views, row in fit:
+        context, action = RegimeForecast._key(views[0], row["x1"])
+        cells.observe(context, action, row["s2"])
+        support.add((context, action))
+
+    def forecast(view, first, *terminal):
+        key = RegimeForecast._key(view, first)
+        if terminal or key not in support:
+            return anchor(view, first, *terminal)
+        ones, total = cells.outcome_probability(*key)
+        return ones / total
+
+    return forecast
+
+
 class RegimeForecast:
     """Maintain an immutable old readout and one fitted alternative per cell."""
 
