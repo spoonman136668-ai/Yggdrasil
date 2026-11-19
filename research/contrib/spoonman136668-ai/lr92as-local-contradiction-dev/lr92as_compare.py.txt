@@ -1,0 +1,179 @@
+"""Frozen one-shot LR-92AS disjoint DEVELOPMENT causal-hypothesis comparison.
+
+All models receive identical public action/outcome and episode-boundary tape;
+forecast before label; evaluator's phase/private labels used only AFTER run.
+Do not score a protected primary or alter any model after source lock.
+"""
+from __future__ import annotations
+import csv
+import hashlib
+import json
+import math
+import time
+from pathlib import Path
+from per_context_retriever import PerContextRetriever,FixedHalfContextBlend,ActiveOnlyContext
+from lr92as_disjoint_dev import SEEDS,FAMILIES,INSTANCES,world,manifest
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from two_regime_hmm_control import TwoRegimeHMM
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+from matched_tabular_controls import FullHistory14,FixedWindow14
+
+ARMS={
+  'PCH_local':(PerContextRetriever,928),
+  'PCH_fixed_half':(FixedHalfContextBlend,928),
+  'PCH_active_only':(ActiveOnlyContext,928),
+  'HMM_MAP_928':(TwoRegimeHMM,928),
+  'BOCPD_896':(BoundedRunLengthBOCPD14,896),
+  'Full14_480':(FullHistory14,480),
+  'Window32_832':(FixedWindow14,832),
+  'YPT4_negative':(PublicDualTimescaleCells,928),
+}
+CONVENTIONAL=('HMM_MAP_928','BOCPD_896','Full14_480','Window32_832')
+METRICS=('A','B','return_first','return_early16','return_late','return_all','all')
+SOURCE_FILES=('per_context_retriever.py','lr92as_disjoint_dev.py','lr92as_compare.py',
+              'frozen_lr92as_dev_plan.json',
+              'public_dual_timescale_cells.py','two_regime_hmm_control.py',
+              'bounded_runlength_bocpd.py','matched_tabular_controls.py')
+
+
+def gitblob(path):
+    raw=Path(path).read_bytes()
+    return hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+
+
+def exact_source_audit(plan):
+    assert plan['status']=='SOURCE_LOCKED_BEFORE_DEV_SCORE'
+    assert plan['development_seed_scope']==list(SEEDS)
+    assert plan['controls']==list(CONVENTIONAL)
+    assert not plan['protected_primary']['used'] and not plan['protected_primary']['authorized']
+    assert set(plan['source_git_blobs'])==set(SOURCE_FILES)-{'frozen_lr92as_dev_plan.json'}
+    for n,v in plan['source_git_blobs'].items():
+        actual=gitblob(Path(__file__).with_name(n))
+        if actual!=v:raise RuntimeError(f'SOURCE_DRIFT_{n}: {actual} != {v}')
+    generated=manifest()
+    digest=hashlib.sha256(json.dumps(generated,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    assert digest==plan['dev_manifest_sha256'], 'DATA_MANIFEST_DRIFT'
+    return digest
+
+
+def _mean(x):
+    assert x
+    return sum(x)/len(x)
+
+
+def score_one(w,cls,budget):
+    tic=time.perf_counter()
+    m=cls()
+    assert len(m.snapshot())==budget+36
+    failures=[]
+    original_a_end,original_b_end=w.dwell[0],sum(w.dwell[:2])
+    old_archive_posthoc=None
+    prefix_hash=None
+    first_forecast=None
+    for ev in w.public:
+        if ev.reset:m.end_episode()
+        if ev.index==original_b_end:
+            before=m.snapshot()
+            prefix_hash=hashlib.sha256(before).hexdigest()
+            if hasattr(m,'predict_archived'):
+                old_archive_posthoc=m.predict_archived(0,ev.action)
+            elif hasattr(m,'predict_protected'):
+                old_archive_posthoc=m.predict_protected(0,ev.action)
+        snap=m.snapshot() if ev.index in (0,original_a_end,original_b_end,len(w.public)-1) else None
+        p=m.predict(0,ev.action)
+        if not isinstance(p,(int,float)) or not math.isfinite(p) or not 0<=p<=1:
+            raise RuntimeError('INVALID_PREDICTION')
+        if snap is not None:
+            assert m.snapshot()==snap
+            assert cls.restore(snap).predict(0,ev.action)==p
+        if ev.index==original_b_end:first_forecast=p
+        failures.append((p-ev.outcome)**2)
+        m.observe_step(0,ev.action,ev.outcome)
+    final=m.snapshot()
+    assert cls.restore(final).snapshot()==final
+    a,b,c=w.dwell
+    return {'A':_mean(failures[:a]),'B':_mean(failures[a:a+b]),
+            'return_first':failures[a+b],
+            'return_early16':_mean(failures[a+b:a+b+16]),
+            'return_late':_mean(failures[a+b+16:]),
+            'return_all':_mean(failures[a+b:]),'all':_mean(failures),
+            'posthoc_archive_forecast':old_archive_posthoc,
+            'first_online_forecast':first_forecast,
+            'pre_return_snapshot_sha256':prefix_hash,
+            'final_snapshot_sha256':hashlib.sha256(final).hexdigest(),
+            'learned_bytes':budget,'checkpoint_bytes':len(final),
+            'updates':len(w.public),'seconds':time.perf_counter()-tic}
+
+
+def run_all():
+    plan=json.loads(Path(__file__).with_name('frozen_lr92as_dev_plan.json').read_text())
+    dataset_sha=exact_source_audit(plan)
+    tic=time.perf_counter()
+    rows=[]
+    for seed in SEEDS:
+        for family in FAMILIES:
+            for index in range(INSTANCES):
+                w=world(seed,family,index)
+                assert w.context_coverage==14
+                a,b,_=w.dwell
+                assert not w.public[a].reset and not w.public[a+b].reset
+                r={'seed':seed,'family':family,'index':index,'dwell':list(w.dwell),
+                   'input_sha256':w.digest(),'models':{}}
+                for name,(cls,budget) in ARMS.items():
+                    r['models'][name]=score_one(w,cls,budget)
+                assert r['models']['PCH_local']['final_snapshot_sha256']==r['models']['PCH_fixed_half']['final_snapshot_sha256']==r['models']['PCH_active_only']['final_snapshot_sha256']
+                rows.append(r)
+    assert len(rows)==24
+    expected_total=sum(sum(r['dwell']) for r in rows)
+    summary={}
+    for name,(cls,budget) in ARMS.items():
+        def stats(group):return {metric:_mean([r['models'][name][metric] for r in group]) for metric in METRICS}
+        summary[name]={'macro':stats(rows), 'by_seed':{str(s):stats([r for r in rows if r['seed']==s]) for s in SEEDS},
+                       'by_family':{f:stats([r for r in rows if r['family']==f]) for f in FAMILIES},
+                       'seconds':sum(r['models'][name]['seconds'] for r in rows),
+                       'learned_bytes':budget,
+                       'updates':sum(r['models'][name]['updates'] for r in rows)}
+        assert summary[name]['updates']==expected_total
+    seed_scores={}
+    for s in SEEDS:
+        k=str(s);ours=summary['PCH_local']['by_seed'][k]
+        best_return=min(summary[c]['by_seed'][k]['return_early16'] for c in CONVENTIONAL)
+        best_B=min(summary[c]['by_seed'][k]['B'] for c in CONVENTIONAL)
+        seed_scores[k]={'return_gain_vs_best_conventional':best_return-ours['return_early16'],
+                        'B_regression_vs_best_conventional':ours['B']-best_B}
+    half=summary['PCH_fixed_half']['macro']; active=summary['PCH_active_only']['macro'];ours=summary['PCH_local']['macro']
+    gate_gain_half=half['return_early16']-ours['return_early16']
+    gate_gain_active=active['return_early16']-ours['return_early16']
+    ablations_good=gate_gain_half>=.005 and gate_gain_active>=.005 and ours['B']<=min(half['B'],active['B'])+.01
+    conventional_good=all(x['return_gain_vs_best_conventional']>=.01 and x['B_regression_vs_best_conventional']<=.01 for x in seed_scores.values())
+    go=ablations_good and conventional_good
+    return {'study':'LR92AS_PER_CONTEXT_DEV','status':'DISJOINT_DEV_ONLY',
+      'manifest_sha256':dataset_sha,'worlds':len(rows),'events_per_model':expected_total,
+      'models':summary,'world_rows':rows,'total_process_seconds':time.perf_counter()-tic,
+      'decision':{'seedwise':seed_scores,
+                  'retrieval_gain_vs_fixed_half':gate_gain_half,
+                  'retrieval_gain_vs_active_only':gate_gain_active,
+                  'ablation_gate_pass':ablations_good,'conventional_gate_pass':conventional_good,
+                  'development_GO':go,'decision':'LR92AS_DEVELOPMENT_GO_DIAGNOSTIC_ONLY' if go else 'LR92AS_DEVELOPMENT_NO_GO',
+                  'scientific_pass_claimable':False,'native_model_integrated':False,'primary_used':False}}
+
+
+def write_evidence(results,outdir):
+    outdir=Path(outdir);outdir.mkdir(parents=True,exist_ok=True)
+    (outdir/'full_results.json').write_text(json.dumps(results,sort_keys=True,indent=2)+'\n')
+    cols=['seed','family','index','dwell_A','dwell_B','dwell_return','input_sha256']+[f'{name}.{k}' for name in ARMS for k in ('B','return_early16','return_first','return_late')]
+    with (outdir/'world_metrics.csv').open('w',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=cols);w.writeheader()
+        for row in results['world_rows']:
+            record=dict(seed=row['seed'],family=row['family'],index=row['index'],dwell_A=row['dwell'][0],dwell_B=row['dwell'][1],dwell_return=row['dwell'][2],input_sha256=row['input_sha256'])
+            for name in ARMS:
+                for m in ('B','return_early16','return_first','return_late'):
+                    record[f'{name}.{m}']=f'{row["models"][name][m]:.9f}'
+            w.writerow(record)
+
+if __name__=='__main__':
+    import sys
+    if len(sys.argv)!=2:raise SystemExit('usage: lr92as_compare.py OUTPUT_DIRECTORY')
+    results=run_all();write_evidence(results,sys.argv[1])
+    print(json.dumps({'decision':results['decision'],'events':results['events_per_model'],'worlds':results['worlds'],
+                      'macro':{k:v['macro'] for k,v in results['models'].items()}},indent=2))
