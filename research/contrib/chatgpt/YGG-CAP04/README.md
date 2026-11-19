@@ -122,3 +122,38 @@ do not add another learner or retrofit CAP04 to post hoc fit this example.
 A future different hypothesis must be prospectively preregistered, evaluated
 on genuinely fresh owner-qualified sources, and integrated only by the central
 Amalgam coordinator after independent scientific qualification.
+
+## CAP04-RD01 opt-in direct-reward shadow (frozen before implementation)
+
+**Preregistered source-free engineering protocol first:** `RD01-FROZEN-ENGINEERING.md`
+in commit `94791622ccb28ffca50b61a42b7b016e8670dc23`. The original
+`YGG-CAP04/prereg.json` remains unchanged; no original-science seeds
+`99917/99931` or owner-protected source are opened.
+
+The existing `PredictiveStateSplit` class now exposes a strictly optional
+`reward_mode="direct"`. Its original default `"xor"` behavior, imported
+witness handling, evidence selection and checkpoint v1 bytes remain unchanged.
+The new mode fits the **actual witnessed terminal reward** conditional on
+current revealed public `s2`, rather than predicting `y XOR s2` and then
+inverting the prediction when `s2=1`. It uses the same fixed, bounded
+history-feature selection, mutation-free prequential readout and source-ID
+controls, **not a competing model-owner/learner process**.
+
+A distinct `SCHEMA_DIRECT` stores the selected reward-mode identity.
+The direct schema and XOR v1 schema can each cold-restore exactly, but
+cross-schema reinterpretation fails closed. The existing direct-reward
+matched-history Beta remains an independently fitted strong control, not
+a reference model to claim superiority over.
+
+The separately frozen RD01 engineering test uses two **128-observation**
+known synthetic series, constant terminal reward 0 or 1, balanced observed
+`s2` and identical public action/view. It requires the direct head's
+balanced stage-two Brier below 0.05 for *both* constructions while retaining
+the XOR model's known ≥0.25 structural lower bound. It verifies the full
+source-clock, closed readouts, exact mode-specific restore and tamper refusal.
+
+**Limitations:** a mechanism class that can represent a known counterexample
+is not demonstrated to discover a new real causal law, retain an older native
+skill, beat exact controls, or improve whole-process efficiency. No claim of
+qualified scientific benefit or permission to integrate into the accepted
+single Yggdrasil learner follows from this opt-in engineering PASS.

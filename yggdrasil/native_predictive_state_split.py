@@ -13,6 +13,8 @@ from yggdrasil.native_context_basis import canonical, digest, pin
 from yggdrasil.native_paired_causal_contrast import state, arm
 
 SCHEMA = "yggdrasil.cap04.native-predictive-state-split.v1"
+SCHEMA_DIRECT = "yggdrasil.cap04.native-predictive-state-direct-reward-shadow.v1"
+REWARD_MODES = ("xor", "direct")
 KINDS = ("transition", "residual")
 FEATURES = ("previous_pair", "previous_post", "previous_reward", "previous_pair_post")
 SHRINK = 4.0
@@ -34,8 +36,11 @@ def bit(x):
 class PredictiveStateSplit:
     """Fixed-penalty prequential causal history feature selection."""
 
-    def __init__(self, *, sham=False):
+    def __init__(self, *, sham=False, reward_mode="xor"):
+        require(type(reward_mode) is str and reward_mode in REWARD_MODES,
+                "REWARD_MODE")
         self.sham = bool(sham)
+        self.reward_mode = reward_mode
         self._events = []
         self._seen = set()
         self._pool = {}
@@ -60,6 +65,15 @@ class PredictiveStateSplit:
             "previous_reward": reward,
             "previous_pair_post": (pair, post),
         }
+
+    def _conditioned_state(self, kind, st, s2):
+        # In the opt-in RD01 mode the terminal reward can have an arbitrary
+        # observed-sensor conditional, instead of being forced to XOR s2.
+        # The original CAP04 XOR mode continues to use the same three-bit
+        # state/key and byte-identical legacy checkpoint schema.
+        if kind == "residual" and self.reward_mode == "direct":
+            return st + (bit(s2),)
+        return st
 
     @staticmethod
     def _mean(counts):
@@ -98,22 +112,24 @@ class PredictiveStateSplit:
             bit(witnessed_s2)
         values = self._feature_values()
         feature = self._winner(stage, values)
-        probability = self._estimate(stage, st, pair, values, feature)
-        if stage == "residual" and witnessed_s2 == 1:
+        conditioned = self._conditioned_state(stage, st, witnessed_s2)
+        probability = self._estimate(stage, conditioned, pair, values, feature)
+        if (stage == "residual" and self.reward_mode == "xor"
+                and witnessed_s2 == 1):
             probability = 1.0 - probability
         require(0 <= probability <= 1 and math.isfinite(probability),
                 "PROBABILITY")
         return float(probability)
 
     @classmethod
-    def from_native_events(cls, native_events, *, sham=False):
+    def from_native_events(cls, native_events, *, sham=False, reward_mode="xor"):
         """Load genuine seven-field historical events without modifying native.
 
         The early native sensor pair could contain two independent public
         views; only the new supplemental readout uses their 3-bit projection.
         The native original/checkpoint remains intact and separately pinned.
         """
-        obj = cls(sham=sham)
+        obj = cls(sham=sham, reward_mode=reward_mode)
         for event in native_events:
             require(type(event) is tuple and len(event) in (6, 7),
                     "ORIGINAL_PUBLIC_ROW")
@@ -147,22 +163,24 @@ class PredictiveStateSplit:
         require(identifier not in self._seen, "DUPLICATE_OR_CONFLICT")
         require(self.count < MAX_EVENTS, "EVENT_CAPACITY")
         values = self._feature_values()
-        labels = {"transition": s2, "residual": y ^ s2}
+        labels = {"transition": s2,
+                  "residual": y if self.reward_mode == "direct" else y ^ s2}
         for kind in KINDS:
             label = labels[kind]
-            base_key = (kind, st, pair)
-            pooled = self._estimate(kind, st, pair, None)
+            conditioned = self._conditioned_state(kind, st, s2)
+            base_key = (kind, conditioned, pair)
+            pooled = self._estimate(kind, conditioned, pair, None)
             if values is not None:
                 self._qualified[kind] += 1
                 for feature in FEATURES:
-                    split = self._estimate(kind, st, pair, values, feature)
+                    split = self._estimate(kind, conditioned, pair, values, feature)
                     p0 = max(1e-12, min(1 - 1e-12, pooled))
                     p1 = max(1e-12, min(1 - 1e-12, split))
                     self._evidence[kind][feature] += (
                         math.log(p1 if label else 1 - p1) -
                         math.log(p0 if label else 1 - p0)
                     )
-                    key = (kind, st, pair, feature, values[feature])
+                    key = (kind, conditioned, pair, feature, values[feature])
                     yes, n = self._split.get(key, (0, 0))
                     self._split[key] = (yes + label, n + 1)
             yes, n = self._pool.get(base_key, (0, 0))
@@ -172,8 +190,12 @@ class PredictiveStateSplit:
         return self
 
     def checkpoint(self):
-        return canonical({"schema": SCHEMA, "sham": self.sham,
-                          "events": self._events})
+        if self.reward_mode == "xor":
+            # Exact legacy schema and bytes for all original CAP04 weights.
+            return canonical({"schema": SCHEMA, "sham": self.sham,
+                              "events": self._events})
+        return canonical({"schema": SCHEMA_DIRECT, "sham": self.sham,
+                          "reward_mode": "direct", "events": self._events})
 
     @classmethod
     def restore(cls, raw, expected_sha):
@@ -181,12 +203,19 @@ class PredictiveStateSplit:
                 digest(raw) == expected_sha, "COLD_HASH")
         try:
             doc = json.loads(raw.decode("ascii"))
-            require(type(doc) is dict and
-                    set(doc) == {"schema", "sham", "events"} and
-                    doc["schema"] == SCHEMA and type(doc["sham"]) is bool and
-                    type(doc["events"]) is list and canonical(doc) == raw,
-                    "COLD_SCHEMA")
-            learner = cls(sham=doc["sham"])
+            require(type(doc) is dict and type(doc.get("sham")) is bool
+                    and type(doc.get("events")) is list
+                    and canonical(doc) == raw, "COLD_SCHEMA")
+            if doc.get("schema") == SCHEMA:
+                require(set(doc) == {"schema", "sham", "events"},
+                        "COLD_SCHEMA")
+                reward_mode = "xor"
+            else:
+                require(doc.get("schema") == SCHEMA_DIRECT and
+                        set(doc) == {"schema", "sham", "reward_mode", "events"}
+                        and doc["reward_mode"] == "direct", "COLD_SCHEMA")
+                reward_mode = "direct"
+            learner = cls(sham=doc["sham"], reward_mode=reward_mode)
             for ident, st, pair, s2, y, post in doc["events"]:
                 views = ((st[0], st[1]), (st[1], st[2]))
                 learner.observe(ident, views, tuple(pair), s2, y,
