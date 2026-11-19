@@ -1,0 +1,164 @@
+{
+  "schema": "lr92am.github-summary.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "LR-92AM",
+  "classification": "DEVELOPMENT_SUPPORTED_ALL_5_PRESET_CHECKS",
+  "scientific_promotion": "HOLD",
+  "native_yggdrasil_training": false,
+  "preprimary": {
+    "prereg_commit": "9e924faf279b3f04f3933fac5141ce67cc772d2c",
+    "source_commit": "f135a926e0edfa3ed05d1160e9c76899f43692c8",
+    "source_sha256": "cc5f4e81ddbeb4f573f5716f31152e1d91d281bea61c0a978f67f515209930a9",
+    "fixture_assertions": 15,
+    "primary_used_for_tuning": false
+  },
+  "primary": {
+    "seeds": [
+      929206101,
+      929206102,
+      929206103
+    ],
+    "worlds": 180,
+    "per_family": 36,
+    "fit_q0": 32,
+    "fit_q1": 64,
+    "holdout_q1": 256,
+    "cold_holdout_q0": 128,
+    "noise_flip": 0.25,
+    "elapsed_seconds": 9.240266035999866,
+    "sha256": "8a9d3b5824b7841efe023c239cea048baef42983dace72194f929427dd3fed89",
+    "raw_bytes": 1111558,
+    "raw_observations_uploaded": false
+  },
+  "accuracy_q1": {
+    "static": {
+      "gate": 0.7364366319444444,
+      "first": 0.7364366319444444,
+      "original_gate": 0.7364366319444444,
+      "sham": 0.7416449652777778,
+      "rf32": 0.6888020833333334
+    },
+    "lag1": {
+      "gate": 0.7156032986111112,
+      "first": 0.7225477430555556,
+      "original_gate": 0.7156032986111112,
+      "sham": 0.5246310763888888,
+      "rf32": 0.6407335069444444
+    },
+    "lag2": {
+      "gate": 0.7364366319444444,
+      "first": 0.5402560763888888,
+      "original_gate": 0.7364366319444444,
+      "sham": 0.5304904513888888,
+      "rf32": 0.6458333333333334
+    },
+    "OOD_AND": {
+      "gate": 0.6725260416666666,
+      "first": 0.6789279513888888,
+      "original_gate": 0.6825086805555556,
+      "sham": 0.6871744791666666,
+      "rf32": 0.6626519097222222
+    },
+    "OOD_XOR": {
+      "gate": 0.5326605902777778,
+      "first": 0.5208333333333334,
+      "original_gate": 0.5310329861111112,
+      "sham": 0.4989149305555556,
+      "rf32": 0.5766059027777778
+    }
+  },
+  "accuracy_cold_q0": {
+    "gate": 0.6700954861111111,
+    "first": 0.6322482638888889,
+    "original_gate": 0.6663194444444445,
+    "sham": 0.5859375,
+    "rf32": 0.6089409722222222,
+    "ungated": 0.6688802083333333
+  },
+  "family_confusion": [
+    [
+      35,
+      1,
+      0
+    ],
+    [
+      1,
+      34,
+      1
+    ],
+    [
+      0,
+      1,
+      35
+    ],
+    [
+      29,
+      5,
+      2
+    ],
+    [
+      12,
+      15,
+      9
+    ]
+  ],
+  "frozen_checks": {
+    "lag1_retention": true,
+    "lag2_gain": true,
+    "history_destruction_specificity": true,
+    "cold_q0_retention": true,
+    "OOD_vs_RF32": true
+  },
+  "margins_absolute": {
+    "lag1_retention": 0.0030555555555555804,
+    "lag2_gain": 0.1461805555555556,
+    "history_destruction_specificity": 0.17594618055555558,
+    "cold_q0_retention": 0.052847222222222254,
+    "OOD_vs_RF32": 0.012964409722222209
+  },
+  "bootstrap95_descriptive_lag2_gate_minus_first": [
+    0.1745849609375,
+    0.21669108072916662
+  ],
+  "bootstrap95_descriptive_lag2_gate_minus_sham": [
+    0.18174913194444445,
+    0.22982042100694441
+  ],
+  "audit": {
+    "status": "PASS_WITH_NUMERIC_TIE_ENVELOPES",
+    "assertions": 9581,
+    "worlds": 180,
+    "world_arm_score_cells_with_tie_envelope": 12,
+    "tie_ambiguous_predictions_total": 1928,
+    "max_previous_action_pair_rows_changed": 93,
+    "independent_source_sha256": "0c0a42fbbbbf0a3e91fba80411dbdfbdbc8c177bfa23adae065a171cefe22f3f",
+    "independent_receipt_sha256": "5ae4a4d95779862a1c43556a8d5df1c3f2f0103918c42e2891592c441b84cd93"
+  },
+  "scored_ledger": {
+    "file": "paired_scores.bin.zlib.b64",
+    "git_blob_sha1": "a015528882b4391dbe153e1c8a599e7f9721ff79",
+    "decoded_bytes": 5588,
+    "decoded_sha256": "2f94e53a7d54073ce09ea2609966ad6bee061e7e69e2790e71259b6bf40bad3c",
+    "worlds": 180,
+    "arms": 6,
+    "contexts": 2
+  },
+  "limitations": [
+    "Independent 320-state synthetic learner, NOT native Yggdrasil or exact historical source replication.",
+    "All three familiar causal families are within programmed grammar. OOD AND is approximated; OOD XOR prediction 53.27%, below fully fitted RF32 57.66%.",
+    "History permutation genuinely destroys fit-only label alignment without altering validation history; proves predictive dependency in this synthetic task, not general native causal intelligence.",
+    "Protected gate did not outperform original strongest-family gate on familiar static/lag1/lag2 tests.",
+    "No model parameters persist across worlds. Cold validation measures within-world q0 retention only, not lifelong memory.",
+    "RF32 receives identical within-world fit data but differs in architecture/compute and carries no prior lifelong knowledge.",
+    "12 small score discrepancies from numerical 0.5-tie decisions; all scores independently bounded and audited, not bit-exact floating equivalence.",
+    "Full primary observation file not uploaded; can reconstruct deterministic observations and score ledger from frozen source/seeds. Runtime elapsed changes byte-for-byte raw hash across replays."
+  ],
+  "authority": {
+    "main_changed": false,
+    "accepted_ref_changed": false,
+    "controller_changed": false,
+    "first_use_consumed": false,
+    "merge": false,
+    "deployment": false
+  }
+}
