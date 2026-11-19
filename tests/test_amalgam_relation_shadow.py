@@ -105,5 +105,88 @@ class NativeRelationShadowTests(unittest.TestCase):
         self.assertIsNone(RELATION.RelationShadow(records).propose(0, 1))
 
 
+    def test_unobserved_target_action_is_explicitly_non_identifiable(self):
+        records = ledger("complement") + [
+            row(10000 + k, 3, 0, 0) for k in range(40)
+        ]
+        proposal = RELATION.RelationShadow(records).propose(3, 1)
+        self.assertIsNotNone(proposal)
+        self.assertEqual(proposal["identification_status"],
+                         "UNIDENTIFIED_TARGET_ACTION")
+        self.assertEqual(proposal["identified_probability_interval"], (0.0, 1.0))
+        self.assertEqual(proposal["target_action_support"], 0)
+        self.assertIsNone(proposal["decision_forecast"])
+        self.assertIs(proposal["decision_eligible"], False)
+        self.assertEqual(proposal["decision_authority"], "NONE_SHADOW_ONLY")
+        self.assertEqual(proposal["minimax_brier"], 0.25)
+
+    def test_indistinguishable_worlds_expose_confident_transfer_failure(self):
+        records = []
+        # The public histories below are identical in both possible worlds.
+        for context in (0, 1):
+            for action in (0, 1):
+                for _ in range(32):
+                    records.append(row(len(records), context, action, action))
+        for _ in range(40):
+            records.append(row(len(records), 2, 0, 0))
+        self.assertEqual(len(records), 168)
+        proposal = RELATION.RelationShadow(records).propose(2, 1)
+        q = proposal["forecast"]
+        self.assertGreater(proposal["posterior"]["complement"], 0.95)
+        self.assertGreater(q, 0.95)
+
+        # World A: target action 1 always gives 0.
+        # World B: target action 1 always gives 1.
+        # Neither unseen outcome enters the identical public ledger.
+        loss_a = q ** 2
+        loss_b = (1.0 - q) ** 2
+        self.assertAlmostEqual(proposal["worst_case_brier"], max(loss_a, loss_b))
+        self.assertAlmostEqual(proposal["balanced_two_world_brier"],
+                               (loss_a + loss_b) / 2.0)
+        self.assertAlmostEqual((loss_a + loss_b) / 2.0,
+                               0.25 + (q - 0.5) ** 2)
+        self.assertGreater(proposal["balanced_two_world_brier"], 0.45)
+        self.assertFalse(proposal["decision_eligible"])
+        self.assertIsNone(proposal["decision_forecast"])
+
+    def test_other_context_data_cannot_identify_missing_action(self):
+        def make(count):
+            records = []
+            for context in (0, 1):
+                for action in (0, 1):
+                    for _ in range(count):
+                        records.append(row(len(records), context, action, action))
+            for _ in range(40):
+                records.append(row(len(records), 2, 0, 0))
+            return RELATION.RelationShadow(records).propose(2, 1)
+
+        early = make(1)
+        later = make(32)
+        self.assertGreater(later["posterior"]["complement"],
+                           early["posterior"]["complement"])
+        self.assertGreater(later["worst_case_brier"],
+                           early["worst_case_brier"])
+        for proposal in (early, later):
+            self.assertEqual(proposal["identified_probability_interval"], (0.0, 1.0))
+            self.assertFalse(proposal["decision_eligible"])
+            self.assertIsNone(proposal["decision_forecast"])
+            self.assertEqual(proposal["target_action_support"], 0)
+
+    def test_equal_and_independent_hypotheses_remain_shadow_only(self):
+        for relationship in ("equal", "independent", "complement"):
+            with self.subTest(relationship=relationship):
+                records = ledger(relationship) + [
+                    row(10000 + k, 3, 0, k % 2) for k in range(20)
+                ]
+                proposal = RELATION.RelationShadow(records).propose(3, 1)
+                self.assertEqual(proposal["identification_status"],
+                                 "UNIDENTIFIED_TARGET_ACTION")
+                self.assertFalse(proposal["decision_eligible"])
+                self.assertIsNone(proposal["decision_forecast"])
+                self.assertGreaterEqual(proposal["worst_case_brier"], 0.25)
+                self.assertGreaterEqual(proposal["balanced_two_world_brier"], 0.25)
+
+
+
 if __name__ == "__main__":
     unittest.main()
