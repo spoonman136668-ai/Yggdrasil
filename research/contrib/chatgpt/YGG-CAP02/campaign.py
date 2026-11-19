@@ -21,16 +21,25 @@ from yggdrasil.native_context_basis import canonical,digest
 from yggdrasil.native_segmented_continuation import SegmentedNativeJEPA
 from yggdrasil.native_evidence_recall import EvidenceRecall
 HERE=Path(__file__).resolve().parent
-PRIOR=HERE.parent/"YGG-CAP01"/"original"/"linux"
+PLATFORM="windows" if sys.platform=="win32" else "linux"
+PRIOR=HERE.parent/"YGG-CAP01"/"original"/PLATFORM
 PREREG="99ec70e48d09df724a32fa0384c3aa5ef18c0b2e"
 SOURCE_BLOB="881df9ae85f3737a3ce2c8a83cd934ec0bde5cde"
 PARENT_SHA="3770e660bc8b908218e6fe82e176bd4bf91158d9"
 PINS={
- 14071:(99721,1054,"f4568f284605556f970d7f2cc4733577f09de244",
-        "6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14"),
- 14072:(99739,1029,"371afb1e830d6790b948ceda06f8260e7070260b",
-        "c503ccf979f90d6d4954f0e8d42133fc177017d4b47de80ee64c9524b870d827"),
-}
+ "linux":{
+  14071:(99721,1054,"f4568f284605556f970d7f2cc4733577f09de244",
+         "6babc23f4baf30afde14db5f2ca8eb3e55e321169aa245482478ff9855b68f14"),
+  14072:(99739,1029,"371afb1e830d6790b948ceda06f8260e7070260b",
+         "c503ccf979f90d6d4954f0e8d42133fc177017d4b47de80ee64c9524b870d827"),
+ },
+ "windows":{
+  14071:(99721,1054,"db50019c5ae9d8e8e16a24792f01fc50a0414b29",
+         "2d08c7e2d6d4d80acfc53727cdd0880d3f632c0f44bdb405b78feffba405938e"),
+  14072:(99739,1029,"9e233e46a4fbc683c8a1388441791cad16b42f2a",
+         "e09b0cbbe47b95686f3ed3732baf080fe6b47301f0128c360437bf29bf9dfbfb"),
+ }
+}[PLATFORM]
 ARMS=("gate","archive","active","mix50","beta_full","beta_recent32",
       "sham_wrong_context")
 CPU_LIMIT=220.
