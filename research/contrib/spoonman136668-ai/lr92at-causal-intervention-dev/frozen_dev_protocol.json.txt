@@ -1,0 +1,96 @@
+{
+  "authority": {
+    "accepted_ref": false,
+    "controller_or_owner_change": false,
+    "merge": false,
+    "native_yggdrasil_training": false,
+    "official_scientific_first_use": false,
+    "paid_apis": false,
+    "prospective_primary_seeds": [],
+    "prospective_primary_source_birth": false,
+    "runner_or_scheduler_change": false
+  },
+  "comparators": {
+    "mechanism_negative": "PermutedProgramSham same state and two-step planner but fixed permuted action-to-program mapping",
+    "same_program_posterior": "ExactBayesIG one-step information gain; ExactBayesMyopicRisk expected Brier risk; ExactBayesRandom uniform baseline",
+    "tabular": "TabularCoverage independent fully fitted Beta(1,1) per action"
+  },
+  "date": "2026-11-19",
+  "development": {
+    "heldout_query_actions_per_arm": 480,
+    "in_hypothesis_mechanisms": 8,
+    "in_hypothesis_worlds": 48,
+    "never_use_prior_exposed_seeds": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802
+    ],
+    "never_use_protected_seeds": [
+      929209101,
+      929209102,
+      929209103
+    ],
+    "new_seeds": [
+      76021921,
+      76021922
+    ],
+    "no_probe_feedback": true,
+    "no_true_mechanism_argument_to_actor": true,
+    "ood_negative_worlds": 12,
+    "out_of_hypothesis_mechanisms": 2,
+    "replications_per_mechanism_seed": 3,
+    "scoring": "all eight heldout do-action predictive Brier risk after 8 training labels, average across worlds; expected analytically under latent law + observed shared heldout labels reported",
+    "total_worlds": 60,
+    "train_interventions_per_arm": 480,
+    "training_noise": "one independent Bernoulli(0.15) draw per step, same random uniform noise draw across policies in one world, independent of selected action"
+  },
+  "experiment": "LR-92AT",
+  "frozen_decision": {
+    "any_failure": "DEVELOPMENT_NO_GO; preserve null/negative result; no tuning this disclosed cohort",
+    "controls_selected_posthoc": "best comparator per seed descriptive only; success must beat all and thresholds frozen before data scoring",
+    "development_go_only_if_all": [
+      "causal lookahead expected heldout Brier improves by at least 0.01 absolute versus BEST of all four conventional control arms IN EACH development seed group, within in-hypothesis worlds",
+      "OOD expected heldout Brier no worse than best conventional OOD control plus 0.01",
+      "combined wall time of all 60 causal lookahead runs no more than twice the fastest of four conventional arms"
+    ],
+    "scientific_pass": "NEVER from this synthetic development experiment"
+  },
+  "frozen_source_sha256": {
+    "causal_programs.py": "02b528f67159dd2f24c5e3a030ea7e6e7da8588c4f0ee6a08a95f686fec68e2c",
+    "evaluate.py": "ca70bd3ea4cabf84e9ad794262479ff102f1426874483d808c00ee58dff0955a",
+    "intervention_worlds.py": "b465aa732a8b40ba8caff29b96ccb03f33a080a17619807f3ffc48a20cf1da19",
+    "test_mechanism.py": "e874c7916bcf40b2629a23f633a27139a723632054ff32f26b20864988473da4"
+  },
+  "lineage_stop": {
+    "action": "NO FURTHER retuning of global or per-context bank-selection gates using their exposed fixtures",
+    "finding": "LR-92AQ, LR-92AR and LR-92AS global/local gating candidates failed bounded-development adaptation criteria",
+    "prior_negative_commit": "a33b46870e666846a612ec89b04cd200317eeb17",
+    "prior_pr": 1323
+  },
+  "new_architecture": {
+    "candidate_state_bytes": 64,
+    "heldout_probe_actions_per_world": 8,
+    "interventions": "do(x0,x1,x2) with three binary independent inputs; eight assignments",
+    "noise_flip_probability": 0.15,
+    "not": "not a two-bank prediction gate; not a transformer/token model",
+    "snapshot_bytes": 101,
+    "static_hypotheses": 8,
+    "train_interventions_per_world": 8,
+    "type": "explicit posterior over eight causal Boolean programs + adaptive two-intervention expected risk planning"
+  },
+  "resource_parity": {
+    "all_arms_actions_and_labels_per_world": 8,
+    "causal_model_state_bytes": 64,
+    "compute_budget_claim": "NO whole-process compute parity without independent native/source qualification",
+    "interventions_necessarily_different_across_active_policies": true,
+    "max_learned_bytes": 928,
+    "static_program_description_and_python_heap_not_counted_in_learned_bytes": true,
+    "tabular_model_state_bytes": 32,
+    "training_and_planning_wall_seconds_measure": true
+  },
+  "schema": "lr92at.frozen-development-protocol.v1",
+  "status": "FROZEN_DEVELOPMENT_ONLY_PRIMARY_UNDEFINED"
+}

@@ -1,0 +1,138 @@
+"""Unscored source/negative-control qualification for LR-92AT DEV.
+
+No protected Yggdrasil world exists here. All source parameters frozen before
+running the full new disjoint development benchmark.
+"""
+import dataclasses
+import hashlib
+import math
+import unittest
+
+from causal_programs import (TABLES,OOD_TABLES, SHAM_TABLES,NAMES,ACTIONS,NOISE,
+                             ProgramPosterior,TabularBeta,choose_intervention,_risk,
+                             _one_action_risk)
+from intervention_worlds import (DEV_SEEDS,LEGACY_DEVELOPMENT,PROTECTED,
+                                 REPLICATES,TRAIN_INTERVENTIONS,make_world,
+                                 development_worlds,source_manifest)
+from evaluate import ARMS, BASELINES,run_one
+
+
+class CausalProgramTests(unittest.TestCase):
+    def test_hypothesis_and_ood_unique(self):
+        self.assertEqual(len(TABLES),8)
+        self.assertEqual(len(OOD_TABLES),2)
+        self.assertEqual(len(set(TABLES+OOD_TABLES)),10)
+        self.assertEqual(len(SHAM_TABLES),8)
+        self.assertEqual(set(ACTIONS),set(range(8)))
+        self.assertEqual((NAMES[0],NAMES[3]),('x0','xor01'))
+
+    def test_posterior_prior_and_exact_bayes(self):
+        m=ProgramPosterior()
+        self.assertEqual(m.predict(0),sum(NOISE+(1-2*NOISE)*t[0] for t in TABLES)/8)
+        w0=m.posterior_if(0,1)
+        self.assertAlmostEqual(sum(w0),1)
+        self.assertAlmostEqual(w0[0]/w0[1],
+                               ((1-NOISE) if TABLES[0][0] else NOISE)/
+                               ((1-NOISE) if TABLES[1][0] else NOISE))
+        old=m.snapshot()
+        self.assertNotEqual(old, ProgramPosterior(sham=True).snapshot())
+        m.observe(0,1)
+        self.assertEqual(m._weights,w0)
+
+    def test_counterfactual_planner_is_nonmutating_and_distinct(self):
+        m=ProgramPosterior()
+        s=m.snapshot()
+        self.assertEqual(choose_intervention(m,'bayes_ig',8),3)
+        self.assertEqual(choose_intervention(m,'risk_two_step',8),2)
+        self.assertEqual(m.snapshot(),s)
+        self.assertGreaterEqual(_risk(m._weights,m._tables),0)
+        self.assertLess(_one_action_risk(m._weights,m._tables,2),_risk(m._weights,m._tables))
+
+    def test_intervention_budgets_and_persistence(self):
+        for m in (ProgramPosterior(),ProgramPosterior(sham=True),TabularBeta()):
+            self.assertLessEqual(m.LEARNED_BYTES,928)
+            self.assertEqual(len(m.snapshot()),m.CHECKPOINT_BYTES)
+            m.observe(0,1);m.observe(3,0)
+            s=m.snapshot()
+            clone=type(m).restore(s)
+            self.assertEqual(clone.snapshot(),s)
+            self.assertEqual(tuple(clone.predict(x) for x in ACTIONS),
+                             tuple(m.predict(x) for x in ACTIONS))
+
+    def test_invalid_inputs_atomic_and_checksum(self):
+        for m in (ProgramPosterior(),TabularBeta()):
+            before=m.snapshot()
+            for invalid in (True,-1,8,3.0,None):
+                with self.assertRaises(ValueError):m.observe(invalid,1)
+                self.assertEqual(before,m.snapshot())
+            for invalid in (True,-1,2,None):
+                with self.assertRaises(ValueError):m.observe(0,invalid)
+                self.assertEqual(before,m.snapshot())
+            b=bytearray(before);b[-3]^=1
+            with self.assertRaises(ValueError):type(m).restore(bytes(b))
+
+    def test_disjoint_world_seeds_and_all_worlds(self):
+        self.assertTrue(set(DEV_SEEDS).isdisjoint(LEGACY_DEVELOPMENT+PROTECTED))
+        worlds=development_worlds()
+        self.assertEqual(len(worlds),60)
+        self.assertEqual(sum(not x.ood for x in worlds),48)
+        self.assertEqual(sum(x.ood for x in worlds),12)
+        self.assertEqual(worlds,development_worlds())
+        self.assertEqual(len(source_manifest()),60)
+        for w in worlds:
+            self.assertEqual(len(w.train_noise),TRAIN_INTERVENTIONS)
+            self.assertEqual(len(w.probe_labels),8)
+            self.assertTrue(all(y in (0,1) for y in w.train_noise+w.probe_labels))
+
+    def test_no_reserved_primary_access(self):
+        for seed in LEGACY_DEVELOPMENT+PROTECTED+(0,True):
+            with self.assertRaises(ValueError):make_world(seed,0,0)
+        for arg in (-1,10,True,1.5):
+            with self.assertRaises(ValueError):make_world(DEV_SEEDS[0],arg,0)
+
+    def test_no_probe_feedback_or_future_leakage(self):
+        w=make_world(DEV_SEEDS[0],2,1)
+        modified=dataclasses.replace(w, probe_labels=tuple(1-y for y in w.probe_labels))
+        for arm in ('CausalLookahead2','ExactBayesIG','TabularCoverage'):
+            a=run_one(w,arm)
+            b=run_one(modified,arm)
+            self.assertEqual(a['checkpoint_sha256'],b['checkpoint_sha256'])
+            self.assertEqual(a['actions'],b['actions'])
+            self.assertEqual(a['probe_forecasts'],b['probe_forecasts'])
+            self.assertEqual(a['expected_probe_brier'],b['expected_probe_brier'])
+
+    def test_random_control_action_policy_not_oracle_seeded(self):
+        from evaluate import _rng_int
+        for seed in DEV_SEEDS:
+            for rep in range(REPLICATES):
+                self.assertEqual([_rng_int(seed,rep,t) for t in range(8)],
+                                 [_rng_int(seed,rep,t) for t in range(8)])
+                self.assertTrue(all(x in ACTIONS for x in [_rng_int(seed,rep,t) for t in range(8)]))
+
+    def test_arms_are_matched_intervention_count_and_readonly_queries(self):
+        world=make_world(DEV_SEEDS[0],0,0)
+        for arm in ARMS:
+            row=run_one(world,arm)
+            self.assertEqual(row['training_interventions'],8)
+            self.assertEqual(len(row['actions']),8)
+            self.assertEqual(len(row['probe_forecasts']),8)
+            self.assertLessEqual(row['state_bytes'],928)
+            self.assertTrue(all(math.isfinite(x) and 0<x<1 for x in row['probe_forecasts']))
+
+    def test_prior_sham_predictions_are_different(self):
+        a=ProgramPosterior()
+        b=ProgramPosterior(sham=True)
+        for action,y in ((0,1),(1,0),(7,0)):
+            a.observe(action,y);b.observe(action,y)
+        self.assertNotEqual(tuple(a.predict(x) for x in ACTIONS),
+                            tuple(b.predict(x) for x in ACTIONS))
+
+    def test_no_result_claims_from_unrun_prospective_primary(self):
+        from evaluate import BASELINES,ARMS
+        self.assertIn('ExactBayesIG',BASELINES)
+        self.assertIn('ExactBayesMyopicRisk',BASELINES)
+        self.assertNotIn('CausalLookahead2',BASELINES)
+        self.assertIn('PermutedProgramSham',ARMS)
+
+
+if __name__=='__main__':unittest.main()
