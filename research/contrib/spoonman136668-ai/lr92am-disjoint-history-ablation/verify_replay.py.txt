@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Check a clean reproduction against frozen LR-92AM paired-score custody.
+
+Ignores nondeterministic wall-clock metadata; does NOT requalify science.
+"""
+import base64,hashlib,json,pathlib,struct,sys,zlib
+EXPECTED='2f94e53a7d54073ce09ea2609966ad6bee061e7e69e2790e71259b6bf40bad3c'
+SEEDS=(929206101,929206102,929206103)
+ARMS=('gate','first','original_gate','ungated','sham','rf32')
+FORMAT='<BBBBbH12H'
+SIZE=struct.calcsize(FORMAT)
+
+def verify(result_path,ledger_path):
+    led=zlib.decompress(base64.b64decode(ledger_path.read_bytes()))
+    assert hashlib.sha256(led).hexdigest()==EXPECTED,'scored evidence hash mismatch'
+    assert len(led)==8+180*SIZE and led[:8]==b'LR92AM01','ledger format mismatch'
+    raw=json.loads(result_path.read_text())
+    assert raw['schema']=='lr92am.primary.v1' and len(raw['rows'])==180,'replayed result format mismatch'
+    actual={ (r['seed'],r['family'],r['world']):r for r in raw['rows'] }
+    assert len(actual)==180,'world identity collision'
+    checked=0
+    for i in range(180):
+        values=struct.unpack_from(FORMAT,led,8+i*SIZE)
+        seedidx,fam,wid,selected,route,conf=values[:6]
+        row=actual[(SEEDS[seedidx],fam,wid)]
+        assert row['selected_family']==selected and row['gate_route']==route,'route drift'
+        assert abs(row['confidence']-conf/65535)<=1/65535+.0000001,'family posterior drift'
+        observed=[row[context][arm] for context in ('q1','cold') for arm in ARMS]
+        assert observed==list(values[6:]),'paired score drift'
+        checked+=1
+    return {'status':'PASS','paired_worlds_verified':checked,'ledger_sha256':EXPECTED,'primary_data_sha256':hashlib.sha256(result_path.read_bytes()).hexdigest(),'wall_time_metadata_ignored':True}
+
+if __name__=='__main__':
+    if len(sys.argv)!=3:raise SystemExit('Usage: python verify_replay.py primary_result.json paired_scores.bin.zlib.b64')
+    print(json.dumps(verify(pathlib.Path(sys.argv[1]),pathlib.Path(sys.argv[2])),indent=2))
