@@ -68,8 +68,8 @@ def verify_source_references(root: Path, expected: FrozenRefs = FROZEN) -> dict:
     _require(type(expected) is FrozenRefs, "FROZEN_REFERENCE_TYPE")
     for sha in vars(expected).values():
         validate_sha(sha)
-    _require(_git(root, "rev-parse", "--show-toplevel") ==
-             str(root.resolve()), "WRONG_REPOSITORY_ROOT")
+    _require(Path(_git(root, "rev-parse", "--show-toplevel")).resolve() ==
+             root.resolve(), "WRONG_REPOSITORY_ROOT")
     commit = _git(root, "rev-parse", "--verify",
                   expected.candidate_sha + "^{commit}")
     _require(commit == expected.candidate_sha, "CANDIDATE_IDENTITY")
