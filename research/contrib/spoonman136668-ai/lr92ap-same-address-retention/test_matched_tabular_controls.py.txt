@@ -1,0 +1,135 @@
+"""Preprimary tests only. No protected-cohort seed may occur here."""
+import hashlib
+import random
+import unittest
+from collections import deque
+
+from matched_tabular_controls import FixedWindow14, FullHistory14, PATTERNS
+
+
+def fixture(seed):
+    rng = random.Random(seed)
+    for phase in ('A','B','Areturn'):
+        for t in range(64):
+            action = rng.randrange(2)
+            y = int((action if phase != 'B' else 1-action) ^ (rng.random() < 0.15))
+            yield phase, t, action, y
+
+
+def evaluate(seed):
+    models = {'full14': FullHistory14(), 'window14': FixedWindow14()}
+    scores = {name: {'B': [], 'Areturn': []} for name in models}
+    for phase,t,a,y in fixture(seed):
+        for name, model in models.items():
+            model.end_episode()  # match the original single-bin fixture exactly
+            p = model.predict(0,a)
+            if phase == 'B' or (phase == 'Areturn' and t < 16):
+                scores[name][phase].append((p-y)**2)
+            model.observe_step(0,a,y)
+    return {name: {phase: sum(v)/len(v) for phase,v in score.items()}
+            for name,score in scores.items()}
+
+
+class MatchedTabularTests(unittest.TestCase):
+    def test_memory_bounds_and_empty_restore(self):
+        for cls in (FullHistory14, FixedWindow14):
+            m=cls()
+            self.assertLessEqual(cls.LEARNED_BYTES, 928)
+            self.assertEqual(len(m.snapshot()), cls.CHECKPOINT_BYTES)
+            self.assertEqual(cls.restore(m.snapshot()).snapshot(),m.snapshot())
+
+    def test_illegal_step_immutability(self):
+        for cls in (FullHistory14, FixedWindow14):
+            m=cls(); before=m.snapshot()
+            for a,b,c,d in ((7,0,0,False),(0,2,0,False),(0,0,2,False),
+                             (0,0,1,1),(-1,0,0,False),(True,0,1,False)):
+                with self.assertRaises(ValueError):
+                    m.observe_step(a,b,c,retained=d)
+                self.assertEqual(before,m.snapshot())
+
+    def test_predictions_nonmutating_and_prior_actions(self):
+        for cls in (FullHistory14, FixedWindow14):
+            m=cls()
+            m.observe_step(0,1,1)
+            m.observe_step(0,0,0)
+            before=m.snapshot()
+            for _ in range(10):m.predict(0,1)
+            self.assertEqual(before,m.snapshot())
+            m.end_episode()
+            self.assertNotEqual(before,m.snapshot())
+            self.assertAlmostEqual(m.predict(0,1),2/3)
+
+    def test_exact_32_window_per_address_with_evictions(self):
+        r=random.Random(72004)
+        m=FixedWindow14()
+        rings=[deque(maxlen=32) for _ in range(16)]
+        histories=[[2,2] for _ in range(16)]
+        for t in range(2300):
+            slot=r.randrange(16)
+            addr=slot if slot<7 else slot-7
+            retained=slot>=7
+            if r.random()<0.1:
+                m.end_episode()
+                histories=[[2,2] for _ in range(16)]
+            a=r.randrange(2); y=r.randrange(2)
+            pattern=PATTERNS.index(tuple(histories[slot]))
+            code=pattern*4+a*2+y
+            m.observe_step(addr,a,y,retained=retained)
+            rings[slot].append(code)
+            histories[slot]=[a,histories[slot][0]]
+            self.assertEqual(sum(m._counts[slot*28:slot*28+28]),len(rings[slot]))
+            if t%31==0:
+                self.assertEqual(m.snapshot(),FixedWindow14.restore(m.snapshot()).snapshot())
+        for slot in range(16):
+            expected=[rings[slot].count(code) for code in range(28)]
+            self.assertEqual(list(m._counts[slot*28:slot*28+28]),expected)
+
+    def test_separate_slot_isolation(self):
+        for cls in (FullHistory14, FixedWindow14):
+            m=cls()
+            for _ in range(18):
+                m.end_episode();m.observe_step(0,0,1,retained=True)
+                m.end_episode();m.observe_step(0,0,0)
+            m.end_episode()
+            self.assertGreater(m.predict(0,0,retained=True),0.85)
+            self.assertLess(m.predict(0,0),0.15)
+
+    def test_checkpoint_corruption_and_inconsistent_counts(self):
+        for cls in (FullHistory14, FixedWindow14):
+            m=cls(); broken=bytearray(m.snapshot()); broken[10]^=1
+            with self.assertRaises(ValueError):cls.restore(bytes(broken))
+        m=FixedWindow14();m.observe_step(0,0,1)
+        broken=bytearray(m.snapshot());broken[5]+=1
+        broken[-32:]=hashlib.sha256(broken[:-32]).digest()
+        with self.assertRaisesRegex(ValueError,'LRC_INVALID_COUNTS'):
+            FixedWindow14.restore(bytes(broken))
+
+    def test_exact_fixture_scores_reproduce(self):
+        for seed,expected in ((73004303,(0.3996,0.2085,0.2206,0.4094)),
+                              (73004304,(0.3702,0.2693,0.1855,0.4255))):
+            r=evaluate(seed)
+            got=(r['full14']['B'],r['full14']['Areturn'],r['window14']['B'],r['window14']['Areturn'])
+            for actual,goal in zip(got,expected):
+                self.assertAlmostEqual(actual,goal,delta=0.00005)
+
+    def test_live_temporal_history_vs_destroyed_history(self):
+        # Deterministic non-primary training stream. Same actions/outcomes;
+        # sham erases the time/context relation before every prediction.
+        actions=[(i*17+(i//7))%2 for i in range(720)]
+        live=FixedWindow14(); sham=FixedWindow14()
+        previous=2
+        actual=[]; destroyed=[]
+        for index,a in enumerate(actions):
+            y=(a^previous) if previous!=2 else a
+            previous=a
+            p=live.predict(0,a)
+            sham.end_episode()
+            q=sham.predict(0,a)
+            if index>=120:
+                actual.append((p-y)**2)
+                destroyed.append((q-y)**2)
+            live.observe_step(0,a,y)
+            sham.observe_step(0,a,y)
+        self.assertLess(sum(actual)/len(actual),sum(destroyed)/len(destroyed))
+
+if __name__=='__main__': unittest.main()

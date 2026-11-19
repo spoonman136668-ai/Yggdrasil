@@ -1,0 +1,82 @@
+LR-92AP — 14-BIN CONVENTIONAL CONTROL QUALIFIER / PREPRIMARY
+=============================================================
+Date 2026-11-19
+Parent PR #1323: https://github.com/spoonman136668-ai/Yggdrasil/pull/1323
+Preexisting branch HEAD: 3c22d54f0928e1379ef57130cbb637ce0370df16
+Yggdrasil main remains at 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9.
+EXTERNAL ISOLATED DEVELOPMENT ONLY; NOT NATIVE TRAINING OR SCIENTIFIC FIRST-USE.
+
+CONTROL IMPLEMENTATIONS
+-----------------------
+matched_tabular_controls.py.txt adds two executable conventional baselines:
+* FullHistory14: 16 addresses x 7 reachable histories x 2 actions x 2 outcomes
+  using uint8 counts, plus 32 bytes actual prior-action state; 480 bytes total.
+  Counters saturate at 255; not a boundless full-history learner.
+* FixedWindow14: exact most-recent-32 actual public observations PER address,
+  each stored as a 5-bit (history,action,outcome) code; evictions subtract from
+  the original temporal bin. 448 count bytes + 32 history + 320 packed ring +
+  16 lengths + 16 head offsets = 832 persistent bytes (limit 928).
+Both accept only public action and public consequence; prediction is read-only.
+States restore deterministically from explicit incompatible magic and SHA256
+checkpoint, with corrupt/invalid history and inconsistent window counts rejected.
+Checkpoints include 4-byte version tag and 32-byte digest outside state budget.
+Source byte hash SHA256:
+2a6b73ba298646a5c955d5b9eb891af8daa0dfab72f52e2b39a6c27c86baca21
+Source Git blob: 7a223f6b097eb6e461853685195ba4b89af2f2b6
+Test byte hash SHA256:
+d80fa02c302308c031138f71ed7c70fea1613113d67aaea369b12813fb6a4b98
+Test Git blob: 3675cfcb5d8327211a7d375f663428105717d70f
+
+REPRODUCTION
+------------
+Copy the .txt files verbatim to matched_tabular_controls.py and
+test_matched_tabular_controls.py in the same directory; run:
+python -m unittest -v test_matched_tabular_controls.py
+This was run locally under Python 3.13.5: 8/8 PASS, ~0.024 s.
+One test initially expected history reset to erase prior learned count;
+the mistaken assertion was corrected BEFORE upload. Final exact blobs PASS.
+All 16 addresses exercised through 2300 independent randomized steps,
+including ring overwrite and exact checkpoint roundtrip checks.
+
+EXACT REPRODUCTION OF THE PREVIOUS ALLOWED TWO SEEDS
+---------------------------------------------------
+Prequential Brier, lower better; histories reset between each step to exactly
+match the prior published single-bin fixture, not an actual 14-bin benchmark.
+
+Seed       phase             FullHistory14   FixedWindow14
+73004303   B (64)              0.3996413     0.2205756
+73004303   A-return (first16)  0.2085285     0.4093928
+73004304   B (64)              0.3701687     0.1855302
+73004304   A-return (first16)  0.2693308     0.4254510
+All four pairs match the preceding PR README results within 0.00005.
+
+TEMPORAL HISTORY NEGATIVE CONTROL (hand-constructed, non-primary)
+-----------------------------------------------------------------
+A deterministic 720-observation action tape with outcomes conditioned on
+the current and previous public action, scored from t=120:
+  FixedWindow14 using genuine history:       Brier 0.0123620
+  Same learner, same data, history erased:    Brier 0.1161756
+This is a mechanical history-dependence check, NOT evidence of novel
+generalization, statistical superiority, or independent primary science.
+No protected seed or 288-world cohort was used.
+
+PROTOCOL LIMIT AND REQUIRED FURTHER WORK
+----------------------------------------
+The 64/64/64 fixed schedule in prereg.json.txt could reveal regime changes
+to an agent that learns or is given the schedule/timestep. A 32-query pre-B
+cold readout is not evidence of automatic A return recognition if no public
+regime-switch cue exists. These identifiability issues must be separated
+from whether an old A trace remains encoded. Do not amend the frozen LR-92AP
+primary after evaluation; it remains unconsumed. Any new jittered-schedule
+falsification requires its own frozen prospective source and independent gate.
+
+Still MISSING: a fully fitted under-budget conventional Bayesian online
+change-point model, a fully fitted HMM/mixture comparator (earlier HMM/MAP
+is approximate), a random-gate comparator, full admissible RF32 reference,
+and full deterministic primary source birth/custody + independent owner
+qualification. Fixed window length 32 is the already published development
+choice; no unseen length optimization was done.
+
+ENGINEERING local focused 8/8 PASS; GitHub dual-OS native/source execution
+not yet verified for this new head. SCIENTIFIC_PRIMARY not run;
+SCIENTIFIC_PASS unverified. MERGE/DEPLOYMENT/OWNER/CONTROLLER HOLD.
