@@ -102,8 +102,8 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
     previously admitted continuation remains cumulative. A rejected candidate
     hash is advisory fork provenance only; no rival specialist is activated.
     """
-    if not isinstance(max_brier_drift, Fraction) or not 0 <= max_brier_drift <= 1:
-        raise ValueError("Invalid frozen retention tolerance")
+    if type(max_brier_drift) is not Fraction or max_brier_drift != TOLERANCE:
+        raise ValueError("Frozen Quine drift gate is exactly 1/50")
     if digest(canonical(quines)) != quine_sha256 or quines.get("schema") != SCHEMA:
         raise ValueError("Quine manifest pin mismatch")
     old, prior, after = _ledger(anchor), _ledger(current), _ledger(proposed)
