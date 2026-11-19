@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.ret04.staged-observation-score-receipt.source-only.v1",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1295,
+    "sha": "a075b323557ed4f5cf600b8eef50bc34c8e1866b",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "freeze_before_source": true,
+  "date": "2026-11-19",
+  "hypothesis": "An opt-in, bounded evidence receipt wrapper over the qualified RET03 single cumulative native model can durably record truly prior-issued first-step and second-step probabilities, independently staged observed outcomes, their two-clock Brier losses and before/after native checkpoint hashes; the scorer never recomputes predictions with revealed answers and never changes RET03/native training.",
+  "scope": {
+    "source_only": true,
+    "original_world_actions": 0,
+    "source_owner_issue": 426,
+    "protected_first_use": false,
+    "science": false,
+    "model_change": false,
+    "main_change": false,
+    "merge": false,
+    "controller": false,
+    "scheduler": false
+  },
+  "model_interface": "Same RET03 StagedTemporalReadout; no new predictor/weights/control policy. Exactly the same begin/record_transition/choose_second/complete calls, observed at matching chronology.",
+  "score_rule": "For each arm archive/live/temporal at completion, transition_loss=(P_at_begin(s2=1) - witnessed_s2)^2; reward_loss=(P_at_second(y=1) - witnessed_y)^2; staged_brier=(transition_loss+reward_loss)/2; use ordered subtraction and multiplication; no post-update predictions or access to future unobserved outcomes.",
+  "receipt_schema": {
+    "source_id": "64 lowercase hex SHA identity, not source-owner signature",
+    "prior_native_sha256": "hash of exact original RET02 native/readout checkpoint BEFORE terminal outcome",
+    "after_native_sha256": "hash AFTER terminal admitted update",
+    "first_forecast": "exact returned immutable P(s2) at begin",
+    "second_forecast": "exact returned immutable P(y) after s2 before y",
+    "observed_s2": "0/1",
+    "observed_y": "0/1",
+    "losses": "three arms archive/live/temporal; separately transition/reward/staged_brier",
+    "score_authority": "ENGINEERING_SOURCE_ONLY"
+  },
+  "qualification": {
+    "focused_both_os": true,
+    "mandatory_full_both_os": true,
+    "strict_G29": true,
+    "new_tests": [
+      "two-stage score arithmetic from issued predictions",
+      "recording only on completed authenticated-form public receipts (not signed original lease)",
+      "no new native or readout update before completion",
+      "three-arm split-stage Brier differs from post-reveal reforecast where applicable",
+      "repeated/out-of-order source fail-closed",
+      "cold exact replay and forged rehash rejection of forecasts/scores/history",
+      "native after-state same as RET03 direct complete and trained prefix unchanged",
+      "bounded 64 source budget; source checkpoint limits"
+    ],
+    "original_RET01_RET02_RET03_preserved": true
+  },
+  "scientific_gate": {
+    "status": "UNRUN",
+    "if_authorized": "independently source-owner-approved unfamiliar causal worlds with action reservations, per-stage public prequential clocks, same-information fully fitted baseline controls, cold old-rule retention, source budget and stop thresholds"
+  },
+  "frozen_stop": "Do not retune previous RET01/RET02/RET03 scored development traces, do not treat constructed fixtures as evidence of scientific gain; no additional model or controller."
+}
