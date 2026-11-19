@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "CKAD45",
+  "date": "2026-11-19",
+  "predecessor_source_sha": "c61e5d28a6e87542ed4018cd3da07216dadc669b",
+  "question": "Does contradiction-conditioned, learned-causal disagreement intervention selection cause materially better postshift learning and cold return retention than equally intervention-budgeted random, coverage, exact Bayesian information-gain and fully trained Beta-information-gain policies when evaluated off-policy on identical exhaustive causal probes?",
+  "reason": "CKAD43/44 show better native causal forecasts but no strong learned recovery; their generators fixed interventions so earlier screens could not test causal action selection. This is a new real closed-loop intervention experiment, not another retrieval parameter update.",
+  "no_hidden_regime_or_action_label_training": true,
+  "native_architecture": "Existing NativeEpisodeExperience(repair=True) and exact CKAD42 NativeInterventionRelations train cumulatively (no memory reset) from each chosen genuine observed action -> next-state -> second action -> reward, independently for each policy. Neither sees evaluator's hidden function, change boundary, counterfactual oracle or held-out examiner.",
+  "actual_worlds": {
+    "independent_dev_worlds": 2,
+    "new_held_structure_families": "Two explicit new Boolean A/B structural families different from CKAD39 originals. World 0 A transition (c xor a), B transition (c xor (a and (1-c))); A terminal (c and a) xor (s and b), B terminal ((c or a) and (s xor b)). World 1 A transition (c and (1-a)), B transition NOT(c xor a); A terminal c xor (s or b), B terminal (c and (1-s)) xor (a or b).",
+    "observation_noise": "Transition true-bit probability .85 (false .15), terminal true-bit probability .9 (false .1), independent deterministic common exogenous Uniform[0,1] streams keyed seed,world,t,stage used identically across policy counterfactual potential outcomes.",
+    "context_and_distractors": "Context bit and two nuisance-view bits are chosen before any intervention. The next state is observed before second intervention. Distinct real outcome of chosen action is returned and trained. No unchosen action outcome is trained.",
+    "episode_count": 232,
+    "hidden_boundaries_first_change": 92,
+    "hidden_boundaries_return": 164,
+    "evaluated_phases": "stable_A t 48..91; early_B 92..115; late_B 116..163; early_return_A 164..187; late_return_A 188..231. Private phase only scorer sees."
+  },
+  "action_policies": [
+    {
+      "name": "ipfc_contradiction",
+      "rule": "Use exact-grammar CKAD42 full and short predictions; if previous 12 witnessed source two-stage Brier mean strictly >0.19, choose each available intervention maximizing H2(short predictive Bernoulli) + 4*(p_full-p_short)^2; otherwise maximize H2(short predictive Bernoulli). Inputs are only current public context and, for second action, actual witnessed next state. No future reward, unseen action outcome, evaluator regime, or external oracle."
+    },
+    {
+      "name": "exact_info_gain",
+      "rule": "Fully fitted exact CKAD42 short posterior hypothesis information gain H2(predictive) - hypothesis-conditional Bernoulli noise entropy. Because conditional hypothesis noise is constant (.85/.15 or .90/.10), maximizing information gain equals maximizing predictive H2. This is the strongest same-basis exact Bayesian information-gain control."
+    },
+    {
+      "name": "beta_info_gain",
+      "rule": "Independent conventional Beta(1,1) per observed transition/terminal intervention cell; maximize predictive binary entropy H2 with source-updated counts, no truth labels."
+    },
+    {
+      "name": "balanced_coverage",
+      "rule": "Least observed intervention cell count for currently witnessed context, stage1 (c,a) and stage2 (c,a,s,b), ties deterministic."
+    },
+    {
+      "name": "random_interventions",
+      "rule": "Deterministic exogenous pseudo-random 0/1 actions keyed source seed/world/step/stage, independent of true outcome."
+    },
+    {
+      "name": "fixed_zero_negative",
+      "rule": "Always action 0 in both stages, source-trained with same episode count; prevents spurious claim from mere sample volume."
+    }
+  ],
+  "fairness_and_information": "Policies choose DIFFERENT action values by definition but each makes exactly two witnessed interventions per episode, receives identical context/exogenous streams and same number of observations, has same native and exact-causal learner architecture/budget (one update per episode), and is judged exclusively on the same exhaustive action-independent causal examiner. Extra policy compute is logged; not matched-compute and efficiency cannot be claimed. Exact info gain has same learned hypothesis prior and no less information than candidate.",
+  "independent_probe": {
+    "when": "Before source observation at t in range(48,232) when t%8==0, with no trained data from t or subsequent episodes",
+    "enumeration": "For each c in 0/1, a in 0/1, observed s in 0/1, b in 0/1, evaluate model stage1 p(s|c,a) and stage2 q(y|c,a,s,b) against evaluator-hidden true Bernoulli probabilities; no counterfactual outcome is provided to learners.",
+    "metric": "Uniform expected two-stage Brier: 0.5*[ (p-p_true)^2+p_true*(1-p_true) + (q-q_true)^2+q_true*(1-q_true) ], averaged over all 16 common input combinations, separately for native and exact causal discounted .93 learner; all arms use identical probe grid and target truths; source-only phases defined by t.",
+    "primary": "causal learner's pooled late B and late A-return expected examiner Brier; secondary native examiner performance, early B/return cold retention, total interventions/learned sources, computational cost and checkpoint digests."
+  },
+  "new_dev_seed_cohort": [
+    45111,
+    45112
+  ],
+  "pilot_untouched": [
+    45211,
+    45212
+  ],
+  "primary_untouched": [
+    45311,
+    45312,
+    45313
+  ],
+  "excluded_prior_dev": [
+    44111,
+    44112,
+    43111,
+    43112,
+    42111,
+    42112,
+    41101,
+    41102,
+    40811,
+    40812
+  ],
+  "frozen_go": {
+    "both_dev_seeds_required": true,
+    "pooled_late_candidate_expected_brier_max": 0.145,
+    "pooled_late_gain_over_best_of_all_other_policies_min": 0.01,
+    "candidate_native_pooled_not_worse_than_best_native_control_by_more_than": 0.005,
+    "candidate_early_return_not_worse_than_best_policy_by_more_than": 0.01,
+    "candidate_late_return_gain_over_exact_information_gain_min": 0.01,
+    "candidate_chosen_actions_differ_from_exact_information_gain_at_least_fraction": 0.1,
+    "require_exact_cold_and_source_identity": true,
+    "decision": "Any failed threshold, incomplete source or nonfinite scores: DEV_NO_GO or SOURCE_INVALID (engineering failure if source). If all pass: DEV_FEASIBLE_NOT_SCIENTIFIC only. Do not score original pilot/primary or repeat dev seeds for postscore tuning."
+  },
+  "unit_test_plan": [
+    "Fixture-only source policy interface and no peek at hidden simulator probability; ensure first action before transition and second after.",
+    "Six policies exactly 2 real actions per episode, same exogenous noise and contexts and matched sample count.",
+    "Native and causal cold checkpoint identity and original 48 source memory preservation; read-only independent examiner, no counterfactual training.",
+    "Public source duplicate idempotence and contradictory source ID atomicity; negative controls for seed gate.",
+    "Expected Brier oracle arithmetic independent of action chosen, policy-independent grid, unchanged phase scores before learning.",
+    "Frozen negative threshold control; source input/transformation tests with disjoint fixture source and no scientific seed calls."
+  ],
+  "qualification": "Preregistration committed before source code and before first DEV score. One exact source SHA Linux/Windows unit + two DEV seeds once per OS, compare all scored phase means and all checkpoint source hashes; retain raw job receipts in repo, including negatives. No automatic first-use or promotion.",
+  "boundaries": "This is a bounded stochastic synthetic research DEV, not unknown-real-world general intelligence, not a full repo regression, no original native architecture substitution, no accepted training integration, no owner first use, no scheduled tasks, controllers, paid APIs, merge or deployment."
+}
