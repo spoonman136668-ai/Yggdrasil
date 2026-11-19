@@ -28,7 +28,7 @@ class V2ProtectedSourceTests(unittest.TestCase):
         for unknown in (False, "99917", 1, 99811):
             with self.assertRaises(ValueError):
                 m.generate_registered(unknown, TEST_A)
-        for invalid in (None, 99917, 1, "cap04-v2-engineering-a"):
+        for invalid in (None, 99917, 1, "cap04-v2-engineering-unknown"):
             with self.assertRaisesRegex(ValueError,
                                         "REGISTERED_FIRST_USE_FORBIDDEN"):
                 m.engineering_fixture(invalid, TEST_A)
