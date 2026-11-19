@@ -283,6 +283,69 @@ class QuineRetentionTests(unittest.TestCase):
         self.assertEqual(len(selected.events), 25)
         self.assertEqual(len(self.anchor.events), 24)
 
+    def test_veto_requires_receipt_custody_before_return(self):
+        """Veto preserves the model but must not silently lose charged evidence."""
+        from tempfile import TemporaryDirectory
+        import json
+
+        class RegressingAfterObservation(FakeSystem):
+            def observe_experience(self, identifier, views, row, *,
+                                   source_sha256, packet_sha256):
+                proposed = super().observe_experience(
+                    identifier, views, row, source_sha256=source_sha256,
+                    packet_sha256=packet_sha256)
+                if proposed is self:
+                    return self
+                return FakeSystem(proposed.events,
+                                  {(0, "transition"): Fraction(9, 10)})
+
+        current = RegressingAfterObservation(self.anchor.events)
+        identifier, views, first, state, second, reward = self.next_event
+        row = {"s1": views[0][0], "x1": first, "s2": state,
+               "x2": second, "y": reward}
+        packet = digest(canonical([identifier, views, row]))
+
+        def attempt(on_veto=None):
+            return QUINE.guarded_observe(
+                self.anchor, current, self.manifest, self.pin, identifier,
+                views, row, source_sha256="pinned-fixture",
+                packet_sha256=packet, on_veto=on_veto)
+
+        with self.assertRaisesRegex(RuntimeError, "REQUIRES_DURABLE"):
+            attempt()
+        with self.assertRaisesRegex(RuntimeError, "NOT_ACKNOWLEDGED"):
+            attempt(lambda receipt, sha: "wrong")
+
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "vetoed-charged-event.json"
+            writes = [0]
+
+            def owner_sink(receipt, expected_sha):
+                if not path.exists():
+                    path.write_bytes(receipt)
+                    writes[0] += 1
+                self.assertEqual(path.read_bytes(), receipt)
+                return digest(path.read_bytes())
+
+            kept, report = attempt(owner_sink)
+            self.assertIs(kept, current)
+            self.assertEqual(len(kept.events), 24)
+            self.assertEqual(report["status"], "VETO_SHARED_STATE_OVERWRITE")
+            self.assertFalse(report["active_model_contains_rejected_witness"])
+            self.assertTrue(report["external_receipt_acknowledged"])
+            self.assertEqual(report["rejected_witness_receipt_sha256"],
+                             digest(path.read_bytes()))
+            data = json.loads(path.read_bytes())
+            self.assertEqual(data["event"][0], identifier)
+            self.assertEqual(data["packet_sha256"], packet)
+            self.assertEqual(data["active_before_sha256"],
+                             digest(current.checkpoint()))
+            kept_again, replay = attempt(owner_sink)
+            self.assertIs(kept_again, current)
+            self.assertEqual(replay["rejected_witness_receipt_sha256"],
+                             report["rejected_witness_receipt_sha256"])
+            self.assertEqual(writes[0], 1)
+
     def test_atomic_guarded_observe_and_idempotent_replay(self):
         identifier, views, first, state, second, reward = self.next_event
         row = {"s1": views[0][0], "x1": first, "s2": state,
