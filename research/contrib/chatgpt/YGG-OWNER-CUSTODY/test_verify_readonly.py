@@ -41,8 +41,7 @@ class OwnerCheckpointBoundary(unittest.TestCase):
         self.assertEqual(self.baseline["source_refs"]["active_native_research_branch"]
                              ["live_research_state"]["status_classification"],"preregistered-blocked")
         c=copy.deepcopy(self.baseline)
-        c["source_refs"]["active_native_research_branch"]["live_research_state"]
-            ["status_classification"]="scientific-pass"
+        c["source_refs"]["active_native_research_branch"]["live_research_state"]["status_classification"]="scientific-pass"
         with self.assertRaisesRegex(M.CustodyError,"OWNER_BLOCK"):M.audit_offline(c)
 
     def test_successful_scheduled_runner_is_not_scientific_training(self):
@@ -50,8 +49,7 @@ class OwnerCheckpointBoundary(unittest.TestCase):
         self.assertEqual(run["job_result"],"success")
         self.assertFalse(run["native_model_training_advanced_by_this_run"])
         c=copy.deepcopy(self.baseline)
-        c["source_refs"]["research_only_controller"]["latest_observed_run"]
-            ["log_verbatim_statuses"]=[]
+        c["source_refs"]["research_only_controller"]["latest_observed_run"]["log_verbatim_statuses"]=[]
         with self.assertRaisesRegex(M.CustodyError,"NO_MODEL_RUN"):M.audit_offline(c)
 
     def test_parallel_CAP03_has_real_history_but_no_accepted_promotion(self):
