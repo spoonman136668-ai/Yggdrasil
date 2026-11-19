@@ -154,7 +154,10 @@ class TemporalContextEngineering(unittest.TestCase):
         bank = NativeTemporalContextReadout(*models())
         original = bank.reader.current.checkpoint()
         weights = tuple(bank.weights)
-        bank.events = [None]*MAX_NEW_EVENTS  # Invalid in-memory fixture only.
+        bank.events = [{"source_id": "0"*64}]*MAX_NEW_EVENTS
+        # This deliberately corrupts only a throwaway in-memory fixture
+        # to test the cap. It is never serialized or admitted to the native
+        # source ledger; a valid new identity must fail before any update.
         with self.assertRaises(ValueError):
             bank.observe(*mechanical(77))
         self.assertEqual(bank.reader.current.checkpoint(), original)
