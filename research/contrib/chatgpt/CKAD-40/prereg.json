@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD40",
+  "kind": "source-only diagnostic of Yggdrasil native causal-memory identifiability",
+  "parent_sha": "feef03a15ec68a8e3da073e9d78d197acf656ea8",
+  "hypothesis": "The CKAD39 retrieval failure may be due to missing A/B-pure archival sources, observed-evidence nonidentifiability, or weak native archival forecasts. Freeze a separated ceiling analysis to distinguish these three causes without selecting or tuning a new learner.",
+  "scope": "Read-only diagnostic on frozen native episode-memory representation. Exactly one existing NativeEpisodeExperience trains from authentic observed two-stage synthetic causal episodes. No new model, no selected policy, no source changes outside research/contrib/chatgpt/CKAD-40 and its new DEV-only GitHub workflow.",
+  "data": "Use immutable CKAD39 synthetic generator, fixed action policy, 2 worlds per seed, unannounced stochastic A->B->A. Native receives only public views, actions, revealed transition and reward. True regime/phase and source-block purity are EVALUATOR-ONLY; never passed to native training or any deployable readout.",
+  "source_parent": "feef03a15ec68a8e3da073e9d78d197acf656ea8",
+  "prereg_before_code": true,
+  "dev_seeds": [
+    40811,
+    40812
+  ],
+  "future_holdout_reserved_unconsumed": [
+    41811,
+    41812,
+    42811,
+    42812,
+    42813
+  ],
+  "forbidden_replay": [
+    38911,
+    38912,
+    39181,
+    39182,
+    49181,
+    49182,
+    49183,
+    14181,
+    14182,
+    14071,
+    14072
+  ],
+  "exact_protocol": {
+    "source_model": "NativeEpisodeExperience(repair=True), same source-only warm 48 / continuous stream semantics as CKAD39; default native context_forecast readout for baseline",
+    "archival_eligibility": "At forecast t, only already-built nonempty frozen archive blocks with stop <= current _context_start and range length >=8; one archive block is evaluator-labelled pure A or B only if all its already witnessed original phases belong to that regime. Mixed blocks excluded. No future event may enter a source or score.",
+    "evidence_window": 16,
+    "group_likelihood": "For each A/B group, average archived-model likelihood for each of the last 16 already revealed transition+terminal consequences using log-sum-exp across frozen source models; compare group log-evidence values. Use no true phase to compute group likelihood or discriminate, but provenance grouping via evaluator labels is diagnostic-only oracle and is NOT a deployable classifier.",
+    "coverage": "Fraction of evaluator late_B and late_return_A episodes with at least one pure A and one pure B archival block available before the forecast.",
+    "separability": "Among covered late_B and late_return_A events, fraction where higher 16-event historical log-evidence identifies the evaluator's true current regime (ties count as incorrect). Require separate per-phase counts and no future outcomes.",
+    "oracle_ceiling": "For each covered event compute a phase-labelled oracle-only mixture forecast over the archived source blocks belonging to evaluator's actual current regime (uniform archived-model weights, terminal conditioned on already seen s2). Score transition and terminal before revealing y; record alongside native_stream, Beta full/rolling12/24/48/discount85/discount95 and prequential Hedge. This is intentionally an evaluator-only upper-bound diagnostic, not a usable policy.",
+    "controls": "Same genuinely observed events/actions and independent fully trained source-only conventional Beta+Hedge as CKAD39, without looking up CKAD39 DEV results for tuning. Log matched native source and cold integrity."
+  },
+  "frozen_dev_screen": {
+    "minimum_covered_episodes_per_seed": 64,
+    "minimum_coverage_fraction_each_seed": 0.5,
+    "minimum_correct_regime_fraction_each_seed": 0.65,
+    "minimum_oracle_gain_vs_native_brier_each_seed": 0.015,
+    "minimum_oracle_gain_vs_strongest_conventional_brier_each_seed": 0.015,
+    "decision": "If insufficient coverage -> ARCHIVE_COVERAGE_GAP; else if class discrimination insufficient -> IDENTIFICATION_GAP; else if phase-labelled oracle cannot beat native and strongest fitted controls by >=0.015 -> REPRESENTATION_GAP; else DIAGNOSTIC_POTENTIAL. Regardless of outcome: SCIENTIFIC_PASS=false; no held first use; no tuning/retuning on DEV cohort.",
+    "stop": "One frozen DEV implementation and two-seed screen. Do not revisit seed scoring or adjust criteria after result."
+  },
+  "qualification": "Freeze prereg at first commit; implement pure diagnostic, negative tests, exact two-OS DEV workflow with actual action-consequence training; independent held unfamiliar-world qualification not authorized. Preserve source/checkpoint integrity and baseline.",
+  "isolation": {
+    "accepted_main": false,
+    "ckad39_mutation": false,
+    "forge_controller": false,
+    "yggdrasil_loop": false,
+    "owner_science_first_use": false,
+    "scheduled_tasks": false,
+    "paid_apis": false,
+    "merges": false,
+    "deployment": false
+  }
+}
