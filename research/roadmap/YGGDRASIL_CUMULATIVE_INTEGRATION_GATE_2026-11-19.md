@@ -1,0 +1,80 @@
+# Yggdrasil — one-learner cumulative integration decision and evidence register
+
+**Date:** 2026-11-19  
+**Scope:** advisory integration specification and current evidence triage, **not** permission to change an owner, accepted model, protected source, or runtime.  
+**Accepted Git baseline:** `spoonman136668-ai/Yggdrasil@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9` (`main`, independently read back).  
+**Existing coordinating review:** [PR #1327](https://github.com/spoonman136668-ai/Yggdrasil/pull/1327).  
+**Existing conditional native-integration objective:** [issue #1088](https://github.com/spoonman136668-ai/Yggdrasil/issues/1088).  
+**Existing primary cumulative research candidate:** [Amalgam PR #1278](https://github.com/spoonman136668-ai/Yggdrasil/pull/1278), verified head `86264b41a08d49f558418c0fba367f3a2636befa`, **draft/unmerged**.  
+**Existing lineage/custody gate:** [LINEAGE01 PR #1322](https://github.com/spoonman136668-ai/Yggdrasil/pull/1322), verified head `bd6ec16f5c54b474c13b9522d32a2984126997f4`, **draft/unmerged**.
+
+## Decision: integrate qualified learning into one lineage, not a pile of prototypes
+
+**North Star:** preserve Yggdrasil's independent, non-transformer/tokenless native causal foundation. The canonical learner should persist its learned weights, chronological public intervention/consequence evidence, readout competence and versioned checkpoint across training stages and cold restarts. New knowledge should improve the same learner's capabilities, and old capabilities must be measured after each addition. Useful research code is not, by itself, a demonstrated beneficial training change.
+
+**Do not:** reset an existing owner to a convenient 1,025-witness experiment; merge every green research branch; attach privately trained donor state without matched public-source provenance; invent a second learner or scheduler; grant JEPA/energy/routing components policy influence on synthetic fixture PASS; label a copy of a checkpoint as retained competence; reuse consumed first-use cohorts.
+
+## Existing integration seam (inspect rather than reinvent)
+
+At the pinned Amalgam candidate `86264b41a08d49f558418c0fba367f3a2636befa`:
+
+- `yggdrasil/native_causal_amalgam.py` Git blob `287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952` already provides **one** `NativeCausalAmalgam` with `activate(native_raw, native_pin, donor_raw, donor_pin)`, `plan(view)`, `specialist_forecasts(...)`, `observe_experience(...)`, `checkpoint()`, and `restore(...)`. Training is **one accepted public event to one native update and four shadow learned specialist updates**. Original native model retains the decision path; specialists do not get automatic action authority.
+- `yggdrasil/native_cumulative_learner.py` integrates `NativeEpisodeExperience` with original public-state context and immutable continuation; original experience is carried in the cumulative learner.
+- `yggdrasil/native_episode_experience.py` Git blob `5a18b00a4c4131526e71f51d63dfd9eb9471c81e` has `observe(identifier, views, row)`, `forecast(...)`, `begin_stream()`, `checkpoint/restore` and a chronological witnessed ledger. Source ID replay conflicts are rejected.
+- `yggdrasil/native_jepa2_multilearner.py` Git blob `e32bff54062e5ae781280c9326d4a767962b9312` includes two trained action-conditioned specialists with checkpoint + source-ledger reconstruction, and source-only later Amalgam adds temporal specialists. Do **not** use its fixed blend as a success claim: historical blending lost the frozen scientific comparisons.
+- Accepted `main` still exposes **only** `yggdrasil/public_causal_cells.py` (blob `5c9a9904e31688bebc2e53723569e1fb988a981f`) with a 164-byte count checkpoint. This is a bounded native control, not the full Amalgam checkpoint or qualified live learner.
+
+The Amalgam code and historical P0 trained demonstration state are **research candidates**, not proof of a live canonical checkpoint. `NativeCausalAmalgam.activate()` and its source-validated `restore()` are concrete *candidate interfaces* for a future **owner-qualified** single-learner acceptance path. They cannot authenticate a private host-local owner/runner, original scientific first-use, or accepted weights on their own.
+
+## Integration triage: evidence before activation
+
+| Existing work | What it can contribute | Current gate / disposition |
+|---|---|---|
+| [#1278 Amalgam](https://github.com/spoonman136668-ai/Yggdrasil/pull/1278) | One native experience writer; coordinated JEPA shadow updates; replayable checkpoints and trained research prefixes | **Reuse as candidate base only.** Held Brier improved `0.330464→0.210820` but stronger fitted/fixed control averaged `0.195822`; familiar Brier `0.091801→0.189425` (+`0.097624` vs +`0.02` limit). **DEV_NO_GO**, no accepted model |
+| [#1329 Quine P0](https://github.com/spoonman136668-ai/Yggdrasil/pull/1329) | Opt-in pre-overwrite old-competence drift veto; source-free negative tests; existing 1,025-witness research anchor | **Candidate safety check only.** Dual-OS engineering receipts exist; no certified actual mastered-regime window or fresh scientific advantage; a veto that blocks all B updates is not cumulative learning |
+| [#1307 RET05](https://github.com/spoonman136668-ai/Yggdrasil/pull/1307) | Opt-in two-clock readout credit from actually issued predictions after public terminal reward | **Engineering qualified draft; science unrun**. Preserve original staged event timing and old checkpoint compatibility; no automatic activation |
+| [#1324 CAP04](https://github.com/spoonman136668-ai/Yggdrasil/pull/1324) | Public-history-conditioned predictive-state hypothesis to distinguish causal aliasing | **Engineering candidate only; fresh scientific trial unrun**. Do not assume it resolves hidden-regime ambiguity |
+| [#1314 ACT01](https://github.com/spoonman136668-ai/Yggdrasil/pull/1314) | Four-native-action/four-outcome opt-in memory with preservation of old PYC1 counts | **Engineering source-only candidate, science unrun**, not accepted in the `NativeEpisodeExperience` prediction path |
+| [#1317 LR-92AO](https://github.com/spoonman136668-ai/Yggdrasil/pull/1317) | Public two-previous-action temporal representation in fixed memory | **Bounded development 6/6 PASS but exact tie to matched conventional tabular lookup**; useful capacity reference, *not* a proven superior learner or installed module |
+| [#1326 source-blind shadow](https://github.com/spoonman136668-ai/Yggdrasil/pull/1326) | Immutable source-public-only observation allowlist and action-identifiability review | **Important anti-leak candidate, not wired to the actor or learner**; do not mistake it for source isolation or active training |
+| [#1320 CKAD41–49](https://github.com/spoonman136668-ai/Yggdrasil/pull/1320) | Verified negative scientific boundary, control results, known-limited hypothesis grammar | **0/9 scientific development passes** within these nine comparisons; **do not promote** their candidate improvements solely because code passed |
+| [#1325 WSP-200](https://github.com/spoonman136668-ai/Yggdrasil/pull/1325) | Source-free contradiction-gated direct weight-write falsifier | **Synthetic negative and protected original source UNRUN**; do not import as qualified knowledge-writing algorithm |
+
+This table distinguishes working **candidate mechanism**, *bounded development signal*, scientifically qualified improvement, and actual accepted integration. An engineering-only component can remain an opt-in research instrument and still be useful; it does not earn policy influence without fresh qualified evidence.
+
+## P0 actual custody gate — needs an existing authorized owner's read-only receipts
+
+**Prior result:** [LINEAGE01 #1322](https://github.com/spoonman136668-ai/Yggdrasil/pull/1322) identified **no accepted canonical continually trained model in Git**, and the official unattended executor reports `RESEARCH_EXECUTOR_UNATTENDED=NOT_CONFIGURED_NO_MODEL_INVOCATION`, `advanced=false`. Host-local/private checkpoints were not inspected; their existence and activity are **UNVERIFIED**. GitHub-only inspection cannot certify the contents of private host storage or start an official trainer.
+
+The **existing owner**, via their already authorized read-only custody path, should provide precisely:
+
+1. **Identity:** owner + runner/process, active lease, source repository SHA/tree/config/dependency identity, compatible model schema, model/checkpoint SHA-256, native learned bytes and any trained specialist state hashes.
+2. **History:** witnessed public event ledger and monotonically increasing count, original source IDs and chronologically linked checkpoint lineage, consumed cohorts and source budget. No fabricated witness events; no replay of protected original first-use.
+3. **Cold continuity:** restore the *same* exact checkpoint in a clean read-only environment; show old public predictions and old-task scores at the last trusted baseline, checkpoint digest invariance, and proof the existing model (not a new one) can resume once authorized.
+4. **Disposition:** if the stored canonical model is *not* accessible or incompatible with the research draft, declare `CONTINUITY_UNVERIFIED` / `INCOMPATIBLE`; select an explicitly authorized recovery/qualification route. **Do not silently initialize or promote a new model.**
+
+This request does not authorize a remote command, local disk search, new owner, scheduled task, model invocation, runner dispatch, controller modification, or acceptance. The owner or a separately authorized execution capability must actually perform and independently attest its readback.
+
+## P1 next *implementable* gate after custody is verified
+
+**Minimum behavior:** using only one authenticated live lineage, append a small new, source-licensed, public action/consequence knowledge increment once; verify source ID idempotency, immutable prior ledger prefix, old and new causal forecasts, unchanged or justified native decisions, exact cold restore, stored JEPA values, negative replay rejection, and no hidden evaluator/source fields. The experiment must demonstrate *functional* old-state retention, not only a checkpoint SHA match.
+
+Before any primary outcome, freeze a **fresh** owner-admitted source-family-disjoint train/validation/held/transfer protocol, learning hypothesis, seeds/splits, negative controls, strongest fully trained conventional/symbolic comparators, equal input/action rights and whole-process costs. Do not reuse the Amalgam consumed `transfer-curve-dev-01`, CKAD41–49 scored results or YGG-CAP03 as a new first-use. For A→B→A return, explicitly distinguish "veto preserved A by refusing B" from "A retained **and** B learned". A structural relationship with **no shared learned factor** needs its own out-of-grammar action-consequence falsifier, not a lookup of an already given true hypothesis.
+
+**Staged implementation approach, no duplicate component development:**
+
+1. Read-only verify owner P0 and existing code/branch heads; freeze the exact candidate interface and an old knowledge baseline.
+2. Reuse Amalgam existing observation and checkpoint seam; put Quine/RET05/CAP04/ACT01 in optional shadow mode **only where scientifically and syntactically compatible**. Preserve `NativeEpisodeExperience` and existing owners' accepted source unchanged.
+3. Author one scoped native compatibility patch only after source/schema and owner qualification; compare on pinned candidate SHA and prove untouched legacy decisions/checkpoints. Do **not** automatically merge other draft branches.
+4. Focused interface/negative/source-mutation tests, then **mandatory full final Linux+Windows regression and source atlas/build** on the final exact candidate SHA/tree; separately authorize any first-use, accepted-ref change or deployment.
+5. If the native candidate ties or loses to the strongest fully trained comparator, preserve its negative; retain only engineering tools that help measure/falsify future research. Do not turn an engineering PASS into a science PASS.
+
+## Present checkpoint and exact next executable action
+
+- **ENGINEERING:** verified main-only simple native control, research candidate seams, recent PR evidence and original checkpoint interfaces. This documentation is a source inventory; it is not a full regression or verified runtime integration.
+- **SCIENTIFIC:** synthetic Amalgam transfer **NO_GO**, CKAD41–49 **0/9 DEV_PASS**; unrun / unqualified newer proposed mechanisms. No demonstrated single continuously improving accepted model.
+- **DEPLOYMENT:** none. Original protected-source owner [issue #426](https://github.com/spoonman136668-ai/Yggdrasil/issues/426) explicitly denies new first-use. Official unattended model execution is disabled.
+- **BLOCKER:** owner-authenticated canonical model checkpoint + ledger/runner custody readback is missing from accessible evidence.
+- **NEXT SAFE OWNER ACTION:** produce *read-only* custody receipt for the actual existing model; reject if absent or mismatched. **NEXT SCIENCE ACTION:** only after qualified custody and separately authorized source access, freeze/execute one shared-lineage retention + unfamiliar-action comparison.
+
+For peer reviewers: identify any erroneously omitted **scientifically demonstrated** beneficial component with its source, prereg, independent run/seed/control results, accepted custody and intended native integration point. A proposal without this evidence must remain shadow-only or research-only.
