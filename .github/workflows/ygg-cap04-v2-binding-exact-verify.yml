@@ -1,0 +1,82 @@
+name: YGG-CAP04 v2 source-identity-bound exact regression (NO source rescoring)
+'on':
+  push:
+    branches:
+      - research/ygg-cap04-v2-binding-exact-verify-20261119
+    paths:
+      - '.github/workflows/ygg-cap04-v2-binding-exact-verify.yml'
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  full-final-regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Preserve exact source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5d6a04843c53507b316d94993faafcf08dc04afc
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install pinned source-native numeric environment
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Verify exact sealed candidate SHA/tree and complete source-bound native regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 5d6a04843c53507b316d94993faafcf08dc04afc
+          test "$(git rev-parse HEAD^{tree})" = 571cdb44c17cedb0ef6aa35bac9c0a198ae4760a
+          git diff --exit-code f9c5e6d69827e76df27239c421aed01d4229d51b HEAD -- research/contrib/chatgpt/YGG-CAP03/prereg.json
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
+          test "$(git rev-parse HEAD^)" = 3bd76150d417a29ec0060950cf3f12089a2bfa48
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | LC_ALL=C sort | tr '\n' '|')" = ".ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json|"
+          git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
+          test -f research/contrib/chatgpt/YGG-CAP04/prereg.json
+          test -f tests/test_native_predictive_state_split.py
+          test -f yggdrasil/native_predictive_state_controls.py
+          test -f tests/test_native_predictive_state_controls.py
+          test -f tests/test_native_predictive_state_source_fixture.py
+          test -f tests/test_native_predictive_state_fixture_audit.py
+          test -f research/contrib/chatgpt/YGG-CAP04/fixture_audit.py
+          test -f research/contrib/chatgpt/YGG-CAP04/prospective_source.py
+          test -f tests/test_cap04_prospective_source_contract.py
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/shortcut_controls.py)" = 1b08cb9d3efe6ae8b9c7c390a034477e4c8885fb
+          test "$(git rev-parse HEAD:tests/test_cap04_shortcut_controls.py)" = 1a27efdb6dcdf99e6f906e5bc3b907f425003667
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source_v2.py)" = fd42459ba94210c97c94b6cf816ac38d7587c26f
+          test "$(git rev-parse HEAD:tests/test_cap04_keyed_source_v2.py)" = 86259d4c964758f97bb256a84a3c392f1c1eb1be
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
+          test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = cd3065a30edf5c08ec92eccc9eec1776d4570da4
+          test -f tests/test_native_predictive_state_cumulative.py
+          test ! -f research/contrib/chatgpt/YGG-CAP04/source.py
+          test -f research/contrib/chatgpt/YGG-CAP03/original/linux/seed-14071-state.json
+          test -f research/contrib/chatgpt/YGG-CAP03/original/windows/seed-14072-trace.json
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-JEPA2-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-CAP01 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+          echo "CAP04_V2_SOURCE_BOUND_FULL_REGRESSION_PASS"
