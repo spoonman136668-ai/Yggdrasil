@@ -1,0 +1,182 @@
+{
+  "schema": "external-research-prereg.v2",
+  "experiment_id": "LR-92AQ",
+  "date": "2026-11-19",
+  "status": "PROTOCOL_FROZEN_SOURCE_NOT_BORN_PRIMARY_UNRUN_OWNER_UNVERIFIED",
+  "purpose": "Repair the known LR-92AP fixed 64/64/64 timing leakage; falsify evidence-based no-cue adaptation and true historical retention under independently variable unseen switches",
+  "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": {
+    "id": "LR-92AP",
+    "pr": 1323,
+    "pr_head_at_design": "0ecc2ac1188cb9cb8795c837f553e85c359d5edb",
+    "frozen_prereg_blob": "828c84f3505d6362dfa4f6c40c0a7dd83f447bc9",
+    "outcome": "DEVELOPMENT_WARNING_PROTECTED_PRIMARY_UNRUN_FIXED_SCHEDULE_VALIDITY_BLOCK"
+  },
+  "owner_checkpoint_audit": {
+    "pr": 1322,
+    "head_at_design": "bd6ec16f5c54b474c13b9522d32a2984126997f4",
+    "canonical_trained_checkpoint": "UNVERIFIED",
+    "native_training": "NOT_EXECUTED_BY_THIS_PROTOCOL"
+  },
+  "hypothesis": "A native tokenless causal memory with evidence-based regime handling retains archived A despite intervening B and improves A-return adaptation, without sacrificing B-phase or unfamiliar 14-bin relations, relative to ALL fitted same-budget controls",
+  "constraints": {
+    "tokenless": true,
+    "non_transformer": true,
+    "public_action_outcome_only": true,
+    "no_hidden_regime_or_phase": true,
+    "no_unknown_seed_reuse": true,
+    "memory_cap_bytes": 928,
+    "whole_process_cost_report_required": true,
+    "prequential_forecast_before_outcome": true,
+    "no_silent_architecture_restart": true,
+    "no_new_controller_or_unattended_executor": true
+  },
+  "prospective_design": {
+    "groups": [
+      {
+        "seed": 929209501,
+        "worlds_per_family": 32
+      },
+      {
+        "seed": 929209502,
+        "worlds_per_family": 32
+      },
+      {
+        "seed": 929209503,
+        "worlds_per_family": 32
+      }
+    ],
+    "source_status": "reserved identifiers only; prospective generator not implemented or executed",
+    "global_consumed_seed_collision_check": "REQUIRED_BEFORE_SOURCE_BIRTH",
+    "families": [
+      "XOR",
+      "AND",
+      "arbitrary14"
+    ],
+    "worlds": 288,
+    "observed_public_events_per_world": 192,
+    "noise_flip_probability": 0.15,
+    "relation_rule": "Evaluator constructs 14 reachable context+action cells; A is one family-specific 14-bit truth table and B is its exact per-cell complement. No labels/potential outcomes passed to models.",
+    "observation_context": "Real chronological public current action and two previous actions; reset previous-action history at world start only; NEVER reset at either hidden phase switch.",
+    "actions": "One deterministic action RNG stream per (group_seed,family,world_index,action); sample all 192 actions before constructing phase schedule. Action generator is independent of dwell lengths and outcome noise; no switch cues in action stream.",
+    "streams": "Independent SHA256-domain-separated deterministic streams for phase lengths, action choices, relation table, and noise; domain bytes and exact source hashes must be locked BEFORE generating any prospective world.",
+    "phase_lengths": {
+      "A": {
+        "distribution": "uniform_integer_inclusive",
+        "min": 48,
+        "max": 80
+      },
+      "B": {
+        "distribution": "uniform_integer_inclusive",
+        "min": 48,
+        "max": 80
+      },
+      "A_return": "192-A-B",
+      "min_return": 32,
+      "max_return": 96
+    },
+    "switch_knowledge": "All models receive exact known A/B dwell-length PRIOR, total 192, same public current-action/time index and public outcomes. No model receives realized dwell samples, phase ID, clean relation, global evaluated family or boundary event flag.",
+    "episode_boundary": "Only world boundary is visible; no special operation, history reset, API event or evaluation marker at hidden transition.",
+    "score_order": "For each public step: choose action independent of hidden phase; ask every model for forecast; record Brier against evaluator-only label; THEN reveal one public action/outcome to every model; update exactly once; log prefix hash and state hash.",
+    "cold_query": "32 evaluator-only counterfactual A questions immediately before true A-return. Results diagnostic for archived A retention, never used for model update. They cannot be interpreted as phase-blind autonomous first-step recognition.",
+    "cue_arm": "Optional SEPARATE exact-replay controlled arm offers the same truthful switch cue to every model; assess archived-knowledge retrieval with cue separately, do not contaminate no-cue primary or use cue results to tune.",
+    "cumulative_native_lifecycle": "Owner-controlled continuing checkpoint lane is separate from fresh-per-world controlled comparator evaluation. No model restarts, checkpoint selection, world consumption or migration without authenticated current native source and cold-restore ledger."
+  },
+  "primary_endpoints": {
+    "rank": "Prequential A-return Brier on post-switch observations 5-16, pooled by family within each reserved seed group, compared to EACH matched conventional control using paired world outcomes",
+    "warmup": "First 16 A-phase outcomes included in update counts, excluded from primary score",
+    "secondary": [
+      "B-phase entire Brier",
+      "A-return first 4 no-cue Brier, reported descriptive due first-step ambiguity",
+      "A-return first16 Brier",
+      "whole return Brier",
+      "new arbitrary14 relations",
+      "32 counterfactual true-A cold archived readouts (no updates)",
+      "cue-arm retrieval not mixed with no-cue scoring",
+      "old-capability cold retention under cumulative native source",
+      "whole-process time, peak learned bytes, peak RSS, model actions and cost"
+    ],
+    "unit": "Brier lower is better; record every world-level paired difference; model receives no phase/family/clean hidden labels",
+    "paired_interval": {
+      "bootstrap_draws": 5000,
+      "seed": 929209901,
+      "seed_stratification": true,
+      "descriptive_only": true
+    }
+  },
+  "controls": [
+    {
+      "name": "full_history_14bin",
+      "budget": "<=928",
+      "status": "source_from_LR92AP_to_lock"
+    },
+    {
+      "name": "fixed_window_14bin",
+      "budget": "<=928",
+      "status": "source_from_LR92AP_to_lock"
+    },
+    {
+      "name": "two_regime_hmm",
+      "budget": "<=928",
+      "status": "source_from_LR92AP_to_lock"
+    },
+    {
+      "name": "bounded_runlength_bocpd",
+      "budget": "<=928",
+      "status": "source_from_LR92AP_to_lock"
+    },
+    {
+      "name": "random_gate_matching_update",
+      "budget": "same_928",
+      "status": "source_from_LR92AP_to_lock"
+    },
+    {
+      "name": "history_permutation_sham",
+      "budget": "matching_public_tape",
+      "status": "negative_control"
+    },
+    {
+      "name": "RF32_fullfit",
+      "budget": "over_928",
+      "status": "out_of_budget_reference_not_matched"
+    },
+    {
+      "name": "untruncated_bocpd",
+      "budget": "over_928",
+      "status": "out_of_budget_reference_not_matched"
+    }
+  ],
+  "frozen_decision": {
+    "development_go_if_all": [
+      "candidate A-return steps5-16 mean Brier improvement >=0.01 absolute against EACH memory-matched fully fitted control in EACH of 3 seed groups",
+      "candidate B-phase mean Brier difference <=+0.01 against EACH memory-matched fully fitted control in EACH seed group",
+      "candidate arbitrary14 mean Brier difference <=+0.01 against EACH memory-matched fully fitted control in EACH seed group",
+      "all controls have identical observed outcomes, actions, time indexes and no realized phase labels",
+      "state <=928 learned+history bytes, versioned snapshot, exact cold restore, prefix retention, invalid-input immutability, no double-updates",
+      "all 288 worlds evaluated exactly once after source/data first-use authorization; complete byte hashes and whole-process cost",
+      "holdout and source-birth integrity verified by an independent evaluator without touching consumed LR92AP cohorts"
+    ],
+    "development_no_go": "Failure of any precommitted criterion -> DEVELOPMENT_NO_GO. Preserve every negative; no re-tuning or repeated primary.",
+    "scientific_pass": "UNAVAILABLE_FROM_EXTERNAL_SYNTHETIC_GATE; only independent owner-qualified native continuing-checkpoint, real unfamiliar transfer, no-restart retention, matched compute and separately authorized scientific first-use can establish scientific pass",
+    "uncertainty": "Before receiving new public switch evidence, the same observable prefix may correspond to continued B or A-return. No no-cue architecture may claim oracle first-step knowledge."
+  },
+  "gates_before_primary": {
+    "protocol_committed_before_any_data_source": true,
+    "deterministic_generator_source_born": false,
+    "source_sha256_and_tree_audited": false,
+    "prospective_dataset_manifest_and_world_digests_born": false,
+    "seed_collision_audit": false,
+    "same_stream_native_and_all_comparators_qualified": false,
+    "full_exact_candidate_sha_final_regression_linux_windows": false,
+    "native_owner_checkpoint_trust_receipt": false,
+    "authority_for_scientific_first_use": false,
+    "no_protected_primary_executed": true
+  },
+  "authority": {
+    "permitted_now": "read-only owner audit; source/prereg development; synthetic mathematical negative controls; GitHub draft PR and ordinary source-only CI",
+    "not_permitted": "any prospective primary generation/scoring, native model/owner checkpoint modification, unbounded runner/queue/scheduler, merged/accepted ref, controller or live deployment",
+    "official_scientific_first_use_authorized": false,
+    "merge_authorized": false,
+    "deployment_authorized": false
+  }
+}

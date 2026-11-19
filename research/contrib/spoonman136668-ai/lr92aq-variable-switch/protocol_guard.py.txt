@@ -1,0 +1,125 @@
+"""LR-92AQ protocol-only, fail-closed verifier. Never generates primary data.
+
+The purpose is to prove the preregistration itself has no deterministic
+64/64/64 phase-clock oracle and to enforce the protected-first-use fence.
+No model, scientific world, owner checkpoint, runner or scheduler is touched.
+"""
+from __future__ import annotations
+import json
+from pathlib import Path
+
+class ProtocolError(ValueError):
+    pass
+
+def check(condition, reason):
+    if not condition:
+        raise ProtocolError("LR92AQ_" + reason)
+
+def phase(a, b, t):
+    check(type(a) is int and 48 <= a <= 80, "A_DURATION_INVALID")
+    check(type(b) is int and 48 <= b <= 80, "B_DURATION_INVALID")
+    check(type(t) is int and 0 <= t < 192, "CLOCK_INVALID")
+    return "A" if t < a else ("B" if t < a+b else "A_return")
+
+def validate(doc):
+    check(type(doc) is dict and doc.get("schema") == "external-research-prereg.v2",
+          "SCHEMA_INVALID")
+    check(doc.get("experiment_id") == "LR-92AQ", "EXPERIMENT_INVALID")
+    check(doc.get("baseline_main") == "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+          "BASELINE_DRIFT")
+    check(doc.get("status") == "PROTOCOL_FROZEN_SOURCE_NOT_BORN_PRIMARY_UNRUN_OWNER_UNVERIFIED",
+          "STATUS_INVALID")
+    d = doc.get("prospective_design")
+    check(type(d) is dict, "DESIGN_MISSING")
+    check(d.get("worlds") == 288 and d.get("observed_public_events_per_world") == 192,
+          "BUDGET_INVALID")
+    check(d.get("families") == ["XOR","AND","arbitrary14"], "FAMILY_DRIFT")
+    check(d.get("noise_flip_probability") == 0.15, "NOISE_DRIFT")
+    check(d.get("source_status") ==
+          "reserved identifiers only; prospective generator not implemented or executed",
+          "SOURCE_ALREADY_MATERIALIZED")
+    groups = d.get("groups")
+    check(type(groups) is list and len(groups) == 3, "GROUPS_INVALID")
+    seen = set()
+    for group in groups:
+        check(type(group) is dict and type(group.get("seed")) is int,
+              "SEED_INVALID")
+        seed = group["seed"]
+        check(seed not in seen and seed not in
+              (929209101,929209102,929209103,73004303,73004304),
+              "SEED_REUSE")
+        seen.add(seed)
+        check(group.get("worlds_per_family") == 32, "GROUP_WORLD_BUDGET")
+    check(seen == {929209501,929209502,929209503}, "SEED_SET_CHANGED")
+    clock = d.get("phase_lengths")
+    check(type(clock) is dict, "CLOCK_CONTRACT_MISSING")
+    for name in ("A","B"):
+        c = clock.get(name)
+        check(type(c) is dict and c.get("distribution") == "uniform_integer_inclusive" and
+              c.get("min") == 48 and c.get("max") == 80, "FIXED_CLOCK_OR_DRIFT")
+    check(clock.get("A_return") == "192-A-B" and
+          clock.get("min_return") == 32 and clock.get("max_return") == 96,
+          "RETURN_CONTRACT_DRIFT")
+    assert all(32 <= 192-a-b <= 96 for a in range(48,81)
+               for b in range(48,81))
+    check("no special operation" in d.get("episode_boundary","") and
+          "no" in d.get("switch_knowledge","").lower(), "SWITCH_CUE_LEAK")
+    check("independent" in d.get("actions","").lower(), "ACTION_RNG_LEAK")
+    check("independent" in d.get("streams","").lower(), "RNG_LEAK")
+    check("ask every model for forecast" in d.get("score_order","") and
+          "THEN reveal one public action/outcome" in d.get("score_order",""),
+          "PREQUENTIAL_DRIFT")
+    check("never used for model update" in d.get("cold_query",""),
+          "COLD_QUERY_LABEL_LEAK")
+    check(doc.get("constraints",{}).get("memory_cap_bytes") == 928,
+          "CAPACITY_DRIFT")
+    controls = doc.get("controls")
+    check(type(controls) is list and len(controls) == 8, "CONTROLS_INCOMPLETE")
+    names = {c.get("name") for c in controls}
+    check(names == {"full_history_14bin","fixed_window_14bin",
+                    "two_regime_hmm","bounded_runlength_bocpd",
+                    "random_gate_matching_update","history_permutation_sham",
+                    "RF32_fullfit","untruncated_bocpd"}, "CONTROL_ID_DRIFT")
+    check(all(c.get("budget") == "over_928" for c in controls
+              if c.get("name") in ("RF32_fullfit","untruncated_bocpd")),
+          "OVERBUDGET_REFERENCE_MISLABEL")
+    barriers = doc.get("gates_before_primary")
+    check(type(barriers) is dict and
+          barriers.get("no_protected_primary_executed") is True and
+          barriers.get("protocol_committed_before_any_data_source") is True,
+          "FIRST_USE_ALREADY_CONSUMED")
+    for key in ("deterministic_generator_source_born",
+                "source_sha256_and_tree_audited",
+                "prospective_dataset_manifest_and_world_digests_born",
+                "seed_collision_audit","same_stream_native_and_all_comparators_qualified",
+                "full_exact_candidate_sha_final_regression_linux_windows",
+                "native_owner_checkpoint_trust_receipt",
+                "authority_for_scientific_first_use"):
+        check(barriers.get(key) is False, "PREPRIMARY_BARRIER_"+key.upper())
+    authority = doc.get("authority",{})
+    check(authority.get("official_scientific_first_use_authorized") is False and
+          authority.get("merge_authorized") is False and
+          authority.get("deployment_authorized") is False, "AUTHORITY_LEAK")
+    # Same 112 public steps for both possible realized schedules. The next
+    # event at t=112 is A_return for one, B for the other. The schedule
+    # clock alone cannot identify the event without a realized switch cue.
+    prefix1 = tuple(phase(64,48,t) for t in range(112))
+    prefix2 = tuple(phase(64,64,t) for t in range(112))
+    check(prefix1 == prefix2 and phase(64,48,112) == "A_return" and
+          phase(64,64,112) == "B", "UNANNOUNCED_SWITCH_AMBIGUITY_MISSING")
+    return {
+        "classification":"PROTOCOL_STRUCTURE_PASS_FIRST_USE_BLOCKED",
+        "worlds":288,"events_per_world":192,"possible_dwell_pairs":33*33,
+        "unannounced_switch_clock_ambiguity_at":112,
+        "owner_checkpoint":"UNVERIFIED",
+        "prospective_worlds_consumed":0
+    }
+
+def validate_file(path):
+    return validate(json.loads(Path(path).read_text(encoding="utf-8")))
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 2:
+        raise SystemExit("usage: protocol_guard.py prereg.json")
+    print(json.dumps(validate_file(sys.argv[1]), sort_keys=True))

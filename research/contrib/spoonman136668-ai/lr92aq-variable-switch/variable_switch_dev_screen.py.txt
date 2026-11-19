@@ -1,0 +1,195 @@
+"""LR-92AQ: development-only matched-comparator falsification (not primary).
+
+Reuses the already qualified LR-92AP development generator WITHOUT altering
+its 48..88 phase-length or variable-length contracts. That generator is not
+the separately frozen 192-event LR-92AQ primary protocol; this study may
+screen designs only. Models see the public current action and observed
+consequence once, AFTER issuing their forecast. No latent/phase values are
+passed to learners. Historical accepted Yggdrasil model is NOT invoked.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import math
+import time
+from collections import defaultdict
+
+from lr92aq_variable_switch_dev import (
+    DEVELOPMENT_SEEDS, FAMILIES, WORLDS_PER_SEED_FAMILY, development_world,
+)
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from matched_tabular_controls import FullHistory14, FixedWindow14
+from two_regime_hmm_control import TwoRegimeHMM
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+
+MODEL_TYPES = {
+    "YPT4_candidate": PublicDualTimescaleCells,
+    "FullHistory14": FullHistory14,
+    "FixedWindow14": FixedWindow14,
+    "HardMAP_HMM": TwoRegimeHMM,
+    "Bounded_BOCPD896": BoundedRunLengthBOCPD14,
+}
+PRIMARY_SEEDS_FORBIDDEN = frozenset({
+    929209101,929209102,929209103,929209501,929209502,929209503
+})
+METRICS = ("B", "return_1_4", "return_5_16", "return_1_16", "return_after_16")
+SCIENTIFIC_CLAIM = "DEVELOPMENT_ONLY_NOT_NATIVE_OR_PRIMARY"
+
+
+def learned_bytes(model):
+    cls = type(model)
+    if cls is PublicDualTimescaleCells:
+        return cls.LEARNED_AND_HISTORY_BYTES
+    return cls.LEARNED_BYTES
+
+
+def prequential(world, factory):
+    """Exact public-only model inputs; evaluation-only indexing after scoring."""
+    m = factory()
+    if learned_bytes(m) > 928:
+        raise AssertionError("LR92AQ_STATE_BUDGET_EXCEEDED")
+    first, second, ret = world.evaluator_only.dwell_lengths
+    start = first + second
+    score = {key: [] for key in METRICS}
+    wall_start = time.perf_counter_ns()
+    final_digest = None
+    updates = predicts = 0
+    for i, obs in enumerate(world.public):
+        if obs.episode_start:
+            m.end_episode()
+        p = m.predict(0, obs.action)
+        predicts += 1
+        if not isinstance(p,(float,int)) or isinstance(p,bool) or (
+            not math.isfinite(p)) or not 0.0 <= p <= 1.0:
+            raise ValueError("LR92AQ_NONFINITE_OR_INVALID_FORECAST")
+        loss = (p-obs.outcome)**2
+        if first <= i < start:
+            score["B"].append(loss)
+        if start <= i < start + 4:
+            score["return_1_4"].append(loss)
+        if start + 4 <= i < start + 16:
+            score["return_5_16"].append(loss)
+        if start <= i < start + 16:
+            score["return_1_16"].append(loss)
+        if start + 16 <= i:
+            score["return_after_16"].append(loss)
+        m.observe_step(0, obs.action, obs.outcome)
+        updates += 1
+        if i == 32:
+            # Byte-identical cold restoration at a public fixed pre-switch
+            # time, NOT a hidden phase boundary or change cue.
+            frozen = m.snapshot()
+            restored = type(m).restore(frozen)
+            if restored.snapshot() != frozen:
+                raise AssertionError("LR92AQ_COLD_RESTORATION_FAILED")
+            m = restored
+    duration = time.perf_counter_ns()-wall_start
+    snapshot = m.snapshot()
+    final_digest = hashlib.sha256(snapshot).hexdigest()
+    if updates!=len(world.public) or predicts!=updates or (
+        len(world.public) != sum(world.evaluator_only.dwell_lengths)):
+        raise AssertionError("LR92AQ_UPDATE_COUNT")
+    if any(not vals for vals in score.values()):
+        raise AssertionError("LR92AQ_EMPTY_METRIC")
+    return {
+        "score": {key: sum(vals)/len(vals) for key,vals in score.items()},
+        "bytes": learned_bytes(m), "checkpoint_bytes":len(snapshot),
+        "updates":updates, "predicts":predicts,
+        "snapshot_sha256":final_digest,
+        "elapsed_ns_dev_only":duration
+    }
+
+
+def evaluate():
+    """Prohibits protected seeds before any developer fixture materialization."""
+    if set(DEVELOPMENT_SEEDS) & PRIMARY_SEEDS_FORBIDDEN or (
+        tuple(DEVELOPMENT_SEEDS) != (73004303,73004304)) or (
+        tuple(FAMILIES) != ("xor","and","random14")) or (
+        WORLDS_PER_SEED_FAMILY != 4):
+        raise ValueError("LR92AQ_PROTECTED_SEED_OR_FIXTURE_DRIFT")
+    per_world = []
+    for seed in DEVELOPMENT_SEEDS:
+        for family in FAMILIES:
+            for index in range(WORLDS_PER_SEED_FAMILY):
+                world = development_world(seed,family,index)
+                if world.evaluator_only.development_seed in PRIMARY_SEEDS_FORBIDDEN:
+                    raise ValueError("LR92AQ_PROTECTED_SEED_REJECTED")
+                results = {}
+                for name,factory in MODEL_TYPES.items():
+                    results[name] = prequential(world,factory)
+                per_world.append({
+                    "seed":seed,"family":family,"index":index,
+                    "public_sha256":world.public_tape_hash(),
+                    "public_events":len(world.public),
+                    "models":results
+                })
+    return per_world
+
+
+def decision(records):
+    """Screening gate only, not a pre-registered primary result."""
+    if len(records) != 24 or any("models" not in r for r in records):
+        raise ValueError("LR92AQ_DEV_RECORDS_INCOMPLETE")
+    groups=[]
+    for seed in DEVELOPMENT_SEEDS:
+        for family in FAMILIES:
+            subset=[r for r in records if r["seed"]==seed and r["family"]==family]
+            if len(subset)!=4:
+                raise ValueError("LR92AQ_DEV_STRATA_MISSING")
+            m={}
+            for name in MODEL_TYPES:
+                m[name]={key:sum(r["models"][name]["score"][key] for r in subset)/len(subset)
+                         for key in METRICS}
+            other=[k for k in MODEL_TYPES if k!="YPT4_candidate"]
+            best=min(other,key=lambda k:m[k]["return_5_16"])
+            improvement=m[best]["return_5_16"]-m["YPT4_candidate"]["return_5_16"]
+            b_penalty=m["YPT4_candidate"]["B"]-min(m[k]["B"] for k in other)
+            # Development screening requires both >=.01 gain over each
+            # matched comparator AND no >.01 B regression.
+            success=improvement>=.01 and b_penalty<=.01
+            groups.append({
+                "seed":seed,"family":family,"candidate":m["YPT4_candidate"],
+                "best_return_control":best,
+                "best_return_control_score":m[best]["return_5_16"],
+                "min_b_score_control":min(m[k]["B"] for k in other),
+                "return_5_16_gain":improvement,"B_regression":b_penalty,
+                "screening_pass":bool(success),
+                "matched_scores":m,
+            })
+    outcome = "DEV_PLAUSIBLE_UNCONFIRMED" if all(g["screening_pass"] for g in groups) else "DEV_NO_GO"
+    return {"classification":outcome,"groups":groups,
+            "failing_strata":[[g["seed"],g["family"]] for g in groups
+                              if not g["screening_pass"]]}
+
+
+def summarized(records):
+    groups=decision(records)
+    totals={name:{} for name in MODEL_TYPES}
+    for name in MODEL_TYPES:
+        for metric in METRICS:
+            totals[name][metric]=sum(r["models"][name]["score"][metric]
+                                     for r in records)/len(records)
+    identity=hashlib.sha256()
+    for row in records:
+        identity.update(bytes.fromhex(row["public_sha256"]))
+    return {
+        "gate":"LR92AQ_UNPROTECTED_24_WORLD_VARIABLE_SWITCH",
+        "claim":SCIENTIFIC_CLAIM,"proposed_primary_executed":False,
+        "canonical_owner_checkpoint_used":False,
+        "actual_native_yggdrasil_training":False,
+        "benchmark_source":"LR92AP_EXPOSED_DEVELOPMENT_FIXTURE_NOT_LR92AQ_FROZEN_PRIMARY",
+        "worlds":len(records),"public_events":sum(r["public_events"] for r in records),
+        "input_digest":identity.hexdigest(),
+        "per_model_scores_unweighted_world_means":totals,
+        "screening":groups,
+        "model_state_bytes":{name:records[0]["models"][name]["bytes"]
+                             for name in MODEL_TYPES},
+        "timing_ns_unqualified_dev_only":{name:sum(r["models"][name]["elapsed_ns_dev_only"]
+                                                for r in records)
+                                           for name in MODEL_TYPES},
+    }
+
+
+if __name__=="__main__":
+    print(json.dumps(summarized(evaluate()),sort_keys=True,separators=(",",":")))
