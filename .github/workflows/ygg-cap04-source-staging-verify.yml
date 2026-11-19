@@ -14,6 +14,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 12
     steps:
+      - name: Preserve exact source bytes on Windows and Linux
+        shell: bash
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
@@ -30,8 +33,15 @@ jobs:
           python -B - <<'PY'
           import hashlib
           from pathlib import Path
-          for name in ("research/contrib/chatgpt/YGG-CAP04/prospective_source.py", "tests/test_cap04_prospective_source_contract.py"):
-              print("CAP04_STAGING_FILE_SHA256", name, hashlib.sha256(Path(name).read_bytes()).hexdigest())
+          expected = {
+              "research/contrib/chatgpt/YGG-CAP04/prospective_source.py": "315cc97b1a868baa6f247956c9ef23258fb5c88861ae3cf781df515dc653745a",
+              "tests/test_cap04_prospective_source_contract.py": "2263e23f5952fc94689406d0c10945edf812a89473368cfc98d31f94048b8351",
+          }
+          for name, pinned in expected.items():
+              actual = hashlib.sha256(Path(name).read_bytes()).hexdigest()
+              print("CAP04_STAGING_FILE_SHA256", name, actual)
+              if actual != pinned:
+                  raise SystemExit("CAP04_STAGING_SOURCE_BYTE_MISMATCH " + name)
           print("CAP04_STAGING_ENGINEERING_ONLY_PASS")
           PY
           test -z "$(git status --porcelain)"
