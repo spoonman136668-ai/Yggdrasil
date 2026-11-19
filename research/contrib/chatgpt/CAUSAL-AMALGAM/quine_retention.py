@@ -281,8 +281,14 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
 
 
 def guarded_observe(anchor, current, quines, quine_sha256, identifier, views, row, *,
-                    source_sha256, packet_sha256, max_brier_drift=TOLERANCE):
-    """Wrap the existing single shared-witness transaction, no second learner."""
+                    source_sha256, packet_sha256, max_brier_drift=TOLERANCE,
+                    on_veto=None):
+    """Guard one charged update, requiring external custody for a rejected witness.
+
+    The active model excludes a vetoed witness. The existing owner must store
+    and acknowledge this canonical receipt before the caller can continue.
+    Acknowledgement alone is NOT proof of durability; that is the owner's duty.
+    """
     _verify_frozen_inputs(anchor, current, quines, quine_sha256,
                           max_brier_drift)
     before = digest(_checkpoint(current))
@@ -296,5 +302,23 @@ def guarded_observe(anchor, current, quines, quine_sha256, identifier, views, ro
     if proposed is current:
         return current, {"status": "IDEMPOTENT_WITNESS", "scientific_pass": False,
                          "active_checkpoint_sha256": before}
-    return assess_update(anchor, current, proposed, quines, quine_sha256,
-                         max_brier_drift=max_brier_drift)
+    selected, report = assess_update(anchor, current, proposed, quines, quine_sha256,
+                                     max_brier_drift=max_brier_drift)
+    if report["status"] == "VETO_SHARED_STATE_OVERWRITE":
+        receipt = canonical({
+            "schema": "yggdrasil.amalgam.charged-veto-receipt.v1",
+            "event": _ledger(proposed)[-1],
+            "source_sha256": source_sha256,
+            "packet_sha256": packet_sha256,
+            "active_before_sha256": before,
+            "rejected_candidate_sha256": report["rejected_shadow_checkpoint_sha256"],
+        })
+        receipt_sha256 = digest(receipt)
+        if not callable(on_veto):
+            raise RuntimeError("VETO_REQUIRES_DURABLE_CHARGED_RECEIPT")
+        if on_veto(receipt, receipt_sha256) != receipt_sha256:
+            raise RuntimeError("VETO_DURABLE_CHARGED_RECEIPT_NOT_ACKNOWLEDGED")
+        report["rejected_witness_receipt_sha256"] = receipt_sha256
+        report["external_receipt_acknowledged"] = True
+        report["active_model_contains_rejected_witness"] = False
+    return selected, report
