@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.wsp197.original-olson-2014-55-site-source-qualification.v1",
+  "status": "SOURCE_IDENTITY_PINNED_BYTES_UNVERIFIED_NO_FIT",
+  "experiment_id": "WSP-197",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "purpose": "Qualify separate original Olson 2014 GB1 ~55-site real single/double mutant count source for a future frozen native factorized shared-weight vs fully fitted conventional comparison. This gate only checks source custody and genotype metadata; no numeric effects or machine learning.",
+  "distinct_predecessors": [
+    "WSP-192 historical Norman NO_GO PR1299",
+    "WSP-193 Protein G Source size INVALID",
+    "WSP-194 KRAS pair-coordinate NO_GO PR1305",
+    "WSP-195/196 Wu 2016 GB1 four-position candidate NO_GO PR1311; Olson 2014 GB1 has 55 mutable sites and separate original study assays; avoid contamination, never recycle WSP196 held outcomes"
+  ],
+  "source": {
+    "repository": "lehner-lab/DMS2structure",
+    "commit": "3c1976b78a743d4d4c73921f047648500e671c8e",
+    "original_research": "Olson et al. 2014, GB1 double-mutant mutational scan; source also reprocessed by Schmiedel & Lehner 2019",
+    "original_research_analysis_script": {
+      "path": "GB1_pipeline.R",
+      "git_blob_sha1": "340d74803a2e0871264ca96f2bf1b94a1ea2bd70"
+    },
+    "files": [
+      {
+        "name": "Olson2014_TableS2_doubles.txt",
+        "size": 21721634,
+        "git_blob_sha1": "dc7ab871b69026fc5d7cb2f505cfe7f6dd36b950",
+        "available": false
+      },
+      {
+        "name": "Olson2014_TableS2_singles.txt",
+        "size": 19302,
+        "git_blob_sha1": "de650d218e3a2aa339fa14f2849060293daa0338",
+        "available_header_only": true
+      },
+      {
+        "name": "Olson2014_TableS2_wildtype.txt",
+        "size": 43,
+        "git_blob_sha1": "f9fb047a2b25b0cde656f6d1760a89524b2bc665",
+        "available_header_only": true
+      },
+      {
+        "name": "GB1_sequence.fasta",
+        "size": 61,
+        "git_blob_sha1": "c1d1deef50b769ccd6a8f7909aa6da66fada68d6",
+        "available_header_only": true
+      }
+    ],
+    "original_license": "Repository LICENSE must be reviewed separately from published measurement data reuse rights; original measurements not copied to Yggdrasil",
+    "byte_route_issue": "GitHub connector exposes original Git blob and byte length via metadata, but fetch_file range of >21MB doubles returns empty content; original measurements not verified in running environment."
+  },
+  "metadata_parser": {
+    "only_fields": "Single first 3 TSV fields (WT amino acid, Position, Mutation), double first 6 (WT_AA1, Pos1, Mut1, WT_AA2, Pos2, Mut2), WT FASTA sequence string. Never parse input/selection count and fitness columns.",
+    "gene_mutation_positions": "Use exact published GB1 FASTA, 56 residues. Check 1-indexed site/reference allele match, canonical unordered pairs by position plus substitution, and row count; do not infer effects from counts.",
+    "noncanonical": "Fail closed on missing headers, invalid alphabet or sites, duplicate genotype, same site double, source drift. Preserve orphan/nonmatched mutations as explicit aggregates not silent exclusions.",
+    "expected_schema": "Author R script renames singles to WT_AA,Pos,Mut,count_r1_t0,count_r1_t1 and doubles first ten fields to WT_AA1,Pos1,Mut1,WT_AA2,Pos2,Mut2,count_r1_t0,count_r1_t1,fitness1,fitness2; original raw doubles may contain eight extra V11..V18 columns deleted by author R analysis.",
+    "minimums": "Freeze numerical FIT/VALID/DEV cohort minima in next distinct science prereg before opening count/fitness values; never tune this source-only gate on outcome.",
+    "leakage": "Do not use author-derived fitness1/fitness2 columns to select split, do not reuse public WSP196 4-site numerical scores as virgin, and no original-world first-use actions."
+  },
+  "reproducibility": {
+    "source_sha1_git_blob": "SHA1('blob '+size+'\\0'+entire_original_bytes) must equal four pinned blob IDs",
+    "sha256": "Record independent SHA256 on verified bytes when available",
+    "receipt": "Aggregate counts, genotype category counts, exact source fingerprints, no individual held mutation labels or observed fitness",
+    "regression": "Focused source-free negative controls, followed by full original-code qualification on accepted source if authorized"
+  },
+  "authority": {
+    "isolated_research_only": true,
+    "no_native_model_edit": true,
+    "no_original_first_use": true,
+    "no_accepted_ref_mutation": true,
+    "no_merge": true,
+    "no_runner_dispatch": true,
+    "no_scheduler": true,
+    "no_paid_api": true
+  },
+  "next": "Acquire authentic exact original double-mutant bytes through approved offline route; run source-admission checker; freeze novel factorized experiment prereg and fully fitted baseline controls before any numerical outcomes. Fail closed if byte route unavailable."
+}
