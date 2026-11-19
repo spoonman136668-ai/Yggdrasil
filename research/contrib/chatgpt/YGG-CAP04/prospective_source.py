@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 
-SCHEMA = "yggdrasil.cap04.prospective-source.v1"
+SCHEMA = "yggdrasil.cap04.prospective-source.v2"
 REGISTERED_DEV = (99917, 99931)
 REGISTERED_PILOT = (100017, 100031)
 REGISTERED_PRIMARY = (100117, 100131, 100151)
@@ -19,6 +19,23 @@ ENGINEERING_FIXTURES = ("cap04-source-structure-fixture-a", "cap04-source-struct
 ACTIONS = ((0, 0), (0, 1), (1, 0), (1, 1))
 EPISODES = 96
 BOUNDARIES = (0, 32, 72, 96)
+
+# Frozen public, source/outcome/seed-independent four-action blocks. Each block
+# contains each intervention once; predecessor order varies across blocks.
+# This defeats the old alias previous_action=f(current_action). No registered
+# scientific source generation is enabled by this engineering patch.
+ACTION_BLOCKS = (
+    ((0, 0), (0, 1), (1, 0), (1, 1)),
+    ((0, 0), (1, 0), (1, 1), (0, 1)),
+    ((0, 0), (1, 1), (0, 1), (1, 0)),
+    ((1, 0), (0, 0), (0, 1), (1, 1)),
+)
+
+
+def action_at(t: int) -> tuple[int, int]:
+    _require(type(t) is int and 0 <= t < EPISODES, "ACTION_CLOCK")
+    return ACTION_BLOCKS[(t // len(ACTIONS)) % len(ACTION_BLOCKS)][t % len(ACTIONS)]
+
 
 
 def _require(ok: bool, reason: str) -> None:
@@ -43,11 +60,9 @@ def _simulate_fixture(identity: str) -> tuple[dict, ...]:
     u, v, w = (_bit(identity, -1, f"initial-{i}") for i in range(3))
     latent = _bit(identity, -1, "initial-private-latent")
     previous_action = (0, 0)
-    rotation = _bit(identity, -1, "action-rotation-0") + 2 * _bit(
-        identity, -1, "action-rotation-1")
     tape = []
     for t in range(EPISODES):
-        a, b = ACTIONS[(t + rotation) % len(ACTIONS)]
+        a, b = action_at(t)
         # Fixed phase boundaries are visible here only to the source builder;
         # the returned learner observation has no phase, latent or family key.
         novel = 32 <= t < 72
