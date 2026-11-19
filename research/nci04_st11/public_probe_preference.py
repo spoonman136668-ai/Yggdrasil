@@ -4,6 +4,8 @@ No world simulator, evaluator truth, reward oracle, source actor, or new
 causal substrate. The existing ST9 NativeRepair8 model remains the only
 causal memory. This small preference head learns which admitted public
 action-feature groups previously increased native causal identifiability.
+The rank-credit target is tautological for independent features: the learned
+preference is shadow-only and never overrides the qualified ST10 selector.
 ST11 is source-only engineering, NOT original-world scientific first use.
 """
 from hashlib import sha256
@@ -101,7 +103,21 @@ class NativeProbePreference:
             raise ValueError("ST11_LEARNING_BUDGET_EXCEEDED")
 
     def propose(self, native):
-        """Pure read. Never executes an action or updates native weights."""
+        """Admitted action choice: exact ST10, never unqualified ST11 credit.
+
+        ST11 rank-credit is predetermined for independent features, so it
+        cannot authorize a preference-based action change. This mode keeps
+        all learned counters, source receipts and checkpoint bytes intact.
+        """
+        self._check_bound(native)
+        return choose_intervention(native)
+
+    def shadow_candidate(self, native):
+        """UNQUALIFIED diagnostic only; never source-executable authority.
+
+        Retains the original ST11 preference for controlled comparison.
+        Callers must not treat this output as an admitted intervention.
+        """
         self._check_bound(native)
         fallback = choose_intervention(native)  # includes calibration, conflicts, budget
         if fallback is None or len(self.events) < 2:
