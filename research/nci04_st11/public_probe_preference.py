@@ -235,7 +235,7 @@ class NativeProbePreference:
                      (d["events"][0][1] != d["origin_identity"] or
                       d["events"][-1][2] != d["current_identity"] or
                       any(prev[2] != nxt[1] for prev, nxt in
-                          zip(d["events"], d["events"][1:]))) or
+                          zip(d["events"], d["events"][1:])))) or
                     (not d["events"] and
                      d["origin_identity"] != d["current_identity"]) or
                     _counts(d["events"]) != (d["trials"], d["positive"])):
