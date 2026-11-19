@@ -1,0 +1,78 @@
+name: LR-92AQ disclosed DEV matched causal controls once
+'on':
+  push:
+    branches: [research/lr92aq-variable-switch-prereg-20261119]
+    paths:
+      - 'research/contrib/spoonman136668-ai/lr92aq-variable-switch/**'
+      - '.github/workflows/lr92aq-dev-screen-once.yml'
+permissions:
+  contents: read
+jobs:
+  dev:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Disable checkout byte translation
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Bring verified frozen DEV generator and existing matched controls into isolated temp directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          pin="2d35cfd721e43abddac1e9a36ea557399c6aeb5a"
+          git fetch --no-tags origin "$pin"
+          test "$(git cat-file -t "$pin")" = commit
+          d="$RUNNER_TEMP/lr92aq-dev"
+          mkdir -p "$d"
+          ap="research/contrib/spoonman136668-ai/lr92ap-same-address-retention"
+          dev="research/contrib/spoonman136668-ai/lr92aq-variable-switch-dev"
+          check_copy() {
+            src="$1"
+            name="$2"
+            want="$3"
+            actual="$(git rev-parse "$pin:$src")"
+            test "$actual" = "$want"
+            git show "$pin:$src" > "$d/$name.py"
+            test "$(git hash-object "$d/$name.py")" = "$want"
+          }
+          check_copy "$dev/lr92aq_variable_switch_dev.py.txt" "lr92aq_variable_switch_dev" d07c5ccc2ce3ae8ba1fd117ef471d08cbaad8cdb
+          check_copy "$ap/public_dual_timescale_cells.py.txt" "public_dual_timescale_cells" e2fca6e277efbf0bd3b77ba7e472e4b5432d205f
+          check_copy "$ap/matched_tabular_controls.py.txt" "matched_tabular_controls" 7a223f6b097eb6e461853685195ba4b89af2f2b6
+          check_copy "$ap/two_regime_hmm_control.py.txt" "two_regime_hmm_control" 41f3adcb8c12d540f3042ae03a6a9dbdd4d6e6f0
+          check_copy "$ap/bounded_runlength_bocpd.py.txt" "bounded_runlength_bocpd" 96bb94e608d2062fb4cc488ed010f150b8325787
+          aq="research/contrib/spoonman136668-ai/lr92aq-variable-switch"
+          test "$(git hash-object "$aq/prereg.json.txt")" = f7b324b8bbe14dfe418892faa20709f8edf79963
+          cp "$aq/prereg.json.txt" "$d/prereg.json.txt"
+          cp "$aq/variable_switch_dev_screen.py.txt" "$d/variable_switch_dev_screen.py"
+          cp "$aq/test_variable_switch_dev_screen.py.txt" "$d/test_variable_switch_dev_screen.py"
+          echo LR92AQ_EXACT_AP_DEV_AND_CONTROL_SOURCE_CUSTODY_PASS
+      - name: Run all 24 disclosed synthetic DEV worlds against five in-budget learners
+        shell: bash
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/lr92aq-dev"
+          (cd "$d" && python -B -m unittest -v test_variable_switch_dev_screen)
+          (cd "$d" && python -B variable_switch_dev_screen.py)
+          echo LR92AQ_SYNTHETIC_DEV_SCREEN_COMPLETE_NOT_PRIMARY
+      - name: Verify source tree and owner untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          echo LR92AQ_READ_ONLY_NO_OWNER_OR_PROTECTED_DATA_PASS
