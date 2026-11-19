@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.wsp189.licensed-original-light-20k-cohort-v1",
+  "experiment_id": "WSP-189",
+  "branch": "research/wsp189-light-20k-cohort-20261118",
+  "parent_sha": "9b23ba258d3c76aed87b4e531ce221acc1821c0a",
+  "classification": "NEW separately preregistered source-safe public light-chamber developer training/evaluation, not a repaired WSP187 result",
+  "prior_history": "WSP187 original 10k source criterion FAILED before FIT when original actuators_white file actually has 20k. WSP187 had read numeric rows until its >10k guard but no model fitting or test score. WSP188 independently counted (metadata ONLY): white 20k, color 10k, smooth 10k; no sensor numeric values reported. WSP189 prereg comes after this original source-access history and cannot claim no source bytes ever opened, only NO PRIOR MODEL FIT/DEV.",
+  "source": {
+    "repo": "juangamella/causal-chamber",
+    "commit": "967d59a42956872f37463cc561ecf6e9ceab9364",
+    "dataset": "lt_walks_v1",
+    "upstream_md5": "dcad019186661a56de7a2d1db97fc2f0",
+    "zip_sha256": "21fb3d0b2fad7d8ba544289ee7880785d1c35ae0b5d7f9302c794ca34d205a19",
+    "member_sha256": {
+      "actuators_white": "5f220699e4090fa6e723e5a369434b58647a84c179a12903e1f550f0a988c670",
+      "color_mix": "b9088d72f079ce320d6958025c7930d124b2d89919bfa4aa8c618c84cf50846f",
+      "smooth_polarizers": "0bb0c193c44d73e7ad51b2519daf5f112d4b57904434b9e89d03f63ff95cae1d"
+    },
+    "license": "CC BY 4.0 physical data, attribution Gamella/Peters/Bühlmann 2025 NMI DOI 10.1038/s42256-024-00964-x",
+    "recorded_original_physical_actions_preexisting": true,
+    "new_physical_actions": 0
+  },
+  "frozen_source_protocol": {
+    "fit": "actuators_white: 14,000 chronological original rows, zero-based indices 0..13999",
+    "validation": "actuators_white: next 6,000 chronological rows indices 14000..19999; previous sensor at 13999 available as public FIT observation",
+    "public_dev_A": "color_mix: all 10,000 original rows, 9,999 scored one-step forecasts",
+    "public_dev_B": "smooth_polarizers: all 10,000 original rows, 9,999 scored one-step forecasts",
+    "source_identity": "ZIP and all three original files byte-identical to WSP188 SHA256. No injected/padded/imputed rows. Abort mismatches before fitting.",
+    "shared_chamber": "These are two different original public excitation protocols of the SAME light tunnel, not independent source-born causal mechanism families.",
+    "model_visibility": "current seven physical actuator values, previous public sensor readings only; current targets/hidden file label/flag/timestamp excluded."
+  },
+  "immutable_algorithm": {
+    "source": "Import WSP187/light_state.py byte-identical. NO changes to its state projection, readout, thresholds, fixed polarizer sine/cos, nonlinear feature policy or controls.",
+    "fit_only": "Normalize current seven actuator values and three sensors from FIT only; batch ridge baseline trained on FIT only, 2D PCA innovation state learned from FIT only, recurrent 3x2 readout fit on FIT. 3 consecutive >2.0 FIT innovation sigma contradictions required for bounded patch (gain0.05, cap0.5, otherwise 0.995 decay), updates AFTER scoring each step.",
+    "controls": "Independent fully FIT-trained current features batch ridge; fully FIT-trained current+previous sensor ARX; fully FIT-trained full-rank previous residual recurrence; same two-state frozen/no update; normal online EMA(alpha0.1), sensor persistence. All receive identical public actions/history, stronger capacity controls disclosed.",
+    "fit_stop_14000_override_only": true,
+    "threshold": "At least 5% normalized RMSE lower in EACH of 3 sensor outputs on BOTH physically distinct public DEV acquisition traces against strongest actually scored conventional baseline per sensor; intact pretrained core checkpoint; otherwise fixed DEVELOPMENT_NO_GO and no new tuning on public DEV.",
+    "max_dev_passes": 2,
+    "development_science_note": "A learned compact sensory representation is not automatically a causal graph, native Yggdrasil trained intelligence, old-law retention, unfamiliar mechanism transfer, energy efficiency gain, or SCIENTIFIC_PASS. No protected new-world first-use."
+  },
+  "permissions": {
+    "original_source_first_use": false,
+    "new_physical_actions": false,
+    "live_lab": false,
+    "paid_api": false,
+    "merge": false,
+    "deployment": false,
+    "controller": false,
+    "scheduled_tasks": false,
+    "accepted_main": false,
+    "scientific_pass": false
+  },
+  "status": "FROZEN_AFTER_INDEPENDENT_METADATA_INSPECTION_BEFORE_WSP189_FIT_OR_PUBLIC_DEV_SCORE"
+}
