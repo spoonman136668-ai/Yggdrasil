@@ -1,0 +1,56 @@
+name: CKAD45 closed-loop causal intervention scientific DEV-only
+on:
+  push:
+    branches:
+      - research/ckad45-closed-loop-intervention-falsification-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  native-interventions:
+    if: "github.event.head_commit.message == 'ci(ckad45): frozen source closed-loop DEV qualification'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Disable platform-dependent checkout rewrite
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Preregistration, source provenance and first-use prohibition
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor ab6f435adcbb09116efde103c4be5614db6f1d0c HEAD
+          git merge-base --is-ancestor c61e5d28a6e87542ed4018cd3da07216dadc669b HEAD
+          test ! -e research/contrib/chatgpt/CKAD-45/pilot_report.json
+          test ! -e research/contrib/chatgpt/CKAD-45/primary_report.json
+          python -B -c "import ast,pathlib; p=pathlib.Path('research/contrib/chatgpt/CKAD-45'); [ast.parse(f.read_text()) for f in p.glob('*.py')]"
+          python -B research/contrib/chatgpt/CKAD-45/campaign.py --mode preflight
+      - name: Original native and closed-loop fixture negative controls (NO DEV scoring)
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-45 -p test_ckad45.py -v
+      - name: One frozen new DEV cohort with equal intervention budget and read-only common probes
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-45/screen_dev.py
+          test -z "$(git status --porcelain)"
