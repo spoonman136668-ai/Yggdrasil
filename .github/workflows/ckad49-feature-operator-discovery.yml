@@ -1,0 +1,57 @@
+name: CKAD49 discovered causal exception feature and operator DEV
+on:
+  push:
+    branches:
+      - research/ckad49-learned-exception-operator-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  qualify:
+    if: "${{ github.event.head_commit.message == 'ci(ckad49): fixture-only preflight' || github.event.head_commit.message == 'ci(ckad49): frozen DEV first-use' }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Keep Windows source bytes identical
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original prereg is ancestor and no reserved scientific first-use
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 63d9ff3b5cabbe932f70ad5452c86d24cfb74c7f HEAD
+          git merge-base --is-ancestor 5949204f743f113891efe18d0ba81c690151acce HEAD
+          test ! -e research/contrib/chatgpt/CKAD-49/pilot_report.json
+          test ! -e research/contrib/chatgpt/CKAD-49/primary_report.json
+          python -B -c "import ast,pathlib; p=pathlib.Path('research/contrib/chatgpt/CKAD-49'); [ast.parse(f.read_text()) for f in p.glob('*.py')]"
+          python -B research/contrib/chatgpt/CKAD-49/campaign.py --mode preflight
+      - name: Engineering-only fixture suite including out-of-grammar negative
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-49 -p test_ckad49.py -v
+      - name: Fresh two-seed original frozen scientific DEV, never held first-use
+        if: "${{ github.event.head_commit.message == 'ci(ckad49): frozen DEV first-use' }}"
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-49/screen_dev.py
+          test -z "$(git status --porcelain)"
