@@ -1,5 +1,5 @@
 name: YGG CAP04 prospective integrated exact-source engineering qualification
-'on':
+on:
   push:
     branches:
       - research/ygg-cap04-prospective-integration-20261119
@@ -47,8 +47,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = ea7dfc3b1463f967ab3182bfaefb966fe3b01af6
-          test "$(git diff --name-only ea7dfc3b1463f967ab3182bfaefb966fe3b01af6 HEAD)" = '.github/workflows/ygg-cap04-prospective-integrated-verify.yml'
+          test "$(git rev-parse HEAD^)" = 8d48a1e33ec174519a0ed4afc6b0b807699e2cb0
+          test "$(git diff --name-only 8d48a1e33ec174519a0ed4afc6b0b807699e2cb0 HEAD)" = '.github/workflows/ygg-cap04-prospective-integrated-verify.yml'
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = 28240be43e7981e1d47100a3a886d04da3c09304
           test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = 56a883f7203afccc37a81ddcff46ae1e1da04491
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
