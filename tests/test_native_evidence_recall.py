@@ -7,7 +7,7 @@ import sys
 import unittest
 
 from yggdrasil.native_context_basis import canonical,digest
-from yggdrasil.native_evidence_recall import EvidenceRecall,context
+from yggdrasil.native_evidence_recall import EvidenceRecall,context,restore_original_sealed_native
 from yggdrasil.native_segmented_continuation import SegmentedNativeJEPA
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
@@ -24,7 +24,7 @@ def original_model():
     data=json.loads(ORIGINAL.read_bytes())
     blob=data["continued_ascii"].encode("ascii")
     assert digest(blob)==data["continued_sha256"]
-    return SegmentedNativeJEPA.restore(blob,digest(blob))
+    return restore_original_sealed_native(blob,digest(blob))
 
 class NativeEvidenceRecallTests(unittest.TestCase):
     def test_evidence_is_not_read_before_witness(self):
