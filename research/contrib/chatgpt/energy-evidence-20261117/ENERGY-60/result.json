@@ -1,0 +1,233 @@
+{
+  "auditor": {
+    "checks": 286552,
+    "limitations": "Shares numpy/sklearn fitting and scorer-provided world truth; not independently regenerated sensor noise or native scientific qualification.",
+    "scorer_imported": false,
+    "status": "PASS",
+    "worlds": 24
+  },
+  "auditor_sha256": "5dd892881b35444e317260726c14151a4062d8dc516684012177865525d02b34",
+  "by_family_mse": {
+    "novel_threshold": {
+      "best_snapshot": 1.571487170609766,
+      "last_snapshot": 6.439609485547561,
+      "pooled_elasticnet": 3.368447926513628,
+      "pooled_krr": 3.739423927502076,
+      "prototype_softmax": 2.1366279197055764,
+      "random_snapshot": 4.727341913266273,
+      "recent_elasticnet": 4.33212656827621,
+      "shuffled_probes": 5.347613254334945,
+      "softmax_memory": 1.4724963921272975,
+      "state_filter": 2.1349994304749473
+    },
+    "return_middle": {
+      "best_snapshot": 0.6841247823725788,
+      "last_snapshot": 3.8691976949154405,
+      "pooled_elasticnet": 1.8144838113672155,
+      "pooled_krr": 2.7236315475215243,
+      "prototype_softmax": 0.7728336018067923,
+      "random_snapshot": 2.061791381802538,
+      "recent_elasticnet": 2.645084230984701,
+      "shuffled_probes": 2.7858732784276197,
+      "softmax_memory": 0.5006259409139074,
+      "state_filter": 0.7342380521861044
+    },
+    "return_old": {
+      "best_snapshot": 0.5079413406455956,
+      "last_snapshot": 2.4450947093804967,
+      "pooled_elasticnet": 2.1660320565596973,
+      "pooled_krr": 2.6003543003879455,
+      "prototype_softmax": 0.9014307766008504,
+      "random_snapshot": 2.8023325502767746,
+      "recent_elasticnet": 3.3071934261273737,
+      "shuffled_probes": 3.446135258970821,
+      "softmax_memory": 0.5533860298581369,
+      "state_filter": 0.8787554020809752
+    }
+  },
+  "by_phase_mse": {
+    "best_snapshot": {
+      "A": 0.02970313344714165,
+      "B": 0.26237445260735914,
+      "C": 2.4714757075734397
+    },
+    "last_snapshot": {
+      "A": 4.415665523989213,
+      "B": 5.19546663297963,
+      "C": 3.1427697328746547
+    },
+    "pooled_elasticnet": {
+      "A": 1.9961460943250182,
+      "B": 2.1898207816686117,
+      "C": 3.1629969184469107
+    },
+    "pooled_krr": {
+      "A": 1.9983509056899755,
+      "B": 3.2949377275215634,
+      "C": 3.770121142200008
+    },
+    "prototype_softmax": {
+      "A": 0.46541882909385485,
+      "B": 0.8450422841676417,
+      "C": 2.5004311848517227
+    },
+    "random_snapshot": {
+      "A": 2.509288089286387,
+      "B": 2.805054365878533,
+      "C": 4.277123390180665
+    },
+    "recent_elasticnet": {
+      "A": 3.5208019831322517,
+      "B": 3.73962998053538,
+      "C": 3.023972261720653
+    },
+    "shuffled_probes": {
+      "A": 3.3450839707107356,
+      "B": 3.664789280352732,
+      "C": 4.569748540669917
+    },
+    "softmax_memory": {
+      "A": 0.05235821740400321,
+      "B": 0.2165629590620902,
+      "C": 2.2575871864332484
+    },
+    "state_filter": {
+      "A": 0.46541882909385485,
+      "B": 0.8207017333055179,
+      "C": 2.4618723223426544
+    }
+  },
+  "by_seed_mse": {
+    "997601": {
+      "best_snapshot": 0.7897662376284497,
+      "last_snapshot": 4.304327839371855,
+      "pooled_elasticnet": 2.345139078769252,
+      "pooled_krr": 2.921895028971223,
+      "prototype_softmax": 1.0975960881341165,
+      "random_snapshot": 3.135284710908356,
+      "recent_elasticnet": 3.343784347413742,
+      "shuffled_probes": 3.733845779617914,
+      "softmax_memory": 0.6488725222278872,
+      "state_filter": 1.09115519775686
+    },
+    "997619": {
+      "best_snapshot": 1.0526026247901774,
+      "last_snapshot": 4.198273420523808,
+      "pooled_elasticnet": 2.5541701175244413,
+      "pooled_krr": 3.1203781546364744,
+      "prototype_softmax": 1.4429987772746966,
+      "random_snapshot": 3.259025852655368,
+      "recent_elasticnet": 3.5124851361784475,
+      "shuffled_probes": 3.985902081537676,
+      "softmax_memory": 1.0354663863716744,
+      "state_filter": 1.4075067254044913
+    }
+  },
+  "classification": "SCREEN_NO_GO",
+  "critical_passed": 0,
+  "critical_total": 4,
+  "experiment_id": "ENERGY-60",
+  "gates": {
+    "all_families_noninferior_10pct": {
+      "pass": false,
+      "rule": "state_filter pooled MSE <=1.10x softmax_memory pooled MSE on EACH family"
+    },
+    "both_seed_positive_vs_softmax": {
+      "pass": false,
+      "rule": "state_filter pooled held MSE strictly lower than softmax_memory for BOTH screen seeds"
+    },
+    "cold_C_gain5_vs_softmax": {
+      "pass": false,
+      "rule": "state_filter C held MSE <=0.95 * softmax_memory C held MSE"
+    },
+    "historical_A_noninferior_5pct": {
+      "pass": false,
+      "rule": "state_filter held A MSE <=1.05x softmax_memory A held MSE"
+    },
+    "independent_audit": {
+      "pass": true,
+      "rule": "Every world, latent memory snapshot, transition, all 10 trained predictors, held predictions and aggregate scores pass auditor; unchanged-source semantic replay matches."
+    },
+    "last_snapshot_gain20pct": {
+      "pass": true,
+      "rule": "state_filter pooled MSE <=0.80x last_snapshot pooled MSE"
+    },
+    "negative_shuffled_20pct": {
+      "pass": true,
+      "rule": "state_filter pooled MSE <=0.80x shuffled_probes pooled MSE"
+    },
+    "pooled_gain5_vs_prototype": {
+      "pass": false,
+      "rule": "state_filter pooled MSE <=0.95 * prototype_softmax pooled MSE (isolates temporal effect)"
+    },
+    "pooled_gain5_vs_softmax": {
+      "pass": false,
+      "rule": "state_filter pooled A/B/C MSE <=0.95 * softmax_memory pooled MSE"
+    },
+    "temporal_prior_exercised": {
+      "pass": true,
+      "rule": "At least 10 percent of second/third query posterior vectors differ by >0.01 L1 from uniform-prior prototype posteriors"
+    }
+  },
+  "gates_passed": 4,
+  "gates_total": 10,
+  "limitations": [
+    "Authored 2/3-Walsh factor representation and KMeans 3 codebook, not native Yggdrasil",
+    "Calibrated 12 labeled consequences per query, not zero-label context discovery",
+    "Third-party numerical solvers shared, auditor validates disclosed truth not independent environment",
+    "Synthetic 4/5 way hidden mechanisms only; no accepted scientific first-use or native learning"
+  ],
+  "methods": [
+    "best_snapshot",
+    "last_snapshot",
+    "pooled_elasticnet",
+    "pooled_krr",
+    "prototype_softmax",
+    "random_snapshot",
+    "recent_elasticnet",
+    "shuffled_probes",
+    "softmax_memory",
+    "state_filter"
+  ],
+  "pooled_mse": {
+    "best_snapshot": 0.9211844312093135,
+    "last_snapshot": 4.251300629947832,
+    "pooled_elasticnet": 2.449654598146847,
+    "pooled_krr": 3.021136591803849,
+    "prototype_softmax": 1.2702974327044065,
+    "random_snapshot": 3.197155281781862,
+    "recent_elasticnet": 3.428134741796095,
+    "shuffled_probes": 3.8598739305777947,
+    "softmax_memory": 0.8421694542997806,
+    "state_filter": 1.2493309615806758
+  },
+  "prereg_commit": "a91e153fc62a024e0059e0d9354a35c2a8397507",
+  "primary_scored": false,
+  "replay": {
+    "audit_checks_each": 286552,
+    "excluded_fields": [
+      "elapsed_seconds",
+      "cases[*].fit.seconds_fit_predict"
+    ],
+    "original_screen_sha256": "23523f539818bd1f0f449083ec282a303e84119f87c6a65cd90f595de4871edf",
+    "replay_sha256": "f229e6b2bfd2bf07ca8d466fa5f5bfd8bed8ca10ffcc95dcfeee4e4809efe449",
+    "replay_source_unchanged": true,
+    "semantic_sha256": "5cd4941bae196e1af3e9d8161332965178c512d204b31897808d50dd75948584",
+    "status": "PASS"
+  },
+  "reserved_primary_seeds": [
+    102101,
+    102119,
+    102137
+  ],
+  "schema": "yggdrasil.external-research-screen.v1",
+  "scorer_sha256": "a7e94c276fd4c4b5ba17f1f239990572c3f0118b7720fab7d1ff340d1be2dc56",
+  "seeds": [
+    997601,
+    997619
+  ],
+  "source_commit": "dff08e665d4851128e9e5bb0846dc1179ca196d1",
+  "temporal_prior_exercised_fraction": 0.125,
+  "timing_local_seconds": 6.2959937150008045,
+  "worlds": 24
+}
