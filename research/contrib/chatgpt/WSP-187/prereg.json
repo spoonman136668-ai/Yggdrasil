@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.wsp187.licensed-public-physical-source-v1",
+  "experiment_id": "WSP-187",
+  "scope": "SEPARATE real physical light-tunnel learned latent sensory state vs conventional recurrent controls; source-observational DEVELOPER evidence ONLY.",
+  "branch": "research/wsp187-light-native-state-20261118",
+  "parent_sha": "f8052433ac871ddae462ea094f3eb701bf131d0d",
+  "record_date": "2026-11-18",
+  "motivation": "WSP186 gave a preregistered negative on public wind-tunnel measurements: gated scalar residual corrections underperformed trained ARX. No reruns/retuning. A different physical light-tunnel source, new actual records and learned two-dimensional causal-candidate sensory state are now tested; calling it causal identification is prohibited.",
+  "source": {
+    "repository": "juangamella/causal-chamber",
+    "commit": "967d59a42956872f37463cc561ecf6e9ceab9364",
+    "dataset": "lt_walks_v1",
+    "README_blob": "1a3a947f55426e7484a6bbc052d53be7ce3f3c66",
+    "download": "https://causalchamber.s3.eu-central-1.amazonaws.com/downloadables/lt_walks_v1.zip",
+    "MD5": "dcad019186661a56de7a2d1db97fc2f0",
+    "licenses": "CC BY 4.0 physical CSVs; MIT source generators; attribution Gamella/Peters/Bühlmann Nature Machine Intelligence 2025, DOI 10.1038/s42256-024-00964-x",
+    "source_data_first_use_new_actions": 0,
+    "remote_lab_calls": 0,
+    "prior_model_training_on_this_source": 0
+  },
+  "original_data_roster": {
+    "FIT_and_VALID": "actuators_white.csv: first 7,000 chronological rows (indices 0..6999) FIT, last 3,000 (indices 7000..9999) VALID, exactly 10,000 source rows",
+    "PUBLIC_DEV_1": "color_mix.csv: 10,000 physically recorded measurements in chronological order (no training, no post-decision tuning)",
+    "PUBLIC_DEV_2": "smooth_polarizers.csv: 10,000 separately physically recorded measurements, new polarizer/variance and input distribution; no post-decision tuning",
+    "source_preflight": "all three exact source members, observed hashes, presence of seven public controlled actuator names and three target sensor columns; no extra/downsampled/altered records; abort on missing/short/invalid, do not silently repair",
+    "sensor_caveat": "light tunnel is ONE physical chamber with a constant base configuration; separately generated excitation processes are NOT novel source-born mechanisms or true independent law transfer."
+  },
+  "learned_problem": {
+    "seven_current_public_inputs": [
+      "red",
+      "green",
+      "blue",
+      "pol_1",
+      "pol_2",
+      "l_31",
+      "l_32"
+    ],
+    "three_current_hidden_until_scored_targets": [
+      "vis_1",
+      "vis_2",
+      "vis_3"
+    ],
+    "features": "FIT-only z-scored seven public actuators, intercept, and deterministic fixed sin/cos(2 angle) features for two polarizers; no source ID/flag/timestamp/future target",
+    "state": "FIT-only batch-ridge baseline predicts three normalized sensors; learn a 2-dimensional principal residual subspace from FIT-only sensor innovations via deterministic symmetric covariance deflation/power iteration, then a fitted recurrent readout from previous public residual state to present normalized sensor residual.",
+    "candidate": "learned frozen two-state projection and readout plus a bounded local patch of its readout, updated only after 3 consecutive public prediction innovations >2.0 FIT innovation sigma; learning rate 0.05, patch abs <=0.5 per element, decay 0.995 otherwise. The sensor outcome at t may update memory only AFTER all t predictions scored.",
+    "controls": [
+      "FIT-only fully trained batch ridge on identical current features",
+      "FIT-only fully fitted 3-target autoregression using current features and 3 already observed previous target values",
+      "FIT-only fully fitted 3x3 previous-residual linear recurrence using exactly same FIT examples",
+      "FIT-only frozen 2D learned residual projection/readout with no online patch",
+      "FIT-only batch ridge + alpha 0.1 conventional EMA of previous prediction error",
+      "persistence of previous 3 public sensors"
+    ],
+    "FIT_regularization": 0.1,
+    "state_rank": 2,
+    "eig_power_iters": 48,
+    "eigenvalue_floor": 1e-9,
+    "state_ridge": 0.1,
+    "adapt_gain": 0.05,
+    "adapt_window": 3,
+    "adapt_innovation_threshold_sigma": 2,
+    "adapt_patch_abs_cap": 0.5,
+    "no_gate_decay": 0.995,
+    "ema_gain": 0.1,
+    "strongest_control": "For diagnostics report per-output *best achieved scored control* after each public DEV (conservative oracle lower-bound, never treat it as available to production selector). Select operational conventional comparator from VALID only, never from public DEV.",
+    "frozen_win": "On BOTH separately physically recorded public DEV excitation regimes, learned adaptive state beats strongest held scored conventional control on all THREE sensors by >=5% relative normalized RMSE, with byte-identical archived pretrained core. Else DEVELOPMENT_NO_GO; report full negative table, no post-public tuning.",
+    "cold_retention": "SHA256 checkpoint of pretrained core and state basis before/after public DEV must be byte-identical. This verifies software immutability ONLY, not cold behavioral transfer to old source or episodic learning.",
+    "maximum_bounded_dev_passes": 2,
+    "pass1": "parser/source admission and FIT-only state/baseline qualification",
+    "pass2": "single source-private numeric score on VALID then public DEV, with no more tuning if non-positive or source invalid.",
+    "strong_negative": "If learned low-rank state is just an algebraically compressed conventional residual predictor or full recurrence matches or wins, do not claim cognitive or causal novelty, only a verified learned representation capability."
+  },
+  "fences": {
+    "source_owner_original_first_use_permission": false,
+    "real_world_action_issuance": false,
+    "scientific_pass": false,
+    "accepted_main": false,
+    "controller": false,
+    "scheduled_tasks": false,
+    "merge": false,
+    "deploy": false,
+    "paid_api": false,
+    "native_yggdrasil_integration": false,
+    "original_graph_oracle": false
+  },
+  "status": "FROZEN_PROTOCOL_BEFORE_OPENING_LT_WALKS_MEASURED_CSVS"
+}
