@@ -1,0 +1,119 @@
+{
+  "schema": "yggdrasil.ckad48.frozen-prereg.v1",
+  "experiment_id": "CKAD48",
+  "parent_exact_sha": "a29b6e668fe1435bd9345664d5b9d2db87b46b7a",
+  "relative_to": "CKAD47 DEV_NO_GO; source-research-only, accepted binary native API unchanged",
+  "hypothesis": "A tokenless learned four-state/four-action causal effect model that infers which public state partition controls an action can compose genuinely state-dependent transitions, transfer to previously unseen action primitive IDs and retain earlier actions, beating a fully source-trained unrestricted per-(state,action) tabular predictor and a false XOR-invariance model, while staying within a strict margin of a full exact Bayesian structural class control.",
+  "physics": {
+    "state_domain": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "action_domain": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "action_effect": "Unobserved deterministic state-conditioned XOR delta per action: state_class is high state bit in world0 and parity(state bits) in world1. Each class maps actions 0..3 bijectively to XOR deltas 0..3; class1 mapping is a nontrivial derangement of class0. Transition p(intended state)=.9, p(each other state)=.1/3.",
+    "reward": "Observed terminal binary reward after two transitions, Bernoulli .9 or .1 of final-state truth; world0 reward parity of state bits, world1 reward OR of state bits.",
+    "privacy": "World's state-partition label and action-to-effect mappings and final true reward function are never passed to any learner, readout or source update; evaluator-only.",
+    "data": "Each public source episode includes s0,a1,s1,a2,s2,y; original actions 0/1 for first80, novel primitive actions 2/3 for next112, return to 0/1 final64; sample same real episode sequence and same real transition/reward outcomes across arms.",
+    "source_seeds": "2 fresh DEV seeds x 2 worlds, 256 episodes each, 1024 observed public episodes and 3072 source consequences per platform; no replay of earlier seeds."
+  },
+  "experimental_native": {
+    "name": "state_partition_gated_native",
+    "learned_banks": "Four causal state-partition hypotheses: no partition; low bit; high bit; parity. Each hypothesis learns Dirichlet(.25) counts for action->observed XOR delta in each public state group. Independent four terminal reward-state Beta(1,1) cells. Source labels/receipts never include private true partition.",
+    "routing": "Prequential Bayesian model evidence from each genuine observed action-state transition updates normalized posterior over the four candidate partitions. Readout uses posterior BMA unless one partition has posterior >=.90; then gates to that retained partition's predictive. No outcome from the current readout is used to select a hypothesis before prediction.",
+    "composed_reward": "For each s0,a1,a2, marginalize over 4 next states and 4 possible final states using chosen partition predictions conditioned on publicly known intermediate state. Condition the *exact* structural control's posterior partition on hypothetical s1 before stage2 without training on that counterfactual, to avoid a weak factorized comparator.",
+    "persistence": "All four partition banks and posterior state, source ledger and raw action IDs persist; action 2/3 effects are genuine four-valued primitives, not binary aliases; exact cold restoration, duplicate idempotence, conflicting identity atomicity."
+  },
+  "strongest_controls": {
+    "exact_structure_BMA": "Independent exact Bayesian model averaging over the same FOUR state-partition classes, Dirichlet(.25) transition-cell posterior predictive per class and accumulated prequential evidence, with joint two-intervention conditioning on the same class posterior. No hard .90 gating. Full genuine-source training. This is a stronger probabilistic structural comparator, not an oracle.",
+    "unconstrained_tabular": "Independently fully trained Dirichlet(.25) for each of 16 (state,action) next-state cells; identical Beta(1,1) state reward model, all authentic source rows; two-action composition.",
+    "invariant_xor": "Independently fully trained action->state-XOR-delta Dirichlet(.25) across all source contexts; ignores state-dependent effects; same Beta reward training.",
+    "random_sham": "Uniform next-state and .5 terminal Bernoulli, not a meaningful comparator; negative only."
+  },
+  "scoring": {
+    "probe_before_source_times": [
+      80,
+      96,
+      112,
+      128,
+      144,
+      160,
+      176,
+      192,
+      208,
+      224,
+      240
+    ],
+    "universal_probe": "The evaluator exhaustively checks 4 initial states x 4 first actions x 4 second actions=64 identical two-action queries, reporting expected Bernoulli Brier against evaluator-private true stochastic two-step transition/reward probabilities. No probe truth or unchosen sampled outcome enters any training model.",
+    "early_unseen": [
+      80,
+      96
+    ],
+    "late_unseen": [
+      144,
+      160,
+      176
+    ],
+    "old_action_return": [
+      192,
+      208,
+      224,
+      240
+    ],
+    "primary_pooled": [
+      144,
+      160,
+      176,
+      192,
+      208,
+      224,
+      240
+    ],
+    "metrics": "Expected two-action terminal Brier by phases, witnessed real source counts, original old-source ledger retention, source/weights/cold SHA, wall/CPU and checkpoint size. Every arm has matched action IDs, genuine outcomes and number of training episodes but extra structural-gating computation is NOT matched.",
+    "score_cohort": [
+      48111,
+      48112
+    ],
+    "pilot_reserved_untouched": [
+      48211,
+      48212
+    ],
+    "primary_reserved_untouched": [
+      48311,
+      48312,
+      48313
+    ],
+    "excluded_dev_consumed": [
+      47111,
+      47112,
+      46111,
+      46112,
+      45111,
+      45112,
+      44111,
+      44112,
+      43111,
+      43112
+    ],
+    "fixed_go": {
+      "all_new_dev_seeds_must_pass": true,
+      "max_pooled_expected_Brier": 0.19,
+      "min_pooled_gain_over_fully_fitted_tabular": 0.01,
+      "min_pooled_gain_over_false_XOR_invariance": 0.025,
+      "max_worsening_vs_strong_exact_structural_BMA": 0.004,
+      "max_early_unseen_worsening_vs_exact_BMA": 0.015,
+      "max_old_action_return_worsening_vs_exact_BMA": 0.008,
+      "four_action_coverage_source_and_exact_cold": true,
+      "cross_platform_checkpoint_and_scored_metric_parity": true,
+      "decision": "Any failure DEV_NO_GO. If all pass DEV_FEASIBLE_NOT_SCIENTIFIC, no strong-control superiority claim or scientific PASS until independent disjoint physics, matched cost, first-use authority and final regression."
+    }
+  },
+  "negative_fixture": "Generate separate engineer-only state-independent XOR and explicitly state-dependent/permutation-violating effects; demonstrate invariant-only cannot fit latter after all action-state cells witnessed, while a conditional model can. Verify all four action IDs, source/ledger/cold integrity and score read purity.",
+  "execution": "Research-only branch, commit protocol before any implementation and first DEV source. Dedicated Ubuntu/Windows exact SHA workflow, fixture tests before one DEV screen, in-repo original receipts, no same-seed tuning or held first-use. No production native ref/controller/trading/scheduler/paid API/merge/deployment actions."
+}
