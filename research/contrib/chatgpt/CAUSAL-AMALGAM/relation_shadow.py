@@ -91,8 +91,10 @@ class RelationShadow:
         The other action's local successes provide a target-context estimate.
         Only *other* contexts with both interventions provide relationship
         evidence.  Equal, complementary and independent hypotheses each get an
-        identical fixed prior; unsupported source structures retain unknown mass
-        through the independent term.  No held label or family ID is consulted.
+        identical fixed prior; the independent alternative covers unrelated
+        action rates **within this menu**, not unknown mechanism families.  A
+        target action with zero witnesses remains non-identifiable even if the
+        contrast posterior approaches 1.  No held label or family ID is consulted.
         """
         if type(context) is not int or not 0 <= context <= 65535:
             raise ValueError("RELATION_PUBLIC_CONTEXT")
@@ -122,11 +124,26 @@ class RelationShadow:
         proposed = (posterior["equal"] * local
                     + posterior["complement"] * (1.0 - local)
                     + posterior["independent"] * 0.5)
+        # In two possible worlds sharing this exact public ledger, the missing
+        # outcome may always be 0 or always be 1.  With no separately admitted
+        # structural transfer assumption, its identified probability interval
+        # is [0, 1] regardless of the posterior over this restricted menu.
+        # An unknown target action must never become an actionable prediction.
+        risk_zero = proposed * proposed
+        risk_one = (1.0 - proposed) * (1.0 - proposed)
         return {
             "context": context,
             "unobserved_action": missing_action,
-            "forecast": proposed,
+            "forecast": proposed,  # Diagnostic forecast only; never for decisions.
             "posterior": posterior,
+            "identification_status": "UNIDENTIFIED_TARGET_ACTION",
+            "target_action_support": 0,
+            "identified_probability_interval": (0.0, 1.0),
+            "decision_forecast": None,
+            "decision_eligible": False,
+            "minimax_brier": 0.25,
+            "worst_case_brier": max(risk_zero, risk_one),
+            "balanced_two_world_brier": (risk_zero + risk_one) / 2.0,
             "other_action_support": zeros + ones,
             "independent_contrast_contexts": len(contrasts),
             "witness_count": self.witness_count,
