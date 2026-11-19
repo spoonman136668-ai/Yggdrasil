@@ -52,4 +52,6 @@ jobs:
             test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/windows/seed-14072-state.json)" = 9e233e46a4fbc683c8a1388441791cad16b42f2a
           fi
           python -B -m unittest discover -s tests -p 'test_native_causal_rule_memory.py' -v
+          python -B research/contrib/chatgpt/YGG-CAP02/campaign.py --help
+          python -B research/contrib/chatgpt/YGG-CAP02/audit.py --help
           test -z "$(git status --porcelain)"
