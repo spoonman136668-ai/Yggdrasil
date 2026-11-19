@@ -1,8 +1,8 @@
-name: YGG-CAP04 v2 source-identity-bound exact regression (NO source rescoring)
+name: YGG CAP04 v2 mock custody exact candidate final regression (NO first use)
 'on':
   push:
     branches:
-      - research/ygg-cap04-v2-binding-exact-verify-20261119
+      - research/ygg-cap04-v2-fixture-custody-exact-verify-20261119
     paths:
       - '.github/workflows/ygg-cap04-v2-binding-exact-verify.yml'
 permissions:
@@ -28,7 +28,7 @@ jobs:
         run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: 5d6a04843c53507b316d94993faafcf08dc04afc
+          ref: 60c893fc9cce963884e180badcd7ee5f87f99518
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -41,11 +41,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = 5d6a04843c53507b316d94993faafcf08dc04afc
-          test "$(git rev-parse HEAD^{tree})" = 571cdb44c17cedb0ef6aa35bac9c0a198ae4760a
+          test "$(git rev-parse HEAD)" = 60c893fc9cce963884e180badcd7ee5f87f99518
+          test "$(git rev-parse HEAD^{tree})" = f5ad1e62c38a2c14f8ed869199e8f0428aee8c16
           git diff --exit-code f9c5e6d69827e76df27239c421aed01d4229d51b HEAD -- research/contrib/chatgpt/YGG-CAP03/prereg.json
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
-          test "$(git rev-parse HEAD^)" = 3bd76150d417a29ec0060950cf3f12089a2bfa48
+          test "$(git rev-parse HEAD^)" = 91c448563a79b2f251db6a77d9a78ccc64e5140f
           test "$(git diff-tree --no-commit-id --name-only -r HEAD | LC_ALL=C sort | tr '\n' '|')" = ".ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json|"
           git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
           test -f research/contrib/chatgpt/YGG-CAP04/prereg.json
@@ -63,6 +63,10 @@ jobs:
           test "$(git rev-parse HEAD:tests/test_cap04_keyed_source_v2.py)" = 86259d4c964758f97bb256a84a3c392f1c1eb1be
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
           test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = cd3065a30edf5c08ec92eccc9eec1776d4570da4
+          test -f research/contrib/chatgpt/YGG-CAP04/custody_fixture_contract.py
+          test -f tests/test_cap04_v2_fixture_custody.py
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/custody_fixture_contract.py)" = 8ba898531b9bfa0b9066ce2fe1ff9befab3922d1
+          test "$(git rev-parse HEAD:tests/test_cap04_v2_fixture_custody.py)" = 5826ae5c319b6d105223e3d8006d93650b7bdcfb
           test -f tests/test_native_predictive_state_cumulative.py
           test ! -f research/contrib/chatgpt/YGG-CAP04/source.py
           test -f research/contrib/chatgpt/YGG-CAP03/original/linux/seed-14071-state.json
@@ -79,4 +83,4 @@ jobs:
           python -B scripts/build_code_atlas.py --check-if-present
           python -B -m unittest discover -s tests -p test_code_atlas.py -v
           test -z "$(git status --porcelain)"
-          echo "CAP04_V2_SOURCE_BOUND_FULL_REGRESSION_PASS"
+          echo "CAP04_V2_MOCK_CUSTODY_FULL_ENGINEERING_PASS"
