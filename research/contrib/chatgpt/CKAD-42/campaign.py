@@ -230,7 +230,13 @@ class NativeInterventionRelations:
         for mode in ("full","short"):
             p=self.transition.predict(index_t,mode)
             q=self.terminal.predict(index_y,mode)
-            losses.append(((p-next_state)**2+(q-reward)**2)/2)
+            # Float **2 delegates to platform-dependent pow on some runtimes.
+            # Explicit IEEE-754 multiplications avoid a one-ULP OS drift in
+            # Hedge weights (first observed at fixture event 74).
+            error_transition=p-next_state
+            error_terminal=q-reward
+            losses.append((error_transition*error_transition+
+                           error_terminal*error_terminal)*.5)
         for i,loss in enumerate(losses):
             self.hedge[i]*=_portable_exp(-ETA*loss)
         normalizer=max(self.hedge)
