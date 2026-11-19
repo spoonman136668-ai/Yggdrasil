@@ -30,7 +30,7 @@ BLOBS = {
 ALLOWED_DESCENDANT_CHANGES = frozenset({
     "research/contrib/chatgpt/YGG-CAP04/source_ref_attestation.py",
     "tests/test_cap04_v2_source_ref_attestation.py",
-    ".github/workflows/ygg-cap04-v2-source-ref.yml",
+    ".github/workflows/ygg-cap04-v2-ref-attestation.yml",
     ".ice/code-atlas.json", ".ice/code-atlas.html", ".ice/code-atlas.ice",
 })
 
