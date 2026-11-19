@@ -174,16 +174,19 @@ class NativeMultiActionCells:
         return bytes(raw) + hashlib.sha256(raw).digest()
 
     @classmethod
-    def restore(cls, checkpoint):
-        """Reconstruct from origin + source tape; count bytes must match.
+    def restore(cls, checkpoint, expected_sha256):
+        """Replay counts from witnessed tape under an externally pinned hash.
 
-        A self-consistently forged complete alternative source history
-        cannot be ruled out by SHA256 alone; authenticated source custody
-        must be separately provided by the independent owner.
+        The caller must obtain expected_sha256 from separately trusted
+        custody, NOT by hashing the untrusted checkpoint being restored.
+        Neither SHA-256 nor a source ID is an actual owner signature.
         """
-        if type(checkpoint) is not bytes or not (
-                cls.MIN_CHECKPOINT_BYTES <= len(checkpoint) <=
-                cls.MAX_CHECKPOINT_BYTES) or (
+        if type(expected_sha256) is not str or re.fullmatch(
+                r"[0-9a-f]{64}", expected_sha256) is None or (
+                type(checkpoint) is not bytes or not (
+                    cls.MIN_CHECKPOINT_BYTES <= len(checkpoint) <=
+                    cls.MAX_CHECKPOINT_BYTES) or
+                hashlib.sha256(checkpoint).hexdigest() != expected_sha256 or
                 checkpoint[:4] != cls.MAGIC or
                 hashlib.sha256(checkpoint[:-32]).digest() != checkpoint[-32:]):
             raise ValueError("NATIVE_ACTION_CHECKPOINT_REJECTED")
