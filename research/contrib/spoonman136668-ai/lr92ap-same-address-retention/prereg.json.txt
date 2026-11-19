@@ -1,0 +1,100 @@
+{
+  "schema": "external-research-prereg.v1",
+  "experiment_id": "LR-92AP",
+  "status": "FROZEN_PROTOCOL_ONLY_SOURCE_NOT_YET_LOCKED_PRIMARY_NOT_RUN",
+  "date": "2026-11-19",
+  "lane": "external synthetic development; no native model integration or official Yggdrasil scientific first-use",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "baseline_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": {
+    "id": "LR-92AO",
+    "pr": 1317,
+    "head_sha": "273c485ebcd50ffdf5bbed4eadce73d4df5804b5",
+    "source_sha256": "7c73ae6d867780fc9e1119d1520f1fbf6ca86d61a289add710664fa5be930428"
+  },
+  "question": "Can an evidence-gated dual-timescale, fixed-byte public temporal memory recover a causal relation after destructive same-address A->B->A interference better than fully trained, equally informed and memory-matched conventional controls?",
+  "known_negative": "LR-92AO temporal14 exactly tied 14-bin conventional lookup on all 144 development worlds; no novelty gain, and previous retention was between different addresses, not same-address interference.",
+  "hypothesis": "A long-term/short-term temporal evidence split gated by online contradiction can improve return-to-A prequential Brier without an unacceptable B-phase, unfamiliar-relationship or resource regression. This is proposed, not observed.",
+  "candidate_contract": {
+    "architecture": "PublicTemporalCausalCells compatibility, 7 active + 9 retained, only actual public actions/outcomes and two prior actions; no hidden phase labels",
+    "maximum_persistent_learned_plus_history_bytes": 928,
+    "design": "Per-address fourteen reachable temporal bins, two outcomes, two 8-bit count banks (long and recent), plus 32 prior-action chronology bytes, total <=928; evidence-gated bank selection and update are specified in a subsequent source-locked implementation before scoring. No extra learned state or oracle.",
+    "checkpoint": "versioned SHA256 checked; do not change 164-byte PYC1 or 964-byte YPT3 formats; new version must be explicit",
+    "no_tokens": true,
+    "no_transformers": true,
+    "offline_pure_local": true
+  },
+  "disjoint_data": {
+    "development_fixture_seeds": [
+      73004303,
+      73004304
+    ],
+    "primary_seeds": [
+      929209101,
+      929209102,
+      929209103
+    ],
+    "worlds_per_seed_per_family": 32,
+    "families": [
+      "XOR",
+      "AND",
+      "arbitrary 14-bit relation"
+    ],
+    "total_worlds": 288,
+    "phase_schedule": "Within each world, 64 public A outcomes, 64 contradicting B outcomes, then 64 public A-return outcomes, all at the SAME memory address. First 16 A outcomes warm the model; score every subsequent outcome prequentially BEFORE its public label is provided. Also score 32 separately generated A-return cold queries immediately after B and BEFORE any return-to-A updates.",
+    "observed_labels_per_world": 192,
+    "heldout_cold_labels_per_world": 32,
+    "training_source": "Deterministic fresh generator and exact potential-outcome action assignment; source SHA/decoded input hashes and first-use source birth must be committed before any primary scoring",
+    "noise_flip_probability": 0.15,
+    "action_policy": "Precommitted randomization independent of phase, hidden family and outcomes; every comparator receives identical action/time/outcome evidence; do not let an intervention query reveal labels before forecast",
+    "constraints": "A and B must be genuinely conflicting conditional tables at measured temporal bins; family stratification and operator identities are EVALUATOR-ONLY",
+    "no_primary_reuse": "No LR-92AO/AN/AM consumed world/seed in prospective scored cohort; no additional scored attempts or threshold changes after observing a primary result"
+  },
+  "controls": [
+    "legacy single-bank 14-bin tabular: same 192 observations, 928-byte upper bound",
+    "fully trained fixed-window count learner: window length frozen using fixture-only development",
+    "conventional Bayesian online change-point detector: hazard/fixed priors chosen on fixture-only development, <=928 persistent bytes",
+    "conventional two-regime HMM/mixture with same observed data: <=928 persistent bytes",
+    "precommitted random gate with identical memory and update budget",
+    "training-history permutation sham preserving public actions/outcomes but destroying prior-action alignment",
+    "fully fitted RF32, same labels, reported as predictive reference only if it exceeds the 928-byte budget (cannot be omitted from strongest-control context)"
+  ],
+  "endpoint": {
+    "primary": "Prequential Brier score on first 16 returning A outcomes pooled by family, by seed (lower better)",
+    "secondary": [
+      "All B-phase prequential Brier",
+      "Whole 48-return A Brier",
+      "32-query true cold A Brier before updates",
+      "new random14 relation Brier",
+      "checkpoint restore parity",
+      "same-address A-retention and interference",
+      "whole-process seconds, peak state bytes, observation and update counts"
+    ],
+    "evaluation_mask": "First 16 A warmup observations excluded from endpoint to avoid comparing unconstrained cold-start priors; full first-use receipts still include them",
+    "interval": "Paired world-level bootstrap nested within frozen seed strata, 5000 draws, random seed 929209901, descriptive only"
+  },
+  "decision": {
+    "development_go_if_all": [
+      "A-return first-16 Brier reduction >=0.01 absolute against the BEST memory-matched fully trained conventional control in EACH of 3 primary seed groups",
+      "B-phase Brier non-inferiority <=+0.01 versus that strongest control in EACH seed group",
+      "arbitrary-14-bit relation Brier non-inferiority <=+0.01 versus strongest memory-matched control in EACH seed group",
+      "true cold A query score and subsequent replay verified from unmodified frozen observations; no history/phase leakage and valid history-destruction sham",
+      "exact checkpoint restore parity, non-mutating invalid inputs, legacy checkpoint unaffected, state <=928 bytes; full source/receipt hash audit",
+      "complete all 288 prospective worlds once, matching information budgets, with unchanged criteria; measure entire train+score cost and report any cost regression"
+    ],
+    "no_go": "Any failed criterion -> DEVELOPMENT_NO_GO. Do not retune consumed cohorts or recast a legitimate negative as infrastructure failure.",
+    "scientific_pass": "NOT CLAIMABLE from this external synthetic development gate; requires genuinely independent source/transfer, native integration, equal whole-process compute and separately owner-qualified first-use."
+  },
+  "authority": {
+    "source_lock_required_before_primary": true,
+    "fixtures_and_unit_tests_required_before_primary": true,
+    "exact_source_sha_and_data_birth_hash_required_before_primary": true,
+    "official_scientific_first_use_authorized": false,
+    "accepted_ref_or_main_mutation": false,
+    "native_integration": false,
+    "runner_controller_queue_or_scheduler_change": false,
+    "paid_api_calls": false,
+    "deployment": false,
+    "merge": false
+  }
+}
