@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD43",
+  "parent_exact_sha": "d477f4f2c4eec401c66cb6b66fffc6d78edd8a39",
+  "purpose": "Falsify whether source-trained two-specialist causal memory improves unannounced A to B to A rule recovery over original NativeEpisodeExperience, independently trained causal full/discount/dual controls and fully fitted conventional Beta/Hedge controls.",
+  "mechanism": {
+    "source": "Genuine observed CKAD39 public actions, two-stage transition and terminal outcomes only; no private phase enters learner.",
+    "original_native": "One continuous NativeEpisodeExperience(repair=True), unchanged; warm 48 then begin_stream, all observed source episodes.",
+    "causal_controls": "Existing CKAD42 NativeInterventionRelations full, short discount .93 and dual, trained on every genuine observed source event, unchanged.",
+    "candidate": "Two persistent NativeInterventionRelations experts A/B. Initially A trains observed episodes. A 12-event prequential active Brier alarm above 0.21 after warm allocates empty B; from the next event train active expert only, freeze inactive expert. No replay into new B, no checkpoint reset.",
+    "switching": "Once B has 16 genuine observed episodes, compare last 12 PREQUENTIALLY scored A/B source-only short-readout Brier values. Switch when alternative has at least .035 smaller mean and 8 events minimum dwell. Both experts score before seeing current outcomes. Never use evaluator phase, future outcome or hidden world.",
+    "readout": "Active expert short-readout transition and terminal (terminal sees already revealed next_state); both read-only. Preserve learned A and B weights and source-ID custody.",
+    "ablations": [
+      "always-A frozen-reference after first switch",
+      "never-switch B reference after B initialized",
+      "sham 0.5"
+    ]
+  },
+  "comparisons": [
+    "unchanged NativeEpisodeExperience full stream",
+    "CKAD42 causal_full",
+    "CKAD42 causal_discount93",
+    "CKAD42 causal_dual",
+    "independently fitted Beta full/window12/window24/window48/discount85/discount95",
+    "prequential Hedge over conventional"
+  ],
+  "evaluation": "Separate early B, late B, early A return, late A return and pooled late B plus late A return two-stage Brier; compare on precisely same real synthetic observations/actions. Source purity, cold exactness, extra compute and allocated expert counts. Private A/B labels evaluator-only.",
+  "frozen_dev": [
+    43111,
+    43112
+  ],
+  "pilots_reserved_unconsumed": [
+    43211,
+    43212
+  ],
+  "primary_reserved_unconsumed": [
+    43311,
+    43312,
+    43313
+  ],
+  "excluded_prior_dev": [
+    42111,
+    42112,
+    41101,
+    41102,
+    40811,
+    40812,
+    38911,
+    38912,
+    39181,
+    39182
+  ],
+  "frozen_thresholds": {
+    "pooled_candidate_brier_max_each_seed": 0.15,
+    "pooled_gain_vs_strongest_of_all_fitted_controls_min_each_seed": 0.01,
+    "late_return_gain_vs_native_min_each_seed": 0.02,
+    "early_return_worsening_vs_native_max_each_seed": 0.005,
+    "late_B_worsening_vs_native_max_each_seed": 0.005,
+    "require_A_and_B_expert_custody_each_seed": true,
+    "decision": "If any threshold fails DEV_NO_GO. Otherwise DEV_FEASIBLE_NOT_SCIENTIFIC. On any DEV_NO_GO stop CKAD43; no same-seed retuning, held first-use, full regression, merge or science claim."
+  },
+  "qualification": "Commit preregistration FIRST. Then fixture-only unit tests with protected seed guards and exact original native and experimental expert checkpoint/read identity, same exact source SHA two-OS DEV screen. No scientific first use or accepted runtime changes. This is reused synthetic family development, not unfamiliar-world transfer or proof of intelligence.",
+  "resources": "2 DEV seeds x 2 worlds, ~900 genuine synthetic episodes; multi-expert update and checkpoint work must be measured and cannot be characterized as matched compute or efficiency.",
+  "authority": {
+    "research_only": true,
+    "scheduled_tasks": false,
+    "paid_api": false,
+    "owner_science_first_use": false,
+    "merge": false,
+    "controller": false,
+    "deployment": false
+  }
+}
