@@ -156,6 +156,9 @@ jobs:
           "$AMALGAM/transfer_curve.py" "$AMALGAM/transfer_curve_protocol.json"
         python -B "$AMALGAM/transfer_curve.py" "$RUNNER_TEMP/amalgam-replay-parents" \
           "$AMALGAM/transfer_curve_protocol.json" "$AMALGAM/transfer-curve-dev-01" --replay
+        python -B "$AMALGAM/recall_evidence_bound.py" "$RUNNER_TEMP/amalgam-replay-parents" \
+          > "$RUNNER_TEMP/amalgam-recall-evidence-bound.json"
+        cmp "$AMALGAM/recall-evidence-bound.json" "$RUNNER_TEMP/amalgam-recall-evidence-bound.json"
         test -z "$(git status --porcelain)"
     - name: Cold-replay every sealed descendant on Windows
       if: runner.os == 'Windows'
