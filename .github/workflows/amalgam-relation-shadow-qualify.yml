@@ -1,0 +1,163 @@
+name: Amalgam relation shadow scoped qualification
+'on':
+  push:
+    branches: [research/amalgam-relation-shadow-20261119]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  atlas:
+    if: >-
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.actor == 'spoonman136668-ai' &&
+      github.event.head_commit.message == 'ci(amalgam-relation): arm one-shot atlas and tests' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      candidate: ${{ steps.pin.outputs.candidate }}
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Regenerate exactly three G29 artifacts on isolated research branch
+        id: pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          test "$(git branch -r --contains HEAD | grep -c 'origin/research/amalgam-relation-shadow-20261119')" -gt 0
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test "$(git diff --cached --name-only | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "docs(amalgam-relation): atlas for $GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/amalgam-relation-shadow-20261119
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  qualify:
+    needs: atlas
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      EXPECTED_CANDIDATE: ${{ needs.atlas.outputs.candidate }}
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact existing native solver dependencies
+        run: >-
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Full inherited root and eras, preflight and replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE"
+          git rev-parse HEAD HEAD^{tree}
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
+          done
+          AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+          DONORS="$RUNNER_TEMP/amalgam-specialists"
+          NATIVE="$RUNNER_TEMP/amalgam-ckad26"
+          mkdir -p "$DONORS" "$NATIVE"
+          for seed in 101 202 303; do
+            git show "bd55239c5c7785b8fce7fd39a6a0321f597a3530:research/contrib/chatgpt/CKAD-26/seed-$seed-refresh-native.json" > "$NATIVE/seed-$seed-refresh-native.json"
+          done
+          for seed in 14071 14072; do
+            git show "eee9ab7719f52c1c67ce30b142e8f07f36454dd1:research/contrib/chatgpt/YGG-JEPA2-03/seed-$seed-state.json" > "$DONORS/seed-$seed-state.json"
+          done
+          python -B "$AMALGAM/shadow_preflight.py" "$NATIVE" "$DONORS" > "$RUNNER_TEMP/amalgam-shadow.json"
+          python -B "$AMALGAM/growth_preflight.py" "$NATIVE/seed-101-refresh-native.json" > "$RUNNER_TEMP/amalgam-growth.json"
+          python -B "$AMALGAM/joint_update_preflight.py" "$NATIVE/seed-101-refresh-native.json" "$DONORS/seed-14071-state.json" --checkpoint-out "$RUNNER_TEMP/amalgam-joint-state.json" > "$RUNNER_TEMP/amalgam-joint.json"
+          python -B "$AMALGAM/verify_preflight.py" "$RUNNER_TEMP/amalgam-shadow.json" "$RUNNER_TEMP/amalgam-growth.json" "$RUNNER_TEMP/amalgam-joint.json"
+          test -z "$(git status --porcelain)"
+      - name: Sealed source-safe receipt replay (Linux only)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+          PARENTS="$RUNNER_TEMP/amalgam-replay-parents"
+          mkdir -p "$PARENTS"
+          cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
+          cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
+          cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
+          python -B "$AMALGAM/verify_linux_evidence.py" "$PARENTS" "$EXPECTED_CANDIDATE" "$RUNNER_TEMP/amalgam-portable-replay.json" > "$RUNNER_TEMP/amalgam-archive-audit.json"
+          python -B "$AMALGAM/outcome_probe_audit.py" "$PARENTS" "$AMALGAM/outcome_probe_protocol.json" "$AMALGAM/outcome-probe-dev-01" > "$RUNNER_TEMP/amalgam-probe-audit.json"
+          python -B "$AMALGAM/transfer_curve.py" "$PARENTS" "$AMALGAM/transfer_curve_protocol.json" "$AMALGAM/transfer-curve-dev-01" --replay > "$RUNNER_TEMP/amalgam-transfer-replay.json"
+          python -B "$AMALGAM/recall_evidence_bound.py" "$PARENTS" > "$RUNNER_TEMP/amalgam-recall-evidence-bound.json"
+          cmp "$AMALGAM/recall-evidence-bound.json" "$RUNNER_TEMP/amalgam-recall-evidence-bound.json"
+          python -B "$AMALGAM/curriculum_start.py" "$PARENTS" "$AMALGAM/curriculum-start-dev-01" --replay > "$RUNNER_TEMP/amalgam-curriculum-replay.json"
+          test -z "$(git status --porcelain)"
+      - name: Cold replay portability on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+          PARENTS="$RUNNER_TEMP/amalgam-portable-parents"
+          mkdir -p "$PARENTS"
+          cp "$RUNNER_TEMP/amalgam-ckad26/seed-101-refresh-native.json" "$PARENTS/"
+          cp "$RUNNER_TEMP/amalgam-specialists/seed-14071-state.json" "$PARENTS/"
+          cp "$RUNNER_TEMP/amalgam-joint-state.json" "$PARENTS/"
+          python -B "$AMALGAM/checkpoint_replay_parity.py" replay "$PARENTS" "$EXPECTED_CANDIDATE" --workers 2 > "$RUNNER_TEMP/amalgam-portable-replay.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Amalgam-relation-portable-${{ matrix.os }}
+          path: ${{ runner.temp }}/amalgam-portable-replay.json
+          if-no-files-found: error
+          retention-days: 14
+
+  parity:
+    needs: [atlas, qualify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: Amalgam-relation-portable-*
+          path: ${{ runner.temp }}/amalgam-relation-portable-results
+      - name: Cross-platform exact native custody and numerical specialist parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          INPUT="$RUNNER_TEMP/amalgam-relation-portable-results"
+          python -B research/contrib/chatgpt/CAUSAL-AMALGAM/checkpoint_replay_parity.py compare "$INPUT/Amalgam-relation-portable-ubuntu-latest/amalgam-portable-replay.json" "$INPUT/Amalgam-relation-portable-windows-2022/amalgam-portable-replay.json" "${{ needs.atlas.outputs.candidate }}"
