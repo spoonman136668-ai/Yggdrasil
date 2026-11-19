@@ -42,7 +42,7 @@ identity, native address, action identity, actual witnessed outcome and
 active/retained slot. Duplicate identical witnesses are idempotent;
 conflicting reused identities, invalid bits/types, illegal actions,
 or observations beyond 256 new source receipts fail closed. The
-new **versioned 712-byte? no:** precise checkpoint is
+new **versioned checkpoint** is
 `4 magic + 164 original + 2 event count + 512 native counts +
 36 * new events + 32 SHA-256` = **714 + 36N bytes**, with
 `0 <= N <= 256`; maximum **9,930 bytes**.
