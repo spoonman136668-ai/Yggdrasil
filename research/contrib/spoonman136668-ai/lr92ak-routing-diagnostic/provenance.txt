@@ -1,0 +1,53 @@
+{
+  "schema": "lr92ak.retrospective-ledger-provenance.v1",
+  "project": "Yggdrasil",
+  "research_classification": "EXPLORATORY_DIAGNOSTIC",
+  "scientific_acceptance": "UNVERIFIED",
+  "parent": {
+    "pr": 1294,
+    "head": "df51f37c2ce819b5cf3f313c3ca91274df2fa20b",
+    "parent_ci_run": 44446185931,
+    "parent_ci": "G29_PASS_LINUX_WINDOWS",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "unchanged_original_verdict": "DEVELOPMENT_NO_GO_9_OF_10"
+  },
+  "source": {
+    "reused_published_ledger_git_blob_sha1": "98a42af7fb397ea8762705db1d69f5138ca1361e",
+    "decoded_sha256": "404c35a82958afcb95f52c9ed2ce2b4ab97459774c195b2b2367a5417f1a861b",
+    "decoded_bytes": 5768,
+    "records": 240
+  },
+  "analysis": {
+    "source_decoded_sha256": "e60094260fb82e5a18b4144eae1c90e728ca1cc475157a3f7e27f765492dbe48",
+    "source_git_blob_sha1": "bcffc90bbed1324930c1cc4859de51cc4c0e1dfa",
+    "result_decoded_sha256": "4055b6b94860dc7e67642ee90ec12954fe62cb918f6b8a3c7c012e40d3ce6055",
+    "result_git_blob_sha1": "4a05f476ae0a9ebf3b95bf76d3e026bd0b2de2e3",
+    "paired_bootstrap_draws": 10000,
+    "bootstrap_seed": 929204901,
+    "runtime": "Python 3.13 stdlib only, isolated container",
+    "validation": "ledger SHA and shape PASS, 240 unique seed/world records, 24 arm-family accuracies recomputed, source-result SHA locally checked"
+  },
+  "findings": {
+    "true_lag1_classified_static": 37,
+    "true_lag1_worlds": 81,
+    "trusted_static_assignment_among_lag1": 27,
+    "lag1_gate_minus_original_lag1_pp": -1.287616,
+    "lag1_gate_minus_ungated_mix_pp": 0.699267,
+    "lag2_gate_minus_original_lag1_pp": 5.013021
+  },
+  "limitations": [
+    "Only ledger-level read-only audit; unavailable original 1.206 MB primary observation tape",
+    "This analysis was conducted after inspecting previously scored LR92AJ worlds; all inferential statistics exploratory",
+    "Original benchmark prior-lag1 policy selected different interventions from gating policy",
+    "No actual routing intervention was performed; cannot establish causal effect of the observed misrouting",
+    "No new training, no new evaluation cohort, no native full regression or original 146426-check audit rerun"
+  ],
+  "authority": {
+    "native_model_touched": false,
+    "accepted_refs_changed": false,
+    "first_use_consumed": false,
+    "controllers_changed": false,
+    "merge": false,
+    "deployment": false
+  }
+}
