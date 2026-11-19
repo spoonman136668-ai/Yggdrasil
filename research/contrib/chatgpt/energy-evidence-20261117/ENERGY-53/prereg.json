@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-53",
+  "project": "Yggdrasil",
+  "date": "2026-11-19",
+  "contribution_class": "falsification",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "parent": "a5466005f9e74d9d24a6f0549821ba2ae9f69217",
+  "source_commit": "4fdadd0b4de9bd6ac79537ccc76356793e898b3d",
+  "preregistration_precedes_prospective_screen": true,
+  "hypothesis": "Posterior hypothesis discrimination from selectively observed do-consequences can reduce cold held prediction error >8% over the strongest fully specified conventional acquisition policy (same downstream OMP), >5% over the strongest policy/learner pairing, and deliver per-cohort and per-family robustness.",
+  "source": {
+    "tar_git_blob": "3d202e61e45f6a723c550e923a40c7bc59735c89",
+    "tar_sha256": "bd1df60e730c72928e1b0aa1c7831f995eb1b84e43bc8bdda6269219ec941661",
+    "experiment_sha256": "c1566f297a01c774d5b50b787f297cd7df31be6a4b51eb3876b603c4626f4851",
+    "auditor_sha256": "24f59a552448ae9a67810a7d8fdd8d181a429a40e64516fe98e0eddb70e8fb48",
+    "dev_seeds_already_consumed_before_freeze": [
+      99709
+    ],
+    "new_screen_seeds": [
+      99721,
+      99733
+    ],
+    "reserved_primary_seeds": [
+      9511,
+      9523,
+      9547
+    ],
+    "primary_not_run": true
+  },
+  "data": {
+    "world_family": [
+      "parity4",
+      "threshold4",
+      "gate4"
+    ],
+    "world_id": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "worlds_per_seed": 12,
+    "action_bits": 11,
+    "causal_bits": 9,
+    "nuisance_bits": 2,
+    "unique_causal_assignments_per_world": 320,
+    "train_old_labels": 80,
+    "candidate_new_pool": 96,
+    "shared_anchors": 4,
+    "adaptive_acquisitions": 12,
+    "selected_new_labels": 16,
+    "held_old": 48,
+    "held_new": 48,
+    "held_cold": 48,
+    "latent_structure": "4 shared lower-order causal motifs plus one NEW-only higher-order motif, signed consequence and Gaussian observation noise sigma=.20. Correlated nuisance cues shift OLD/NEW/COLD. Causal support identities hidden from policies and downstream learners.",
+    "grammar": "Known finite 24-prototype high-order mechanism bank shared by all methods: 8 parity4, 8 threshold4, 8 four-bit gate4 signatures on nine first action variables; unseen identity but known candidate family. NOT arbitrary operator invention, model trained externally, not native Yggdrasil.",
+    "leakage_guard": "Candidate policies receive old 80 factual outcomes, unlabeled new action candidates, and observe(index) callback revealing ONLY each selected action label. Held labels and planted factor never supplied to policy/fit. Candidate pool and held causal assignments source-keyed unique.",
+    "dataset_provenance": "Fresh code-generated synthetic intervention consequences under SHA256-keyed seed streams; no user/third-party files or protected native first-use."
+  },
+  "methods": {
+    "policies": [
+      "tournament",
+      "hamming",
+      "d_optimal",
+      "uncertainty",
+      "random"
+    ],
+    "candidate": "Tournament sequentially re-fits each of 24 single-factor hypotheses to the factual residuals of already observed new interventions, with soft posterior weights, then maximizes predictive posterior variance. Uses exactly 4 common anchor +12 adaptive new labels.",
+    "strong_controls": "Hamming max-min diversity; standard regularized D-optimal leverage on the same 24 features; single-best-hypothesis predictive uncertainty; and seeded random intervention acquisition.",
+    "downstream_learners": [
+      "OMP3 residual correction with frozen OMP4 old base (PRIMARY, fixed before results)",
+      "ElasticNet alpha .045 l1 .8 max_iter3000 tol1e-5 on same 24 candidate features",
+      "Ridge alpha 1 on same 24 features"
+    ],
+    "information_parity": "All policies same 80 old labels and 16 new labels, same fixed shared anchors and 96 candidate actions, all same 24 authored features and same frozen old OMP4 fit. Fully train three downstream models independently. 48 unseen old/new/cold held actions per world. No seed or retrospective model selection.",
+    "compute": "12 prospective worlds for each of 2 screening seeds; if SCREEN_PROMISING 36 primary worlds on 3 reserved seeds. Exactly one screen, source-identical replay and independent auditor. Single-thread CPU Python3.13.5 NumPy2.3.5 scikit-learn1.8.0 SciPy1.17.0. No paid APIs, runner, queue, native official execution.",
+    "audit": "Independent action-policy reconstruction and all fitted downstream refits with per-arm predicted SHA256 and held MSE. Shares synthetic generator and third-party NumPy/sklearn; does NOT establish completely independent science.",
+    "metrics": "Mean per-world new and cold MSE (lower better), old frozen checkpoint MSE, candidate OMP cold margin against best alternate OMP and best other policy/learner, per-seed and family margins, summed selection seconds."
+  },
+  "frozen_screen_gates": {
+    "gain8_omp_best_alternative": "Pooled tournament+OMP cold MSE <=0.92 * MIN pooled cold MSE among hamming/d_optimal/uncertainty/random + OMP.",
+    "gain5_all_other_arms": "Pooled tournament+OMP cold MSE <=0.95 * MIN pooled cold MSE over ANY other acquisition policy and any of 3 downstream learners.",
+    "gain10_random_omp": "Pooled tournament+OMP cold MSE <=0.90 * random+OMP.",
+    "gain5_hamming_omp": "Pooled tournament+OMP cold MSE <=0.95 * hamming+OMP.",
+    "per_seed_positive_both": "Tournament+OMP cold MSE strictly lower than BEST alternate OMP policy separately in BOTH 99721 and 99733 screen seeds.",
+    "old_retention_exact": "Tournament old held MSE exactly equal to same frozen old checkpoint (within 1e-10) in every world.",
+    "family_no_more_than_10pct_worse": "Pooled tournament+OMP cold MSE <=1.10 times strongest alternate OMP policy in EACH of the 3 mechanism families.",
+    "selection_cost_below_20x_random": "Summed tournament selection seconds <=20 times summed random selection seconds on same local CPU. Not equivalent to Joules or end-to-end cost."
+  },
+  "screen_decision": {
+    "SCREEN_PROMISING": "Only if BOTH gain8_omp_best_alternative and gain5_all_other_arms and per_seed_positive_both PASS, at least 7/8 total pass, and auditor independently replays ALL 24-world action/prediction receipts PASS. Then eligible for separate 36-world primary on frozen reserved seeds.",
+    "SCREEN_NO_GO": "Any of the three critical gates FAIL OR fewer than 7/8 pass, with exact source, all same-budget controls, valid independent audit, preserved individual worlds. Stop without scoring primary or tuning consumed seeds.",
+    "INVALID": "Prereg after prospective seeds, package or code hash drift, missing strong control/candidate, policy label leakage, incorrect split/count, independent audit FAIL, or changed primary learner. This is not an ordinary science NO-GO.",
+    "SCIENCE": "SCREEN_PROMISING is not SCIENTIFIC_PASS or native acceptance. Only all 8 primary frozen experiment.gates() and independent audit PASS would mean external DEVELOPMENT_GO; native validation remains separate."
+  },
+  "primary_frozen_gates_from_experiment_source": [
+    "cold_gain_8pct_vs_best_other_omp",
+    "cold_gain_5pct_vs_best_any",
+    "random_gain_10pct",
+    "hamming_gain_5pct",
+    "seed_stability_2of3",
+    "family_no_degradation_10pct",
+    "old_retention_exact",
+    "selection_cost_below_20x_random"
+  ],
+  "prohibitions": [
+    "No post-result policy/learner/threshold/seed adjustments",
+    "No extra screens on exhausted seeds",
+    "No primary reserved-seed scoring if screen fails",
+    "No Yggdrasil native model/checkpoint/accepted ref/loop modifications",
+    "No autonomous scheduler, queue, paid API, merge or deployment"
+  ],
+  "source_freeze_statement": "Source+auditor committed as 4fdadd0b4de9bd6ac79537ccc76356793e898b3d before this prereg. Only development seed 99709 has been scored before this commit; prospective 99721/99733 and primary 9511/9523/9547 untouched."
+}
