@@ -2,13 +2,16 @@
 import json
 
 from yggdrasil.native_context_basis import canonical, digest, pin, require
-from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE, NativeCumulativeLearner
+from yggdrasil.native_cumulative_learner import (
+    EXPERIENCE_SOURCE, NativeCumulativeLearner, experience_packet_sha256,
+)
 from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist
 from yggdrasil.native_jepa_temporal import (
     NativeTemporalMultiLearner, TemporalLatentSpecialist, _source_equivalent,
 )
 
 SCHEMA = "yggdrasil.ckad.native-causal-amalgam.v1"
+EXTERNAL_SCHEMA = "yggdrasil.ckad.native-causal-amalgam.v2"
 MAX_BYTES = 32 * 1024 * 1024
 KINDS = ("transition", "reward")
 
@@ -48,9 +51,11 @@ class NativeCausalAmalgam:
         direct, temporal = (self._heads[1], self._heads[3]) if terminal else (self._heads[0], self._heads[2])
         return direct.probability(views, *extras), temporal.probability(views, extras, history)
 
-    def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256):
+    def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256,
+                           external_source_sha256=None):
         native = self.native.observe_experience(
-            identifier, views, row, source_sha256=source_sha256, packet_sha256=packet_sha256)
+            identifier, views, row, source_sha256=source_sha256, packet_sha256=packet_sha256,
+            external_source_sha256=external_source_sha256)
         if native is self.native:
             return self
         require(views[0][0] == views[1][0], "AMALGAM_PAIRED_VIEW_COORDINATE")
@@ -67,7 +72,8 @@ class NativeCausalAmalgam:
 
     def checkpoint(self):
         data = {
-            "schema": SCHEMA, "native_ascii": self.native.checkpoint().decode("ascii"),
+            "schema": SCHEMA if self.native._external_experience is None else EXTERNAL_SCHEMA,
+            "native_ascii": self.native.checkpoint().decode("ascii"),
             "native_parent_sha256": self._native_parent,
             "specialist_parent_sha256": self._specialist_parent,
             "action_heads": [head.as_data() for head in self._heads[:2]],
@@ -78,28 +84,38 @@ class NativeCausalAmalgam:
         return raw
 
     @classmethod
-    def restore(cls, raw, expected_sha, *, native_parent, native_pin, donor_parent, donor_pin):
+    def restore(cls, raw, expected_sha, *, native_parent, native_pin, donor_parent, donor_pin,
+                external_source_sha256=None):
         require(type(raw) is bytes and 0 < len(raw) <= MAX_BYTES
                 and pin(expected_sha) and digest(raw) == expected_sha, "AMALGAM_CHECKPOINT_PIN")
         data = json.loads(raw)
         require(type(data) is dict and set(data) == {
             "schema", "native_ascii", "native_parent_sha256", "specialist_parent_sha256",
             "action_heads", "temporal_heads"
-        } and data["schema"] == SCHEMA and canonical(data) == raw
+        } and data["schema"] in (SCHEMA, EXTERNAL_SCHEMA) and canonical(data) == raw
                 and data["native_parent_sha256"] == native_pin
                 and data["specialist_parent_sha256"] == donor_pin, "AMALGAM_CHECKPOINT_CONTRACT")
         replay = cls.activate(native_parent, native_pin, donor_parent, donor_pin)
         current = data["native_ascii"].encode("ascii")
-        native = NativeCumulativeLearner.restore(current, digest(current))
+        native = NativeCumulativeLearner.restore(
+            current, digest(current), external_source_sha256=external_source_sha256)
         old_ledger = replay.native._episode_reader()._ledger
         new_ledger = native._episode_reader()._ledger
         require(new_ledger[:len(old_ledger)] == old_ledger, "AMALGAM_NATIVE_PREFIX")
 
-        for identifier, views, first, state, second, reward in new_ledger[len(old_ledger):]:
+        boundary = native._external_experience
+        if boundary is not None:
+            require(boundary[0] >= len(old_ledger), "AMALGAM_EXTERNAL_NATIVE_PREFIX")
+        for index, event in enumerate(new_ledger[len(old_ledger):], start=len(old_ledger)):
+            identifier, views, first, state, second, reward = event
             row = {"s1": views[0][0], "x1": first, "s2": state, "x2": second, "y": reward}
+            source = EXPERIENCE_SOURCE
+            if boundary is not None and index >= boundary[0]:
+                source = boundary[1]
             replay = replay.observe_experience(
-                identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
-                packet_sha256=digest(canonical([identifier, views, row])))
+                identifier, views, row, source_sha256=source,
+                packet_sha256=experience_packet_sha256(source, identifier, views, row),
+                external_source_sha256=external_source_sha256)
         require(replay.native.checkpoint() == current, "AMALGAM_NATIVE_REPLAY")
         action_heads = tuple(ActionLatentSpecialist.from_data(d, kind)
                              for d, kind in zip(data["action_heads"], KINDS, strict=True))

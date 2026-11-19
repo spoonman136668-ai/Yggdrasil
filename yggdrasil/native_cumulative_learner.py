@@ -24,9 +24,18 @@ REPAIR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v2'
 HISTORY_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v3'
 DTR_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v4'
 EXPERIENCE_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v5'
+EXTERNAL_EXPERIENCE_SCHEMA = 'yggdrasil.ckad.native-cumulative-learner.v6'
 EXPERIENCE_SOURCE = '20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef'
+EXPERIENCE_SCHEMAS = (EXPERIENCE_SCHEMA, EXTERNAL_EXPERIENCE_SCHEMA)
 MAX_BYTES = 16 * 1024 * 1024
 MAX_EVENTS = 128
+
+
+def experience_packet_sha256(source_sha256, identifier, views, row):
+    packet = [identifier, views, row]
+    if source_sha256 != EXPERIENCE_SOURCE:
+        packet.insert(0, source_sha256)
+    return digest(canonical(packet))
 
 
 def coordinates(slot):
@@ -59,7 +68,8 @@ def _two_stage_plan(transition, terminal):
 class NativeCumulativeLearner:
     """One immutable train/save/restore interface; no rival memory substrate."""
     __slots__ = ('_properties', '_source', '_hypotheses', '_quarantined', '_events',
-                 '_schema', '_repairs', '_history', '_dtr', '_experience')
+                 '_schema', '_repairs', '_history', '_dtr', '_experience',
+                 '_external_experience')
 
     def __init__(self, property_raw, expected_sha256):
         self._properties = NativePropertyKnowledge.restore(property_raw, expected_sha256)
@@ -72,6 +82,7 @@ class NativeCumulativeLearner:
         self._history = None
         self._dtr = None
         self._experience = None
+        self._external_experience = None
 
     def _copy(self):
         obj = object.__new__(NativeCumulativeLearner)
@@ -223,21 +234,42 @@ class NativeCumulativeLearner:
     def _episode_reader(self):
         return self._experience if self._experience is not None else NativeEpisodeExperience()
 
-    def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256, repair=None):
-        """Admit one revealed development episode through the pilot source contract."""
+    def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256,
+                           repair=None, external_source_sha256=None):
+        """Admit a pilot witness or continue with one explicitly pinned source.
+
+        The caller supplies the external manifest pin from the frozen protocol,
+        separately from the source identity reported by the receipt producer.
+        """
         require(self._dtr is not None, 'EPISODE_REQUIRES_INTEGRATED_PARENT')
-        require(source_sha256 == EXPERIENCE_SOURCE and
-                digest(canonical([identifier, views, row])) == packet_sha256,
+        external = source_sha256 != EXPERIENCE_SOURCE
+        require(not external or (pin(source_sha256) and source_sha256 == external_source_sha256),
+                'EPISODE_EXTERNAL_SOURCE_PIN')
+        require(experience_packet_sha256(source_sha256, identifier, views, row) == packet_sha256,
                 'EPISODE_SOURCE_PACKET')
         require(repair is None or (type(repair) is bool and self._experience is None),
                 'EPISODE_REPAIR_CONFIGURATION')
         previous = (self._episode_reader() if repair is None
                     else NativeEpisodeExperience(repair=repair))
+        source_boundary = self._external_experience
+        if source_boundary is not None:
+            start, pinned_source, packets = source_boundary
+            require(source_sha256 == pinned_source, 'EPISODE_EXTERNAL_SOURCE_CHANGE')
+        elif external:
+            start = len(previous._ledger)
+            packets = ()
+        if external and pin(identifier) and identifier in previous._ids:
+            require(all(entry[0] != identifier for entry in previous._ledger[:start]),
+                    'EPISODE_EXTERNAL_PREFIX_COLLISION')
         experience = previous.observe(identifier, views, row)
+        if external:
+            require(row['s1'] == views[0][0], 'EPISODE_EXTERNAL_CONTEXT')
         if previous is experience:
             return self
         candidate = self._copy()
         candidate._experience = experience
+        if external:
+            candidate._external_experience = (start, source_sha256, (*packets, packet_sha256))
         return candidate
 
     def consolidate_experience(self):
@@ -380,12 +412,15 @@ class NativeCumulativeLearner:
             d['schema'] = EXPERIENCE_SCHEMA
             d['experience_ascii'] = self._experience.checkpoint().decode('ascii')
             d['experience_source'] = EXPERIENCE_SOURCE
+            if self._external_experience is not None:
+                d['schema'] = EXTERNAL_EXPERIENCE_SCHEMA
+                d['external_experience'] = self._external_experience
         raw = canonical(d)
         require(len(raw) <= MAX_BYTES, 'INTEGRATED_CHECKPOINT_CAPACITY')
         return raw
 
     @classmethod
-    def restore(cls, raw, expected_sha256):
+    def restore(cls, raw, expected_sha256, *, external_source_sha256=None):
         require(type(raw) is bytes and 0 < len(raw) <= MAX_BYTES and pin(expected_sha256)
                 and digest(raw) == expected_sha256, 'INTEGRATED_CHECKPOINT_PIN')
         def unique(pairs):
@@ -397,8 +432,11 @@ class NativeCumulativeLearner:
             d = json.loads(raw.decode('ascii'), object_pairs_hook=unique)
             keys={'schema','source_mode','properties_ascii','source_ascii','hypotheses_ascii',
                   'quarantined','events','accepted_native','scientific_pass'}
-            require(type(d) is dict and d.get('schema') in (SCHEMA,REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA,EXPERIENCE_SCHEMA)
-                and set(d)==(keys|{'repairs','history_ascii','dtr_ascii','experience_ascii','experience_source'} if d['schema']==EXPERIENCE_SCHEMA else
+            schema = d.get('schema') if type(d) is dict else None
+            if schema == EXTERNAL_EXPERIENCE_SCHEMA:
+                keys.add('external_experience')
+            require(schema in (SCHEMA, REPAIR_SCHEMA, HISTORY_SCHEMA, DTR_SCHEMA, *EXPERIENCE_SCHEMAS)
+                and set(d)==(keys|{'repairs','history_ascii','dtr_ascii','experience_ascii','experience_source'} if schema in EXPERIENCE_SCHEMAS else
                              keys|{'repairs','history_ascii','dtr_ascii'} if d['schema']==DTR_SCHEMA else
                              keys|{'repairs','history_ascii'} if d['schema']==HISTORY_SCHEMA else
                              keys|{'repairs'} if d['schema']==REPAIR_SCHEMA else keys)
@@ -421,7 +459,8 @@ class NativeCumulativeLearner:
                     hypotheses.append(None); continue
                 h = h.encode('ascii')
                 if json.loads(h)['schema']==SPARSE_SCHEMA:
-                    require(d['schema'] in (REPAIR_SCHEMA,HISTORY_SCHEMA,DTR_SCHEMA,EXPERIENCE_SCHEMA),'INTEGRATED_SPARSE_VERSION')
+                    require(schema in (REPAIR_SCHEMA, HISTORY_SCHEMA, DTR_SCHEMA, *EXPERIENCE_SCHEMAS),
+                            'INTEGRATED_SPARSE_VERSION')
                     hyp=NativeSparseHypothesis.restore(h,digest(h))
                 else:hyp = NativeDegreeHypothesis.restore(h, digest(h))
                 require(hyp.info()['source_checkpoint_sha256'] == digest(obj._view(slot)),
@@ -457,7 +496,8 @@ class NativeCumulativeLearner:
                             'INTEGRATED_EVENT_STATUS')
             require(flags == qs, 'INTEGRATED_QUARANTINE_LEDGER')
             obj._hypotheses = tuple(hypotheses); obj._quarantined = tuple(qs); obj._events = tuple(es)
-            obj._schema=DTR_SCHEMA if d['schema']==EXPERIENCE_SCHEMA else d['schema'];repairs=d.get('repairs',[])
+            obj._schema = DTR_SCHEMA if schema in EXPERIENCE_SCHEMAS else schema
+            repairs = d.get('repairs', [])
             require(type(repairs) is list and len(repairs)<=16,'INTEGRATED_REPAIR_LEDGER')
             slots=set()
             for e in repairs:
@@ -475,10 +515,23 @@ class NativeCumulativeLearner:
                 obj._history=NativeStochasticHistory.restore(h,digest(h))
             if obj._schema==DTR_SCHEMA:
                 h=d['dtr_ascii'].encode('ascii');obj._dtr=NativeDTRHistory.restore(h,digest(h))
-            if d['schema']==EXPERIENCE_SCHEMA:
+            if schema in EXPERIENCE_SCHEMAS:
                 require(d['experience_source']==EXPERIENCE_SOURCE,'EPISODE_SOURCE_CHECKPOINT')
                 experience=d['experience_ascii'].encode('ascii')
                 obj._experience=NativeEpisodeExperience.restore(experience,digest(experience))
+            if schema == EXTERNAL_EXPERIENCE_SCHEMA:
+                start, source, packets = d['external_experience']
+                ledger = obj._experience._ledger
+                require(type(start) is int and 0 <= start < len(ledger)
+                        and pin(source) and source != EXPERIENCE_SOURCE
+                        and source == external_source_sha256 and type(packets) is list
+                        and len(packets) == len(ledger) - start, 'EPISODE_EXTERNAL_SOURCE_CHECKPOINT')
+                for event, packet in zip(ledger[start:], packets, strict=True):
+                    identifier, views, first, state, second, reward = event
+                    row = dict(s1=views[0][0], x1=first, s2=state, x2=second, y=reward)
+                    require(packet == experience_packet_sha256(source, identifier, views, row),
+                            'EPISODE_EXTERNAL_CHECKPOINT_PACKET')
+                obj._external_experience = (start, source, tuple(packets))
             require(obj.checkpoint() == raw, 'INTEGRATED_COLD_BYTES')
             return obj
         except (ValueError, TypeError, KeyError, UnicodeError, AttributeError, IndexError) as exc:

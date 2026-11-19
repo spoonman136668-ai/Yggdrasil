@@ -1,0 +1,89 @@
+name: Amalgam external source qualification
+on:
+  push:
+    branches: [research/amalgam-external-receipts-20261119]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  atlas:
+    if: github.event.head_commit.message == 'research(amalgam): bind external development receipts'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    outputs:
+      candidate: ${{ steps.atlas.outputs.candidate }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Stamp isolated candidate
+        id: atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "docs(amalgam): atlas for $GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          git push origin HEAD:refs/heads/research/amalgam-external-receipts-20261119
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  qualify:
+    needs: atlas
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      CANDIDATE: ${{ needs.atlas.outputs.candidate }}
+      DESCENDANT_NATIVE: ff51d1f91fe5ca25ad16ae1107bf89721f928da6b3209cad43adc66604bacaf8
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Exact-source regression and isolated receipt fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
+          git rev-parse HEAD HEAD^{tree}
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
+          done
+          AMALGAM=research/contrib/chatgpt/CAUSAL-AMALGAM
+          INPUTS="$RUNNER_TEMP/external-receipt-inputs"
+          mkdir -p "$INPUTS"
+          git fetch --no-tags origin bd55239c5c7785b8fce7fd39a6a0321f597a3530 eee9ab7719f52c1c67ce30b142e8f07f36454dd1
+          git show bd55239c5c7785b8fce7fd39a6a0321f597a3530:research/contrib/chatgpt/CKAD-26/seed-101-refresh-native.json > "$INPUTS/seed-101-refresh-native.json"
+          git show eee9ab7719f52c1c67ce30b142e8f07f36454dd1:research/contrib/chatgpt/YGG-JEPA2-03/seed-14071-state.json > "$INPUTS/seed-14071-state.json"
+          python -B "$AMALGAM/joint_update_preflight.py" "$INPUTS/seed-101-refresh-native.json" "$INPUTS/seed-14071-state.json" --checkpoint-out "$INPUTS/amalgam-joint-state.json"
+          python -B "$AMALGAM/external_receipt_preflight.py" "$INPUTS" | tee "$RUNNER_TEMP/amalgam-external-receipt.json"
+          python -c "import json, os, sys; data=json.load(open(sys.argv[1])); assert data['descendant_native']==os.environ['DESCENDANT_NATIVE'] and data['head_step_deltas']==[3]*4 and data['new_source_actions']==0" "$RUNNER_TEMP/amalgam-external-receipt.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Amalgam-external-receipt-${{ matrix.os }}
+          path: ${{ runner.temp }}/amalgam-external-receipt.json
+          if-no-files-found: error
