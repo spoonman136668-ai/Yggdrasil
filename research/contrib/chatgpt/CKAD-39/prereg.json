@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CKAD39",
+  "kind": "source-only native evidence-conditioned old causal-memory retrieval",
+  "parent_commit": "0acaf48b6148f3241c3627a7f92c0db45009c543",
+  "preregistered_before_source": true,
+  "question": "Can read-only likelihood retrieval across previously witnessed native causal source blocks, gated by an endogenous contradiction detection, recover an earlier causal relationship after an unannounced A->B->A shift better than the existing native context readout and fully trained conventional adaptive controls, without retraining, losing, or altering native knowledge?",
+  "mechanism": "One external, opt-in read-only forecast projection over the existing NativeEpisodeExperience._context_models archive: compute each archived source block's likelihood on a fixed window of the 16 latest witnessed genuine events, normalize log likelihood, and, only within 48 episodes of a native stream contradiction and with posterior top mass >=0.55, blend 50% archived predictive mixture and 50% unmodified native context forecast. No model update/readout writes, no hidden boundary labels, no additional native learner, no oracle knowledge, no new action budget. Exact conditional terminal forecasts reweight archive hypotheses on already observed next state.",
+  "source_and_split": "Reuse CKAD38's authenticated sequential synthetic generator and same existing native learner as research-only predecessor at pinned commit. New CKAD39 seed cohorts guarantee distinct episode IDs and stochastic worlds. Two worlds/seed; 48 witnessed warm episodes and one continuing stream. All arms receive identical action/transition/reward source events; forecasts precede outcomes; evaluator-only regime/phase labels never passed into learner. This first screen is same structural families, not out-of-family transfer proof.",
+  "dev_seeds": [
+    38911,
+    38912
+  ],
+  "original_pilot_seeds": [
+    39181,
+    39182
+  ],
+  "reserved_primary_seeds": [
+    49181,
+    49182,
+    49183
+  ],
+  "consumed_forbidden_pilot_seeds": [
+    14181,
+    14182,
+    14071,
+    14072
+  ],
+  "claimed_primary_first_use": false,
+  "controls": [
+    "unchanged native stream context_forecast on same original trained model",
+    "native no-repair",
+    "native global nonstream",
+    "Beta(1,1) full historical cells",
+    "Beta(1,1) sliding 12,24,48 windows",
+    "discounted Beta 0.85 and 0.95",
+    "genuinely prequential exponential Hedge over six fully fitted conventional controls eta=4",
+    "constant 0.5 sham"
+  ],
+  "metric": "Prequential mean squared/Brier for predicted transition and observed-transition-conditioned terminal across late-B+late-A-return pooled, plus early-B, early-return, stable and per-world Brier; cold checkpoint identities, retained archival source IDs/digests, no read mutation, source budget and runtime. Compare each seed against individually strongest fully fitted conventional expert and unchanged native stream. All forecast data from witnessed events only.",
+  "frozen_screen_go": "Both previously unseen original pilot seeds (ONLY after source freeze and independent DEV tests) must meet pooled late B+late A return Brier <=0.145 and at least 0.025 absolute lower Brier than BOTH original native stream and strongest conventional control, plus no worse than native stream at early B and late A return. Zero mutation on retrieval, complete source ledger preservation, exact cold restoration, duplicate idempotence, conflicting duplicate rejection, same actions/consequences for all arms, independent score reconstruction. Otherwise SCREEN_NO_GO; no post-result hyperparameter or seed tuning.",
+  "stop_rule": "Run one bounded DEV implementation pass; if either DEV seed fails the 0.025 native and strongest conventional improvement, stop before consuming pilot/primary seeds. A subsequent change requires a new separately preregistered hypothesis, never retroactively changed thresholds.",
+  "qualification": "First freeze this prereg commit; then implement source and unit tests. Run preflight/DEV-only first. Freeze exact source code/test blob and qualified SHA before original pilot first-use. Cross-platform final regression and original independent audit required. Pilot GO never equals scientific PASS; actual unfamiliar-world transfer separately required.",
+  "isolation": "Read-only research-contribution lane. No edits to original native model files, accepted main, CKAD38 evidence, inference runner, Forge, official research controller, schedule, training loop or deployment. No paid APIs or externally scheduled tasks.",
+  "authority": {
+    "research_only": true,
+    "owner_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "controller": false,
+    "scheduled_tasks": false,
+    "paid_api": false
+  }
+}
