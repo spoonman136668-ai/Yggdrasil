@@ -1,0 +1,186 @@
+name: YGG-JEPA2-05 exact continuation and rehearsal qualification
+'on':
+  push:
+    branches:
+      - research/ygg-jepa2-05-memory-rehearsal-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  preflight:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Preserve public native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exactly pinned existing original native numeric dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Frozen prereg, authentic prior learned weights and prospective source preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code d0fa25aad2c6dc270eb0f863b6e93cbb89092f23 HEAD -- research/contrib/chatgpt/YGG-JEPA2-05/prereg.json
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-JEPA2-05/source.py)" = ee809ef04859d94f7e96f50d757635b6827d1f7c
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-RET01/seed-14071-state.json)" = e2912ca930ad99ed23bfee4ce18d1e3945f6780a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-RET01/seed-14072-state.json)" = 3f076a393a15911769c0a40d37ccafc06dfaf2b7
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-JEPA2-04/campaign.py)" = dcb5ae2a4bd75ce1c99bc071de96cb23d2cd1455
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-JEPA2-05 -p 'test_*.py' -v
+          python -B research/contrib/chatgpt/YGG-JEPA2-05/campaign.py --help
+          python -B research/contrib/chatgpt/YGG-JEPA2-05/audit.py --help
+          test -z "$(git status --porcelain)"
+  train:
+    needs: preflight
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve public native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install original pinned native numeric dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: CONTINUE existing actual 7-component Yggdrasil native model and independently audit all scored receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code d0fa25aad2c6dc270eb0f863b6e93cbb89092f23 HEAD -- research/contrib/chatgpt/YGG-JEPA2-05/prereg.json
+          python -B research/contrib/chatgpt/YGG-JEPA2-05/campaign.py --output "$RUNNER_TEMP/YGG-JEPA2-05"
+          python -B research/contrib/chatgpt/YGG-JEPA2-05/audit.py "$RUNNER_TEMP/YGG-JEPA2-05" --output "$RUNNER_TEMP/YGG-JEPA2-05/audit.json"
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: YGG-JEPA2-05-${{ matrix.os }}
+          path: ${{ runner.temp }}/YGG-JEPA2-05/
+          if-no-files-found: warn
+          retention-days: 30
+  seal:
+    needs: train
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - name: Preserve public native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-JEPA2-05-ubuntu-latest
+          path: ${{ runner.temp }}/YGG-JEPA2-05-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-JEPA2-05-windows-2022
+          path: ${{ runner.temp }}/YGG-JEPA2-05-windows
+      - name: Preserve original two-platform training evidence without scored-source rerun and rebuild G29
+        id: seal
+        shell: bash
+        env:
+          YGG_205_LINUX: ${{ runner.temp }}/YGG-JEPA2-05-linux
+          YGG_205_WINDOWS: ${{ runner.temp }}/YGG-JEPA2-05-windows
+          YGG_205_SOURCE: ${{ github.sha }}
+          YGG_205_RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code d0fa25aad2c6dc270eb0f863b6e93cbb89092f23 HEAD -- research/contrib/chatgpt/YGG-JEPA2-05/prereg.json
+          python -B research/contrib/chatgpt/YGG-JEPA2-05/seal.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/contrib/chatgpt/YGG-JEPA2-05/
+          git commit -m 'research(jepa2-05): seal original cumulative JEPA and matched-control development evidence'
+          EVIDENCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$EVIDENCE"
+          git add .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m "docs(jepa2-05): exact G29 atlas pinned at $EVIDENCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ygg-jepa2-05-memory-rehearsal-20261119
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  final:
+    needs: seal
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Preserve public native source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install original pinned native dependencies
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Mandatory full original plus new native regression on exact final source SHA and G29
+        shell: bash
+        env:
+          EXACT_CANDIDATE: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_CANDIDATE"
+          git rev-parse HEAD 'HEAD^{tree}'
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-JEPA2-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
