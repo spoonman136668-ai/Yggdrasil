@@ -1,0 +1,64 @@
+"""Read-only LR-92AR development CSV receipt validator; never reruns worlds."""
+import csv
+import hashlib
+import json
+import math
+from pathlib import Path
+
+CSV_SHA256 = '1793138522ed3f15e7a864ad411980c6396a5bd47e959eea4905c3894262a7ee'
+SEEDS = (74009171, 74009172)
+FAMILIES = ('xor', 'and', 'random14')
+MODELS = ('BOCPD_896', 'CHR_candidate', 'CHR_fixed_half', 'Full14_480',
+          'HMM_MAP_928', 'Window32_832', 'YPT4_negative')
+CONTROLS = ('BOCPD_896','HMM_MAP_928','Full14_480','Window32_832')
+
+
+def audit(path='world_metrics.csv'):
+    raw = Path(path).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != CSV_SHA256:
+        raise ValueError('LR92AR_CSV_BYTES_DRIFT')
+    rows = list(csv.DictReader(raw.decode().splitlines()))
+    if len(rows) != 24:
+        raise ValueError('LR92AR_EXPECTED_24_WORLDS')
+    keys = {(int(r['seed']), r['family'], int(r['index'])) for r in rows}
+    expected = {(s, f, i) for s in SEEDS for f in FAMILIES for i in range(4)}
+    if keys != expected:
+        raise ValueError('LR92AR_SCOPE_DRIFT')
+    events = 0
+    for r in rows:
+        events += sum(int(r[x]) for x in ('dwell_A','dwell_B','dwell_Areturn'))
+        if int(r['coverage']) != 14 or len(r['public_tape_sha256']) != 64:
+            raise ValueError('LR92AR_DATA_COVERAGE_OR_DIGEST')
+        for model in MODELS:
+            for phase in ('B', 'A_return_early16', 'A_return_late', 'A_return_first'):
+                v=float(r[model+'.'+phase])
+                if not math.isfinite(v) or not 0<=v<=1:
+                    raise ValueError('LR92AR_NONFINITE_SCORE')
+    if events != 4834:
+        raise ValueError('LR92AR_EVENT_COUNT_DRIFT')
+    mean = lambda v:sum(v)/len(v)
+    def score(name, phase, subset=rows):
+        return mean([float(r[name+'.'+phase]) for r in subset])
+    seedwise = {}
+    for seed in SEEDS:
+        sub = [r for r in rows if int(r['seed']) == seed]
+        return_gain = min(score(c, 'A_return_early16', sub) for c in CONTROLS) - score('CHR_candidate','A_return_early16',sub)
+        B_regression = score('CHR_candidate','B',sub) - min(score(c, 'B', sub) for c in CONTROLS)
+        seedwise[str(seed)] = {'return_gain':return_gain, 'B_regression':B_regression}
+    gate_return_gain = score('CHR_fixed_half','A_return_early16')-score('CHR_candidate','A_return_early16')
+    gate_B_regression = score('CHR_candidate','B')-score('CHR_fixed_half','B')
+    passes = (all(v['return_gain']>=0.01 and v['B_regression']<=0.01 for v in seedwise.values()) and
+              gate_return_gain>=.005 and gate_B_regression<=.01)
+    if passes:
+        raise AssertionError('LR92AR_UNEXPECTED_GO_REQUIRES_INDEPENDENT_REVIEW')
+    return {'decision':'LR92AR_DEVELOPMENT_NO_GO', 'csv_sha256':CSV_SHA256,
+            'worlds':len(rows),'events_per_model':events,
+            'mean_scores':{model:{phase:score(model,phase) for phase in ('B','A_return_early16','A_return_late','A_return_first')}
+                           for model in MODELS},
+            'seedwise':seedwise,'gate_return_gain':gate_return_gain,
+            'gate_B_regression':gate_B_regression,
+            'scientific_pass_claimable':False,'protected_primary_used':False}
+
+
+if __name__=='__main__':
+    print(json.dumps(audit(),indent=2,sort_keys=True))
