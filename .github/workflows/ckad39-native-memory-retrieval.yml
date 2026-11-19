@@ -1,0 +1,56 @@
+name: CKAD39 isolated development-only native retrieval qualification
+on:
+  push:
+    branches:
+      - research/ckad39-evidence-conditioned-retrieval-20261118
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  dev:
+    if: "github.event.head_commit.message == 'ci(ckad39): development-only qualification'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Prevent platform-dependent checkout rewrites
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact preregistered lineage and syntax, no first-use
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d210f6d0259bb4dc27fe6a5155eeef0ffdcb776a HEAD
+          git merge-base --is-ancestor 0acaf48b6148f3241c3627a7f92c0db45009c543 HEAD
+          test ! -e research/contrib/chatgpt/CKAD-39/source_lock.json
+          test ! -e research/contrib/chatgpt/CKAD-39/pilot_screen_report.json
+          python -B -c "import ast,pathlib; p=pathlib.Path('research/contrib/chatgpt/CKAD-39'); [ast.parse(x.read_text()) for x in p.glob('*.py')]"
+          python -B research/contrib/chatgpt/CKAD-39/campaign.py --mode preflight
+      - name: Development tests and native cold-restore controls
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-39 -p test_ckad39.py -v
+      - name: Exactly two development seeds; negative science does not fail engineering
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CKAD-39/screen_dev.py
+          test -z "$(git status --porcelain)"
