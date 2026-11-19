@@ -503,6 +503,117 @@ class NativeCumulativeLearner:
                 'INTEGRATED_CAUSAL_WITNESS_MEMORY_CUSTODY')
         return updated, version, status
 
+    def scdr_k4_defect_repair(self, *, edge_slot=12, anchor_slot=13):
+        """Source-only K4 constant-F2 cellular-sheaf defect witness.
+
+        Six genuinely witnessed edge-action outcomes form C1=F2**6.
+        The three rooted triangle cycles give H1=F2**3 because d0 has
+        rank three. Single-edge syndromes are distinguishable; an
+        uncorroborated cycle defect is NEVER evidence of a specific
+        physical faulty edge. The two independently witnessed vertex
+        anchors are required to certify an ephemeral correction.
+        Existing observed edge evidence, learned relations, and weights
+        are NEVER overwritten or secretly reinterpreted as true labels.
+
+        Returns diagnostic data, not an accepted repair or new latent.
+        """
+        require(self._schema == RELATION_SCHEMA
+                and edge_slot == 12 and anchor_slot == 13
+                and self._source._model.context_bits == 3
+                and all(self._compiled[k] is not None
+                        and not self._quarantined[k]
+                        and self._source._seen[k].bit_count() >= 12
+                        for k in (1, 2, 3))
+                and not self._repairs and self._history is None
+                and self._dtr is None and self._experience is None,
+                'INTEGRATED_SCDR_SCOPE')
+        edges = ((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3))
+        def source_event(slot, count):
+            events = [x for x in self._events if x['slot'] == slot]
+            require(len(events) == 1
+                    and events[0]['status'] == 'ACQUIRED'
+                    and events[0]['records'] == count
+                    and pin(events[0]['source_ref'])
+                    and pin(events[0]['source_sha256'])
+                    and self._source._seen[slot].bit_count() == count,
+                    'INTEGRATED_SCDR_AUTHENTIC_OBSERVED_SOURCE')
+            return events[0]
+        edge_receipt = source_event(edge_slot, 6)
+        edge_rows = self._rows(edge_slot)
+        edge_bits = {}
+        for c, a, y in edge_rows:
+            mask = c | (a << 3)
+            require(mask in range(8, 14) and mask not in edge_bits,
+                    'INTEGRATED_SCDR_EDGE_PACKET_INVALID')
+            edge_bits[mask] = y
+        require(set(edge_bits) == set(range(8, 14)),
+                'INTEGRATED_SCDR_EDGE_PACKET_INCOMPLETE')
+        observations = [edge_bits[i] for i in range(8, 14)]
+        syndrome = (
+            observations[0] ^ observations[1] ^ observations[3],
+            observations[0] ^ observations[2] ^ observations[4],
+            observations[1] ^ observations[2] ^ observations[5],
+        )
+        single_defects = {
+            (1, 1, 0): 0, (1, 0, 1): 1,
+            (0, 1, 1): 2, (1, 0, 0): 3,
+            (0, 1, 0): 4, (0, 0, 1): 5,
+        }
+        suspect = single_defects.get(syndrome)
+        proposed_edge = edges[suspect] if suspect is not None else edges[0]
+        proposals = [[vertex, 0] for vertex in proposed_edge]
+        result = {
+            'sheaf': 'constant-F2-K4',
+            'd0_rank': 3,
+            'h1_dimension': 3,
+            'syndrome': list(syndrome),
+            'edge_actions': [[i, 1] for i in range(6)],
+            'observed_edge_bits': observations,
+            'suspect_edge': list(edges[suspect]) if suspect is not None else None,
+            'proposed_vertex_actions': proposals,
+            'source_edge_sha256': edge_receipt['source_sha256'],
+            'source_anchor_sha256': None,
+            'repaired_edge_bits': observations[:],
+            'repair_certified': False,
+            'status': ('NO_DEFECT' if syndrome == (0, 0, 0)
+                       else 'NONLOCALIZABLE' if suspect is None
+                       else 'UNVALIDATED_DEFECT'),
+            'accepted_native': False,
+            'scientific_pass': False,
+        }
+        require(not self._quarantined[edge_slot]
+                and not self._quarantined[anchor_slot],
+                'INTEGRATED_SCDR_QUARANTINE')
+        if not self._source._seen[anchor_slot]:
+            require(not any(x['slot'] == anchor_slot for x in self._events),
+                    'INTEGRATED_SCDR_EMPTY_ANCHOR_LEDGER')
+            return result
+        anchor_receipt = source_event(anchor_slot, 2)
+        anchors = self._rows(anchor_slot)
+        seen = {(c, a): y for c, a, y in anchors}
+        require(len(seen) == 2
+                and set(seen) == {tuple(x) for x in proposals}
+                and all(a == 0 for c, a in seen),
+                'INTEGRATED_SCDR_ANCHORS_NOT_PROPOSED')
+        result['source_anchor_sha256'] = anchor_receipt['source_sha256']
+        if suspect is None:
+            return result
+        a, b = proposed_edge
+        validated_edge = seen[(a, 0)] ^ seen[(b, 0)]
+        if validated_edge == observations[suspect]:
+            result['status'] = 'REJECTED_BY_ANCHORS'
+            return result
+        updated = observations[:]
+        updated[suspect] = validated_edge
+        require((updated[0] ^ updated[1] ^ updated[3],
+                 updated[0] ^ updated[2] ^ updated[4],
+                 updated[1] ^ updated[2] ^ updated[5]) == (0, 0, 0),
+                'INTEGRATED_SCDR_REPAIR_NOT_GLOBAL_SECTION')
+        result['repaired_edge_bits'] = updated
+        result['repair_certified'] = True
+        result['status'] = 'SOURCE_WITNESSED_CORRECTION'
+        return result
+
     def propose_source_change_witnesses(
             self, relation_slot, historical_evidence_slots,
             public_candidates, *, count=2):

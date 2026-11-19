@@ -1,0 +1,165 @@
+name: CKAD25-AE seal original K4 sheaf repair and safety failure evidence
+on:
+  push:
+    branches: [research/ckad25ae-k4-scdr-source-repair-20261118]
+    paths:
+      - ".github/workflows/ckad25ae-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  original-artifact-only-cross-os-seal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Prevent automatic Windows source line ending changes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Pin independent auditor, original source and no duplicate science result
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25ae-k4-scdr-source-repair-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "ab4a592374400562b9faeea975ffa00c9a9575c7"
+          test "$(git hash-object tests/test_native_scdr_k4.py)" = "087d3bd77c23f3c3ffda34ae66575566acd037bb"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AE/run.py)" = "0d2ef2212ae7e5c9498844264627ac2f4ae2080c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AE/prereg.json)" = "85f064ea10cac1b31331fce55f006c5a2e77fcbb"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AB/run.py)" = "3c3d88a66e8fe343bc9fd7fa47c8992343cc4bbb"
+          test ! -e research/contrib/chatgpt/CKAD25-AE/result.json
+          test ! -e research/contrib/chatgpt/CKAD25-AE/provenance.json
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          s="research/contrib/chatgpt/CKAD25-AE/audit_results.py"
+          compile(Path(s).read_text(encoding="utf-8"),s,"exec")
+          print("CKAD25AE_INDEPENDENT_ARTIFACT_AUDITOR_COMPILE_PASS")
+          PY
+      - name: Get existing original Linux and Windows source-only first-use ZIPs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14487428669/zip" \
+            -o "$RUNNER_TEMP/scdr-linux.zip"
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14487463628/zip" \
+            -o "$RUNNER_TEMP/scdr-windows.zip"
+      - name: Byte-seal original source, strong Bayesian and noisy-anchor failures
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-AE")
+          temp=Path(os.environ["RUNNER_TEMP"])
+          def sha(b):return hashlib.sha256(b).hexdigest()
+          archives={
+              "linux":("a4c4203487b31675410162bfb02425425dac36065e4642ef0338c88565b0749f",14487428669),
+              "windows":("708a4a4b42f0f1e057372483ae71ee42eb78765a83ba6d34b25ed6a613bde24a",14487463628)}
+          raw={}
+          for system,(expected_zip,artifact) in archives.items():
+              z=temp/f"scdr-{system}.zip"
+              assert sha(z.read_bytes())==expected_zip,(system,"ZIP_UNVERIFIED")
+              with zipfile.ZipFile(z) as archive:
+                  assert archive.namelist()==["ckad25ae-result.json"],archive.namelist()
+                  raw[system]=archive.read("ckad25ae-result.json")
+          expected="32bd31c59ee48a3f33ef4c6114d355a4b6d6dfd92687af6257f838224ff9be0a"
+          exact=raw["linux"]
+          assert exact==raw["windows"] and sha(exact)==expected,"CROSS_OS_FROZEN_DRIFT"
+          d=json.loads(exact)
+          assert exact==json.dumps(d,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")
+          assert d["executed_source_sha256"]==sha((root/"run.py").read_bytes())
+          assert d["parent_AB_source_sha256"]==sha(Path("research/contrib/chatgpt/CKAD25-AB/run.py").read_bytes())
+          assert d["scored_original_primary"] is True
+          assert d["development_disposition"]=="DEVELOPMENT_MIXED_OR_NO_GO"
+          assert d["frozen_gates"]["full_independent_conventional_k4_repair_parity"] is True
+          assert d["frozen_gates"]["genuine_k4_h1_rank_and_unique_single_fault_localization"] is True
+          assert d["frozen_gates"]["noisy_anchor_false_repair_at_most_5_percent"] is False
+          assert d["frozen_gates"]["within_0_05_of_strong_full_mixture_bayes"] is False
+          assert d["arm_statistics"]["native_k4_scdr"]["mean_brier"]==.1375
+          assert d["arm_statistics"]["full_16vertex_64mask_mixture_bayes_same_anchors"]["mean_brier"]==.071278882
+          assert d["arm_statistics"]["native_k4_scdr"]["DOUBLE_ANCHOR5"]["false_repairs"]==4
+          assert d["no_repair_brier"]==.170833333
+          assert d["independent_source_actions"]==7552
+          assert d["scientific_pass"] is False and d["algorithmic_superiority"] is False
+          assert d["universal_safety"] is False
+          assert d["owner_science_first_use"] is False and d["accepted_main_changed"] is False
+          assert d["forge_dispatch"] is False and d["merge"] is False and d["deployment"] is False
+          (root/"result.json").write_bytes(exact)
+          provenance={
+              "schema":"yggdrasil.ckad25ae.frozen-sheaf-repair-original-failed-safety.v1",
+              "accepted_main_observed":"5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+              "qualified_parent_native":"791c67f0afee62a3b9de695277c625783b099da5",
+              "previous_real_three_cycle_scdr_pr":1231,
+              "first_prereg_before_implementation":"b7cdb4675dedceedbce3000039180080da323992",
+              "new_native_method_commit":"7c720c403c94d6b007b320afb3196e125f49c688",
+              "native_git_blob":"ab4a592374400562b9faeea975ffa00c9a9575c7",
+              "last_unit_test_fix_before_first_use":"3fff44a7c703535272c84dda2f2c3aed43860602",
+              "unit_test_git_blob":"087d3bd77c23f3c3ffda34ae66575566acd037bb",
+              "original_scorer_before_first_use_commit":"f3485be983f562118380bd223925eae0383ecdb6",
+              "original_scorer_git_blob":"0d2ef2212ae7e5c9498844264627ac2f4ae2080c",
+              "scorer_sha256":sha((root/"run.py").read_bytes()),
+              "original_frozen_workflow_trigger":"2b92ee866f74249f8d3682f738f8ca8b80d72c21",
+              "original_run_id":44433660248,
+              "linux_original_job_id":135257394525,
+              "windows_original_job_id":135257394615,
+              "original_artifact_ids":{key:val[1] for key,val in archives.items()},
+              "original_zip_sha256":{key:val[0] for key,val in archives.items()},
+              "original_raw_sha256":expected,
+              "cross_os_original_result_byte_identical":True,
+              "independent_auditor":str(root/"audit_results.py"),
+              "original_source_not_rerun_during_seal":True,
+              "fresh_primary_seeds":32,"distinct_source_worlds":160,
+              "genuine_synthetic_do_outcomes":7552,
+              "fully_matched_source_action_arms":5,
+              "frozen_preset_gates_pass":6,"frozen_preset_gates_total":8,
+              "native_correction_mean_brier":.1375,
+              "raw_observation_mean_brier":.170833333,
+              "strong_exact_Bayes_mean_brier":.071278882,
+              "noise_false_repairs_in_32_double_anchor5":4,
+              "frozen_development_disposition":"DEVELOPMENT_MIXED_OR_NO_GO",
+              "genuine_native_new_source_memory_retention":True,
+              "native_K4_graph_and_vertex_action_semantics_supplied":True,
+              "scientific_pass":False,
+              "universal_noise_safe":False,
+              "accepted_main_changed":False,"owner_first_use":False,
+              "forge_dispatch":False,"merge":False,"deployment":False,
+              "warning":"Native sheaf scheme correctly repairs source-witnessed isolated faults but had four unsafe false repairs under 5%-noisy vertex validation and failed exact Bayesian competitiveness. No post-hoc retune of these seeds."
+          }
+          (root/"provenance.json").write_text(json.dumps(provenance,sort_keys=True,indent=2)+"\n",encoding="utf-8")
+          print("CKAD25AE_ORIGINAL_FROZEN_NEGATIVE_SOURCE_SHA256="+expected)
+          PY
+          python3 research/contrib/chatgpt/CKAD25-AE/audit_results.py research/contrib/chatgpt/CKAD25-AE/result.json
+          test -z "$(git diff --name-only)"
+      - name: Commit ONLY original raw result and read-only audit provenance to isolated draft branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25ae-k4-scdr-source-repair-20261118
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git add -- research/contrib/chatgpt/CKAD25-AE/result.json research/contrib/chatgpt/CKAD25-AE/provenance.json
+          python3 - <<'PY'
+          import subprocess
+          f=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert f=={"research/contrib/chatgpt/CKAD25-AE/result.json",
+                     "research/contrib/chatgpt/CKAD25-AE/provenance.json"},f
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(scdr-k4): seal positive single-fault correction and frozen Bayesian/noisy-anchor no-go"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "CKAD25AE_FROZEN_EVIDENCE_COMMIT=$(git rev-parse HEAD)"
