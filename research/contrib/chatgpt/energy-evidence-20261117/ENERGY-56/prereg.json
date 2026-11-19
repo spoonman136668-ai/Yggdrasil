@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-56",
+  "date": "2026-11-19",
+  "source_commit": "f07c49ed1830221080919c36f9427c79970e1c96",
+  "source_file": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-56/source.tar.bz2",
+  "source_git_blob": "b4c0ce9608c4988dbec908913d144240b184cc65",
+  "source_sha256": "38e67516fbac0608e94b1b406cf6da6124e24ec79c0d3f7fe8079d52798c1958",
+  "experiment_py_sha256": "8e5234659795898c30519269806b0f1b3ac1549c0fdf9f23a4efc4e91dd5075c",
+  "audit_py_sha256": "d89eb38ab2a5825eb51882b40d5042efb0e94d397b1f7ff9d5af79dcf44ee04a",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "hypothesis": "Learning a sparse basis of lower-order native-action consequence motifs and composing disjoint triple motifs improves held unfamiliar cold consequence prediction, above both the same learned basis without composition and the strongest fully fitted conventional learner, without old-context degradation.",
+  "background_selection": "One excluded 6-world dev seed 99903 showed preliminary failure; one bounded source revision was made before source freeze (disjoint support and 0.3 shrink). This source is frozen despite that negative. Earlier dev seed is excluded from prospective claims.",
+  "design": {
+    "screen_seed": 99917,
+    "source_ids": [
+      0,
+      1
+    ],
+    "families": [
+      "parity_composed",
+      "mixed_composed",
+      "gated_composed"
+    ],
+    "screen_worlds": 6,
+    "held_primary_seeds": [
+      9911,
+      9923,
+      9941
+    ],
+    "primary_source_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "primary_worlds": 36,
+    "data_source": "self-authored deterministic synthetic generated from NumPy SeedSequence [5601,seed,source_id,family_id]. No human data or native protected scientific first-use.",
+    "interventions": "12 observed binary action bits (10 causal +2 context-correlated nuisance). Exactly 512 unique 10-bit causal action identities per world, split 128 train-old+96 train-new+96 held-old+96 held-new+96 held-cold. None of the 3 held sets is exposed to fitted methods.",
+    "factors": "3 groups of 3 causal bits and one spare causal role, hidden from all learners; parity, majority and gated module mechanisms, two products of group modules, signed stage-specific weights. Gaussian consequence noise σ=.20. Cold nuisance cues independently randomized, new retains same true mechanism as cold.",
+    "candidate": "Fixed 8-support old-stage OMP selected from generic 1–3 parity grammar on all 12 observed variables. Compose only disjoint selected degree-three motif pairs, scale products by 0.3, fit separate old/new Ridge α=.06. Supports frozen from OLD, weights newly fit on NEW. All hyperparameters exactly in source bundle.",
+    "strong_controls": [
+      "No-composition same 8 OLD support basis + per-stage Ridge α=.06 (capacity-matched ablation)",
+      "Fully trained separate-context OMP12 on ALL 1–6 parity features",
+      "Fully trained separate-context ElasticNet α=.04 l1=.8 on ALL 1–6 parity features",
+      "Fully trained separate-context Ridge α=12 on ALL 1–6 parity features",
+      "Fully trained separate-context RBF KernelRidge α=.30 γ=.18",
+      "Fully trained separate-context ExtraTrees 64 trees depth14 min leaf2"
+    ],
+    "negative": "Same candidate support+compositions with permuted NEW labels only; OLD head unchanged.",
+    "budgets": "All 8 arms receive identical 128 OLD+96 NEW labeled witness actions. 96 held each old/new/cold per world. Fixed stage-specific model count (old/new each). Candidate composition count depends only on OLD selected triple supports (not held truth). Compute one frozen screen, one deterministic replay, independent refit auditor; no primary if screening fails.",
+    "runtime": "Linux CPU, Python3.13.5 NumPy2.3.5 sklearn1.8.0 SciPy1.17.0, single BLAS/OpenMP thread. Time measurements of per-case whole scorer are descriptive only; no cost gate. No GPU, paid APIs or remote runner.",
+    "metrics": "Per-arm held OLD/NEW/COLD squared-error mean per world and pooled mean, per-family cold means, seed cold, whole scorer wall time, count of constructed compositional products and count of matched true role identities if auditable. No post-score tuning.",
+    "verification": "Independent separate audit.py re-fits all 8 arms from saved factual arrays, recomputes all held predictions and aggregates, validates training/held causal-assignment uniqueness and protocol counts. Shares NumPy/sklearn library and exposed generated arrays, NOT independent source re-generation."
+  },
+  "frozen_gates": {
+    "cold_gain5_no_comp": "hierarchical pooled cold MSE <=0.95 × no_composition pooled cold MSE",
+    "cold_gain5_strongest_conventional": "hierarchical pooled cold MSE <=0.95 × min(full_omp,full_elasticnet,full_ridge,rbf_kernel,extra_trees) pooled cold MSE",
+    "family_robust_10pct": "hierarchical cold MSE <=1.10 × no_composition cold MSE separately for each parity_composed/mixed_composed/gated_composed family",
+    "old_held_5pct": "hierarchical pooled OLD MSE <=1.05 × no_composition pooled OLD MSE",
+    "composition_nontrivial": "at least 3 of six screen worlds have at least one disjoint triple composition",
+    "shuffled_gain20": "hierarchical cold MSE <=0.80 × shuffled_composition cold MSE",
+    "cold_gain5_vs_new": "hierarchical cold MSE <=1.20 × hierarchical NEW MSE (guard nuisance shift)",
+    "audit_pass": "independent re-fit of all 8 arms + exact-action count/uniqueness + deterministic replay must pass"
+  },
+  "classification": {
+    "SCREEN_PROMISING": "Both critical cold_gain5_no_comp and cold_gain5_strongest_conventional pass AND >=6 of 8 gates pass, including audit_pass; primary may then be scored using exact preregistered primary seeds and unchanged source, still no native acceptance",
+    "SCREEN_NO_GO": "Either critical gate fails on valid scored screen with independent audit PASS, OR fewer than 6 of 8 gates pass. Stop immediately; do not run primary or tune consumed seeds. If audit fails classify INVALID/UNVERIFIED not scientific no-go.",
+    "INVALID": "Any missing label parity, leakage, incomplete cases, scorer/auditor provenance mismatch, source drift, source/prereg commit after prospective scoring or audit inability to verify; do not count invalid screen as negative scientific result.",
+    "preprimary": "All gates, metrics, seeds and code committed before fresh 99917 scoring. A negative study is preserved with full source and records; no retuning/more seed fishing.",
+    "restrictions": "No model/accepted scientific first-use, native Yggdrasil ref edits, controller/queue/scheduler/runner execution, merge, promotion, deployment or live resource use."
+  }
+}
