@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "LR-92AO",
+  "project": "Yggdrasil",
+  "contributor": "spoonman136668-ai",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "purpose": "Opt-in source-level native-facing temporal observation cell candidate; compare against action-only native control, fully trained RF32, matched conventional conditional-count table, and history-shuffled negative control, without modifying accepted Yggdrasil native runtime.",
+  "predecessor": {
+    "pr": 1310,
+    "sha": "961e717ae1fee1d16a4e2269f1ff487d4defbb36",
+    "science": "DEVELOPMENT_NO_GO 3/6; pooled Bayesian beats archived causal operator and XOR OOD remains weak"
+  },
+  "changed_paths": [
+    "research/contrib/spoonman136668-ai/lr92ao-native-temporal-candidate/"
+  ],
+  "question": "Does bounded native action-history state learn arbitrary observed nonlinear temporal relationships under identical interventions while preserving cold retained-slot memory and fixed byte ceilings?",
+  "hypothesis": "History-aware cell will beat action-only baseline and valid history-shuffle on nonlinear XOR/AND and match a fully-trained conventional 14-bin frequency lookup exactly. Strong RF32/random-family and static baselines bound its usefulness.",
+  "scope": "Research-only opt-in source candidate; not integrated into yggdrasil/ original tracked source, no accepted checkpoint migrations, no native owner first-use, no production or model-wide training.",
+  "preregistered_date": "2026-11-19",
+  "inputs": [
+    {
+      "name": "procedural public-action sequences",
+      "source": "Original synthetic fixture and seeded benchmark with source fixed before primary scores, all random actions observable with rest=2 at episode boundaries",
+      "sha256": "source SHA bound at exact source commit; no external data"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      929208101,
+      929208102,
+      929208103
+    ],
+    "families": [
+      "XOR",
+      "AND",
+      "STATIC",
+      "RANDOM_14BIT"
+    ],
+    "worlds_per_family_per_seed": 12,
+    "total_worlds": 144,
+    "split": "Per-world: 45 episodes ×8 action-consequence steps = 360 fitting observations; disjoint 35 episodes ×8 steps = 280 heldout validation observations. 40,320 heldout labels total.",
+    "ordering": "Seed then family listed above then world index 0..11. New independent RNG streams for fitting and validation; random truth table from separate frozen world seed.",
+    "data_budget": "Exactly 360 observed training events and 280 heldout per world for every arm. Bernoulli outcome flip 0.15. Actions uniform binary; previous actions are derived chronologically with explicit rest=2 at each episode boundary. No hidden counterfactual labels.",
+    "compute_budget": "Single local CPU primary with fixed 144 worlds; RF32 32 trees per world trained once; <=120 seconds, max 2GB RAM; no paid services or runner writes. One read-only result audit. No postscore retry.",
+    "capacity": "16 addresses, 7 active +9 retained. Each temporal address stores 14 physically reachable (action,current_history) patterns ×2 outcome counters of uint16. Total 896 counters bytes +32 history bytes =928 learned/chronology bytes; 964-byte tamper-detectable checkpoint. Extrapolation outside 14 observed patterns not supported.",
+    "frozen_model": "Boolean conditional memory from observed frequencies with Laplace+1 smoothing, integer exact comparison, abstention without both arms, and 14-bit arbitrary conditional truth table induction only when all reachable patterns sufficiently supported; no preset causal-family classes.",
+    "arm_names": [
+      "temporal",
+      "tabular14",
+      "action_only",
+      "history_shuffle",
+      "rf32"
+    ],
+    "controls": {
+      "tabular14": "Fully fitted conventional conditional frequency lookup using exactly the same 14 bins and Laplace+1; expected to tie temporal. No novelty claim if tied.",
+      "action_only": "Existing PublicCausalCells-compatible public action/outcome count model trained on the exact same 360 observations; it lacks history.",
+      "history_shuffle": "Preserves actions and labels but independently permutes valid previous-action pairs across fitting observations. Evaluation uses true time order.",
+      "rf32": "Fully fit RandomForestClassifier n_estimators=32, min_samples_leaf=2, n_jobs=1, seeded per world, same 360 fit labels and three observed features; not compute matched."
+    },
+    "evaluator": "At q>=0.5 predict 1; aggregate heldout correct/280 across all worlds by family and arm. Exact fixed matched 14-bin parity check per world. Cold retained address restored from checkpoint and compared before vs after 80 contradictory active-address observations. Record full world-by-arm scores plus fit/eval SHA256.",
+    "deterministic_expected": true
+  },
+  "classification_rules": {
+    "development_supported": "All six preregistered checks: (C1) pooled XOR+AND temporal > action_only by >=5.0 percentage points; (C2) pooled XOR+AND temporal > shuffled history by >=5.0 pp; (C3) all temporal and conventional tabular14 world correct counts identical; (C4) on RANDOM family temporal >= fully fitted RF32 minus 2.0 pp; (C5) all 144 cold retained addresses preserved exactly after conflicting active memory learning; (C6) STATIC family temporal >= action-only minus 3.0 pp. All valid source/fixture/budget integrity checks. This is external development only, never SCIENTIFIC_PASS.",
+    "development_mixed": "Exactly one metric misses its floor by <=1.0 pp, others and integrity pass.",
+    "development_no_go": "Integrity passes but not supported/mixed; report all negatives unchanged.",
+    "invalid": "Source or frozen prereg drift; evaluation seed exposure before source commit; data/label leakage; training budgets mismatch; missing control; corrupted evidence; primary incomplete. A negative performance is NOT an infrastructure failure."
+  },
+  "metrics": [
+    "All six frozen check booleans and raw margins",
+    "Family-level heldout accuracies, true shuffled negative control",
+    "Strong RF32 and equivalent conventional tabular control",
+    "Retained-address checkpoint byte identity after interference",
+    "Original checkpoint compatibility, resource bytes, run time and full score provenance"
+  ],
+  "prohibited_after_primary_run": [
+    "Changing seeds/families/splits/noise/models",
+    "Postscore tuning",
+    "Additional score cohorts",
+    "Using unobserved counterfactuals",
+    "Promoting, merging, dispatching native first-use, controller changes"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "official_first_use": false
+  },
+  "preregistration_note": "Fixture-only tests (8 unit tests and 4 fixture worlds, seed 73004302) ran before this preregistration. No primary seeds were used. Candidate is stored as source archive under research contribution path to avoid altering the native G29 indexed-source contract; owner-qualified native integration is a SEPARATE step."
+}
