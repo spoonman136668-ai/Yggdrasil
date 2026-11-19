@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.ret01.evidence-readout.prereg.v1",
+  "id": "YGG-RET01",
+  "parent": {
+    "sha": "65a69d2733c18910178e1b7443332fddfd6bab89",
+    "tree": "19d2e9acd2ecb05c2c6537d4f743c59238be14df",
+    "pr": 1280,
+    "qualified_run": 44431580888,
+    "engineering_pass": true,
+    "development_no_go": true
+  },
+  "question": "Can a cold-pinned archive of the original native causal readout plus public evidence-only Bayesian context selection retain historical readout competence while the existing 7-component native+six-specialist Yggdrasil model continues accumulating new domain observations, with no reset, hidden-domain labels, post-result tuning or accepted-model modification?",
+  "scope": "Yggdrasil isolated draft research branch; native source and six learned heads remain in same cumulative old model, only opt-in additional readout bank and source-bound development evidence",
+  "fixed_sources": {
+    "archived_prior": [
+      "research/contrib/chatgpt/YGG-JEPA2-03/seed-14071-state.json",
+      "research/contrib/chatgpt/YGG-JEPA2-03/seed-14072-state.json"
+    ],
+    "archived_git_blobs": [
+      "958cc6050d167355af43b12f10ddd85542033319",
+      "08d8b357a3baa290e5a4c6773160aab6765b9fb5"
+    ],
+    "current_model": [
+      "research/contrib/chatgpt/YGG-JEPA2-04/seed-14071-state.json",
+      "research/contrib/chatgpt/YGG-JEPA2-04/seed-14072-state.json"
+    ],
+    "current_git_blobs": [
+      "752b53d424dda55c0d18eb42bedef752e5492594",
+      "2e7ed2218d8b88f47a463d752fb9e304f2535940"
+    ],
+    "old_ledger_counts": [
+      702,
+      677
+    ],
+    "current_ledger_counts": [
+      942,
+      917
+    ],
+    "new_dev_seeds": [
+      97241,
+      97259
+    ],
+    "worlds": [
+      0,
+      1
+    ],
+    "events_per_world": 32,
+    "new_events_per_original_seed": 64,
+    "new_source": "research/contrib/chatgpt/YGG-RET01/source.py, independent seeded two-world, 2-action binary public causal shift A/B/A; no hidden regime/domain truth supplied to learner; generator and frozen seed pair fixed before implementation",
+    "old_diagnostic": "last 32 authenticated historical CKAD37 observed events from archived native ledger; already consumed (not held science), score archived/current/gated readout cold and after observed evidence-only returning episodes; cannot be claimed as novel generalization",
+    "science_first_use": false
+  },
+  "algorithm": {
+    "one_model": "existing NativeFutureStateLearner remains sole cumulative model and undergoes all 64 revealed public interventions, original 4 JEPA heads update, last 2 future heads retained byte/weight-exact but not updated because research objective is readout retrieval and no prospective multistep targets are supplied",
+    "readout_bank": "separate immutable archived native context-readout snapshot from JEPA2-03 stored with fixed SHA; does not compete for learning or overwrite latest 7-component state",
+    "selection": "posterior probability of archive versus live native context model, initial archive weight 1/8, public witnessed transition and reward joint likelihood updated after each observation; posterior strictly clamped [1/32,31/32], no hidden task/phase identifiers, no evaluator-only scope tags, no hindsight",
+    "query": "for each 2-action event return native_live, native_archived, evidence_gated convex mixture, fixed half-mixture, random-chance and independent matched online full/window24/window32/disc95 conditional Beta controls",
+    "return": "after 64 prospective new witnessed episodes, score 32 pre-consumed authentic old episodes in known historical order; update gate from public observed outcomes only AFTER each prediction; do not update native/archived trained weights on those old cases; return diagnostics NOT unconsumed transfer",
+    "serialization": "source-anchored versioned exact original checkpoint and archived checkpoint and post-event live checkpoint; independent replay and ledger prefix/weights verification, fail on recomputed SHA tampering"
+  },
+  "frozen_parameters": {
+    "prior_archived": 0.125,
+    "posterior_floor": 0.03125,
+    "posterior_ceil": 0.96875,
+    "history_beta_windows": [
+      24,
+      32
+    ],
+    "discount": 0.95,
+    "no_new_api": true,
+    "no_new_scheduled_tasks": true,
+    "episodes_budget": 64,
+    "train_worlds_per_seed": 2,
+    "max_cpu_seconds_seed": 125,
+    "old_recall_test_count": 32,
+    "max_full_checkpoint_bytes": 2000000
+  },
+  "qualifier": {
+    "new_domain": "pooled prequential new-domain late_B+return_A 2-outcome Brier: evidence-gated readout must beat live native and best fully-trained conventional Beta by at least 0.005 on BOTH seeds, and must not be worse than chance by >0.02",
+    "historical_return": "after seeing public outcomes from old historical test sequence, evidence-only gate old-readout Brier must beat still-live native by >=0.01 and trail pinned archive by <=0.03 on BOTH seeds; no archive mode flag or old-world label passed to gate",
+    "cold_custody": "archived source and frozen original trained old parameters exact; full newly trained current model old prefix retained; final cold restored replay and post-event evidence-source parity PASS; no weight/tamper/duplicate/conflict leakage; no hidden source labels; both OS independent receipts must align",
+    "verdict": "ALL frozen predicates required for DEVELOPMENT_GO; otherwise DEVELOPMENT_NO_GO. Even development-positive results are not SCIENTIFIC_PASS (old historical diagnostic and synthetic prospective source). Independent physical-world science and owner approval separate.",
+    "stop": "one fixed two-seed development pass, never choose threshold from scored data, no rerun scored samples to tune; stop early only on pre-registered resource/safety violation."
+  },
+  "controls": [
+    "live native contextual forecast unchanged except witnessed updates",
+    "frozen archived original native contextual forecast",
+    "static 50/50 mix archive vs live",
+    "online Beta full/window24/window32/discount95 same public view/actions/outcomes and update opportunities",
+    "fixed chance .5; gate with deliberately shuffled old likelihood (negative) using last revealed event matched count"
+  ],
+  "authority": {
+    "read_only_history": true,
+    "isolated_research": true,
+    "accepted_main_unchanged": true,
+    "no_merge": true,
+    "no_science_first_use": true,
+    "no_foreground_controller_change": true,
+    "no_paid_apis": true,
+    "existing_github_hosted_runner": true,
+    "no_schedule": true
+  },
+  "paths": [
+    "yggdrasil/native_readout_retention.py",
+    "tests/test_native_readout_retention.py",
+    "research/contrib/chatgpt/YGG-RET01/**",
+    ".github/workflows/ygg-ret01.yml",
+    ".ice/code-atlas.*"
+  ]
+}

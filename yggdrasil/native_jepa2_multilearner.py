@@ -13,14 +13,14 @@ import json
 from math import cos, exp, isfinite, sin, tanh
 
 from yggdrasil.native_context_basis import canonical, digest, pin, require
-from yggdrasil.native_episode_experience import NativeEpisodeExperience
+from yggdrasil.native_episode_experience import NativeEpisodeExperience, MAX_EPISODES as NATIVE_MAX_EPISODES
 
 SCHEMA = "yggdrasil.ckad.native-multilearner-jepa2.v1"
 HIDDEN, LATENT = 8, 2
 LR, STEPS, CLIP = 0.045, 3, 5.0
 NATIVE_WEIGHT, JEPA_WEIGHT = 0.75, 0.25
 MAX_BYTES = 1024 * 1024
-MAX_EPISODES = 1000
+MAX_EPISODES = NATIVE_MAX_EPISODES
 
 
 def _bit(v):

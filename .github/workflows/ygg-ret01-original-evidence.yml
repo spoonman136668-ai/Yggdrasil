@@ -1,0 +1,177 @@
+name: YGG-RET01 original-artifact audit and exact-final qualification
+'on':
+  push:
+    branches:
+      - research/ygg-ret01-evidence-readout-20261118
+permissions:
+  contents: read
+  actions: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  original_artifact_audit:
+    if: "github.event.head_commit.message == 'ci(ret01): seal original trained source receipts without retraining'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+        artifact: [YGG-RET01-ubuntu-latest, YGG-RET01-windows-2022]
+        exclude:
+          - os: ubuntu-latest
+            artifact: YGG-RET01-windows-2022
+          - os: windows-2022
+            artifact: YGG-RET01-ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install identical pinned original native numeric dependencies
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ${{ matrix.artifact }}
+          run-id: 44435881875
+          repository: spoonman136668-ai/Yggdrasil
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/YGG-RET01-original
+      - name: Independent exact source/score/readout/cold verification of ORIGINAL trained artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 57ae0eaff00867f8583adfb901d62359f7d76093 HEAD -- \
+            yggdrasil/native_readout_retention.py \
+            yggdrasil/native_jepa2_multilearner.py \
+            yggdrasil/native_jepa_temporal.py \
+            tests/test_native_readout_retention.py \
+            research/contrib/chatgpt/YGG-RET01/prereg.json \
+            research/contrib/chatgpt/YGG-RET01/source.py \
+            research/contrib/chatgpt/YGG-RET01/campaign.py
+          python -B research/contrib/chatgpt/YGG-RET01/audit.py "$RUNNER_TEMP/YGG-RET01-original"
+          test -z "$(git status --porcelain)"
+  seal:
+    needs: original_artifact_audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install identical pinned original native numeric dependencies
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-RET01-ubuntu-latest
+          run-id: 44435881875
+          repository: spoonman136668-ai/Yggdrasil
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/YGG-RET01-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: YGG-RET01-windows-2022
+          run-id: 44435881875
+          repository: spoonman136668-ai/Yggdrasil
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/YGG-RET01-windows
+      - name: Cross-OS original-source evidence seal, reanchor G29, write isolated research branch
+        id: seal
+        shell: bash
+        env:
+          YGG_RET01_LINUX: ${{ runner.temp }}/YGG-RET01-linux
+          YGG_RET01_WINDOWS: ${{ runner.temp }}/YGG-RET01-windows
+          YGG_RET01_RUN: '44435881875'
+          YGG_RET01_SOURCE: '57ae0eaff00867f8583adfb901d62359f7d76093'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git diff --exit-code 57ae0eaff00867f8583adfb901d62359f7d76093 HEAD -- \
+            yggdrasil/native_readout_retention.py \
+            yggdrasil/native_jepa2_multilearner.py \
+            yggdrasil/native_jepa_temporal.py \
+            research/contrib/chatgpt/YGG-RET01/prereg.json \
+            research/contrib/chatgpt/YGG-RET01/source.py \
+            research/contrib/chatgpt/YGG-RET01/campaign.py
+          python -B research/contrib/chatgpt/YGG-RET01/seal.py
+          python -B research/contrib/chatgpt/YGG-RET01/audit.py research/contrib/chatgpt/YGG-RET01
+          git add -- research/contrib/chatgpt/YGG-RET01/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'research(ret01): seal original trained native readout and negative evidence'
+          RESULT_SHA="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$RESULT_SHA"
+          git add .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git commit -m "docs(ret01): G29 exact source atlas at $RESULT_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/ygg-ret01-evidence-readout-20261118
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  final:
+    needs: seal
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Preserve source byte semantics
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Original pinned native numeric dependencies
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: MANDATORY final full original+new native regression and exact G29 source custody
+        shell: bash
+        env:
+          EXACT_CANDIDATE: ${{ needs.seal.outputs.final_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_CANDIDATE"
+          git rev-parse HEAD 'HEAD^{tree}'
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
