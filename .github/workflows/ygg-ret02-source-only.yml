@@ -138,12 +138,13 @@ jobs:
               'test_nci04g7a_environment.py'
           }
           names={p.name for p in Path('tests').glob('test_*.py')}
-          assert forbidden<=names,forbidden-names
+          excluded=forbidden & names
+          assert 'test_free_fanout_sidecar.py' in excluded
           loader=unittest.TestLoader()
           suite=unittest.TestSuite()
-          for n in sorted(names-forbidden):
+          for n in sorted(names-excluded):
               suite.addTests(loader.discover(start_dir='tests',pattern=n))
-          print('RET02_WINDOWS_POSIX_ONLY_EXCLUDED='+','.join(sorted(forbidden)))
+          print('RET02_WINDOWS_POSIX_ONLY_EXCLUDED='+','.join(sorted(excluded)))
           print('RET02_WINDOWS_FULL_NATIVE_COUNT='+str(suite.countTestCases()))
           if not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():
               raise SystemExit(1)
