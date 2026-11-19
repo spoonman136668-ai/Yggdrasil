@@ -1,0 +1,147 @@
+{
+  "schema": "yggdrasil.wsp192.published-original-gene-fitness-dev.v1",
+  "prereg_commit": "86f45714b623ac1f755497432aadf3bd7e63daa3",
+  "source": "thomasmaxwellnorman/Perturbseq_GI@3b25109aeb9c0c2026bd70abd50304a0ad4e5395/final_emaps/processed_fitnesses.csv",
+  "source_git_blob": "c3609fe77b10e8b18d61bde816743528e42a0533",
+  "conditions": {
+    "gene_intersection": 112,
+    "source_rows": 113,
+    "source_columns": 113,
+    "observed_unordered_pairs": 6216,
+    "directed_overlap_pairs": 6216,
+    "max_directional_disagreement": 1.1102230246251565e-16,
+    "split_counts": {
+      "FIT": 4338,
+      "VALID": 936,
+      "DEV": 942
+    },
+    "source_pair_weighted": true
+  },
+  "design": {
+    "hash": "sha256",
+    "salt": "WSP192-ORIGINAL-GENE-FITNESS-v1",
+    "train_uses_dev": false,
+    "fit_target_mean": -0.33336304583914783,
+    "fit_target_sd": 0.17437380074125922,
+    "fit_value_count": 4338,
+    "valid_value_count": 936,
+    "dev_value_count": 942,
+    "retention_measured": false,
+    "biological_held_out_causal_transfer": false
+  },
+  "additive_control": {
+    "lambda": 1,
+    "epochs": 300,
+    "converged": false,
+    "validation_rmse": 0.30958087779623905,
+    "dev_rmse": 0.3000445548587345
+  },
+  "bilinear_controls": [
+    {
+      "rank": 8,
+      "lambda": 1,
+      "epochs": 50,
+      "converged": true,
+      "fit_rmse": 0.13644672007235206,
+      "validation_rmse": 0.18881380035260484
+    },
+    {
+      "rank": 4,
+      "lambda": 1,
+      "epochs": 50,
+      "converged": true,
+      "fit_rmse": 0.1675481261330702,
+      "validation_rmse": 0.1951874714639483
+    },
+    {
+      "rank": 8,
+      "lambda": 0.1,
+      "epochs": 160,
+      "converged": true,
+      "fit_rmse": 0.13054846580089083,
+      "validation_rmse": 0.19550295935609704
+    },
+    {
+      "rank": 4,
+      "lambda": 0.1,
+      "epochs": 140,
+      "converged": true,
+      "fit_rmse": 0.16555518591318955,
+      "validation_rmse": 0.19731824547352358
+    },
+    {
+      "rank": 2,
+      "lambda": 1,
+      "epochs": 50,
+      "converged": true,
+      "fit_rmse": 0.19646067442145201,
+      "validation_rmse": 0.21464128894972756
+    },
+    {
+      "rank": 2,
+      "lambda": 0.1,
+      "epochs": 150,
+      "converged": true,
+      "fit_rmse": 0.19559061908720807,
+      "validation_rmse": 0.21554310111293745
+    }
+  ],
+  "selected_strong_control": {
+    "type": "bilinear_als",
+    "variant": "rank8_lambda1",
+    "converged": true,
+    "validation_rmse": 0.18881380035260484,
+    "dev_rmse": 0.17754917948663984
+  },
+  "programmed_candidate": {
+    "beta": 2,
+    "validation_rmse": 0.27315232518565197,
+    "dev_rmse": 0.27002062916468145,
+    "residual_memory_edges": 4338,
+    "gradient_updates": 0
+  },
+  "negative_control": {
+    "shuffled_beta": 0,
+    "validation_rmse": 0.30958087779623905,
+    "dev_rmse": 0.3000445548587345
+  },
+  "held_comparison": {
+    "gain_vs_selected_strong_control": -0.5208216109216086,
+    "bootstrap_95_lower": -0.612317472072303,
+    "bootstrap_95_upper": -0.4280803678266498,
+    "paired_bootstrap_unit": "gene_pair",
+    "bootstrap_replicates": 2000
+  },
+  "runtime": {
+    "internal_milliseconds": 29532,
+    "source_download_seconds": "not measured",
+    "historical_experiment_resources": "not measured",
+    "memory_peak_bytes": "not measured"
+  },
+  "conclusions": {
+    "engineering": "RESEARCH_SCRIPT_EVALUATED",
+    "development": "PUBLIC_DEV_NO_GO",
+    "scientific_pass": false,
+    "actual_yggdrasil_training": false,
+    "original_world_first_use": false,
+    "production_deployment": false
+  },
+  "limitations": [
+    "Same previously published K562 source, not unfamiliar world",
+    "Source is author-averaged pair fitness, not single-cell transcriptomic states",
+    "No actual policy-selected interventions, no cold memory retention or genuine general-intelligence inference",
+    "Conventional lowrank optimizer convergence must be checked before asserting superiority",
+    "All numerical results are public developmental research, not independent scientific acceptance"
+  ],
+  "evidence": {
+    "primary_scored_at": "2026-11-19",
+    "exact_evaluator_git_blob": "5f8a4ba2289b21da19f3bd33c710779f5a4da01a",
+    "pre_score_protocol_git_blob": "e9c9dd02feacb860deaee4590f2c7676542d1fc6",
+    "pre_score_qualification_git_blob": "99f4419817f0202e59b8fced8c9fa27fca6c2e1d",
+    "source_bytes": "GitHub original author content read once at published Git blob",
+    "unmodified_source_file_redistributed": false,
+    "source_characters": 235998,
+    "independent_reproduction": "not yet",
+    "native_yggdrasil_training": false
+  }
+}
