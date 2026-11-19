@@ -1,0 +1,232 @@
+"""NCI-05F source-free exhaustive contradiction controls. NOT scientific data."""
+from __future__ import annotations
+from dataclasses import replace
+import json
+from pathlib import Path
+from itertools import combinations
+import unittest
+
+from role_probe import (
+    ConditionalRoleProposal, candidates, conditional_public_effect,
+    exact_symbolic_control, infer_conditional_role, probe_masks,
+)
+from challenge_guard import (
+    PublicChallengeAssessment, challenge_masks, fixed_budget_control_masks,
+    assess_public_challenges,
+)
+
+
+def initial_rows(a,law):
+    return [(mask,law(mask)) for mask in probe_masks(a)]
+
+
+def alternative_laws(a,kind):
+    bits=candidates(a)
+    for b in (0,1):
+        js=bits if kind=="single_xor_pair_and" else (bits[0],)
+        for j in js:
+            for p,q in combinations(bits,2):
+                def law(m, a=a,b=b,j=j,p=p,q=q,kind=kind):
+                    action=(m>>a)&1
+                    first=(m>>p)&1
+                    second=(m>>q)&1
+                    if kind=="pair_parity_main":
+                        return b ^ action ^ first ^ second
+                    if kind=="pair_and_main":
+                        return b ^ action ^ (first & second)
+                    return b ^ action ^ ((m>>j)&1) ^ (first & second)
+                yield law
+
+
+class SourceFreeFollowupTests(unittest.TestCase):
+    def test_01_frozen_prereg_before_implementation(self):
+        p=json.loads(Path(__file__).with_name("challenge_prereg.json.txt").read_text())
+        self.assertEqual(p["schema"],"nci05.followup-two-public-challenges.proof.v1")
+        self.assertEqual(p["status"],
+            "FROZEN_BEFORE_FOLLOWUP_CODE_AND_SOURCEFREE_CASE_SCORING")
+        self.assertEqual(p["frozen_queries"]["total_effects_if_complete"],7)
+        self.assertEqual(p["offfamily_exhaustive_cases"]["adaptive_two_query_refutations"],624)
+        self.assertEqual(p["offfamily_exhaustive_cases"]["fixed_two_query_refutations"],600)
+        self.assertFalse(p["scientific"]["first_use_authorized"])
+        self.assertFalse(p["scientific"]["scientific_pass"])
+        self.assertTrue(p["restrictions"]["no_owner_runner"])
+
+    def test_02_all_six_bit_permutations_have_two_new_public_masks(self):
+        for a in range(6):
+            for j in candidates(a):
+                rows=initial_rows(a,lambda m,a=a,j=j:
+                        conditional_public_effect(m,action_bit=a,
+                                                 factor_bit=j,offset=0))
+                prop=infer_conditional_role(a,rows)
+                self.assertEqual(prop.factor_bit,j)
+                new=challenge_masks(prop)
+                self.assertEqual(new,(1<<j,sum(1<<i for i in candidates(a))))
+                self.assertEqual(len(set((*probe_masks(a),*new))),7)
+                self.assertEqual(len(set((*probe_masks(a),
+                                      *fixed_budget_control_masks(a)))),7)
+
+    def test_03_original_60_in_prior_cases_remain_conditional_only(self):
+        count=0
+        for a in range(6):
+            for j in candidates(a):
+                for bias in (0,1):
+                    law=lambda m,a=a,j=j,bias=bias:conditional_public_effect(
+                        m,action_bit=a,factor_bit=j,offset=bias)
+                    base=initial_rows(a,law)
+                    prop=infer_conditional_role(a,base)
+                    self.assertIsNotNone(prop)
+                    self.assertEqual(exact_symbolic_control(a,base),((j,bias),))
+                    result=assess_public_challenges(
+                        prop,base,[(m,law(m)) for m in challenge_masks(prop)])
+                    self.assertEqual(result.status,
+                                     "SUPPORTED_UNDER_SUPPLIED_GRAMMAR_ONLY")
+                    self.assertEqual(result.newly_witnessed_effects,2)
+                    self.assertFalse(result.globally_certified)
+                    self.assertFalse(result.native_admission)
+                    self.assertFalse(result.scientific_pass)
+                    count+=1
+        self.assertEqual(count,60)
+
+    def test_04_exhaustive_adaptive_falsification_vs_frozen_fixed_control(self):
+        expected={
+            "pair_parity_main":(120,72,72,72),
+            "pair_and_main":(120,60,60,36),
+            "single_xor_pair_and":(600,492,492,492),
+        }
+        overall_alias=adaptive_rejected=fixed_rejected=0
+        for kind,(expected_total,expected_alias,expected_adaptive,
+                  expected_fixed) in expected.items():
+            total=aliased=adaptive=fixed=0
+            for a in range(6):
+                for law in alternative_laws(a,kind):
+                    total+=1
+                    base=initial_rows(a,law)
+                    prop=infer_conditional_role(a,base)
+                    if prop is None:
+                        continue
+                    aliased+=1
+                    self.assertEqual(exact_symbolic_control(a,base),
+                                     ((prop.factor_bit,prop.offset),))
+                    challenges=[(m,law(m)) for m in challenge_masks(prop)]
+                    r=assess_public_challenges(prop,base,challenges)
+                    if r.status=="REJECTED_OFF_PRIOR_WITNESS":
+                        adaptive+=1
+                    fixed_masks=fixed_budget_control_masks(a)
+                    if any(law(m)!=prop.predict_under_prior(m)
+                           for m in fixed_masks):
+                        fixed+=1
+            self.assertEqual((total,aliased,adaptive,fixed),
+                             (expected_total,expected_alias,
+                              expected_adaptive,expected_fixed),kind)
+            overall_alias+=aliased
+            adaptive_rejected+=adaptive
+            fixed_rejected+=fixed
+        self.assertEqual((overall_alias,adaptive_rejected,fixed_rejected),
+                         (624,624,600))
+
+    def test_05_new_observations_are_indispensable(self):
+        for a in range(6):
+            j=candidates(a)[2]
+            law=lambda m,a=a,j=j:conditional_public_effect(
+                m,action_bit=a,factor_bit=j,offset=1)
+            first=initial_rows(a,law)
+            prop=infer_conditional_role(a,first)
+            masks=challenge_masks(prop)
+            for partial in ((),((masks[0],law(masks[0])),)):
+                r=assess_public_challenges(prop,first,partial)
+                self.assertEqual(r.status,"INCOMPLETE_ABSTAIN")
+                self.assertFalse(r.native_admission)
+            full=assess_public_challenges(prop,first,
+                      ((masks[0],law(masks[0])),(masks[1],law(masks[1]))))
+            self.assertEqual(full.status,"SUPPORTED_UNDER_SUPPLIED_GRAMMAR_ONLY")
+
+    def test_06_sourcefree_unrestricted_counterexample_survives_seven(self):
+        for a in range(6):
+            for j in candidates(a):
+                law=lambda m,a=a,j=j:conditional_public_effect(
+                     m,action_bit=a,factor_bit=j,offset=0)
+                base=initial_rows(a,law)
+                prop=infer_conditional_role(a,base)
+                more=challenge_masks(prop)
+                witnessed=set(probe_masks(a))|set(more)
+                self.assertEqual(len(witnessed),7)
+                withheld=next(m for m in range(64) if m not in witnessed)
+                alt=lambda m,withheld=withheld:law(m) ^ int(m==withheld)
+                self.assertEqual([alt(m) for m in witnessed],
+                                 [law(m) for m in witnessed])
+                r=assess_public_challenges(
+                  prop,base,[(m,alt(m)) for m in more])
+                self.assertEqual(r.status,"SUPPORTED_UNDER_SUPPLIED_GRAMMAR_ONLY")
+                self.assertFalse(r.globally_certified)
+                self.assertNotEqual(prop.predict_under_prior(withheld),
+                                    alt(withheld))
+
+    def test_07_public_effect_order_only_does_not_change_custody_digest(self):
+        a=5;j=1
+        law=lambda m:conditional_public_effect(m,action_bit=a,
+                                               factor_bit=j,offset=1)
+        first=initial_rows(a,law)
+        p=infer_conditional_role(a,first)
+        more=[(m,law(m)) for m in challenge_masks(p)]
+        x=assess_public_challenges(p,first,more)
+        y=assess_public_challenges(p,first[::-1],more[::-1])
+        self.assertEqual(x,y)
+        self.assertEqual(len(x.public_evidence_sha256),64)
+        changed=[more[0],(more[1][0],more[1][1]^1)]
+        z=assess_public_challenges(p,first,changed)
+        self.assertEqual(z.status,"REJECTED_OFF_PRIOR_WITNESS")
+        self.assertNotEqual(x.public_evidence_sha256,z.public_evidence_sha256)
+
+    def test_08_mismatched_or_forged_prior_proposal_is_refused(self):
+        a=5
+        j=candidates(a)[0]
+        law=lambda m:conditional_public_effect(m,action_bit=a,
+                                               factor_bit=j,offset=0)
+        first=initial_rows(a,law)
+        prop=infer_conditional_role(a,first)
+        new=[(m,law(m)) for m in challenge_masks(prop)]
+        for forged in (
+            replace(prop,evidence_sha256="0"*64),
+            replace(prop,factor_bit=candidates(a)[-1]),
+            replace(prop,offset=1),
+            replace(prop,action_bit=0),
+        ):
+            with self.assertRaises(ValueError):
+                assess_public_challenges(forged,first,new)
+        changed=first.copy()
+        changed[1]=(changed[1][0],changed[1][1]^1)
+        with self.assertRaises(ValueError):
+            assess_public_challenges(prop,changed,new)
+
+    def test_09_invalid_public_challenge_fields_are_refused(self):
+        a=5;j=0
+        law=lambda m:conditional_public_effect(m,action_bit=a,
+                                               factor_bit=j,offset=0)
+        first=initial_rows(a,law)
+        prop=infer_conditional_role(a,first)
+        masks=challenge_masks(prop)
+        for invalid in (None,{},[1],[(masks[0],0)]*2,
+                        [(masks[0],0,0)],[(masks[0],True)],
+                        [(True,0)],[(64,0)],[(-1,0)],
+                        [(masks[0],2)],[(masks[0],-1)],
+                        [(masks[0],None)],[(masks[0],0)]*3,
+                        [(1<<a,0)]):
+            with self.assertRaises(ValueError):
+                assess_public_challenges(prop,first,invalid)
+        for invalid in (None,{},1,True,("str",)):
+            with self.assertRaises(ValueError):
+                challenge_masks(invalid)
+
+    def test_10_not_a_native_integration_or_checkpoint(self):
+        src=Path(__file__).with_name("challenge_guard.py").read_text()
+        self.assertNotIn("import yggdrasil",src)
+        self.assertNotIn("subprocess",src)
+        self.assertNotIn("requests",src)
+        self.assertNotIn("source_first_use=True",src)
+        self.assertFalse(hasattr(PublicChallengeAssessment,"restore"))
+        self.assertFalse(PublicChallengeAssessment(
+            "INCOMPLETE_ABSTAIN",0,"0"*64).native_admission)
+
+
+if __name__=="__main__":
+    unittest.main()
