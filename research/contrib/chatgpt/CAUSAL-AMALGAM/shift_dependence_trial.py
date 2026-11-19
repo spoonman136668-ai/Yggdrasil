@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from random import Random
 from statistics import mean
+import sys
 from time import monotonic
 
 
@@ -15,15 +16,16 @@ DONOR = (5 / 32, 27 / 32)
 TARGET = (25 / 32, 7 / 32)
 
 
-def worlds(scope, seed, agreement, split, count, probes, target_probes):
+def worlds(scope, seed, agreement, split, count, probes, target_probes,
+           laws=(DONOR, TARGET)):
     key = f"{scope}:{seed}:{agreement}:{split}".encode("ascii")
     generator = Random(int.from_bytes(sha256(key).digest(), "big"))
     rows = []
     for index in range(count):
         donor = generator.randrange(2)
         target = donor if generator.random() < agreement else 1 - donor
-        a = sum(generator.random() < DONOR[donor] for _ in range(probes))
-        b = sum(generator.random() < TARGET[target] for _ in range(target_probes))
+        a = sum(generator.random() < laws[0][donor] for _ in range(probes))
+        b = sum(generator.random() < laws[1][target] for _ in range(target_probes))
         rows.append((index, a, b))
     return rows
 
@@ -47,35 +49,42 @@ def observe_fit(receipts, hypotheses, probes):
     return masses
 
 
-def prediction(ones, probes, agreement):
-    unchanged, changed = (likelihood(ones, probes, p) for p in DONOR)
+def prediction(ones, probes, agreement, laws=(DONOR, TARGET)):
+    unchanged, changed = (likelihood(ones, probes, p) for p in laws[0])
     shift = (unchanged * (1 - agreement) + changed * agreement) / (unchanged + changed)
-    return TARGET[0] * (1 - shift) + TARGET[1] * shift
+    return laws[1][0] * (1 - shift) + laws[1][1] * shift
 
 
-def run():
+def run(protocol=PLAN):
     started = monotonic()
-    raw = PLAN.read_bytes()
+    raw = protocol.read_bytes()
     plan = json.loads(raw)
     hypotheses = [float(Fraction(value)) for value in plan["hypotheses"]]
     rows = []
-    for seed in plan["seeds"]:
-        for truth in hypotheses:
-            fit = worlds(plan["id"], seed, truth, "fit", plan["fit_worlds"],
-                         plan["fit_probes_per_cell"], plan["fit_probes_per_cell"])
-            held = worlds(plan["id"], seed, truth, "held", plan["held_worlds"],
-                          plan["held_donor_probes"], 1)
-            posterior = observe_fit(fit, hypotheses, plan["fit_probes_per_cell"])
-            fitted = sum(h * w for h, w in zip(hypotheses, posterior, strict=True))
-            scores = {name: mean((prediction(a, plan["held_donor_probes"], agreement) - b)**2
-                                 for _, a, b in held)
-                      for name, agreement in (("independent", .5), ("coupled", 1.0),
-                                              ("fitted", fitted), ("oracle", truth))}
-            trace = json.dumps([fit, held], separators=(",", ":")).encode("ascii")
-            rows.append(dict(seed=seed, agreement=truth, posterior=posterior, fitted=fitted,
-                             brier=scores, trace_sha256=sha256(trace).hexdigest(),
-                             actions=len(fit) * 2 * plan["fit_probes_per_cell"]
-                             + len(held) * (plan["held_donor_probes"] + 1)))
+    families = plan.get("families", {"": (DONOR, TARGET)})
+    for family, laws in families.items():
+        for seed in plan["seeds"]:
+            for truth in hypotheses:
+                scope = f"{plan['id']}-{family}" if family else plan["id"]
+                fit = worlds(scope, seed, truth, "fit", plan["fit_worlds"],
+                             plan["fit_probes_per_cell"], plan["fit_probes_per_cell"], laws)
+                held = worlds(scope, seed, truth, "held", plan["held_worlds"],
+                              plan["held_donor_probes"], 1, laws)
+                posterior = observe_fit(fit, hypotheses, plan["fit_probes_per_cell"])
+                fitted = sum(h * w for h, w in zip(hypotheses, posterior, strict=True))
+                scores = {name: mean((prediction(a, plan["held_donor_probes"], agreement) - b)**2
+                                     for _, a, b in held)
+                          for name, agreement in (("independent", .5), ("coupled", 1.0),
+                                                  ("fitted", fitted))}
+                scores["oracle"] = mean((prediction(a, plan["held_donor_probes"], truth, laws)
+                                         - b)**2 for _, a, b in held)
+                trace = json.dumps([fit, held], separators=(",", ":")).encode("ascii")
+                rows.append(dict(seed=seed, agreement=truth, posterior=posterior, fitted=fitted,
+                                 brier=scores, trace_sha256=sha256(trace).hexdigest(),
+                                 actions=len(fit) * 2 * plan["fit_probes_per_cell"]
+                                 + len(held) * (plan["held_donor_probes"] + 1)))
+                if family:
+                    rows[-1]["family"] = family
     correlated = [r for r in rows if r["agreement"] != .5]
     null = [r for r in rows if r["agreement"] == .5]
     gain = mean(r["brier"]["independent"] - r["brier"]["fitted"] for r in correlated)
@@ -91,4 +100,5 @@ def run():
 
 
 if __name__ == "__main__":
-    print(json.dumps(run(), indent=2, sort_keys=True))
+    protocol = Path(sys.argv[1]) if len(sys.argv) == 2 else PLAN
+    print(json.dumps(run(protocol), indent=2, sort_keys=True))
