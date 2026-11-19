@@ -14,6 +14,10 @@ from yggdrasil.native_paired_causal_contrast import state, arm
 
 SCHEMA = "yggdrasil.cap04.native-predictive-state-split.v1"
 SCHEMA_DIRECT = "yggdrasil.cap04.native-predictive-state-direct-reward-shadow.v1"
+SCHEMA_RECENT32 = "yggdrasil.cap04.native-direct-reward-recent32-shadow.v1"
+ROUTING_MODES = ("cumulative", "recent32")
+RECENT_WINDOW = 32
+RECENT_LOG_GATE = 2.5
 REWARD_MODES = ("xor", "direct")
 KINDS = ("transition", "residual")
 FEATURES = ("previous_pair", "previous_post", "previous_reward", "previous_pair_post")
@@ -36,17 +40,25 @@ def bit(x):
 class PredictiveStateSplit:
     """Fixed-penalty prequential causal history feature selection."""
 
-    def __init__(self, *, sham=False, reward_mode="xor"):
+    def __init__(self, *, sham=False, reward_mode="xor",
+                 routing_mode="cumulative"):
         require(type(reward_mode) is str and reward_mode in REWARD_MODES,
                 "REWARD_MODE")
+        require(type(routing_mode) is str and routing_mode in ROUTING_MODES
+                and (routing_mode == "cumulative" or reward_mode == "direct"),
+                "ROUTING_MODE")
         self.sham = bool(sham)
         self.reward_mode = reward_mode
+        self.routing_mode = routing_mode
         self._events = []
         self._seen = set()
         self._pool = {}
         self._split = {}
         self._evidence = {k: {f: 0.0 for f in FEATURES} for k in KINDS}
         self._qualified = {k: 0 for k in KINDS}
+        # RD04 opt-in only; never written into old v1/v2 checkpoint schemas.
+        # Evidence is replay-derived from genuine witnessed source events.
+        self._recent_gains = {k: {f: [] for f in FEATURES} for k in KINDS}
 
     @property
     def count(self):
@@ -92,6 +104,12 @@ class PredictiveStateSplit:
     def _winner(self, kind, values):
         if values is None or self._qualified[kind] < MIN_EVIDENCE:
             return None
+        if self.routing_mode == "recent32":
+            scores = {f: math.fsum(self._recent_gains[kind][f])
+                      for f in FEATURES}
+            f = max(FEATURES, key=lambda name:
+                    (scores[name], -FEATURES.index(name)))
+            return f if scores[f] >= RECENT_LOG_GATE else None
         f = max(FEATURES, key=lambda name:
                 (self._evidence[kind][name], -FEATURES.index(name)))
         if self._evidence[kind][f] < LOG_PENALTY:
@@ -122,14 +140,16 @@ class PredictiveStateSplit:
         return float(probability)
 
     @classmethod
-    def from_native_events(cls, native_events, *, sham=False, reward_mode="xor"):
+    def from_native_events(cls, native_events, *, sham=False,
+                           reward_mode="xor", routing_mode="cumulative"):
         """Load genuine seven-field historical events without modifying native.
 
         The early native sensor pair could contain two independent public
         views; only the new supplemental readout uses their 3-bit projection.
         The native original/checkpoint remains intact and separately pinned.
         """
-        obj = cls(sham=sham, reward_mode=reward_mode)
+        obj = cls(sham=sham, reward_mode=reward_mode,
+                  routing_mode=routing_mode)
         for event in native_events:
             require(type(event) is tuple and len(event) in (6, 7),
                     "ORIGINAL_PUBLIC_ROW")
@@ -176,10 +196,14 @@ class PredictiveStateSplit:
                     split = self._estimate(kind, conditioned, pair, values, feature)
                     p0 = max(1e-12, min(1 - 1e-12, pooled))
                     p1 = max(1e-12, min(1 - 1e-12, split))
-                    self._evidence[kind][feature] += (
-                        math.log(p1 if label else 1 - p1) -
-                        math.log(p0 if label else 1 - p0)
-                    )
+                    gain = (math.log(p1 if label else 1 - p1) -
+                            math.log(p0 if label else 1 - p0))
+                    self._evidence[kind][feature] += gain
+                    if self.routing_mode == "recent32":
+                        recent = self._recent_gains[kind][feature]
+                        recent.append(gain)
+                        if len(recent) > RECENT_WINDOW:
+                            recent.pop(0)
                     key = (kind, conditioned, pair, feature, values[feature])
                     yes, n = self._split.get(key, (0, 0))
                     self._split[key] = (yes + label, n + 1)
@@ -193,6 +217,11 @@ class PredictiveStateSplit:
         if self.reward_mode == "xor":
             # Exact legacy schema and bytes for all original CAP04 weights.
             return canonical({"schema": SCHEMA, "sham": self.sham,
+                              "events": self._events})
+        if self.routing_mode == "recent32":
+            return canonical({"schema": SCHEMA_RECENT32, "sham": self.sham,
+                              "reward_mode": "direct",
+                              "routing_mode": "recent32",
                               "events": self._events})
         return canonical({"schema": SCHEMA_DIRECT, "sham": self.sham,
                           "reward_mode": "direct", "events": self._events})
@@ -210,12 +239,22 @@ class PredictiveStateSplit:
                 require(set(doc) == {"schema", "sham", "events"},
                         "COLD_SCHEMA")
                 reward_mode = "xor"
-            else:
-                require(doc.get("schema") == SCHEMA_DIRECT and
-                        set(doc) == {"schema", "sham", "reward_mode", "events"}
+                routing_mode = "cumulative"
+            elif doc.get("schema") == SCHEMA_DIRECT:
+                require(set(doc) == {"schema", "sham", "reward_mode", "events"}
                         and doc["reward_mode"] == "direct", "COLD_SCHEMA")
                 reward_mode = "direct"
-            learner = cls(sham=doc["sham"], reward_mode=reward_mode)
+                routing_mode = "cumulative"
+            else:
+                require(doc.get("schema") == SCHEMA_RECENT32 and
+                        set(doc) == {"schema", "sham", "reward_mode",
+                                     "routing_mode", "events"} and
+                        doc["reward_mode"] == "direct" and
+                        doc["routing_mode"] == "recent32", "COLD_SCHEMA")
+                reward_mode = "direct"
+                routing_mode = "recent32"
+            learner = cls(sham=doc["sham"], reward_mode=reward_mode,
+                          routing_mode=routing_mode)
             for ident, st, pair, s2, y, post in doc["events"]:
                 views = ((st[0], st[1]), (st[1], st[2]))
                 learner.observe(ident, views, tuple(pair), s2, y,
