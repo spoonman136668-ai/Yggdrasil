@@ -1,0 +1,142 @@
+{
+  "schema": "yggdrasil.ckad41.dev-screen-evidence.v1",
+  "experiment_id": "CKAD41",
+  "decision": "DEV_NO_GO",
+  "engineering_status": "DEV_SCOPE_PASS",
+  "scientific_pass": false,
+  "prereg_commit": "3464c859e79b101894c9682042d460ced5068291",
+  "parent_sha": "d95674f3edae01268353f47c2d8dddd85ab8f21b",
+  "qualified_source_sha": "4458be879af0b0d2bfe068382156da837696e3dc",
+  "qualified_source_tree": "d51f402a1da076544a602b68fcf8bd904d5c67ba",
+  "source_git_blob_shas": {
+    "research/contrib/chatgpt/CKAD-41/prereg.json": "1b6270f6cd27d6177407ec6a1446a25e704fec89",
+    "research/contrib/chatgpt/CKAD-41/campaign.py": "28abbfef3c1b8c082c8b7e6561c4916c672af454",
+    "research/contrib/chatgpt/CKAD-41/test_ckad41.py": "23b4101bd1d0f3ff32bfa8499beedc6186a04520",
+    "research/contrib/chatgpt/CKAD-41/screen_dev.py": "6af5f561c28c8e3b61f681914162c0acf51b82d8",
+    "research/contrib/chatgpt/CKAD-41/README.md": "5ed013087530e442dc53ed4a413bdced64064d4d",
+    ".github/workflows/ckad41-native-causal-microanchors.yml": "99a8558f6573cc9cf04ea0514beba687700d014e"
+  },
+  "ci": {
+    "run_id": 44442044268,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44442044268",
+    "source_sha": "4458be879af0b0d2bfe068382156da837696e3dc",
+    "jobs": [
+      {
+        "id": 135284988084,
+        "os": "ubuntu-latest",
+        "conclusion": "success",
+        "unit_tests_pass": 7,
+        "dev_decision": "DEV_NO_GO"
+      },
+      {
+        "id": 135284987534,
+        "os": "windows-2022",
+        "conclusion": "success",
+        "unit_tests_pass": 7,
+        "dev_decision": "DEV_NO_GO"
+      }
+    ],
+    "identical_seed_scores": true,
+    "identical_native_cold_sha": true,
+    "full_final_repo_regression": false
+  },
+  "cohort": {
+    "dev_seeds_consumed": [
+      41101,
+      41102
+    ],
+    "reserved_pilots_untouched": [
+      42101,
+      42102
+    ],
+    "reserved_primary_untouched": [
+      43101,
+      43102,
+      43103
+    ],
+    "worlds": 4,
+    "authentic_synthetic_episodes": 932,
+    "authentic_synthetic_observed_consequences": 1864
+  },
+  "frozen_screen": {
+    "candidate": "native_micro16",
+    "native_archive_episode_cap": 128,
+    "matched_native_anchor32_episode_cap": 128,
+    "previous_genuine_evidence_window": 16,
+    "max_pooled_brier": 0.145,
+    "min_gain_vs_all_matched_controls": 0.015,
+    "max_early_phase_worsening_vs_native": 0.005,
+    "require_both_dev_seeds": true
+  },
+  "results": [
+    {
+      "seed": 41101,
+      "episodes": 460,
+      "pool_late_phase_episodes": 178,
+      "pooled_brier": {
+        "native_micro16": 0.19142465587219776,
+        "native_anchor32": 0.20829786385926222,
+        "native_stream": 0.16079120726633664,
+        "strongest_conventional": 0.162218487422219,
+        "strongest_conventional_arm": "beta_window48"
+      },
+      "delta_micro16_vs_native": -0.03063344860586112,
+      "delta_micro16_vs_native32": 0.01687320798706446,
+      "early_B": {
+        "micro16": 0.29436949253978967,
+        "native_stream": 0.22108940093458287
+      },
+      "early_return_A": {
+        "micro16": 0.2147859271930086,
+        "native_stream": 0.19687867835451933
+      },
+      "eligible_micro16": 178,
+      "pure_B_micro16": 156,
+      "source_integrity": true,
+      "cold_sha256": [
+        "2ad3854f307a567617643dc1e988c65d38c66096525f7a671499bed555d5e0b3",
+        "91d76be438a404a574205ab51c74d3100ceb33a9012f7da0aed6e6cb088f5866"
+      ]
+    },
+    {
+      "seed": 41102,
+      "episodes": 472,
+      "pool_late_phase_episodes": 169,
+      "pooled_brier": {
+        "native_micro16": 0.15697584759541752,
+        "native_anchor32": 0.18727810875426826,
+        "native_stream": 0.14831333691707474,
+        "strongest_conventional": 0.1497069370111785,
+        "strongest_conventional_arm": "beta_window48"
+      },
+      "delta_micro16_vs_native": -0.00866251067834278,
+      "delta_micro16_vs_native32": 0.03030226115885074,
+      "early_B": {
+        "micro16": 0.3204104606076735,
+        "native_stream": 0.26246827611802387
+      },
+      "early_return_A": {
+        "micro16": 0.20470767913548196,
+        "native_stream": 0.1741157196624257
+      },
+      "eligible_micro16": 169,
+      "pure_B_micro16": 136,
+      "source_integrity": true,
+      "cold_sha256": [
+        "77ef8c8e243261cf6ed83c969acb72e4d55aa347e457059f34a4ce5afe6a713e",
+        "2f4bff494d71fc8a77c12b5b3a4ff027b16245043cc271ac244864092c95cb32"
+      ]
+    }
+  ],
+  "analysis": "Source diversity/availability alone is insufficient. Compact 16-episode archive predicts better than equal-episode-budget 32-episode archive but worse than continuously trained original native stream on both disjoint development seeds, including early change and return. 16-event evidence-selected blocks exist on every late phase episode but have inadequate predictive quality; rebuilding/routing memory has measurable extra update work.",
+  "qualifications_and_limits": [
+    "Two DEV seeds and reused synthetic causal families; not held unfamiliar-world generalization, independent real-world grounding, or general intelligence.",
+    "Native 16/32 archive comparison matches retained source-episode memory capacity but does NOT match update or forecast compute to the original model; no efficiency claim.",
+    "All source observations are genuine public consequences from the evaluator-generated world. Evaluator-private phases only used after forecasting to score archived source purity.",
+    "Original native checkpoint/source ledger survives. All proposed readouts are pure reads, duplicates idempotent, contradictory source identity rejected.",
+    "Linux and Windows executed same DEV cohort once for cross-platform parity. Neither original pilot nor primary seeds consumed.",
+    "Engineering PASS denotes DEV only. Full final required platforms regression not executed owing to scientific negative; accepted main unchanged.",
+    "Unrelated repository proxy-fanout failures are separate infrastructure/authority state, not CKAD41 science outcome."
+  ],
+  "next": "STOP CKAD41 under frozen rule. New research hypothesis should strengthen learned causal state representations and tested counterfactual interventions rather than multiplying archived wrappers. No retroactive tuning or promotion."
+}
