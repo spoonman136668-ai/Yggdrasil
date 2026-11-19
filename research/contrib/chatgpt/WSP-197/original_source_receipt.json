@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.wsp197.olson-original-byte-metadata-receipt.v1",
+  "gate": "ORIGINAL_SOURCE_BYTE_AND_GENOTYPE_METADATA_PASS",
+  "source_repo": "lehner-lab/DMS2structure",
+  "source_sha": "3c1976b78a743d4d4c73921f047648500e671c8e",
+  "source_path_prefix": "GB1/dataset/",
+  "original_olson_2014_double_source": "historical Olson 2014 single/double mutant table; not the Wu 2016 four-site previously consumed WSP-196 sample",
+  "source_access_method": "GitHub Git blob API via read-only connected GitHub integration. Direct raw URL and ordinary GitHub file fetch failed for the 21.7MB table; Git blob endpoint supplied full original text.",
+  "integrity_method": "All four original Git blob SHA-1 digests recomputed independently over ASCII source bytes using SHA1('blob '+len+'\\0'+contents); all matched pinned upstream Git object IDs. Independently computed SHA-256 over the same bytes.",
+  "source_files": [
+    {
+      "name": "Olson2014_TableS2_doubles.txt",
+      "bytes": 21721634,
+      "git_blob_sha1": "dc7ab871b69026fc5d7cb2f505cfe7f6dd36b950",
+      "sha256": "097b3227d2a21bfaaefa3fe0a82741599fc1a29684f47af4df39c7b81e2c78ef"
+    },
+    {
+      "name": "Olson2014_TableS2_singles.txt",
+      "bytes": 19302,
+      "git_blob_sha1": "de650d218e3a2aa339fa14f2849060293daa0338",
+      "sha256": "51d5a821fd0794cdb298907aafd8d17a292ca7546e44c920d915875099825c49"
+    },
+    {
+      "name": "Olson2014_TableS2_wildtype.txt",
+      "bytes": 43,
+      "git_blob_sha1": "f9fb047a2b25b0cde656f6d1760a89524b2bc665",
+      "sha256": "aa2480a7b7c1a5d6f3e0cc77c7caf3e7740d59e5f9848439b9211007323e4d55"
+    },
+    {
+      "name": "GB1_sequence.fasta",
+      "bytes": 61,
+      "git_blob_sha1": "c1d1deef50b769ccd6a8f7909aa6da66fada68d6",
+      "sha256": "caa6ac7db0b24b2548893f6bd4ec6c606946dfe6299ddb44d3f7b346ba1fe0b9"
+    }
+  ],
+  "original_line_ending": "Original TSV records separated with lone carriage returns (CR, U+000D), not LF/CRLF. Original FASTA uses LF. Python universal-newline reader uses newline='' and accepts CR.",
+  "original_metadata": {
+    "single_genotypes": 1045,
+    "double_genotypes": 535917,
+    "unique_mutation_positions": 55,
+    "reference_length_amino_acids": 56,
+    "singles_columns": 5,
+    "doubles_columns": 18,
+    "wildtype_rows": 1,
+    "wildtype_columns": 2
+  },
+  "metadata_checks": [
+    "All four original byte identities exact",
+    "FASTA expected 56 standard residues",
+    "Mutation positions 1-indexed and within 56 residues",
+    "WT reference allele matches FASTA at source position",
+    "Every alternate is one of 20 standard amino acids and differs from WT",
+    "Unordered double mutants canonicalized for duplicate detection",
+    "No same-site double genotypes",
+    "No duplicate single or double genotype identities",
+    "Original table widths match 5 and 18 fields",
+    "Single and double source rosters both nonempty"
+  ],
+  "metadata_validator": "Independent JS metadata-only verifier equivalent to committed Python checker core genotype semantics; not the Python original-source execution. Parses tab fields as strings; does not numerically interpret count, selection or fitness columns.",
+  "focused_source_free_tests": {
+    "status": "PASS",
+    "count": 6,
+    "python_implementation_git_blob_sha1": "3b174552cb9aa11adaa453cf9a6d2e2ebc9992bd",
+    "test_file_git_blob_sha1": "6221601ac943b254eaad1f754ecab0308bfd4fd0",
+    "local_reconstructed_bytes_git_blob_verified": true,
+    "command": "python -m unittest -v test_source_admission",
+    "python_source_free_test_elapsed_sec": 0.013,
+    "whole_process_wall_sec": 0.79,
+    "max_rss_kib": 96908
+  },
+  "limitations": {
+    "original_data_republished": false,
+    "original_numeric_fitness_outcomes_read_for_training": false,
+    "native_yggdrasil_model_trained": false,
+    "original_world_first_use": false,
+    "sci_pass": false,
+    "python_exact_original_535917_row_checker_run": false,
+    "cross_platform_full_regression": "NOT RUN",
+    "independent_replication": "NOT RUN",
+    "source_data_license": "Underlying data reuse/redistribution rights not independently verified. Repo code is MIT; no original measurements redistributed.",
+    "no_scientific_prereg": "A new prospective WSP-198 comparator and held protocol still required before any observed counts/fitness values are used."
+  },
+  "next": "Add CR-only source-free engineering regression to WSP-197 checker tests; freeze independent factorized and fully fitted baseline prereg before numerically analyzing Olson 2014 source; maintain original first-use authority boundaries."
+}
