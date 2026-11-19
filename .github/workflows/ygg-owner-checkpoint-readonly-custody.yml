@@ -12,7 +12,7 @@ env:
   PYTHONHASHSEED: '0'
 jobs:
   provenance-only:
-    if: "github.event.head_commit.message == 'ci(owner-custody): one-shot read-only source verification'"
+    if: "github.event.head_commit.message == 'ci(owner-custody): one-shot read-only source verification' || github.event.head_commit.message == 'ci(owner-custody): verify optional checkpoint-receipt intake fixtures'"
     strategy:
       fail-fast: false
       matrix:
@@ -44,6 +44,10 @@ jobs:
           set -euo pipefail
           python -B -m unittest discover -s research/contrib/chatgpt/YGG-OWNER-CUSTODY -p test_verify_readonly.py -v
           python -B research/contrib/chatgpt/YGG-OWNER-CUSTODY/verify_readonly.py
+      - name: Synthetic-only receipt integrity and false-acceptance negative controls
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-OWNER-CUSTODY -p test_owner_receipt_candidate.py -v
       - name: Verify original GitHub main, owner, CAP03, NKR07 and CI metadata only
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
