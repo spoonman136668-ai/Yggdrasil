@@ -31,3 +31,15 @@ Before additional first-use:
 4. Request specific authority only for owner acceptance/deployment or protected first use if the verified contract requires it. Never treat ChatGPT WebUI, GitHub Actions success, or historical standing scope as universal owner authority.
 
 **Status:** source audit only; engineering pending until CI; scientific gain unproven; accepted main/runner unchanged; no merge, promotion, schedule change, paid API, or deployment.
+
+## LINEAGE01-E — verified official executor limitation
+
+The owner launcher [run #44522000519](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44522000519) ran on the existing self-hosted Windows research-only runner and completed successfully. Its original log explicitly reports `RESEARCH_AGENT_POLICY=GPT_CHAT_GITHUB_SOURCE_ONLY_NO_CODEX_NO_EXTERNAL_APIS` and `RESEARCH_EXECUTOR_UNATTENDED=NOT_CONFIGURED_NO_MODEL_INVOCATION`. The next-cycle dispatch step was skipped.
+
+The accepted main script `scripts/Invoke-RepoLocalResearchCycle.ps1` (Git blob `ecbe954a7b7a8af61ae3b74e4e8f43713b37e60c`) deliberately records `advanced=false` and reason `gpt-authored-research-required-no-unattended-model`, then returns before training. The exact accepted policy file `docs/research-executor-codex-free.md` (blob `3501ef93794dde2e46c21d223782d7f14f450542`) prohibits unattended model invocation. The launcher dispatches another cycle only on `advanced=true`.
+
+This is an **intentional executor-policy limitation**, not a training failure, a disconnected runner, or evidence that the native model cannot learn. Existing scheduled watchdogs are not a model-driven research loop. No new scheduled tasks were created, nor were the existing owner runner, policies, or controller modified.
+
+`executor_contract.py` checks the exact Git source, unconditional no-model return, policy and dispatch fence. Negative tests fail closed if someone weakens those source statements. The pinned report records **unattended execution disabled**, **accepted canonical cumulative checkpoint unverified**, and **owner-private checkpoint path unverified**. CI verification is source-only, not inspection of private host files.
+
+**Owner-side action actually required for unattended autonomous training:** establish a separately authorized, qualified unattended model executor (no paid API or Codex fallback assumed) and authenticate the official persistent native checkpoint with its witnessed training ledger and resume contract. Nothing in CAP01–CAP03 authorizes adopting their scientifically negative draft states. The existing chat/GitHub research lane can continue bounded source work independently.

@@ -10,6 +10,7 @@ import json
 import pathlib
 import subprocess
 import hashlib
+from executor_contract import inspect_pinned
 
 ROOT=pathlib.Path(__file__).resolve().parents[4]
 HERE=pathlib.Path(__file__).resolve().parent
@@ -89,8 +90,10 @@ def check(manifest):
         "show",CAP03+":research/contrib/chatgpt/YGG-CAP03/result.json"))
     require(outcome.get("scientific_pass",False) is False,
             "NO_UNFOUNDED_SCIENCE_PROMOTION")
+    executor=inspect_pinned(git,MAIN,snapshots["owner_controller"])
     return {
         "schema":"yggdrasil.lineage01.readonly-main-owner-audit.v1",
+        "official_executor_contract":executor,
         "snapshot_only":True,
         "accepted_main_sha":MAIN,
         "active_owner_branch_observed_sha":OWNER,
