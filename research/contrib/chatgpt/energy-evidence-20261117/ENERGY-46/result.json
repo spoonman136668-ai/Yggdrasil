@@ -1,0 +1,190 @@
+{
+  "aggregate": {
+    "elasticnet": {
+      "cold_held": 0.1556264249463086,
+      "fit_s": 0.12430757599997833,
+      "new_held": 0.13519324071731836,
+      "old_held": 0.12487306657250535,
+      "pred_s": 0.23859920100062482
+    },
+    "forest": {
+      "cold_held": 2.663438889855899,
+      "fit_s": 1.3978011200005085,
+      "new_held": 2.648098267428093,
+      "old_held": 2.5946152156174964,
+      "pred_s": 0.5351752980000128
+    },
+    "hybrid_validation": {
+      "cold_held": 0.23500840743324813,
+      "fit_s": 0.13580010600014703,
+      "new_held": 0.1448512844956246,
+      "old_held": 0.14815345394306395,
+      "pred_s": 0.2234717289999253
+    },
+    "no_repair": {
+      "cold_held": 1.7003602720624773,
+      "fit_s": 0.03716754399988531,
+      "new_held": 1.684226025703697,
+      "old_held": 0.14815345394306395,
+      "pred_s": 0.22974589300019943
+    },
+    "omp_full7": {
+      "cold_held": 0.6331453171303477,
+      "fit_s": 0.052345503000537974,
+      "new_held": 0.5590016610676252,
+      "old_held": 0.6329825816509578,
+      "pred_s": 0.2221056749993977
+    },
+    "omp_structural_memory": {
+      "cold_held": 0.6331453171303477,
+      "fit_s": 0.11423746199977813,
+      "new_held": 0.5590016610676252,
+      "old_held": 0.6329825816509578,
+      "pred_s": 0.21872257700010778
+    },
+    "replay_gated": {
+      "cold_held": 0.15589895078815583,
+      "fit_s": 0.2047002969998175,
+      "new_held": 0.16307968745498344,
+      "old_held": 0.14815345394306395,
+      "pred_s": 0.23113053199995193
+    },
+    "ridge": {
+      "cold_held": 2.661642240211047,
+      "fit_s": 0.07151546700004019,
+      "new_held": 2.5195600716665516,
+      "old_held": 2.4586166267316125,
+      "pred_s": 0.23676393999994616
+    },
+    "shuffled_gate": {
+      "cold_held": 4.343238287245825,
+      "fit_s": 0.19821757100021387,
+      "new_held": 4.4418954789822,
+      "old_held": 0.14815345394306395,
+      "pred_s": 0.22924372199997833
+    },
+    "stagewise_omp4": {
+      "cold_held": 0.24732446069003045,
+      "fit_s": 0.0587301880002542,
+      "new_held": 0.1530451937517595,
+      "old_held": 0.14815345394306395,
+      "pred_s": 0.2212811860005104
+    },
+    "unconditional_replay": {
+      "cold_held": 0.3597765568027695,
+      "fit_s": 0.19284502999983033,
+      "new_held": 0.37562265071704776,
+      "old_held": 0.14815345394306395,
+      "pred_s": 0.2207873190003511
+    }
+  },
+  "arms": 11,
+  "auditor_original": {
+    "bytes": 651,
+    "packed_bytes": 399,
+    "packed_sha256": "0d90755e8681f7e50e079df4154f13a1315ed5dc6752850c560192728020d304",
+    "path": "audited.json.bz2",
+    "sha256": "73cca78842ce9bc8849768b337d9a83757bdf86601cd8f56aa855f0bd7b53890"
+  },
+  "auditor_original_sha256": "528509534942e2e18bb2880f411db2e1af2dc9b9128cfb8a024f6779d3858074",
+  "canonical_semantic_replay": {
+    "bytes": 77689,
+    "sha256": "37d1ce78db2955431b0ef2c90dfe8c6b99cc0c11a51a9fe12d1521aa7df29262",
+    "status": "PASS"
+  },
+  "case_receipts": {
+    "bytes": 8958,
+    "path": "case_receipts.csv",
+    "rows": 36,
+    "sha256": "9ed01d6c025060e7106302af710b09286c8b774dd0bf9e2ad750f5ca55279759"
+  },
+  "classification": "DEVELOPMENT_NO_GO",
+  "date": "2026-11-18",
+  "decision": {
+    "best_conventional_cold": 0.1556264249463086,
+    "best_conventional_old": 0.12487306657250535,
+    "changed_exact": 0.8888888888888888,
+    "classification": "DEVELOPMENT_NO_GO",
+    "fails": 4,
+    "gates": {
+      "changed_correct_support_70pct": true,
+      "cold_vs_best_10pct": false,
+      "cold_vs_matched_hybrid_5pct": true,
+      "nochange_false_edit_at_most_10pct": false,
+      "old_replay_retention_1pct": true,
+      "old_vs_best_1pct": false,
+      "seed_wins_2of3": false,
+      "sham_new_20pct": true,
+      "time_at_most_3x_memory": true
+    },
+    "nochange_correct": 0.8888888888888888,
+    "passes": 5,
+    "perseed": {
+      "8909": {
+        "best_conventional": 0.13158182778928126,
+        "candidate": 0.15694426587790875
+      },
+      "8923": {
+        "best_conventional": 0.14844233268602866,
+        "candidate": 0.22231361031715843
+      },
+      "8933": {
+        "best_conventional": 0.18685511436361582,
+        "candidate": 0.08843897616940037
+      }
+    },
+    "seedwins": 1
+  },
+  "deployment": "NONE",
+  "experiment_id": "ENERGY-46",
+  "independent_audit": {
+    "arms": [
+      "replay_gated",
+      "unconditional_replay",
+      "hybrid_validation",
+      "stagewise_omp4",
+      "omp_structural_memory",
+      "omp_full7",
+      "elasticnet",
+      "ridge",
+      "forest",
+      "no_repair",
+      "shuffled_gate"
+    ],
+    "cases": 36,
+    "checks": 153215,
+    "independent_all_arm_refit": true,
+    "independent_all_held_predictions": true,
+    "independent_source_generator": true,
+    "limitation": "Shared NumPy RNG and scikit-learn implementation; software is not independently qualified native Yggdrasil.",
+    "schema": "energy46.audit.v1",
+    "status": "PASS",
+    "third_party_backends_shared": [
+      "numpy",
+      "scikit-learn"
+    ]
+  },
+  "independent_source_worlds": 36,
+  "native_linux_windows_full_regression": "NOT_RUN",
+  "native_yggdrasil_training": false,
+  "original_wall_s": 5.411162503000014,
+  "prereg_commit": "7a8e6e99f55cbc167317e4a750ea938fa6058776",
+  "primary_original": {
+    "bytes": 163402,
+    "packed_bytes": 25194,
+    "packed_sha256": "38be7ed6b49c9e0d26e367c39b5069173ea8fbf018d6dae2aa2865b0bd6d8837",
+    "path": "scored.json.bz2",
+    "sha256": "f540d34519a8ae10de86d77dad8d04024d678855fbdaa39089b06702882d4961"
+  },
+  "primary_seeds": [
+    8909,
+    8923,
+    8933
+  ],
+  "protocol_status": "FROZEN_BEFORE_PRIMARY",
+  "replay_wall_s": 5.305920576999938,
+  "schema": "yggdrasil.energy46.disposition.v1",
+  "scientific_pass": false,
+  "source_commit": "78dffbfecfa7616822514cf1e5414a1ae467de67",
+  "source_original_sha256": "fa38237a02f5fd76b66406ef6dccfe9b35bd406a24697ca81642d7c1ef1e1698"
+}
