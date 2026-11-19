@@ -60,7 +60,7 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         self.assertEqual(old.snapshot(), before)
         self.assertEqual(new.counts(0, 2), (0, 0, 0, 1))
         self.assertEqual(new.counts(0, 3, retained=True), (0, 0, 1, 0))
-        restored = Cells.restore(new.snapshot())
+        restored = Cells.restore(new.snapshot(), hashlib.sha256(new.snapshot()).hexdigest())
         self.assertEqual(restored.original_binary_snapshot(), before)
         self.assertEqual(restored.snapshot(), new.snapshot())
 
@@ -73,7 +73,7 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         exact = migrated.snapshot()
         self.assertEqual(len(exact), Cells.MIN_CHECKPOINT_BYTES +
                          25 * Cells.EVENT_BYTES)
-        cold = Cells.restore(exact)
+        cold = Cells.restore(exact, hashlib.sha256(exact).hexdigest())
         self.assertEqual(cold.snapshot(), exact)
         for i in range(25, 42):
             for cells in (migrated, cold):
@@ -139,7 +139,7 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         for i in range(3):
             c.observe(identity(i), 0, i, 3-i)
         genuine = c.snapshot()
-        self.assertEqual(Cells.restore(genuine).snapshot(), genuine)
+        self.assertEqual(Cells.restore(genuine, hashlib.sha256(genuine).hexdigest()).snapshot(), genuine)
         forged_count = bytearray(genuine)
         count_slot = Cells.HEADER_BYTES + 2*2
         forged_count[count_slot] ^= 1
@@ -158,8 +158,30 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         forged_order[-32:] = hashlib.sha256(forged_order[:-32]).digest()
         for altered in (forged_count, forged_tape, forged_order):
             with self.assertRaises(ValueError):
-                Cells.restore(bytes(altered))
+                Cells.restore(bytes(altered), hashlib.sha256(genuine).hexdigest())
         self.assertEqual(c.snapshot(), genuine)
+
+
+    def test_hash_pin_is_integrity_not_owner_authentication(self):
+        c = Cells()
+        c.observe(identity(999), 0, 2, 3)
+        original = c.snapshot()
+        original_pin = hashlib.sha256(original).hexdigest()
+        forged = bytearray(original)
+        # Entirely new but *self-consistent* invented source identity.
+        start = Cells.HEADER_BYTES + Cells.LEARNED_BYTES
+        forged[start] ^= 1
+        forged[-32:] = hashlib.sha256(forged[:-32]).digest()
+        alternative = bytes(forged)
+        with self.assertRaises(ValueError):
+            Cells.restore(alternative, original_pin)
+        alt_pin = hashlib.sha256(alternative).hexdigest()
+        rebuilt = Cells.restore(alternative, alt_pin)
+        self.assertEqual(rebuilt.snapshot(), alternative)
+        self.assertNotEqual(original, alternative)
+        # Deliberately demonstrates why self-created hashes cannot
+        # establish source owner signature or original-world first use.
+        self.assertEqual(rebuilt.counts(0, 2), c.counts(0, 2))
 
     def test_bad_checksum_length_magic_legacy_and_invalid_record_rejected(self):
         c = Cells()
@@ -182,7 +204,7 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
                      bytearray(good)):
             with self.subTest(shape=(type(data).__name__, len(data))):
                 with self.assertRaises(ValueError):
-                    Cells.restore(data)
+                    Cells.restore(data, hashlib.sha256(good).hexdigest())
 
     def test_source_budget_hard_and_saturating_counter_no_wrap(self):
         c = Cells()
@@ -193,7 +215,7 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         with self.assertRaises(ValueError):
             c.observe(identity(99_999), 0, 2, 3)
         self.assertEqual(c.snapshot(), old)
-        self.assertEqual(Cells.restore(old).snapshot(), old)
+        self.assertEqual(Cells.restore(old, hashlib.sha256(old).hexdigest()).snapshot(), old)
         # Local saturation negative only: do not serialize forged manual
         # data as authentic source evidence; the public source tape is source.
         throwaway = Cells()
@@ -224,12 +246,12 @@ class NativeMultiActionCellsEngineering(unittest.TestCase):
         c.observe(0, 1, 0)
         self.assertEqual(c.choose(0), 0)
         old = c.snapshot()
-        self.assertEqual(PublicCausalCells.restore(old).snapshot(), old)
+        self.assertEqual(PublicCausalCells.restore(old, hashlib.sha256(old).hexdigest()).snapshot(), old)
         n = Cells.migrate(old)
         n.observe(identity(340), 0, 3, 2)
         self.assertEqual(c.snapshot(), old)
         self.assertEqual(n.original_binary_snapshot(), old)
-        self.assertEqual(PublicCausalCells.restore(old).choose(0), 0)
+        self.assertEqual(PublicCausalCells.restore(old, hashlib.sha256(old).hexdigest()).choose(0), 0)
 
 
 if __name__ == "__main__":
