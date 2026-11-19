@@ -1,0 +1,85 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment": "LR-92AN",
+  "contributor": "spoonman136668-ai",
+  "parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": {
+    "pr": 1308,
+    "sha": "280980e14ac032d2ea3efb2ed67de53e18102a96",
+    "status": "external development pass, science unverified; OOD XOR weak"
+  },
+  "class": "disjoint causal-transfer and cumulative memory falsification",
+  "scope": "External synthetic research only; no native Yggdrasil model training, no protected first-use, no merge/promotion, no controller/runner writes.",
+  "question": "Does retaining a causal-operator archive across separately trained worlds improve prediction on disjoint base truth tables after interference, and does it fail clearly on a causal family absent from its grammar?",
+  "hypothesis": "Equal-mass prior archive of per-world Bayesian operator evidence will retain learned AND(prev1=0,prev2=1) through L1/L2 interference, improve low-data transfer vs uniform/recent/no-AND, and an absent XOR mechanism will expose the boundary.",
+  "frozen": {
+    "seeds": [
+      929207101,
+      929207102,
+      929207103
+    ],
+    "per_seed": {
+      "acquisition_AND": 12,
+      "interference_L1": 6,
+      "interference_L2": 6,
+      "transfer_AND": 20,
+      "structural_OOD_XOR": 10
+    },
+    "worlds_total": 162,
+    "base_table_split": "Training/interference sample 6-bit q,a truth tables 0..31. Transfer and XOR sample 32..63. All worlds independently drawn, no reuse of fitting/evaluation labels across worlds.",
+    "data_budget": "Acquisition and interference: 32 q0 + 32 q1 fit observations/world. Transfer and XOR: 12 q0 + 12 q1 fit/world. Every evaluated transfer world has 128 disjoint q1 heldout labels and 128 cold q0 heldout labels. Action a and predecessor actions in {0,1,2}; noise flip p=0.25. All arms see identical within-world action/outcome tapes; no active intervention claims.",
+    "mechanism": "B(q,a) XOR (q==1 AND H(prev1,prev2)) XOR Bernoulli(0.25); H=AND(prev1==0,prev2==1) for acquisition/transfer; H=(prev1==0) or (prev2==1) for interference; XOR(prev1==0,prev2==1) for structural OOD. Predictor family contains only static,L1,L2,AND (XOR absent).",
+    "inference": "For each operator, analytically marginalize 64 possible nuisance base tables using conditional Beta(1,1) bit priors with known flip noise, posterior over fixed 4 causal operators. A 4-entry operator archive stores mean of per-world uniform-prior posteriors over all acquisition+interference worlds. Same-capacity from-scratch uniform prior and last-12 interference-only prior; no gradients, no token models.",
+    "arms": [
+      "archive-all-worlds",
+      "uniform-from-scratch",
+      "recency-last12",
+      "no-AND-fixed-family",
+      "whole-history-log-evidence",
+      "shuffled-history-all-train-and-transfer",
+      "RF32-per-world",
+      "RF32-pooled-across-worlds"
+    ],
+    "controls": "Shuffled history: for each (world, context) independently permute the paired (prev1,prev2) training columns while keeping current action, context, outcomes, and budget fixed; evaluate on real heldout histories. RF32 per-world uses all same within-world observations; pooled RF32 additionally uses all historical labels from earlier worlds, fitting on the same observation budget but not same capacity. RF32 use n_estimators=32,max_depth=None,min_samples_leaf=2, random_state exact mod 2**32.",
+    "latency": "Record wall-clock by arm/phase, not matched compute by default. Isolated CPU, no paid API. One complete primary, no additional scored sweeps.",
+    "scientific_evaluation": "Exact 0.5 threshold prediction, per-world paired correct counts /128, 3 deterministic seed cohorts. Cold q0 evaluated after transfer fitting. 5000 paired stratified bootstrap resamples (seed 929207901) DESCRIPTIVE only, never used to tune.",
+    "go_checks": {
+      "C1": "Transfer AND archive accuracy >= uniform-from-scratch +0.015",
+      "C2": "Transfer AND archive accuracy >= recency-last12 +0.03",
+      "C3": "Transfer AND archive accuracy >= no-AND +0.05",
+      "C4": "Transfer AND archive accuracy >= shuffled-history-all-train-and-transfer +0.05",
+      "C5": "Cold q0 archive accuracy >= uniform-from-scratch -0.01",
+      "C6": "OOD XOR archive accuracy >= best fully-fitted RF32 comparator -0.03 (falsification stress; fail => no OOD generalization)"
+    },
+    "classification": {
+      "development_supported": "All 6 checks + parity/integrity PASS; narrow external development evidence, NOT scientific pass",
+      "development_mixed": "Exactly one check misses by <=1 percentage point; all other checks and integrity pass",
+      "development_no_go": "Complete, valid result not meeting above",
+      "invalid": "Pre-primary outcome inspection, source/prereg drift, unequal histories, heldout leakage, absent comparator, source error or incomplete result. Scientific negatives never reclassified as infrastructure defects."
+    },
+    "negative_controls": [
+      "true paired-history permutation (no binary-mask flip reparameterization)",
+      "unseen XOR mechanism absent from fixed operator family",
+      "recency-only after 12 interference worlds",
+      "no-AND family without capacity expansion",
+      "pooled learned Bayes and fully fitted random forests"
+    ],
+    "no_postscore": [
+      "threshold/model/seed/split/noise change",
+      "additional primary cohorts",
+      "capacity growth",
+      "metric cherry-picking",
+      "promotion/native code/controller changes"
+    ]
+  },
+  "authority": {
+    "research_only": true,
+    "native_training": false,
+    "official_science": false,
+    "production": false,
+    "protected_first_use": false,
+    "merge": false,
+    "controller_mutation": false
+  },
+  "recorded_on": "2026-11-19"
+}
