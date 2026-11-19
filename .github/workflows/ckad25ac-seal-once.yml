@@ -1,0 +1,157 @@
+name: CKAD25-AC seal frozen no-go source evidence once
+on:
+  push:
+    branches: [research/ckad25ac-identity-reassignment-20261118]
+    paths:
+      - ".github/workflows/ckad25ac-seal-once.yml"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  seal-original-unchanged-negative:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Keep original Git source bytes
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Verify no scientific source drift or duplicate original result
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/ckad25ac-identity-reassignment-20261118"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git hash-object yggdrasil/native_cumulative_learner.py)" = "3f33f32c7919bba5297fbf79ff561ef9e85c7255"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AB/run.py)" = "3c3d88a66e8fe343bc9fd7fa47c8992343cc4bbb"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AC/run.py)" = "e14d2513b11fecc8598cf8a5174c40535fa5e91c"
+          test "$(git hash-object research/contrib/chatgpt/CKAD25-AC/prereg.json)" = "0b63db34a34bfb37c1167f3c3cf6eca3a2211ce4"
+          test ! -e research/contrib/chatgpt/CKAD25-AC/result.json
+          test ! -e research/contrib/chatgpt/CKAD25-AC/provenance.json
+          test -z "$(git status --porcelain)"
+          python3 - <<'PY'
+          from pathlib import Path
+          f="research/contrib/chatgpt/CKAD25-AC/audit_results.py"
+          compile(Path(f).read_text(encoding="utf-8"),f,"exec")
+          print("CKAD25AC_READ_ONLY_AUDITOR_COMPILATION_PASS")
+          PY
+      - name: Retrieve unchanged Linux and Windows original first-use artifact ZIP bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14484179629/zip" \
+            -o "$RUNNER_TEMP/ckad25ac-linux.zip"
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14485482778/zip" \
+            -o "$RUNNER_TEMP/ckad25ac-windows.zip"
+      - name: Verify original artifacts and independently audit exact frozen no-go, no rescore
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path("research/contrib/chatgpt/CKAD25-AC")
+          temp=Path(os.environ["RUNNER_TEMP"])
+          def sha(b):return hashlib.sha256(b).hexdigest()
+          archives={
+              "linux":("88b3f261a6f05200f8b1dda02b918ad87920a97fa0a9cea83b72a642c012f049",14484179629),
+              "windows":("b4b58c8f3bc565d7c5a245e753e5f0c64e1b1ade365d5d16be375eae13330e83",14485482778)}
+          original={}
+          for system,(expected,artid) in archives.items():
+              z=temp/f"ckad25ac-{system}.zip"
+              assert sha(z.read_bytes())==expected,(system,"ZIP_PROVENANCE_DRIFT")
+              with zipfile.ZipFile(z) as f:
+                  assert f.namelist()==["ckad25ac-result.json"],f.namelist()
+                  original[system]=f.read("ckad25ac-result.json")
+          raw=original["linux"]
+          expected="c96c0ff59c34a1f6a0090e776efd4d4a357aa72ba624bc8f5cb9fc2c775e7e2b"
+          assert raw==original["windows"] and sha(raw)==expected,"CROSS_OS_RESULT_DRIFT"
+          d=json.loads(raw)
+          assert raw==json.dumps(d,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode("ascii")
+          assert d["source_sha256"]==sha((root/"run.py").read_bytes())
+          assert d["parent_scoring_source_sha256"]==sha(Path("research/contrib/chatgpt/CKAD25-AB/run.py").read_bytes())
+          assert d["development_disposition"]=="DEVELOPMENT_NO_GO"
+          assert d["frozen_gates"]["stable_learned_intervention_advantage"] is False
+          assert d["frozen_gates"]["reassigned_transfer_advantage"] is False
+          assert d["frozen_gates"]["conventional_no_information_leak"] is True
+          assert d["frozen_gates"]["all_native_committee_and_source_history_retain_exact_cold"] is True
+          assert d["condition_arms"]["STABLE"]["native_beta_memory"]["shifted_detected"]==59
+          assert d["condition_arms"]["REASSIGNED"]["native_beta_memory"]["shifted_detected"]==48
+          assert d["genuine_source_actions"]==8352
+          assert d["held_conditional_predictions"]==2560
+          assert d["scientific_pass"] is False and d["conventional_superiority"] is False
+          assert d["protected_owner_first_use"] is False
+          assert d["accepted_main_changed"] is False and d["forge_dispatch"] is False
+          assert d["merge"] is False and d["deployment"] is False
+          (root/"result.json").write_bytes(raw)
+          prov={
+              "schema":"yggdrasil.ckad25ac.original-source-identity-reassignment-negative.v1",
+              "qualified_native_parent":"791c67f0afee62a3b9de695277c625783b099da5",
+              "parent_qualified_tree":"761fab92387e09a3fec68f817485030cee59bc2b",
+              "accepted_main_observed_sha":"5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+              "initial_prereg_before_source":"8ee6908d8a7d373ddef0424f61723bb30b574bac",
+              "existing_native_source_blob":"3f33f32c7919bba5297fbf79ff561ef9e85c7255",
+              "new_frozen_scorer_committed_before_first_use":"ff7e127bddb072f34fcb696e7c25a48b6a10be1f",
+              "explicit_uniform_24_mapping_marginal_prescore_commit":"ab462bc0d6853192b400ef061f230b316333c5c0",
+              "source_scoring_git_blob":"e14d2513b11fecc8598cf8a5174c40535fa5e91c",
+              "source_sha256":sha((root/"run.py").read_bytes()),
+              "parent_scoring_source_sha256":sha(Path("research/contrib/chatgpt/CKAD25-AB/run.py").read_bytes()),
+              "source_first_use_trigger_sha":"45b27a854db213d759780e893f5f5b176082a1e8",
+              "original_first_source_run_id":44428878152,
+              "linux_original_job_id":135240916276,
+              "windows_original_job_id":135240916127,
+              "linux_artifact_id":14484179629,
+              "windows_artifact_id":14485482778,
+              "original_zip_sha256":{x:obj[0] for x,obj in archives.items()},
+              "original_raw_canonical_result_sha256":expected,
+              "identical_original_result_both_platforms":True,
+              "independent_auditor":"research/contrib/chatgpt/CKAD25-AC/audit_results.py",
+              "source_first_use_rerun_during_seal":False,
+              "original_source_genuine_do_outcomes":8352,
+              "original_held_conditional_predictions":2560,
+              "frozen_development_verdict":"DEVELOPMENT_NO_GO",
+              "stable_detected_96":59,"reassigned_detected_96":48,
+              "stable_fixed_detected_96":52,"reassigned_fixed_detected_96":50,
+              "conventional_exact_tie":True,
+              "full_physical_action_semantics_transferred":False,
+              "scientific_pass":False,
+              "owner_source_first_use":False,"accepted_main_changed":False,
+              "merge":False,"forge_dispatch":False,"deployment":False,
+              "negative_limit":"No observable causal-role-to-new-visible-identity mapping: exact permutation marginal Bayes is uniform 1/4. Stable policy also misses +8pp preset fixed-policy gate by 0.7pp. Do not retune consumed source or claim native generalization."
+          }
+          (root/"provenance.json").write_text(json.dumps(prov,sort_keys=True,indent=2)+"\n",encoding="utf-8")
+          print("CKAD25AC_ORIGINAL_NO_GO_SOURCE_HASH_SEALED="+expected)
+          PY
+          python3 research/contrib/chatgpt/CKAD25-AC/audit_results.py research/contrib/chatgpt/CKAD25-AC/result.json
+          test -z "$(git diff --name-only)"
+      - name: Append only original immutable negative result and source provenance to draft branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=research/ckad25ac-identity-reassignment-20261118
+          git fetch --quiet origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA"
+          git add -- research/contrib/chatgpt/CKAD25-AC/result.json research/contrib/chatgpt/CKAD25-AC/provenance.json
+          python3 - <<'PY'
+          import subprocess
+          changed=set(subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines())
+          assert changed=={"research/contrib/chatgpt/CKAD25-AC/result.json",
+                           "research/contrib/chatgpt/CKAD25-AC/provenance.json"},changed
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "research(ckad25ac): seal exact frozen identity reassignment transfer no-go"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "CKAD25AC_NEGATIVE_EVIDENCE_SEALED_SHA=$(git rev-parse HEAD)"
