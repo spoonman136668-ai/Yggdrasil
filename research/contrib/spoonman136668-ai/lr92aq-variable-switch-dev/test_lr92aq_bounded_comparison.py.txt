@@ -1,0 +1,145 @@
+"""One-shot deterministic 24-world LR-92AQ comparison qualification.
+
+Tests inspect only the two exposed development seeds. They do not import or
+create protected first-use data. No training restart or owner interaction.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+import unittest
+from pathlib import Path
+
+from lr92aq_variable_switch_dev import (
+    DEVELOPMENT_SEEDS, FAMILIES, development_world, development_manifest,
+    fork_continuing_B, FORBIDDEN_PRIOR_PRIMARY,
+)
+from lr92aq_bounded_comparison import (
+    LEARNERS, SCORE_KEYS, FIXTURE_MANIFEST_SHA256, CONVENTIONAL_CONTROLS,
+    NEGATIVE_SHAMS, evaluate_one, run_all,
+)
+
+ORIGINAL_BLOBS = {
+    'lr92aq_variable_switch_dev.py': 'd07c5ccc2ce3ae8ba1fd117ef471d08cbaad8cdb',
+    'public_dual_timescale_cells.py': 'e2fca6e277efbf0bd3b77ba7e472e4b5432d205f',
+    'bounded_runlength_bocpd.py': '96bb94e608d2062fb4cc488ed010f150b8325787',
+    'matched_tabular_controls.py': '7a223f6b097eb6e461853685195ba4b89af2f2b6',
+    'two_regime_hmm_control.py': '41f3adcb8c12d540f3042ae03a6a9dbdd4d6e6f0',
+    'bounded_bayesian_controls.py': 'aafba29564433827ba0477d32b999a050571b9f9',
+    'random_gate_control.py': '47691b96e570d7b14afb8f66ec329f9b89e8ae20',
+}
+
+
+class LR92AQComparisonTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.result = run_all()
+
+    def test_exact_original_source_blob_parity(self):
+        here = Path(__file__).parent
+        for name, wanted in ORIGINAL_BLOBS.items():
+            blob = subprocess.check_output(['git','hash-object',str(here/name)]).decode().strip()
+            self.assertEqual(blob, wanted, name)
+
+    def test_dev_only_and_unchanged_manifest(self):
+        manifest = development_manifest()
+        self.assertEqual(len(manifest), 24)
+        digest = hashlib.sha256(json.dumps(manifest,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        self.assertEqual(digest,FIXTURE_MANIFEST_SHA256)
+        self.assertEqual(self.result['manifest_sha256'],digest)
+        self.assertEqual(self.result['events_per_model'],4966)
+        self.assertFalse(self.result['decision']['primary_first_use_permitted'])
+        for seed in FORBIDDEN_PRIOR_PRIMARY:
+            with self.assertRaises(ValueError): development_world(seed,'xor',0)
+
+    def test_all_models_bounded_memory_and_restore(self):
+        self.assertEqual(len(LEARNERS),8)
+        self.assertEqual(len(CONVENTIONAL_CONTROLS),6)
+        self.assertEqual(tuple(NEGATIVE_SHAMS),('RandomGate_928',))
+        for name,(cls,budget) in LEARNERS.items():
+            self.assertLessEqual(budget,928)
+            m=cls()
+            self.assertEqual(len(m.snapshot()),budget+36,name)
+            self.assertEqual(m.snapshot(),cls.restore(m.snapshot()).snapshot())
+
+    def test_same_public_action_outcome_tape_per_model(self):
+        for row in self.result['rows']:
+            self.assertEqual(len(row['models']),len(LEARNERS))
+            self.assertEqual({s['updates'] for s in row['models'].values()},
+                             {sum(row['dwell_lengths'])})
+            self.assertEqual({s['checkpoint_bytes']-s['state_bytes']
+                              for s in row['models'].values()},{36})
+            self.assertEqual(len(row['public_sha256']),64)
+
+    def test_return_first_step_is_causally_indistinguishable(self):
+        for family in FAMILIES:
+            world=development_world(DEVELOPMENT_SEEDS[0],family,0)
+            fork=fork_continuing_B(world)
+            k=sum(world.evaluator_only.dwell_lengths[:2])
+            self.assertEqual(world.public[:k],fork.public[:k])
+            self.assertEqual(world.public[k].action,fork.public[k].action)
+            self.assertFalse(world.public[k].episode_start)
+            for name,(cls,_) in LEARNERS.items():
+                a=cls()
+                for e in world.public[:k]:
+                    if e.episode_start:a.end_episode()
+                    a.observe_step(0,e.action,e.outcome)
+                saved=a.snapshot()
+                clone=cls.restore(saved)
+                self.assertEqual(a.predict(0,world.public[k].action),
+                                 clone.predict(0,fork.public[k].action),name)
+
+    def test_all_14_contexts_and_no_phase_reset(self):
+        for row in self.result['rows']:
+            w=development_world(row['seed'],row['family'],row['index'])
+            self.assertEqual(set(w.evaluator_only.bins),set(range(14)))
+            a,b,_=w.evaluator_only.dwell_lengths
+            self.assertFalse(w.public[a].episode_start)
+            self.assertFalse(w.public[a+b].episode_start)
+
+    def test_first_forecast_read_only_and_replay(self):
+        for row in self.result['rows']:
+            for name,v in row['models'].items():
+                self.assertEqual(v['first_forecast'],v['replayed_first_forecast'],name)
+                self.assertTrue(0<=v['first_forecast']<=1)
+                self.assertEqual(set(v['scores']),set(SCORE_KEYS))
+                self.assertTrue(all(0<=x<=1 for x in v['scores'].values()))
+
+    def test_ablated_gate_has_identical_updated_memory(self):
+        for row in self.result['rows']:
+            a=row['models']['YPT4_candidate']['final_checkpoint_sha256']
+            b=row['models']['RandomGate_928']['final_checkpoint_sha256']
+            self.assertEqual(a,b)
+
+    def test_archived_memory_readout_not_actual_policy(self):
+        for row in self.result['rows']:
+            y=row['models']['YPT4_candidate']
+            self.assertIsNotNone(y['archived_first_forecast'])
+            self.assertTrue(0<=y['archived_first_forecast']<=1)
+            self.assertTrue(0<=y['archived_first_brier']<=1)
+            for name,v in row['models'].items():
+                if name not in ('YPT4_candidate','RandomGate_928'):
+                    self.assertIsNone(v['archived_first_forecast'])
+
+    def test_cost_and_development_fail_closed(self):
+        self.assertFalse(self.result['decision']['candidate_diagnostic_GO'])
+        self.assertFalse(self.result['decision']['scientific_pass_claimable'])
+        self.assertFalse(self.result['decision']['candidate_B_noninferiority_vs_best_B'])
+        self.assertGreater(self.result['models']['YPT4_candidate']['B'] -
+                           self.result['models']['BOCPD896']['B'], .1)
+        self.assertGreater(self.result['total_process_seconds'],0)
+        for values in self.result['models'].values():
+            self.assertEqual(values['total_updates'],4966)
+            self.assertGreater(values['total_elapsed_seconds'],0)
+
+    def test_fixed_seedwise_context_statistics(self):
+        for name,model in self.result['models'].items():
+            self.assertEqual(set(model['by_seed']),set(map(str,DEVELOPMENT_SEEDS)))
+            self.assertEqual(set(model['by_family']),set(FAMILIES))
+            for sub in list(model['by_seed'].values())+list(model['by_family'].values()):
+                self.assertTrue(all(0<=v<=1 for v in sub.values()))
+
+
+if __name__ == '__main__':
+    unittest.main()

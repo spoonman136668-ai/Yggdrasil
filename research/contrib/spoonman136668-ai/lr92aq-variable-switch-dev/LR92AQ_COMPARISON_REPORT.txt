@@ -1,0 +1,162 @@
+LR-92AQ — 24-WORLD VARIABLE-SWITCH DECISIVE DEVELOPMENT COMPARISON
+===================================================================
+2026-11-19. ENGINEERING / SCIENTIFIC DEVELOPMENT ONLY; NOT native training.
+Original LR-92AP 288-world protected first-use untouched; all LR-92AQ inputs
+use ONLY the two already disclosed development seeds (73004303, 73004304).
+Proposed primary LR-92AQ remains undefined, unauthorized and unconsumed.
+
+EVIDENCE SOURCE / CUSTODY
+-------------------------
+Existing development generator (exact Git blob):
+  d07c5ccc2ce3ae8ba1fd117ef471d08cbaad8cdb
+Existing candidate YPT4:
+  e2fca6e277efbf0bd3b77ba7e472e4b5432d205f
+Existing bounded conventional control blobs:
+  BOCPD896: 96bb94e608d2062fb4cc488ed010f150b8325787
+  FullHistory14 and Window32: 7a223f6b097eb6e461853685195ba4b89af2f2b6
+  HMM MAP: 41f3adcb8c12d540f3042ae03a6a9dbdd4d6e6f0
+  Soft HMM and approximate CPD: aafba29564433827ba0477d32b999a050571b9f9
+  Random-gate YPT4-memory ablation: 47691b96e570d7b14afb8f66ec329f9b89e8ae20
+
+NEW exact locally executed comparison source:
+  lr92aq_bounded_comparison.py.txt
+  Git blob 8423e79645eb6a9499ef3ae2a5a8c13bb71fb6b0
+  SHA256 ffa4c19bf283d9f5623bc75b779c2565747c691ec6245a3159733e34c1ce4e5d
+NEW exact locally executed tests:
+  test_lr92aq_bounded_comparison.py.txt
+  Git blob cf8e6aa3cbd24eaef86dbff111d2e02669fe60f2
+  SHA256 73133a23adc3b8c6cc55377cda36b6c0c9b830c6890102a0204e04c5be325111
+NEW full world-by-world prequential Brier metrics CSV (24 rows, 8 arms):
+  world_metrics.csv
+  Git blob ac4703037327f2e4eb5363e3e6f267136a3a7d12
+  SHA256 f1ac82e7034b784afe250d1ec167da23cf8c8df8d6b27d5d2723cc0643ee0d85
+
+Each of seven imported source files was independently copied from exact
+GitHub Git blobs into isolated local Python and verified byte-for-byte
+using git hash-object BEFORE any comparison was executed. Manifest SHA256
+89aebc45577d146b5f74600faa170b442db713a8c33b32caa7dd2e83868a44d1
+matches the previously frozen 24-world development manifest.
+Python 3.13.5 Linux x86_64, standard-library-only, offline/no paid APIs.
+New 11/11 unit tests PASS: source custody, seed/manifest fences,
+same-world public tape, all model memory budgets and restore parity,
+same-prefix no-cue first-step equivalence, true all-14-context coverage,
+no phase-switch reset, prediction nonmutation and replay,
+random-gate identical learned state, archived readout separation,
+per-seed/family metrics and mandatory development fail-closed decision.
+Cross-platform source-in-.txt execution and full native Yggdrasil
+regression NOT RUN. G29 atlas/index CI does not run this Python harness.
+
+COMPARISON DESIGN
+-----------------
+Two EXPOSED development seeds x three causal relationship families
+(XOR, AND, random14) x four worlds = 24 independent fresh-world episodes.
+Total 4,966 PUBLIC action/outcome observations per model (39,728 total
+predict/update observations across eight learner arms).
+Three private evaluator A/B/A dwell lengths between 48 and 88, different
+in 24/24 worlds; change boundaries do not coincide with an episode reset.
+All 14 temporal bins visited within EVERY world. Each learner starts
+untrained independently in each world; no inter-world transfer/adaptation.
+All learners receive same public episode start, current action and then
+the same outcome only AFTER issuing the forecast. No latent phase,
+relationship table, future consequence, or switch-time feature passed.
+Identical source-locked parameters; no fixture hyperparameter search.
+Every model's 16-address learned/history state <=928 serialized bytes.
+Models' snapshot envelopes add 4 magic + 32 SHA256 checksum bytes.
+A/HMM models are approximate bounded conventional controls; no claim
+all possible conventional algorithms have been ruled out.
+Reported Brier are MACRO means of 24 world-level prequential scores
+(unweighted by variable dwell length); lower is better.
+
+RESULTS — 24-WORLD MACRO BRIER (LOWER BETTER)
+---------------------------------------------
+Model                      bytes   B-phase   A-return first16   A-return late
+YPT4 original candidate      928    .390144        .242663          .206764
+BOCPD bounded conventional   896    .216130        .270075          .193877
+Full-history14 conventional  480    .354285        .264906          .225838
+Window32 conventional        832    .234788        .342618          .198102
+Hard-MAP two-regime HMM      928    .219427        .238095          .160725
+Soft two-regime HMM          928    .266272        .240668          .167451
+Approximate CPD             928    .239417        .322440          .213784
+Random YPT4-memory gate      928    .411690        .212580          .191670
+
+Among the six listed conventional matched-memory controls, HMM MAP achieves
+the best pooled first16 A-return Brier (.238095). YPT4's .242663 is WORSE
+by .004568 absolute, not BETTER by the required >=.01. Best conventional
+B-phase control BOCPD896 scores .216130; YPT4 scores .390144, regression
++.174014 absolute, vastly exceeding +.01 noninferiority allowance.
+Seedwise candidate early-return advantage vs each seed's post-hoc best
+conventional comparator is NEGATIVE at both seeds:
+  seed 73004303: -.001019
+  seed 73004304: -.013413
+Hence development diagnostic candidate_GO = FALSE. No scientific PASS
+is claimable from these disclosed fixtures regardless of model score.
+
+Random-gate negative ablation improves A-return first16 to .212580
+but B adaptation collapses to .411690, WORSE than original candidate.
+Its learned checkpoint is identical byte-for-byte to the original YPT4
+after the same updates on ALL 24 worlds, confirming the change is the
+prediction gate alone. It is a negative ablation, not a suitable joint winner.
+
+MECHANISTIC ARCHIVE-RETRIEVAL DIAGNOSTIC — NOT AUTONOMOUS PREDICTION
+--------------------------------------------------------------------
+At the first unannounced A-return, the actual YPT4 policy forecasts
+Brier .229994 on the 24 observed first return labels.
+Its explicitly requested protected-bank archival readout scores .107898
+over those same 24 first return labels. This is a POST-HOC diagnostic
+that selects the old-A bank WITH EVALUATOR KNOWLEDGE that A has returned.
+A phase-blind learner does NOT have that knowledge. This readout is NOT
+a valid online phase prediction, cannot count toward scientific advantage,
+and cannot be used as an oracle gate. It is evidence that the archived
+state contains recoverable information in these constructed worlds, while
+the implemented evidence gate fails to exploit it appropriately.
+
+TIMING / COST
+-------------
+One locally measured 24-world pass, Python 3.13.5 Linux, no GPU, no network.
+All models independently created/restored, prequential 4,966 updates each.
+Model-level wall-clock includes model init, predict, public observe,
+periodic snapshots and final restore; excludes source import, Python
+process startup and shared generator. Descriptive observed sums:
+BOCPD896 0.23s; YPT4 0.01s; hard-MAP HMM 0.01s; soft HMM 0.02s,
+full14 0.01s; exact times vary per execution and are stored by the
+reproducible harness. These are NOT independently controlled CPU/platform
+or whole-lifecycle training-cost comparisons. Learned/history state counts
+exclude Python heap/transient algorithm buffers.
+
+FAILURE DIAGNOSIS / FALSIFIABLE PIVOT
+-------------------------------------
+ENGINEERING: Local 11/11 PASS; exact source/Git blobs verified.
+SCIENTIFIC DEVELOPMENT: YPT4 mechanism NO_GO on exposed 24-world
+variable-switch development test. Cause suggested by controlled negative:
+A-bank knowledge may be present, but autonomous contradiction detection
+and retrieval selection are insufficient; a random gate can improve
+return-to-A by sacrificing B adaptation, not jointly solving both.
+Do NOT retune these disclosed 24 worlds to manufacture a positive.
+No native learning, transfer, general intelligence or independent
+scientific acceptance is established. Original protected LR-92AP fixed-
+schedule 288-world cohort remains UNCONSUMED and scientifically blocked;
+LR-92AQ primary seeds/source birth NOT DEFINED or authorized.
+Proposed next mechanism is explicit causal-hypothesis archiving +
+public-evidence contradiction-driven retrieval with a phase-uncertainty
+posterior, independent state/clock, and cold retention vs no-cue
+identifiability separated BEFORE any new disjoint scientific first-use.
+A new predeclared disjoint dev/primary design will be required; do not
+reuse current exposed fixtures for iterative parameter tuning.
+
+DEPLOYMENT/OWNER: HOLD. No main/accepted model, independent owner,
+runner/controller/scheduler/queue, native live training, merge or
+scientific first-use performed by this gate.
+
+REPRODUCE
+---------
+From PR #1323, copy exact *.py.txt files from LR-92AP and LR-92AQ folders
+into a single offline directory, dropping .txt suffix. Required imports:
+lr92aq_variable_switch_dev, public_dual_timescale_cells,
+bounded_runlength_bocpd, matched_tabular_controls,
+two_regime_hmm_control, bounded_bayesian_controls, random_gate_control.
+Then:
+  python -m unittest -v test_lr92aq_bounded_comparison.py
+  python lr92aq_bounded_comparison.py > variable_switch_results.json
+The full per-world CSV is committed here. Original observed local full JSON
+has SHA256 88124021c45ae1641d46437a8159bfa051a8e55f70456a9dfefa70dc383ea6d0
+but runtime timing fields are nondeterministic on rerun.
