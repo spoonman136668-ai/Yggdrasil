@@ -1,5 +1,31 @@
 # ST11 — native public action-effect preference, source-only engineering
 
+## 2026-11-18 rank-target falsification disposition
+
+**Rank-credit proxy scientifically INVALID as a learned intervention-value
+objective.** Independent GF(2) enumeration over 16,384 possible prior-action
+sets confirms that 12,945 permitted linear-rank and 118,164 permitted
+quadratic-rank candidate actions automatically gain one unit of rank
+regardless of any of the 256 possible 8-bit effects. The only genuinely
+outcome-dependent exception is a saturated-linear contradiction probe;
+no measured superiority for that decision has been demonstrated.
+
+**Engineering corrective action:** `NativeProbePreference.propose(native)`
+now always returns the exact verified ST10 `choose_intervention(native)`
+result. Learned Beta-like counts, source-receipt IDs, old native checkpoint,
+cold restoration, and the original ST11 checkpoint schema are **preserved**.
+The previously unqualified preference remains available ONLY through
+`shadow_candidate(native)` for source-free auditing; it is not admitted
+to drive real interventions. New negative controls validate 16,384 action
+sets and 256 synthetic outcome values per feature degree, and confirm
+action choices stay ST10-identical even if posterior reads would raise.
+
+This is a **candidate engineering safeguard**, not evidence of stronger
+causal learning, scientific advancement, real reward, unseen-world transfer
+or full adaptation. No new original world is constructed or used. The
+owner-scoped original-source first-use prohibition in issue #426 remains.
+Do not tune this proxy, change ST9 scoring, or promote ST11 to Forge.
+
 **Parent** [ST10 PR #1275](https://github.com/spoonman136668-ai/Yggdrasil/pull/1275)
 at `0e68a8e9a8e7c96a17efdd2347e7cd32de15fc1f`.
 Original ST9 learning, source, 8-action limit, hidden-world controls, native
