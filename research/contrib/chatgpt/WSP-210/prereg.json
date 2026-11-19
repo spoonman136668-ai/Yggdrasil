@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-210",
+  "date": "2026-11-19",
+  "project": "Yggdrasil",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "sha": "d3bf25bca9c7239d4befc58a9233b1cc62e96749",
+    "tree": "45cece780aed7afe311a447514ad6aae436bad78",
+    "prior_pr": 1331
+  },
+  "hypothesis": "WSP209 lambda10 mathematically enforced near-zero factors; test whether λ0.2 recovers B0 learning and novel-pair transfer for fully trained rank4 controls vs direct-weight programming. No post-result hyperparameter tuning.",
+  "datasets": {
+    "worlds": [
+      {
+        "seed": 21011,
+        "kind": "hub",
+        "n": 64
+      },
+      {
+        "seed": 21012,
+        "kind": "hub",
+        "n": 64
+      },
+      {
+        "seed": 21013,
+        "kind": "complete",
+        "n": 16
+      },
+      {
+        "seed": 21014,
+        "kind": "complete",
+        "n": 16
+      }
+    ],
+    "preflight": {
+      "seed": 21001,
+      "kind": "complete",
+      "n": 10,
+      "not_primary": true
+    },
+    "generator": "Fabricated rank4 factors coordinate k=sin((site+shift)*(k+1)*.37+seed*.013)+0.5*cos((site+shift)*(k+2)*.19+seed*.007), shift=.7 for D or 0 for C. Double target is rank4 dot product. C/C and D/D alternate A source for each site pair.",
+    "pairs": "Hub (1,j),j2..64 plus (j,j+1), even j2..62. Complete all unordered 1..16, smoke all 1..10.",
+    "split": "WSP200 existing SHA256 salted whole-site-pair FIT,VALID,PUBLIC_DEV,RESERVED and FIT stage B0..B3. Never generate RESERVED label. PUBLIC_DEV once and only after all FIT models frozen. Never use VALID.",
+    "source": "FABRICATED_WSP210_<seed>, synthetic-only source_digest f repeated 64; no original GFP numeric measurement."
+  },
+  "variables": {
+    "lambda_grid": [
+      10,
+      2,
+      0.2
+    ],
+    "primary": 0.2,
+    "negative_control": 10,
+    "robustness": 2,
+    "rank": 4,
+    "source": "WSP200 same core solver with process-local scoped lambda, no edits to WSP200 or PR #1331"
+  },
+  "arms": {
+    "direct": "WSP200 contradiction mode rank4; 16 B0 sweeps then 2 later sweeps, same write gate",
+    "refit": "WSP200 full_refit warm cumulative rank4, coordinatewise exact normal equations, frozen 100 sweep cap and three 1e-6 stable relative reductions; fail if not converged",
+    "adam": "Conventional rank4 full-batch Adam, same factor init and FIT labels, same rank/lambda. beta1=.9 beta2=.999 eps=1e-8 lr=.03; 2500 max epochs/stage, minimum300 and 100-epoch relative objective plateau <=1e-6; no held feedback. If no plateau report comparator UNQUALIFIED.",
+    "no_update": "Rank4 WSP200 frozen after B0 at λ0.2 only",
+    "zero_readout": "Predicted standardized interaction 0 from B0 mean, no fitted factor",
+    "privileged_oracle": "True synthetic generator factors, exact target ceiling, NOT matched-information control"
+  },
+  "metrics": "B0 witness MSE after B0-B3, stage writes/solves and objective, cold bytes and hash, held equal site-pair group RMSE, zero-readout RMSE, privileged oracle RMSE, CPU/wall. Keep complete per-world result.",
+  "decision": {
+    "valid": "4/4 worlds have 4 nonempty FIT stages and PUBLIC_DEV, 3 lambdas, finite stable results, exact cold restore, refit converged and Adam plateau confirmed, no source leakage; Linux/Windows agree classification and metrics within 1e-8",
+    "control_recovery": "at least 3/4 worlds λ0.2 refit AND Adam each B0 MSE <=0.70 respective λ10 B3 MSE, and held RMSE <=0.90 zero-readout",
+    "competitive_direct": "at least 3/4 recovered worlds λ0.2 direct B0 MSE <=1.05 refit B0 and held RMSE <=1.05 refit",
+    "memorization_only": "at least 3/4 worlds λ0.2 refit B0 <=0.70 λ10 B0 but held >0.90 zero-readout",
+    "persistent_failure": "at least 3/4 worlds λ0.2 refit AND Adam B0 MSE >0.80 λ10, held >0.95 zero-readout",
+    "categories": [
+      "INVALID",
+      "REGULARIZATION_RECOVERS_ALL",
+      "REGULARIZATION_RECOVERS_CONTROLS_ONLY",
+      "LOW_LAMBDA_MEMORIZATION_ONLY",
+      "PERSISTENT_LOW_LAMBDA_FAILURE",
+      "MIXED"
+    ],
+    "constraints": "Never alter thresholds, seeds, budget or cohorts after full primary inspection; source-free developer smoke may run only on seed21001 before primary, one frozen primary comparison per OS."
+  },
+  "compute": {
+    "python": "3.12 stdlib",
+    "max_job_minutes": 20,
+    "hosts": [
+      "ubuntu-24.04",
+      "windows-2022"
+    ],
+    "paid_apis": false
+  },
+  "permission": {
+    "GFP_source_first_use": false,
+    "original_held": false,
+    "RESERVED": false,
+    "accepted_main": false,
+    "native_owner": false,
+    "controller": false,
+    "merge": false,
+    "deployment": false
+  },
+  "interpretation": "Only source-free synthetic development; does not demonstrate general intelligence, Yggdrasil native learning, or independent published-world improvement."
+}
