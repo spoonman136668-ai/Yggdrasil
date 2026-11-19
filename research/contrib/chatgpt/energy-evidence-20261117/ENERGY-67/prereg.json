@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-67",
+  "date": "2026-11-19",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "parent_commit": "68bc744a73dcb0ca28bd00312f982df96639455b",
+  "source_commit": "eb3d2a33783bbe4af0fc7c2e841d902488c7ccaf",
+  "source_tar_sha256": "1b0259ae8c9ab7a8bcb898ff2ebacf61ba804fd230a7b3ae76d649804c864ad0",
+  "scorer_sha256": "0cac2f8b82991e2c383f023a3613cabc71eca350893c2123591065854b87560c",
+  "auditor_sha256": "120f70849be1809f888164e7952083e2fffb7bfe4acc47a9a93a197813863ecc",
+  "before_source_freeze_excluded_dev_seed": 109701,
+  "prospective_screen_seeds": [
+    109711,
+    109727
+  ],
+  "reserved_primary_seeds": [
+    109801,
+    109819,
+    109837
+  ],
+  "hypothesis": "A preauthored sparse residual learner that adds a new fourth-order causal feature only when its conditional held-training validation improvement exceeds 3% will improve cold consequence prediction by at least 5% versus the strongest conventional fully fitted learner, 3% versus the exactly matched validation-selected path, on both independent seed cohorts, and without >10% family-specific degradation. Falsify if any critical gate fails.",
+  "data": {
+    "generator": "ENERGY-67:v1 from frozen experiment.py, source-keyed NumPy PCG64",
+    "families": [
+      "two_quad",
+      "four_quad",
+      "four_quad_plus_fifth"
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "screen_worlds": 24,
+    "input": "9 binary controllable do-action bits, NO nuisance variables in this study",
+    "latent_mechanism": "three signed two-input parity factors OLD, coefficient-shifted old factors plus 2 or 4 new fourth-order parity factors NEW, optional fifth-order out-of-grammar factor; iid Gaussian noise sigma .18",
+    "disjoint_assignments_per_world": 288,
+    "train_old": 80,
+    "train_new": 64,
+    "selected_new_fit": 48,
+    "selected_new_validation": 16,
+    "held_old": 48,
+    "held_new": 48,
+    "held_cold": 48,
+    "unique_action_universe": 512,
+    "cold_definition": "Held actions disjoint from OLD/NEW/held OLD/held NEW under NEW source mechanism; not an independently new environment or nuisance shift",
+    "leakage": "Predictions of held consequences, planted support indices, and generator coefficients never enter model fit, feature choice, validation or hyperparameter selection; generator truth in original scorer receipts only for independent auditor, audited separately"
+  },
+  "methods": {
+    "feature_grammar": "researcher-supplied 36 two-bit Walsh terms and 126 fourth-order Walsh terms from 9 known causal bits; optional 5th-order planted effect OUTSIDE this grammar",
+    "old": "3-pair greedy OMP-style sparse model from OLD observations; old readout cloned exactly",
+    "candidate": "NEW greedy fourth-order path with 0 to 5 additions; fit first 48 outcomes, compare 16 NEW validation consequences; accept each sequential factor only when loss decreases at least 3%, stop at first failure; refit selected basis on all 64 NEW",
+    "same_compute_primary_control": "cv_growth picks k in 0..5 with minimum validation loss from the EXACT SAME candidate path, six ridge fits and split; then refits all 64 NEW",
+    "other_controls": [
+      "fixed_two and fixed_five same greedy path",
+      "matched_elasticnet: 5 predetermined alphas .01,.03,.1,.3,1.0; l1=.8 selected by same train/validation; refit on identical OLD supports+all 126 fourth order terms",
+      "full_omp_five: full pair+quad grammar with five sparse terms trained NEW",
+      "old_support_only Ridge trained on all NEW",
+      "old_frozen no-update",
+      "shuffled_negative: deterministic source-keyed shuffle of NEW labels, five greedy new terms"
+    ],
+    "fit": "Ridge regularization .3 excluding intercept; standard sklearn ElasticNet l1_ratio=.8 tol1e-6 max_iter3000; NumPy greedy projections; no truth-informed control as realistic arm",
+    "capacity": "Candidate and cv_growth exactly share search path, validation and data; conventional ElasticNet has different capacity/fit cost; no claim equal physical compute across ALL controls",
+    "runtime": "single core Python 3.13.5, NumPy 2.3.5, SciPy 1.17.0, scikit-learn 1.8.0; environment OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1",
+    "metrics": "Mean world-level OLD/NEW/COLD held MSE; per family and seed cold MSE; adaptive selected feature count and planted factor count; inherited old readout exactness"
+  },
+  "frozen_screen_gates": {
+    "vs_strongest_5pct": "candidate cold MSE <=0.95*MIN pooled cold MSE across cv_growth,fixed_two,fixed_five,matched_elasticnet,full_omp_five,old_support_only",
+    "vs_matched_cv_3pct": "candidate cold <=0.97*cv_growth cold",
+    "vs_elasticnet_5pct": "candidate cold <=0.95*matched_elasticnet cold",
+    "both_seed_strongest": "candidate mean cold MSE strictly less than minimum conventional control mean in EACH screen seed",
+    "family_non_degradation_10pct": "candidate mean cold MSE <=1.10*strongest conventional cold MSE within EACH mechanism family",
+    "adaptive_capacity_response": "mean candidate selected fourth-order k in four_quad >= mean selected k in two_quad+1",
+    "old_exact": "all 9 arms old-held predictions identical per world (frozen copied old readout)",
+    "vs_frozen_20pct": "candidate cold <=.8*old_frozen cold",
+    "shuffled_negative_20pct": "candidate cold <=.8*shuffled_negative cold"
+  },
+  "critical_gates": [
+    "vs_strongest_5pct",
+    "vs_matched_cv_3pct",
+    "both_seed_strongest",
+    "family_non_degradation_10pct"
+  ],
+  "classifications": {
+    "SCREEN_PROMISING": "All four critical gates and >=8 of 9 gates pass, with independent auditor verified; may then run frozen three-seed 36-world primary on separate seeds; not scientific pass or acceptance",
+    "SCREEN_NO_GO": "Any critical gate fails or fewer than 8/9 pass despite valid independent audit. STOP: do not score primary or retune consumed screen seeds",
+    "INVALID": "Source or prereg not committed before prospective scoring; wrong dataset/seed counts, fit/held label leakage, missing strongest controls, source drift, independent auditor disagreement, or non-disjoint intervention assignments",
+    "PRIMARY_GO_IF_SCREEN_ELIGIBLE": "All nine frozen gates must pass on the three reserved primary seeds with audited outputs and source-identical replay; external development only, never SCIENTIFIC_PASS or native acceptance",
+    "PRIMARY_NO_GO": "Any primary frozen gate fails; preserve negative evidence without promotion"
+  },
+  "isolation": [
+    "No new PR",
+    "No Yggdrasil main, native learner, weights or accepted reference changes",
+    "No scheduler/queue/controller/runner actions",
+    "No deployment, merge, or scientific first use",
+    "No paid APIs",
+    "No rerun of consumed seeds for gate tuning"
+  ],
+  "statement": "Exclusion pilot 109701 (3 worlds, audit 12717 checks) was scored before source/prereg freeze. Screening and primary seeds not consumed before this commit. Source and test oracle are contributor-authored. No native tokenless Yggdrasil training is claimed."
+}
