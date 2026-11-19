@@ -1,0 +1,19 @@
+{
+  "schema": "yggdrasil.amalgam.local-evidence-development.v1",
+  "id": "amalgam-cell-local-crossed-retention-dev-01",
+  "owner_scope": "Isolated synthetic development only. No data or effects from the protected original-world source.",
+  "parent_joint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [993103, 993127, 993149],
+  "shifts": [[], [0], [3], [0, 3]],
+  "fit_per_seed": 64,
+  "prefix_per_phase": 8,
+  "scored_per_phase": 32,
+  "wall_budget_seconds": 480,
+  "min_transition_gain": 0.005,
+  "max_retention_drift": 0.02,
+  "hypothesis": "Independent evidence weights over the original and continued native forecasts improve crossed-shift transition Brier over pooled weights and matched fitted controls while retaining unchanged and familiar return predictions.",
+  "schedule": "Fit both altered cells in a balanced action schedule. For each shift, reveal a fixed balanced eight-episode prefix to every adaptive readout and never admit scoring rows. Then switch to the original law and reveal a disjoint return prefix without resetting the evidence weights. All public rows and action costs match across comparisons.",
+  "arms": ["anchor", "continued", "shared", "local", "fit_full", "fit_trailing", "fit_change_point"],
+  "rule": "Development signal requires local transition Brier gain of at least 0.005 on average in changed cells versus the strongest matched comparator per seed. All seeds must keep transition and reward drift within 0.02 versus anchor in unchanged cells and return phases. Otherwise DEV_NO_GO. The exact fixed-share Bayesian weighting null remains equivalent. No scientific superiority claim or deployment follows."
+}
