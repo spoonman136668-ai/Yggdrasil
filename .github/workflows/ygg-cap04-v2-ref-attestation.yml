@@ -31,7 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${{ github.sha }}"
-          test "$(git rev-parse HEAD^)" = 2d082bc23731523f900f062769309ebf40d46935
+          test "$(git rev-parse HEAD^)" = 1eaf8658765c21027d5b7b4c3c5f16cae5bdd514
           test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/ygg-cap04-v2-ref-attestation.yml"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source.py)" = b78122a274ca63b38bafdd52f121d7ac0869a81b
           test "$(git rev-parse HEAD:tests/test_cap04_prospective_source_contract.py)" = cd3065a30edf5c08ec92eccc9eec1776d4570da4
@@ -39,7 +39,7 @@ jobs:
           test "$(git rev-parse HEAD:tests/test_cap04_shortcut_controls.py)" = 1a27efdb6dcdf99e6f906e5bc3b907f425003667
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/prospective_source_v2.py)" = fd42459ba94210c97c94b6cf816ac38d7587c26f
           test "$(git rev-parse HEAD:tests/test_cap04_keyed_source_v2.py)" = 86259d4c964758f97bb256a84a3c392f1c1eb1be
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/source_ref_attestation.py)" = 63058299ff2f46591f9f7c68b11e7d5dabd3f37a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP04/source_ref_attestation.py)" = cce2c21189eb99069b2407cf5a5c3329cacf209f
           test "$(git rev-parse HEAD:tests/test_cap04_v2_source_ref_attestation.py)" = fac0ae42d58a54a2b8f3f3cec67975c2de877a0f
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
           git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
