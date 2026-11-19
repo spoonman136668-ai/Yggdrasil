@@ -47,5 +47,9 @@ jobs:
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/source.py)" = 9e34144de876778d8931b7dacce9b990bb36716a
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14071-state.json)" = f4568f284605556f970d7f2cc4733577f09de244
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14072-state.json)" = 371afb1e830d6790b948ceda06f8260e7070260b
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/windows/seed-14071-state.json)" = db50019c5ae9d8e8e16a24792f01fc50a0414b29
+            test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP01/original/windows/seed-14072-state.json)" = 9e233e46a4fbc683c8a1388441791cad16b42f2a
+          fi
           python -B -m unittest discover -s tests -p 'test_native_causal_rule_memory.py' -v
           test -z "$(git status --porcelain)"
