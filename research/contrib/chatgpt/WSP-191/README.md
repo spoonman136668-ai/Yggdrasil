@@ -27,14 +27,14 @@ Only after a source owner has independently provided the original four filtered 
 python source_admission.py --root /path/to/filtered-geo-files
 ```
 
-The checker SHA256/MD5-hashes each compressed source file, compares MD5 to the pinned third-party archival manifest, checks plain-text metadata structure/counts and checks the MatrixMarket header and declared dimensions. It refuses symlinks, corrupted or missing files, mismatched counts and size/drift anomalies, and it returns a JSON receipt. The checker **does not parse expression matrix numeric values**. It does not establish official GEO publisher-signature verification or a successful gene-pair join.
+The checker SHA256/MD5-hashes each compressed source file, compares MD5 to the pinned third-party archival manifest, checks plain-text metadata structure/counts, checks the MatrixMarket header and declared dimensions, and validates filtered matrix barcodes against the author's cell identity mapping (`cell BC`, `cell_BC`, or `cell_barcode`) and `guide_identity` assignments. It rejects duplicate identifiers, orphan cell identities, ambiguous join keys, missing assigned guides, source file drift, symlinks, corrupted or missing files, mismatched counts, and size anomalies. Its JSON receipt includes only aggregate join counts, not individual cell IDs or guide identities. The checker **does not parse expression matrix numeric values**. It does not establish official GEO publisher-signature verification or a successful gene-pair cohort/split classification. Exact original file bytes still must be supplied and independently verified before the join can actually be executed on research data.
 
-**PASS here is strictly byte-digest-and-metadata-shape custody.** Source admission still requires provenance/licensing, barcode-to-identity pairing, guide/condition/replicate keys and contamination audit; a prospective whole-pair protocol with matched full-trained controls; and separately authorized execution. Do not reuse external published pair-class evaluation labels to select a test split. Do not claim science or native training from synthetic fixture tests.
+**PASS here is strictly byte-digest-and-metadata-shape custody.** Source admission still requires provenance/licensing, actual archived file hashes and source-dependent join results, intervention pair/condition/replicate identities and contamination audit; a prospective whole-pair protocol with matched full-trained controls; and separately authorized execution. Do not reuse external published pair-class evaluation labels to select a test split. Do not claim science or native training from synthetic fixture tests.
 
 ## Current outcome
 
-- Read-only source-free **local engineering fixtures:** 6/6 PASS (both implementation and tests prepared in this session), **not** GitHub CI or full regression.
-- Exact original source archive digests: **NOT RUN** — files unavailable from the active execution environment.
+- Read-only source-free **local engineering fixtures:** **12/12 PASS** on Python 3.13.5/Linux, on code bytes matching the isolated branch Git blobs (6 earlier checks + 6 join/identity checks), **not** GitHub CI, dual-OS qualification, or the mandatory full final repository regression.
+- Exact original source archive digests, actual barcode/guide metadata join, and source cohort: **NOT RUN** — original GEO files unavailable from the active execution environment.
 - Original-world first-use: **DENIED/NOT ATTEMPTED**, independent source-owner #426 unchanged.
 - Accepted Yggdrasil `main`: `5e74f8db85b2f5839c42148c0dfba69a88b1a2c9` at branch creation, untouched.
 - Source code and tests live only on isolated `research/wsp191-geo-source-admission-20261118`; no PR, no merge, no deployment.
