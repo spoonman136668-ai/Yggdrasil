@@ -99,5 +99,56 @@ class AdmissionTests(unittest.TestCase):
                 s.metadata(root, spec)
 
 
+    def test_original_cr_only_with_eighteen_double_columns(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec = self.fixture(root)
+            for name in ("Olson2014_TableS2_doubles.txt",
+                         "Olson2014_TableS2_singles.txt",
+                         "Olson2014_TableS2_wildtype.txt"):
+                p = root / name
+                data = p.read_text()
+                if name.endswith("_doubles.txt"):
+                    lines = data.splitlines()
+                    lines[0] += "".join("\tV" + str(i) for i in range(11, 19))
+                    lines[1] += "\t" * 8
+                    data = "\n".join(lines) + "\n"
+                data = data.replace("\n", "\r")
+                p.write_bytes(data.encode())
+                raw = p.read_bytes()
+                spec[name] = (len(raw), hashlib.sha1(
+                    f"blob {len(raw)}\0".encode() + raw).hexdigest())
+            receipt = s.metadata(root, spec)
+            self.assertEqual(receipt["single_genotypes"], 2)
+            self.assertEqual(receipt["double_genotypes"], 1)
+            self.assertFalse(receipt["count_or_fitness_values_parsed"])
+
+    def test_out_of_reference_position_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec = self.fixture(root)
+            name = "Olson2014_TableS2_singles.txt"
+            p = root / name
+            p.write_text(p.read_text().replace("Q\t2\tA", "Q\t57\tA"))
+            raw = p.read_bytes()
+            spec[name] = (len(raw), hashlib.sha1(
+                f"blob {len(raw)}\0".encode() + raw).hexdigest())
+            with self.assertRaisesRegex(s.SourceRejected, "REFERENCE_ALLELE_MISMATCH"):
+                s.metadata(root, spec)
+
+    def test_noncanonical_alternate_allele_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec = self.fixture(root)
+            name = "Olson2014_TableS2_singles.txt"
+            p = root / name
+            p.write_text(p.read_text().replace("Q\t2\tA", "Q\t2\t*"))
+            raw = p.read_bytes()
+            spec[name] = (len(raw), hashlib.sha1(
+                f"blob {len(raw)}\0".encode() + raw).hexdigest())
+            with self.assertRaisesRegex(s.SourceRejected, "INVALID_ALTERNATE_ALLELE"):
+                s.metadata(root, spec)
+
+
 if __name__ == "__main__":
     unittest.main()
