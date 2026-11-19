@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 import json
 import pathlib
+import sys
 import unittest
 
 from yggdrasil.native_context_basis import canonical,digest
@@ -11,7 +12,7 @@ from yggdrasil.native_segmented_continuation import SegmentedNativeJEPA
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 SOURCE=ROOT/"research/contrib/chatgpt/YGG-CAP02/source.py"
-ORIGINAL=ROOT/"research/contrib/chatgpt/YGG-CAP01/original/linux/seed-14071-state.json"
+ORIGINAL=ROOT/"research/contrib/chatgpt/YGG-CAP01/original"/("windows" if sys.platform=="win32" else "linux")/"seed-14071-state.json"
 
 def source():
     spec=importlib.util.spec_from_file_location("cap02_test_source",SOURCE)
