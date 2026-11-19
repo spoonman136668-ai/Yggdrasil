@@ -71,7 +71,7 @@ class NativeEvidenceRecallTests(unittest.TestCase):
         gate.witness(sha,"terminal",(0,1),1,0,.7,.2,1,1)
         raw=gate.checkpoint()
         obj=json.loads(raw)
-        obj["events"][0][2][1]=1
+        obj["events"][0][2][0]="transition"
         tampered=canonical(obj)
         with self.assertRaisesRegex(ValueError,"COLD_REJECTED"):
             EvidenceRecall.restore(tampered,digest(tampered))
