@@ -1,0 +1,140 @@
+{
+  "schema": "yggdrasil.wsp198.qualified-public-development-provenance.v1",
+  "experiment_id": "WSP-198",
+  "research_lane": "isolated public-data contribution",
+  "classification": "PUBLIC_DEV_NO_GO",
+  "scientific_pass": false,
+  "frozen_pre_outcome_sequence": {
+    "first_prereg_commit": "27d658bc52b1282b00dc5cd7a0f7461cd99daa19",
+    "source_admission_other_branch": "research/wsp197-olson-gb1-55site-admission-20261119",
+    "source_admission_commit": "a77d1311b801261cd4b43ad9f1cbf7dcff408a71",
+    "source_admission_receipt_git_blob": "548aee3d280d90bb989f0a329295f53e74c352f0",
+    "initial_evaluator_commit": "6c8d4f288d8cf7e79c93e2af98200788f88a746c",
+    "source_free_engineering_defect_recorded": "5db30750532caa8f917db35bf6c49ef6c5edfc7f",
+    "final_evaluator_commit": "8070a1ea3bafaa769a509392117ea1727fc63be3",
+    "final_exact_evaluator_git_blob": "f4af822a019eb87f2c11f3dfe6228af8a97f1f58",
+    "pre_score_source_free_qualification_commit": "6a2e5086fedd2f913a7db703d16b4bc01c0836e2",
+    "first_original_numeric_DEV_result_commit": "e43ab3192999f13965fbf7d28038ddaea7506585",
+    "first_result_git_blob": "5990c877b725a50f3814a71c71f0105d45a31972",
+    "first_original_numeric_DEV_attempts": 1,
+    "post_result_tuning": false,
+    "post_result_scoring_replay": false
+  },
+  "source": {
+    "repository": "lehner-lab/DMS2structure",
+    "pinned_commit": "3c1976b78a743d4d4c73921f047648500e671c8e",
+    "historical_experiment": "Olson 2014 GB1 55-site single/double mutant counts, original full text Git blob and source metadata independently verified",
+    "source_file_sha256_receipts": "see WSP-197 original_source_receipt.json; 4/4 exact Git blob SHA1 and independent SHA256 verified",
+    "original_data_copied_to_yggdrasil": false,
+    "license": "source reprocessor code MIT, original underlying historical measurement-data redistribution rights not independently verified",
+    "not_reused": "WSP-195/196 prior Wu 2016 4-site GB1 held results not used to train, score or select WSP-198 model"
+  },
+  "study": {
+    "single_parent_features": 1045,
+    "double_mutant_rows": 535917,
+    "whole_unordered_sitepair_group_counts": {
+      "FIT": 1060,
+      "VALID": 235,
+      "DEV": 190
+    },
+    "rows": {
+      "FIT": 382536,
+      "VALID": 84818,
+      "DEV": 68563
+    },
+    "original_test_sitepair_labels_used_in_fit_or_valid": false,
+    "held_group_bootstrap_replicates": 2000,
+    "original_numeric_outcome_scored_once": true
+  },
+  "candidate": {
+    "type": "no-gradient spectral shared native site-state interaction basis",
+    "rank": 2,
+    "alpha": 2,
+    "persistent_parameter_count_in_memory": 2090,
+    "validation_rmse": 0.6557954502205413,
+    "held_rmse": 0.6912816134489848,
+    "actual_yggdrasil_native_weights_modified": false,
+    "trained_factor_arrays_persisted_as_durable_model_checkpoint": false
+  },
+  "strong_control": {
+    "method": "bilinear_ALS",
+    "rank": 4,
+    "lambda": 10,
+    "converged": true,
+    "validation_rmse": 0.46316186522462605,
+    "held_rmse": 0.46438592165928844,
+    "parameters": 8360,
+    "iterations": 45
+  },
+  "other_controls": [
+    {
+      "rank": 2,
+      "lambda": 1,
+      "converged": false,
+      "iterations": 50
+    },
+    {
+      "rank": 2,
+      "lambda": 10,
+      "converged": true,
+      "iterations": 40
+    },
+    {
+      "rank": 4,
+      "lambda": 1,
+      "converged": false,
+      "iterations": 50
+    },
+    {
+      "rank": 4,
+      "lambda": 10,
+      "converged": true,
+      "iterations": 45
+    }
+  ],
+  "negative": {
+    "shuffled_fitness_residual_rank": 2,
+    "shuffled_beta": 0,
+    "shuffled_held_rmse": 1.133636446238166,
+    "zero_interaction_held_rmse": 1.133636446238166
+  },
+  "result": {
+    "relative_held_RMSE_gain": -0.4885929594484253,
+    "bootstrap_95_lower": -0.6400081219206148,
+    "bootstrap_95_upper": -0.36977642302007596,
+    "development": "NO_GO, strongest converged conventional beat native spectral program"
+  },
+  "retention": {
+    "measured_single_weight_json_roundtrip_max_drift": 0,
+    "not_evidence_of_delayed_or_interference_retention": true
+  },
+  "resources": {
+    "measured_evaluator_internal_ms": 290464,
+    "preprocessing_and_spectral_stage_ms": 77323,
+    "data_fetch_wall_clock_ms": "not measured separately",
+    "process_rss_bytes": "not measured",
+    "whole_process_end_to_end_budget": "not fully measured",
+    "quantized_or_serialized_weights_saved": false
+  },
+  "engineering": {
+    "focused_source_free_WSP197_tests": "9/9 PASS exact Git blob, local Python Linux",
+    "focused_WSP198_negative_cases": 5,
+    "focused_WSP198_reduced_source_free_integration": "PASS, 1056 synthetic double records, smaller guards only in ephemeral smoke copy",
+    "full_candidate_regression_linux_windows": "UNVERIFIED",
+    "github_ci": "NOT_QUERIED_AS_OF_THIS_RECEIPT",
+    "independent_science_replication": "NOT_RUN",
+    "operator_or_accepted_native_owner_qualification": "NOT_RUN"
+  },
+  "scope": {
+    "cross_world_causal_transfer": false,
+    "causal_action_consequence_learning": false,
+    "general_intelligence": false,
+    "native_yggdrasil_training": false,
+    "public_historical_dev": true,
+    "no_protected_original_world_first_use": true,
+    "no_merge_or_promotion": true,
+    "no_runner_or_scheduler_started": true,
+    "no_source_api_cost_or_external_model_usage": true
+  },
+  "next": "Preserve negative without retuning this held set. Independently test a different factorization or a new source with matched parameter/compute baselines and cold-restorable retention, through new prospective prereg and independent native qualification."
+}
