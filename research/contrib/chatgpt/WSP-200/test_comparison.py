@@ -43,6 +43,8 @@ class FullSourceFreeComparison(unittest.TestCase):
         self.assertEqual("site_pair_group",result["bootstrap"]["unit"])
         self.assertFalse("SCIENTIFIC_PASS" in json.dumps(result))
         self.assertGreater(result["paired_comparison"]["cost_ratio"],0)
+        print("WSP208_FABRICATED_COMPARISON=" + json.dumps(
+            result["paired_comparison"], sort_keys=True))
 
     def test_reserved_outcomes_not_read_even_with_poison(self):
         manifest, labels = fixture()
