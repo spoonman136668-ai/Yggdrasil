@@ -68,6 +68,32 @@ class FixtureAuditTests(unittest.TestCase):
         self.mutate(lambda x: x.update({"fixture_id": "99917"}))
         self.mutate(lambda x: x.update({"evidence_class": "SCIENTIFIC_PASS"}))
 
+    def test_reproducible_history_measurement_never_claims_science(self):
+        diagnostic = audit.engineering_diagnostic(
+            "engineering-history-01", raw=self.raw)
+        self.assertEqual(diagnostic["evidence_class"], "ENGINEERING_FIXTURE_ONLY")
+        self.assertIs(diagnostic["scientific_pass"], False)
+        self.assertEqual(diagnostic["registered_source_actions"], 0)
+        self.assertEqual(diagnostic["rows"], 96)
+        self.assertEqual(diagnostic["observed_previous_current_pairs"], 16)
+        self.assertEqual(diagnostic["receipt_sha256"], digest(self.raw))
+        for phase in ("novel", "cold_return", "pooled"):
+            arm_scores = self.parsed["phase_means"][phase]
+            value = diagnostic["phases"][phase]
+            self.assertAlmostEqual(value["candidate_brier"],
+                                   arm_scores["predictive_state_split"],
+                                   places=8)
+            best = min(arm_scores[name] for name in audit.ARMS)
+            self.assertAlmostEqual(value["best_control_brier"], best,
+                                   places=8)
+            self.assertAlmostEqual(value["candidate_minus_best"],
+                                   arm_scores["predictive_state_split"] - best,
+                                   places=8)
+        self.assertGreaterEqual(
+            diagnostic["potentially_history_distinguishing_public_cells"], 1)
+        with self.assertRaisesRegex(ValueError, "DIAGNOSTIC_SOURCE"):
+            audit.engineering_diagnostic("engineering-history-02", raw=self.raw)
+
     def test_two_source_disjoint_fixture_replay(self):
         second = audit.build_fixture_receipt("engineering-history-02")
         output = audit.audit_fixture_receipt(second)

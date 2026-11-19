@@ -61,3 +61,28 @@ checkpoint/JEPA heads and scientific source-first-use prohibition remain
 unchanged. Previous two fixture identities now generate new *engineering*
 rows; do not relabel earlier fixture scores as fresh science. The source
 actor and registered DEV/pilot/primary cohorts are still absent.
+
+
+## Next bounded gate: causal-history matched-control engineering diagnostic
+
+With the identified current-action alias removed, the existing immutable
+fixture auditor now emits `CAP04_ENGINEERING_DIAGNOSTIC=` JSON for **both**
+already known 96-observation engineering sources. Each result binds the
+independently audited source and prequential score receipt, reports all seven
+candidate/control Brier scores and the best control in the frozen novel
+(48–71), familiar-return (72–95), and pooled (48–95) intervals. Positive
+`candidate_minus_best` means the learner **lost** to that matched control.
+
+It also reports the distinct ordered previous/current actions (expected
+16 of 16) and how often the same observable current public views and action
+can follow multiple previously witnessed actions. This is **necessary but
+insufficient** to establish identifiable causal dependencies: public context
+could contain other predictive information and the code only performs
+observational prequential scoring. There is no new registered source birth,
+no protected cohort, no first-use lease, no action-selection evaluation and
+no claim of scientific advantage even if a known fixture scores well.
+
+An exact frozen-source and dual-OS full test workflow emits the diagnostic
+to the GitHub Actions run. The archived engineering fixture metrics are
+exploratory and may motivate a distinct preregistered follow-up but must
+not be used to tune the existing reserved CAP04 scientific thresholds.

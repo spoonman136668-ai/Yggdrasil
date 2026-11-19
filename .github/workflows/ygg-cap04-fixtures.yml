@@ -81,5 +81,6 @@ jobs:
           for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
             python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
           done
+          python -B research/contrib/chatgpt/YGG-CAP04/fixture_audit.py
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"

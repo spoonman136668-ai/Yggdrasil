@@ -185,3 +185,71 @@ def audit_fixture_receipt(raw):
     except (ValueError, TypeError, KeyError, IndexError, UnicodeError,
             OverflowError, ArithmeticError) as exc:
         raise ValueError("YGG_CAP04_FIXTURE_AUDIT_REJECTED") from exc
+
+
+def engineering_diagnostic(fixture_id, raw=None):
+    """Reconcile old-world/novel/return Brier vs every existing fitted arm.
+
+    This is exploratory *engineering fixture* scoring on already-known
+    fabricated source, not a fresh DEV result or independently held science.
+    Never turn fixture performance into SCIENTIFIC_PASS.
+    """
+    if raw is None:
+        raw = build_fixture_receipt(fixture_id)
+    proof = audit_fixture_receipt(raw)
+    doc = json.loads(raw.decode("ascii"))
+    require(doc["fixture_id"] == fixture_id, "DIAGNOSTIC_SOURCE")
+    require(proof["classification"] == "ENGINEERING_FIXTURE_ONLY",
+            "DIAGNOSTIC_SCOPE")
+    rows = doc["rows"]
+    # Stage zero is intentionally separated: the published novel and return
+    # Brier windows are locked in the existing fixture audit.
+    stage0 = phase_means(rows)
+    phases = {}
+    for phase in ("novel", "cold_return", "pooled"):
+        scores = stage0[phase]
+        candidates = [(scores[name], name) for name in ARMS]
+        best_score, best_name = min(candidates)
+        candidate = scores["predictive_state_split"]
+        phases[phase] = {
+            "candidate_brier": round(candidate, 9),
+            "best_control": best_name,
+            "best_control_brier": round(best_score, 9),
+            "candidate_minus_best": round(candidate - best_score, 9),
+            "candidate_better": candidate < best_score,
+            "arms": {name: round(scores[name], 9) for name in ARMS_ALL},
+        }
+    # Necessary but not sufficient identifiability diagnostic: check whether
+    # the *same observed public views and current action* can follow multiple
+    # different previous witnessed actions in the novel stage.
+    public_cells = {}
+    ordered_pairs = set()
+    for i in range(32, 72):
+        current = rows[i]
+        previous_action = tuple(rows[i - 1]["action"])
+        action = tuple(current["action"])
+        key = (tuple(tuple(view) for view in current["views"]), action)
+        public_cells.setdefault(key, set()).add(previous_action)
+        ordered_pairs.add((previous_action, action))
+    return {
+        "schema": "yggdrasil.cap04.engineering-diagnostic.v1",
+        "evidence_class": "ENGINEERING_FIXTURE_ONLY",
+        "fixture_id": fixture_id,
+        "source_sha256": doc["source_sha256"],
+        "receipt_sha256": proof["receipt_sha256"],
+        "rows": N,
+        "registered_source_actions": 0,
+        "observed_previous_current_pairs": len(ordered_pairs),
+        "potentially_history_distinguishing_public_cells":
+            sum(len(previous) > 1 for previous in public_cells.values()),
+        "novel_public_cells": len(public_cells),
+        "phases": phases,
+        "scientific_pass": False,
+        "accepted_native_state_changed": False,
+    }
+
+
+if __name__ == "__main__":
+    for fixture_id in source_module().FIXTURE_IDS:
+        print("CAP04_ENGINEERING_DIAGNOSTIC=" +
+              canonical(engineering_diagnostic(fixture_id)).decode("ascii"))
