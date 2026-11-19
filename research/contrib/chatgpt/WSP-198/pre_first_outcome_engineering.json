@@ -1,0 +1,13 @@
+{
+  "schema": "yggdrasil.wsp198.pre-first-outcome-engineering-repair.v1",
+  "first_prereg_commit": "27d658bc52b1282b00dc5cd7a0f7461cd99daa19",
+  "frozen_design_unchanged": true,
+  "original_numeric_fitness_values_read_for_wsp198": false,
+  "initial_evaluator_commit": "6c8d4f288d8cf7e79c93e2af98200788f88a746c",
+  "initial_evaluator_git_blob": "dbea832d384e07ffd99dea8fbfe85e9c6134a27a",
+  "issue": "Source-free engineering fixture discovered TypeError Assignment to constant variable because fitN, sum and sumsq counters were declared with const and subsequently incremented in FIT branch.",
+  "repair": "Replace const counters with let, without changing any source, partition, model, alpha, lambda, rank, optimizer, convergence, metric, threshold or held-out data policy. Re-run source-free fixture before any real numerical labels.",
+  "synthetic_test_status": "Initial five malformed-input negative controls PASS. First reduced-minima 48-single / 1,056-double generated fixture FAIL due const counter programming defect; no real Olson fitness values consumed.",
+  "source_free_fixture_limit_changes": "Reduced data-size and sitepair minimums only in an ephemeral in-memory copy of the evaluator. Committed evaluator minima unchanged. Not a scientific model or acceptance result.",
+  "explicit_no_post_score_tuning": true
+}

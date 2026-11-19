@@ -1,0 +1,107 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSP-198",
+  "contributor": "chatgpt",
+  "contribution_class": "independent-public-historical-protein-factorized-weight-development",
+  "parent_accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_receipt": "WSP-197/original_source_receipt.json commit a77d1311b801261cd4b43ad9f1cbf7dcff408a71",
+  "question": "Does persistent no-gradient spectral programming of shared mutation interaction weights predict effects at entirely unseen GB1 site-pairs better than fully optimized same-information additive and bilinear factorization baselines?",
+  "hypothesis": "An evidence-gated spectral shared mutation-factor program yields >=5% lower held site-pair-weighted RMSE than strongest validation-selected converged conventional control in a distinct 55-site historical GB1 double-mutant landscape.",
+  "source": {
+    "repo": "lehner-lab/DMS2structure",
+    "commit": "3c1976b78a743d4d4c73921f047648500e671c8e",
+    "raw_doubles": {
+      "file": "GB1/dataset/Olson2014_TableS2_doubles.txt",
+      "bytes": 21721634,
+      "git_sha1": "dc7ab871b69026fc5d7cb2f505cfe7f6dd36b950",
+      "sha256": "097b3227d2a21bfaaefa3fe0a82741599fc1a29684f47af4df39c7b81e2c78ef"
+    },
+    "raw_singles": {
+      "file": "GB1/dataset/Olson2014_TableS2_singles.txt",
+      "bytes": 19302,
+      "git_sha1": "de650d218e3a2aa339fa14f2849060293daa0338",
+      "sha256": "51d5a821fd0794cdb298907aafd8d17a292ca7546e44c920d915875099825c49"
+    },
+    "raw_wildtype": {
+      "file": "GB1/dataset/Olson2014_TableS2_wildtype.txt",
+      "bytes": 43,
+      "git_sha1": "f9fb047a2b25b0cde656f6d1760a89524b2bc665",
+      "sha256": "aa2480a7b7c1a5d6f3e0cc77c7caf3e7740d59e5f9848439b9211007323e4d55"
+    },
+    "reference": {
+      "file": "GB1/dataset/GB1_sequence.fasta",
+      "bytes": 61,
+      "git_sha1": "c1d1deef50b769ccd6a8f7909aa6da66fada68d6",
+      "sha256": "caa6ac7db0b24b2548893f6bd4ec6c606946dfe6299ddb44d3f7b346ba1fe0b9"
+    },
+    "original_source_admission": "Original full metadata ONLY and all four exact bytes verified; 1045 singles, 535917 double genotypes, 55 sites. No original count/fitness outcome values used for model fitting or scoring before prereg.",
+    "licensing": "Original reprocessor repository MIT software license, underlying 2014 measured data redistribution rights not independently verified. No original source bytes republished.",
+    "public_prior_outcome_exposure": "Published Olson 2014 experiment and prior analyses publicly known; this is PUBLIC DEV, not virgin blind or new physical-world first use."
+  },
+  "data_and_split": {
+    "label": "Compute for each mutant log((Selection Count+0.5)/(Input Count+0.5)) - log((wildtype selection+0.5)/(wildtype input+0.5)). For each double, subtract the two corresponding single-mutant measured log-effects to form epistasis residual.",
+    "admission": "Counts must be finite nonnegative integers (strict decimal), no zero-denominator due fixed pseudocount=0.5. Do not skip rows based on label magnitude or observed effect. Exclude only source-genotype pair rows whose parent single isn't in the verified 1045-member single roster; report count; require >=450000 eligible doubles.",
+    "unit": "Entire unordered mutated position pair (site_i,site_j) across all mutation identities; never individual source row. No held site-pair labels or counts used in preprocessing.",
+    "split": "SHA256('WSP198-OLSON55-SITEPAIR-v1\\0'+min_site+'\\0'+max_site), first 8 digest bytes big-endian modulo 100: FIT 0..69, VALID 70..84, DEV 85..99. Pre-frozen, no salt sweep or rebalancing.",
+    "minimums": "At least 700 distinct FIT site pairs, 120 VALID site pairs, 120 DEV site pairs, 180000 FIT double genotypes, 25000 VALID double genotypes, 25000 DEV double genotypes, >=800 parent single mutant features.",
+    "source_normalization": "From FIT double epistasis residuals only: subtract FIT residual mean and divide FIT population SD. FIT/VALID/DEV same transform. All controls and candidate use same single-parent effects, FIT doubles, VAILD hyperparam selection and kept DEV sealed until one score.",
+    "missing_and_corruption": "No missing original data source; original CR-only 18 column format; fail closed on malformed genotype or counts, unexpected alternate, reference mismatch, duplicates, sources SHA mismatch, or insufficient independent groups."
+  },
+  "candidate": {
+    "name": "No-gradient persistent spectral interaction weight programming",
+    "features": "One native non-token position/allele address per mutation, 1045 possible state addresses, no seq tokenizer/pretrained embeddings.",
+    "train": "Construct symmetric FIT-only observed epistasis residual adjacency W_ij = z_ij/sqrt(degree_i*degree_j), absent edges exactly zero. Program r orthogonal signed eigen-basis vectors using 25 deterministic normalized power iterations per component plus projection deflation; rank r in [2,4], deterministic trigonometric seed fixed 19811. Direct factor storage r*number_mutation_features, no gradient-descent updates or per-held-pair lookup table.",
+    "inference": "Predict held epistasis residual as alpha*sqrt(degree_i*degree_j)*sum_k(lambda_k*v_ki*v_kj), alpha chosen from [0,0.5,1,2] on VALID site-pair-equal-weighted RMSE. Inference never reads a held edge's original numerical label.",
+    "selection": "Select candidate rank and alpha by VALID site-pair-equal-weighted RMSE (tie prefer alpha0 and lower rank). No model change after DEV."
+  },
+  "strong_conventional_controls": {
+    "additive": "Fully fitted per-mutation residual correction ridge coordinate descent over identical FIT doubles, regularization lambda [1,10], max 100 sweeps until <=1e-6 max coefficient delta; VALID selects.",
+    "bilinear_als": "Regularized rank-[2,4] asymmetric U,V ALS over symmetric directed FIT edges, ridge lambda [1,10], max 50 full ALS sweeps; use mean of U_i.V_j and U_j.V_i for held prediction; ensure training objective relative improvement <=1e-4 over last two checkpoints or report unconverged. Same FIT observations, same native site/allele features; more adjustable parameters than spectral program.",
+    "mean": "FIT-only residual prediction 0 after standardization.",
+    "selected": "Strongest CONVERGED baseline chosen by minimum VALID site-pair-weighted RMSE. Do not claim fully fitted if optimization not converged. If no rank-[2,4] bilinear variants converge, mark comparator qualification incomplete and SCIENTIFIC_INVALID.",
+    "negative_controls": [
+      "Candidate alpha=0 ablation",
+      "FIT residual labels shuffled across observed FIT genotype edges using fixed seed19831, keeping all matrix geometry, candidate rank/alpha selection VALID only"
+    ],
+    "resource": "At most 25 spectral power iterations per component; <=50 ALS sweeps per variant; at most 4 ALS variants. Run same FIT/VALID/DEV sets and record wall/process memory when available, candidate stored params and control params."
+  },
+  "metrics": {
+    "primary": "Equal weight per held unordered site-pair group of mean squared normalized epistasis residual error; RMSE=sqrt(mean group MSE).",
+    "uncertainty": "2000 bootstrap resamples of held site-pair groups with replacement, deterministic seed 19841; 95% percentile CI of relative RMSE gain vs strongest converged conventional.",
+    "retention": "Serialize and cold restore measured 1045 single effects before/after interaction factor learning; confirm no single effect changes and report exact roundtrip delta. This is an engineered frozen-weight test NOT genuine delayed interference retention.",
+    "cost": "Record FIT/VALID/DEV source rows and independent site pairs, candidate/control factor dimensions, CPU runtime and peak RSS if available, source access time separately, no training efficiency claim without whole process comparison.",
+    "support_threshold": "At least 5% lower held DEV RMSE than strongest converged conventional and bootstrap 95% lower gain >0, no single drift. Remains PUBLIC_DEV_SUPPORTED_PENDING_INDEPENDENT_QUALIFICATION, never SCIENTIFIC_PASS without independent source and native owner qualification.",
+    "no_go": "If strict data and convergence gates PASS but improvement fails, PUBLIC_DEV_NO_GO; preserve negative, stop tuning.",
+    "invalid": "Source admission drift, data leakage, insufficient eligible rows/groups, missing strong baseline convergence, nonfinite outputs or unknown source license for redistribution: either FAIL_CLOSED or engineering INVALID; do not represent invalid as a science negative.",
+    "prohibit_post_score": [
+      "new salt",
+      "new partition",
+      "new rank",
+      "new code",
+      "label-based source filtering",
+      "held feedback tuning",
+      "changed source",
+      "promoting unqualified model",
+      "replaying first-use"
+    ],
+    "scientific_scope": "Retrospective within-protein variant-site transfer from published Olson 2014; not a new physical intervention, model general intelligence, action-consequence learning, new organism transfer, or scientific proof of native Yggdrasil training."
+  },
+  "authority": {
+    "research_contribution_only": true,
+    "protected_first_use_allowed": false,
+    "accepted_main_change": false,
+    "merge": false,
+    "model_promotion": false,
+    "scheduler": false,
+    "runner_dispatch": false,
+    "deployment": false,
+    "owner_issue_426": "untouched"
+  },
+  "prior_used_dev": [
+    "WSP-192",
+    "WSP-194",
+    "WSP-196"
+  ],
+  "state": "PRE_OUTCOME_PREREG_FIRST"
+}

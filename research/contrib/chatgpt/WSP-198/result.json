@@ -1,0 +1,174 @@
+{
+  "schema": "yggdrasil.wsp198.olson-real-public-dev.v1",
+  "classification": "PUBLIC_DEV_NO_GO",
+  "prereg_commit": "27d658bc52b1282b00dc5cd7a0f7461cd99daa19",
+  "source": {
+    "repo": "lehner-lab/DMS2structure",
+    "sha": "3c1976b78a743d4d4c73921f047648500e671c8e",
+    "bytes_doubles": 21721634,
+    "original_single_count": 1045,
+    "original_double_count": 535917,
+    "measurement": "raw Olson 2014 selection/input counts, log-relative fitness with fixed 0.5 pseudocount"
+  },
+  "cohort": {
+    "single_parent_features": 1045,
+    "double_genotypes": 535917,
+    "excluded_orphan_doubles": 0,
+    "fit_valid_held_rows": [
+      382536,
+      84818,
+      68563
+    ],
+    "fit_valid_held_site_pairs": [
+      1060,
+      235,
+      190
+    ],
+    "fit_epistasis_mean": 0.06237114188676619,
+    "fit_epistasis_sd": 1.0816765618789348,
+    "whole_sitepair_split": true
+  },
+  "candidate": {
+    "method": "no-gradient signed spectral shared native weights",
+    "rank": 2,
+    "alpha": 2,
+    "valid_rmse": 0.6557954502205413,
+    "held_rmse": 0.6912816134489848,
+    "learned_factor_parameters": 2090,
+    "learned_eigenvalues": [
+      0.7287587972621011,
+      -0.45061028734294334,
+      -0.2638356707455435,
+      0.22692512384191307
+    ],
+    "gradient_updates": 0
+  },
+  "negative": {
+    "method": "shuffled FIT residual eigenbasis",
+    "rank": 2,
+    "alpha": 0,
+    "valid_rmse": 1.1007038497948338,
+    "held_rmse": 1.133636446238166,
+    "ablation_held_rmse": 1.133636446238166
+  },
+  "additive_controls": [
+    {
+      "lambda": 1,
+      "iterations": 10,
+      "converged": true,
+      "valid_rmse": 0.8292172758427151
+    },
+    {
+      "lambda": 10,
+      "iterations": 10,
+      "converged": true,
+      "valid_rmse": 0.8299414397335125
+    }
+  ],
+  "bilinear_controls": [
+    {
+      "rank": 2,
+      "lambda": 1,
+      "iterations": 50,
+      "converged": false,
+      "validation_rmse": 0.5079008869321616,
+      "objective": 0.268810517072919,
+      "parameter_count": 4180
+    },
+    {
+      "rank": 2,
+      "lambda": 10,
+      "iterations": 40,
+      "converged": true,
+      "validation_rmse": 0.509573660839772,
+      "objective": 0.3252315567025545,
+      "parameter_count": 4180
+    },
+    {
+      "rank": 4,
+      "lambda": 1,
+      "iterations": 50,
+      "converged": false,
+      "validation_rmse": 0.46140863366514595,
+      "objective": 0.20890347298363088,
+      "parameter_count": 8360
+    },
+    {
+      "rank": 4,
+      "lambda": 10,
+      "iterations": 45,
+      "converged": true,
+      "validation_rmse": 0.46316186522462605,
+      "objective": 0.2824389318339546,
+      "parameter_count": 8360
+    }
+  ],
+  "selected_conventional": {
+    "type": "bilinear_ALS",
+    "rank": 4,
+    "lambda": 10,
+    "validated": true,
+    "converged": true,
+    "valid_rmse": 0.46316186522462605,
+    "held_rmse": 0.46438592165928844,
+    "learned_parameters": 8360
+  },
+  "held": {
+    "gain_vs_strong_conventional": -0.4885929594484253,
+    "bootstrap_95_lower": -0.6400081219206148,
+    "bootstrap_95_upper": -0.36977642302007596,
+    "independent_sitepair_groups": 190,
+    "bootstrap_replicates": 2000,
+    "scored_once": true
+  },
+  "retention": {
+    "frozen_source_single_weights": 1045,
+    "json_roundtrip_absolute_max_drift": 0,
+    "delayed_retention_proven": false
+  },
+  "runtime": {
+    "total_eval_ms": 290464,
+    "preprocessing_and_candidate_ms": 77323,
+    "peak_rss_bytes": "unavailable",
+    "external_original_data_collection_cost": "unavailable"
+  },
+  "science": {
+    "scientific_pass": false,
+    "public_historical_dev": true,
+    "unfamiliar_world": false,
+    "native_yggdrasil_training": false,
+    "original_new_intervention": false
+  },
+  "authority": {
+    "accepted_main_mutated": false,
+    "original_world_first_use": false,
+    "merge": false,
+    "deployment": false
+  },
+  "provenance": {
+    "first_prereg_sha": "27d658bc52b1282b00dc5cd7a0f7461cd99daa19",
+    "exact_evaluator_blob": "f4af822a019eb87f2c11f3dfe6228af8a97f1f58",
+    "exact_pre_score_qualification_blob": "c1a27fe29b2026644d336c05f9f69b2412fe962f",
+    "original_source_commit": "3c1976b78a743d4d4c73921f047648500e671c8e",
+    "original_source_git_blobs": [
+      "de650d218e3a2aa339fa14f2849060293daa0338",
+      "dc7ab871b69026fc5d7cb2f505cfe7f6dd36b950",
+      "f9fb047a2b25b0cde656f6d1760a89524b2bc665",
+      "c1d1deef50b769ccd6a8f7909aa6da66fada68d6"
+    ],
+    "original_source_independent_sha256": "WSP-197/original_source_receipt.json",
+    "source_bytes": {
+      "singles": 19302,
+      "doubles": 21721634,
+      "wildtype": 43,
+      "fasta": 61
+    },
+    "evaluator_code_frozen_before_fitness_access": true,
+    "original_source_not_redistributed": true,
+    "primary_attempts": 1,
+    "independent_replication": false,
+    "full_cross_platform_regression": "NOT_RUN",
+    "native_yggdrasil_training": false
+  },
+  "execution_elapsed_ms": 290465
+}
