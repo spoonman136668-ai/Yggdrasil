@@ -13,3 +13,7 @@ A pinned original native readout archive (702/677 episodes, prior JEPA2-03) rece
 Source hash and original trained-model Git blobs are pinned in `prereg.json`. Frozen source: `source.py`. Candidate: `yggdrasil/native_readout_retention.py`. Protocol: `campaign.py`, independent `audit.py` and `seal.py`. Results and full model checkpoints will be recorded under this folder, not as chat attachments.
 
 **Status:** source, model, tests and protocol committed to an isolated branch. Engineering preflight is the active gate; **neither source training nor science has been claimed**. No accepted `main`, Forge controller, paid API, scheduled task, owner's protected first-use, other model, or deployment is modified.
+
+## Frozen two-platform preflight proof
+
+[Run #44435011018](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44435011018) **COMPLETED SUCCESS, Linux and Windows original prior-source pins and all focused readout/JEPA compatibility and cold tamper tests passed**. No model code, original native state, source generation, training controls, frozen metrics, thresholds, seed identity or preregistration changed after this preflight. The next commit is a README-only trigger for the single original frozen development training comparison.
