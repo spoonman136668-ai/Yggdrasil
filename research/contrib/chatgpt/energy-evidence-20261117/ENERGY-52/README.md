@@ -1,0 +1,15 @@
+# ENERGY-52 — Evidence-gated high-order causal correction
+
+External synthetic research only. **No native Yggdrasil model, controller, runner, scheduler, queue, accepted ref, research first-use, or deployment changes.** Branch: `research/archive/energy-evidence-20261117`; existing draft PR #1210.
+
+Motivation: ENERGY-51 recovered many planted high-order parity supports but its corrective updates *increased* held cold MSE. ENERGY-52 checks whether accepting only corrections that improve 24 untouched NEW-context validation outcomes avoids harmful updates.
+
+**Frozen source archive:** `source.tar.bz2` holds `experiment.py` and `audit.py`, unchanged after the frozen source commit. Original experiment SHA-256 `1e80168f86d65e2ccd250e6975ed5df414653f064812007e723109d3178348c9`; audit SHA-256 `1ac95760f049a04ddc745491857ced76404dea9bc45a454170214054ffe8fbe7`; archive SHA-256 `b0b7406281f61df50ed0c3427cb3e32ac0c2876e35c35b597bdbb72d8ce3b32b`. Archive Git blob `cc5af0968a9ed749fd2b02c256b7f17c55a77bc8`.
+
+Worlds use fresh synthetic 12-bit interventions and authored 1–5-way Walsh parity features. Each world supplies 72 OLD witnessed outcomes and 72 NEW outcomes (48 new fit / 24 new validation), followed by 72 never-seen held OLD/NEW/COLD consequences. Fitting never accesses held truths. Candidate accepts a new sparse correction only if its **measured reduction in NEW validation MSE is greater than 5%** of the old-predictor validation MSE, and then refits the accepted correction on all 72 NEW factual outcomes. OLD predictions remain frozen. Fully trained separate-context ElasticNet, OMP, standard ungated corrections, a no-update ablation and a shuffled-label negative are evaluated with the same 144 factual training outcomes per world.
+
+**Exploratory smoke evidence already consumed before source freeze:** excluded seeds 99991 and 99997, 12 worlds per seed. Both favor conventional ElasticNet: gated energy cold MSE 3.7028 / 3.3040 versus ElasticNet 2.2732 / 2.0564. Their refit audits passed 22,740 enumerated checks each. These are **retrospective exploratory observations** and do **not count as prospective confirmation**. The frozen screen will use completely different seeds **99973 and 99979**, only after a separate GitHub prereg commit. The reserved primary seeds **9419/9431/9449** must not run if either independent screen fails its frozen stop criteria.
+
+Reproduce source: `tar -xjf source.tar.bz2` (no internet, model weights, paid API or GPU). Use Python 3.13.5, NumPy 2.3.5, scikit-learn 1.8.0 with BLAS/OpenMP threads 1. Score a specified excluded seed via `python -c "import experiment as e,json; r=e.evaluate((99973,),full=True); json.dump(r,open('screen.json','w'),sort_keys=True)"`, then `python audit.py screen.json --out audit.json`.
+
+**Audit independence limitation:** the audit checks deterministic case re-fitting, saved losses, assignments, source counts and aggregation, but imports the same generator/learners from the frozen experiment. It is **not an independently reimplemented causal generator**. No evidence here establishes native tokenless Yggdrasil learning or scientific acceptance.
