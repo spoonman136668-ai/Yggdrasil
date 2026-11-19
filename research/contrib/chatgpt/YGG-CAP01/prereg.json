@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.cap01.segmented-native-continuation.prereg.v1",
+  "experiment": "YGG-CAP01",
+  "type": "bounded development capacity and retention-identity engineering",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1298,
+    "sha": "7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+    "tree": "5fb69bfbbb057e061e46cab38e86302a7f32b5fd",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "prior_training": [
+    {
+      "old_seed": 14071,
+      "episodes": 1022,
+      "model_sha256": "646058e49adf75d2cf74b16b901e801b24ea38f017a717d68fe65a93ab4cad9e",
+      "source_git_blob": "33b648ef36e381a2eb753094f930a4722570b448"
+    },
+    {
+      "old_seed": 14072,
+      "episodes": 997,
+      "model_sha256": "ef8e1b6daa9b0349d675aee6c30a79d759d6e21c460b5fc900461417c1970609",
+      "source_git_blob": "5b9df452e45a1ebc3faadb265ceeffbc580ed7bf"
+    }
+  ],
+  "question": "Can Yggdrasil continue learning beyond its native 1024 episode cap while immutably preserving all old native+six-head weights and old readout, with a bounded additive native segment and six continual specialist heads?",
+  "negative_findings": "JEPA2-05 source-bound actual training gave development NO-GO and native old Brier interference +0.05167/+0.12553; do not rerun or retune scored seeds 99231/99247.",
+  "model_architecture": {
+    "accepted_main_unchanged": true,
+    "source_archived": "Entire exact 7-component JEPA2-05 model checkpoint preserved byte-for-byte and read only; old model's native/heads not mutated.",
+    "additive_native": "NativeEpisodeExperience native shards of max 64 events each, max 4 shards, separate from immutable old model; original native episode cap stays unchanged.",
+    "specialists": "Clone original two action latent heads, two temporal latent heads and two 3-step future heads from original weights. Four original short-horizon heads retain weights with source-count epoch offset to satisfy inherited fixed MAX_EPISODES validation; continue gradient training only on future witnessed source. Two future heads update only once each when a 3-step public future is fully observed; no resets of weights.",
+    "update_chronology": "At t: score forecasts before witnessing s2/y and future post; observe public outcome once; all six heads update after relevant outcome; source actions for 3-step forecast announced ex ante; no hidden phase/source evaluator label is supplied.",
+    "custody": "Unique 64-hex source IDs across immutable prior+new native shards; byte-verified parent, no old witness mutations, exact new episode tape replay, cold restore replays all new events to detect forged rehashed source/weights, fail closed on conflict/cap/tamper.",
+    "readouts": "Expose archived old native readout separately from active native and JEPA heads; do not promote unqualified mixture/selector.",
+    "limits": {
+      "new_native_shard_size": 64,
+      "max_shards": 4,
+      "max_total_new": 256,
+      "max_checkpoint_bytes": 2097152,
+      "old_native_cap": 1024
+    }
+  },
+  "disjoint_dev_source": {
+    "seeds": [
+      99601,
+      99603
+    ],
+    "events_each": 32,
+    "causal_families": 2,
+    "phases": "A 0-11; B 12-21; A_return 22-31",
+    "hidden_labels_evaluation_only": true,
+    "public_sensor_views": 2,
+    "actions_preannounced": true,
+    "source_owner_first_use": false,
+    "training_runs": "one original source-bound training per OS after frozen prereg and source/test preflight"
+  },
+  "controls": {
+    "frozen_original": "Old source readout and original six-head parameters byte exact",
+    "active_native": "new native shard forecasts compared descriptively with prior-fully-fitted Beta",
+    "conventional": "fully fitted or online Beta on same observed public action/consequence as sidecar; no comparative science claim",
+    "zero_training": "frozen readouts and output difference to demonstrate actual new training",
+    "negative": "duplicate/conflict ID, invalid sensor/row, forged rehash, source mutation, future target leak, checkpoint replay, capacity overflow"
+  },
+  "frozen_engineering_success": [
+    "Two original 7-component models independently load exact pinned source checkpoint and their old native readout Brier across consumed witnesses unchanged exactly before/after new updates and cold restore",
+    "Each receives precisely 32 genuinely new source witnessed interventions; count advances 1022→1054 and 997→1029, both above inherited 1024 capacity without changing legacy native schema/cap",
+    "All six specialist head weights source-initialized from original and trained at least once; initial weight provenance exact, step counts monotonic across counter epochs, no reset of parameter weights",
+    "30 completed 3-step windows per seed, with outputs only used after public observation; exactly matching new source IDs and events in stored evidence; source-disjoint from consumed JEPA2-05",
+    "Independent auditor cold-replays authenticated original+new tape and recomputes prequential metrics without importing original scoring code; same classification and metrics across Linux/Windows tolerance <=1e-8",
+    "Independent source-bound full Linux and Windows final regression on exact post-evidence SHA, G29 source-index check and clean trees"
+  ],
+  "development_go_scope": "Engineering capacity and integrity only; no pre-registered efficacy gain, no scientific benefit or accepted native value claimed.",
+  "stop": "Any engineering custody/capacity/control mismatch stops qualification; preserve negative. No post-result scientific retuning or reused source first-use.",
+  "authority": {
+    "repo_branch_only": true,
+    "draft": true,
+    "merge": false,
+    "main_mutation": false,
+    "new_scheduled_tasks": false,
+    "paid_apis": false,
+    "forge_changes": false,
+    "owner_first_use": false,
+    "scientific_pass": false,
+    "deployment": "NONE"
+  }
+}
