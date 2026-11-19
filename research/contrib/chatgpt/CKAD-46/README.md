@@ -20,7 +20,7 @@ The strongest fitted independent control enumerates all **36** balanced mapping 
 - Fully fitted conventional Beta(1,1) outcome counts keyed by **raw symbol IDs** and context, not mapped identity.
 - A separate unmodified native learner with a deterministic identity-hash binary adapter for unknown symbols.
 - Frozen source causal expert with equal 50/50 unknown symbol mapping and no inferred identity.
-- **Privileged mapping oracle ceiling (not a trainable control)**, used only in evaluation to show unachieved knowledge, never to train candidate or controls.
+- **Privileged true-mapping frozen-prototype diagnostic (not a trainable control or a mathematical performance ceiling)**, used only in evaluation to show unachieved knowledge, never to train candidate or controls.
 
 All learnable arms see the same actual public source rows and actions, same stochastic exogenous outcomes and identical number of witnessed interventions. Extra exact Bayesian and separate source-model computation is **not matched compute**, and no efficiency improvement may be claimed.
 
@@ -41,3 +41,7 @@ PYTHONPATH=. python -B research/contrib/chatgpt/CKAD-46/screen_dev.py
 ```
 
 One isolated Actions workflow first runs only disjoint engineering fixture tests. It allows only the exact frozen new DEV cohort on Ubuntu and Windows, and emits all source checkpoint SHA receipts. It never invokes scheduled tasks, paid APIs, a new controller or official FORGE/Yggdrasil owner process. The accepted native binary API is not modified, no user File Library artifacts are created, and `main` is not merged/promoted.
+
+## Evaluator diagnostic caution
+
+The `oracle_known_mapping` arm uses the evaluator's private action-class mapping only for **scoring predictions from a frozen 96-event source-trained causal prototype**. It is not an achievable learner, was never used to fit any candidate, and is **not** a mathematical or statistical upper performance bound: a separately trained nonprivileged online model can outperform a frozen-prototype diagnostic because the latter does not adapt its weights. All frozen decision thresholds compare the candidate exclusively against trained **nonprivileged** controls; this privileged diagnostic is excluded.
