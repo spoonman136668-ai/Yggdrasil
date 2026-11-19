@@ -148,14 +148,21 @@ class Learner:
 
     def _sweep(self, active: set[str]) -> None:
         assert self.mean is not None and self.sd is not None
+        # Build a transient adjacency view for this sweep.  Preserve the
+        # original observation ordering exactly, so every floating reduction
+        # and checkpoint is bitwise equivalent to the naive full scan.
+        by_address: dict[str, list[Sample]] = {address: [] for address in active}
+        for obs in self.samples:
+            if obs.left in by_address:
+                by_address[obs.left].append(obs)
+            if obs.right in by_address and obs.right != obs.left:
+                by_address[obs.right].append(obs)
         for addr in sorted(active):
             mat = [[0.0]*self.rank for _ in range(self.rank)]
             rhs = [0.0]*self.rank
             for i in range(self.rank):
                 mat[i][i] = LAMBDA
-            for obs in self.samples:
-                if addr != obs.left and addr != obs.right:
-                    continue
+            for obs in by_address[addr]:
                 other = obs.right if addr == obs.left else obs.left
                 features = self.weights[other]
                 target = (obs.target-self.mean)/self.sd
