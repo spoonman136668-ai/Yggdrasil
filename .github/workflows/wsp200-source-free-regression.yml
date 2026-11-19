@@ -32,7 +32,7 @@ jobs:
       - name: Full repository regression
         run: python -m unittest discover -s tests -p 'test_*.py' -v
       - name: WSP-200 source-free behavioral regression
-        run: python -m unittest discover -s research/contrib/chatgpt/WSP-200 -p test_learner.py -v
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-200 -p 'test_*.py' -v
       - name: Fabricated-only multistage controls diagnostic
         run: python research/contrib/chatgpt/WSP-200/source_free_diagnostic.py
       - name: Pinned source-atlas validation
