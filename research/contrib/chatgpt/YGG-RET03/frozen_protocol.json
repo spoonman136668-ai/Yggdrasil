@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.ret03.staged-temporal-source-only-contract.v1",
+  "frozen_date": "2026-11-19",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1291,
+    "sha": "0e4c9b32cd3a037f10b5d441ec9fb2c8c92f54eb",
+    "branch": "research/ygg-ret02-temporal-context-20261118",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Can the existing single RET02 native-cumulative causal readout support a genuinely staged two-action forecast interface that never exposes unobserved s2 or y to earlier predictions and only updates persistent weights after the complete observed public action/consequence receipt?",
+  "interfaces": [
+    "begin(source_id, public_views, action_x1) -> forecast_transition with no s2/x2/y",
+    "observe_transition(source_id, observed_s2) -> no learner update",
+    "choose_second(source_id, action_x2) -> forecast_reward with observed s2 and x2 but no y",
+    "complete(source_id, observed_y) -> update existing original native and temporal readout once",
+    "checkpoint/restore -> replay completed source events and reconstruct any pending stage with exact pre-reveal predictions"
+  ],
+  "source": "existing RET02 snapshot restored verbatim; no original first use; no development scored data rerun; only manual public-shaped API fixtures",
+  "mechanics": {
+    "one_pending_at_time": true,
+    "completed_event_id_guard": true,
+    "event_cap": 64,
+    "strict_bit_inputs": true,
+    "session_stage_enforcement": true,
+    "checkpoint_cold_sha_replay": true,
+    "first_forecast_hidden_inputs": "s2,x2,y",
+    "second_forecast_hidden_inputs": "y",
+    "no_source_actions": true,
+    "original_native_checkpoint_unchanged_until_complete": true,
+    "no_new_controller": true
+  },
+  "controls": [
+    "same completed native sequence and weights as RET02.observe on equivalent full event",
+    "change hidden downstream truth without affecting transition forecast",
+    "same first observed s2 and planned x2 but different future y cannot affect reward forecast",
+    "reject missing stage, source conflict, premature completion, duplicate action, forged pending and corrupted rehashed weight",
+    "cold restore at each phase and exact native continuation",
+    "history ablation independence"
+  ],
+  "acceptance": "dual-OS focused + exact final mandatory Linux/Windows whole-root/inherited causal/G29 tests; only previously qualified source Git blobs preserved; initial source-only does NOT certify science",
+  "science": {
+    "performed": false,
+    "first_use": false,
+    "scientific_pass": false,
+    "protected_owner_issue": 426,
+    "unfamiliar_worlds": false,
+    "conventional_fitted_controls": false,
+    "world_training": false,
+    "minimum_future": "prospective disjoint signed owner permitted worlds plus fully trained history-aware comparators, prior state cold return, action cost and whole-process time"
+  },
+  "scope": {
+    "allowed_paths": [
+      "yggdrasil/native_staged_temporal.py",
+      "tests/test_native_staged_temporal.py",
+      "research/contrib/chatgpt/YGG-RET03/**",
+      ".github/workflows/ygg-ret03-source-only.yml",
+      ".ice/code-atlas.*"
+    ],
+    "no_original_ret01_ret02_model_edit": true,
+    "no_merge": true,
+    "no_accepted_main": true,
+    "no_forge_controller": true,
+    "no_scheduler": true
+  }
+}
