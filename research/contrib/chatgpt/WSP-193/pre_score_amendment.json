@@ -1,0 +1,22 @@
+{
+  "schema": "yggdrasil.wsp193.pre-score-study-design-amendment.v1",
+  "original_prereg_commit": "231e0f0989a6b90f032822e744ff040b9fc56724",
+  "original_evaluator_commit": "e9081ddc8983832dd0177a8e847f2f1d100cadb2",
+  "timing": "BEFORE any original source outcome values or genotype rows read; only original CSV header, original study metadata, and source-free fixture reviewed",
+  "issue": "Original prereg uniformly required >=10 distinct mutational sites per assay. Wu 2016 Protein G experiment is explicitly a 4-site combinatorial mutational landscape, so 10-site gate would reject valid original data for a known-design reason, regardless of outcomes.",
+  "correction": "Olson 2014 >=10 distinct source FIT mutational sites; Wu 2016 >=4 (and <=4 not required). Require >=20 distinct FIT mutation site-state features and >=350/75/75 FIT/VALID/DEV measured multi-mutants in BOTH assays unchanged.",
+  "unchanged": [
+    "Git source blob and commit",
+    "whole genotype SHA256 hash salt and thresholds",
+    "outcomes still uninspected",
+    "candidate algorithm/weight update",
+    "lambda and beta candidate spaces",
+    "full-trained pairwise ridge comparators",
+    "comparison metrics and beta confidence",
+    "seeds",
+    "single run",
+    "classification rule",
+    "authority boundaries"
+  ],
+  "independence": "This is an ex-ante fixed study design correction, not a response to numeric outcome or split counts. If data still fails the amended gate, stop and mark INVALID."
+}
