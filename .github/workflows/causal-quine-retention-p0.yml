@@ -101,7 +101,7 @@ jobs:
         run: |
           set -euo pipefail
           python -B -m unittest -v tests/test_amalgam_quine_retention.py
-          python -B -m compileall -q research/contrib/chatgpt/CAUSAL-AMALGAM/quine_retention.py
+          python -B -c "from pathlib import Path; p = Path('research/contrib/chatgpt/CAUSAL-AMALGAM/quine_retention.py'); compile(p.read_text(encoding='utf-8'), str(p), 'exec')"
       - name: Full inherited native and research regression
         shell: bash
         run: |
@@ -115,4 +115,5 @@ jobs:
         run: |
           set -euo pipefail
           python -B scripts/build_code_atlas.py --check-if-present
+          git status --porcelain
           test -z "$(git status --porcelain)"
