@@ -97,6 +97,8 @@ def audit_candidate(candidate, prereg=None):
 
     kinds = {"TRANSFER_CHANGED": set(), "TRANSFER_UNCHANGED": set()}
     seen_worlds = set()
+    world_owner = {}
+    seed_owner = {}
     seen_mechanism_hashes = set()
     evidence_families = {}
     winning_actions = set()
@@ -132,6 +134,15 @@ def audit_candidate(candidate, prereg=None):
         require(key not in seen_worlds, "DUPLICATE_WORLD_CONTEXT")
         seen_worlds.add(key)
         family = entry["family_id"]
+        world_identity = (family, entry["split"], entry["seed_id"])
+        prior_world = world_owner.get(entry["world_id"])
+        require(prior_world is None or prior_world == world_identity,
+                "WORLD_COHORT_CONFLICT")
+        world_owner[entry["world_id"]] = world_identity
+        prior_seed = seed_owner.get(entry["seed_id"])
+        require(prior_seed is None or prior_seed == entry["world_id"],
+                "SEED_ASSIGNED_MULTIPLE_WORLDS")
+        seed_owner[entry["seed_id"]] = entry["world_id"]
         signature = entry["mechanism_sha256"]
         old = entry["old"]
         new = entry["new"]
@@ -180,7 +191,15 @@ def audit_candidate(candidate, prereg=None):
             policy["min_unchanged_control_families"],
             "INSUFFICIENT_NEGATIVE_FAMILIES")
     require(winning_actions == {0, 1}, "NO_ACTION_INFORMATION_RANK_REVERSAL")
-    require(budget <= costs["total_source_action_ceiling_not_authorization"],
+    # Every compared arm consumes its own source actions; per-arm budgeting
+    # alone would understate the true source cost if used as a future plan.
+    arms = prereg["proposed_science"]["arms"]
+    require(type(arms) is list and len(arms) >= 2 and
+            all(type(arm) is str and TOKEN.fullmatch(arm) is not None
+                for arm in arms) and len(set(arms)) == len(arms),
+            "CONTROL_ARM_CONTRACT")
+    total_budget = budget * len(arms)
+    require(total_budget <= costs["total_source_action_ceiling_not_authorization"],
             "SOURCE_CEILING_EXCEEDED")
     return {
         "schema": "yggdrasil.amalgam.action-identifiability-design-audit.v1",
@@ -188,7 +207,9 @@ def audit_candidate(candidate, prereg=None):
         "declared_changed_families": len(kinds["TRANSFER_CHANGED"]),
         "declared_unchanged_controls": len(kinds["TRANSFER_UNCHANGED"]),
         "both_actions_need_conditional_selection": True,
-        "declared_action_budget_sum_not_approval": budget,
+        "declared_action_budget_sum_per_arm_not_approval": budget,
+        "declared_control_arms": len(arms),
+        "declared_total_action_budget_all_arms_not_approval": total_budget,
         "cells": reported,
         "source_identity_independently_verified": False,
         "novelty_independently_verified": False,
