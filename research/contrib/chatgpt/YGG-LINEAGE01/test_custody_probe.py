@@ -54,7 +54,7 @@ class CustodyProbeTests(unittest.TestCase):
         self.assertFalse(report["continuation_authorized"])
 
     def test_pyc1_tamper_rejected(self):
-        payload = b"YPC1" + b"\\x00" * 128
+        payload = b"YPC1" + bytes(128)
         raw = payload + hashlib.sha256(payload).digest()
         with self.assertRaisesRegex(ValueError, "PYC1_INTEGRITY"):
             mod.inspect(raw[:-1] + bytes([raw[-1] ^ 1]))
