@@ -1,0 +1,161 @@
+{
+  "aggregate_cold_mse_by_policy_learner": {
+    "d_optimal": {
+      "elasticnet": 0.3392992287086331,
+      "omp": 0.37574030194979907,
+      "ridge": 0.7626647133369334
+    },
+    "hamming": {
+      "elasticnet": 0.3722185755189835,
+      "omp": 0.5666888063350909,
+      "ridge": 0.810047644996231
+    },
+    "random": {
+      "elasticnet": 0.5259799245069144,
+      "omp": 0.49385180798115497,
+      "ridge": 0.9294066510952318
+    },
+    "tournament": {
+      "elasticnet": 0.3294266345352043,
+      "omp": 0.27800204610265244,
+      "ridge": 0.6383686437953755
+    },
+    "uncertainty": {
+      "elasticnet": 0.35550863383594433,
+      "omp": 0.34031126496266967,
+      "ridge": 0.759412773830893
+    }
+  },
+  "audit": {
+    "all_policies_and_learners_replayed": true,
+    "checks": 2399,
+    "held_predictions_sha256_all_verified": true,
+    "schema": "yggdrasil.energy53.audit.v1",
+    "seeds": [
+      99721,
+      99733
+    ],
+    "source_independence": "Independent selector and full estimator refits, shared generator and NumPy/sklearn",
+    "status": "PASS",
+    "world_count": 24
+  },
+  "best_other_any_mse": {
+    "learner": "elasticnet",
+    "mse": 0.3392992287086331,
+    "policy": "d_optimal"
+  },
+  "best_other_omp_cold_mse": 0.34031126496266967,
+  "candidate_cold_mse": 0.27800204610265244,
+  "classification": "SCREEN_NO_GO",
+  "common_label_budget": {
+    "held_per_context": 48,
+    "new_pool": 96,
+    "old_labels": 80,
+    "selected_new_labels": 16,
+    "shared_anchor_labels": 4
+  },
+  "date": "2026-11-19",
+  "deployment": "NONE",
+  "experiment": "ENERGY-53",
+  "frozen_screen_gates": {
+    "family_no_more_than_10pct_worse": true,
+    "gain10_random_omp": true,
+    "gain5_all_other_arms": true,
+    "gain5_hamming_omp": true,
+    "gain8_omp_best_alternative": true,
+    "old_retention_exact": true,
+    "per_seed_positive_both": false,
+    "selection_cost_below_20x_random": true
+  },
+  "gain_vs_best_omp_percent": 18.309478784621547,
+  "gain_vs_best_other_any_percent": 18.06581843385753,
+  "gain_vs_random_omp_percent": 43.70739529351672,
+  "learners": [
+    "omp",
+    "elasticnet",
+    "ridge"
+  ],
+  "limits": "Finite authored 24-factor grammar, synthetic deterministic generator, audit shares generator+libraries, heterogeneous downstream controls, selection wall time not whole process or Joules; no native Yggdrasil qualification",
+  "native_training": false,
+  "passed": 7,
+  "per_family": [
+    {
+      "best_other_omp": 0.056450994082975756,
+      "best_other_policy": "hamming",
+      "family": "parity4",
+      "tournament_omp": 0.06049583493013593,
+      "within_10percent": true
+    },
+    {
+      "best_other_omp": 0.7274665576811551,
+      "best_other_policy": "hamming",
+      "family": "threshold4",
+      "tournament_omp": 0.6815887529985791,
+      "within_10percent": true
+    },
+    {
+      "best_other_omp": 0.09955072555400318,
+      "best_other_policy": "uncertainty",
+      "family": "gate4",
+      "tournament_omp": 0.09192155037924224,
+      "within_10percent": true
+    }
+  ],
+  "per_seed": [
+    {
+      "best_other_omp": 0.47251096015172717,
+      "best_other_policy": "uncertainty",
+      "passed": true,
+      "relative_gain_percent": 24.96662969041401,
+      "seed": 99721,
+      "tournament_omp": 0.35454089848402576
+    },
+    {
+      "best_other_omp": 0.13311618358791624,
+      "best_other_policy": "d_optimal",
+      "passed": false,
+      "relative_gain_percent": -51.34387742435784,
+      "seed": 99733,
+      "tournament_omp": 0.2014631937212791
+    }
+  ],
+  "policies": [
+    "tournament",
+    "hamming",
+    "d_optimal",
+    "uncertainty",
+    "random"
+  ],
+  "pre_freeze_dev_seed_excluded": [
+    99709
+  ],
+  "prereg_commit": "f5eb3730d8233d7592d2a762044ca3389e8f9d8f",
+  "primary_downstream_learner": "omp",
+  "primary_seeds_reserved_unrun": [
+    9511,
+    9523,
+    9547
+  ],
+  "rejected_for_lack_of_seed_stability": true,
+  "schema": "yggdrasil.energy53.screen_disposition.v1",
+  "scientific_pass": false,
+  "screen_seeds": [
+    99721,
+    99733
+  ],
+  "screen_source_commit": "4fdadd0b4de9bd6ac79537ccc76356793e898b3d",
+  "semantic_replay": {
+    "excluded_nondeterministic_fields": [
+      "fit_predict_seconds",
+      "selection_seconds",
+      "selection_seconds_total",
+      "wall_seconds"
+    ],
+    "non_timing_bytes": 143038,
+    "semantic_sha256": "57c31d594f4e328dc80d8c1950873374e5de5913629786f4deaaf1b2ce67f99b",
+    "source_shas_pinned": true,
+    "status": "PASS"
+  },
+  "total_gates": 8,
+  "worlds": 24
+}
