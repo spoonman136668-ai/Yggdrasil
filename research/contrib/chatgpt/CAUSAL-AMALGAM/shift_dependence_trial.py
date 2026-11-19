@@ -3,6 +3,7 @@
 from fractions import Fraction
 from hashlib import sha256
 import json
+from math import sqrt
 from pathlib import Path
 from random import Random
 from statistics import mean
@@ -34,12 +35,12 @@ def likelihood(ones, total, probability):
     return probability**ones * (1 - probability)**(total - ones)
 
 
-def observe_fit(receipts, hypotheses, probes):
+def observe_fit(receipts, hypotheses, probes, laws=(DONOR, TARGET)):
     """Integrate over each unknown pair of local shift states."""
     masses = [1 / len(hypotheses)] * len(hypotheses)
     for _, a, b in receipts:
-        donor = [likelihood(a, probes, p) for p in DONOR]
-        target = [likelihood(b, probes, p) for p in TARGET]
+        donor = [likelihood(a, probes, p) for p in laws[0]]
+        target = [likelihood(b, probes, p) for p in laws[1]]
         same = sum(u * v for u, v in zip(donor, target, strict=True))
         different = sum(u * v for u, v in zip(donor, reversed(target), strict=True))
         masses = [weight * (same * h + different * (1 - h))
@@ -47,6 +48,17 @@ def observe_fit(receipts, hypotheses, probes):
         total = sum(masses)
         masses = [weight / total for weight in masses]
     return masses
+
+
+def fit_marginal_contrast(receipts, probes):
+    """Use the second factorial moment of a balanced symmetric mixture."""
+    cap = 0.5 - 1 / (2 * (len(receipts) + 1))
+    margins = []
+    for i in (1, 2):
+        second = mean(row[i] * (row[i] - 1) for row in receipts) / (probes * (probes - 1))
+        contrast = min(cap, sqrt(max(0, second - .25)))
+        margins.append((.5 - contrast, .5 + contrast))
+    return margins[0], margins[1][::-1]
 
 
 def prediction(ones, probes, agreement, laws=(DONOR, TARGET)):
@@ -85,10 +97,23 @@ def run(protocol=PLAN):
                                  + len(held) * (plan["held_donor_probes"] + 1)))
                 if family:
                     rows[-1]["family"] = family
+                if plan.get("calibrate_marginals"):
+                    learned = fit_marginal_contrast(fit, plan["fit_probes_per_cell"])
+                    learned_weights = observe_fit(fit, hypotheses, plan["fit_probes_per_cell"],
+                                                  learned)
+                    known_weights = observe_fit(fit, hypotheses, plan["fit_probes_per_cell"], laws)
+                    for name, weights, margins in (("calibrated", learned_weights, learned),
+                                                    ("law_matched_fit", known_weights, laws)):
+                        fitted_agreement = sum(h * w for h, w in zip(hypotheses, weights, strict=True))
+                        scores[name] = mean((prediction(a, plan["held_donor_probes"],
+                                                        fitted_agreement, margins) - b)**2
+                                            for _, a, b in held)
+                    rows[-1]["learned_margins"] = learned
     correlated = [r for r in rows if r["agreement"] != .5]
     null = [r for r in rows if r["agreement"] == .5]
-    gain = mean(r["brier"]["independent"] - r["brier"]["fitted"] for r in correlated)
-    drift = max(r["brier"]["fitted"] - r["brier"]["independent"] for r in null)
+    candidate = "calibrated" if plan.get("calibrate_marginals") else "fitted"
+    gain = mean(r["brier"]["independent"] - r["brier"][candidate] for r in correlated)
+    drift = max(r["brier"][candidate] - r["brier"]["independent"] for r in null)
     signal = gain >= plan["min_correlated_gain"] and drift <= plan["max_null_drift"]
     actions = sum(r["actions"] for r in rows)
     if actions != plan["budget_actions"]:
