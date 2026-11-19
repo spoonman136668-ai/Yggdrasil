@@ -49,7 +49,12 @@ class RelationShadow:
     second_action, reward).  The retained rows are copied, never modified.
     """
 
-    def __init__(self, accepted_ledger):
+    def __init__(self, accepted_ledger, *, projection=0):
+        # The native episode reader learns which paired-view coordinate is
+        # stable.  Default zero preserves legacy caller semantics; the custody
+        # bridge always supplies the restored learner's verified projection.
+        projection = _bit(projection)
+        self.projection = projection
         seen = set()
         self._cells = defaultdict(lambda: [[0, 0], [0, 0]])
         canonical_rows = []
@@ -66,8 +71,10 @@ class RelationShadow:
                     or any(type(view) not in (list, tuple) or len(view) != 2
                            for view in views)):
                 raise ValueError("RELATION_PAIRED_VIEWS")
-            context, nuisance = views[0]
-            other_context, other_nuisance = views[1]
+            context = views[0][projection]
+            other_context = views[1][projection]
+            nuisance = views[0][1 - projection]
+            other_nuisance = views[1][1 - projection]
             if (type(context) is not int or not 0 <= context <= 65535
                     or context != other_context):
                 raise ValueError("RELATION_PUBLIC_CONTEXT")
@@ -82,7 +89,7 @@ class RelationShadow:
                                    first, transition, second, reward))
         self.witness_count = len(canonical_rows)
         self.witness_sha256 = sha256(json.dumps(
-            canonical_rows, separators=(",", ":"), ensure_ascii=True
+            [projection, canonical_rows], separators=(",", ":"), ensure_ascii=True
         ).encode("ascii")).hexdigest()
 
     def propose(self, context, missing_action):
@@ -133,6 +140,7 @@ class RelationShadow:
         risk_one = (1.0 - proposed) * (1.0 - proposed)
         return {
             "context": context,
+            "projection": self.projection,
             "unobserved_action": missing_action,
             "forecast": proposed,  # Diagnostic forecast only; never for decisions.
             "posterior": posterior,
