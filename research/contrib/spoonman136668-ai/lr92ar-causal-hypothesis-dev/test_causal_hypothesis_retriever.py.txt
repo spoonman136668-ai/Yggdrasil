@@ -1,0 +1,76 @@
+import hashlib
+import unittest
+from causal_hypothesis_retriever import CausalHypothesisRetriever as C, FixedHalfBlend
+
+class TestCHR(unittest.TestCase):
+    def test_budget_cold_restore(self):
+        m=C();self.assertEqual(m.LEARNED_BYTES,928)
+        self.assertEqual(len(m.snapshot()),964)
+        self.assertEqual(C.restore(m.snapshot()).snapshot(),m.snapshot())
+        self.assertAlmostEqual(m.predict(0,0),.5)
+
+    def test_contradictions_update_belief(self):
+        m=C()
+        for t in range(48):m.end_episode();m.observe_step(0,0,1)
+        self.assertEqual(sum(m._archive[:28]),48)
+        old=m._belief[0]
+        for t in range(32):m.end_episode();m.observe_step(0,0,0)
+        self.assertNotEqual(m._belief[0],old)
+        self.assertEqual(C.restore(m.snapshot()).snapshot(),m.snapshot())
+
+    def test_no_phase_state(self):
+        m=C()
+        self.assertEqual(set(m.__dict__),{'_archive','_adaptive','_history','_belief'})
+        self.assertFalse(hasattr(m,'phase'))
+        self.assertEqual(m.predict.__code__.co_varnames[:3],('self','address','action'))
+
+    def test_invalid_atomic(self):
+        m=C();old=m.snapshot()
+        for a,b,y,ret in [(7,0,1,False),(0,2,1,False),(0,0,2,False),(0,0,0,1),(True,0,0,False)]:
+            with self.assertRaises(ValueError):m.observe_step(a,b,y,retained=ret)
+            self.assertEqual(m.snapshot(),old)
+
+    def test_frozen_archived_and_adaptive_continuation(self):
+        m=C()
+        for t in range(200):m.end_episode();m.observe_step(0,t%2,int(t>=48))
+        self.assertEqual(sum(m._archive[:28]),48)
+        self.assertGreater(sum(m._adaptive[:28]),0)
+        self.assertEqual(C.restore(m.snapshot()).snapshot(),m.snapshot())
+
+    def test_retained_slot_isolation(self):
+        m=C()
+        for t in range(99):m.observe_step(0,t%2,int(t%3==0),retained=True)
+        self.assertEqual(C.restore(m.snapshot()).snapshot(),m.snapshot())
+        self.assertEqual(m.predict(0,1),.5)
+        self.assertNotEqual(m._history[7],0)
+
+    def test_corrupt_and_rehashed_malformed_rejected(self):
+        m=C();x=bytearray(m.snapshot());x[70]^=1
+        with self.assertRaises(ValueError):C.restore(bytes(x))
+        x=bytearray(m.snapshot());x[900]=8;x[-32:]=hashlib.sha256(x[:-32]).digest()
+        with self.assertRaises(ValueError):C.restore(bytes(x))
+
+    def test_identical_learned_state_ablation(self):
+        m=C();b=FixedHalfBlend()
+        for t in range(300):
+            action=(t//7)%2;y=int(t%11>=4)
+            if t%7==0:m.end_episode();b.end_episode()
+            m.observe_step(0,action,y);b.observe_step(0,action,y)
+        self.assertEqual(m.snapshot(),b.snapshot())
+
+    def test_prediction_is_readonly(self):
+        m=C()
+        for t in range(80):m.observe_step(0,t%2,int(t%3==0))
+        before=m.snapshot()
+        for _ in range(30):m.predict(0,0);m.predict_archived(0,1)
+        self.assertEqual(m.snapshot(),before)
+
+    def test_public_prefix_cannot_reveal_future_regime(self):
+        m=C();n=C()
+        for t in range(119):
+            a=t%2;y=int(t%9>3)
+            m.observe_step(0,a,y);n.observe_step(0,a,y)
+        self.assertEqual(m.snapshot(),n.snapshot())
+        self.assertEqual(m.predict(0,0),n.predict(0,0))
+
+if __name__=='__main__':unittest.main()
