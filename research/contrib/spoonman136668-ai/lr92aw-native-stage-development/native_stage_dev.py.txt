@@ -1,0 +1,299 @@
+"""LR-92AW: source-free, development-only native-SCHEMA two-stage causal study.
+
+This does NOT import, train, alter or restore a native Yggdrasil checkpoint.
+The data shape and public information order match NativeEpisodeExperience's
+paired views, s1/x1/s2/x2/y schema; no claim of native-model performance.
+Evaluator-only laws, phase times, counterfactual probabilities and noise
+must never be supplied to any learning method.
+"""
+from __future__ import annotations
+import hashlib
+import json
+import math
+import random
+from dataclasses import dataclass
+
+SCHEMA = 'lr92aw.native-stage-development.v1'
+SEEDS = (88041001, 88041002)
+FORBIDDEN = (73004303, 73004304, 74009171, 74009172, 75011801,
+             75011802, 76021921, 76021922, 77033101, 77033102,
+             929209101, 929209102, 929209103)
+FAMILIES = ('mediated', 'direct', 'mixed')
+REPS = 4
+NOISE = 0.10
+BOUND = 32768
+TERMINAL_KEYS = ('s1', 'x1', 's2', 'x2')
+MASKS = tuple(range(16))
+
+
+def _seed(seed, family, rep, salt):
+    return int.from_bytes(hashlib.sha256(f'LR92AW|{seed}|{family}|{rep}|{salt}'.encode()).digest()[:8],'big')
+
+
+def _bits(x, n):
+    return tuple((x >> i) & 1 for i in range(n))
+
+
+def _key(values, mask):
+    key = 0
+    bit = 0
+    for i, val in enumerate(values):
+        if (mask >> i) & 1:
+            key |= (val << bit)
+            bit += 1
+    return key
+
+
+def _essentials(table, n):
+    return all(any(table[j] != table[j ^ (1 << b)] for j in range(1 << n)) for b in range(n))
+
+
+def _table(rng, n):
+    while True:
+        t = tuple(rng.randrange(2) for _ in range(1 << n))
+        if _essentials(t,n):
+            return t
+
+
+@dataclass(frozen=True)
+class Rule:
+    mask: int
+    table: tuple[int, ...]
+    def clean(self, values):
+        return self.table[_key(values,self.mask)]
+    def prob(self, values):
+        return NOISE + (1 - 2*NOISE) * self.clean(values)
+
+
+@dataclass(frozen=True)
+class Event:
+    identifier: str
+    views: tuple[tuple[int,int],tuple[int,int]]
+    s1: int
+    x1: int
+    s2: int
+    x2: int
+    y: int
+    def public_row(self):
+        return {'s1':self.s1,'x1':self.x1,'s2':self.s2,'x2':self.x2,'y':self.y}
+
+
+@dataclass(frozen=True)
+class World:
+    seed:int
+    family:str
+    rep:int
+    dwell:tuple[int,int,int]
+    transition_A:Rule
+    terminal_A:Rule
+    transition_B:Rule
+    terminal_B:Rule
+    public:tuple[Event,...]
+    hidden_phase:tuple[str,...]
+
+    def public_digest(self):
+        raw=json.dumps([{'id':e.identifier,'views':e.views,'row':e.public_row()}
+                        for e in self.public],sort_keys=True,separators=(',',':')).encode()
+        return hashlib.sha256(raw).hexdigest()
+
+    def truth(self, phase, s1, x1, s2, x2):
+        if phase not in ('A','B'):
+            raise ValueError('AW_EVALUATOR_ONLY_PHASE')
+        transition = self.transition_A if phase=='A' else self.transition_B
+        terminal = self.terminal_A if phase=='A' else self.terminal_B
+        return transition.prob((s1,x1)), terminal.prob((s1,x1,s2,x2))
+
+
+def build_world(seed:int, family:str, rep:int)->World:
+    if (type(seed) is not int or seed not in SEEDS or type(family) is not str or
+        family not in FAMILIES or type(rep) is not int or not 0 <= rep < REPS):
+        raise ValueError('AW_DEV_ONLY')
+    rule_rng=random.Random(_seed(seed,family,rep,'rules'))
+    trans_A=Rule(3,_table(rule_rng,2))
+    trans_B=Rule(3,_table(rule_rng,2))
+    # Guarantee an observable transition change; no hidden source flags.
+    while trans_B.table==trans_A.table:
+        trans_B=Rule(3,_table(rule_rng,2))
+    masks={'mediated':(0b1100,0b1011), 'direct':(0b1011,0b1101),
+           'mixed':(0b1101,0b1110)}
+    a_mask,b_mask=masks[family]
+    term_A=Rule(a_mask,_table(rule_rng,a_mask.bit_count()))
+    term_B=Rule(b_mask,_table(rule_rng,b_mask.bit_count()))
+    timing=random.Random(_seed(seed,family,rep,'timing'))
+    dwell=tuple(timing.randrange(48,81) for _ in range(3))
+    # Public episodes occur one per event: no phase reset marker exists.
+    action_rng=random.Random(_seed(seed,family,rep,'actions'))
+    noise_rng=random.Random(_seed(seed,family,rep,'noise'))
+    rows=[]; phases=[]
+    for i in range(sum(dwell)):
+        stage='A' if i<dwell[0] or i>=dwell[0]+dwell[1] else 'B'
+        s1=action_rng.randrange(2)
+        x1=action_rng.randrange(2)
+        x2=action_rng.randrange(2)
+        v=action_rng.randrange(2)
+        transition=trans_A if stage=='A' else trans_B
+        terminal=term_A if stage=='A' else term_B
+        s2=transition.clean((s1,x1)) ^ int(noise_rng.random()<NOISE)
+        y=terminal.clean((s1,x1,s2,x2)) ^ int(noise_rng.random()<NOISE)
+        identifier=hashlib.sha256(f'LR92AW|{seed}|{family}|{rep}|public|{i}'.encode()).hexdigest()
+        rows.append(Event(identifier,((s1,v),(s1,1-v)),s1,x1,s2,x2,y))
+        phases.append(stage)
+    return World(seed,family,rep,dwell,trans_A,term_A,trans_B,term_B,
+                 tuple(rows),tuple(phases))
+
+
+def development_worlds():
+    return tuple(build_world(s,f,r) for s in SEEDS for f in FAMILIES for r in range(REPS))
+
+
+def _binary_beta_p(n1,n0):
+    return (n1+1)/(n1+n0+2)
+
+
+def _integrated_log_evidence(n1,n0):
+    return math.lgamma(n1+1)+math.lgamma(n0+1)-math.lgamma(n1+n0+2)
+
+
+class StageStructureBayes:
+    """Conventional exact subset evidence mixture, not a novel native learner.
+
+    The terminal law is a posterior mixture over all 16 parent subsets of
+    (s1,x1,s2,x2), without preprogrammed truth functions. The transition
+    law is a mixture over all four parent subsets of (s1,x1).
+    """
+    name='structure_bayes'
+    def __init__(self):
+        self.data=[]
+    def _predict(self,inputs,target,variables):
+        weights=[];probs=[]
+        for mask in range(1<<variables):
+            counts={}
+            for row in self.data:
+                values, outcome=row[target]
+                key=_key(values,mask)
+                v=counts.setdefault(key,[0,0]);v[outcome]+=1
+            evidence= -0.65*mask.bit_count()
+            for n0,n1 in counts.values():
+                evidence += _integrated_log_evidence(n1,n0)
+            x=counts.get(_key(inputs,mask),[0,0])
+            probs.append(_binary_beta_p(x[1],x[0]))
+            weights.append(evidence)
+        top=max(weights)
+        post=[math.exp(w-top) for w in weights]
+        return sum(w*p for w,p in zip(post,probs))/sum(post)
+    def predict_transition(self,views,x1):
+        _check_view(views,x1)
+        return self._predict((views[0][0],x1),0,2)
+    def predict_terminal(self,views,x1,s2,x2):
+        _check_view(views,x1,s2,x2)
+        return self._predict((views[0][0],x1,s2,x2),1,4)
+    def observe(self,event):
+        _check_event(event)
+        self.data.append((((event.s1,event.x1),event.s2),
+                          ((event.s1,event.x1,event.s2,event.x2),event.y)))
+    def snapshot(self):
+        return _snapshot(self.name,self.data)
+    @classmethod
+    def restore(cls,raw):
+        data=_restore(raw,cls.name)
+        m=cls()
+        m.data=[((tuple(a),s2),(tuple(b),y)) for ((a,s2),(b,y)) in data]
+        return m
+
+
+class StageTabular:
+    """Fully trained conventional conditional-frequency baseline."""
+    def __init__(self,window=None):
+        if window is not None and (type(window) is not int or window<1):
+            raise ValueError('AW_WINDOW')
+        self.window=window
+        self.data=[]
+    @property
+    def name(self):
+        return 'tabular_full' if self.window is None else f'tabular_window{self.window}'
+    def predict_transition(self,views,x1):
+        _check_view(views,x1)
+        return self._p((views[0][0],x1),0)
+    def predict_terminal(self,views,x1,s2,x2):
+        _check_view(views,x1,s2,x2)
+        return self._p((views[0][0],x1,s2,x2),1)
+    def _p(self,inputs,target):
+        events=(row[target] for row in self.data)
+        count=[0,0]
+        for key,outcome in events:
+            if key==inputs:count[outcome]+=1
+        return _binary_beta_p(count[1],count[0])
+    def observe(self,event):
+        _check_event(event)
+        self.data.append((((event.s1,event.x1),event.s2),
+                          ((event.s1,event.x1,event.s2,event.x2),event.y)))
+        if self.window is not None and len(self.data)>self.window:
+            self.data.pop(0)
+    def snapshot(self):
+        return _snapshot(self.name,self.data)
+    @classmethod
+    def restore(cls,raw,window=None):
+        obj=cls(window)
+        data=_restore(raw,obj.name)
+        obj.data=[((tuple(a),s2),(tuple(b),y)) for ((a,s2),(b,y)) in data]
+        if window is not None and len(obj.data)>window:
+            raise ValueError('AW_WINDOW_BREACH')
+        return obj
+
+
+class NoLearning:
+    name='no_learning'
+    def predict_transition(self,views,x1):
+        _check_view(views,x1);return .5
+    def predict_terminal(self,views,x1,s2,x2):
+        _check_view(views,x1,s2,x2);return .5
+    def observe(self,event):
+        _check_event(event)
+    def snapshot(self):
+        return _snapshot(self.name,[])
+    @classmethod
+    def restore(cls,raw):
+        if _restore(raw,cls.name)!=[]:raise ValueError('AW_NONEMPTY_NULL')
+        return cls()
+
+
+def _check_view(views,*bits):
+    if (type(views) is not tuple or len(views)!=2 or
+        any(type(v) is not tuple or len(v)!=2 for v in views) or
+        any(type(b) is not int or b not in (0,1) for v in views for b in v) or
+        views[0][0]!=views[1][0] or
+        any(type(b) is not int or b not in (0,1) for b in bits)):
+        raise ValueError('AW_INVALID_NATIVE_SCHEMA')
+
+
+def _check_event(event):
+    if type(event) is not Event or len(event.identifier)!=64 or any(c not in '0123456789abcdef' for c in event.identifier):
+        raise ValueError('AW_BAD_PUBLIC_EVENT')
+    _check_view(event.views,event.x1,event.s2,event.x2,event.y)
+    if event.views[0][0]!=event.s1:
+        raise ValueError('AW_VIEW_ROW_CONFLICT')
+
+
+def _snapshot(name,data):
+    raw=json.dumps({'schema':SCHEMA,'model':name,'data':data},sort_keys=True,separators=(',',':')).encode()
+    if len(raw)+32>BOUND:
+        raise ValueError('AW_STATE_CAPACITY')
+    return raw+hashlib.sha256(raw).digest()
+
+
+def _restore(blob,name):
+    if type(blob) is not bytes or len(blob)<32 or len(blob)>BOUND or hashlib.sha256(blob[:-32]).digest()!=blob[-32:]:
+        raise ValueError('AW_CORRUPT_CHECKPOINT')
+    obj=json.loads(blob[:-32])
+    if type(obj) is not dict or set(obj)!={'schema','model','data'} or obj['schema']!=SCHEMA or obj['model']!=name or type(obj['data']) is not list:
+        raise ValueError('AW_BAD_CHECKPOINT_SCHEMA')
+    if _snapshot(name,obj['data'])!=blob:
+        raise ValueError('AW_NONCANONICAL_CHECKPOINT')
+    return obj['data']
+
+
+def manifest():
+    return tuple({'seed':w.seed,'family':w.family,'rep':w.rep,
+        'lengths':w.dwell,'public_sha256':w.public_digest(),
+        'terminal_parent_A':w.terminal_A.mask,'terminal_parent_B':w.terminal_B.mask}
+        for w in development_worlds())

@@ -1,0 +1,100 @@
+"""Negative-control and interface tests; do NOT score development results."""
+import hashlib
+import json
+import unittest
+from native_stage_dev import (SEEDS,FORBIDDEN,FAMILIES,REPS,SCHEMA,Event,Rule,
+    StageStructureBayes,StageTabular,NoLearning,development_worlds,build_world,
+    _key, _check_view, _check_event, manifest)
+
+class StageTests(unittest.TestCase):
+    def test_seed_fence(self):
+        for s in FORBIDDEN+(0,True):
+            with self.assertRaises(ValueError):build_world(s,'mediated',0)
+        for f in ('', 'oracle','native','x'):
+            with self.assertRaises(ValueError):build_world(SEEDS[0],f,0)
+    def test_24_disjoint_worlds(self):
+        worlds=development_worlds()
+        self.assertEqual(len(worlds),len(SEEDS)*len(FAMILIES)*REPS)
+        self.assertEqual(len({w.public_digest() for w in worlds}),len(worlds))
+        self.assertEqual(len({w.dwell for w in worlds}),len(worlds))
+        self.assertEqual(manifest(),manifest())
+    def test_native_public_exact_shape(self):
+        for w in development_worlds():
+            for e in w.public:
+                _check_event(e)
+                self.assertEqual(set(e.public_row()),{'s1','x1','s2','x2','y'})
+                self.assertEqual(e.views[0][0],e.views[1][0])
+                self.assertTrue(all(v in (0,1) for v in e.public_row().values()))
+    def test_no_phase_clock_or_oracle_field(self):
+        e=development_worlds()[0].public[0]
+        self.assertNotIn('phase',e.__dict__)
+        self.assertNotIn('truth',e.__dict__)
+        self.assertNotIn('dwell',e.__dict__)
+    def test_novel_parent_sets(self):
+        for w in development_worlds():
+            self.assertNotEqual(w.terminal_A.mask,w.terminal_B.mask)
+            self.assertNotEqual(w.transition_A.table,w.transition_B.table)
+            self.assertTrue(all(mask & (1<<3) for mask in (w.terminal_A.mask,w.terminal_B.mask)))
+    def test_action_reward_truth_hidden(self):
+        w=development_worlds()[0]
+        for p in ('A','B'):
+            t,y=w.truth(p,0,1,1,0)
+            self.assertTrue(.1<=t<=.9 and .1<=y<=.9)
+        with self.assertRaises(ValueError):w.truth('Areturn',0,0,0,0)
+    def test_missing_view_and_invalid_action(self):
+        for v in (((0,0),(1,0)),((0,0,0),(0,0)),[ (0,0),(0,0) ]):
+            with self.assertRaises(ValueError):_check_view(v,0)
+        with self.assertRaises(ValueError):_check_view(((0,0),(0,0)),2)
+    def test_models_predict_prior(self):
+        v=((0,0),(0,1))
+        for m in (StageStructureBayes(),StageTabular(),StageTabular(32),NoLearning()):
+            self.assertAlmostEqual(m.predict_transition(v,1),.5)
+            self.assertAlmostEqual(m.predict_terminal(v,1,0,1),.5)
+            self.assertEqual(m.snapshot(),m.snapshot())
+    def test_restore_after_public_events(self):
+        w=build_world(SEEDS[0],FAMILIES[0],0)
+        for m in (StageStructureBayes(),StageTabular(),StageTabular(32),NoLearning()):
+            for e in w.public[:20]:m.observe(e)
+            raw=m.snapshot()
+            restored=(StageStructureBayes.restore(raw) if isinstance(m,StageStructureBayes)
+                else StageTabular.restore(raw,m.window) if isinstance(m,StageTabular)
+                else NoLearning.restore(raw))
+            self.assertEqual(restored.snapshot(),raw)
+            v=w.public[19].views
+            self.assertEqual(m.predict_terminal(v,0,1,1),restored.predict_terminal(v,0,1,1))
+    def test_corrupt_checksum_rejected(self):
+        m=StageTabular();raw=bytearray(m.snapshot());raw[10]^=1
+        with self.assertRaises(ValueError):StageTabular.restore(bytes(raw))
+    def test_model_scope_no_native_owner(self):
+        import native_stage_dev as d
+        from pathlib import Path
+        text=Path(d.__file__).read_text(encoding='utf-8')
+        for forbidden in ('NativeCausalAmalgam(', 'NativeCumulativeLearner(', 'actions/', 'owner_checkpoint_path'):
+            self.assertNotIn(forbidden,text)
+    def test_no_learn_null_negative(self):
+        w=development_worlds()[0]
+        m=NoLearning()
+        before=m.snapshot()
+        for e in w.public[:12]:m.observe(e)
+        self.assertEqual(before,m.snapshot())
+    def test_counterfactual_first_switch_underdetermined(self):
+        w=development_worlds()[0]
+        i=w.dwell[0]
+        # Identical PUBLIC pre-switch evidence and action, but different hidden
+        # B mechanism: a pre-switch predictor cannot know the next regime.
+        self.assertTrue(all(e.s1 in (0,1) for e in w.public[:i]))
+        self.assertEqual(len(w.public[:i]),i)
+        model=StageTabular()
+        for e in w.public[:i]:model.observe(e)
+        before=model.snapshot()
+        p=model.predict_transition(w.public[i].views,w.public[i].x1)
+        self.assertEqual(p,model.predict_transition(w.public[i].views,w.public[i].x1))
+        self.assertEqual(model.snapshot(),before)
+    def test_unique_source_identifiers(self):
+        for w in development_worlds():
+            self.assertEqual(len(set(e.identifier for e in w.public)),len(w.public))
+    def test_frozen_manifest_determinism(self):
+        x=json.dumps(manifest(),sort_keys=True,separators=(',',':')).encode()
+        self.assertEqual(hashlib.sha256(x).hexdigest(),hashlib.sha256(x).hexdigest())
+
+if __name__=='__main__':unittest.main()
