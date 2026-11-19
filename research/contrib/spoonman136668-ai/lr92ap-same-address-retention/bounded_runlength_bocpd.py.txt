@@ -1,0 +1,170 @@
+"""LR-92AP: bounded, fitted Beta-Bernoulli Bayesian run-length control.
+
+Offline synthetic-development comparator; NOT installed in Yggdrasil. Each of
+16 independent addresses has a Q8 32-bin run-length posterior and a ring of
+32 actual public events (current action, 2 older actions, observed outcome).
+Each observation contributes to fitted Bernoulli posterior predictive counts
+for all feasible run lengths, not to a fixed MAP or two-regime approximation.
+
+Boundary: exact Beta(1,1) conditional emission probabilities within a run-
+length bin; run-length posterior is quantized Q8, r>=31 folded into r=31,
+and data older than 32 public events discarded. Thus NOT exact untruncated
+BOCPD, and NOT a general Bayesian proof. No phase labels, latent switches,
+future actions/outcomes, or external learner state are accessible.
+"""
+from __future__ import annotations
+import hashlib
+
+
+class BoundedRunLengthBOCPD14:
+    MAGIC = b'LRB1'
+    PATTERNS = ((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1))
+    LEARNED_BYTES = 896  # 32 history + 320 packed tape + 16+16 ring heads/lengths + 512 Q8 weights
+    CHECKPOINT_BYTES = 932
+    WINDOW = 32
+    MAX_RUN = 31
+    HAZARD = 1.0/32.0  # fixed before any protected experiment
+
+    def __init__(self):
+        self._history = bytearray([2,2] * 16)
+        self._ring = bytearray(320)
+        self._length = bytearray(16)
+        self._head = bytearray(16)
+        self._posterior = bytearray(512)
+        for slot in range(16):
+            self._posterior[slot * 32] = 255
+
+    @staticmethod
+    def _slot(address, retained):
+        if type(retained) is not bool or type(address) is not int:
+            raise ValueError('LRB_INVALID_ADDRESS')
+        if not 0 <= address < (9 if retained else 7):
+            raise ValueError('LRB_INVALID_ADDRESS')
+        return address + (7 if retained else 0)
+
+    @staticmethod
+    def _bit(x):
+        if type(x) is not int or x not in (0,1):
+            raise ValueError('LRB_INVALID_BIT')
+        return x
+
+    def _context(self, slot, action):
+        pair = tuple(self._history[slot*2:slot*2+2])
+        try:
+            return self.PATTERNS.index(pair) * 4 + action * 2
+        except ValueError:
+            raise ValueError('LRB_INVALID_HISTORY') from None
+
+    def _ring_read(self, slot, index):
+        bit = (slot*32 + index)*5
+        byte, shift = divmod(bit,8)
+        pair = self._ring[byte] | (self._ring[byte+1] << 8 if byte+1 < 320 else 0)
+        return (pair >> shift) & 31
+
+    def _ring_write(self, slot, index, value):
+        bit = (slot*32 + index)*5
+        byte, shift = divmod(bit,8)
+        pair = self._ring[byte] | (self._ring[byte+1] << 8 if byte+1 < 320 else 0)
+        pair = (pair & ~(31 << shift)) | (value << shift)
+        self._ring[byte] = pair & 255
+        if byte+1 < 320:
+            self._ring[byte+1] = (pair >> 8) & 255
+
+    def _likelihoods(self, slot, target):
+        """Fitted Beta(1,1) predictive for each possible segment age r.
+
+        Only actual prior public observations of the same temporal bin enter
+        that age's posterior. Predictions never mutate counts or history.
+        """
+        n = self._length[slot]
+        head = self._head[slot]
+        failures = successes = 0
+        values = [0.5]
+        for r in range(1, self.MAX_RUN+1):
+            if r <= n:
+                code = self._ring_read(slot, (head-r) % self.WINDOW)
+                if code // 2 == target // 2:  # same 14-bin action+context
+                    if code & 1:
+                        successes += 1
+                    else:
+                        failures += 1
+            values.append((successes+1.0)/(successes+failures+2.0))
+        return values
+
+    @staticmethod
+    def _quantize(probabilities):
+        total = sum(probabilities)
+        if not total > 0:
+            raise ValueError('LRB_POSTERIOR_ZERO')
+        scaled = [255.0*p/total for p in probabilities]
+        rounded = [int(x) for x in scaled]
+        remaining = 255-sum(rounded)
+        for index in sorted(range(len(scaled)),key=lambda i:(-(scaled[i]-rounded[i]),i))[:remaining]:
+            rounded[index] += 1
+        assert sum(rounded)==255 and all(0 <= v <= 255 for v in rounded)
+        return bytes(rounded)
+
+    def predict(self, address, action, *, retained=False):
+        slot = self._slot(address, retained)
+        target = self._context(slot, self._bit(action))
+        probs = self._likelihoods(slot, target)
+        start = slot*32
+        return sum(self._posterior[start+r] * probs[r] for r in range(32))/255.0
+
+    def observe_step(self, address, action, public_outcome, *, retained=False):
+        # Reject all externally invalid inputs before any mutation.
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        outcome = self._bit(public_outcome)
+        target = self._context(slot,action)
+        predicted = self._likelihoods(slot,target)
+        prior = self._posterior[slot*32:slot*32+32]
+        q = [0.0]*32
+        q[1] = self.HAZARD * 0.5 * sum(prior)  # fresh segment predictive
+        for r,weight in enumerate(prior):
+            if weight:
+                evidence = predicted[r] if outcome else 1.0-predicted[r]
+                q[min(r+1,self.MAX_RUN)] += (1.0-self.HAZARD)*weight*evidence
+        fitted = self._quantize(q)
+        head = self._head[slot]
+        self._ring_write(slot,head,target+outcome)
+        self._head[slot] = (head+1)%self.WINDOW
+        self._length[slot] = min(self.WINDOW,self._length[slot]+1)
+        self._history[2*slot+1] = self._history[2*slot]
+        self._history[2*slot] = action
+        self._posterior[slot*32:slot*32+32] = fitted
+
+    def end_episode(self):
+        self._history[:] = bytes([2,2]*16)
+
+    def snapshot(self):
+        raw = (self.MAGIC+bytes(self._history)+bytes(self._ring)+
+               bytes(self._length)+bytes(self._head)+bytes(self._posterior))
+        assert len(raw) == self.CHECKPOINT_BYTES-32
+        return raw + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,blob):
+        if (type(blob) is not bytes or len(blob)!=cls.CHECKPOINT_BYTES or
+                blob[:4]!=cls.MAGIC or
+                hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError('LRB_CHECKPOINT_REJECTED')
+        result=cls()
+        result._history[:]=blob[4:36]
+        result._ring[:]=blob[36:356]
+        result._length[:]=blob[356:372]
+        result._head[:]=blob[372:388]
+        result._posterior[:]=blob[388:900]
+        for s in range(16):
+            if tuple(result._history[2*s:2*s+2]) not in cls.PATTERNS:
+                raise ValueError('LRB_INVALID_HISTORY')
+            n,h=result._length[s],result._head[s]
+            if n>32 or h>31 or (n<32 and h!=n):
+                raise ValueError('LRB_INVALID_RING')
+            posterior=result._posterior[s*32:s*32+32]
+            if sum(posterior)!=255 or any(posterior[r] for r in range(n+1,32)):
+                raise ValueError('LRB_INVALID_POSTERIOR')
+            for idx in range(n):
+                if result._ring_read(s,idx)>=28:
+                    raise ValueError('LRB_INVALID_EVENT')
+        return result
