@@ -1,0 +1,12 @@
+# WSP-195 — First original GB1 source attempt: INVALID
+
+**Preserved decision:** `INVALID — MUTANT_ALPHABET_OR_LENGTH`. This was an original-source *format admission* rejection before model fitting or held four-site scoring, **not** a loss against a conventional predictor.
+
+- Original source: [`wchnicholas/ProteinGFourMutants@dbdd7639187e0b8f22359f404ce4d1d950fcc8a9/result/Mutfit`](https://github.com/wchnicholas/ProteinGFourMutants/blob/dbdd7639187e0b8f22359f404ce4d1d950fcc8a9/result/Mutfit), Git blob `3bf094f1b5c8bd84a35e04ae9c23bcf97c2bfa89`, **13,837,211 bytes**. Original author method `script/Mapper5_NW.py` independently verified.
+- [`prereg.json`](./prereg.json) committed FIRST at `3af4c3e0bcbedd0416d8c3d2955eec0ca89df8f7` before inspecting measured fitness values.
+- [`evaluate.mjs`](./evaluate.mjs), original Git blob `19b3d9ef5ef870e1c888687173147a106353afb3`, tested with one complete **synthetic engineering fixture** of all 160,000 genotype combinations (112,071 ms). Six negative source-format checks passed. The synthetic fixture is **not scientific evidence**.
+- Authentic source independently verified by computing Git SHA1 from the returned original 13,837,211 bytes. First original source attempt ended at `MUTANT_ALPHABET_OR_LENGTH`, preserved as immutable [`result.json`](./result.json) at commit `88fed22f6f3476bc3745f7d27ada9a742d601105`.
+- A subsequent **genotype-only, numerical-outcome-free** diagnostic [`post_invalid_source_roster.json`](./post_invalid_source_roster.json), commit `22110264bc55adbaeef4e992925a425f26d4ac83`, established original author's table contained **32,587 underscore-placeholder sequences**, 158,570 standard-AA genotype rows and **149,361 standard genotypes with nonmissing original I20fitRaw values**, matching the published reported landscape size. The original WSP-195 parser had correctly rejected those previously unadmitted placeholders.
+- WSP-195 original prereg, evaluator and INVALID result remain unchanged. **No post-invalid reinterpretation of WSP-195 as an experimental model loss or success.**
+
+**Versioned follow-up:** [WSP-196](../WSP-196/README.md) introduces a separately preregistered, *source metadata-only* exclusion of 4-character underscore-placeholder genotypes. All WSP-195 model hypotheses, train/VALID/HD4 partitions, fully fitted conventional controls and scientific pass/fail thresholds are unchanged. No protection owner first-use, Yggdrasil native model promotion, accepted-main ref update, merger or deployment authorized.
