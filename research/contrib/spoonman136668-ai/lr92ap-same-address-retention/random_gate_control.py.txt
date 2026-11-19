@@ -1,0 +1,29 @@
+"""LR-92AP preprimary random-gate negative control; NOT native Yggdrasil.
+
+Uses the exact YPT4 dual-bank learned state, update path, memory limit, and
+checkpoint. Only the predict-time bank-selection policy changes. The gate is
+a fixed, source-locked pseudo-random ablation based on *public* stored state;
+no hidden regime, future outcome, additional learned byte, or global clock.
+The hash is deterministic and is NOT evidence of statistical independence.
+"""
+import hashlib
+from public_dual_timescale_cells import PublicDualTimescaleCells
+
+
+class RandomGateDualTimescaleCells(PublicDualTimescaleCells):
+    GATE_SALT = b"LR-92AP-RANDOM-GATE-v1-fixed"
+
+    def predict(self, address, action, *, retained=False):
+        slot = self._addr(address, retained)
+        arm = self._bit(action, "ACTION")
+        pos = self._offset(slot, arm)
+        protected = self._p(self._protected, pos)
+        recent = self._p(self._recent, pos)
+        if self._recent[pos] + self._recent[pos + 1] < 4:
+            return protected
+        # No changing RNG state, seed search, timing inputs, or label oracle.
+        tag = bytes((slot, arm, pos & 255, pos >> 8))
+        digest = hashlib.sha256(self.GATE_SALT + tag
+                                + self._protected + self._recent
+                                + self._history).digest()
+        return recent if digest[0] & 1 else protected
