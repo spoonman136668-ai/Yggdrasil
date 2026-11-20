@@ -306,3 +306,30 @@ The outcome is retrospective mathematical evidence only. The single
 cumulative Yggdrasil learner and its canonical checkpoint lineage are
 owned by the independent Unified Causal Intelligence Amalgam Work
 coordinator, not this research contributor.
+
+## RD07 — witnessed complete old-A history query diagnosis
+
+The independent and immutable RD07 source-only analysis contract was
+committed BEFORE any implementation at
+`RD07-FROZEN-OLD-QUERY-CONTEXT-AUDIT.md`,
+SHA `d0602f3cde2ad3a1b0aa52d8d14e92ae40e20639`.
+
+`rd07_old_query_context.py` reuses ONLY the two old, fully consumed RD04
+public source histories. The existing three source-trained research
+shadows are retrospectively replayed to the original 64/192/256 learned
+snapshots. At every stage, exactly the first 16 old A witness queries are
+evaluated using (1) the previously published changing-history readout
+and (2) the SAME learned weights on the original, fully source-witnessed
+pre-observation prior pair/post/reward history. All source IDs and
+previous event records are matched against the append-only learner
+ledger; cold reconstructed same-source checkpoints must match.
+
+This corrects a **measurement attribution problem**, not the
+original preregistered RD04 score or NO_GO. A fixed-context historical
+readout can still change because learned model counts/evidence
+changed. The source is already scored/in-sample synthetic data; the
+results are NOT independent science, a trained new mechanism,
+or proof of general causal intelligence, and cannot admit a
+canonical Yggdrasil checkpoint. The original cumulative native
+learner remains solely under Unified Causal Intelligence Amalgam
+Work chat.
