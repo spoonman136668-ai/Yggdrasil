@@ -39,6 +39,11 @@ jobs:
         run: |
           node --check research/contrib/chatgpt/GKD-03/run.mjs
           node research/contrib/chatgpt/GKD-03/run.mjs
+      - name: GKD-04 generic GPT claim AST-to-numeric program and source boundaries
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          node --check research/contrib/chatgpt/GKD-04/run.mjs
+          node research/contrib/chatgpt/GKD-04/run.mjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -91,4 +96,9 @@ jobs:
         run: |
           node --check research/contrib/chatgpt/GKD-03/run.mjs
           node research/contrib/chatgpt/GKD-03/run.mjs
+      - name: GKD-04 generic GPT claim AST-to-numeric program and source boundaries
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          node --check research/contrib/chatgpt/GKD-04/run.mjs
+          node research/contrib/chatgpt/GKD-04/run.mjs
       - run: git diff --exit-code
