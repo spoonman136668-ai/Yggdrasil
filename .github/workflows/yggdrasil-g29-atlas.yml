@@ -34,6 +34,11 @@ jobs:
         run: |
           node --check research/contrib/chatgpt/GKD-02/run.mjs
           node research/contrib/chatgpt/GKD-02/run.mjs
+      - name: GKD-03 signed witness replay and unknown-law identifiability tests
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          node --check research/contrib/chatgpt/GKD-03/run.mjs
+          node research/contrib/chatgpt/GKD-03/run.mjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -81,4 +86,9 @@ jobs:
         run: |
           node --check research/contrib/chatgpt/GKD-02/run.mjs
           node research/contrib/chatgpt/GKD-02/run.mjs
+      - name: GKD-03 signed witness replay and unknown-law identifiability tests
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          node --check research/contrib/chatgpt/GKD-03/run.mjs
+          node research/contrib/chatgpt/GKD-03/run.mjs
       - run: git diff --exit-code
