@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.external-research-frozen-protocol.v1",
+  "experiment_id": "ENERGY-TRANSFER-17",
+  "date_utc": "2026-11-20",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "draft_pr": 1346,
+  "base_head": "2788e166c3f0fcb9394c5debe132f88bc724356d",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "native_integration_owner": "Amalgam PR #1278",
+  "motivation": "Independently reimplement source-free simulator, selection and posterior arithmetic after ENERGY-COVERAGE-16 development signal. Evaluate robustness to noisier observations and adversarial out-of-hypothesis causal changes, rather than replay earlier consumed seeds.",
+  "question": "Does forcing 12 diverse interventions preserve bounded local causal hypothesis repair under a new simulator with 15% noise, including a nonlinear structural shift outside the fitted XOR hypothesis class, against strong fully Bayesian controls?",
+  "simulation": {
+    "family": "Independent counter-hash 5-input binary mechanism simulator with 62 candidate nonzero XOR-mask/bias hypotheses; separate source implementation (not independent operator). OLD parity mask popcount 2 or 3; parity bit biased with 15% flip noise.",
+    "world_families": [
+      "NULL",
+      "SINGLE_EDGE",
+      "DOUBLE_EDGE",
+      "NONLINEAR_AND"
+    ],
+    "nonlinear": "On NONLINEAR_AND, switch NEW observation law to OLD parity XOR (input bit i AND distinct input bit j), so no XOR hypothesis can express the true conditional law. The bit indices are source truth withheld from learners.",
+    "old_observations": 24,
+    "new_interventions_per_arm": 16,
+    "held_per_input": 20,
+    "input_contexts": 32,
+    "smoke_seed": 88501,
+    "primary_seeds": [
+      88513,
+      88523,
+      88547,
+      88561,
+      88567,
+      88583,
+      88597,
+      88609,
+      88619,
+      88631,
+      88643,
+      88657
+    ],
+    "pairing": "Identical OLD and held observations across arms per world; NEW outcomes indexed by seed,family,input,per-input observation ordinal; matched actions recover identical observations."
+  },
+  "arms": {
+    "local_coverage12": "Frozen Gate16 local radius-1 XOR committee with once-only radius-2 expansion when NEW cumulative logloss/observations >0.75 after >=6 observations; same MAP OLD prior exp(-mask/bias distance). Choose first 12 distinct contexts by posterior predictive entropy, then unrestricted entropy.",
+    "local_entropy": "Identical local model and expansion, unrestricted entropy, no coverage gate.",
+    "full_map_ig": "All 62 XOR hypotheses with same MAP OLD prior and exact mutual information I(H;Y|x) for known fixed noise 0.15, equal to predictive outcome entropy minus constant noise entropy; unrestricted maximum information action.",
+    "full_map_coverage12": "All 62 hypotheses, MAP OLD prior, first 12 distinct contexts, then unrestricted maximum information.",
+    "full_marginal_ig": "Fully Bayesian NEW prior marginalized over all 62 OLD hypotheses, weighting each by correctly normalized OLD posterior at 24 OLD observations and exp(-distance) transition prior; all NEW hypotheses retained; unrestricted maximum information.",
+    "full_marginal_coverage12": "Same fully marginalized conventional Bayesian predictor as full_marginal_ig but with 12-distinct-context action constraint.",
+    "full_random": "Fully fitted all-62 MAP old prior, deterministic uniform random actions."
+  },
+  "metrics": "36 familiar+12 nonlinear worlds; held binary Brier overall/family/known-familiar, paired differences, changed-mask exact recovery on SINGLE_EDGE/DOUBLE_EDGE only, NULL any-change false alarms, unique contexts, 16-action parity, SAME-PROCESS serialized OLD posterior/readout equality, counted hypothesis likelihood/predict evaluations including OLD fit and initial mixture, no speed claim; require independent arithmetic audit. Strongest control chosen by lowest held Brier among all Bayesian arms including random, not cherry-picked active.",
+  "decision": {
+    "known_coverage_improvement": "local_entropy minus local_coverage12 held Brier averaged over NULL/SINGLE_EDGE/DOUBLE_EDGE >=0.010 and on DOUBLE_EDGE >=0.025",
+    "strong_conventional_tolerance": "local_coverage12 known Brier <= strongest conventional arm +0.015 (among full_map_ig/full_map_coverage12/full_marginal_ig/full_marginal_coverage12/full_random), and <= strongest by <=0.025 on every known family",
+    "nonlinear_robustness": "local_entropy minus local_coverage12 Brier on NONLINEAR_AND >=0.010; local_coverage12 Brier on NONLINEAR_AND <= best conventional arm on NONLINEAR_AND+0.015",
+    "recovery": "local_coverage12 exact mask+bias recovery >=0.80 of 24 changed parity worlds; NULL per-world any-change <=0.05",
+    "budget_integrity": "Both coverage arms must visit >=12 distinct contexts in every world; every arm exactly 16 NEW outcomes, OLD 24; serialized OLD posterior/readout same-process exact match for all 48.",
+    "compute": "counted hypothesis operations for full_marginal_ig / local_coverage12 >=2x, report random baseline and full runtime not qualified",
+    "classification": "DEV_SIGNAL_UNQUALIFIED only if every frozen criterion passes. Otherwise NO_GO. Never SCIENTIFIC_PASS or integration without independently operated reproduction, native original-source qualification, functionality cold restore and full regression."
+  },
+  "control_contract": "Old fitting uses all 24 OLD examples for all arms. Source truth cannot reach estimators/selectors. Hypothesis prior and formulas frozen before source; source first read back at exact commit before one smoke and one frozen primary. No replay consumed seeds, threshold retuning or cherry picking. Keep result and negative controls in existing draft repo; additive new files only. No new workflows, scheduled jobs, native model mutation, main, merge, owner runner, acceptance or paid APIs."
+}
