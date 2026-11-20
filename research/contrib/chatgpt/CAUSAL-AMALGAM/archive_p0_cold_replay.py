@@ -22,6 +22,10 @@ from four_head_retention import (HEAD_NAMES, audit_old_heads,
 from headwise_consolidation import assess_bounded_blend
 from headwise_capsule import seal_capsule, restore_capsule
 from headwise_shadow_readout import materialize_research_readout
+from headwise_source_continuation import (
+    SAMPLE_ORDINALS, seal_consumed_continuation,
+    recover_consumed_continuation, historical_retention,
+)
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import digest
 
@@ -263,6 +267,8 @@ def replay_consumed_selector(start, source_directory):
     counts = Counter()
     shadow = []
     consolidation = []
+    g28_retention = []
+    g28_native_by_next = {}
     original_native_parent = checked(source_directory, protocol["native_name"],
                                      protocol["native_sha256"])
     original_donor = json.loads(checked(
@@ -299,6 +305,10 @@ def replay_consumed_selector(start, source_directory):
         gate = gate.observe_experience(
             identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
             packet_sha256=packet)
+        if index + 1 in g28_native_by_next:
+            expected = g28_native_by_next.pop(index + 1)
+            if digest(gate.system.native.checkpoint()) != expected:
+                raise ValueError("G28_ARCHIVE_NATIVE_NEXT_MISMATCH")
         if index + 1 in SHADOW_ORDINALS:
             # Read-only on the SAME authentic consumed trajectory; do not
             # enforce this advisory veto, branch policy or create new trials.
@@ -366,6 +376,38 @@ def replay_consumed_selector(start, source_directory):
                     raise
             else:
                 raise ValueError("G27_UNAUTHORIZED_UPDATE")
+            if index + 1 in SAMPLE_ORDINALS:
+                # G28 never calls the world: this next source-public event
+                # is read from the PINNED ALREADY-CONSUMED original trace.
+                g28_raw, g28_pin, advanced = seal_consumed_continuation(
+                    capsule_raw, capsule_pin, start, previous.system,
+                    gate.system, raw_trace, index + 1, **original_parents)
+                cold_advanced, g28_receipt = recover_consumed_continuation(
+                    g28_raw, g28_pin, capsule_raw, capsule_pin,
+                    start, previous.system, gate.system,
+                    raw_trace, index + 1, **original_parents)
+                if advanced.checkpoint() != cold_advanced.checkpoint():
+                    raise ValueError("G28_COLD_CONTINUATION_MISMATCH")
+                for public in seen_views:
+                    if (advanced.plan(public[0]) != cold_advanced.plan(public[0])
+                            or advanced.plan(public[0]) != gate.system.plan(public[0])):
+                        raise ValueError("G28_NATIVE_PLAN_DRIFT")
+                    for first in (0, 1):
+                        if (advanced.specialist_forecasts(public, first)
+                                != cold_advanced.specialist_forecasts(public, first)):
+                            raise ValueError("G28_FIRST_ACTION_PROBE_DRIFT")
+                        for state, second in product((0, 1), repeat=2):
+                            if (advanced.specialist_forecasts(
+                                    public, first, state, second)
+                                    != cold_advanced.specialist_forecasts(
+                                    public, first, state, second)):
+                                raise ValueError("G28_SECOND_ACTION_PROBE_DRIFT")
+                old_report = historical_retention(
+                    start, advanced, cold_advanced)
+                g28_retention.append({
+                    **g28_receipt, "old_historical_retention": old_report,
+                    "historically_seen_public_forecast_addresses": 80})
+                g28_native_by_next[index + 2] = g28_receipt["after_native_sha256"]
             consolidation.append({
                 "ordinal": index + 1,
                 "phase": event["phase"],
@@ -377,6 +419,8 @@ def replay_consumed_selector(start, source_directory):
                     **g27_receipt, "historical_public_forecast_queries": policy_queries},
             })
 
+    if len(g28_retention) != len(SAMPLE_ORDINALS) or g28_native_by_next:
+        raise ValueError("G28_FROZEN_SAMPLES_NOT_COMPLETED")
     shadow_report = summarize_shadow(shadow)
     consolidation_report = summarize_bounded_consolidation(consolidation)
     checkpoint = gate.system.checkpoint()
@@ -436,6 +480,15 @@ def replay_consumed_selector(start, source_directory):
         "four_head_retention": four_head_retention,
         "shadow_guard_sensitivity": shadow_report,
         "bounded_headwise_consolidation": consolidation_report,
+        "g28_consumed_source_continuation": {
+            "gate": "G28_RESEARCH_ONLY_ONE_WITNESS_COLD_CONTINUATION",
+            "frozen_sample_ordinals": list(SAMPLE_ORDINALS),
+            "source_action_count": 0,
+            "new_training_worlds": 0,
+            "official_checkpoint_admitted": False,
+            "scientific_pass": False,
+            "samples": g28_retention,
+        },
         "native_action_drift": native_action_drift,
         "selector_action_drift": selector_action_drift,
         "selector_evidence_from_original_public_trace": True,
