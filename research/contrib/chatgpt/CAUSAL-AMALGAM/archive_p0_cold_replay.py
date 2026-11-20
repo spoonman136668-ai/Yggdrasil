@@ -174,6 +174,16 @@ def replay_consumed_selector(start, source_directory):
             or gate.system.checkpoint() != reopened.system.checkpoint()):
         raise ValueError("P0_CONSUMED_SELECTOR_COLD_POLICY_DRIFT")
     policy_check = guard.verify_selector_replay(gate, reopened)
+    # Contrast the *original* P0 against its already-consumed negative
+    # development descendant: differences are action-policy diagnostics,
+    # never a claim that either action's unobserved consequence is correct.
+    native_action_drift = guard.diagnose_historical_action_divergence(
+        start, gate.system)
+    selector_action_drift = guard.diagnose_historical_action_divergence(
+        SpecialistSelection(start, **config), gate)
+    if (native_action_drift["view_count"] != EXPECTED_VIEWS
+            or selector_action_drift["view_count"] != EXPECTED_VIEWS):
+        raise ValueError("P0_CONSUMED_SELECTOR_POLICY_VIEW_COVERAGE")
     if (policy_check["readout_witnesses"] != 1121
             or policy_check["policy_queries"] != 80
             or dict(counts) != {0: 96}
@@ -189,6 +199,8 @@ def replay_consumed_selector(start, source_directory):
         "reconstructed_native_sha256": digest(native),
         "linux_exact_core_bytes_required_on_windows": False,
         "policy_check": policy_check,
+        "native_action_drift": native_action_drift,
+        "selector_action_drift": selector_action_drift,
         "selector_evidence_from_original_public_trace": True,
         "independently_saved_trained_selector_authenticated": False,
         "new_world_actions": 0,
