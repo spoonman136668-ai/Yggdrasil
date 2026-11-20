@@ -1,0 +1,391 @@
+{
+  "schema": "yggdrasil.gate23.source-reliability-sequential-20261120.v1",
+  "prereg_commit": "61e43959294aa9122f64cfcb595f09dbf2e6225f",
+  "parent_commit": "7f177f61508d8eeb37458c5c38f117cadf1e4271",
+  "design": {
+    "trials": 192,
+    "source_A": 64,
+    "B_train": 48,
+    "R_train": 48,
+    "B_held": 16,
+    "R_held": 16,
+    "state_bytes": 384,
+    "first_use": "source_committed_before_primary_score"
+  },
+  "groups": {
+    "pair_xor": {
+      "seeds": 32,
+      "seed_first": 141000,
+      "seed_last": 141031,
+      "held_B": {
+        "detector": 0.0689524296,
+        "frozen": 0.4181978202,
+        "rolling": 0.0689524296,
+        "growing": 0.2733654693,
+        "bayesian": 0.0751302594,
+        "null": 0.25
+      },
+      "held_R": {
+        "detector": 0.0561041184,
+        "frozen": 0.0561041184,
+        "rolling": 0.0679267829,
+        "growing": 0.0809535507,
+        "bayesian": 0.0575721865,
+        "null": 0.25
+      },
+      "prequential_B": {
+        "detector": 0.1914406718,
+        "frozen": 0.4034408758,
+        "rolling": 0.1464863046,
+        "growing": 0.3391159996,
+        "bayesian": 0.147799597,
+        "null": 0.25
+      },
+      "prequential_R": {
+        "detector": 0.1419839311,
+        "frozen": 0.0509761606,
+        "rolling": 0.1805105339,
+        "growing": 0.0938269267,
+        "bayesian": 0.0776068162,
+        "null": 0.25
+      },
+      "false_switch_trials": 32,
+      "source_reliable": 32,
+      "returned_to_source": 32,
+      "entered_alternate": 32,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "detector": 533,
+        "rolling": 492,
+        "growing": 492,
+        "bayesianMasks": 3936,
+        "evidenceOps": 96
+      }
+    },
+    "mux3": {
+      "seeds": 32,
+      "seed_first": 142000,
+      "seed_last": 142031,
+      "held_B": {
+        "detector": 0.0826608898,
+        "frozen": 0.364375,
+        "rolling": 0.0826608898,
+        "growing": 0.278855093,
+        "bayesian": 0.0985593085,
+        "null": 0.25
+      },
+      "held_R": {
+        "detector": 0.0590039063,
+        "frozen": 0.0590039063,
+        "rolling": 0.0795382756,
+        "growing": 0.0786672402,
+        "bayesian": 0.0611539129,
+        "null": 0.25
+      },
+      "prequential_B": {
+        "detector": 0.2090405165,
+        "frozen": 0.3533333333,
+        "rolling": 0.1656242871,
+        "growing": 0.3071094555,
+        "bayesian": 0.1774179832,
+        "null": 0.25
+      },
+      "prequential_R": {
+        "detector": 0.1348139867,
+        "frozen": 0.0566861979,
+        "rolling": 0.1903562938,
+        "growing": 0.09752495,
+        "bayesian": 0.0813891515,
+        "null": 0.25
+      },
+      "false_switch_trials": 32,
+      "source_reliable": 32,
+      "returned_to_source": 32,
+      "entered_alternate": 32,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "detector": 533,
+        "rolling": 492,
+        "growing": 492,
+        "bayesianMasks": 3936,
+        "evidenceOps": 96
+      }
+    },
+    "essential3": {
+      "seeds": 32,
+      "seed_first": 143000,
+      "seed_last": 143031,
+      "held_B": {
+        "detector": 0.1226377683,
+        "frozen": 0.3250585937,
+        "rolling": 0.1226377683,
+        "growing": 0.2329569707,
+        "bayesian": 0.1442913121,
+        "null": 0.25
+      },
+      "held_R": {
+        "detector": 0.0686420356,
+        "frozen": 0.0667382812,
+        "rolling": 0.108189342,
+        "growing": 0.0812234562,
+        "bayesian": 0.0689434767,
+        "null": 0.25
+      },
+      "prequential_B": {
+        "detector": 0.2252466146,
+        "frozen": 0.3473242187,
+        "rolling": 0.1757919326,
+        "growing": 0.299032546,
+        "bayesian": 0.1784262861,
+        "null": 0.25
+      },
+      "prequential_R": {
+        "detector": 0.1256507775,
+        "frozen": 0.0569986979,
+        "rolling": 0.1828518354,
+        "growing": 0.1034585735,
+        "bayesian": 0.0800525109,
+        "null": 0.25
+      },
+      "false_switch_trials": 32,
+      "source_reliable": 32,
+      "returned_to_source": 31,
+      "entered_alternate": 32,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "detector": 533,
+        "rolling": 492,
+        "growing": 492,
+        "bayesianMasks": 3936,
+        "evidenceOps": 96
+      }
+    },
+    "unary": {
+      "seeds": 32,
+      "seed_first": 144000,
+      "seed_last": 144031,
+      "held_B": {
+        "detector": 0.0651968285,
+        "frozen": 0.417121337,
+        "rolling": 0.0651968285,
+        "growing": 0.1929998296,
+        "bayesian": 0.0682426516,
+        "null": 0.25
+      },
+      "held_R": {
+        "detector": 0.0422237578,
+        "frozen": 0.0422237578,
+        "rolling": 0.0434228412,
+        "growing": 0.0804825702,
+        "bayesian": 0.0423739305,
+        "null": 0.25
+      },
+      "prequential_B": {
+        "detector": 0.1989948968,
+        "frozen": 0.4236726184,
+        "rolling": 0.1354605376,
+        "growing": 0.3133437032,
+        "bayesian": 0.1250005805,
+        "null": 0.25
+      },
+      "prequential_R": {
+        "detector": 0.1377058242,
+        "frozen": 0.0524489867,
+        "rolling": 0.171203232,
+        "growing": 0.1035090659,
+        "bayesian": 0.0770047871,
+        "null": 0.25
+      },
+      "false_switch_trials": 32,
+      "source_reliable": 32,
+      "returned_to_source": 32,
+      "entered_alternate": 32,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "detector": 533,
+        "rolling": 492,
+        "growing": 492,
+        "bayesianMasks": 3936,
+        "evidenceOps": 96
+      }
+    },
+    "stationary3": {
+      "seeds": 32,
+      "seed_first": 145000,
+      "seed_last": 145031,
+      "held_B": {
+        "detector": 0.0715617766,
+        "frozen": 0.0715617766,
+        "rolling": 0.0985154309,
+        "growing": 0.0624959478,
+        "bayesian": 0.0725896138,
+        "null": 0.25
+      },
+      "held_R": {
+        "detector": 0.0562830343,
+        "frozen": 0.0562830343,
+        "rolling": 0.0932036089,
+        "growing": 0.0458629685,
+        "bayesian": 0.059727552,
+        "null": 0.25
+      },
+      "prequential_B": {
+        "detector": 0.0602828414,
+        "frozen": 0.0602828414,
+        "rolling": 0.1193620197,
+        "growing": 0.0561249007,
+        "bayesian": 0.0630591152,
+        "null": 0.25
+      },
+      "prequential_R": {
+        "detector": 0.0621494824,
+        "frozen": 0.0621494824,
+        "rolling": 0.0970380007,
+        "growing": 0.0523842074,
+        "bayesian": 0.0645736945,
+        "null": 0.25
+      },
+      "false_switch_trials": 0,
+      "source_reliable": 32,
+      "returned_to_source": 0,
+      "entered_alternate": 0,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "detector": 533,
+        "rolling": 492,
+        "growing": 492,
+        "bayesianMasks": 3936,
+        "evidenceOps": 96
+      }
+    },
+    "noise_fair": {
+      "seeds": 32,
+      "seed_first": 146000,
+      "seed_last": 146031,
+      "held_B": {
+        "detector": 0.2519726562,
+        "frozen": 0.2811389074,
+        "rolling": 0.2760815223,
+        "growing": 0.2697131467,
+        "bayesian": 0.2634919665,
+        "null": 0.25
+      },
+      "held_R": {
+        "detector": 0.2504099151,
+        "frozen": 0.2701458924,
+        "rolling": 0.3053638082,
+        "growing": 0.2555806439,
+        "bayesian": 0.2615777248,
+        "null": 0.25
+      },
+      "prequential_B": {
+        "detector": 0.2525716146,
+        "frozen": 0.266535157,
+        "rolling": 0.2899180133,
+        "growing": 0.2637486789,
+        "bayesian": 0.2615187205,
+        "null": 0.25
+      },
+      "prequential_R": {
+        "detector": 0.2511782636,
+        "frozen": 0.2692284646,
+        "rolling": 0.2892678647,
+        "growing": 0.2573608049,
+        "bayesian": 0.2589234938,
+        "null": 0.25
+      },
+      "false_switch_trials": 1,
+      "source_reliable": 1,
+      "returned_to_source": 0,
+      "entered_alternate": 1,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "detector": 533,
+        "rolling": 492,
+        "growing": 492,
+        "bayesianMasks": 3936,
+        "evidenceOps": 96
+      }
+    }
+  },
+  "summary": {
+    "B_loss_vs_rolling": {
+      "mean": 0,
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    "B_loss_vs_bayesian": {
+      "mean": -0.0116939038,
+      "ci95": [
+        -0.0157516533,
+        -0.0076361544
+      ]
+    },
+    "R_gain_vs_rolling": {
+      "mean": 0.0182758559,
+      "ci95": [
+        0.0127495291,
+        0.0238021827
+      ]
+    },
+    "R_gain_vs_bayesian": {
+      "mean": 0.0010174221,
+      "ci95": [
+        -0.0000782148,
+        0.0021130591
+      ]
+    },
+    "prequential_B_loss_vs_rolling": {
+      "mean": 0.0503399094,
+      "ci95": [
+        0.0464413159,
+        0.054238503
+      ]
+    },
+    "related_returned_to_source": 127,
+    "noise_false_switch": 1,
+    "stationary_false_switch": 0
+  },
+  "conditions": {
+    "noise_false_switch_trial_fraction_max": true,
+    "stationary_false_switch_trial_fraction_max": true,
+    "related_B_mean_regression_vs_rolling_max": true,
+    "related_B_mean_regression_vs_bayes_max": true,
+    "related_R_gain_vs_rolling_min": true,
+    "related_R_gain_vs_rolling_ci_lower_positive": true,
+    "related_R_gain_vs_bayes_min": false,
+    "related_R_gain_vs_bayes_ci_lower_positive": false,
+    "related_return_reactivation_fraction_min": true,
+    "related_prequential_B_regression_vs_rolling_max": false,
+    "noise_held_Brier_regression_vs_null_max": true,
+    "stationary_held_Brier_regression_vs_rolling_max": true,
+    "all_held_phase_disjoint": true,
+    "all_source_A_immutable": true,
+    "all_384byte_continuations_exact": true,
+    "eligible_comparator_work_accounted": true
+  },
+  "verdict": "SOURCE_RELIABILITY_CHANGEPOINT_SCIENTIFIC_NO_GO",
+  "exclusions": {
+    "native_first_use": false,
+    "actual_causal_generalization": false,
+    "independent_replication": false,
+    "process_exit_retention": false,
+    "compute_equalized": false,
+    "canonical_learner": false,
+    "accepted_science": false
+  }
+}
