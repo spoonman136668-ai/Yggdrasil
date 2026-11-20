@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GKD-03",
+  "contributor": "chatgpt_connector_caller_reported",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "53e7988506cb4fd5ba8f5ebb0d7460e93f8dc1d2",
+  "question": "Can assistant-response-derived causal rules be safely corrected using verified non-replayed event IDs, and can the learner avoid overconfident extrapolation in two unfamiliar causal worlds identical under observed interventions?",
+  "hypothesis": "A fixed 16-slot event ledger plus fixture Ed25519 verifier blocks replay amplification and conflicting reuse; unknown worlds indistinguishable at two interventions must abstain until a third discriminating observation. A two-feature preprogrammed polynomial learner will tie symbolic and fully fitted OLS controls; no intelligence advantage predicted.",
+  "baseline": "main@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9; original GKD-02 negative/robust tie PR#1348 CI #44817943387",
+  "changed_paths": [
+    "research/contrib/chatgpt/GKD-03/**",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "frozen_design": {
+    "seeds": [
+      4001,
+      4002
+    ],
+    "worlds_per_seed": 16,
+    "contexts": 4,
+    "events_per_known_world": 10,
+    "law": "eta[c]=[1,.8,.55,.3][(c+j)%4]. Context2 switches to .35 if 1 else eta+.1 after stage A. y=eta*idealCircuitHeat(x).",
+    "samples": "x from xorshift32 seed XOR (j*0x9e3779b9) unsigned. V=2+22u,R1=1+19u,R2=1+19u,t=1+9u,m=.2+4.8u,c=100+900u,topology=eventOrdinal%2.",
+    "order": "Per world 2 uniquely signed events per context (8); after first per context replay identical signed event 5x, no extra evidence; after both, cold restore; change context2, add 2 new signed events; after first change replay 5x; cold restore. For each world test same signed physical ID with different y (re-signed) rejected without mutation; unsigned and wrong-signature also rejected.",
+    "fixture_authority": "Fixture Ed25519 issuer key only, fixed private seed in source-only test signer; recipient uses public key to verify canonical [issuer,eventID,context,x,y]. Test keys are NOT real-world authentication or production provenance.",
+    "checkpoint": "8B header + four 19B numeric context slots + 16*(32B SHA256 issuer+eventID + 32B SHA256 content) entries + 32B checksum =1140B. No eviction. Cold readback preserves ledger and context.",
+    "novel_pair": "16 paired causal laws with identical two observed eta=.65 at V=4 and 18. World0 eta(V)=.65; World1 eta(V)=.65 + .003*(1+(pairIndex%4))*(V-4)*(V-18). At V=11 correct outcomes differ, so 2-witness certified predictions must abstain. Observe third signed V=11, then evaluate V=7 and V=15 on each branch (64 targets).",
+    "polynomial": "Explicit supplied fixed two-feature basis [1,(V-4)*(V-18)] fit from two endpoints and third distinguishable probe; no automatic new primitive. Matched independent exact symbolic and full-rank ordinary least squares controls receive identical three points.",
+    "budget": "32 known worlds 320 independent events, 800 duplicate replay attempts, 32 conflict plus 32 invalid signature attempts, 64 known cold restores, 16 paired two-world ambiguous tests, 64 postprobe predictions. Node v22.16.0 on hosted Linux/Windows; zero paid API, external actions, or runtime GPT inference.",
+    "controls": [
+      "GKD-02 naive duplicate update",
+      "Independent symbolic ID-dedup memory",
+      "Robust fitted per-context gain",
+      "Fully fitted two-feature polynomial OLS with same three observations",
+      "Unchanged donor prior",
+      "Indistinguishable world-pair evidence negative"
+    ],
+    "success": "PASS engineering only if 320 distinct accepted, 800 duplicates ignored with unchanged bytes, 32 conflicts and 32 altered signatures rejected, 32 context-change repairs and unrelated retention, 64 cold restores, 1140-byte checkpoint, zero certified 2-witness unfamiliar predictions on both pair arms, 64/64 postprobe predictions tie fully fitted OLS/symbolic to 1e-9. Scientific superiority remains false.",
+    "negative": "Any replay count inflation, forged witness acceptance, evidence collision, overconfident preprobe unseen law, retained context loss or postprobe error is engineering NO_GO. Ties are not intelligence gains.",
+    "determinism": "Frozen original source, controls, seeds, source claims, probes, rates, and all budgets before code. No postscore reruns/tuning."
+  },
+  "classification_rules": {
+    "supported": "All frozen engineering criteria; SCIENTIFIC_PASS=false",
+    "negative": "Any frozen criterion fails = NO_GO",
+    "mixed": "Report mixed engineering only, no promoted science",
+    "invalid": "Source ID, shared evidence, verifier leakage, changed splits or postresult tuning invalidates confirmatory score"
+  },
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Pre-implementation freeze; GKD-03 is independent source-only synthetic donor correction and nonidentifiability diagnostic. No original protected CausalGym first-use, integration, merge, deployment, or GPT weight transfer."
+}
