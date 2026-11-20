@@ -128,6 +128,38 @@ class Know04Tests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 node(entries=entries)
 
+    def test_pair_unique_but_first_view_alias_suppresses_shadow_planning(self):
+        # Distinct paired observations are not necessarily distinct planner inputs.
+        colliding = rows() + [[[11, 12, 13], [[0, 1], [0, 1]]]]
+        projection, native, facts = node(entries=colliding)
+        native_before, facts_before = native.checkpoint(), facts.checkpoint()
+        proposed = projection.query(1, 2, 3)
+        self.assertEqual(proposed["classification"], "SYNTHETIC_VIEW_PROPOSAL_ONLY")
+        self.assertEqual(proposed["paired_public_views"], [[0, 1], [0, 0]])
+        output = projection.shadow_plan(1, 2, 3)
+        self.assertEqual(output["classification"], "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
+        self.assertFalse(output["native_plan_called"])
+        self.assertIsNone(output["shadow_plan"])
+        self.assertFalse(output["policy_activation"])
+        self.assertEqual(native.plan_calls, 0)
+        self.assertEqual((native.checkpoint(), facts.checkpoint()),
+                         (native_before, facts_before))
+
+    def test_eight_distinct_pairings_have_only_four_planner_views(self):
+        views = [((state, a), (state, b))
+                 for state in (0, 1) for a in (0, 1) for b in (0, 1)]
+        self.assertEqual(len(views), 8)
+        self.assertEqual(len(set(views)), 8)
+        self.assertEqual(len({pair[0] for pair in views}), 4)
+        entries = [[[i + 1, 2, 3], [list(v) for v in pair]]
+                   for i, pair in enumerate(views)]
+        projection, native, _ = node(entries=entries)
+        self.assertEqual(projection.query(1, 2, 3)["classification"],
+                         "SYNTHETIC_VIEW_PROPOSAL_ONLY")
+        output = projection.shadow_plan(1, 2, 3)
+        self.assertEqual(output["classification"], "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
+        self.assertEqual(native.plan_calls, 0)
+
     def test_view_shape_enforces_native_two_bit_constraints(self):
         bads = [
             [[1,2,3], [[0,1], [1,0]]],

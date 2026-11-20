@@ -74,7 +74,7 @@ def make_fixture_manifest(joint_sha, facts_sha, entries):
 
 class ExplicitPublicViewProjection:
     """No mapping guesses, no causal admission, no accepted-model mutation."""
-    __slots__ = ("_bridge", "_raw", "_sha", "_bindings")
+    __slots__ = ("_bridge", "_raw", "_sha", "_bindings", "_ambiguous_plan_views")
 
     def __init__(self, bridge, raw, expected_sha256):
         _require(isinstance(bridge, TypedFactualReadoutBridge),
@@ -109,6 +109,7 @@ class ExplicitPublicViewProjection:
                  "MAPPING_CAPACITY")
         mappings, previous = {}, None
         used_views = set()
+        plan_view_counts = {}
         for entry in rows:
             _require(type(entry) is list and len(entry) == 2,
                      "INVALID_ENTRY")
@@ -119,12 +120,15 @@ class ExplicitPublicViewProjection:
             _require(views not in used_views, "AMBIGUOUS_VIEW_ALIAS")
             mappings[key] = views
             used_views.add(views)
+            plan_view_counts[views[0]] = plan_view_counts.get(views[0], 0) + 1
             previous = key
         bridge._check_snapshots()
         self._bridge = bridge
         self._raw = raw
         self._sha = expected_sha256
         self._bindings = mappings
+        self._ambiguous_plan_views = frozenset(
+            view for view, count in plan_view_counts.items() if count > 1)
 
     def checkpoint(self):
         """Return the immutable synthetic mapping only, not a learner checkpoint."""
@@ -180,6 +184,11 @@ class ExplicitPublicViewProjection:
         if proposal["paired_public_views"] is None:
             return {**proposal, "native_plan_called": False, "shadow_plan": None}
         public_view = tuple(proposal["paired_public_views"][0])
+        if public_view in self._ambiguous_plan_views:
+            self.checkpoint()
+            return {**proposal, "classification": "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW",
+                    "native_plan_called": False, "shadow_plan": None,
+                    "policy_activation": False, "causal_observation_admitted": False}
         result = self._bridge.independent_native_plan(public_view)
         self.checkpoint()
         return {**proposal, "native_plan_called": True, "shadow_plan": result,
