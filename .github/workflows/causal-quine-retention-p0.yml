@@ -42,6 +42,9 @@ jobs:
           echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   regression:
     needs: atlas
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -110,6 +113,20 @@ jobs:
           for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
             python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
           done
+      - name: Authenticate archived P0 research-only cold policy readback
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: spoonman136668-ai/Yggdrasil
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/quine-p0-original-research"
+          mkdir -p "$archive"
+          # Download original completed research archives only; no source actions.
+          gh run download 44391641043 -n CKAD26-refresh-primary -D "$archive"
+          gh run download 44420677720 -n YGG-JEPA2-03-ubuntu-latest -D "$archive"
+          gh run download 44499793023 -n Amalgam-shared-consequence-ubuntu-latest -D "$archive"
+          python -B research/contrib/chatgpt/CAUSAL-AMALGAM/archive_p0_cold_replay.py "$archive"
       - name: Verify committed G29 atlas and clean exact-source tree
         shell: bash
         run: |
