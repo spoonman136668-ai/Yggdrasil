@@ -1,0 +1,69 @@
+name: MH-01 meta-selected Hebbian rule development (source-only)
+on:
+  push:
+    branches: [research/mh01-evolved-hebbian-rule-20261120]
+permissions:
+  contents: read
+concurrency:
+  group: ygg-mh01-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-meta-hebbian-development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9e
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Source ancestry, immutable R7 parent and prereg-first
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor f3cdabdb3420bb8604e41dda9903ae65eba008e7 HEAD
+          git merge-base --is-ancestor a371ff5136d28fa06569b1ef935e27a0695f135a HEAD
+          test "$(git rev-parse 'HEAD:research/native/itd01/r7/native_cells.py')" = 4c492a494ac5b25d5e9c49b98185be6a2c966b2f
+          git show --format= --name-only a371ff5136d28fa06569b1ef935e27a0695f135a | python -B -c 'import sys; a=sys.stdin.read().splitlines(); assert a==["research/native/itd01/mh01/PREREG.md"],a'
+          git diff --name-only f3cdabdb3420bb8604e41dda9903ae65eba008e7 HEAD | python -B -c 'import sys; names=set(sys.stdin.read().splitlines()); allow={"research/native/itd01/mh01/PREREG.md","research/native/itd01/mh01/study.py","research/native/itd01/mh01/test_study.py",".github/workflows/qualify-mh01-hebbian.yml"}; assert names==allow,(names,allow)'
+          echo MH01_SOURCE_CUSTODY_PASS
+      - name: Focused MH01 and inherited R7 tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/native/itd01/mh01 -p test_study.py -v
+          python -B -m unittest discover -s research/native/itd01/r7 -p test_native_cells.py -v
+          echo MH01_FOCUSED_ENGINEERING_PASS
+      - name: Freeze outcomes including genuine negative and outer cost
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/native/itd01/mh01/study.py > mh01-results.json
+          python -B -c 'import json; r=json.load(open("mh01-results.json")); assert len(r["fit_search"])==32 and len(r["held"]["evolved"])==3 and not r["scientific_first_use"] and all(x["independent_process_predictions_exact"] for x in r["restore_checks"]); print("MH01_DEV_RESULT="+r["development_mechanism"]); print("MH01_EVOLVED_MACRO="+str(r["evolved_macro"])); print("MH01_BEST_CONTROL_MACRO="+str(r["best_control_macro"])); print("MH01_OUTER_COST_RATIO="+str(r["cost_ratio_to_one_fixed_rule_run"]))'
+      - name: Existing original source regression (full for this stacked candidate)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py'
+          echo MH01_R7_STACK_FULL_REGRESSION_PASS
+      - name: Working tree and no protected original first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; xs=sys.stdin.read().splitlines(); assert xs==["?? mh01-results.json"],xs'
+          echo MH01_ORIGINAL_SCIENCE_FIRST_USE_BLOCKED
+      - name: Preserve results independent of science outcome
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mh01-source-only-${{ matrix.os }}
+          path: mh01-results.json
+          if-no-files-found: ignore
