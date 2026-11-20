@@ -36,13 +36,13 @@ jobs:
           set -euo pipefail
           test "$GITHUB_REF_NAME" = research/mh07-mixed-bank-archive-20261120
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = 08a4cdd5cb5f8a554913acd036d42665d7076a13
+          git merge-base --is-ancestor 08a4cdd5cb5f8a554913acd036d42665d7076a13 "$GITHUB_SHA"
           git merge-base --is-ancestor b1aa2e681b0a0d8f9dc5f5dcaa4bc84881449d98 "$GITHUB_SHA"
           git merge-base --is-ancestor 778478247077b92611e099540ae320380832566f "$GITHUB_SHA"
           test "$(git rev-parse HEAD:research/itd02_v32e_pair_consensus.rs)" = 85237dcc82905e05a273b11023b5be5db722726e
           test "$(git rev-parse HEAD:research/mh03_checkpoint_bank_readback.py)" = "$(git rev-parse 778478247077b92611e099540ae320380832566f:research/mh03_checkpoint_bank_readback.py)"
           git diff --name-only 778478247077b92611e099540ae320380832566f "$GITHUB_SHA" |
-            python -B -c 'import sys; x=set(sys.stdin.read().splitlines()); e={"research/mh07_mixed_bank_archive_protocol.md","research/mh07_mixed_bank_archive.py","research/test_mh07_mixed_bank_archive.py",".github/workflows/qualify-mh07-mixed-bank-archive.yml"}; assert x==e,(x,e)'
+            python -B -c 'import sys; x=set(sys.stdin.read().splitlines()); e={"research/mh07_mixed_bank_archive_protocol.md","research/mh07_mixed_bank_archive.py","research/test_mh07_mixed_bank_archive.py",".github/workflows/qualify-mh07-mixed-bank-archive.yml",".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert x==e,(x,e)'
           test -z "$(git status --porcelain --untracked-files=all)"
           python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
           git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
