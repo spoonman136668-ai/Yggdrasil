@@ -162,7 +162,7 @@ def prove(session,joint_file):
     from yggdrasil.native_context_accumulator import NativeContextAccumulator
     from yggdrasil.native_cumulative_facts import CumulativeNativeFacts
     from yggdrasil.native_knowledge_activation import (
-        PINN_ROWS,PINN_PACKED_SHA,open_installed_session)
+        PINNED_ROWS,PINNED_PACKED_SHA,open_installed_session)
     t=time.monotonic()
     protocol=json.loads(Path(__file__).with_name("know13_protocol.json").read_bytes())
     must(protocol["schema"]=="yggdrasil.know13.same-address-cumulative-blind-role-development.v1"

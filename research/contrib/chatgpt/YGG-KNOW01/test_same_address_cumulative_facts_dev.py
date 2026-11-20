@@ -108,6 +108,19 @@ class Tests(unittest.TestCase):
             with self.assertRaises(ValueError):obj(0,0,x)
         for x in (True,-1,64):
             with self.assertRaises(ValueError):subject(0,0,x)
+    def test_original_source_imports_exact_pinned_constants(self):
+        import ast
+        from pathlib import Path
+        tree=ast.parse(Path(__file__).with_name(
+            "same_address_cumulative_facts_dev.py").read_text("utf-8"))
+        names=set()
+        for item in ast.walk(tree):
+            if isinstance(item,ast.ImportFrom) and (
+                    item.module=="yggdrasil.native_knowledge_activation"):
+                names.update(alias.name for alias in item.names)
+        self.assertEqual(names,{"PINNED_ROWS","PINNED_PACKED_SHA",
+                                "open_installed_session"})
+
     def test_canonical_and_absent_activation(self):
         self.assertEqual(canonical({"b":2,"a":1}),b'{"a":1,"b":2}')
         import same_address_cumulative_facts_dev as m
