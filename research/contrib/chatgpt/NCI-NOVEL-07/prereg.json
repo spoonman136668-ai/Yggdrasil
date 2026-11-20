@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "NCI-NOVEL-07",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "successor-proposal",
+  "status": "ENGINEERING_GUARD_ONLY_NOT_PRIMARY_PREREG",
+  "question": "Can an independently learned causal law A survive B interference and cold restore, then reduce the public-evidence cost of unsignaled return to A against the strongest equally-informed control?",
+  "hypothesis": "Retained learned context should recover A with strictly lower prospective observation/action cost without weakening reward or prediction against fully-fitted correctly specified controls; ties or losses are negative.",
+  "exact_parent_sha": "38df284c2bca4b4d70390051977ad4baf9e66492",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1345#issuecomment-7051673657",
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1345#issuecomment-7051829657",
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/442",
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1344"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/NCI-NOVEL-07/"
+  ],
+  "inputs": [],
+  "engineering_only": {
+    "observation_contract": [
+      "observation: public integer 0..255",
+      "action: public binary 0/1",
+      "outcome: publicly witnessed binary 0/1"
+    ],
+    "prohibited_learner_inputs": [
+      "source_id",
+      "phase",
+      "regime",
+      "oracle",
+      "reset",
+      "counterfactual",
+      "private switch clock"
+    ],
+    "cold_restore": "Compare identical pre-B public queries after process restore; a matching serialized checkpoint alone is insufficient.",
+    "arm_parity": "Require identical ordered public tapes and action opportunities for all compared arms. Report interventions, fitting and validation evidence, compute, bytes, process time and memory.",
+    "test_data": "Fabricated manually written unit tuples only; no original or prospective scientific world outcomes and no reuse of NCI05 or D256 cohorts.",
+    "max_unit_tape_witnesses": 2,
+    "allowed_outcome": "Engineering guard test qualification only; not source authenticity, causal identification, control-fit proof or science."
+  },
+  "proposed_science_design": {
+    "identity": "Separate future source-pinned sealed manifest is MANDATORY before any scientific first use. This proposal does NOT reserve seeds, authorize source first use or freeze final primary.",
+    "regimes": "Independently learned A and B with unannounced A-to-B-to-A switches; no externally supplied boundary, phase, source or reset label; test genuinely unfamiliar context-conditioned causal operators, not only known two-rule identity.",
+    "controls": [
+      "fully_fitted_Bayesian_change_point_or_HMM_with_learned_emissions",
+      "fully_fitted_episodic_memory",
+      "fully_fitted_online_nonparametric",
+      "fully_trained_conventional_temporal_model",
+      "flat_no_retention",
+      "shuffled_context",
+      "reset_memory",
+      "no_change",
+      "evaluator_only_oracle_not_eligible_for_gain"
+    ],
+    "fairness": "All non-oracle arms see exactly the same cumulative public tape, ordered action opportunities, source foundation, byte/slot and action budgets; evaluate matched-compute subset and stronger unrestricted controls separately. Counterfactual outcomes only for evaluator, never learners.",
+    "metrics": [
+      "every_step_prequential_Brier_including_probe_actions",
+      "every_step_reward_including_abstentions_and_probes",
+      "switch_detection_delay_and_false_alarm_rate",
+      "cold_restore_old_A_functional_Brier_vs_pre_B",
+      "return_A_recovery_extra_public_actions",
+      "memory_bytes_CPU_seconds_wall_seconds_peak_RSS"
+    ],
+    "negatives": [
+      "stationary_no_change",
+      "phase_shuffled",
+      "observationally_indistinguishable",
+      "unseen_third_law",
+      "same_address_context_alias",
+      "cold_tamper"
+    ],
+    "evidence": "Evaluator may know law/source identity for scoring only; source IDs, switches and outcomes withheld from learner until public consequences occur. Pre-evidence identifiability limits must be included.",
+    "proposed_thresholds": {
+      "old_A_Brier_regression_max_absolute": 0.02,
+      "post_return_Brier_gain_min_relative_vs_best_nonoracle": 0.05,
+      "post_return_reward_gain_min_absolute_vs_best_nonoracle": 0.02,
+      "recovery_public_action_cost_ratio_max_vs_best_nonoracle": 0.8,
+      "false_alarm_regression": "no increase vs strongest validated change-point control",
+      "decision": "Prospective scientific gain requires all criteria across >=3/4 genuinely unfamiliar independent families, independent reproduction and native owner acceptance; incomplete=>UNVERIFIED, negative=>NO_GO."
+    },
+    "blockers_to_primary": [
+      "separate_frozen_source_and_seed_manifest",
+      "independent_owner_first_use_custody",
+      "actual_world_interface_and_data_license",
+      "fully_specified_model_training_budget_and_hyperparameter_selection",
+      "qualified_full_final_cross_platform_regression"
+    ]
+  },
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "source_first_use_authorized": false
+  },
+  "preregistration_note": "This is a design and source-free engineering preflight freeze. It is NOT a final confirmatory preregistration; no protected or primary evidence may be generated until all manifest and custody blockers are closed before first use."
+}
