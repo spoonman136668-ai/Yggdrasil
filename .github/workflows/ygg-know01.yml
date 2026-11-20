@@ -180,6 +180,19 @@ jobs:
           PYTHONPATH="$RUNNER_TEMP/know03-source" python -B -m yggdrasil.native_knowledge_activation             --source "$RUNNER_TEMP/know03-nkr05" --destination-parent "$RUNNER_TEMP" --name know03-history-readonly             > "$RUNNER_TEMP/know03-install.json"
           PYTHONPATH="$RUNNER_TEMP/know03-source" python -B research/contrib/chatgpt/YGG-KNOW01/real_image_pairing.py             --installed-session "$RUNNER_TEMP/know03-history-readonly"             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json"             --output "$RUNNER_TEMP/know03-pairing-receipt.json"
           test -z "$(git status --porcelain)"
+      - name: Cold restore original native sublearner and shadow read historical facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          AMALGAM=86264b41a08d49f558418c0fba367f3a2636befa
+          git fetch --no-tags origin "$AMALGAM"
+          test "$(git rev-parse "$AMALGAM:yggdrasil/native_cumulative_learner.py")" = 1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4
+          test "$(git rev-parse "$AMALGAM:yggdrasil/native_cumulative_facts.py")" = 37d8d88198292b165eee0570049d4d3286dd900b
+          mkdir "$RUNNER_TEMP/know06-amalgam-source"
+          git archive "$AMALGAM" yggdrasil | tar -xf - -C "$RUNNER_TEMP/know06-amalgam-source"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/native_cold_shadow.py --installed-session "$RUNNER_TEMP/know03-history-readonly" --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know06-cold-shadow-receipt.json"
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -187,5 +200,6 @@ jobs:
           name: YGG-KNOW03-real-image-archived-amalgam-compatibility
           path: |
             ${{ runner.temp }}/know03-pairing-receipt.json
+            ${{ runner.temp }}/know06-cold-shadow-receipt.json
           retention-days: 30
           if-no-files-found: error
