@@ -486,3 +486,41 @@ jobs:
           path: ${{ runner.temp }}/know29-policy-calibration-receipt.json
           if-no-files-found: error
           retention-days: 30
+
+  know30-study:
+    if: "github.event.head_commit.message == 'research(know30): qualify one-shot two-step-vs-entropy'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Exact source and atlas-only successor checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One prospective source-only held first-use, AFTER mandatory regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know30_two_step_planning_protocol.json)" = bd804e6a94debb4b314d9d6a86af179bb44de1a2
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know30_two_step_planning_dev.py \
+            | tee "$RUNNER_TEMP/know30-two-step-policy-receipt.log"
+          python -B -c 'import json,os,pathlib; f=pathlib.Path(os.environ["RUNNER_TEMP"])/"know30-two-step-policy-receipt.log"; line=f.read_text().strip(); assert line.startswith("YGG_KNOW30_RECEIPT="); d=json.loads(line.split("=",1)[1]); assert d["schema"]=="yggdrasil.know30.two-step-policy-result.dev.v1" and d["prereg_commit"]=="effc0078a561fcc7c5a2584c95f75a97388a1ae5" and d["prereg_blob"]=="bd804e6a94debb4b314d9d6a86af179bb44de1a2"; assert d["worlds_per_cohort"]==18 and d["witnesses_per_arm_per_cohort"]==576 and d["score_queries_per_arm_per_cohort"]==72 and d["historical_FIT_witnesses_per_mapping_group"]==108; assert d["hypotheses"]["H1_two_reward_bellman_identity"] and d["hypotheses"]["H5_budgets_cold_and_deliberation"]; assert d["scientific_gate"]=="SCIENTIFIC_NO_GO_SYNTHETIC_NOT_NATIVE" and not d["accepted_native_modified"] and not d["original_first_use_426"] and d["deployment"]=="NONE"'
+          test -z "$(git status --porcelain)"
+      - name: Preserve small, source-only scientific result receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW30-receding-two-step-prospective-dev
+          path: ${{ runner.temp }}/know30-two-step-policy-receipt.log
+          if-no-files-found: error
+          retention-days: 30
