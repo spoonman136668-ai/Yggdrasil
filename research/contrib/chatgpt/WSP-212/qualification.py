@@ -63,6 +63,8 @@ def _component(seed: int, allele: str, pos: int, dim: int) -> int:
 
 
 def target(seed: int, i: int, j: int, allele: str) -> float:
+    if seed not in {w[0] for w in WORLDS} or seed in FORBIDDEN:
+        raise ValueError("not an authorized WSP212 calibration seed")
     # Exact integer dot product before a single rational -> float conversion.
     # No OS-specific sin/cos, random generator, or teacher-model execution.
     return sum(_component(seed, allele, i, k) *
