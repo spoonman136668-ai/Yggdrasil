@@ -193,8 +193,174 @@ def evaluate(linux_file: Path, windows_file: Path | None = None):
     }
 
 
+
+# RET1025-PROBE-CURVE-DEV01, frozen before scoring: #1355 comment 7053465572.
+# Only the original already-consumed public return witnesses may be replayed.
+RECOVERY_K = (0, 1, 2, 4, 8, 16, 32)
+ORIGINAL_BAYES_SOURCE_BLOB = "659bcac55aba4e90eb27bccf90e9fb4fc2fc2bce"
+
+
+def _native_pinned_bayes_class():
+    """Load *only* exact pinned TransitionControls class AST, not POSIX imports."""
+    import ast
+    from collections import deque
+    raw = (Path(__file__).resolve().parent / "selection_trial.py").read_bytes()
+    blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+    if blob != ORIGINAL_BAYES_SOURCE_BLOB:
+        raise ValueError("RET1025_CONTROL_ORIGINAL_BLOB_DRIFT")
+    tree = ast.parse(raw)
+    clauses = [n for n in tree.body if isinstance(n, ast.ClassDef)
+               and n.name == "TransitionControls"]
+    if len(clauses) != 1:
+        raise ValueError("RET1025_CONTROL_CLASS_MISSING")
+    module = ast.fix_missing_locations(ast.Module(body=clauses, type_ignores=[]))
+    env = {"defaultdict":defaultdict, "deque":deque}
+    exec(compile(module, "selection_trial.TransitionControls", "exec"), env)
+    return env["TransitionControls"]
+
+
+def _paired_keys(e):
+    _, views, row = _public_row(e)
+    context = views[0][0]
+    return (("transition",context,row["x1"]),row["s2"]), (
+        ("terminal",context,row["x1"],row["s2"],row["x2"]),row["y"])
+
+
+class _HistoryControls:
+    """Native source-identical Beta/full/trailing32/change-point32 formulas."""
+    def __init__(self):
+        self.full = defaultdict(lambda:[0,0])
+        self.online = _native_pinned_bayes_class()(32, 1/32)
+
+    def observe(self,e):
+        for key,outcome in _paired_keys(e):
+            if type(outcome) is not int or outcome not in (0,1):
+                raise ValueError("RET1025_INVALID_PUBLIC_OUTCOME")
+            self.full[key][outcome] += 1
+            self.online.update(key,outcome)
+
+    def forecast(self,key):
+        failures,successes=self.full[key]
+        full=(successes+0.5)/(successes+failures+1)
+        trailing,change_point=self.online.forecast(key)
+        return full,trailing,change_point
+
+
+def _score_remaining(state, control, tape):
+    old=state.checkpoint()
+    total={n:[0.0,0.0] for n in ("native","full_beta","trailing32_beta","change_point32_beta")}
+    for e in tape:
+        _,views,row=_public_row(e)
+        x=views[0][0]
+        a,s,b,y=row["x1"],row["s2"],row["x2"],row["y"]
+        predictions=(
+            (float(state.context_forecast(views[0],a)),
+             float(state.context_forecast(views[0],a,s,b))),
+            control.forecast(("transition",x,a)),
+            control.forecast(("terminal",x,a,s,b)))
+        )
+        for target,truth in enumerate((s,y)):
+            q=predictions[0][target]
+            if not 0<=q<=1:
+                raise ValueError("RET1025_NATIVE_INVALID_FORECAST")
+            total["native"][target]+=(q-truth)**2
+            for name,p in zip(("full_beta","trailing32_beta","change_point32_beta"),
+                              predictions[target+1], strict=True):
+                if not 0<=p<=1:
+                    raise ValueError("RET1025_CONTROL_INVALID_FORECAST")
+                total[name][target]+=(p-truth)**2
+    if state.checkpoint()!=old:
+        raise ValueError("RET1025_READOUT_MUTATED")
+    n=len(tape)
+    if not n:
+        raise ValueError("RET1025_RECOVERY_EMPTY_SUFFIX")
+    return {name:{"transition_brier":round(v[0]/n,12),
+                  "terminal_brier":round(v[1]/n,12),
+                  "mean_brier":round((v[0]+v[1])/(2*n),12)}
+            for name,v in total.items()}
+
+
+def recovery_curve(linux_file:Path, windows_file:Path|None=None):
+    """Fixed K-shot future-suffix retrospective readout of original native class."""
+    archive=read_original_archive(linux_file,windows_file)
+    tape=archive["tape"]
+    if RECOVERY_K!=(0,1,2,4,8,16,32) or len(tape)!=1025:
+        raise ValueError("RET1025_RECOVERY_MANIFEST_DRIFT")
+    state,final=original_class_replay(tape)
+    if final.checkpoint()!=archive["episode_ascii"].encode("ascii"):
+        raise ValueError("RET1025_ORIGINAL_REPLAY_DRIFT")
+    control=_HistoryControls()
+    for row in tape[:STOP_BEFORE]:
+        control.observe(row)
+    updated=0
+    results=[]
+    for k in RECOVERY_K:
+        while updated<k:
+            e=tape[STOP_BEFORE+updated]
+            identifier,views,row=_public_row(e)
+            state=state.observe(identifier,views,row)
+            control.observe(e)
+            updated+=1
+        end=STOP_BEFORE+k
+        if len(state._ledger)!=end:
+            raise ValueError("RET1025_RECOVERY_LEAK_OR_MISSING_EVIDENCE")
+        snapshot=state.checkpoint()
+        cold=NativeEpisodeExperience.restore(snapshot,sha(snapshot))
+        if cold.checkpoint()!=snapshot:
+            raise ValueError("RET1025_COLD_RESTORE_DRIFT")
+        scores=_score_remaining(cold,control,tape[end:STOP_AFTER])
+        best=min((scores[n]["mean_brier"],n) for n in
+                 ("full_beta","trailing32_beta","change_point32_beta"))
+        weights=cold._context_weights
+        if not weights or sum(weights,Fraction(0))!=1:
+            raise ValueError("RET1025_RECOVERY_INVALID_POSTERIOR")
+        results.append({
+            "k_prior_return_witnesses":k,
+            "public_prefix_count":end,
+            "historical_future_score_count":STOP_AFTER-end,
+            "public_prefix_sha256":digest(canonical(tape[:end])),
+            "consumed_return_prefix_sha256":digest(canonical(tape[STOP_BEFORE:end])),
+            "cold_native_sha256":sha(snapshot),
+            "cold_restoration_exact":True,
+            "context_component_count":len(weights),
+            "highest_posterior_weight":round(float(max(weights)),12),
+            "stream_detections":len(cold._stream_detections),
+            "brier":scores,
+            "best_conventional":best[1],
+            "native_minus_best":round(scores["native"]["mean_brier"]-best[0],12),
+            "candidate_beats_all_controls_by_0_005":
+                scores["native"]["mean_brier"]<=best[0]-0.005,
+        })
+    if abs(results[0]["brier"]["native"]["mean_brier"]-EXPECTED_NATIVE)>PRECISION:
+        raise ValueError("RET1025_ZERO_PROBE_NATIVE_REGRESSION")
+    if abs(results[0]["brier"]["full_beta"]["mean_brier"]-EXPECTED_BETA)>PRECISION:
+        raise ValueError("RET1025_ZERO_PROBE_BETA_REGRESSION")
+    positive=all(x["candidate_beats_all_controls_by_0_005"] for x in results
+                 if x["k_prior_return_witnesses"] in (1,2,4,8))
+    return {
+        "schema":"ygg.ret1025.native-return-recovery-dev.v1",
+        "pre_result_freeze":"https://github.com/spoonman136668-ai/Yggdrasil/pull/1355#issuecomment-7053465572",
+        "classification":("RET1025_RECOVERY_DEV_SIGNAL_ONLY" if positive
+                          else "RET1025_RECOVERY_DEV_NO_PAIRED_GAIN"),
+        "fixed_probe_counts":list(RECOVERY_K),
+        "original_joint_sha256":archive["original_joint_sha256"],
+        "native_source_unchanged":True,
+        "full_native_checkpoint_replay_exact":True,
+        "all_cold_restores_exact":True,
+        "results":results,
+        "scientific_gain_verified":False,
+        "source_actions_executed":0,
+        "already_consumed_historical_source_only":True,
+        "accepted_model_updated":False,
+    }
+
 if __name__=="__main__":
+    if len(sys.argv) in (3,4) and sys.argv[1]=="--recovery-dev":
+        output=recovery_curve(Path(sys.argv[2]),
+                              Path(sys.argv[3]) if len(sys.argv)==4 else None)
+        print(json.dumps(output,sort_keys=True,indent=2))
+        raise SystemExit(0)
     if len(sys.argv) not in (2,3):
-        raise SystemExit("usage: ret1025_original_class.py LINUX_JSON [WINDOWS_JSON]")
+        raise SystemExit("usage: ret1025_original_class.py [--recovery-dev] LINUX_JSON [WINDOWS_JSON]")
     report=evaluate(Path(sys.argv[1]),Path(sys.argv[2]) if len(sys.argv)==3 else None)
     print(json.dumps(report,sort_keys=True,indent=2))

@@ -58,5 +58,38 @@ class RET1025OriginalClassSourceTests(unittest.TestCase):
         self.assertEqual(gate.PRECISION,1e-9)
 
 
+    def test_recovery_frozen_counts(self):
+        self.assertEqual(gate.RECOVERY_K,(0,1,2,4,8,16,32))
+        self.assertEqual(gate.ORIGINAL_BAYES_SOURCE_BLOB,
+                         "659bcac55aba4e90eb27bccf90e9fb4fc2fc2bce")
+        self.assertEqual(gate.STOP_AFTER-gate.STOP_BEFORE,48)
+
+    def test_exact_original_bayesian_class_loaded_portably(self):
+        classic=gate._native_pinned_bayes_class()
+        obj=classic(32,1/32)
+        key=("transition",0,1)
+        self.assertEqual(obj.forecast(key),(0.5,0.5))
+        for value in (1,0,1,1):
+            obj.update(key,value)
+        trailing,change=obj.forecast(key)
+        self.assertAlmostEqual(trailing,0.7)
+        self.assertTrue(0<=change<=1)
+        self.assertAlmostEqual(sum(obj.weights[key]),1)
+
+    def test_public_only_control_updates_and_invalid_reject(self):
+        ctrl=gate._HistoryControls()
+        e=["a"*64,[[0,1],[0,0]],1,0,1,1]
+        pre=ctrl.forecast(("transition",0,1))
+        ctrl.observe(e)
+        self.assertNotEqual(pre,ctrl.forecast(("transition",0,1)))
+        self.assertEqual(ctrl.full[("transition",0,1)],[1,0])
+        with self.assertRaisesRegex(ValueError,"INVALID_PUBLIC_OUTCOME"):
+            ctrl.observe(["b"*64,[[0,1],[0,0]],1,2,1,1])
+
+    def test_no_evaluator_extra_field_accepted(self):
+        with self.assertRaises((TypeError,ValueError)):
+            gate._paired_keys(["a"*64,[[0,1],[0,0]],1,0,1,1,{"phase":"A"}])
+
+
 if __name__=="__main__":
     unittest.main()

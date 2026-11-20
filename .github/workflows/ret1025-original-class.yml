@@ -156,11 +156,25 @@ jobs:
           assert r["source_actions_executed"]==0 and not r["scientific_gain_verified"]
           print("RET1025_ORIGINAL_CLASS_RETROSPECTIVE_NO_GAIN_VERIFIED")
           PY
+          python -B research/contrib/chatgpt/CAUSAL-AMALGAM/ret1025_original_class.py --recovery-dev "$RUNNER_TEMP/ret1025-original-linux/amalgam-joint-state.json" "$RUNNER_TEMP/ret1025-original-windows/amalgam-joint-state.json" > "$RUNNER_TEMP/ret1025-recovery.json"
+          cat "$RUNNER_TEMP/ret1025-recovery.json"
+          python -B - <<'PY'
+          import json,os
+          p=os.path.join(os.environ["RUNNER_TEMP"],"ret1025-recovery.json")
+          r=json.load(open(p))
+          assert r["fixed_probe_counts"]==[0,1,2,4,8,16,32]
+          assert len(r["results"])==7 and r["all_cold_restores_exact"]
+          assert all(x["cold_restoration_exact"] for x in r["results"])
+          assert not r["scientific_gain_verified"] and r["source_actions_executed"]==0
+          print("RET1025_FROZEN_PROBE_CURVE_COMPLETE")
+          PY
           test -z "$(git status --porcelain --untracked-files=all)"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ret1025-original-class-${{ matrix.os }}
-          path: ${{ runner.temp }}/ret1025-report.json
+          path: |
+            ${{ runner.temp }}/ret1025-report.json
+            ${{ runner.temp }}/ret1025-recovery.json
           if-no-files-found: error
   parity:
     needs: [atlas, qualify]
@@ -188,4 +202,10 @@ jobs:
           assert a["classification"]=="RETROSPECTIVE_DEV_NO_GAIN"
           assert not a["scientific_gain_verified"]
           print("RET1025_EXACT_DUAL_OS_ARCHIVAL_PARITY_PASS")
+          cases=list((pathlib.Path(os.environ["RUNNER_TEMP"])/"ret1025-reports").rglob("ret1025-recovery.json"))
+          assert len(cases)==2,[str(p) for p in cases]
+          ra,rb=(json.loads(p.read_bytes()) for p in sorted(cases))
+          assert ra==rb,"RET1025_RECOVERY_LINUX_WINDOWS_MISMATCH"
+          assert not ra["scientific_gain_verified"] and ra["source_actions_executed"]==0
+          print("RET1025_RECOVERY_CROSS_OS_PARITY_PASS")
           PY
