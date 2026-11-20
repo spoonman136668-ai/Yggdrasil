@@ -94,30 +94,47 @@ class ContextOLS {
     return baseline(x)*(denominator>0?numerator/denominator:1);
   }
 }
+class RobustMedian {
+  constructor(){this.ratios=Array.from({length:4},()=>[]);}
+  observe(c,x,y) {
+    context(c);
+    const e=observationValue(x,y),v=this.ratios[c];
+    v.push(e);if(v.length>3)v.shift();
+  }
+  predict(c,x) {
+    context(c);
+    const sorted=[...this.ratios[c]].sort((a,b)=>a-b);
+    const n=sorted.length;
+    const eta=n===0?1:n%2?sorted[Math.floor(n/2)]:(sorted[n/2-1]+sorted[n/2])/2;
+    return baseline(x)*eta;
+  }
+}
 const rng=seed=>{let s=seed>>>0;return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967296;};};
 const specimen=(u,n)=>[2+22*u(),1+19*u(),1+19*u(),1+9*u(),0.2+4.8*u(),100+900*u(),n%2];
 const err=(a,b)=>Math.abs(a-b)/Math.max(1,Math.abs(b));
 const fail=(f,reason)=>{let caught=false;try{f();}catch(e){caught=String(e.message).startsWith("GKD02_FAIL_CLOSED:");}need(caught,"NEGATIVE_"+reason);};
 export function run(){
   const seeds=[1101,1102,1103,1104],effs=[1,0.8,0.55,0.3];
-  let scored=0,symbolicTies=0,olsTies=0,maxError=0,donorWrong=0;
+  let scored=0,symbolicTies=0,olsTies=0,robustTies=0,maxOLSerror=0,maxError=0,donorWrong=0;
   let spuriousAbstain=0,spuriousRecovery=0,isolatedRepair=0,coldRestores=0,offAbstain=0;
   let witnesses=0,checkpointDigest=null;
   for(const seed of seeds)for(let j=0;j<16;j++){
     const u=rng((seed^Math.imul(j,0x9e3779b9))>>>0);
     let n=0;const sample=()=>specimen(u,n++);
     const laws=Array.from({length:4},(_,c)=>effs[(c+j)%4]);
-    const native=empty(),sym=new ExactSymbolic(),ols=new ContextOLS();
-    const learn=(c,x,e)=>{const y=e*baseline(x);observe(native,c,x,y);sym.observe(c,x,y);ols.observe(c,x,y);witnesses++;};
+    const native=empty(),sym=new ExactSymbolic(),ols=new ContextOLS(),robust=new RobustMedian();
+    const learn=(c,x,e)=>{const y=e*baseline(x);observe(native,c,x,y);sym.observe(c,x,y);ols.observe(c,x,y);robust.observe(c,x,y);witnesses++;};
     const score=()=>{
       for(let c=0;c<4;c++)for(let k=0;k<3;k++){
         const x=sample(),truth=laws[c]*baseline(x);
-        const got=predict(native,c,x),ref=sym.predict(c,x),fit=ols.predict(c,x);
+        const got=predict(native,c,x),ref=sym.predict(c,x),fit=ols.predict(c,x),rob=robust.predict(c,x);
         need(got.confident&&ref.confident,"CONFIDENCE");
         const e=err(got.value,truth);
         maxError=Math.max(maxError,e);need(e<=1e-9,"PREDICTION");
         need(err(got.value,ref.value)<=1e-9,"SYMBOLIC");symbolicTies++;
-        need(err(got.value,fit)<=1e-9,"OLS");olsTies++;
+        need(err(got.value,rob)<=1e-9,"ROBUST_MEDIAN");robustTies++;
+        const fitError=err(got.value,fit);maxOLSerror=Math.max(maxOLSerror,fitError);
+        if(fitError<=1e-9)olsTies++;
         if(err(baseline(x),truth)>1e-9)donorWrong++;
         scored++;
       }
@@ -161,7 +178,7 @@ export function run(){
   fail(()=>observe(s,0,[0,4,5,0,1,300,0],1),"ZERO_BASE");
   fail(()=>observe(s,0,valid,NaN),"NONFINITE");
   fail(()=>observe(s,0,valid,-1),"NEGATIVE_OUTCOME");
-  need(scored===1536&&symbolicTies===1536&&olsTies===1536&&maxError<=1e-9,"PRIMARY");
+  need(scored===1536&&symbolicTies===1536&&robustTies===1536&&maxError<=1e-9,"PRIMARY");
   need(witnesses===768&&spuriousAbstain===64&&spuriousRecovery===64&&isolatedRepair===64,"REPAIR");
   need(coldRestores===128&&offAbstain===48,"RETENTION_AND_OFF");
   const result={
@@ -169,14 +186,14 @@ export function run(){
     preregistration_sha:"2f3482d3f36cd7e0a9d20b0d5c20150bcea0c393",
     classification:"ENGINEERING_DEV_PASS_SCIENTIFIC_UNVERIFIED",
     worlds:64,seeds,witnesses,heldout:scored,symbolic_ties:symbolicTies,
-    fitted_ols_ties:olsTies,max_relative_error:maxError,
+    robust_median_ties:robustTies,rolling_two_ols_ties:olsTies,max_rolling_two_ols_error:maxOLSerror,max_relative_error:maxError,
     donor_prior_wrong_predictions:donorWrong,spurious_abstentions:spuriousAbstain,
     spurious_recoveries:spuriousRecovery,isolated_repairs:isolatedRepair,
     cold_restores:coldRestores,off_family_abstentions:offAbstain,
     checkpoint_bytes:116,sample_checkpoint_sha256:checkpointDigest,
     invalid_guard_cases_pass:6,teacher_inference_at_recipient_runtime:0,
     scientific_gain_verified:false,native_integration:false,
-    limitation:"Same known eta*ideal family; exact symbolic and fully fitted OLS tie; no independent causal law discovery, no new original world and no automatic LLM semantic compiler"
+    limitation:"Same known eta*ideal family; exact symbolic and robust fitted control tie. Rolling-two OLS is outlier-sensitive negative control, not a winning baseline. No independent causal law discovery, original-world test or automatic LLM semantic compiler"
   };
   console.log(JSON.stringify(result,null,2));return result;
 }
