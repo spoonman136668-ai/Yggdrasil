@@ -1,0 +1,178 @@
+name: MH05 fresh source-only V32E stored-bank evaluation
+on:
+  push:
+    branches: [research/mh05-fresh-storage-20261120]
+    paths-ignore:
+      - .ice/code-atlas.html
+      - .ice/code-atlas.ice
+      - .ice/code-atlas.json
+permissions:
+  contents: read
+concurrency:
+  group: ygg-mh05-singleuse-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-atlas:
+    if: ${{ github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.seal.outputs.source_sha }}
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Protect prereg/parent and seal exact derived G29 index
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$GITHUB_REF_NAME" = research/mh05-fresh-storage-20261120
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          # This source-first-use job accepts ONLY the immediate next commit after new preprimary tests.
+          test "$(git rev-parse HEAD^)" = 90cca3feeddc0f57d72542a28a5440820672f2c7
+          git merge-base --is-ancestor 47eda2556e72732c755988ef88c3d1adafe91e69 "$GITHUB_SHA"
+          git merge-base --is-ancestor 3b6f11b4fb18ceb2616956a0bf80d3f15e583531 "$GITHUB_SHA"
+          test "$(git rev-parse HEAD:research/itd02_v32e_pair_consensus.rs)" = 85237dcc82905e05a273b11023b5be5db722726e
+          test "$(git rev-parse HEAD:research/mh04_native_bank_retention.py)" = "$(git rev-parse 3b6f11b4fb18ceb2616956a0bf80d3f15e583531:research/mh04_native_bank_retention.py)"
+          test "$(git rev-parse HEAD:research/mh03_checkpoint_bank_readback.py)" = "$(git rev-parse 3b6f11b4fb18ceb2616956a0bf80d3f15e583531:research/mh03_checkpoint_bank_readback.py)"
+          git diff --name-only 3b6f11b4fb18ceb2616956a0bf80d3f15e583531 "$GITHUB_SHA" |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={"research/mh05_fresh_storage_prereg.md","research/mh05_fresh_storage.py","research/test_mh05_fresh_storage.py",".github/workflows/qualify-mh05-fresh-storage.yml"}; assert a==e,(a,e)'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --name-only |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(MH05): source-pin only derived G29 Atlas'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo MH05_SOURCE_QUALIFIED_INDEX_SEAL_PASS
+
+  source-only-primary:
+    needs: source-atlas
+    if: ${{ needs.source-atlas.result == 'success' && github.run_attempt == 1 }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    permissions:
+      contents: read
+    steps:
+      - name: Preserve exact bytes for both platforms
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.source-atlas.outputs.final_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify source and generated-index final candidate before any scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$(git rev-parse HEAD)" = '${{ needs.source-atlas.outputs.final_sha }}'
+          test "$(git rev-parse HEAD^)" = '${{ needs.source-atlas.outputs.source_sha }}'
+          test "$(git rev-parse HEAD:research/itd02_v32e_pair_consensus.rs)" = 85237dcc82905e05a273b11023b5be5db722726e
+          git diff --name-only HEAD^ HEAD |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
+          python -B scripts/build_code_atlas.py --check-if-present
+          echo MH05_ORIGINAL_RUST_AND_INDEX_CUSTODY_PASS
+      - name: Build unchanged original native Rust and source-owned Python adapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          ext=so
+          if [[ "${{ runner.os }}" == "Windows" ]]; then ext=dll; fi
+          for stem in itd02_v32a_native_microcells itd02_v32d_context_memory itd02_v32e_pair_consensus; do
+            rustc --edition=2021 -C opt-level=3 --crate-type cdylib "research/$stem.rs" -o "$RUNNER_TEMP/$stem.$ext"
+          done
+          echo "V32A_NATIVE_LIBRARY=$RUNNER_TEMP/itd02_v32a_native_microcells.$ext" >> "$GITHUB_ENV"
+          echo "V32D_NATIVE_LIBRARY=$RUNNER_TEMP/itd02_v32d_context_memory.$ext" >> "$GITHUB_ENV"
+          echo "V32E_NATIVE_LIBRARY=$RUNNER_TEMP/itd02_v32e_pair_consensus.$ext" >> "$GITHUB_ENV"
+          echo MH05_UNMODIFIED_NATIVE_RUST_BUILT_PASS
+      - name: Exercise both phase branches on zero-event mechanical dry path
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s research -p 'test_mh05_*.py' -v
+          echo MH05_ZERO_EVENT_PREPRIMARY_SOURCE_AND_PHASE_PASS
+      - name: MANDATORY complete exact-final inherited regression BEFORE scientific use
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B - <<'PY'
+          import sys,unittest
+          suite=unittest.TestLoader().discover("tests",pattern="test_*.py")
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.wasSuccessful(),"MH05_ROOT_FAIL"
+          assert result.testsRun==139,("MH05_ROOT_COUNT_DRIFT",result.testsRun)
+          if sys.platform=="win32":
+              expected={"test_missing_result_rejected","test_mismatched_candidate_id_rejected",
+                        "test_existing_roles_learn_from_own_measured_residual_only",
+                        "test_separate_native_model_output_and_equal_information_controls"}
+              actual={x.id().rsplit(".",1)[-1] for x,why in result.skipped}
+              assert actual==expected and all("POSIX" in why for x,why in result.skipped),(actual,expected)
+          else:
+              assert not result.skipped,result.skipped
+          print("MH05_FULL_ORIGINAL_ROOT_139_PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MH05_FULL_FINAL_SOURCE_REGRESSION_PASS
+      - name: ONE new frozen public synthetic source trial; no replay/retry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          PYTHONPATH=. python -B research/mh05_fresh_storage.py > mh05-report.json
+          python -B - <<'PY'
+          import json
+          r=json.load(open("mh05-report.json"))
+          assert r["trial_id"]=="MH05-SYNTH-HI-503-509-521-523-541-20261120"
+          assert len(r["results"])==10 and len(r["shams"])==5
+          assert r["prior_mh04_cohort_invalid_consumed"]
+          assert not r["protected_original_source_first_use"] and not r["scientific_gain_verified"]
+          for row in r["results"]:
+              assert set(row["stages"])=={"a240","x240"}
+              assert len(bytes.fromhex(row["full_original_checkpoint_hex"]["a240"]))==2264
+              assert len(bytes.fromhex(row["full_original_checkpoint_hex"]["x240"]))==2264
+              assert row["frozen_x240_same_checkpoint"]
+          result=r["summary"]
+          print("MH05_FROZEN_STORAGE="+result["storage_class"])
+          print("MH05_FROZEN_COST="+result["cost_class"])
+          print("MH05_H="+str(result["grouped"]["H"]))
+          print("MH05_I="+str(result["grouped"]["I"]))
+          print("MH05_SCIENTIFIC_GAIN_VERIFIED_FALSE")
+          PY
+      - name: Archive full independent source receipts, including negatives
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mh05-fresh-bank-storage-${{ matrix.os }}
+          path: mh05-report.json
+          if-no-files-found: ignore
