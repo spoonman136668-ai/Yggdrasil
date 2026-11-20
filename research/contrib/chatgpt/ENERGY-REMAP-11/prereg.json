@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-REMAP-11",
+  "date": "2026-11-20",
+  "scope": "independent source-free causal topology transfer; not native integration",
+  "base_sha_at_freeze": "678e1eb0b008a6fdfc245d8049d04f007fa211af",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "central_owner": "Amalgam PR #1278",
+  "question": "Can a bounded directed-energy local repair transfer a causal transition model to randomly relabeled state observations, including previously unseen action-dependent edges, using only two public anchor correspondences and sparse NEW intervention evidence, without losing OLD predictions?",
+  "hypothesis": "Topology-informed point alignment plus local contradiction repair may outperform independent new-context tabular count controls under pure remap and sparse changed edges, but should not be presumed better than fully fitted Bayesian permutation+change mixtures and will likely fail an out-of-family random rewiring negative.",
+  "worlds": {
+    "n_states": 6,
+    "actions": 2,
+    "original_law": "A secret directed Hamiltonian ring: action0 goes to successor, action1 predecessor; 0.88 target probability, otherwise uniform among the other 5.",
+    "two_contexts": "OLD sensor labels are 0..5. NEW sensor labels are a random unobserved bijection permutation; every new source and destination is permuted. TWO anchors are supplied as public old->new sensor correspondences for distinct old sensors 0 and 3. Both model and controls receive these anchors.",
+    "family": [
+      "SENSOR_REMAP",
+      "LOCAL_REWIRE",
+      "OUT_FAMILY"
+    ],
+    "changes": "SENSOR_REMAP: graph exactly same under new labels. LOCAL_REWIRE: swap action1 destinations of two randomly chosen distinct old states before applying permutation. OUT_FAMILY: action1 new targets are drawn independently from six states with replacement and are not constrained to ring/row-swap family. Action0 remains old successor graph. Learners receive no family label, hidden edges, or permutation.",
+    "data": "Each OLD row/action receives 6 independent observations (72 events). Each NEW row/action receives 2 observations (24 events). Held NEW has 96 independent outcomes per row/action (1,152/world). 12 seeds ×3 regimes=36 worlds, 41,472 held outcomes. OLD training readout frozen before NEW fit, retained after JSON serialization. No held labels in fitting.",
+    "source": "Source-free deterministic FNV1a/xorshift32 streams keyed by experiment, seed, regime, phase, state, action; OLD/new data independently drawn. Permutations keyed separately. No overlap with ENERGY-DELAY-07, ENERGY-DEPENDENT-NULL-10 or any prior consumed seeds.",
+    "seeds": [
+      95711,
+      95717,
+      95729,
+      95731,
+      95747,
+      95753,
+      95767,
+      95773,
+      95783,
+      95789,
+      95801,
+      95813
+    ],
+    "smoke": [
+      95701
+    ]
+  },
+  "candidate": "For each of the 24 candidate sensor bijections consistent with two anchors, score mapped OLD Dirichlet(.5) row predictions on NEW data, and choose maximum-likelihood bijection (no access to true map). Use that MAP alignment to transfer OLD row Dirichlet(.5) counts. Compute per-action/source local Bayesian reset-vs-stay evidence from mapped new observations and old mapped row counts, with prior reset .25, then use a hard contradiction gate when posterior reset>=.80; reset selected rows to NEW-only Dirichlet(.5), otherwise pool OLD+NEW counts. Preserve OLD frozen readout separately. This is a restricted, nontransformer directed-edge memory, not new learned topology discovery proof.",
+  "comparators": [
+    "FULLY FITTED independent NEW-only per-(sensor,action) Dirichlet(.5) baseline",
+    "FULLY FITTED anchor-constrained Bayesian model averaging over all 24 permutations using mapped OLD Dirichlet(.5) row likelihoods and weighted pooled OLD+NEW predictions (no explicit NEW rewiring)",
+    "FULLY FITTED joint permutation-plus-action-edge-change Bayesian model: for each of 24 anchor-consistent mappings, each NEW action/state row likelihood is mixture of pooled OLD predictive and NEW-only Dirichlet(.5) predictive with reset prior .25; exact per-row integrated Dirichlet-multinomial likelihood; posterior over mappings and row resets marginalized in predictive. STRONGEST conventional comparator.",
+    "FULLY FITTED MAP sensor alignment with pooled OLD+NEW Dirichlet(.5) on every row (no repair), a matched conventional ablation",
+    "Privileged true permutation and old/new true target predictor, source-law oracle only, not a superiority target"
+  ],
+  "fairness": "All non-oracle learners see same 72 OLD, 24 NEW public transitions and two anchor correspondences, fixed 6x2 row count budget and no true family labels. Exact Bayesian baseline may maintain a posterior over 24 mappings; state computational advantage claims must be measured separately under matching source/inference cost. No source-family Bayes oracle is an expected-Brier superiority target.",
+  "metrics": [
+    "held NEW multiclass Brier overall + per family and action",
+    "correct sensor permutation recovery (descriptive, never claim latent inference without anchors)",
+    "candidate false local reset in SENSOR_REMAP",
+    "NEW changed-edge target detection recall in LOCAL_REWIRE and OUT_FAMILY",
+    "OLD frozen prediction array exactly stable across NEW and JSON roundtrip (not independent process)",
+    "whole-experiment CPU and memory UNVERIFIED unless timed on common OS"
+  ],
+  "frozen_decision": {
+    "supported_dev_only": "Candidate held NEW Brier improves >=.01 against strongest fully fitted non-privileged comparator across all 36 worlds AND <=1/12 SENSOR_REMAP worlds show any false reset AND OLD readout preserved 36/36 AND LOCAL_REWIRE mean Brier no worse than best fitted dynamic comparator+0.005. Independent native qualification still required.",
+    "mixed_no_go": "Candidate improves >=.01 over NEW-only Dirichlet on SENSOR_REMAP and LOCAL_REWIRE, but does not dominate best conventional mapping+change control or fails negative controls.",
+    "negative_no_go": "Valid experiment not meeting supported or mixed. Preserve negative out-of-family behavior.",
+    "invalid": "Bad sample quotas, pre/post train overlap, source readback mismatch, source-family knowledge leaked to candidate, true permutation given beyond anchors, prior seeds replayed, thresholds selected after score, omitted joint Bayesian strong comparator, or primary run before source commit."
+  },
+  "custody": "Prereg commit first; freeze and fetch exact executable before smoke/primary; primary frozen seeds once; store 36-world metrics and source in existing PR #1346; never repeat consumed seeds. No standalone canonical learner, owner checkpoint, runner, schedule or production change."
+}
