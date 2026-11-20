@@ -65,6 +65,10 @@ jobs:
         run: node research/contrib/chatgpt/self-assembling-topologies/gate21/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate21/result.json
       - name: Gate21 independent logic and frozen-threshold receipt audit (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate21/audit.cjs
+      - name: Gate22 A-B-A causal changepoint exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate22/result.json
+      - name: Gate22 frozen hypothesis source and numeric receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/audit.cjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -143,4 +147,8 @@ jobs:
         run: node research/contrib/chatgpt/self-assembling-topologies/gate21/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate21/result.json
       - name: Gate21 independent logic and frozen-threshold receipt audit (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate21/audit.cjs
+      - name: Gate22 A-B-A causal changepoint exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate22/result.json
+      - name: Gate22 frozen hypothesis source and numeric receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/audit.cjs
       - run: git diff --exit-code
