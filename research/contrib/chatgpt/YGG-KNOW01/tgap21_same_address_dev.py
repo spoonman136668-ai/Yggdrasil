@@ -74,6 +74,7 @@ class TwoSlotMemory:
         self.recent = []
         self.since_switch = 0
         self.next_step = 0
+        self.total_witnesses = 0
         self.switches = 0
 
     def slot_prediction(self, slot, action):
@@ -98,6 +99,7 @@ class TwoSlotMemory:
         pair[0] += outcome
         pair[1] += 1
         self.next_step += 1
+        self.total_witnesses += 1
         self.since_switch += 1
         self.recent = (self.recent + [anomaly])[-6:]
         if self.since_switch >= 8 and sum(self.recent) >= 3:
@@ -122,7 +124,8 @@ class TwoSlotMemory:
             "accepted_native": False, "scientific_gain_verified": False,
             "slots": self.slots, "active": self.active,
             "recent": self.recent, "since_switch": self.since_switch,
-            "next_step": self.next_step, "switches": self.switches,
+            "next_step": self.next_step, "total_witnesses": self.total_witnesses,
+            "switches": self.switches,
         })
         require(len(raw) <= CAPACITY, "CAPACITY")
         return raw
@@ -143,7 +146,7 @@ class TwoSlotMemory:
             require(type(obj) is dict and set(obj) == {
                 "schema", "mode", "accepted_native", "scientific_gain_verified",
                 "slots", "active", "recent", "since_switch",
-                "next_step", "switches"
+                "next_step", "total_witnesses", "switches"
             } and obj["schema"] == SCHEMA
                     and obj["mode"] == SOURCE_MODE
                     and obj["accepted_native"] is False
@@ -159,18 +162,19 @@ class TwoSlotMemory:
                                     and pair[0] <= pair[1]
                                     for pair in slot)
                             for slot in s.slots), "CHECKPOINT_COUNTS")
-            for attr in ("active", "since_switch", "next_step", "switches"):
+            for attr in ("active", "since_switch", "next_step",
+                         "total_witnesses", "switches"):
                 require(type(obj[attr]) is int and obj[attr] >= 0,
                         "CHECKPOINT_TYPES")
                 setattr(s, attr, obj[attr])
-            require(s.active in (0, 1) and s.next_step <= 72
+            require(s.active in (0, 1)
+                    and s.next_step <= 72
                     and s.since_switch <= s.next_step
                     and s.switches <= s.next_step // 8
-                    and s.next_step == sum(pair[1] for slot in s.slots
-                                          for pair in slot)
-                    or (s.next_step < sum(pair[1] for slot in s.slots
-                                           for pair in slot)
-                        and s.next_step <= 64),
+                    and s.total_witnesses ==
+                    sum(pair[1] for slot in s.slots for pair in slot)
+                    and s.total_witnesses >= s.next_step
+                    and s.total_witnesses <= 256,
                     "CHECKPOINT_STEP_COUNT")
             s.recent = obj["recent"]
             require(type(s.recent) is list
