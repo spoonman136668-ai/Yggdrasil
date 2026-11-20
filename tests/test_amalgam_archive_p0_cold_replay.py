@@ -79,6 +79,70 @@ class ArchivedP0RestoreControls(unittest.TestCase):
             finally:
                 P0.HERE = original
 
+    def test_frozen_shadow_ordinals_are_phase_boundaries_not_post_result_selected(self):
+        self.assertEqual(P0.SHADOW_ORDINALS, (1, 8, 32, 33, 64, 65, 96))
+        self.assertEqual([(n - 1) // 32 for n in P0.SHADOW_ORDINALS],
+                         [0, 0, 0, 1, 1, 2, 2])
+
+    @staticmethod
+    def shadow_fixtures():
+        from yggdrasil.native_context_basis import canonical, digest
+        # Source-free fabricated scores only; no original-source or model replay.
+        rows = []
+        for ordinal in P0.SHADOW_ORDINALS:
+            heads = {name: {
+                "old_brier_drift": 0.0,
+                "within_existing_quine_comparison": True,
+            } for name in P0.HEAD_NAMES}
+            rows.append({
+                "ordinal": ordinal,
+                "phase": (ordinal - 1) // 32,
+                "witness_sha256": digest(canonical([ordinal])),
+                "head_guard": {
+                    "schema": "yggdrasil.amalgam.four-head-one-witness-advice.v1",
+                    "passed": True, "old_ledger_sha256": P0.EXPECTED_LEDGER,
+                    "old_witness_count": P0.EXPECTED_EPISODES,
+                    "anchor_checkpoint_sha256":
+                        "576370a1963158f7dc43099360f491eb6a1e49355448922943b6d484c8",
+                    "heads": heads,
+                },
+            })
+        return rows
+
+    def test_shadow_summary_counts_synthetic_head_veto_without_enforcement(self):
+        samples = self.shadow_fixtures()
+        samples[3]["head_guard"]["heads"]["direct_transition"] = {
+            "old_brier_drift": 0.030,
+            "within_existing_quine_comparison": False,
+        }
+        samples[3]["head_guard"]["passed"] = False
+        result = P0.summarize_shadow(samples)
+        self.assertEqual(result["sample_count"], 7)
+        self.assertEqual(result["shadow_head_only_would_veto_count"], 1)
+        self.assertEqual(result["shadow_head_only_within_comparison_count"], 6)
+        self.assertEqual(result["real_vetoes_enforced"], 0)
+        self.assertEqual(result["source_actions"], 0)
+        self.assertFalse(result["scientific_pass"])
+
+    def test_shadow_summary_rejects_forged_ordinal_phase_pins_and_status(self):
+        import copy
+        base = self.shadow_fixtures()
+        with self.assertRaisesRegex(ValueError, "SAMPLE_COUNT"):
+            P0.summarize_shadow(base[:-1])
+        for mutation, error in (
+            (lambda a: a[2].update(ordinal=31), "ORDINAL"),
+            (lambda a: a[2].update(phase=1), "ORDINAL"),
+            (lambda a: a[0]["head_guard"].update(old_ledger_sha256="0" * 64), "CUSTODY"),
+            (lambda a: a[0]["head_guard"].update(passed=1), "CUSTODY"),
+            (lambda a: a[0]["head_guard"]["heads"]["temporal_transition"].update(
+                old_brier_drift=0.021), "CLASSIFICATION"),
+            (lambda a: a[0]["head_guard"].update(passed=False), "PASS_MISMATCH"),
+        ):
+            item = copy.deepcopy(base)
+            mutation(item)
+            with self.subTest(error=error), self.assertRaisesRegex(ValueError, error):
+                P0.summarize_shadow(item)
+
     def test_original_selection_archive_is_a_negative_not_an_improvement(self):
         import json
         folder = P0.HERE / "selection-dev-01"

@@ -17,7 +17,8 @@ if str(HERE) not in sys.path:
 
 from specialist_selection import SpecialistSelection
 import quine_retention as guard
-from four_head_retention import audit_old_heads
+from four_head_retention import (HEAD_NAMES, audit_old_heads,
+                                 assess_one_witness_head_update)
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import digest
 
@@ -27,6 +28,8 @@ EXPECTED_LEDGER = "55697acbbe953b5cf6878cecfd3286b068f665fc3c6f78334d241466c4beb
 EXPECTED_EPISODES = 1025
 EXPECTED_VIEWS = 8
 MODES = {"native": 0, "direct": 1, "temporal": 2}
+# Frozen before G24 diagnostics; original A→B→A 32/32/32 consumed phases.
+SHADOW_ORDINALS = (1, 8, 32, 33, 64, 65, 96)
 
 
 def checked(directory, name, pin):
@@ -88,6 +91,63 @@ def make_policy(system, mode):
     return policy
 
 
+
+def summarize_shadow(samples):
+    """Reject malformed samples; this is NOT acceptance of a repaired learner."""
+    if type(samples) is not list or len(samples) != len(SHADOW_ORDINALS):
+        raise ValueError("P0_HEAD_SHADOW_SAMPLE_COUNT")
+    failures = 0
+    for ordinal, sample in zip(SHADOW_ORDINALS, samples, strict=True):
+        if (type(sample) is not dict
+                or set(sample) != {"ordinal", "phase", "witness_sha256", "head_guard"}
+                or sample["ordinal"] != ordinal
+                or sample["phase"] != (ordinal - 1) // 32
+                or type(sample["witness_sha256"]) is not str
+                or len(sample["witness_sha256"]) != 64):
+            raise ValueError("P0_HEAD_SHADOW_ORDINAL_OR_SOURCE")
+        advice = sample["head_guard"]
+        if (type(advice) is not dict
+                or advice.get("schema") != "yggdrasil.amalgam.four-head-one-witness-advice.v1"
+                or type(advice.get("passed")) is not bool
+                or advice.get("old_ledger_sha256") != EXPECTED_LEDGER
+                or advice.get("old_witness_count") != EXPECTED_EPISODES
+                or advice.get("anchor_checkpoint_sha256")
+                != "576370a1963158f7dc43099360f491eb6a1e49355448922943b6d"
+                   "484c8"
+                or type(advice.get("heads")) is not dict
+                or tuple(advice["heads"]) != HEAD_NAMES):
+            raise ValueError("P0_HEAD_SHADOW_CUSTODY")
+        checks = []
+        for name in HEAD_NAMES:
+            part = advice["heads"][name]
+            if (type(part) is not dict
+                    or type(part.get("within_existing_quine_comparison")) is not bool
+                    or type(part.get("old_brier_drift")) not in (int, float)):
+                raise ValueError("P0_HEAD_SHADOW_HEAD_FIELDS")
+            checks.append(part["old_brier_drift"] <= 0.02)
+            if part["within_existing_quine_comparison"] != checks[-1]:
+                raise ValueError("P0_HEAD_SHADOW_HEAD_CLASSIFICATION")
+        if advice["passed"] != all(checks):
+            raise ValueError("P0_HEAD_SHADOW_PASS_MISMATCH")
+        failures += not advice["passed"]
+    return {
+        "gate": "P0_CONSUMED_G24_SHADOW_GUARD_SENSITIVITY",
+        "fixed_sample_ordinals": list(SHADOW_ORDINALS),
+        "shadow_proposals": samples,
+        "sample_count": len(samples),
+        "shadow_head_only_would_veto_count": failures,
+        "shadow_head_only_within_comparison_count": len(samples) - failures,
+        "old_witnesses": EXPECTED_EPISODES,
+        "replayed_consumed_suffix_witnesses": 96,
+        "source_actions": 0,
+        "real_vetoes_enforced": 0,
+        "new_training": False,
+        "counterfactual_new_policy_or_gain_verified": False,
+        "owner_approval_verified": False,
+        "scientific_pass": False,
+    }
+
+
 def replay_consumed_selector(start, source_directory):
     """Reconstruct selector evidence from an already-consumed 96-event trace.
 
@@ -124,6 +184,7 @@ def replay_consumed_selector(start, source_directory):
                   minimum_gain=Fraction(protocol["selection_gain"]))
     gate = SpecialistSelection(start, **config)
     counts = Counter()
+    shadow = []
     for index, event in enumerate(records):
         identifier, row = event["id"], event["row"]
         views = tuple(tuple(view) for view in event["views"])
@@ -145,10 +206,24 @@ def replay_consumed_selector(start, source_directory):
             if abs(round(value * 1_000_000) - prediction[key]) > 1:
                 raise ValueError("P0_CONSUMED_SELECTOR_PREDICTION_DRIFT")
         counts[origin] += 1
+        previous = gate
+        packet = digest(canonical([identifier, views, row]))
         gate = gate.observe_experience(
             identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
-            packet_sha256=digest(canonical([identifier, views, row])))
+            packet_sha256=packet)
+        if index + 1 in SHADOW_ORDINALS:
+            # Read-only on the SAME authentic consumed trajectory; do not
+            # enforce this advisory veto, branch policy or create new trials.
+            advice = assess_one_witness_head_update(
+                start, previous.system, gate.system)
+            shadow.append({
+                "ordinal": index + 1,
+                "phase": event["phase"],
+                "witness_sha256": packet,
+                "head_guard": advice,
+            })
 
+    shadow_report = summarize_shadow(shadow)
     checkpoint = gate.system.checkpoint()
     native = gate.system.native.checkpoint()
     if (len(gate.system.native._episode_reader()._ledger) != 1121
@@ -204,6 +279,7 @@ def replay_consumed_selector(start, source_directory):
         "linux_exact_core_bytes_required_on_windows": False,
         "policy_check": policy_check,
         "four_head_retention": four_head_retention,
+        "shadow_guard_sensitivity": shadow_report,
         "native_action_drift": native_action_drift,
         "selector_action_drift": selector_action_drift,
         "selector_evidence_from_original_public_trace": True,
