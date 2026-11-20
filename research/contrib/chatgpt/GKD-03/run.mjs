@@ -160,7 +160,7 @@ export function run(){
       const w=[...observed,third];assert(identifiableWithinSuppliedGrammar(w),'PROBE_RANK');
       const model=candidate(w),sym=symbolic(w),ols=fittedOLS(w);
       for(const voltage of [7,15]){
-        const x=sample(r,j);x[0]=voltage,expected=truth(x),got=model(x);
+        const x=sample(r,j);x[0]=voltage;const expected=truth(x),got=model(x);
         const d=rel(got,expected);maxError=Math.max(maxError,d);assert(d<=1e-9,'TEST_TRANSFER');correct++;
         assert(rel(got,sym(x))<=1e-9,'SYM');symbolicTies++;
         assert(rel(got,ols(x))<=1e-9,'OLS');olsTies++;
