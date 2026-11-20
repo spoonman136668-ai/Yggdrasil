@@ -1,0 +1,190 @@
+name: RET1025 original-native-class archival audit
+on:
+  push:
+    branches: [research/amalgam-ret1025-original-class-readback-20261120]
+    paths-ignore: [.ice/code-atlas.json, .ice/code-atlas.ice, .ice/code-atlas.html]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ret1025-archival-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  atlas:
+    if: ${{ github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      source_sha: ${{ steps.seal.outputs.source_sha }}
+      candidate_sha: ${{ steps.seal.outputs.candidate_sha }}
+    steps:
+      - name: LF-safe checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Seal original native source and derived source Atlas
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 86264b41a08d49f558418c0fba367f3a2636befa HEAD
+          git merge-base --is-ancestor 34c8a94e328bb7cdba1927df35223a40e0559b0b HEAD
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
+          git diff --name-only 86264b41a08d49f558418c0fba367f3a2636befa HEAD |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={"research/contrib/chatgpt/CAUSAL-AMALGAM/RET1025-ORIGINAL-CLASS.md","research/contrib/chatgpt/CAUSAL-AMALGAM/ret1025_original_class.py","tests/test_amalgam_ret1025_original_class.py",".github/workflows/ret1025-original-class.yml"}; assert a==e,(a,e)'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.json .ice/code-atlas.ice .ice/code-atlas.html
+          git diff --cached --name-only |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "index(RET1025): exact-source derived G29 only"
+          test "$(git rev-parse HEAD^)" = "$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "candidate_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo RET1025_DERIVED_ATLAS_PASS
+  qualify:
+    needs: atlas
+    if: ${{ needs.atlas.result == 'success' && github.run_attempt == 1 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: LF-safe checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.atlas.outputs.candidate_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pinned original scientific dependencies
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Exact final source and G29 controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ needs.atlas.outputs.candidate_sha }}'
+          test "$(git rev-parse HEAD^)" = '${{ needs.atlas.outputs.source_sha }}'
+          git diff --name-only HEAD^ HEAD |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
+          python -B scripts/build_code_atlas.py --check-if-present
+          echo RET1025_FINAL_SOURCE_PASS
+      - name: Focused fail-closed controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_amalgam_ret1025_original_class.py' -v
+          echo RET1025_FOCUSED_PASS
+      - name: MANDATORY original complete final regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py' -v
+          done
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo RET1025_FULL_FINAL_REGRESSION_PASS
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: Amalgam-shared-consequence-ubuntu-latest
+          repository: spoonman136668-ai/Yggdrasil
+          run-id: '44432722069'
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/ret1025-original-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: Amalgam-shared-consequence-windows-2022
+          repository: spoonman136668-ai/Yggdrasil
+          run-id: '44432722069'
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/ret1025-original-windows
+      - name: Original native class read-only historic source scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/CAUSAL-AMALGAM/ret1025_original_class.py "$RUNNER_TEMP/ret1025-original-linux/amalgam-joint-state.json" "$RUNNER_TEMP/ret1025-original-windows/amalgam-joint-state.json" > "$RUNNER_TEMP/ret1025-report.json"
+          cat "$RUNNER_TEMP/ret1025-report.json"
+          python -B - <<'PY'
+          import json,os
+          r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"],"ret1025-report.json")))
+          assert r["original_native_class_exact_final_replay"]
+          assert r["original_native_class_exact_cold_restore"]
+          assert r["return_scored_without_any_updates"]
+          assert r["classification"]=="RETROSPECTIVE_DEV_NO_GAIN"
+          assert r["scores"]["native_minus_beta_mean"]>0
+          assert r["source_actions_executed"]==0 and not r["scientific_gain_verified"]
+          print("RET1025_ORIGINAL_CLASS_RETROSPECTIVE_NO_GAIN_VERIFIED")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ret1025-original-class-${{ matrix.os }}
+          path: ${{ runner.temp }}/ret1025-report.json
+          if-no-files-found: error
+  parity:
+    needs: [atlas, qualify]
+    if: ${{ needs.qualify.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: ret1025-original-class-*
+          path: ${{ runner.temp }}/ret1025-reports
+      - name: Independent archive-only exact Linux/Windows report parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os,pathlib
+          files=list((pathlib.Path(os.environ["RUNNER_TEMP"])/"ret1025-reports").rglob("ret1025-report.json"))
+          assert len(files)==2,[str(p) for p in files]
+          a,b=(json.loads(p.read_bytes()) for p in sorted(files))
+          assert a==b,"RET1025_CROSS_OS_REPORT_MISMATCH"
+          assert a["classification"]=="RETROSPECTIVE_DEV_NO_GAIN"
+          assert not a["scientific_gain_verified"]
+          print("RET1025_EXACT_DUAL_OS_ARCHIVAL_PARITY_PASS")
+          PY
