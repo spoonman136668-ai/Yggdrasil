@@ -18,7 +18,9 @@
     "train_prior": "Use each mapping group's same existing already-consumed KNOW26 108 source witnesses to obtain FIT mapping prior. Both candidate and all fair controls receive identical historical FIT and online public evidence; count extra FIT actions separately.",
     "public": "At t=0..47 learner sees c=t%4, chosen opaque action a∈{0,1,2,3}, one actual witnessed binary consequence, local checkpoint. No mapping/law/phase/switch position, private coin, counterfactual label, next regime or future schedule ever enters policy.",
     "hidden": "For each of three evaluator-private physical maps, true Boolean law A=KNOW27 H0 for first segment, B=KNOW27 H2 for middle segment, A for final segment. Private boundaries t=12 and t=36 are known ONLY to evaluator; model code must not branch on t except allowed public context and stopping budget.",
-    "noise": "For each (mid,seed,t), SHA256('know30:private:coin:v1:'+mid+':'+seed+':'+t) first8 bytes /2**64 supplies a common exogenous coin for all arms. Each source yields exactly one action-conditioned Bernoulli witness with .85/.15 probability as in KNOW27. Action-dependent observations can differ despite shared coins."
+    "noise": "For each (mid,seed,t), SHA256('know30:private:coin:v1:'+mid+':'+seed+':'+t) first8 bytes /2**64 supplies a common exogenous coin for all arms. Each source yields exactly one action-conditioned Bernoulli witness with .85/.15 probability as in KNOW27. Action-dependent observations can differ despite shared coins.",
+    "fit_regime_prototypes": "Before HELD, all fair arms are supplied identical synthetic, explicitly labeled FIT A and FIT B witness datasets (32 witnesses per seed): A seeds [15311,15313], B seeds [15319,15329], each for three private map groups. Phase labels are TRAIN-only; NEVER revealed for HELD. These source-labelled examples are extra 128 FIT actions/group (384 overall), in addition to historical 108 mapping FIT/group. Count and hash source costs separately; no true map is supplied.",
+    "fit_law_noise": "SHA256('know30:fit:coin:v1:'+mid+':'+seed+':'+t) first64 /2**64, action t%4, public c=t%4, only observed action reward. Held noise remains entirely separate."
   },
   "frozen_worlds": {
     "mapping_groups": [
@@ -49,21 +51,19 @@
     "source_separation": "New KNOW30 seeds/domain do not overlap consumed KNOW27/28/29 or KNOW20-23 and TGAP cohorts."
   },
   "methods": {
-    "candidate": "2 bounded separately checkpointable full JointHypothesis 6-map×256-law posterior slots. Shared FIT prior. Active slot updated ONLY from public single-witness evidence; detect contradiction using posterior predictive likelihood and frozen threshold; preserve old slot on nonprivileged switch, use likelihood-weighted posterior belief for source-blind reactivation. No hidden phase key, t=12/36 condition, oracle writes or evaluator model select.",
-    "fully_fitted_switching_bayes": "Conventional two-state switching Bayes/HMM with two full 6×256 posteriors, same initial FIT, same action/outcomes and a hazard selected ONLY from independent synthetic FIT episodes; no true phase labels on held online data.",
+    "candidate": "Both full 6×256 posterior slots start from the same historical mapping FIT prior, then receive identical source-labelled A/B FIT witnesses into slot A/B before HELD. HELD phase belief P(A) begins 0.5; before each outcome mixes with hazard h=1/16. Likelihood update uses ONLY the two slot predictions for the chosen public action. Write the witnessed outcome into slot A only if posterior P(A)>=0.8, into B only if P(A)<=0.2, otherwise quarantine without assigning to a trained slot. Inactive slot weights remain byte-stable. At every t the policy returns the posterior-phase-weighted forecast, no true labels or switch timing. No active intervention selection.",
+    "fully_fitted_switching_bayes": "Same labelled FIT prototypes, hypothesis array capacity, initial phase belief 0.5, transition hazard h=1/16, public action and witnessed evidence. Non-privileged posterior phase filter; unlike selective-write candidate, SOFT fractional-responsibility Bayesian emission updates both slots at every held witness (sum fractional assimilation weights exactly 1). Explicitly label this as a two-slot mean-field/assumed-density HMM approximation, NOT exact joint HMM over two 256-table latent laws. Report this approximation limitation.",
     "fit_hazards": [
-      0.03125,
-      0.0625,
-      0.125
+      0.0625
     ],
-    "hazard_selection": "Choose best FIT prequential Brier on independent synthetic FIT regimes seeded 15311,15313,15319,15329; make evaluation phase-blind even on FIT, no held use for selection; tie chooses smallest hazard. Count FIT witness budget and compute, apply chosen hazard to candidate and HMM.",
+    "hazard_selection": "Single fixed h=1/16 preregistered from KNOW20-23; no held or FIT hazard optimization, no hidden schedule clock. Both candidate and HMM use identical h. Label HMM approximate rather than exact.",
     "controls": [
-      "Single continuously updated full JointHypothesis, no archive",
-      "Two full-slot HMM with same data/family/hazard and no privileged true phase",
-      "Rolling-last-8 history refit of full JointHypothesis using same FIT prior and 8 recent public witnesses",
-      "Uniform p=0.5 prediction",
-      "No-FIT two-slot identical candidate ablation",
-      "Private true-phase oracle separately named INELIGIBLE; never matched control"
+      "Same prototypes/size phase-blind soft-update two-slot approximate HMM",
+      "Single continuously updated full JointHypothesis, same historical mapping FIT and pooled A+B labelled FIT source",
+      "Rolling-last8 single posterior refit on previous eight public witnesses, same map FIT prior and 2×64 labelled FIT historical observations retained in a separate ledger",
+      "Uniform p=0.5",
+      "No-FIT identical candidate (no historical mapping FIT or A/B labels; cold equal priors, report as an incomparable reduced-information ablation)",
+      "Private phase oracle using trained A/B prototypes; explicitly INELIGIBLE"
     ],
     "capacity": "Both archive and HMM may use at most two copies of identical 6×256 posterior and common 64 latest public events; measure actual serialized byte maxima and CPU time. Rolling control uses same 64-history upper budget. The no-archive arm is strictly smaller and not the strongest matched-size competitor.",
     "action_cost": "PRIMARY fixed tape charges no differential cost, identical action count and observations. No online entropy action study is authorized under this protocol; an active policy requires a separate new prereg and is not conflated with memory attribution."
@@ -84,8 +84,8 @@
     "H1": "At t36 before any post-return witness, no source-blind model is expected to distinguish unseen B→A from B continuation; same public prefix must yield identical forecast. NO zero-evidence positive target.",
     "H2": "Candidate after k=4 and k=8 return witnesses must beat the best fully FIT conventional switching Bayes/HMM return high Brier by at least 0.005 absolute at BOTH k values, and win on at least 18/24 individual worlds at k8.",
     "H3": "Candidate B-stage mean high Brier may not exceed HMM B-stage high Brier by more than 0.005; protects against sacrificing changed-law learning to make return look good.",
-    "H4": "Cold restored old-A full posterior (where archived by nonprivileged rule) produces bit-identical function output to the archived snapshot, and no archive may silently change while B is active. The score must state how many A writes were actually learned before freezing.",
-    "H5": "At least one witnessed outcome changes candidate live phase belief, and tampered/source-forged/duplicate/out-of-order events fail closed; no evaluator-private fields leak.",
+    "H4": "After a public-evidence-triggered high-confidence switch to B, candidate A-slot bytes/readouts must be bit-identical until candidate returns to A. Also report original post-FIT A readout vs post-B readout and post-cold-restore; record A/B fit exposure and discarded/ambiguous HELD witness counts; no privileged hidden-boundary freeze.",
+    "H5": "At least one witnessed outcome changes each filter's live P(A), typed/tamper/duplicate/out-of-order events fail closed; model receives neither private map/law nor HELD phase; report received and actually assigned witness counts separately. Never label a no-write protected slot as successfully learned unless original A functional Brier and observation count are recorded.",
     "verdict": "Research-only DEVELOPMENT_SUPPORTED requires H2+H3+H4+H5, otherwise DEVELOPMENT_MIXED or NO_GO; H1 is a feasibility/identifiability guard, not a success metric. Scientific gain and accepted native training remain false regardless of synthetic scores."
   },
   "first_use": "Commit THIS immutable protocol before implementation or accessing any new KNOW30 synthetic held witness. Focused unit tests may use constructed toy consequences but MUST NOT generate held world seeds; one single prospective primary result after both platforms focused/full-final and source-custody qualification. Never re-score, retune or extend consumed HELD after viewing results.",
@@ -98,5 +98,6 @@
     "accepted_native_modified": false,
     "scientific_gain_verified": false,
     "deployment": "NONE"
-  }
+  },
+  "revision": "Pre-first-use method concretization; initial prereg commit 13c0f0ad2622acc6ce16605f34ce8a4c59c16985 remains in history. No KNOW30 model code or HELD evidence yet."
 }
