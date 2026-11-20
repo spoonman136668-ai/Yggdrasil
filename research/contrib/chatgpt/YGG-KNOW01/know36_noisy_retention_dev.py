@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import os
+import time
 from pathlib import Path
 
 from know33_local_metaplastic_dev import Beta, canonical, digest
@@ -159,7 +160,7 @@ def private_y(seed,t,law):
     coin=hashlib.sha256(f"know36:synthetic:noise:v1:{seed}:{t}".encode()).digest()
     return int(int.from_bytes(coin[:8],"big")/(1<<64)<q)
 
-def fit_hazard(p):
+def fit_hazard(p, witness=private_y):
     costs={h:[] for h in HAZARDS}
     calls=0
     for family in ("B1","B2"):
@@ -167,7 +168,7 @@ def fit_hazard(p):
             ys=[]
             for t in range(LIMIT):
                 law=family if (64<=t<128 or 192<=t<256) else "A"
-                ys.append(private_y(seed,t,law))
+                ys.append(witness(seed,t,law))
                 calls+=1
             for h in HAZARDS:
                 m=Comparator("hmm",h)
@@ -182,10 +183,10 @@ def fit_hazard(p):
     h=min(HAZARDS,key=lambda h:(sum(costs[h])/12,h))
     return h,{str(k):sum(v)/12 for k,v in costs.items()}
 
-def held_world(seed,family,h):
+def held_world(seed,family,h,witness=private_y):
     # Exactly 384 unique source requests. Reuse shared A outcomes for both forks.
-    source_A=[private_y(seed,t,"A") for t in range(LIMIT)]
-    source_B={t:private_y(seed,t,family)
+    source_A=[witness(seed,t,"A") for t in range(LIMIT)]
+    source_B={t:witness(seed,t,family)
               for t in list(range(64,128))+list(range(192,256))}
     prefix=models(h)
     for t in range(64):
@@ -200,6 +201,7 @@ def held_world(seed,family,h):
         stats={stage:{name:[] for name in ARMS}
                for stage in ("B_first","A_return","B_second")}
         prefix_switches=ms["candidate"].switches
+        elapsed_ns={name:0 for name in ARMS}
         bank_b_128=None
         bank_b_192=None
         keep_a=True
@@ -210,7 +212,9 @@ def held_world(seed,family,h):
             x=x_for(t)
             for name,m in ms.items():
                 stats[stage][name].append(brier(m.prob(x),q_for(law,x)))
+                started=time.perf_counter_ns()
                 m.observe(t,x,y)
+                elapsed_ns[name]+=time.perf_counter_ns()-started
             if t+1 in (128,192,256):
                 ms={name:cold(m) for name,m in ms.items()}
                 if branch=="treatment_B":
@@ -223,6 +227,8 @@ def held_world(seed,family,h):
                       for stage,row in stats.items()},
             "sham_switches":ms["candidate"].switches-prefix_switches,
             "candidate_bytes":len(ms["candidate"].checkpoint()),
+            "checkpoint_bytes":{name:len(m.checkpoint()) for name,m in ms.items()},
+            "observation_ns":elapsed_ns,
         }
     return {
       "seed":seed,"family":family,"A_prefix":a_prefix,
@@ -230,6 +236,8 @@ def held_world(seed,family,h):
       "old_A_preserved":keep_a,"old_B_preserved":bank_b_128==bank_b_192,
       "sham_switch_delta":forks["control_A"]["sham_switches"],
       "candidate_bytes":forks["treatment_B"]["candidate_bytes"],
+      "checkpoint_bytes":forks["treatment_B"]["checkpoint_bytes"],
+      "observation_ns":forks["treatment_B"]["observation_ns"],
       "source_calls":384,"model_events_per_arm":448,
     }
 
@@ -281,6 +289,7 @@ def proof():
       "live_A_retained_worlds":sum(w["old_A_preserved"] for w in worlds),
       "B_retained_worlds":sum(w["old_B_preserved"] for w in worlds),
       "worlds":worlds,
+      "measurement_note":"Python per-observe nanoseconds exploratory; not controlled equal compute",
       "development_verdict":("DEVELOPMENT_SUPPORTED" if all(H.values())
                              else "DEVELOPMENT_MIXED_OR_NO_GO"),
       "scientific":"SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE",
