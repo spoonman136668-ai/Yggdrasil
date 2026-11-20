@@ -85,8 +85,14 @@ def _rule(seed: int, layer: str, i: int) -> _Rule:
         parents.append(raw)
     if i >= 2 and i % 2 == 0:
         parents[0] = 8 + i - 1
-        if parents[0] == parents[1]:
-            parents[1] = (parents[1] + 1) % pool
+        # Keep every causal parent distinct, including the third parent
+        # in majority/compose. The old pair-only collision repair could
+        # silently duplicate parents[0] and parents[2].
+        used = {parents[0]}
+        for j in range(1, len(parents)):
+            while parents[j] in used:
+                parents[j] = (parents[j] + 1) % pool
+            used.add(parents[j])
     return _Rule(kind, tuple(parents), _pick(seed, "invert", 2, layer, i))
 
 
