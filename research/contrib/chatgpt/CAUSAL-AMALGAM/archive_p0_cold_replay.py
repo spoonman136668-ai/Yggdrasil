@@ -21,6 +21,7 @@ from four_head_retention import (HEAD_NAMES, audit_old_heads,
                                  assess_one_witness_head_update)
 from headwise_consolidation import assess_bounded_blend
 from headwise_capsule import seal_capsule, restore_capsule
+from headwise_shadow_readout import materialize_research_readout
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import digest
 
@@ -262,6 +263,16 @@ def replay_consumed_selector(start, source_directory):
     counts = Counter()
     shadow = []
     consolidation = []
+    original_native_parent = checked(source_directory, protocol["native_name"],
+                                     protocol["native_sha256"])
+    original_donor = json.loads(checked(
+        source_directory, protocol["donor_name"], protocol["donor_sha256"]))
+    original_parents = {
+        "native_parent": original_native_parent,
+        "native_pin": protocol["native_sha256"],
+        "donor_parent": original_donor["state_ascii"].encode("ascii"),
+        "donor_pin": original_donor["state_sha256"],
+    }
     for index, event in enumerate(records):
         identifier, row = event["id"], event["row"]
         views = tuple(tuple(view) for view in event["views"])
@@ -311,6 +322,50 @@ def replay_consumed_selector(start, source_directory):
                     or cold_receipt["canonical_native_model_restored"] is not False
                     or cold_receipt["capsule_bytes"] != len(capsule_raw)):
                 raise ValueError("G26_SIDECARE_RECONSTRUCT_FAILED")
+            # G27: genuine original native cold restore + G26 heads as
+            # *read-only* shadow, preserving the canonical v1 restore fence.
+            original_checkpoints = tuple(
+                m.checkpoint() for m in (start, previous.system, gate.system))
+            readout, g27_receipt = materialize_research_readout(
+                capsule_raw, capsule_pin, start, previous.system,
+                gate.system, **original_parents)
+            seen_views = tuple(dict.fromkeys(
+                item[1] for item in start.native._episode_reader()._ledger))
+            if len(seen_views) != EXPECTED_VIEWS:
+                raise ValueError("G27_PUBLIC_VIEW_COVERAGE")
+            policy_queries = 0
+            for public in seen_views:
+                if readout.plan(public[0]) != gate.system.plan(public[0]):
+                    raise ValueError("G27_NATIVE_PLAN_CHANGED")
+                for first in (0, 1):
+                    values = readout.specialist_forecasts(public, first)
+                    if len(values) != 2:
+                        raise ValueError("G27_TRANSITION_FORECASTS")
+                    policy_queries += 1
+                    for state, second in product((0, 1), repeat=2):
+                        values = readout.specialist_forecasts(
+                            public, first, state, second)
+                        if len(values) != 2:
+                            raise ValueError("G27_REWARD_FORECASTS")
+                        policy_queries += 1
+            if (policy_queries != 80
+                    or tuple(m.checkpoint() for m in (
+                        start, previous.system, gate.system)) != original_checkpoints):
+                raise ValueError("G27_COLD_READOUT_INTEGRITY")
+            try:
+                readout.checkpoint()
+            except ValueError as exc:
+                if "G27_NOT_AN_OFFICIAL_NATIVE_CHECKPOINT" not in str(exc):
+                    raise
+            else:
+                raise ValueError("G27_UNAUTHORIZED_CHECKPOINT")
+            try:
+                readout.observe_experience("prohibited", (), {})
+            except ValueError as exc:
+                if "G27_READ_ONLY_NO_TRAINING" not in str(exc):
+                    raise
+            else:
+                raise ValueError("G27_UNAUTHORIZED_UPDATE")
             consolidation.append({
                 "ordinal": index + 1,
                 "phase": event["phase"],
@@ -318,6 +373,8 @@ def replay_consumed_selector(start, source_directory):
                 "blend": assess_bounded_blend(
                     start, previous.system, gate.system),
                 "g26_cold_receipt": cold_receipt,
+                "g27_readonly_receipt": {
+                    **g27_receipt, "historical_public_forecast_queries": policy_queries},
             })
 
     shadow_report = summarize_shadow(shadow)
