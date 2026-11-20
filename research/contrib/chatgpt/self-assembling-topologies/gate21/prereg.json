@@ -1,0 +1,122 @@
+{
+  "schema": "yggdrasil.contributor.prereg.v1",
+  "id": "GATE21-REPEAT-EVIDENCE-GATED-REWIRING-20261120",
+  "parent_commit": "90515a68cc0ffb00a6063600e9a7c2500c92702b",
+  "experiment_class": "predeclared synthetic developmental falsification, not original native first-use",
+  "motivation": "Gate20 changed edges in 31/32 random-label worlds and lost to fully trained fixed and Bayesian controls. Test whether truly repeated action consequences and a disjoint training-only witness gate can reduce spurious structural rewiring without losing related-world predictive accuracy.",
+  "hypotheses": {
+    "null": "Independent random labels offer no persistent causal structure; hard-witness consensus must suppress unsupported graph changes.",
+    "alternative": "A local rewiring rule with repeated-evidence confirmation will lower false-positive structural changes and held-out Brier on noise/unrelated worlds without material degradation on genuine causal shifts; outperforming fully fitted fixed and Bayesian models remains a separate necessary criterion."
+  },
+  "worlds": {
+    "input_bits": 6,
+    "contexts": [
+      "A source",
+      "B remapped source or B unrelated"
+    ],
+    "cohorts": [
+      {
+        "family": "xor_pair",
+        "first_seed": 101000,
+        "seeds": 32,
+        "parent_count": 2
+      },
+      {
+        "family": "mux3",
+        "first_seed": 102000,
+        "seeds": 32,
+        "parent_count": 3
+      },
+      {
+        "family": "essential3",
+        "first_seed": 103000,
+        "seeds": 32,
+        "parent_count": 3
+      },
+      {
+        "family": "unary",
+        "first_seed": 104000,
+        "seeds": 32,
+        "parent_count": 1
+      },
+      {
+        "family": "unrelated3",
+        "first_seed": 105000,
+        "seeds": 32,
+        "parent_count": 3
+      },
+      {
+        "family": "independent_noise",
+        "first_seed": 106000,
+        "seeds": 32,
+        "parent_count": 0
+      }
+    ],
+    "total_seeds": 192,
+    "deterministic_labeled_noise": "for genuine causal families, each action-visit label flip with hash-based probability 1/20; independent-noise labels use an independent hash stream for every action and visit",
+    "hidden": "true source/target parents, operator, remapping, family, held responses never visible to learner"
+  },
+  "data": {
+    "A_training": "64 unique binary intervention action vectors, one witness each",
+    "B_training": "32 unique actions, each revisited 3 times in round order = 96 labeled experiences",
+    "B_fit_actions": "24 unique action IDs, three visits each =72 fit responses",
+    "B_sentinel_actions": "8 disjoint unique action IDs, three visits each =24 witness responses; eligibility gate only, never optimized by dynamic risk",
+    "B_held": "16 unseen unique action IDs, one independently generated label each, strictly excluded from source selection, fit and witness gates",
+    "B_unused": "16 unique action IDs, never labeled",
+    "split": "seed-domain-shuffled disjoint action IDs and visit-specific deterministic noise",
+    "budget": "same 64 A and 96 B labeled actions available to each arm, no teacher, 384-byte persisted evidence/metadata ceiling"
+  },
+  "mechanisms": {
+    "source": "A64, independent penalized leave-one-out best 1..3-parent mask, tie by ascending mask",
+    "online_gated": "At B steps 32,64,96, score 1-edge add/prune/swap neighbors on available B-fit rows. Candidate needs B-fit LOO-Brier improvement >=0.008 and independent B-sentinel Brier improvement >=0.012, at least eight sentinel events and margin positive in two disjoint witness halves of accumulated sentinel sequence; at most one mutation per checkpoint; reject otherwise.",
+    "online_ungated": "Same local candidates and B-fit risk, frequency and 0.008 threshold; no sentinel confirmation; use identical B events and 384-byte state.",
+    "fully_fit_fixed": "Separately written exhaustive fitted static 1..3-parent selector over all 96 B observations, one global search, no online mutations, same source A available",
+    "bayesian": "Fully trained fixed-subset Beta(1,1) Bayesian evidence mixture over all 1..3-parent masks using B96, equal model-order prior; more transient compute; quantify",
+    "frozen_A": "Keep A mask, fit B labels using all B96",
+    "nulls": "p=.5, shuffled B-label static control",
+    "persistent": "Save A64 rows, B96 rows, 1-byte active mask, source mask, edit counts, and compared-candidate work counter inside 384 bytes; cold B-step64 checkpoint and completed B96 double restore. This is deterministic same-process reconstruction, not process-exit/ native checkpoint.",
+    "work": "Report candidate loss evaluations and compute costs, with no claimed equal compute, time or energy when unmatched."
+  },
+  "scoring": {
+    "held": "Held Brier with all 16 B actions; lower better. Paired normal 95% CI across independent seed trials. Related composite across 128 seeds; negative outcomes per family.",
+    "structure": "Gated and ungated edit counts and final parent masks. Count false structural changes in independent noise and unrelated source worlds; unrelated3 may legitimately require B adaptation, so do not label all such edits false.",
+    "verdict": "All substantive thresholds together required for provisional structural scientific development gain; engineering replay PASS never scientific gain."
+  },
+  "frozen_thresholds": {
+    "related_gated_vs_ungated_Brier_cost_max": 0.01,
+    "related_gated_vs_ungated_paired_ci_upper_max": 0.02,
+    "noise_gated_change_fraction_max": 0.2,
+    "noise_ungated_change_fraction_min": 0.5,
+    "noise_gated_Brier_regression_vs_fully_fit_fixed_max": 0.015,
+    "unrelated_gated_Brier_regression_vs_fully_fit_fixed_max": 0.02,
+    "related_gated_gain_vs_fully_fit_fixed_min": 0.01,
+    "related_gated_gain_vs_fully_fit_fixed_ci_lower_positive": true,
+    "worst_related_gated_deficit_to_bayesian_max": 0.015,
+    "related_gated_gain_vs_frozen_A_min": 0.025,
+    "related_gated_retention_source_all": true,
+    "cold_checkpoint_replay_all": true,
+    "all_B_held_disjoint": true,
+    "all_saved_state_under_384_bytes": true
+  },
+  "negative_controls": [
+    "noise labels independently redrawn across repeated actions",
+    "unrelated target Boolean causal rule",
+    "ungated same local search",
+    "fully fitted B static",
+    "Bayesian mixture",
+    "frozen A",
+    "shuffled B training labels",
+    "p=.5"
+  ],
+  "authority": {
+    "existing_PR_only": true,
+    "keep_draft": true,
+    "no_main_or_checkpoint_promotion": true,
+    "no_native_first_use": true,
+    "no_runner_or_controller_dispatch": true,
+    "no_new_workflow": true,
+    "no_scheduler_or_paid_API": true,
+    "central_amalgam_owner_only_integration": true
+  },
+  "strict_first_use": "Freeze this JSON in Git before executable; commit executable separately before primary score; never tune thresholds or evaluated seeds after seeing outcome. Preserve negatives and original SHA lineage."
+}
