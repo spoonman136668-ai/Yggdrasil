@@ -132,7 +132,7 @@ def init(source_rows):
     scores = from_rows(source_rows)
     weights = posterior(scores)
     q = normalize_counts([max(1, round(x * Q)) for x in weights])
-    return {"schema": 27, "source": scores, "stream": [], "evidence": [],
+    return {"schema": 27, "source": scores, "all_scores": scores.copy(), "stream": [], "evidence": [],
             "hmm": q, "expert_source_q": 500000, "work": 0, "source_digest": source_digest(scores)}
 
 def source_digest(scores):
@@ -155,10 +155,7 @@ def forecasts(state, x, action):
         recent = src
     mix_q = state["expert_source_q"]
     hm = hazard_predict(state["hmm"], x, action)
-    all_rows = state["stream"]
-    all_score = state["source"].copy()
-    for row in all_rows:
-        scores_add(all_score, row)
+    all_score = state["all_scores"]
     return {"archive": native_agent_forecast(state, x, action),
             "hazard": hm, "source_recent_bayes": (mix_q * src + (Q - mix_q) * recent) / Q,
             "rolling": recent, "source": src,
@@ -184,6 +181,7 @@ def update(state, event):
     recent_w = (Q - prior_s) * rec_lik
     state["expert_source_q"] = round(Q * source_w / (source_w + recent_w))
     state["hmm"] = hazard_update(state["hmm"], event)
+    scores_add(state["all_scores"], event)
     state["stream"].append(list(event))
     assert len(state["stream"]) <= 128 and state["source_digest"] == source_digest(state["source"])
     state["work"] += len(HYP) * 3
