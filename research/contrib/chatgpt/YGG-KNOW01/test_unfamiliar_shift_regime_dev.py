@@ -93,9 +93,10 @@ class Know21Tests(unittest.TestCase):
                         if len(s) % 2 == 0)
         self.assertEqual(total, 296)
         self.assertEqual(6*4*48, 1152)
-        self.assertIsNone(evaluate_world(
-            "native", PUBLIC_SCENES[2], FAMILIES[2][2][0],
-            0, FAMILIES[2][1])["return_steps"] if False else None)
+        odd = evaluate_world("native", PUBLIC_SCENES[2],
+                             FAMILIES[2][2][0], 0, FAMILIES[2][1])
+        self.assertEqual(odd["return_steps"], 0)
+        self.assertEqual(odd["return_wrong"], 0)
 
     def test_primary_frozen_run_has_no_promotion_or_hypothesis_retuning(self):
         r = study()
