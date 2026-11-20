@@ -135,7 +135,7 @@ function gatedUpdate(s,ob){
 function greedyUpdate(s,ob){
  s.rows.push(ob.slice());const n=s.rows.length;if(n<8||n%8!==0)return;
  const fit=s.rows.slice(-32);
- let current=loo(fit,s.mask);s.work++,best=s.mask;let risk=current;
+ let current=loo(fit,s.mask);s.work++;let best=s.mask,risk=current;
  for(const m of neighbors(s.mask)){const v=loo(fit,m);s.work++;if(v<risk-1e-12){risk=v;best=m;}}
  if(best!==s.mask&&current-risk>=.006){s.mask=best;s.edits++;s.mode=1;}
 }
