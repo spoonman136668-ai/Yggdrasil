@@ -333,3 +333,25 @@ or proof of general causal intelligence, and cannot admit a
 canonical Yggdrasil checkpoint. The original cumulative native
 learner remains solely under Unified Causal Intelligence Amalgam
 Work chat.
+
+## RD08 — witnessed-history provenance checked readout API
+
+Frozen before implementation:
+`RD08-FROZEN-WITNESSED-QUERY-INTERFACE.md` commit
+`3d56a1e1317b25c8a78af4f2f593c52339c81c4e`.
+
+`PredictiveStateSplit.forecast_witnessed_context` is a read-only,
+explicitly **retrospective-only** public method for already witnessed
+public source data. It requires exact original event ID, views,
+chosen action, stage, original observed public s2 (for terminal
+predictions), and exact original previous witness ID. It does not
+forecast unobserved/future actions, introduce a hidden world/phase,
+train or modify an owner checkpoint. It rejects forged source identities,
+predecessors, observation differences and unsupported sham history.
+The existing RD07 source-only audit independently checks the method
+against original private computation and locks old synthetic numeric
+receipt SHA256 A/B unchanged.
+
+This interface is a validation instrument, **not** a cumulative
+intelligence gain, trained alternate memory, original source first-use,
+or permission to integrate into the sole canonical Amalgam learner.

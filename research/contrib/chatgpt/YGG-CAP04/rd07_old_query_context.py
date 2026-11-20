@@ -127,7 +127,12 @@ def frozen_prediction(model, rows, index):
     require(type(value) is float and math.isfinite(value)
             and 0 <= value <= 1, "PREDICTION")
     require(model.checkpoint() == original, "FROZEN_READ_MUTATION")
-    return value
+    predecessor_id = rows[index - 1]["id"] if index else None
+    checked = model.forecast_witnessed_context(
+        current["id"], current["views"], current["action"], "residual",
+        current["s2"], predecessor_id=predecessor_id)
+    require(checked == value, "WITNESSED_INTERFACE_PARITY")
+    return checked
 
 
 def stage_result(models, rows):

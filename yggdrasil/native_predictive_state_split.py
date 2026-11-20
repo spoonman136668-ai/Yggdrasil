@@ -139,6 +139,61 @@ class PredictiveStateSplit:
                 "PROBABILITY")
         return float(probability)
 
+    def forecast_witnessed_context(self, identifier, views, chosen, stage,
+                                   witnessed_s2=None, *, predecessor_id=None):
+        """Read-only, RETROSPECTIVE prediction at original witnessed context.
+
+        Only previously ingested public witnesses can be queried. The
+        predecessor ID must be the genuine immediately preceding witnessed
+        event (or None for the very first event). This is NOT a prospective
+        source-first-use forecast, phase oracle, new training interface, or
+        evidence of retained intelligence.
+        """
+        before = self.checkpoint()
+        require(self.sham is False, "WITNESS_SHAM_UNSUPPORTED")
+        require(type(identifier) is str and pin(identifier)
+                and identifier in self._seen, "QUERY_WITNESS")
+        require(stage in KINDS, "QUERY_STAGE")
+        st = state(views)
+        pair = arm(chosen)
+        index = next((i for i, event in enumerate(self._events)
+                      if event[0] == identifier), None)
+        require(index is not None, "QUERY_LEDGER")
+        current = self._events[index]
+        require(current[1] == st and current[2] == pair,
+                "QUERY_PUBLIC_MISMATCH")
+        if stage == "transition":
+            require(witnessed_s2 is None, "QUERY_EARLY_SENSOR")
+        else:
+            bit(witnessed_s2)
+            require(current[3] == witnessed_s2, "QUERY_SENSOR_MISMATCH")
+        if index == 0:
+            require(predecessor_id is None, "QUERY_INITIAL_PREDECESSOR")
+            values = None
+        else:
+            previous = self._events[index - 1]
+            require(type(predecessor_id) is str
+                    and predecessor_id == previous[0],
+                    "QUERY_PREDECESSOR")
+            previous_pair, previous_post, previous_reward = (
+                previous[2], previous[5], previous[4])
+            values = {
+                "previous_pair": previous_pair,
+                "previous_post": previous_post,
+                "previous_reward": previous_reward,
+                "previous_pair_post": (previous_pair, previous_post),
+            }
+        feature = self._winner(stage, values)
+        conditioned = self._conditioned_state(stage, st, witnessed_s2)
+        result = self._estimate(stage, conditioned, pair, values, feature)
+        if (stage == "residual" and self.reward_mode == "xor"
+                and witnessed_s2 == 1):
+            result = 1.0 - result
+        require(math.isfinite(result) and 0 <= result <= 1,
+                "QUERY_PROBABILITY")
+        require(before == self.checkpoint(), "QUERY_MUTATION")
+        return float(result)
+
     @classmethod
     def from_native_events(cls, native_events, *, sham=False,
                            reward_mode="xor", routing_mode="cumulative"):
