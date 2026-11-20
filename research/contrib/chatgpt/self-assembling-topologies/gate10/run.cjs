@@ -230,7 +230,7 @@ function run() {
       bayesian_nominal_log_bytes: 3840, hidden_operator_labels_provided_to_learner: false,
       template_family_known_to_bayesian_control: true,
       native_yggdrasil_first_use: false },
-    development, negative_controls: { parity3, random_labels }, verdict };
+    development, negative_controls: { parity3, random_labels: randomLabels }, verdict };
 }
 if (typeof module !== "undefined" && typeof require !== "undefined" && require.main === module) {
   const fs = require("fs");
