@@ -1,0 +1,2837 @@
+{
+  "schema": "energy-coverage-16-result.v1",
+  "seeds": [
+    88307,
+    88319,
+    88331,
+    88337,
+    88349,
+    88361,
+    88379,
+    88397,
+    88403,
+    88417,
+    88429,
+    88441
+  ],
+  "scenarios": [
+    "NULL",
+    "SINGLE_EDGE",
+    "DOUBLE_EDGE"
+  ],
+  "worlds": 36,
+  "old_cold_serializations": 36,
+  "old_samples": 864,
+  "new_samples_per_arm": 576,
+  "held_samples": 23040,
+  "summary": {
+    "local_coverage12": {
+      "brier": 0.09391888038409087,
+      "cost": 12319.333333333334,
+      "identified_shift_rate": 0.9583333333333334,
+      "null_false_report_rate": 0,
+      "expanded_worlds": 17,
+      "unique_actions": 13.305555555555555,
+      "by_scenario": {
+        "NULL": 0.08855148157370386,
+        "SINGLE_EDGE": 0.10401181189986392,
+        "DOUBLE_EDGE": 0.08919334767870486
+      }
+    },
+    "local_entropy": {
+      "brier": 0.14324067421562314,
+      "cost": 13046,
+      "identified_shift_rate": 0.75,
+      "null_false_report_rate": 0,
+      "expanded_worlds": 15,
+      "unique_actions": 7.777777777777778,
+      "by_scenario": {
+        "NULL": 0.08855275321648969,
+        "SINGLE_EDGE": 0.1185543487429762,
+        "DOUBLE_EDGE": 0.22261492068740352
+      }
+    },
+    "full_bayes_ig": {
+      "brier": 0.09720904378387528,
+      "cost": 39184,
+      "identified_shift_rate": 1,
+      "null_false_report_rate": 0.08333333333333333,
+      "expanded_worlds": 0,
+      "unique_actions": 13.666666666666666,
+      "by_scenario": {
+        "NULL": 0.11037945549437368,
+        "SINGLE_EDGE": 0.0920814474907032,
+        "DOUBLE_EDGE": 0.08916622836654897
+      }
+    },
+    "full_bayes_random": {
+      "brier": 0.09700158462535728,
+      "cost": 7440,
+      "identified_shift_rate": 0.9166666666666666,
+      "null_false_report_rate": 0,
+      "expanded_worlds": 0,
+      "unique_actions": 12.694444444444445,
+      "by_scenario": {
+        "NULL": 0.0896195943965082,
+        "SINGLE_EDGE": 0.11130812387390988,
+        "DOUBLE_EDGE": 0.09007703560565371
+      }
+    },
+    "full_bayes_coverage12": {
+      "brier": 0.09430862683111002,
+      "cost": 35092,
+      "identified_shift_rate": 0.9583333333333334,
+      "null_false_report_rate": 0,
+      "expanded_worlds": 0,
+      "unique_actions": 14.36111111111111,
+      "by_scenario": {
+        "NULL": 0.08854221899443558,
+        "SINGLE_EDGE": 0.1052289756753287,
+        "DOUBLE_EDGE": 0.08915468582356567
+      }
+    },
+    "local_on_bayes_trace": {
+      "brier": 0.09711228706349065,
+      "cost": 4798.055555555556,
+      "identified_shift_rate": 1,
+      "null_false_report_rate": 0.08333333333333333,
+      "expanded_worlds": 17,
+      "unique_actions": 13.666666666666666,
+      "by_scenario": {
+        "NULL": 0.11039217900593369,
+        "SINGLE_EDGE": 0.09177845334573337,
+        "DOUBLE_EDGE": 0.0891662288388048
+      }
+    }
+  },
+  "verdict": {
+    "loss_gap": -0.0032901633997844126,
+    "baseline_improvement": 0.049321793831532276,
+    "double_improvement": 0.13342157300869867,
+    "cost_ratio": 3.180691595865577,
+    "coverage_min": 12,
+    "coverage_vs_unrestricted_pass": true,
+    "strong_control_tolerance_pass": true,
+    "coverage_constraint_pass": true,
+    "action_budget_pass": true,
+    "compute_proxy_pass": true,
+    "changed_hypothesis_recovery_pass": true,
+    "null_false_change_pass": true,
+    "cold_readout_pass": true,
+    "development_signal": true
+  },
+  "rows": [
+    {
+      "seed": 88307,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 12,
+        "bias": 1
+      },
+      "old_readout_digest": 1837686425,
+      "new_truth": {
+        "mask": 12,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08000000440969314,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.0800158660457124,
+          "cost": 13768,
+          "identified": true,
+          "declared_change": false,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 8,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08000001039852299,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08000005634784899,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.08000002817780254,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08000000377919061,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88307,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 14,
+        "bias": 1
+      },
+      "old_readout_digest": 2944905089,
+      "new_truth": {
+        "mask": 15,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08257912660636643,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.1233117727256412,
+          "cost": 18016,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08251033065695842,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 10,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08249138870483638,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0825220445263421,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08250667439469049,
+          "cost": 5416,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 10,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88307,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 25,
+        "bias": 0
+      },
+      "old_readout_digest": 2938588998,
+      "new_truth": {
+        "mask": 26,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.11368314352247348,
+          "cost": 15676,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.11357387008040305,
+          "cost": 17368,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.11373211538083725,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.11369168583671958,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.11361761562072725,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.11373835292617122,
+          "cost": 5472,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88319,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 20,
+        "bias": 1
+      },
+      "old_readout_digest": 3827952453,
+      "new_truth": {
+        "mask": 20,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09624999580063516,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.09624999953339955,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.09625075408669632,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.10518419014223879,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09624971535107779,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09625168516447291,
+          "cost": 5350,
+          "identified": true,
+          "declared_change": false,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 12,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88319,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 24,
+        "bias": 1
+      },
+      "old_readout_digest": 220043545,
+      "new_truth": {
+        "mask": 26,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.11374999541553024,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.11374999541553024,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 6,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.1137499868864508,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.1137474999106678,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.1137499868864508,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.11374999461602542,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88319,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 11,
+        "bias": 1
+      },
+      "old_readout_digest": 845938192,
+      "new_truth": {
+        "mask": 14,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09749926586651193,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.09749588537282382,
+          "cost": 18016,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.09749931835630128,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.09913194270063766,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09749931835630128,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09749977559615043,
+          "cost": 5472,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 15,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88331,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 3,
+        "bias": 1
+      },
+      "old_readout_digest": 1319636441,
+      "new_truth": {
+        "mask": 3,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.07750000536016997,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.07750000536016997,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 8,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.07750001403983797,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.07757204842177648,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0775000371307777,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.07750000512465088,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88331,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 12,
+        "bias": 1
+      },
+      "old_readout_digest": 2275068596,
+      "new_truth": {
+        "mask": 13,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.1280418718868754,
+          "cost": 14620,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.10374929657218475,
+          "cost": 14932,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.10374687414409238,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.2204310263764344,
+          "cost": 7440,
+          "identified": false,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.1037471981725612,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.1037493375425663,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88331,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 13,
+        "bias": 1
+      },
+      "old_readout_digest": 1815067743,
+      "new_truth": {
+        "mask": 21,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.05875086138710049,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.06031489248432925,
+          "cost": 18016,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.05875290800192142,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.05882426094193183,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.058752850111789844,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.05875184606157301,
+          "cost": 5472,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88337,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 18,
+        "bias": 0
+      },
+      "old_readout_digest": 3359380020,
+      "new_truth": {
+        "mask": 18,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08250003660579108,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08250033854891532,
+          "cost": 17260,
+          "identified": true,
+          "declared_change": false,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08250037185876205,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08250010624748713,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.08250040282935225,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08250005131038426,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88337,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 5,
+        "bias": 1
+      },
+      "old_readout_digest": 603560308,
+      "new_truth": {
+        "mask": 7,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08750415741169876,
+          "cost": 15550,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08750056350048259,
+          "cost": 17260,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 9,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.09371912095070288,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.10628610473396086,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.25148036228458326,
+          "cost": 35092,
+          "identified": false,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09008311159833916,
+          "cost": 5356,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88337,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 22,
+        "bias": 0
+      },
+      "old_readout_digest": 915750549,
+      "new_truth": {
+        "mask": 14,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09999966150056797,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.09999994811081087,
+          "cost": 18016,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.0999934492562411,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.0999001079541024,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09999934815103542,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09999866392664078,
+          "cost": 5472,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 12,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88349,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 17,
+        "bias": 1
+      },
+      "old_readout_digest": 3738916679,
+      "new_truth": {
+        "mask": 17,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.0925000000564565,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.0925000000564565,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.0924999930114135,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.0925003807419368,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09249999141643449,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.0924999956922488,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88349,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 25,
+        "bias": 1
+      },
+      "old_readout_digest": 3718492671,
+      "new_truth": {
+        "mask": 24,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09249999936650541,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.09249999936650541,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 6,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.09250000068228297,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.09240421360576027,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 9,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09250000068228297,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09250000118895142,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88349,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 19,
+        "bias": 0
+      },
+      "old_readout_digest": 1790040920,
+      "new_truth": {
+        "mask": 26,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.10999998443551559,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.4124984939389972,
+          "cost": 10384,
+          "identified": false,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.1099998869525128,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.10960852355504888,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.1099998869525128,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.10999995454955536,
+          "cost": 5472,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88361,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 22,
+        "bias": 0
+      },
+      "old_readout_digest": 2743129660,
+      "new_truth": {
+        "mask": 22,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08511771662507331,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": false,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08511682995529493,
+          "cost": 18016,
+          "identified": true,
+          "declared_change": false,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.34699969718177504,
+          "cost": 39184,
+          "identified": false,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08500184943951901,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0850065104091168,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.3471638095795609,
+          "cost": 5464,
+          "identified": false,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 11,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88361,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 5,
+        "bias": 0
+      },
+      "old_readout_digest": 3727902763,
+      "new_truth": {
+        "mask": 1,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.10249997688180675,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.10249997688180675,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 6,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.1024975644880265,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.1024608145469467,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.1024975644880265,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.10249940984800014,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88361,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 17,
+        "bias": 1
+      },
+      "old_readout_digest": 1155730359,
+      "new_truth": {
+        "mask": 17,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08625000046903661,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08625000046903661,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.0862500006883978,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08625171792768446,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0862500006883978,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08625000046903661,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88379,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 3,
+        "bias": 0
+      },
+      "old_readout_digest": 3702739677,
+      "new_truth": {
+        "mask": 3,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.07750000621100554,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.07750000621100554,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.07750085171885632,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.07751759917746907,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.07750006291460858,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.07750005590216623,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88379,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 22,
+        "bias": 0
+      },
+      "old_readout_digest": 1461458034,
+      "new_truth": {
+        "mask": 18,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09624999849535897,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.09624998645880803,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 6,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.09624998640872032,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.09624923494176607,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 10,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09624998640872032,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09624999260569936,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88379,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 28,
+        "bias": 0
+      },
+      "old_readout_digest": 2931534830,
+      "new_truth": {
+        "mask": 21,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.07875050060451523,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.411249831432466,
+          "cost": 10384,
+          "identified": false,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.07876501558852664,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.07894717422881069,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.07875952145874346,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.0787555521242708,
+          "cost": 5464,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88397,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 6,
+        "bias": 1
+      },
+      "old_readout_digest": 1427714013,
+      "new_truth": {
+        "mask": 6,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08625001174120349,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08625000130421365,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08625001162973929,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08623308287092205,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.08625000042380851,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.086250005212443,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88397,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 26,
+        "bias": 0
+      },
+      "old_readout_digest": 4086542810,
+      "new_truth": {
+        "mask": 27,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.10249943801594164,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.10249966113305727,
+          "cost": 15424,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 10,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.10249983844060236,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.10617972794745556,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.10249973235246401,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.10249995971369816,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88397,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 6,
+        "bias": 1
+      },
+      "old_readout_digest": 3700246467,
+      "new_truth": {
+        "mask": 12,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.07877984736928331,
+          "cost": 15076,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.416249828437581,
+          "cost": 10384,
+          "identified": false,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.0787536985969281,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.0787504122771053,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.07875457207064092,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.07875236538048994,
+          "cost": 5356,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 12,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88403,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 13,
+        "bias": 1
+      },
+      "old_readout_digest": 927781732,
+      "new_truth": {
+        "mask": 13,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.11624999868853111,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.11624998819682111,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.1162499970854644,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.1159769081517357,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.1162499970854644,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.11624999868853111,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88403,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 24,
+        "bias": 1
+      },
+      "old_readout_digest": 2704705017,
+      "new_truth": {
+        "mask": 28,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.07625002946036555,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.07625002946036555,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 6,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.07625035283878087,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.07625823224957526,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.07625032573397253,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.07625010418924702,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88403,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 9,
+        "bias": 0
+      },
+      "old_readout_digest": 666610172,
+      "new_truth": {
+        "mask": 17,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.06787001060373807,
+          "cost": 14620,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.0675002596594612,
+          "cost": 16096,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.0675017203841443,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.06753185529573862,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0675017203841443,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.06750085933174668,
+          "cost": 5356,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88417,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 28,
+        "bias": 1
+      },
+      "old_readout_digest": 3962836937,
+      "new_truth": {
+        "mask": 28,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08500000177945197,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08500000177945197,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 8,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08505158921484163,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 9,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08500013100933876,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0849997003726,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.0850405970037955,
+          "cost": 5424,
+          "identified": true,
+          "declared_change": false,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 9,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88417,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 7,
+        "bias": 0
+      },
+      "old_readout_digest": 3692554927,
+      "new_truth": {
+        "mask": 15,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.07002045723563356,
+          "cost": 16204,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.07003681740039848,
+          "cost": 18016,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.07000013411750933,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.07146989384954114,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.07000015277047997,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.07000006974110365,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88417,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 17,
+        "bias": 0
+      },
+      "old_readout_digest": 1873840826,
+      "new_truth": {
+        "mask": 18,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09874888281786696,
+          "cost": 12976,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.4187498278517478,
+          "cost": 10384,
+          "identified": false,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.0987493065431959,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.09874522288853155,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09874909421858785,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09874964036322192,
+          "cost": 5356,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88429,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 3,
+        "bias": 1
+      },
+      "old_readout_digest": 2409331300,
+      "new_truth": {
+        "mask": 3,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.10124999899805451,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.10124999899805451,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.10124994517406946,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.10544685363900079,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.10124995128967876,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.10124997713818029,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88429,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 10,
+        "bias": 0
+      },
+      "old_readout_digest": 4200376100,
+      "new_truth": {
+        "mask": 14,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.21374668247443487,
+          "cost": 15550,
+          "identified": false,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.37180353966233337,
+          "cost": 17260,
+          "identified": false,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08875317384202905,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 10,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.18521467911160772,
+          "cost": 7440,
+          "identified": false,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.08875034736577847,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08875278128887021,
+          "cost": 5332,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 30,
+          "unique_actions": 10,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88429,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 11,
+        "bias": 1
+      },
+      "old_readout_digest": 1966781116,
+      "new_truth": {
+        "mask": 13,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08873825882182469,
+          "cost": 14212,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.39624998221453367,
+          "cost": 10384,
+          "identified": false,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08875014993244465,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.0887573402150337,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.0887499694314339,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 15,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.0887498426290378,
+          "cost": 5472,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 15,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88441,
+      "scenario": "NULL",
+      "old_map": {
+        "mask": 13,
+        "bias": 0
+      },
+      "old_readout_digest": 632699087,
+      "new_truth": {
+        "mask": 13,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08250000260838072,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08250000260838072,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 4,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08250023053250534,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08250192656882491,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.08250023053250534,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08249996347557995,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": false,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 14,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88441,
+      "scenario": "SINGLE_EDGE",
+      "old_map": {
+        "mask": 10,
+        "bias": 0
+      },
+      "old_readout_digest": 91509607,
+      "new_truth": {
+        "mask": 14,
+        "bias": 0
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.08250000954784939,
+          "cost": 9592,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.08250054633860088,
+          "cost": 10384,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 6,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.08250000643228259,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.08250467050836649,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 12,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.08250000643228259,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.08250000342160906,
+          "cost": 4240,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 12,
+          "unique_actions": 16,
+          "count": 16
+        }
+      }
+    },
+    {
+      "seed": 88441,
+      "scenario": "DOUBLE_EDGE",
+      "old_map": {
+        "mask": 14,
+        "bias": 1
+      },
+      "old_readout_digest": 592992557,
+      "new_truth": {
+        "mask": 28,
+        "bias": 1
+      },
+      "results": {
+        "local_coverage12": {
+          "brier": 0.09124975474602376,
+          "cost": 13336,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 16,
+          "count": 16
+        },
+        "local_entropy": {
+          "brier": 0.09124622819665165,
+          "cost": 14128,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 11,
+          "count": 16
+        },
+        "full_bayes_ig": {
+          "brier": 0.09124717071713659,
+          "cost": 39184,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "full_bayes_random": {
+          "brier": 0.10078418344649975,
+          "cost": 7440,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 14,
+          "count": 16
+        },
+        "full_bayes_coverage12": {
+          "brier": 0.09122233243847347,
+          "cost": 35092,
+          "identified": true,
+          "declared_change": true,
+          "expanded": false,
+          "hypotheses": 62,
+          "unique_actions": 13,
+          "count": 16
+        },
+        "local_on_bayes_trace": {
+          "brier": 0.09124789270776318,
+          "cost": 5464,
+          "identified": true,
+          "declared_change": true,
+          "expanded": true,
+          "hypotheses": 32,
+          "unique_actions": 13,
+          "count": 16
+        }
+      }
+    }
+  ],
+  "source_commit": "d5131e16589f9d701ca252eaaefc0d32fa7968c6",
+  "source_blob": "b72b087a2794d512d5edea63e6acf41008ff93ba",
+  "protocol_commit": "01c67c37c29f885583f858a5692de0171d3407da",
+  "protocol_blob": "c7ae088a2c4c1952088850245e69f6bc7eec4736",
+  "smoke_seed": 88289,
+  "smoke_only": {
+    "worlds": 3,
+    "old_samples": 72,
+    "held_samples": 1920,
+    "pass": true
+  },
+  "classification": "DEV_SIGNAL_UNQUALIFIED"
+}
