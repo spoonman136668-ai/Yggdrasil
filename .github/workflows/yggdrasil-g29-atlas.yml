@@ -29,6 +29,11 @@ jobs:
       - name: GKD-01 frozen response-donor numerical checks (no teacher/runtime APIs)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
         run: node research/contrib/chatgpt/GKD-01/run.mjs
+      - name: GKD-02 donor-reliability contradiction, retention and independent controls
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          node --check research/contrib/chatgpt/GKD-02/run.mjs
+          node research/contrib/chatgpt/GKD-02/run.mjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -71,4 +76,9 @@ jobs:
       - name: GKD-01 frozen response-donor numerical checks (no teacher/runtime APIs)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
         run: node research/contrib/chatgpt/GKD-01/run.mjs
+      - name: GKD-02 donor-reliability contradiction, retention and independent controls
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          node --check research/contrib/chatgpt/GKD-02/run.mjs
+          node research/contrib/chatgpt/GKD-02/run.mjs
       - run: git diff --exit-code
