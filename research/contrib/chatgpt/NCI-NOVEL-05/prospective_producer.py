@@ -79,8 +79,14 @@ def _worker(*, archive: Path, seed: int, family: str, claim: Path,
         raise ValueError("internal worker claim mismatch")
     module = types.ModuleType("_frozen_nci05_engineering")
     module.__file__ = str(archive) + ":experiment.py"
-    exec(compile(frozen_experiment(archive), module.__file__, "exec"), module.__dict__)
-    result = module.single(seed, family)
+    if module.__name__ in sys.modules:
+        raise RuntimeError("frozen engineering module already loaded")
+    sys.modules[module.__name__] = module
+    try:
+        exec(compile(frozen_experiment(archive), module.__file__, "exec"), module.__dict__)
+        result = module.single(seed, family)
+    finally:
+        sys.modules.pop(module.__name__, None)
     with open(output, "x", encoding="utf-8") as out:
         json.dump(result, out, sort_keys=True, allow_nan=False)
         out.flush()
@@ -99,6 +105,9 @@ def _engine(seed: int, family: str, archive: Path, claim: Path,
         subprocess.run(args, timeout=timeout, check=True, capture_output=True)
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError("engineering world timed out; seed remains consumed") from exc
+    except subprocess.CalledProcessError as exc:
+        tail = (exc.stderr or b"").decode("utf-8", errors="replace")[-1200:]
+        raise RuntimeError("engineering child failed; attempt remains consumed; stderr tail: " + tail) from exc
     if not output.is_file() or output.is_symlink():
         raise ValueError("worker result missing or invalid")
     return json.loads(output.read_text("utf-8"))

@@ -157,6 +157,35 @@ class ProducerTests(unittest.TestCase):
         self.assertIn('ledger required outside internal worker', run.stderr)
         self.assertFalse(self.path.exists())
 
+    def test_dynamic_module_pickle_with_mock_only(self):
+        claim = self.path.with_suffix('.claim')
+        claim.write_text(json.dumps({
+            'schema': p.PROTOCOL, 'world_id': 'engineering:917201:fourfold',
+            'source_sha256': SHA
+        }))
+        out = self.path.with_suffix('.result')
+        source = (
+            'import pickle\n'
+            'class Dummy:\n    pass\n'
+            'def single(seed, family):\n'
+            '    obj = Dummy()\n'
+            "    raw = pickle.dumps(obj)\n"
+            "    return {'seed':seed, 'family':family, "
+            "'pickle_bytes':len(raw), 'cold_restore':isinstance(pickle.loads(raw), Dummy)}\n"
+        )
+        with patch.object(p, 'source_identity', return_value=SHA), \
+             patch.object(p, 'frozen_experiment', return_value=source):
+            p._worker(archive=Path('unused'), seed=917201, family='fourfold',
+                      claim=claim, source_key=SHA, output=out)
+        self.assertTrue(json.loads(out.read_text())['cold_restore'])
+        self.assertNotIn('_frozen_nci05_engineering', p.sys.modules)
+
+    def test_child_failure_exposes_bounded_stderr_no_retry(self):
+        err = subprocess.CalledProcessError(1, ['fake-child'], stderr=b'pickle-failed')
+        with patch.object(p.subprocess, 'run', side_effect=err):
+            with self.assertRaisesRegex(RuntimeError, 'pickle-failed'):
+                p._engine(917201, 'fourfold', Path('unused'), self.path, SHA, 5)
+
     def test_not_a_scientific_runner_cli(self):
         self.assertFalse(hasattr(p, 'run_primary'))
         self.assertNotIn('809011', str(p.ENGINEERING_SEEDS))
