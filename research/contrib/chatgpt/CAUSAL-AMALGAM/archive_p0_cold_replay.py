@@ -96,7 +96,8 @@ def replay_consumed_selector(start, source_directory):
     """
     from collections import Counter
     from specialist_selection import SpecialistSelection
-    from selection_trial import configuration
+    # The existing selection_trial module imports Unix-only resource; this
+    # portable archive readback needs just its original frozen configuration.
     from yggdrasil.native_context_basis import canonical
     from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE
 
@@ -117,7 +118,10 @@ def replay_consumed_selector(start, source_directory):
     if len(known) != len(original_ledger):
         raise ValueError("P0_CONSUMED_SELECTOR_DUPLICATE_PARENT")
 
-    gate = SpecialistSelection(start, **configuration(protocol))
+    config = dict(window=protocol["window"],
+                  minimum_count=protocol["minimum_count"],
+                  minimum_gain=Fraction(protocol["selection_gain"]))
+    gate = SpecialistSelection(start, **config)
     counts = Counter()
     for index, event in enumerate(records):
         identifier, row = event["id"], event["row"]
@@ -165,8 +169,7 @@ def replay_consumed_selector(start, source_directory):
         native_pin=protocol["native_sha256"],
         donor_parent=donor["state_ascii"].encode("ascii"),
         donor_pin=donor["state_sha256"])
-    reopened = SpecialistSelection.replay(start, reopened_core,
-                                          **configuration(protocol))
+    reopened = SpecialistSelection.replay(start, reopened_core, **config)
     if (guard._checkpoint(gate) != guard._checkpoint(reopened)
             or gate.system.checkpoint() != reopened.system.checkpoint()):
         raise ValueError("P0_CONSUMED_SELECTOR_COLD_POLICY_DRIFT")
