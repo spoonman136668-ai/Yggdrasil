@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE26-NATIVE-PUBLIC-CAUSAL-CROSS-PROCESS-FUNCTIONAL-RETENTION-20261120",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "df8464eac118e29386495de61567b3c8cae0f722",
+  "question": "Does existing original PublicCausalCells retain verified action-consequence decisions after actual Python process exit/restart under interference, and does that memory outperform an equal-evidence independent Beta counter or transfer to new contexts?",
+  "hypothesis": "Cryptographically valid 164-byte checkpoint preserves functional readout across separate processes; expected native counter control can retain independent contexts but not dynamically recover overwritten active source states, generalize to new addresses or beat a Laplace/Beta counter.",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1340",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44796114791"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate26/*",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "native implementation",
+      "source": "yggdrasil/public_causal_cells.py",
+      "blob_sha": "5c9a9904e31688bebc2e53723569e1fb988a981f",
+      "license": "original Yggdrasil source",
+      "sha256": "independent Git commit SHA and Git blob readback; no local change to native module"
+    },
+    {
+      "name": "deterministic binary public action-outcome interventions",
+      "source": "new Gate26 scripts pinned before primary scoring",
+      "license": "original generated synthetic",
+      "sha256": "frozen Git blob supplied in outcome provenance"
+    }
+  ],
+  "frozen_design": {
+    "seeds": "301000–301023 inclusive, 24 new deterministic trials (no prior gate seed reuse)",
+    "stages": "Exactly three child Python processes per seed: A cold fresh training writes checkpoint A, B new-process restore trains interference B and writes checkpoint B, C new-process read-only restore emits functional decisions/contrasts; all stages exit before successor starts. Parent Python runner independently trains warm A→B reference.",
+    "data": "Train contexts: active addresses 0..4 and retained addresses 0..4. Unseen: active 5..6 and retained 5..8. Source A each trained address observes actions 0 and 1 separately 24 times per arm with public outcome Bernoulli ~0.9 for its preferred arm and ~0.1 for the opposite, deterministic hash. B changes the 5 active causal preferences to opposite, 64 observations/arm, while retained 5 remain unmodified. No true preferences given to PublicCausalCells method.",
+    "interventions": "Outcome generator is external; PublicCausalCells.observe receives only address, selected binary action, and the revealed public binary consequence. Schedule and data identical across warm and independent child processes. Data evaluator separately recomputes planted action preferences, not supplied to choose().",
+    "held": "New domain-separated public outcome samples (16 each learned address/arm) used only for comparing post-restore chosen-action reward; none used to fit. Six zero-evidence contexts never trained and checked for appropriate abstention.",
+    "capacity": "Unmodified native PublicCausalCells has 16 context slots, 2 actions, binary outcomes, 128 learned bytes and 164-byte integrity-checked checkpoint. No new graph, hidden capacity, model weights, tokens, transformer or external API.",
+    "runtime": "Python 3.12 standard library on Linux+Windows GitHub-hosted G29 runner with separate subprocess.run(sys.executable,stage.py) invocations, subprocess PID/exit/path receipts, ephemeral isolated temp directory, deterministic SHA-256; no owner runner, production credentials or scheduled workflow.",
+    "comparators": "Independent Beta(1,1)/Laplace action-outcome counter using same public observed interventions (not native internals) and identical scope; fresh zero-data PublicCausalCells; source-only A checkpoint; phase-B updated active counter; shuffled outcome/no information null. These controls benchmark memory rather than prove a novel mechanism.",
+    "evaluator": "Exact child vs warm byte SHA256 + all 16 addresses' choose, choose_wilson and rational action contrast. Compare independent Beta action preferences on trained addresses, known-action reward on domain-separated evaluation samples, abstention on untrained, retained A readouts after B, and active A historical readout immediately after B without return retraining.",
+    "security": "Mutated one-byte checkpoint, truncated checkpoint, wrong MAGIC, and type invalid must be rejected without modifying accepted state; test on fresh child processes where feasible.",
+    "compute_budget": "24 seeds, 3 ordinary Python child processes per seed, A per seed 10*2*24=480 experiences, B 5*2*64=640 experiences, warm controls replicate exactly. No GPU/paid API. Total child processes 72 plus bounded negative controls; no timer/scheduler introduced.",
+    "expected_deterministic": true
+  },
+  "frozen_thresholds": {
+    "cross_process_functional_readout_exact_fraction_min": 1,
+    "cross_process_checkpoint_bytes_exact_fraction_min": 1,
+    "distinct_parent_child_pids_all": true,
+    "retained_source_choose_accuracy_min": 0.85,
+    "retained_source_wilson_coverage_min": 0.6,
+    "retained_historical_bytes_preserved_all": true,
+    "previously_unseen_address_abstention_fraction_min": 1,
+    "held_reward_gain_vs_untrained_chance_min": 0.1,
+    "corruption_and_truncation_rejected_all": true,
+    "independent_equal_evidence_beta_advantage_min": 0.02,
+    "historical_active_source_return_accuracy_min": 0.8,
+    "unseen_context_transfer_gain_vs_scratch_min": 0.1,
+    "all_original_native_source_unmodified": true
+  },
+  "classification_rules": {
+    "functional_retention_pass": "First nine tests (through corruption rejection) pass, only proves native counter-state persistence and within-address empirical decision recovery.",
+    "scientific_supported": "All frozen thresholds pass, including outperforming independent equal-evidence Beta and unseen-context transfer + no active-source interference, THEN provisional synthetic signal only; original native learner owner first-use remains unapproved.",
+    "mixed_or_negative": "If any structural/novelty threshold fails, SCIENTIFIC_NO_GO; preserve positives for native checkpoint functional retention separately.",
+    "invalid": "No distinct processes, evidence leaked to evaluator, missing frozen source pre-first-score, changed native module, incomplete qualifiers/receipt, or exceeded data/compute."
+  },
+  "prohibited_after_primary_run": [
+    "seed/threshold or task-world changes",
+    "post-scoring policy selection",
+    "replaying consumed seeds as new confirmatory work",
+    "promoting checkpoint into canonical Amalgam",
+    "using privileged owner runner/scheduler/production state"
+  ],
+  "authority": {
+    "research_only": true,
+    "keep_PR_1340_draft": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "checkpoint_promotion": false,
+    "scheduler_or_queue_authority": false,
+    "native_original_scientific_first_use": false
+  }
+}
