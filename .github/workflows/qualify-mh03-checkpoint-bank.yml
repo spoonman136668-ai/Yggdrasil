@@ -1,0 +1,139 @@
+name: MH03 source-owned checkpoint bank readback
+on:
+  push:
+    branches: [research/mh03-checkpoint-bank-readback-20261120]
+    paths-ignore:
+      - .ice/code-atlas.html
+      - .ice/code-atlas.ice
+      - .ice/code-atlas.json
+permissions:
+  contents: read
+concurrency:
+  group: ygg-mh03-mechanical-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-atlas:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    timeout-minutes: 20
+    outputs:
+      source_sha: ${{ steps.publish.outputs.source_sha }}
+      final_sha: ${{ steps.publish.outputs.final_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Freeze MH03 sources and seal only derived Atlas
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = research/mh03-checkpoint-bank-readback-20261120
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 43e50a48935470a100ca6f4d94005204355e0436 "$GITHUB_SHA"
+          git merge-base --is-ancestor bc58e5dc6112b013e8c6e1969f6f76513892e1ff "$GITHUB_SHA"
+          test "$(git rev-parse HEAD:research/itd02_v32e_pair_consensus.rs)" = 85237dcc82905e05a273b11023b5be5db722726e
+          git diff --name-only bc58e5dc6112b013e8c6e1969f6f76513892e1ff "$GITHUB_SHA" |
+            python -B -c 'import sys; actual=set(sys.stdin.read().splitlines()); expected={"research/mh03_checkpoint_bank_readback_prereg.md","research/mh03_checkpoint_bank_readback.py","research/test_mh03_checkpoint_bank_readback.py",".github/workflows/qualify-mh03-checkpoint-bank.yml"}; assert actual==expected,(actual,expected)'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --name-only |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); expected={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==expected,(a,expected)'
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(MH03): pin derived-only source Atlas'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo MH03_DERIVED_ATLAS_SEAL_PASS
+
+  mandatory-final-regression:
+    needs: source-atlas
+    if: ${{ needs.source-atlas.result == 'success' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    permissions:
+      contents: read
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Preserve exact source bytes across hosts
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.source-atlas.outputs.final_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Validate original source, exact derived-only final SHA and Atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ needs.source-atlas.outputs.final_sha }}'
+          test "$(git rev-parse HEAD^)" = '${{ needs.source-atlas.outputs.source_sha }}'
+          test "$(git rev-parse HEAD:research/itd02_v32e_pair_consensus.rs)" = 85237dcc82905e05a273b11023b5be5db722726e
+          git diff --name-only HEAD^ HEAD |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); expected={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==expected,(a,expected)'
+          python -B scripts/build_code_atlas.py --check-if-present
+          echo MH03_SOURCE_AND_ATLAS_CUSTODY_PASS
+      - name: Compile unchanged original native Rust ABI (no network)
+        shell: bash
+        run: |
+          set -euo pipefail
+          ext=so
+          if [[ "${{ runner.os }}" == "Windows" ]]; then ext=dll; fi
+          for stem in itd02_v32a_native_microcells itd02_v32d_context_memory itd02_v32e_pair_consensus; do
+            rustc --edition=2021 -C opt-level=3 --crate-type cdylib "research/$stem.rs" -o "$RUNNER_TEMP/$stem.$ext"
+          done
+          echo "V32A_NATIVE_LIBRARY=$RUNNER_TEMP/itd02_v32a_native_microcells.$ext" >> "$GITHUB_ENV"
+          echo "V32D_NATIVE_LIBRARY=$RUNNER_TEMP/itd02_v32d_context_memory.$ext" >> "$GITHUB_ENV"
+          echo "V32E_NATIVE_LIBRARY=$RUNNER_TEMP/itd02_v32e_pair_consensus.$ext" >> "$GITHUB_ENV"
+          echo MH03_ORIGINAL_NATIVE_RUST_BUILD_PASS
+      - name: Focused read-only fixture / original ABI parity / negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s research -p 'test_mh03_*.py' -v
+          echo MH03_MECHANICAL_PARITY_AND_NEGATIVES_PASS
+      - name: Mandatory full root final regression without replaying historic trials
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B - <<'PY'
+          import sys, unittest
+          suite=unittest.TestLoader().discover("tests", pattern="test_*.py")
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.wasSuccessful(), "MH03_FINAL_ROOT_REGRESSION_FAIL"
+          assert result.testsRun == 139, ("MH03_ROOT_COUNT_DRIFT",result.testsRun)
+          if sys.platform == "win32":
+              expected={"test_missing_result_rejected","test_mismatched_candidate_id_rejected",
+                        "test_existing_roles_learn_from_own_measured_residual_only",
+                        "test_separate_native_model_output_and_equal_information_controls"}
+              actual={case.id().rsplit(".",1)[-1] for case,reason in result.skipped}
+              assert actual == expected and all("POSIX" in reason for case,reason in result.skipped), ("MH03_UNEXPECTED_WINDOWS_SKIP",actual)
+          else:
+              assert not result.skipped, ("MH03_LINUX_ROOT_SKIP",result.skipped)
+          print("MH03_FULL_ROOT_139_DISCOVERED_PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MH03_FULL_EXACT_FINAL_REGRESSION_PASS
