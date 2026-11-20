@@ -270,7 +270,23 @@ def selftest():
           for i in range(445)]
     folds=split(mock)
     guard([len(folds[g]) for g in ("fit","valid","dev")]==[267,89,89],"FOLD_TEST")
-    nextn=xorshift(7007);guard([nextn(100) for _ in range(3)]==[nextn2 for nextn2 in [47,86,67]] or True,"RNG_DETERMINISTIC")
+    r1=xorshift(7007);r2=xorshift(7007)
+    guard([r1(100) for _ in range(100)]==[r2(100) for _ in range(100)],"RNG_DETERMINISTIC")
+    # A malformed synthetic CSV must fail before any inference or model score.
+    header=("rownames",)+FIELDS
+    original=[{field:str(i) for field in header} for i in range(445)]
+    for i,row in enumerate(original):
+        row.update({"rownames":str(i+1),"data_id":"fixture"+str(i),
+                    "treat":str(int(i<185)),"re74":"0","re75":"0","re78":"0"})
+    rows=io.StringIO(newline="")
+    w=csv.DictWriter(rows,fieldnames=header);w.writeheader();w.writerows(original)
+    parsed=parse(rows.getvalue().encode("utf-8"))
+    guard(len(parsed["rows"])==445 and
+          parsed["source_sha256"]==hashlib.sha256(rows.getvalue().encode()).hexdigest(),"CSV_ROUNDTRIP")
+    invalid=rows.getvalue().replace("fixture1,1,","fixture0,1,",1)
+    try:parse(invalid.encode())
+    except ValueError as exc:guard("DATA_ID_UNIQUE" in str(exc),"DUPLICATE_TEST")
+    else:guard(False,"DUPLICATE_NOT_REJECTED")
     print("GKD07_RCT_SOURCE_FREE_SELFTEST_PASS (445 synthetic IDs, no original outcomes)")
 
 def main():
