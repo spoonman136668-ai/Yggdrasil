@@ -56,14 +56,14 @@
       "Frozen donor eta=1 no evidence updates",
       "Bad-witness and out-of-family negative controls"
     ],
-    "success": "ENGINEERING_DEV_PASS if 1536/1536 predictions have relative error <=1e-9 and tie both strong controls; 64/64 spurious abstentions+recoveries; 64/64 context-specific B corrections+unrelated retention; 128/128 cold equivalent restores; 48/48 OFF abstentions; 116-byte checkpoint; all invalid-input and digest checks. SCIENTIFIC_PASS=false by design.",
-    "negative": "Any unexplained confident OFF prediction, missing retention, wrong prediction vs exact symbolic, post-result tuning or invalid source custody is NO_GO/INVALID; no scientific-gain inference.",
+    "success": "ENGINEERING_DEV_PASS iff 1536/1536 <=1e-9 vs true heldout; 1536/1536 exact independent symbolic and robust rolling-three median numerical ties; REPORT rather than gate the ordinary two-row OLS outlier degradation; 64/64 spurious abstention/recovery; 64/64 B isolated context repair; 128 cold restores; 48 OFF abstentions; 116-byte checkpoint and negative guards. No scientific gain inference.",
+    "negative": "Any confident OFF prediction, missing retention, failure against strong exact symbolic or robust median control, invalid source custody or postresult tuning yields NO_GO/INVALID. Ordinary OLS outlier sensitivity is a valid measured negative comparator, not disqualifying engineering failure.",
     "security": "reject unknown context, NaN/inf, zero-base, digest corruption and malformed shapes",
     "deterministic_expected": true
   },
   "classification_rules": {
-    "supported": "ENGINEERING_DEV_PASS if 1536/1536 predictions have relative error <=1e-9 and tie both strong controls; 64/64 spurious abstentions+recoveries; 64/64 context-specific B corrections+unrelated retention; 128/128 cold equivalent restores; 48/48 OFF abstentions; 116-byte checkpoint; all invalid-input and digest checks. SCIENTIFIC_PASS=false by design.",
-    "negative": "Any unexplained confident OFF prediction, missing retention, wrong prediction vs exact symbolic, post-result tuning or invalid source custody is NO_GO/INVALID; no scientific-gain inference.",
+    "supported": "ENGINEERING_DEV_PASS iff 1536/1536 <=1e-9 vs true heldout; 1536/1536 exact independent symbolic and robust rolling-three median numerical ties; REPORT rather than gate the ordinary two-row OLS outlier degradation; 64/64 spurious abstention/recovery; 64/64 B isolated context repair; 128 cold restores; 48 OFF abstentions; 116-byte checkpoint and negative guards. No scientific gain inference.",
+    "negative": "Any confident OFF prediction, missing retention, failure against strong exact symbolic or robust median control, invalid source custody or postresult tuning yields NO_GO/INVALID. Ordinary OLS outlier sensitivity is a valid measured negative comparator, not disqualifying engineering failure.",
     "mixed": "Otherwise engineering mixed/unverified; preserve fail cases.",
     "invalid": "Any changed seeds/splits or test-first result invalidates prereg."
   },
@@ -75,5 +75,18 @@
     "reuse protected first-use",
     "edit canonical learner"
   ],
-  "preregistration_note": "Freeze this before implementation/scoring. GPT donor is self-authored conditional hypothesis; generating it used model inference. Purely synthetic test is not original world evidence or trained causal advantage."
+  "preregistration_note": "Freeze this before implementation/scoring. GPT donor is self-authored conditional hypothesis; generating it used model inference. Purely synthetic test is not original world evidence or trained causal advantage.",
+  "controls": [
+    "Independent exact symbolic two-witness context repair using identical inputs, hypotheses and observations; expected exact tie.",
+    "Robust fully fitted per-context median of last three witnessed eta=y/ideal ratios, same evidence; expected tie after 2 clean witnesses or 2 consistent context-shift witnesses; no extra source actions.",
+    "Conventional rolling last-two-witness least-squares slope through origin, fully fitted to same observations, is included as a NONROBUST negative control for the single injected outlier, not a required tie on post-outlier context0.",
+    "Globally pooled least-squares one-gain control, same observations.",
+    "Frozen GPT donor eta=1.",
+    "Out-of-family nonlinear effect abstention and single bad-witness guard."
+  ],
+  "amendment": {
+    "status": "BEFORE_ANY_PRIMARY_EXECUTION",
+    "parent_prereg_commit": "2f3482d3f36cd7e0a9d20b0d5c20150bcea0c393",
+    "reason": "Static pre-run control logic review found that a rolling-last-two OLS control must retain the injected outlier when scoring context0 at B; requiring it to tie is invalid. Added an independently fitted robust last-three median comparator as strongest conventional control, preserve raw OLS as an explicit expected negative. No world/run data inspected; candidate source not scored."
+  }
 }
