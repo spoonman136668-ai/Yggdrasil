@@ -1,0 +1,50 @@
+{
+  "experiment_id": "ENERGY-DEPENDENT-NULL-10",
+  "prereg_commit": "2ad34543c842ac249bf333220bbf652152041cc1",
+  "source_commit": "aaa7e3277696dc61da1cb46200d2d7936f42224e",
+  "source_blob": "5b5957fdf861250bb3f1da288190e61f4708ed2e",
+  "exact_executed_source_readback": true,
+  "result": {
+    "schema": "yggdrasil.energy-dependent-null10.exact.v1",
+    "model": "24 randomized Bernoulli(.5) actions with Bernoulli(.5) nuisance U per episode, three conditionally independent binary lag outcomes given U, with probabilities .8/.2 based on U",
+    "exact_arithmetic": true,
+    "latent_profiles": 2925,
+    "conditional_count_pairs": 396045,
+    "mass_conservation": true,
+    "prior_one_lag_marginal_match": true,
+    "marginal_original_alarm": {
+      "numerator": "36366854681240",
+      "denominator": "281474976710656",
+      "decimal": 0.12920102208099138
+    },
+    "marginal_fisher_alarm": {
+      "numerator": "2378762467116",
+      "denominator": "281474976710656",
+      "decimal": 0.00845106195554024
+    },
+    "exact_three_lag_original_fwer": {
+      "numerator": "18834641544337069219673711239075908890450489419460296630859375000",
+      "denominator": "59604644775390625000000000000000000000000000000000000000000000000",
+      "decimal": 0.31599284947191664
+    },
+    "exact_three_lag_fisher_bonferroni_fwer": {
+      "numerator": "1444481457378734568816362487880989397606778086423873901367187500",
+      "denominator": "59604644775390625000000000000000000000000000000000000000000000000",
+      "decimal": 0.024234377418437824
+    },
+    "conditional_profiles_above_05": 2807,
+    "independent_lag_assumption": false,
+    "original_primary_cohort_replayed": false,
+    "consumed_scientific_seeds": 0,
+    "scientific_gain_verified": false,
+    "engineering": "PASS_EXACT_DEPENDENT_LAGS",
+    "scientific": "ANALYTIC_DIAGNOSTIC_ONLY",
+    "deployment": "NONE",
+    "restrictions": [
+      "Original generator PREREG and original 4/12 NULL NO-GO unchanged",
+      "Correct effect is absent by construction; exact error risk does not imply independent model generalization",
+      "Conventional Fisher+Bonferroni is not a novel learning mechanism"
+    ]
+  },
+  "source_free": true
+}
