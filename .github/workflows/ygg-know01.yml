@@ -791,3 +791,62 @@ jobs:
           path: ${{ runner.temp }}/know34-first-use.json
           if-no-files-found: error
           retention-days: 30
+
+  know36-noisy-two-regime-study:
+    # ONE fresh synthetic HELD after source-only final dual-OS acceptance.
+    # Commit-message exact key, first attempt only. No schedule or owner model.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know36): one-shot noisy double-return held after exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Git checkout with stable line endings
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One disjoint, frozen, synthetic 24-world first use only
+        shell: bash
+        env:
+          YGG_KNOW36_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know36_noisy_retention_protocol.json")" = af1769f93a78b89f3f76577033787643f1185efe
+          test "$(git rev-parse "HEAD:$base/know35_two_regime_bank_dev.py")" = 8aa74ada276748faa7b32f834d406a9293ef40e0
+          test "$(git rev-parse "HEAD:$base/know36_noisy_retention_dev.py")" = 79484ead408dc1144b01897b7133a0e4c416ba55
+          test "$(git rev-parse "HEAD:$base/test_know36_noisy_retention_dev.py")" = 75c62d55a7349f34838b1bbb089ae876578c5fb1
+          PYTHONPATH=$base python -B "$base/know36_noisy_retention_dev.py" > "$RUNNER_TEMP/know36-noisy-two-bank-held.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know36-noisy-two-bank-held.json").read_text())
+          assert d["schema"] == "yggdrasil.know36.noisy-two-regime-result.dev.v1"
+          assert d["prereg_commit"] == "01e9ca76e7b358ea3d414fd22450b90910d6f2d4"
+          assert d["prereg_blob"] == "af1769f93a78b89f3f76577033787643f1185efe"
+          assert d["fit_worlds"] == 12 and d["held_worlds"] == 24
+          assert d["fit_source_calls"] == 3072 and d["held_unique_source_events"] == 9216
+          assert d["model_events_per_arm"] == 10752
+          assert set(d["family_metrics"]) == {"B1", "B2"}
+          assert len(d["worlds"]) == 24 and len(d["frozen_hypotheses"]) == 7
+          assert d["scientific"] == "SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["original_first_use_426"] is False and d["native_changed"] is False
+          assert d["deployment"] == "NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve bounded synthetic result only, no real source/checkpoint
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW36-noisy-two-bank-first-use
+          path: ${{ runner.temp }}/know36-noisy-two-bank-held.json
+          if-no-files-found: error
+          retention-days: 30
