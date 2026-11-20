@@ -172,7 +172,7 @@ def tree_utility(rows):
 
 def policy_query(facts, seed, possible, used, policy, *, rnd=None):
     """Policy sees only public source and previous already observed outcomes."""
-    require(policy in ("native", "symbolic", "tree", "oracle", "random",
+    require(callable(policy) or policy in ("oracle", "random",
                        "passive", "zero"), "POLICY")
     if policy == "zero":
         return None
