@@ -44,6 +44,11 @@ jobs:
         run: |
           node --check research/contrib/chatgpt/GKD-04/run.mjs
           node research/contrib/chatgpt/GKD-04/run.mjs
+      - name: GKD-05 source-free published-source admission and fitted-control preflight
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          python -B research/contrib/chatgpt/GKD-05/admit.py --selftest
+          python -B research/contrib/chatgpt/GKD-05/score.py --selftest
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -101,4 +106,9 @@ jobs:
         run: |
           node --check research/contrib/chatgpt/GKD-04/run.mjs
           node research/contrib/chatgpt/GKD-04/run.mjs
+      - name: GKD-05 source-free published-source admission and fitted-control preflight
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: |
+          python -B research/contrib/chatgpt/GKD-05/admit.py --selftest
+          python -B research/contrib/chatgpt/GKD-05/score.py --selftest
       - run: git diff --exit-code
