@@ -34,7 +34,7 @@ Against the **best fully fitted adaptive comparator**, local repair is **0.00288
 | Scenario | Local repair action-1 Brier | Strongest relevant fitted control | Interpretation |
 |---|---:|---:|---|
 | LOCAL_SWAP | 0.379883 | Row-change Bayes 0.388241 | Local repair better by only 0.008357, below 0.01 gain requirement |
-| GLOBAL_REVERSE | 0.464561 | Global-change Bayes 0.405378 | Local repair substantially worse under global rewiring |
+| GLOBAL_REVERSE | 0.464561 | Post-reset Dirichlet 0.405213 | Local repair substantially worse under global rewiring |
 | NULL | 0.335952 | Static pooled Dirichlet 0.335952 | Equal; no unnecessary resets |
 
 **Negative controls and memory:** `0/12` NULL worlds triggered false local repair; candidate flagged changed rows in `12/12` LOCAL_SWAP and `12/12` GLOBAL_REVERSE worlds. In LOCAL_SWAP, post-score descriptive detection was 20 true changed rows, 0 false flags, 4 missed rows, 8/12 worlds exactly identifying both changed rows. This observation was **not a preregistered discovery/acceptance threshold**. All 36 JSON round-trips retained stored historical forecasts exactly, and protected action-0 Brier passed the frozen guard. **This does not prove independent-process cold restoration or cumulative lifelong retention**.
