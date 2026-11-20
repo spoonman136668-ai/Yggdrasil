@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GKD-02",
+  "contributor": "chatgpt_connector_caller_reported",
+  "contribution_class": "falsification",
+  "question": "Can an assistant-provided causal equation be corrected by real observed contrary evidence without damaging unrelated retained knowledge, while detecting out-of-family evidence?",
+  "hypothesis": "Four-context numerical correction memory should show synthetic within-family correction and retention but tie an independent exact symbolic two-witness updater and a fully fitted context-wise linear learner. No independent scientific superiority expected.",
+  "exact_parent_sha": "28b51c7b95d9f7f2217cae18dd2e29058c757b38",
+  "accepted_native_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "Yggdrasil PR #1348 GKD-01 exact-head dual-OS CI #44795300051 engineering PASS but symbolic tie",
+    "Yggdrasil WSP-125 already tests generic causal support learning; NKR-19 tests Bayesian memory. This experiment tests assistant-donor hypothesis correction only."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/GKD-02/**",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "GKD-01 manual GPT donor ideal circuit heat law",
+      "sha256": "1f328bdbdd1b17a6b1ff7c9794f5661ff1ef422ceb6514d200d73eea121a614c",
+      "source": "GKD-01/run.mjs Git blob c409b80db2cb8e92cd2c2737a6b1c8c32fb1e007"
+    }
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "frozen_design": {
+    "seeds": [
+      1101,
+      1102,
+      1103,
+      1104
+    ],
+    "worlds_per_seed": 16,
+    "contexts": 4,
+    "laws": "64 worlds. Context efficiency eta[c]=[1,0.8,0.55,0.3][(c+worldIndex)%4]; ideal base_heat from pinned GKD-01; witnessed y=eta[c]*base_heat. Stage B changes context2 to 0.35 if originally 1 else old+0.1. Source does not expose eta, world ID, or heldout outcome to candidate.",
+    "rng": "xorshift32 seed ^ (worldIndex*0x9e3779b9); per event x=[2+22u,1+19u,1+19u,1+9u,0.2+4.8u,100+900u,ordinal%2] from consecutive draws; independent future x never used in updates.",
+    "ordering": "For each world: stage A two distinct witnesses/context, then 3 heldout per context; context0 one injected bad witness y=base*(eta0+0.2) then one clean witness, require abstention then recovery; stage B context2 two consistent changed witnesses then 3 heldout per context. 16 OFF worlds use nonlinear eta(V)=0.2+0.02*V with two differing V witnesses and then 3 heldout.",
+    "data_budget": "64*(8 stage-A+1 injected bad+1 clean+2 stage-B)=768 main synthetic witnesses; 32 OFF witnesses; 1536 main heldout predictions and 48 OFF heldout abstentions. No external source calls.",
+    "compute_budget": "one isolated Node v22.16.0 source-only run on both CI platforms; no paid APIs, self-hosted or owner runner, original-world first-use or model inference after donor preparation",
+    "capacity": "4 contexts each [trusted eta float64,pending eta float64,count u8,pendingCount u8,ambiguous u8] = 76 bytes; 8-byte header +32-byte SHA-256 digest =116-byte checkpoint; no unbounded ledger",
+    "update": "etaObserved=y/idealHeat with finite positive idealHeat. Two mutually consistent witnesses abs <=1e-9 establish trusted eta. One contrary witness must abstain without overwriting. Second consistent contrary witness commits correction; inconsistent witnesses mark ambiguous and abstain. A clean witness matching original trusted after a spurious one clears pending. Isolate other contexts.",
+    "controls": [
+      "Independent exact symbolic two-witness context repair using identical inputs, donor hypotheses and observations",
+      "Fully fitted context-wise rolling two-witness least-squares slope through origin on identical data; expected tie on A/B clean heldouts",
+      "Globally pooled least-squares one-gain control",
+      "Frozen donor eta=1 no evidence updates",
+      "Bad-witness and out-of-family negative controls"
+    ],
+    "success": "ENGINEERING_DEV_PASS if 1536/1536 predictions have relative error <=1e-9 and tie both strong controls; 64/64 spurious abstentions+recoveries; 64/64 context-specific B corrections+unrelated retention; 128/128 cold equivalent restores; 48/48 OFF abstentions; 116-byte checkpoint; all invalid-input and digest checks. SCIENTIFIC_PASS=false by design.",
+    "negative": "Any unexplained confident OFF prediction, missing retention, wrong prediction vs exact symbolic, post-result tuning or invalid source custody is NO_GO/INVALID; no scientific-gain inference.",
+    "security": "reject unknown context, NaN/inf, zero-base, digest corruption and malformed shapes",
+    "deterministic_expected": true
+  },
+  "classification_rules": {
+    "supported": "ENGINEERING_DEV_PASS if 1536/1536 predictions have relative error <=1e-9 and tie both strong controls; 64/64 spurious abstentions+recoveries; 64/64 context-specific B corrections+unrelated retention; 128/128 cold equivalent restores; 48/48 OFF abstentions; 116-byte checkpoint; all invalid-input and digest checks. SCIENTIFIC_PASS=false by design.",
+    "negative": "Any unexplained confident OFF prediction, missing retention, wrong prediction vs exact symbolic, post-result tuning or invalid source custody is NO_GO/INVALID; no scientific-gain inference.",
+    "mixed": "Otherwise engineering mixed/unverified; preserve fail cases.",
+    "invalid": "Any changed seeds/splits or test-first result invalidates prereg."
+  },
+  "prohibited_after_primary_run": [
+    "change thresholds",
+    "change donor laws",
+    "change world seeds",
+    "increase teacher calls",
+    "reuse protected first-use",
+    "edit canonical learner"
+  ],
+  "preregistration_note": "Freeze this before implementation/scoring. GPT donor is self-authored conditional hypothesis; generating it used model inference. Purely synthetic test is not original world evidence or trained causal advantage."
+}
