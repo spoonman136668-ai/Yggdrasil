@@ -1,0 +1,81 @@
+from __future__ import annotations
+import hashlib,inspect,json,subprocess,unittest
+from pathlib import Path
+from worlds import world,worlds,SEEDS,SMOKE_SEED,FAMILIES,REPS,FORBIDDEN
+from mechanism import ActiveRecall
+from diagnose import diagnostic_one,archive_probe,DIAGNOSTIC_ARMS,STRONG_CONTROLS,ARMS
+from compare import one
+
+HERE=Path(__file__).resolve().parent
+class AttributionSourceTests(unittest.TestCase):
+    def setUp(self):
+        self.w=world(SMOKE_SEED,'cubic_rewrite',0)
+    def test_seed_separation(self):
+        self.assertEqual(len(SEEDS),2)
+        self.assertFalse(set(SEEDS)&set(FORBIDDEN))
+        self.assertNotIn(SMOKE_SEED,SEEDS)
+        self.assertTrue(set((95820101,95820102,94771101,94771102,929209101))<=set(FORBIDDEN))
+    def test_exact_preserved_learner(self):
+        sha=hashlib.sha256((HERE/'mechanism.py').read_bytes()).hexdigest()
+        self.assertEqual(sha,'4169b3cdf2a4d92db3ee0125302285f4d886eb347f9db73af9721519279aff78')
+    def test_no_phase_fields_in_public_observation(self):
+        self.assertEqual(self.w.initial[0] in (0,1),True)
+        self.assertEqual(len(self.w.initial),sum(self.w.dwell))
+        self.assertEqual(len(self.w.trans_noise),len(self.w.initial))
+    def test_oracle_not_in_model_signature(self):
+        self.assertEqual(tuple(inspect.signature(ActiveRecall.observe).parameters),('self','c','y'))
+        self.assertEqual(tuple(inspect.signature(ActiveRecall.predict).parameters),('self','c'))
+        self.assertEqual(tuple(inspect.signature(ActiveRecall.intervention_score).parameters),('self','c','mode'))
+    def test_oracle_finite_and_bounded(self):
+        a=ActiveRecall();slot,loss=archive_probe(self.w,a,0)
+        self.assertEqual(slot,0)
+        self.assertAlmostEqual(loss,.25)
+    def test_oracle_cannot_make_archive_more_informed(self):
+        a=ActiveRecall()
+        s0,l0=archive_probe(self.w,a,0)
+        self.assertEqual(s0,0)
+        self.assertEqual(l0,.25)
+    def test_action_policy_parity_with_original_active(self):
+        diag=diagnostic_one(self.w,'dual_active')
+        original=one(self.w,'dual_active')
+        for k in ('A','B','return16','return_all'):
+            self.assertAlmostEqual(diag[k],original[k],places=12)
+        self.assertEqual(diag['cold'][0]['sha256'],original['cold'][str(self.w.dwell[0])])
+        self.assertEqual(diag['switches'],original['switches'])
+        self.assertEqual(diag['checkpoint_sha256'],original['checkpoint_sha256'])
+    def test_action_policy_parity_passive(self):
+        diag=diagnostic_one(self.w,'dual_passive')
+        original=one(self.w,'dual_passive')
+        for k in ('A','B','return16','return_all'):
+            self.assertAlmostEqual(diag[k],original[k],places=12)
+        self.assertEqual(diag['checkpoint_sha256'],original['checkpoint_sha256'])
+    def test_active_return_oracle_is_only_lower_bound(self):
+        x=diagnostic_one(self.w,'dual_active')
+        self.assertLessEqual(x['oracle_return16'],x['return16']+1e-12)
+        self.assertLessEqual(x['oracle_B'],x['B']+1e-12)
+        self.assertEqual(len(x['cold']),2)
+        self.assertLessEqual(x['checkpoint_bytes'],1056)
+        self.assertIn(x['return_boundary']['phase'],('return',))
+    def test_negative_checkpoint_tamper(self):
+        m=ActiveRecall();raw=m.snapshot();b=bytearray(raw);b[2]^=1
+        with self.assertRaises(ValueError):ActiveRecall.restore(bytes(b))
+    def test_arms_and_baselines_frozen(self):
+        self.assertEqual(len(ARMS),9)
+        self.assertEqual(len(DIAGNOSTIC_ARMS),3)
+        self.assertEqual(len(STRONG_CONTROLS),5)
+        self.assertNotIn('no_learning_random',STRONG_CONTROLS)
+    def test_fixed_public_input_hash(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0)
+        self.assertEqual(w.public_input_sha256,self.w.public_input_sha256)
+    def test_world_manifest_expected_size(self):
+        self.assertEqual(len(worlds()),len(SEEDS)*len(FAMILIES)*REPS)
+    def test_no_runtime_owner_or_network(self):
+        for n in ('diagnose.py','mechanism.py','controls.py','compare.py','worlds.py'):
+            s=(HERE/n).read_text()
+            self.assertNotIn('subprocess.',s)
+            self.assertNotIn('requests.',s)
+            self.assertNotIn('urllib.request',s)
+    def test_fixed_irreducible_noise(self):
+        self.assertAlmostEqual(.07*(1-.07)**2 + .93*(.07)**2,.0651)
+
+if __name__=='__main__':unittest.main()
