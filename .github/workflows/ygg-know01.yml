@@ -523,3 +523,54 @@ jobs:
           path: ${{ runner.temp }}/know30-two-step-policy-receipt.log
           if-no-files-found: error
           retention-days: 30
+
+  know30-blind-archive-reactivation-study:
+    # A distinct source-only retention trial, NOT the KNOW30 two-step action study.
+    # Runs exactly once on the frozen one-shot source change, never on atlas bumps.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know30-archive): one-shot blinded recovery held after full regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable exact candidate source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Run one synthetic prospective source-only A/B/A reactivation first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know30_blind_archive_reactivation_protocol.json)" = ae7e5987cb4d5910325bb2e2275d5e3e6d26210b
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know30_blind_archive_reactivation_dev.py)" = 9671ffcef8cd5be62eb62643529eca9cf4bb3471
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know30_blind_archive_reactivation_dev.py \
+            > "$RUNNER_TEMP/know30-blind-archive-reactivation-receipt.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          f=pathlib.Path(os.environ["RUNNER_TEMP"])/"know30-blind-archive-reactivation-receipt.json"
+          d=json.loads(f.read_text())
+          assert d["schema"]=="yggdrasil.know30.blind-archive-reactivation-result.v1"
+          assert d["prereg_first_commit"]=="13c0f0ad2622acc6ce16605f34ce8a4c59c16985"
+          assert (d["held_worlds"],d["witnesses_per_policy"],d["fit_labeled_A_and_B_per_map"],d["fit_historical_mapping_per_map"])==(24,1152,128,108)
+          assert len(d["worlds"])==24 and len(d["results"])==5
+          assert d["scientific"]=="SCIENCE_NO_GO_NOT_NATIVE" and d["protected_original_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve only the bounded synthetic result, no native checkpoint
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW30-blind-archive-reactivation-first-use
+          path: ${{ runner.temp }}/know30-blind-archive-reactivation-receipt.json
+          if-no-files-found: error
+          retention-days: 30
