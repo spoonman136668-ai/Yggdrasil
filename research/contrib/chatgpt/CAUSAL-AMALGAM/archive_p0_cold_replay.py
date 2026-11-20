@@ -25,6 +25,7 @@ from yggdrasil.native_context_basis import digest
 PROTOCOL = HERE / "selection_protocol_dev.json"
 EXPECTED_NATIVE = "5720151e18b52f7219763027c2ad9c7c37476e099b4334e42417615adb7f959d"
 EXPECTED_LEDGER = "55697acbbe953b5cf6878cecfd3286b068f665fc3c6f78334d241466c4beb274"
+EXPECTED_JOINT = "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8"
 EXPECTED_EPISODES = 1025
 EXPECTED_VIEWS = 8
 MODES = {"native": 0, "direct": 1, "temporal": 2}
@@ -112,7 +113,7 @@ def summarize_shadow(samples):
                 or advice.get("old_ledger_sha256") != EXPECTED_LEDGER
                 or advice.get("old_witness_count") != EXPECTED_EPISODES
                 or advice.get("anchor_checkpoint_sha256")
-                != "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8"
+                != EXPECTED_JOINT
                 or type(advice.get("heads")) is not dict
                 or tuple(advice["heads"]) != HEAD_NAMES):
             raise ValueError("P0_HEAD_SHADOW_CUSTODY")
@@ -293,7 +294,7 @@ def replay_consumed_selector(start, source_directory):
 def run(directory):
     """Archive-only cold replay, no scientific source actions or owner custody."""
     protocol = json.loads(PROTOCOL.read_bytes())
-    if protocol["joint_sha256"] != "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8":
+    if protocol["joint_sha256"] != EXPECTED_JOINT:
         raise ValueError("P0_ARCHIVE_PROTOCOL_PIN_MISMATCH")
     original = restore_core(directory, protocol)
     reopened = restore_core(directory, protocol)

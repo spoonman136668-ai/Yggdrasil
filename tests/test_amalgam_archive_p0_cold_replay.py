@@ -103,7 +103,7 @@ class ArchivedP0RestoreControls(unittest.TestCase):
                     "passed": True, "old_ledger_sha256": P0.EXPECTED_LEDGER,
                     "old_witness_count": P0.EXPECTED_EPISODES,
                     "anchor_checkpoint_sha256":
-                        "576370a1963158f7dc43099360f491eb6a1e49355448922943b6d484c8",
+                        P0.EXPECTED_JOINT,
                     "heads": heads,
                 },
             })
