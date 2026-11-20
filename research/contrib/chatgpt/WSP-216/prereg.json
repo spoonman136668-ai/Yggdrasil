@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-216",
+  "date": "2026-11-20",
+  "role": "Independent Yggdrasil research contributor only; the central Unified Causal Intelligence Amalgam chat controls cumulative native training, checkpoint lineage and integration.",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "sha": "8ddcbfba7bf34fd2302bd1e5aec730ee1ca0e34a",
+    "pr": 1341,
+    "main_accepted": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Test whether native-style local counterfactual credit accumulation learns an unknown delayed action-consequence lag and preserves learned action effects when irrelevant context/distractor policy shifts, against a fully fitted conventional exact conditional-mean baseline and matched-information wrong-credit ablations. Treat all data as synthetic development only.",
+  "hypothesis": "Across fresh synthetic delayed-action worlds, local paired-intervention causal attribution should learn persistent action effects, match fully trained correct-credit conditional MLE, and outperform wrong-credit and context-correlation controls under disjoint distractor/context shifts. Evidence of correctly provided intervention traces is not evidence of autonomously discovering interventions or native Yggdrasil SCIENTIFIC_PASS.",
+  "freeze": {
+    "worlds": [
+      21601,
+      21602,
+      21603,
+      21604
+    ],
+    "prior_cohorts": "No reuse of WSP210-215 synthetic data or outcomes, no original GFP labels or RESERVED",
+    "source": "WSP216|seed|purpose|episode|coordinate SHA256 random-access generator, no platform RNG.",
+    "stages": 4,
+    "fit_episodes_per_stage": 32,
+    "held_episodes": 64,
+    "outputs": 3,
+    "action_options": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "action_slots": [
+      0,
+      1
+    ],
+    "stage": "B0-B3 consecutive fresh paired intervention episodes, same observations for all arms",
+    "split": "FIT phase episode indexes 0..127 (32 per stage); HELD phase indexes 0..63 independently namespaced, generated only after B3; held contexts 8..15 unseen vs FIT 0..7, altered distractor-action pairing. No sample ID overlap; all action/slot cells observed in every stage.",
+    "causal_world": "Exactly one of lag0/lag1 has unknown nonzero causal effects for its four actions, other lag zero. Active lag and signed action->3-vector effect independently SHA256-generated, unknown to models. Every episode contains paired reference and intervention branches identical in context, noise source/other-slot action but differing by setting one action at one lag from no-op 0 to action1..4. Outcome y3 is delayed after both slots and includes context baseline, both action effects, hashed independent branch noise in {-1,0,+1}/16. The paired observed difference is the only legal candidate training target; no hidden effect table or true causal lag exposed to fitted arms.",
+    "held": "New context IDs 8..15 and changed distractor policy vs FIT contexts 0..7; evaluate paired delayed consequence differences for held only after all stages; do not call this unfamiliar-law transfer."
+  },
+  "arms": {
+    "candidate": "Online local memory indexed by (lag action, effect output), maintains cumulative count and sum of observed paired difference; predicts per-index empirical mean. Sequential B0..B3 update from exactly one paired intervention at a time, constant footprint 2*4*3 means + counts and stage/checkpoint ledger; no teacher, no gradients.",
+    "strong_conventional": "FULLY TRAINED conventional exact least-squares/conditional Gaussian MLE: from scratch after every stage on ALL cumulative FIT paired rows, separate 8-action-slot cells and 3 outputs, exact closed-form per-cell mean; same feature inputs and no privileged oracle; fully trained to objective optimum. This is an identical-capacity matching strong control; ties count as no superiority.",
+    "wrong_credit": "Matched online last-action-only table, indexes pair delta by actual t1 action regardless of changed slot; otherwise identical rows, online sums, cold restore and bytes.",
+    "no_lag_control": "Matched online intervention-action table ignores which lag changed; same row information and scalar sums.",
+    "shuffled_credit": "Matched online table indexes pair delta by opposite lag from marked changed lag; no true labels or oracle, same writes.",
+    "zero": "No-fit zero causal-effect readout.",
+    "oracle": "Privileged hidden causal effect table may only be used for external diagnostic check after primary; not a competitor and never passed to any fit."
+  },
+  "budget": "All trained models receive exactly the same paired reference and intervention observations, contexts, lag0/lag1, changed slot and changed action. Online candidate, shuffled, no-lag and last-action process 32 paired events x4 stages; conventional fully refits from cumulative observations after each stage. Measure per-output scalar accumulations, stored scalars, actual wall time; conventional batch exact optimum, not matched compute. No action generation controlled by a learner; matched information/actions by construction.",
+  "metrics": [
+    "Per stage all-arm FIT identity SHA256, stage count, 8 address-count coverage, online cold checkpoint exact bytes and B0 historical prediction parity, stage B0 retained error on original B0 episode identifiers.",
+    "Held pairwise contrast RMSE for causal candidate, conventional full-batch conditional MLE, wrong-credit t1 only, no-lag, lag-swap and zero. Absolute units of intervention effect.",
+    "Cross-platform numeric tolerance abs 1e-10 or relative 1e-10 across predictions/metrics; allow distinct timing and checkpoint SHA across OS only if prediction parity passes.",
+    "Independent preflight negative tests deny prior seeds, HELD target access before B3, stage replay, corrupted/wrong cohort checkpoint, cross-policy restoration, wrong FIT stage and source namespaces.",
+    "Mandatory unchanged Yggdrasil root full suite and inherited WSP200,209 full + WSP210,211,212,213,214,215 source-only tests, G29 source atlas and clean checkout on GitHub-hosted Linux+Windows Python3.12."
+  ],
+  "decision": {
+    "INVALID": "Any incomplete stage, source leakage, oracle use in fit, wrong baseline/mismatched info, incomplete negative control/CI, nonfinite metric, failed or divergent OS parity, or model/retention/restore corruption; no scientific result.",
+    "CREDIT_SUPPORTED": "At least 3/4 worlds: candidate held contrast RMSE <=1.02 times fully fitted conditional MLE (or <=MLE+1e-10 near zero), candidate held contrast RMSE <=0.75 times both wrong_credit and no_lag_control, <=0.75 zero, all eight intervention lag-action addresses persist with nondecreasing counts, and B0 historical RMSE after B3 <=max(1.5*B0_at_B0_RMSE,0.1). This is bounded source-free supervised interventional trace learning, NOT native learning or SCIENTIFIC_PASS.",
+    "NO_GAIN": "All four worlds valid and objective CREDIT_SUPPORTED not met; preserve negative outcome with per-world baselines. No post outcome tuning/seed reuse.",
+    "output": "One frozen primary per OS on GitHub-hosted read-only CI, diagnostic JSON artifacts, independent cross-OS score check; stage evidence and qualified experiment stay draft/unmerged."
+  },
+  "authority": {
+    "owner_learner_mutation": false,
+    "amalgam_integration": false,
+    "original_gfp_first_use": false,
+    "reserved_first_use": false,
+    "merge": false,
+    "main_ref": false,
+    "self_hosted_runner": false,
+    "new_scheduler": false,
+    "paid_api": false,
+    "production": false
+  },
+  "notes": "This tests causal credit when the changed intervention slot is explicitly observed. It does not prove discovery of which interventions to run, autonomous causal structure learning, unknown-world law transfer, broad knowledge accumulation, performance against arbitrary strong models or native intelligence."
+}
