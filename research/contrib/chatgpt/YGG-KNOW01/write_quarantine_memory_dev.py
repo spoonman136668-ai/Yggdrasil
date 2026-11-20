@@ -57,7 +57,7 @@ def protocol():
             [(d["seed"], d["role"], *d["shifts"])
              for d in data["held"]] == list(HELD) and
             data["budget"]["fit_witnesses"] == 72 and
-            data["budget"]["actions_per_policy"] == 512 and
+            data["budget"]["held_events_per_policy"] == 512 and
             data["budget"]["return_events_per_policy"] == 192 and
             data["algorithm"]["readout"].startswith("Use identical") and
             data["source"]["mode"] == SOURCE_MODE and
