@@ -1,0 +1,286 @@
+"""EXT-MHE01 static public packet safety tests. No upstream simulator runs."""
+from __future__ import annotations
+
+from copy import deepcopy
+from hashlib import sha256
+import json
+import math
+from pathlib import Path
+import unittest
+
+from packet_fence import (
+    UPSTREAM_SHA, SCHEMA, validate_declared_source_config,
+    project_public_reset, project_public_step, inspect_intervention_metadata
+)
+
+
+def config():
+    return {"upstream_sha": UPSTREAM_SHA, "env_type": "highway",
+            "include_task_id": False, "enable_causal_logging": False}
+
+
+def obs():
+    return [[1.0, 0, 4], [2.5, -3, 6.0]]
+
+
+def step(info=None):
+    return (obs(), 0.42, False, False, info if info is not None else {})
+
+
+def intervention(variable, *, applied=True, reset=False, granularity="mid_episode"):
+    return {"variable": variable, "value": 0.4, "previous_value": 0.2,
+            "granularity": granularity, "applied": applied,
+            "requires_reset": reset}
+
+
+class PublicSourcePacketFenceTests(unittest.TestCase):
+    def test_01_original_source_static_prereg_and_owner_hold(self):
+        p = json.loads(Path(__file__).with_name("prereg.json.txt").read_text())
+        self.assertEqual(p["schema"], "mhe01.sourcefree-public-packet-fence.prereg.v1")
+        self.assertEqual(p["upstream"]["commit"], UPSTREAM_SHA)
+        self.assertEqual(p["upstream"]["license_blob"],
+                         "1993f2e1a1e4993cbff028f6d4140a7ffe3290ae")
+        self.assertEqual(p["original_source_status"], "NO_OWNER_FIRST_USE_LEASE")
+        self.assertFalse(p["no_owner_actions"]["trainer"])
+        self.assertFalse(p["no_owner_actions"]["source_step"])
+        self.assertFalse(p["no_owner_actions"]["canonical_checkpoint"])
+
+    def test_02_only_pinned_and_known_source_config_accepted(self):
+        self.assertTrue(validate_declared_source_config(config()))
+        for key, value in (
+            ("upstream_sha", "0"*40),
+            ("upstream_sha", None),
+            ("env_type", "intersection"),
+            ("env_type", "highway-fast"),
+            ("include_task_id", True),
+            ("include_task_id", None),
+            ("include_task_id", 0),
+            ("enable_causal_logging", True),
+            ("enable_causal_logging", 0),
+            ("enable_causal_logging", None)):
+            c=config()
+            c[key]=value
+            with self.assertRaises(ValueError):
+                validate_declared_source_config(c)
+
+    def test_03_unknown_or_missing_configuration_fail_closed(self):
+        for bad in (None, {}, [], "config", {"env_type":"highway"}):
+            with self.assertRaises(ValueError):
+                validate_declared_source_config(bad)
+        c=config()
+        c["source_owner_authenticated"]=True
+        with self.assertRaises(ValueError):
+            validate_declared_source_config(c)
+
+    def test_04_reset_public_projection_has_no_leakage(self):
+        a=project_public_reset((obs(),{}),config(),(2,3))
+        secret={"task":{"task_id":33,"difficulty":0.98,
+                        "confounder":{"weather":0.98}},
+                "description":"causal_fresh_weather=0.98",
+                "source_private":{"graph":{"latent":True}}}
+        b=project_public_reset((obs(),secret),config(),(2,3))
+        self.assertEqual(a,b)
+        self.assertEqual(a["kind"],"reset")
+        self.assertEqual(a["observation"],[[1.0,0.0,4.0],[2.5,-3.0,6.0]])
+        serialized=json.dumps(a,sort_keys=True)
+        for forbidden in ("task_id","difficulty","weather","confounder",
+                          "description","graph","source_private"):
+            self.assertNotIn(forbidden,serialized)
+        self.assertFalse(a["source_owner_authenticated"])
+        self.assertFalse(a["native_admission"])
+
+    def test_05_raw_step_info_leaks_are_discarded_including_base_env_info(self):
+        first=project_public_step(3,step({}),config(),(2,3))
+        injected={"task":{"difficulty":0.717,"confounder":{"weather":0.717}},
+                  "reward_components":{"high_speed_reward":0.5},
+                  "driver_aggressiveness":0.717,"task_id":18,
+                  "true_scm":{"private_edge":"X->Y"},
+                  "counterfactual":{"reward":123456789}}
+        second=project_public_step(3,step(injected),config(),(2,3))
+        self.assertEqual(first,second)
+        serialized=json.dumps(second,sort_keys=True)
+        for bad in ("difficulty","weather","confounder","reward_components",
+                    "driver_aggressiveness","task_id","private_edge",
+                    "counterfactual"):
+            self.assertNotIn(bad,serialized)
+        self.assertEqual(first["action"],3)
+        self.assertEqual(first["reward"],0.42)
+        self.assertFalse(first["scientific_pass"])
+
+    def test_06_all_five_honest_public_driving_actions_are_in_range(self):
+        for action in range(5):
+            packet=project_public_step(action,step(),config(),(2,3))
+            self.assertEqual(packet["action"],action)
+            self.assertEqual(packet["kind"],"step")
+            self.assertEqual(len(packet["local_content_sha256"]),64)
+
+    def test_07_invalid_public_actions_and_bool_are_denied(self):
+        for action in (-1,5,True,False,5.0,"1",None,[],{}):
+            with self.assertRaises(ValueError):
+                project_public_step(action,step(),config(),(2,3))
+
+    def test_08_explicit_shape_excludes_appended_task_identifier(self):
+        o=obs()
+        for new_obs in (o+[[-1,2,3]], [r+[987] for r in o],
+                        [o[0]], [[1,2,3], [0,0]], [[1,2,3],{"bad":1}],
+                        [[1,2,3], [1,2,3,4]]):
+            with self.assertRaises(ValueError):
+                project_public_reset((new_obs,{}),config(),(2,3))
+        # A correct shape is necessary but NOT sufficient to prove public
+        # provenance: no source actor was used in this test.
+        self.assertFalse(project_public_reset((o,{}),config(),(2,3))[
+            "source_owner_authenticated"])
+
+    def test_09_invalid_shapes_and_missing_public_shape_denied(self):
+        for shape in (None,(2,),[2,3],(0,3),(2,0),(-1,3),(2,65),
+                      (64,64,1),(True,3),(1.0,3),(1,999999)):
+            with self.assertRaises(ValueError):
+                project_public_reset((obs(),{}),config(),shape)
+
+    def test_10_nonfinite_bool_nested_private_observations_denied(self):
+        for bad in (float("nan"),float("inf"),-float("inf"),
+                    1e40, True, None, "0", {}, [1], complex(1,2)):
+            x=obs()
+            x[0][0]=bad
+            with self.assertRaises(ValueError):
+                project_public_step(1,(x,0.1,False,False,{}),
+                                    config(),(2,3))
+
+    def test_11_nonfinite_or_non_scalar_rewards_denied(self):
+        for bad in (float("nan"),float("inf"),-float("inf"),
+                    1e50,True,False,"1",None,{"private":9},[1]):
+            with self.assertRaises(ValueError):
+                project_public_step(1,(obs(),bad,False,False,{}),
+                                    config(),(2,3))
+        out=project_public_step(1,(obs(),-0.125,False,False,{}),
+                                config(),(2,3))
+        self.assertEqual(out["reward"],-0.125)
+
+    def test_12_true_terminal_flags_required(self):
+        for index in (2,3):
+            for invalid in (0,1,"False",None):
+                fields=list(step())
+                fields[index]=invalid
+                with self.assertRaises(ValueError):
+                    project_public_step(1,fields,config(),(2,3))
+        for end,timeout in ((False,False),(True,False),(False,True),(True,True)):
+            p=project_public_step(4,(obs(),0.0,end,timeout,{}),
+                                  config(),(2,3))
+            self.assertIs(p["terminated"],end)
+            self.assertIs(p["truncated"],timeout)
+
+    def test_13_source_step_and_reset_tuple_and_info_shape(self):
+        for invalid in (None,{},[],[obs()],(obs(),None),
+                        (obs(),[]),(obs(),{},{})):
+            with self.assertRaises(ValueError):
+                project_public_reset(invalid,config(),(2,3))
+        for invalid in (None,{},[],[obs(),0.1],
+                        (obs(),0.1,False,False,None),
+                        (obs(),0.1,False,False,[]),
+                        (obs(),0.1,False,False,{},{})):
+            with self.assertRaises(ValueError):
+                project_public_step(2,invalid,config(),(2,3))
+
+    def test_14_local_digest_is_stable_but_never_source_owner_signature(self):
+        p=project_public_step(2,step(),config(),(2,3))
+        q=project_public_step(2,step({"any":"irrelevant"}),config(),(2,3))
+        self.assertEqual(p,q)
+        digest=p["local_content_sha256"]
+        raw={k:v for k,v in p.items() if k!="local_content_sha256"}
+        encoded=json.dumps(raw,sort_keys=True,separators=(",",":"),
+                           ensure_ascii=True,allow_nan=False).encode("ascii")
+        self.assertEqual(digest,sha256(encoded).hexdigest())
+        other=project_public_step(3,step(),config(),(2,3))
+        self.assertNotEqual(digest,other["local_content_sha256"])
+        self.assertFalse(p["source_owner_authenticated"])
+        self.assertFalse(p["native_admission"])
+        self.assertFalse(p["scientific_pass"])
+
+    def test_15_mid_episode_physical_request_is_not_witnessed_effect(self):
+        for variable in ("driver_aggressiveness","speed_limit"):
+            p=inspect_intervention_metadata(intervention(variable))
+            self.assertEqual(p["category"],"physical_mechanism_request")
+            self.assertFalse(p["observed_do_effect"])
+            self.assertFalse(p["learner_visible"])
+            self.assertFalse(p["requires_reset_before_effect"])
+            self.assertEqual(p["next_required_evidence"],
+                             "AUTHENTICATED_PUBLIC_EFFECT")
+
+    def test_16_episode_level_config_change_requires_reset_and_actual_effect(self):
+        for variable in ("vehicles_count","vehicles_density","lanes_count"):
+            p=inspect_intervention_metadata(intervention(
+                    variable,applied=False,reset=True,granularity="episode_level"))
+            self.assertTrue(p["requires_reset_before_effect"])
+            self.assertFalse(p["observed_do_effect"])
+            self.assertEqual(p["category"],"scene_configuration_request")
+            self.assertEqual(p["next_required_evidence"],
+                             "AUTHENTICATED_RESET_AND_PUBLIC_EFFECT")
+
+    def test_17_reward_weights_never_qualify_as_physical_learning_gain(self):
+        for variable in ("collision_reward","high_speed_reward",
+                         "right_lane_reward","lane_change_reward",
+                         "reward_speed_range"):
+            p=inspect_intervention_metadata(intervention(variable))
+            self.assertEqual(p["category"],"reward_definition_change")
+            self.assertFalse(p["causal_reward_comparison_permitted"])
+            self.assertFalse(p["observed_do_effect"])
+        duration=inspect_intervention_metadata(intervention("duration"))
+        self.assertEqual(duration["category"],"episode_budget_change")
+        self.assertFalse(duration["causal_reward_comparison_permitted"])
+
+    def test_18_intervention_granularity_conflicts_are_rejected(self):
+        for bad in (
+            intervention("speed_limit",applied=False),
+            intervention("speed_limit",reset=True),
+            intervention("speed_limit",granularity="episode_level"),
+            intervention("vehicles_count",applied=True,reset=True,
+                         granularity="episode_level"),
+            intervention("vehicles_count",applied=False,reset=False,
+                         granularity="episode_level"),
+            intervention("vehicles_count",applied=False,reset=True,
+                         granularity="mid_episode"),
+        ):
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(bad)
+
+    def test_19_bad_intervention_metadata_and_unknown_variables_fail_closed(self):
+        for x in (None,[],{},{"variable":"speed_limit"}, "speed_limit"):
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(x)
+        for bad in ("confounder_weather","task_id","hidden_scm",
+                    "reward_components","unknown",None,True):
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(intervention(bad))
+        meta=intervention("speed_limit")
+        meta["source_owner_authenticated"]=True
+        with self.assertRaises(ValueError):
+            inspect_intervention_metadata(meta)
+        for flag,val in (("applied",1),("applied","true"),
+                         ("requires_reset",0),("requires_reset",None)):
+            meta=intervention("speed_limit")
+            meta[flag]=val
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(meta)
+
+    def test_20_private_prior_value_is_never_forwarded_or_used_as_label(self):
+        meta=intervention("speed_limit")
+        out=inspect_intervention_metadata(meta)
+        secret=deepcopy(meta)
+        secret["previous_value"]={"latent_weather":0.9987,"task_id":123}
+        self.assertEqual(out,inspect_intervention_metadata(secret))
+        self.assertNotIn("latent_weather",json.dumps(out))
+        self.assertNotIn("previous_value",out)
+        self.assertNotIn("value",out)
+
+    def test_21_native_api_and_owner_unsafe_access_absent(self):
+        source=Path(__file__).with_name("packet_fence.py").read_text()
+        for forbidden in ("import yggdrasil","from yggdrasil","import gymnasium",
+                          "import highway_env","subprocess","requests",
+                          "source_first_use=True","checkpoint_restore("):
+            self.assertNotIn(forbidden,source)
+        self.assertEqual(SCHEMA,"mhe01.public_projection.v1")
+        self.assertEqual(UPSTREAM_SHA,"a194c73b3261a137d84521e1520dfa4f4c690faa")
+
+
+if __name__=="__main__":
+    unittest.main()
