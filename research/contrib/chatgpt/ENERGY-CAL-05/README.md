@@ -63,3 +63,15 @@ All 36 stored historical per-state/action predictions passed an **in-process JSO
 - **ENGINEERING — PARTIAL:** Exact executable GitHub readback, once-only deterministic primary, repo-stored full world-level score table and arithmetic readback PASS. Dual-platform native tests and G29 source atlas qualification are **not passing**: the existing source index is pinned to an older tracked file set. Do not weaken the guard.
 - **SCIENTIFIC — NO-GO:** Strongest conventional comparison fails. Local vs global behavior and null negatives are preserved. No native retention, reasoning, transfer or intelligence gain verified.
 - **DEPLOYMENT — NONE:** No main ref edit, runner/queue dispatch, native checkpoint promotion, model restart, scheduler, or integration was authorized or performed.
+
+## Postscore arithmetic audit (not a science replay)
+
+A separately committed [audit.mjs](audit.mjs), commit `2d54051c607c408628a10e66d2a84a9b08ba9c6b`, checks the saved primary receipt only: 36 unique seed/scenario keys, per-arm Brier bounds, world quotas, aggregate mean equality, each scenario mean, source commit identity, recorded negative controls, control ranking and frozen verdict. The audit source was GitHub-readback-verified (Git blob `d5f66df41e95f16d8d813e8800f1ffe3d475fa86`), then executed against the repo-stored 71,458-byte [result.json](result.json) without rerunning the generator. **AUDIT PASS: 36/36 worlds, 46,080 held, hierarchy Bayes strongest fitted baseline, candidate +0.011352 Brier worse, 0 NULL global gate false triggers, negative NO-GO.**
+
+Local reproduction of **arithmetic auditing only**, safe on a clone without reusing scientific primary seeds:
+
+```bash
+node --input-type=module -e "import('node:fs').then(async fs=>{const m=await import('./research/contrib/chatgpt/ENERGY-CAL-05/audit.mjs');console.log(m.auditResult(JSON.parse(fs.readFileSync('./research/contrib/chatgpt/ENERGY-CAL-05/result.json','utf8'))));})"
+```
+
+This audit is **postscore**, not independently preregistered scientific validation. It cannot independently verify the unrecorded individual held transition outcomes, runtime environment, model first use or science qualification.
