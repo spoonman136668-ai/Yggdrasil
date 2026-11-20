@@ -230,6 +230,45 @@ dual-OS regression must still pass. This is an **operation-count
 prediction**, not an independently measured end-to-end speedup.
 The archive is already consumed and remains `DEV_NO_GO`.
 
+## Historical action-policy divergence — separate from retained Brier
+
+The Quine admission guard checks only **observed** transition/reward losses
+against the frozen old checkpoint (+0.02 tolerance); its alternative-action
+readback verifies **same-checkpoint cold-restore equivalence**. Neither
+implies that training a *new* candidate preserves the decisions the old
+policy would take on historical public inputs. A future update can change
+an unchosen terminal-action forecast and flip a second-stage choice while
+**all charged historical Brier losses remain exactly unchanged**.
+
+A new bounded **read-only diagnostic**,
+`quine_retention.diagnose_historical_action_divergence(anchor, candidate)`,
+enumerates all distinct earlier *seen paired public views*, compares both
+first actions and the four contingent second-action outputs of the
+existing native/selector `plan` interface, and records hashed changed
+view addresses. It requires an exact earlier ledger prefix and an
+unchanged complete checkpoint on return. The diagnostic is **not** part
+of the retention admission/veto decision, cannot know real unchosen
+consequences, and must not declare a policy change harmful or useful.
+
+A source-free negative fixture proves that an arbitrary previously
+unwitnessed second action can flip even when `assess_update` returns
+`ADMIT_RESEARCH_CANDIDATE` and both full-anchor Brier drifts are
+**zero**. A separate control verifies zero divergence after a
+same-policy readback and rejects altered source lineage. This is a
+mathematical/engineering limitation test, not new science.
+
+The existing already-consumed **96-event P0 selector negative**
+will now be audited through the same real native/selected policy
+interfaces on all 8 historical public paired views, reporting
+native-only vs selected action divergence separately. This is a
+**retrospective** policy observation: neither old-law mastery,
+return success, action utility nor benefit is certified. A credible
+scientific retention gate would need independent *source-qualified
+utility/regret* and off-policy action-value support, not a
+hard-coded requirement for a frozen old action that might prevent
+legitimate learning. Exact-source Linux/Windows full qualification
+is required before this readout is considered complete.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
