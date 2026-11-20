@@ -1,0 +1,9 @@
+# KNOW39: soft readout with deferred persistent writes
+
+Frozen prereg before evaluator/HELD: `f38313a69d029595b7d382ea2e7e1bab2b80030b`, protocol blob `5eb63f3fbb1edc87665e9a23525386eb90765a48`. Independent research contributor PR #1327; no canonical model, checkpoint, original #426 first use, new controller or schedule.
+
+KNOW38 proved strong *stored-state protection* (A and B byte-identical 24/24; sham false admission 1/24) but suffered stale single-bank forecasts (0/24 paired wins against conventional fitted HMM). KNOW39 now decouples predictive and storage pathways: every witnessed outcome updates a **fast global Bayesian A/B belief** for the next prediction, while long-term Beta banks stay unchanged until every eighth witnessed outcome. A batch is permanently committed only when belief exceeds fixed 0.9 A or 0.9 B confidence, otherwise it is dropped. Each bank/cell caps at six actual witnessed writes. This is tokenless and synthetic-only.
+
+Strong fully online HMM, hard-readout equivalent, immediate-write variant, KNOW38 original buffer, fixed no-switch and rolling-last8 controls are separated. Same public 256-step tape for each arm; FIT-only h selection. Frozen 12 calibration worlds, disjoint 24 HELD worlds, 3072+9216 unique source events, 10752 model occurrences per arm. Frozen P0,P1,H1–H5 demand paired improvement over HMM, stronger ablations, returning-A performance, bank custody, cold readback and sham safety.
+
+All Python unit tests inject independent deterministic mock consequences. Never call `private_y` or `proof` during local qualification. HELD first-use may be triggered once only after exact source checksum, focused dual-OS, atlas, complete final regression on both OS, and original-source read-only compatibility. Preserve negative, no post-result tuning or reruns. Any synthetic support cannot be native scientific acceptance.
