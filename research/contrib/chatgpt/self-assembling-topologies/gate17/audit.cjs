@@ -50,9 +50,9 @@ function essential(t){return [0,1,2].every(k=>(()=>{
 let e=0;
 for(let table=0;table<256;table++)if(essential(table))e++;
 assert(e>0&&e<256);
-function mux(x){const a=bit(x,2),b=bit(x,1),c=bit(x,0);return a?c:b;}
+function muxTruth(x){const a=bit(x,2),b=bit(x,1),c=bit(x,0);return a?c:b;}
 function maj(x){return bit(x,2)+bit(x,1)+bit(x,0)>=2?1:0;}
-for(const fn of [mux,maj]){
+for(const fn of [muxTruth,maj]){
  const table=Array.from({length:8},(_,x)=>fn(x)).reduce((a,v,x)=>a|(v<<x),0);
  assert(essential(table),"all three Boolean source parents are essential");
 }
