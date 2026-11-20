@@ -257,7 +257,7 @@ def _score_remaining(state, control, tape):
             (float(state.context_forecast(views[0],a)),
              float(state.context_forecast(views[0],a,s,b))),
             control.forecast(("transition",x,a)),
-            control.forecast(("terminal",x,a,s,b)))
+            control.forecast(("terminal",x,a,s,b))
         )
         for target,truth in enumerate((s,y)):
             q=predictions[0][target]
