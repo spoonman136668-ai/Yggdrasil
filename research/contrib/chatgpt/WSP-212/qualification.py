@@ -58,7 +58,7 @@ def metadata(world):
 def _component(seed: int, allele: str, pos: int, dim: int) -> int:
     if allele not in ("C", "D") or dim not in range(RANK) or pos < 1:
         raise ValueError("invalid frozen source-free component")
-    key = f"WSP212\\0{seed}\\0{allele}\\0{pos}\\0{dim}".encode("utf-8")
+    key = f"WSP212\0{seed}\0{allele}\0{pos}\0{dim}".encode("utf-8")
     return (hashlib.sha256(key).digest()[0] % 7) - 3
 
 
@@ -73,8 +73,8 @@ def samples(seed, gene, pairs):
     for i, j, group in pairs:
         for alt in ("C", "D"):
             yield Sample(f"{seed}_{i}_{j}_{alt}", group,
-                         f"{gene}\\0{i}\\0A\\0{alt}",
-                         f"{gene}\\0{j}\\0A\\0{alt}",
+                         f"{gene}\0{i}\0A\0{alt}",
+                         f"{gene}\0{j}\0A\0{alt}",
                          target(seed, i, j, alt))
 
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     result = run_calibration()
     destination = Path(args.output)
     destination.write_text(json.dumps(result, sort_keys=True, indent=2,
-                          allow_nan=False) + "\\n", encoding="utf-8")
+                          allow_nan=False) + "\n", encoding="utf-8")
     print("WSP212_CONTROL_CLASSIFICATION=" + result["classification"])
     for w in result["worlds"]:
         print(f"WSP212_WORLD={w['world']} STATUS={w['status']} STAGES={w['stages_completed']}")
