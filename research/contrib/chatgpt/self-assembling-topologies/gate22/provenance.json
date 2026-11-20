@@ -1,0 +1,49 @@
+{
+  "schema": "yggdrasil.gate22.provenance.v1",
+  "date_utc": "2026-11-20",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "pr": 1340,
+  "parent": "eb44df75612be0aaa6ee388a08f308eb8fc8dc39",
+  "prereg_commit": "a4ad408eb9e4032407962ac06e4b14bd3a8e290a",
+  "first_source_commit": "9f473e24cbe5c249ee0f608c23ca5f0fa0ca1351",
+  "first_execution": "ABORTED_NO_METRICS: ReferenceError best is not defined at early greedy control update (before any aggregate result). No threshold, seed, data, method or scored outcome was modified.",
+  "mechanical_patch_commit": "7eec42d96c4011e57ad38b5fa7a34bb0140448a4",
+  "mechanical_patch_blob": "a23311393ddec84c579317deae4059d2efdc0448",
+  "mechanical_patch": "Changed undeclared best variable in greedyUpdate to let best=s.mask; left everything else unchanged. Source identity verified at exact 40-hex SHA before first completed scientific score.",
+  "first_complete_result_commit": "ed488d5e9eccc79060c4175a6c198c2c48d690f7",
+  "runtime": "deterministic JavaScript V8 sandbox evaluation of frozen source fetched through authenticated GitHub connection, no model/teacher/paid API/production runner; exact Node.js source replay and two-OS regression separately qualified later",
+  "data": {
+    "trials": 192,
+    "A_training": 64,
+    "B_training": 48,
+    "A_return_training": 48,
+    "B_strict_held": 16,
+    "A_return_strict_held": 16,
+    "generation": "fixed new seed cohorts; no true context labels to adaptive methods; user-facing phase markers only to evaluator"
+  },
+  "controls": [
+    "source-frozen A",
+    "independent global all-history static",
+    "independent 32-event sliding static",
+    "Bayesian hazard mixture of source and recency posterior",
+    "ungated local graph",
+    "null .5",
+    "phase-oracle illustrative only"
+  ],
+  "negative": "26/32 noise worlds produced false mode switches (threshold <=6.4/32), B phase held Brier gated worse than sliding/Bayes, R source reuse benefit not enough versus Bayes; strict joint hypothesis NO_GO",
+  "limitations": [
+    "State restoration re-instantiated within same process, not cross-process/owner native checkpoint.",
+    "Only source A is immutable; B online learned state is reconstructed from raw history rather than latent-native retention.",
+    "Unseen phase-held target outcomes not fitted, but action IDs may occur in source A.",
+    "Strong controls have different compute and transient memory footprints. No equalized compute or energy gain.",
+    "Half-val witnesses are eight recent training outcomes; no standalone independent external source.",
+    "No accepted model or scientific first-use; cumulative Yggdrasil integration owned by separate Amalgam coordinator."
+  ],
+  "qualification": {
+    "full_final_CI": "PENDING",
+    "scientific": "NO_GO",
+    "native_original_first_use": false,
+    "merge": false,
+    "deployment": false
+  }
+}
