@@ -40,7 +40,7 @@
       90301
     ],
     "worlds": "10 primary seeds x INVERSE/SAME/INDEPENDENT = 30 independent worlds; 6 observable state labels, separate random hidden 6-cycles; action 0 follows successor; action 1 follows inverse/same/independent successor; true edge probability .90, each alternative .02; labels randomly permuted per world, no hidden cycle/regime disclosed to learners",
-    "split": "For each world: 2 train transitions per state under action 0 and 2 under action 1 only for states 0,2,4 (18 training; 6 unseen action1 rows). Held 64 independent next-state outcomes for each of 6 states x 2 actions =768 held events/world. Training and held RNG streams SHA-256-keyed separately. 540 train and 23,040 held events total.",
+    "split": "For each world: 2 train transitions per state under action 0 and 2 under action 1 only for states 0,2,4 (18 training; 3 unseen action1 rows). Held 64 independent next-state outcomes for each of 6 states x 2 actions =768 held events/world. Training and held RNG streams SHA-256-keyed separately. 540 train and 23,040 held events total.",
     "ordering": "Fit action0 witnesses first, inspect fixed action0 prediction vector, then fit action1 witnesses and evaluate after JSON cold restore; no held labels during fitting.",
     "data_budget": "18 source observations per world per arm; no extra actions/data for any arm",
     "compute_budget": "stdlib CPU only; one primary pass; max 30 worlds x 768 held events x all arms; no search or tune on primary outcomes; record per-arm wall and CPU timing, Python/platform, whole-process including graph enumeration, log memory/capacity",
