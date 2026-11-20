@@ -73,7 +73,9 @@ def rounded(x: float) -> float:
 
 def execute():
     native = (ROOT / "yggdrasil" / "public_causal_cells.py").read_bytes()
-    native_blob_valid = git_blob(native) == PINNED_NATIVE_GIT_BLOB
+    # GitHub Windows checkout may expand LF to CRLF; Git blobs are canonical LF.
+    # Normalize transport-only line endings before the pinned Git object check.
+    native_blob_valid = git_blob(native.replace(b"\r\n", b"\n")) == PINNED_NATIVE_GIT_BLOB
     if not native_blob_valid:
         raise AssertionError("GATE26_NATIVE_SOURCE_BLOB_DRIFT")
     totals = {
