@@ -257,6 +257,17 @@ jobs:
             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
             --output "$RUNNER_TEMP/know12-blind-role-dev-receipt.json"
           test -z "$(git status --porcelain)"
+      - name: KNOW13 same-address cumulative causal learning frozen DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/same_address_cumulative_facts_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know13-same-address-dev-receipt.json"
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -270,5 +281,6 @@ jobs:
             ${{ runner.temp }}/know10-four-head-receipt.json
             ${{ runner.temp }}/know11-grounded-causal-dev-receipt.json
             ${{ runner.temp }}/know12-blind-role-dev-receipt.json
+            ${{ runner.temp }}/know13-same-address-dev-receipt.json
           retention-days: 30
           if-no-files-found: error
