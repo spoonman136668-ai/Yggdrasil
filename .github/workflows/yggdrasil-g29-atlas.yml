@@ -18,6 +18,9 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: GKD-01 mandatory full Yggdrasil Python regression
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
       - name: GKD-01 exact Node on isolated contributor PR
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -40,6 +43,9 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: GKD-01 mandatory full Yggdrasil Python regression
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
       - if: always()
         name: Emit bounded diagnostic for the committed atlas (no giant Base64 log line)
         shell: bash
