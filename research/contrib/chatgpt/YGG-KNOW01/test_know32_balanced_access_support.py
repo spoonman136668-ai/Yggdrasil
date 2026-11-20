@@ -82,11 +82,12 @@ class Know32CoverageBeforeHeld(unittest.TestCase):
                 self.assertEqual(sum(counts.values()), 16)
                 self.assertEqual([counts[c] for c in range(8)], [3, 3, 3, 3, 1, 1, 1, 1])
 
-    def test_complete_public_action_set_every_block(self):
+    def test_each_block_holds_one_action_over_all_four_contexts(self):
         for mapping in ALL_MAPS:
             for phase in range(3):
-                _, _, blocks = physical_counts(mapping, phase, True)
-                self.assertEqual(blocks, [set(range(4))] * 4)
+                grid, _, blocks = physical_counts(mapping, phase, True)
+                self.assertEqual(blocks, [{0}, {1}, {2}, {3}])
+                self.assertEqual({c for c, _ in grid}, set(range(4)))
         self.assertEqual([tape(t, True)[0] for t in range(48)],
                          [t % 4 for t in range(48)])
 
