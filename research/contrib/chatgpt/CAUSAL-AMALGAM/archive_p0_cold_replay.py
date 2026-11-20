@@ -112,8 +112,7 @@ def summarize_shadow(samples):
                 or advice.get("old_ledger_sha256") != EXPECTED_LEDGER
                 or advice.get("old_witness_count") != EXPECTED_EPISODES
                 or advice.get("anchor_checkpoint_sha256")
-                != "576370a1963158f7dc43099360f491eb6a1e49355448922943b6d"
-                   "484c8"
+                != "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8"
                 or type(advice.get("heads")) is not dict
                 or tuple(advice["heads"]) != HEAD_NAMES):
             raise ValueError("P0_HEAD_SHADOW_CUSTODY")
