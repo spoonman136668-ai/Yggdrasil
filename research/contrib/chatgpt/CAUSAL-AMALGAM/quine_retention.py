@@ -203,7 +203,12 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
     if len(after) != len(prior) + 1:
         raise ValueError("Each Quine gate checks exactly one newly witnessed episode")
 
-    allowed = max_brier_drift * SCALE * SCALE
+    # Historical anchor and candidate forecasts are pure reads. Score each
+    # retained charged witness once per policy, then reuse the frozen losses
+    # for per-regime, Quine and complete-prefix checks. This preserves every
+    # drift threshold without repeatedly rescoring the same native history.
+    anchor_losses = tuple(_loss(anchor, event) for event in old)
+    proposal_losses = tuple(_loss(proposed, event) for event in old)
     largest = Fraction(0)
     items = 0
     groups = {}
@@ -218,9 +223,9 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
         baseline = [0, 0]
         candidate = [0, 0]
         for index in range(start, stop):
-            for target, value in enumerate(_loss(anchor, old[index])):
+            for target, value in enumerate(anchor_losses[index]):
                 baseline[target] += value
-            for target, value in enumerate(_loss(proposed, old[index])):
+            for target, value in enumerate(proposal_losses[index]):
                 candidate[target] += value
         denominator = (stop - start) * SCALE * SCALE
         group_drift = [Fraction(new - before, denominator)
@@ -236,14 +241,14 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
                 raise ValueError("Quine index missing, duplicated, or outside regime")
             indices_seen.add(index)
             event = old[index]
-            original = _loss(anchor, event)
+            original = anchor_losses[index]
             if (item["witness_id"] != event[0]
                     or item["witness_sha256"] != digest(canonical(event))
                     or item["signed_reward_proxy"] != (1 if event[5] else -1)
                     or original != (item["transition_brier_numerator"],
                                     item["reward_brier_numerator"])):
                 raise ValueError("Quine evidence does not match the pinned anchor")
-            updated = _loss(proposed, event)
+            updated = proposal_losses[index]
             delta = [Fraction(new - before, SCALE * SCALE)
                      for before, new in zip(original, updated, strict=True)]
             largest = max(largest, *delta)
@@ -255,10 +260,10 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
     if not groups:
         raise ValueError("No Quines selected")
     baseline, candidate = [0, 0], [0, 0]
-    for event in old:
-        for target, value in enumerate(_loss(anchor, event)):
+    for old_pair, new_pair in zip(anchor_losses, proposal_losses, strict=True):
+        for target, value in enumerate(old_pair):
             baseline[target] += value
-        for target, value in enumerate(_loss(proposed, event)):
+        for target, value in enumerate(new_pair):
             candidate[target] += value
     overall = [Fraction(new - before, len(old) * SCALE * SCALE)
                for before, new in zip(baseline, candidate, strict=True)]
