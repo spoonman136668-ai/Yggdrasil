@@ -35,12 +35,33 @@ jobs:
           git show --format= --name-only a371ff5136d28fa06569b1ef935e27a0695f135a | python -B -c 'import sys; a=sys.stdin.read().splitlines(); assert a==["research/native/itd01/mh01/PREREG.md"],a'
           git diff --name-only f3cdabdb3420bb8604e41dda9903ae65eba008e7 HEAD | python -B -c 'import sys; names=set(sys.stdin.read().splitlines()); allow={"research/native/itd01/mh01/PREREG.md","research/native/itd01/mh01/study.py","research/native/itd01/mh01/test_study.py",".github/workflows/qualify-mh01-hebbian.yml"}; assert names==allow,(names,allow)'
           echo MH01_SOURCE_CUSTODY_PASS
-      - name: Focused MH01 and inherited R7 tests
+      - name: Focused MH01 engineering and original R7 frozen negative
         shell: bash
         run: |
           set -euo pipefail
           python -B -m unittest discover -s research/native/itd01/mh01 -p test_study.py -v
-          python -B -m unittest discover -s research/native/itd01/r7 -p test_native_cells.py -v
+          python -B - <<'PY'
+          import json, sys, unittest
+          sys.path.insert(0, "research/native/itd01/r7")
+          from test_native_cells import R7NativeYgg
+          from native_cells import gates, study
+          test_names = unittest.defaultTestLoader.getTestCaseNames(R7NativeYgg)
+          frozen = "test_frozen_three_init_cohorts_keep_original_negatives"
+          assert frozen in test_names and len(test_names) == 7, test_names
+          suite = unittest.TestSuite(R7NativeYgg(name) for name in test_names if name != frozen)
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.wasSuccessful(), "MH01_R7_INHERITED_ENGINEERING_REGRESSION"
+          rows = [study(seed) for seed in (17, 31, 47)]
+          observed = [(r["a_before_b"], r["a_after_b"], r["b_after_training"]) for r in rows]
+          expected = [(0.85, 0.9125, 0.89375), (0.93125, 0.86875, 0.88125),
+                      (0.9375, 0.8875, 0.86875)]
+          assert observed == expected and not gates(rows), (observed, expected)
+          with open("mh01-inherited-r7-negative.json", "w", encoding="utf8") as f:
+              json.dump({"disposition": "R7_FROZEN_SCIENTIFIC_NO_GO",
+                         "unaltered_parent": "f3cdabdb3420bb8604e41dda9903ae65eba008e7",
+                         "original_seed_results": rows}, f, indent=2, sort_keys=True)
+          print("MH01_R7_ORIGINAL_NEGATIVE_PRESERVED=PASS")
+          PY
           echo MH01_FOCUSED_ENGINEERING_PASS
       - name: Freeze outcomes including genuine negative and outer cost
         shell: bash
@@ -58,12 +79,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git status --porcelain --untracked-files=all | python -B -c 'import sys; xs=sys.stdin.read().splitlines(); assert xs==["?? mh01-results.json"],xs'
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; xs=set(sys.stdin.read().splitlines()); assert xs=={"?? mh01-results.json","?? mh01-inherited-r7-negative.json"},xs'
           echo MH01_ORIGINAL_SCIENCE_FIRST_USE_BLOCKED
       - name: Preserve results independent of science outcome
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mh01-source-only-${{ matrix.os }}
-          path: mh01-results.json
+          path: |
+            mh01-results.json
+            mh01-inherited-r7-negative.json
           if-no-files-found: ignore
