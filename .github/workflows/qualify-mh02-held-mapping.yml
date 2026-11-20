@@ -1,0 +1,100 @@
+name: MH02 V32E unseen-mapping DEV comparisons
+on:
+  push:
+    branches: [research/mh02-v32e-held-mapping-20261120]
+permissions:
+  contents: read
+concurrency:
+  group: ygg-mh02-held-mapping-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-public-dev:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    timeout-minutes: 40
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Exact source-parent and prereg-first scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor 1b615944bab5bc6e60db63a6f78bd7d601905aa4 HEAD
+          git merge-base --is-ancestor a0fbf8470048d02f53559654ad8acab5c7c0a463 HEAD
+          git merge-base --is-ancestor 5f543f7825dfdb46f952ca048656d97db8590b15 HEAD
+          git show --format= --name-only a0fbf8470048d02f53559654ad8acab5c7c0a463 | python -B -c 'import sys; p=sys.stdin.read().splitlines(); assert p==["research/mh02_v32e_held_mapping_prereg.md"],p'
+          test "$(git rev-parse HEAD:research/itd02_v32e_pair_consensus.rs)" = 85237dcc82905e05a273b11023b5be5db722726e
+          git diff --name-only 1b615944bab5bc6e60db63a6f78bd7d601905aa4 HEAD | python -B -c 'import sys; p=set(sys.stdin.read().splitlines()); a={"research/mh02_v32e_held_mapping_prereg.md","research/mh02_v32e_held_mapping_audit.py","research/test_mh02_v32e_held_mapping.py",".github/workflows/qualify-mh02-held-mapping.yml"}; assert p==a,(p,a)'
+          echo MH02_SOURCE_FIRST_CUSTODY_PASS
+      - name: Compile unmodified original Rust modules (no Cargo/network)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustc --version
+          ext=so
+          if [[ "${{ runner.os }}" == 'Windows' ]]; then ext=dll; fi
+          started=$(date +%s%N)
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32a_native_microcells.rs -o "$RUNNER_TEMP/v32a.$ext"
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32d_context_memory.rs -o "$RUNNER_TEMP/v32d.$ext"
+          rustc --edition=2021 -C opt-level=3 --crate-type cdylib research/itd02_v32e_pair_consensus.rs -o "$RUNNER_TEMP/v32e.$ext"
+          end=$(date +%s%N)
+          sha256sum research/itd02_v32a_native_microcells.rs research/itd02_v32d_context_memory.rs research/itd02_v32e_pair_consensus.rs
+          sha256sum "$RUNNER_TEMP/v32a.$ext" "$RUNNER_TEMP/v32d.$ext" "$RUNNER_TEMP/v32e.$ext"
+          echo "V32A_NATIVE_LIBRARY=$RUNNER_TEMP/v32a.$ext" >> "$GITHUB_ENV"
+          echo "V32D_NATIVE_LIBRARY=$RUNNER_TEMP/v32d.$ext" >> "$GITHUB_ENV"
+          echo "V32E_NATIVE_LIBRARY=$RUNNER_TEMP/v32e.$ext" >> "$GITHUB_ENV"
+          echo "MH02_COMPILE_WALL_NS=$((end-start))" >> "$GITHUB_ENV"
+          echo MH02_EXACT_NATIVE_BINARY_BUILD_PASS
+      - name: Focused source, null, cold and conventional tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s research -p 'test_mh02_*.py' -v
+          echo MH02_FOCUSED_TESTS_PASS
+      - name: Preserve complete negative-positive DEV result without thresholds changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B research/mh02_v32e_held_mapping_audit.py > mh02-report.json
+          python -B - <<'PY'
+          import json
+          r=json.load(open("mh02-report.json"))
+          assert len(r["results"])==10 and set(r["grouped"])=={"D","E"} and not r["original_source_first_use"] and not r["original_native_model_modified"]
+          for label, d in r["grouped"].items():
+              print("MH02_"+label+"_NATIVE_X60="+str(d["native_mean_x60"]))
+              print("MH02_"+label+"_RECENCY_X60="+str(d["recency_mean_x60"]))
+              print("MH02_"+label+"_OLD_V32D_X60="+str(d["old_mean_x60"]))
+              print("MH02_"+label+"_ADVANTAGE="+str(d["native_mean_advantage"]))
+          print("MH02_NATIVE_COST_RATIO="+str(r["native_to_recency_cost_ratio"]))
+          print("MH02_FROZEN_DEV_RESULT="+r["classification"])
+          PY
+      - name: Mandatory full candidate original regression and G29 source check
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          echo MH02_FULL_INHERITED_REGRESSION_PASS
+      - name: Verify no candidate-local changes except original outcome receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --untracked-files=all | python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); assert a=={"?? mh02-report.json"},a'
+          echo MH02_NO_ORIGINAL_MODEL_CHANGE_PASS
+      - name: Preserve full raw evidence even on scientific NO-GO / regression failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mh02-evidence-${{ matrix.os }}
+          path: mh02-report.json
+          if-no-files-found: ignore
