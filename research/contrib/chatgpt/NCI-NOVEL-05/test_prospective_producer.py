@@ -137,6 +137,26 @@ class ProducerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'frozen archive mismatch'):
             p.frozen_experiment(archive)
 
+    def test_internal_worker_cli_reaches_seed_guard_without_ledger(self):
+        cmd = [p.sys.executable, str(Path(p.__file__).resolve()),
+               '--internal-worker', '--seed', str(p.CONSUMED[1]),
+               '--family', p.FAMILIES[0], '--claim', str(self.path),
+               '--source-key', SHA, '--worker-out', str(self.path.with_suffix('.result'))]
+        run = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn('internal worker seed/family denied', run.stderr)
+        self.assertNotIn('arguments are required', run.stderr)
+        self.assertFalse(self.path.exists())
+
+    def test_public_cli_still_requires_ledger(self):
+        cmd = [p.sys.executable, str(Path(p.__file__).resolve()),
+               '--engineering-world', '--seed', str(p.ENGINEERING_SEEDS[0]),
+               '--family', p.FAMILIES[0], '--max-world-seconds', '1']
+        run = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn('ledger required outside internal worker', run.stderr)
+        self.assertFalse(self.path.exists())
+
     def test_not_a_scientific_runner_cli(self):
         self.assertFalse(hasattr(p, 'run_primary'))
         self.assertNotIn('809011', str(p.ENGINEERING_SEEDS))

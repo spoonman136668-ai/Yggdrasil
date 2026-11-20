@@ -176,7 +176,7 @@ def main() -> None:
     action.add_argument("--engineering-world", action="store_true")
     action.add_argument("--qualify-budget", action="store_true")
     action.add_argument("--internal-worker", action="store_true", help=argparse.SUPPRESS)
-    p.add_argument("--ledger", required=True, type=Path)
+    p.add_argument("--ledger", type=Path)
     p.add_argument("--archive", type=Path, default=ARCHIVE)
     p.add_argument("--seed", type=int)
     p.add_argument("--family", choices=FAMILIES)
@@ -194,6 +194,8 @@ def main() -> None:
         _worker(archive=opts.archive, seed=opts.seed, family=opts.family,
                 claim=opts.claim, source_key=opts.source_key, output=opts.worker_out)
         return
+    if opts.ledger is None:
+        p.error("ledger required outside internal worker")
     if opts.claim is not None or opts.source_key is not None or opts.worker_out is not None:
         p.error("internal-only parameters are forbidden")
     source_key = source_identity(opts.archive)
