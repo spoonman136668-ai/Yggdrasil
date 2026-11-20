@@ -37,6 +37,60 @@ class ArchivedP0RestoreControls(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "routing fixture"):
             P0.route_evidence("unknown")
 
+    def test_rejects_consumed_selector_trace_tampering_before_any_replay(self):
+        import json
+        with TemporaryDirectory() as d:
+            directory = Path(d)
+            trace_dir = directory / "selection-dev-01"
+            trace_dir.mkdir()
+            (trace_dir / "producer.json").write_text(
+                json.dumps({"trace_sha256": "0" * 64}))
+            (trace_dir / "audit.json").write_text(
+                json.dumps({"development": "DEV_NO_GO"}))
+            (trace_dir / "trace.json").write_bytes(b"[]")
+            original = P0.HERE
+            try:
+                P0.HERE = directory
+                with self.assertRaisesRegex(ValueError, "TRACE_PIN"):
+                    P0.replay_consumed_selector(object(), directory)
+            finally:
+                P0.HERE = original
+
+    def test_rejects_invalid_consumed_selection_roster_before_replay(self):
+        import json
+        from yggdrasil.native_context_basis import digest
+        with TemporaryDirectory() as d:
+            directory = Path(d)
+            trace_dir = directory / "selection-dev-01"
+            trace_dir.mkdir()
+            raw = b"[]"
+            (trace_dir / "trace.json").write_bytes(raw)
+            (trace_dir / "producer.json").write_text(json.dumps({
+                "trace_sha256": digest(raw), "episodes": 96,
+                "parent_sha256": "incorrect-original-parent",
+            }))
+            (trace_dir / "audit.json").write_text(
+                json.dumps({"development": "DEV_NO_GO"}))
+            original = P0.HERE
+            try:
+                P0.HERE = directory
+                with self.assertRaisesRegex(ValueError, "SELECTOR_PROTOCOL"):
+                    P0.replay_consumed_selector(object(), directory)
+            finally:
+                P0.HERE = original
+
+    def test_original_selection_archive_is_a_negative_not_an_improvement(self):
+        import json
+        folder = P0.HERE / "selection-dev-01"
+        original = json.loads((folder / "trace.json").read_bytes())
+        self.assertEqual(len(original), 96)
+        self.assertTrue(all(event["origin"] == 0 for event in original))
+        self.assertEqual([sum(e["phase"] == i for e in original)
+                          for i in range(3)], [32, 32, 32])
+        audit = json.loads((folder / "audit.json").read_bytes())
+        self.assertEqual(audit["development"], "DEV_NO_GO")
+        self.assertEqual(audit["specialist_origin_counts"], {"0": 64})
+
     def test_rejects_wrong_archived_member_bytes(self):
         with TemporaryDirectory() as d:
             root = Path(d)
