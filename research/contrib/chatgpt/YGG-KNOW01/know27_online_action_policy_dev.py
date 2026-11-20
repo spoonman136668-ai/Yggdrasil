@@ -35,7 +35,7 @@ def protocol():
             and d["held_ABA"]["seeds"]==list(ABA_SEEDS)
             and d["held_stationary"]["action_witnesses_per_policy"]==768
             and d["held_ABA"]["action_witnesses_per_policy"]==192
-            and d["action_policy"]["EVI"].startswith("For each candidate action")
+            and d["policy"]["EVI"].startswith("For each candidate action")
             and d["hypotheses"]["H2"].endswith("0.01000.")
             and d["source_mode"]==MODE,"FROZEN_PROTOCOL")
     return d
