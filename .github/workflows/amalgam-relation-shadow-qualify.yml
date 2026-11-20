@@ -60,6 +60,9 @@ jobs:
         os: [ubuntu-latest, windows-2022]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
     env:
       EXPECTED_CANDIDATE: ${{ needs.atlas.outputs.candidate }}
     steps:
@@ -75,6 +78,39 @@ jobs:
       - name: Install exact existing native solver dependencies
         run: >-
           python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Pinned historical original CKAD22 native ZERO-probe readout (no source actor)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_CANDIDATE"
+          test "$(git status --porcelain)" = ""
+          # Existing 2026 original Actions artifact, NEVER generate or step source.
+          # The exact ZIP SHA is checked by the native script, then old checkpoint SHA.
+          gh api -H 'Accept: application/vnd.github+json' \
+            "repos/${GITHUB_REPOSITORY}/actions/artifacts/14410228167/zip" \
+            > "$RUNNER_TEMP/ckad22-original-archival.zip"
+          python -B research/contrib/chatgpt/CAUSAL-AMALGAM/ckad22_native_zero_probe.py \
+            "$RUNNER_TEMP/ckad22-original-archival.zip" \
+            > "$RUNNER_TEMP/amalgam-original-native-cold.json"
+          python -B - "$RUNNER_TEMP/amalgam-original-native-cold.json" <<'PY'
+          import json, sys
+          data=json.load(open(sys.argv[1],encoding='utf-8'))
+          assert data['schema']=='ckad22.historical-native-cold-zero-probe.v1'
+          assert len(data['results'])==3 and [v['seed'] for v in data['results']]==[101,202,303]
+          assert data['original_world_source_actions']==0 and data['new_observations']==0
+          assert data['scientific_gain_verified'] is False and data['source_first_use'] is False
+          assert data['deployment']=='NONE'
+          for row in data['results']:
+              assert len(row['public_readouts'])==2 and row['new_context_start']==384
+              print('COLD_NATIVE_VERIFIED seed=%d end384=%s initial_actions=%s' % (
+                  row['seed'],row['original_384_sha256'][:12],
+                  [v['planner_first'] for v in row['public_readouts']]))
+          print('COLD_NATIVE_HISTORICAL_READ_ONLY_PASS')
+          PY
+          test "$(git status --porcelain)" = ""
+
       - name: Full inherited root and eras, preflight and replay
         shell: bash
         run: |
