@@ -279,6 +279,26 @@ class QuineRetentionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "requires active selectors"):
             QUINE.verify_selector_replay(self.anchor, FakeSystem(self.anchor.events))
 
+    def test_cold_replay_queries_each_distinct_public_address_only_once(self):
+        """Unchanged policy forecasts are reused across historical witnesses."""
+        class CountingSelector(FakeSelector):
+            def __init__(self, system):
+                super().__init__(system)
+                self.calls = 0
+
+            def forecast(self, views, first, *terminal):
+                self.calls += 1
+                return super().forecast(views, first, *terminal)
+
+        original = CountingSelector(self.anchor)
+        restored = CountingSelector(FakeSystem(self.anchor.events))
+        report = QUINE.verify_selector_replay(original, restored)
+        expected_queries = len({event[1] for event in self.anchor.events}) * 10
+        self.assertEqual(report["policy_queries"], expected_queries)
+        self.assertEqual(report["readout_witnesses"], len(self.anchor.events))
+        self.assertEqual(original.calls, expected_queries)
+        self.assertEqual(restored.calls, expected_queries)
+
     def test_selector_restore_detects_unobserved_first_action_drift(self):
         """The old action-only loss check cannot see a changed unchosen action."""
         class ChangedFirstAction(FakeSelector):
