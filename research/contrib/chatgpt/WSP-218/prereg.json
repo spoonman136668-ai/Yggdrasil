@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-218",
+  "date": "2026-11-20",
+  "role": "Independent Yggdrasil tokenless research contributor only; central Unified Causal Intelligence Amalgam Work chat retains sole native cumulative learner/checkpoint integration ownership.",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "sha": "774d3e06b0392a48c1affa984d02a1b8a8183c9f",
+    "pr": 1343,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "hypothesis": "Removing WSP217's incorrect last-action comparator conditioning will show whether a persistent native-style action/context sufficient-statistics learner identifies unmarked causal lag in balanced delayed-action worlds under observed context-action correlation and an unseen context-policy shift, matching a fully fitted correct-context ridge OLS and beating the truly wrong-lag control.",
+  "source_free_protocol": {
+    "cohort": [
+      {
+        "seed": 21801,
+        "active_lag": 0
+      },
+      {
+        "seed": 21802,
+        "active_lag": 0
+      },
+      {
+        "seed": 21803,
+        "active_lag": 1
+      },
+      {
+        "seed": 21804,
+        "active_lag": 1
+      }
+    ],
+    "active_lag_assignment": "Independent prereg prescribes 2 first-slot and 2 last-slot causal worlds; active-lag truth used solely by world generator and postfit evaluator, NEVER in learner feature routing. No post-outcome world replacement.",
+    "forbidden": "Every prior WSP210..217 cohort; WSP217 21701–21704 retired. Use only new 21801..21804.",
+    "hidden_world": "Action0 no effect; each action1..4 produces 3 signed independently SHA-256 generated effects in one active lag, inert lag zero. Context 0..7 has hashed nuisance baseline per channel, correlated with seen action pairs via deterministic hashed context assignment, but is observed and conditioned; independent hashed measurement noise [-2..2]/32. No uncontrolled latent confounding is simulated. Hidden coefficients never enter fit/predict.",
+    "FIT": "Four cumulative stages B0..B3, 50 independent ordered episodes per stage (25 distinct 5x5 action pairs repeated twice). Observations contain only episode ID, ordered actions (t0,t1), context ID (0..7), one 3-channel delayed outcome. No changed-slot intervention marker, no pairwise contrast or hidden causal coefficient in FIT. Hash source WSP218|seed|purpose|stage|pair|repeat. Stage context SHA256('WSP218|seed|context|stage|i|a0|a1').digest[0] % 8. Full 16-feature design [8 one-hot observed context nuisance, lag0 actions1..4, lag1 actions1..4], rank16 MUST be checked using FIT metadata only and no targets BEFORE any primary and after each stage. Thus exact conditional regression is identifiable under observed context-action association.",
+    "HELD": "100 paired reference (0,0) vs treatment (25 5x5 pairs x4) delayed outcomes generated only AFTER all 4 stages completed. Unseen contexts8..15 with new policy mapping; context nuisance cancels in pairwise contrast but independent branch noise persists. Fit models cannot access HELD targets or world oracle.",
+    "trials_per_OS": "ONE frozen primary on Linux and ONE on Windows solely for deterministic parity after G29 and full final regression; no rerun or post-outcome tuning. Seeds retired even for NO_GAIN."
+  },
+  "candidate": "Bounded resident cumulative normal-equation sufficient-statistics learner without raw-row replay: 16x16 input coactivation sums + 16x3 target sums + 16x3 weights; after each stage fixed 60 Gauss-Seidel sweeps over 16 coordinates and 3 outputs, ridge=0.01 (applied to all 16 dimensions, including context). Cold checkpoint restores exact bytes/functional B0 historical predictions, stage and source digests; no oracle. Online single episode accumulation, warm-start previous weights.",
+  "controls": {
+    "strong": "FULLY TRAINED exact from-scratch 16-feature ridge Gaussian-elimination OLS on all cumulative FIT rows each stage. Same context+action observations, 16 features, 3 outputs and ridge0.01; exact residual <=1e-7 required. Strongest fitted model, no candidate superiority expected.",
+    "last_only": "Fully fitted exact contextual OLS using 8 context one-hot +4 last-action features; receives all rows, outputs. This is a legitimate strong model in active_lag=1 worlds and cannot be required to lose there.",
+    "first_only": "Fully fitted exact contextual OLS using 8 context one-hot +4 first-action features; likewise legitimate in active_lag=0 worlds.",
+    "lag_blind": "Fully fitted exact contextual OLS using 8 context +4 pooled action count features; sacrifices temporal order, otherwise same data.",
+    "context_omitted": "Fully fitted exact two-lag 9-feature intercept/action OLS, no observed context covariates; diagnostic of observed action-context spurious correlation.",
+    "shuffled": "Fully fitted exact 16-feature contextual OLS with source/outcome pairs cyclically shifted within each original stage independently; source records same cardinality, causal correspondence broken.",
+    "zero": "Zero predicted action-effect contrast with no training.",
+    "oracle": "Privileged postfit causal coefficients and active lag are audit only and cannot train any arm."
+  },
+  "qualification": {
+    "source_preflight": "Every cohort stage independently has exactly 25 action pairs, 2 appearances each, 8 context IDs and exact rank16 unregularized FULL 16-feature Gram from metadata alone. No model FIT target or HELD target generation during preflight. Negative bad seeds/replay/identity, source policy/cold restore/corrupt/wrong-world checkpoints, numerics/parity fail-closed.",
+    "comparison": "All arms receive identical staged 50 row action/outcome/context info, first/last controls are fitted regardless of true lag, evaluation independently labels appropriate *wrong-lag* and *right-lag* control by postfit hidden assignment; no privileged routing into fitted arms. Report both.",
+    "metrics": "HELD causal contrast RMSE, zero/oracle diagnostics, per-stage B0 original historical outcome RMSE and checkpoint round-trip, causal lag inferred from fitted action effect L2, source SHA identity, all FIT-stage full rank, exact conventional normal-equation residual, local coordinate solve counts, scalar resident footprint, total raw batch refit rows, wall-clock diagnostics (not numeric parity). Linux/Windows numeric parity 1e-9 abs/rel.",
+    "frozen_success": "BALANCED_CREDIT_SUPPORTED if >=3/4 worlds: local HELD contrast RMSE <=max(1.10*fully_fitted_correct_context_OLS_RMSE,OLS_RMSE+0.02), local RMSE <=0.75*fully_fitted_WRONG_LAG_OLS_RMSE and <=0.75*lag_blind_RMSE and <=0.75*shuffled_RMSE and <=0.60*zero_RMSE; correct active lag via postfit local action-weight L2 active >1.5*inactive, B3 B0 historical outcome RMSE <=max(1.2*B0_after_B0_RMSE,B0_after_B0+0.02), exact source/CI/splits/restore validated. Explicitly do NOT require improvement over the rightly conditioned single-lag model.",
+    "NO_GAIN": "All worlds valid but frozen success not met; preserve null and all per-world controls, do not change thresholds or run same seeds.",
+    "INVALID": "Any failed exact 16-rank metadata or OS parity, invalid strong baseline/cold restore/evidence/cost identity, opened HELD early, nondeterministic results, missing complete full regression or G29, source-first-use violation; no scientific verdict.",
+    "limitations": "A pass supports bounded source-free temporal credit under identifiable fully observed correlates, not unobserved confounding, active experimental design, unknown causal-law generalization, novel architecture, or conventional strong-control superiority; covariance learner is effectively incremental linear regression not verified native intelligence."
+  },
+  "execution_authority": {
+    "native_amalgam_training": false,
+    "checkpoint_mutation": false,
+    "original_GFP_first_use": false,
+    "RESERVED_first_use": false,
+    "accepted_main_write": false,
+    "merge": false,
+    "self_hosted_runner": false,
+    "new_scheduler": false,
+    "paid_API": false,
+    "production_deploy": false
+  },
+  "requirements": "GitHub-hosted Ubuntu24.04/Windows2022 Python3.12 read-only qualification. Mandatory original Yggdrasil root full suite, WSP200/209 full, WSP210 smoke and WSP211 allowlist and WSP212..217 source-only tests; no consumed past primary replay. Exact source atlas three files pinned by G29 before WSP218 first label. Independent numerically verified Windows/Linux parity. Preserve all results in WSP218 PR repo, not chat artifacts.",
+  "freeze": "This prereg commit MUST PRECEDE implementation and any FIT/HELD model output. No tuning of seeds, 60 sweeps, ridge, contexts or decision criteria after a primary outcome."
+}
