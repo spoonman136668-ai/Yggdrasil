@@ -120,6 +120,31 @@ class QuineRetentionTests(unittest.TestCase):
         self.assertIsNone(report["rejected_shadow_checkpoint_sha256"])
         self.assertEqual(len(self.anchor.events), 24)
 
+    def test_single_historical_loss_evaluation_per_policy_per_witness(self):
+        """Retention verdict is unchanged while expensive native reads are reused."""
+        from unittest.mock import patch
+
+        candidate = self.proposal()
+        original = QUINE._loss
+        counts = {"anchor": 0, "proposal": 0}
+
+        def counted(system, event):
+            if system is self.anchor:
+                counts["anchor"] += 1
+            elif system is candidate:
+                counts["proposal"] += 1
+            else:
+                self.fail("Unexpected policy scored by historical Quine check")
+            return original(system, event)
+
+        with patch.object(QUINE, "_loss", side_effect=counted):
+            selected, report = QUINE.assess_update(
+                self.anchor, self.current, candidate, self.manifest, self.pin)
+        self.assertIs(selected, candidate)
+        self.assertEqual(report["status"], "ADMIT_RESEARCH_CANDIDATE")
+        self.assertEqual(report["quines_checked"], 16)
+        self.assertEqual(counts, {"anchor": 24, "proposal": 24})
+
     def test_one_bad_quine_blocks_shared_overwrite(self):
         candidate = self.proposal({(0, "transition"): Fraction(9, 10)})
         chosen, report = QUINE.assess_update(
