@@ -79,6 +79,14 @@ class MH07ArchiveProvenanceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "INVALID_OFFLINE_MASK"):
                 m.policy(state, bits)
 
+    def test_original_unused_bank_tie_is_legacy_only(self):
+        # At A240 unused bank1 genuinely has 3 zero action scores.
+        self.assertEqual(m.select((0.0, 0.0, 0.0), allow_tied_archive=True), 0)
+        with self.assertRaisesRegex(ValueError, "UNIDENTIFIABLE_TIED"):
+            m.select((0.0, 0.0, 0.0))
+        with self.assertRaisesRegex(ValueError, "UNIDENTIFIABLE_TIED"):
+            m.select((0.2, 0.2, -0.1))
+
     def test_original_archive_immutable_before_after_readouts(self):
         before = [hashlib.sha256(path.read_bytes()).hexdigest()
                   for path in (self.ubuntu, self.windows)]
