@@ -114,7 +114,11 @@ def budget_gate(per_family_seconds: dict[str, list[float]],
 
     Not a scheduler and not an authorization to consume any scientific cohort.
     """
-    if type(target_worlds_per_family) is not int or target_worlds_per_family < 1 or budget_seconds <= 0 or safety_factor < 1.0 or not per_family_seconds:
+    if (type(target_worlds_per_family) is not int or target_worlds_per_family < 1
+            or type(budget_seconds) not in (int, float) or not math.isfinite(budget_seconds)
+            or budget_seconds <= 0 or type(safety_factor) not in (int, float)
+            or not math.isfinite(safety_factor) or safety_factor < 1.0
+            or not isinstance(per_family_seconds, dict) or not per_family_seconds):
         raise ValueError("invalid budget")
     estimated = 0.0
     for family, samples in per_family_seconds.items():
@@ -122,5 +126,7 @@ def budget_gate(per_family_seconds: dict[str, list[float]],
             raise ValueError(f"unqualified timing sample: {family}")
         estimated += max(samples) * target_worlds_per_family
     projected = estimated * safety_factor
+    if not math.isfinite(projected):
+        raise ValueError("nonfinite projection")
     return {"projected_seconds": round(projected, 3),
             "budget_seconds": budget_seconds, "qualified": projected <= budget_seconds}

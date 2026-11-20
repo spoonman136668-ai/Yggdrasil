@@ -84,6 +84,18 @@ class ReceiptTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unqualified timing"):
             budget_gate({"A": [1, 2]}, 4, 100)
 
+    def test_nonfinite_budget_or_factor_rejected(self):
+        for budget, factor in [(float("inf"), 1.5), (float("nan"), 1.5),
+                               (100, float("inf")), (100, float("nan")),
+                               (True, 1.5), (100, False)]:
+            with self.subTest(budget=budget, factor=factor):
+                with self.assertRaisesRegex(ValueError, "invalid budget"):
+                    budget_gate({"A": [1, 2, 2]}, 4, budget, safety_factor=factor)
+
+    def test_overflowed_projection_rejected(self):
+        with self.assertRaisesRegex(ValueError, "nonfinite projection"):
+            budget_gate({"A": [1e308, 1e308, 1e308]}, 4, 1e308)
+
 
 if __name__ == "__main__":
     unittest.main()
