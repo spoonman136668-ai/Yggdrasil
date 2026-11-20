@@ -112,7 +112,7 @@ class RD07FixedHistoricalQuery(unittest.TestCase):
             (("stages", "a_anchor", "direct",
               "mismatched_public_history_contexts"), -1),
             (("functional_readout_drift","recent32","b_endpoint",
-              "retrospective_fixed_context_within_old_limit"),False),
+              "retrospective_fixed_context_within_old_limit"),None),
             (("previous_rd04_verdict",),"RD04_ENGINEERING_FEASIBLE"),
             (("source",),"cap04-rd04-source-c"),
             (("scientific_pass",),True),
