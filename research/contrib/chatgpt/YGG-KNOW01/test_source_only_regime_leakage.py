@@ -1,8 +1,7 @@
 """Source-free KNOW15 factual cue identifiability/negative tests."""
-import json
 import unittest
 from same_slot_blind_regime_dev import (
-    SEEDS, CUES, FIT, N, bundle, subject, object_id, world
+    SEEDS, CUES, FIT, N, subject, object_id, world
 )
 from source_only_regime_leakage import select_cue_without_actions
 
@@ -13,9 +12,14 @@ class FactsOnly:
         self.rows = set()
         self.mode = source_mode
         for task in (0, 1):
-            for q, p, obj, ref in json.loads(
-                    bundle(seed_index, task))["records"]:
-                self.rows.add((q, p, obj))
+            _private_role, modes, columns = world(seed_index, task)
+            for entity in range(N):
+                q = subject(seed_index, task, entity)
+                self.rows.add((q, 960, object_id(task, 4, modes[entity])))
+                for feature, predicate in enumerate(CUES):
+                    self.rows.add((
+                        q, predicate,
+                        object_id(task, feature, columns[feature][entity])))
 
     def fact(self, q, p, o):
         present = (q, p, o) in self.rows
