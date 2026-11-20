@@ -85,11 +85,29 @@ def verify_selector_replay(expected, restored):
         raise ValueError("Quine restored witness ledger differs")
     if _checkpoint(expected) != _checkpoint(restored):
         raise ValueError("Quine restored active-policy custody differs")
-    for event in _ledger(expected):
+    events = _ledger(expected)
+    for event in events:
         if _loss(expected, event) != _loss(restored, event):
             raise ValueError("Quine restored functional readout differs")
+
+    # Equality of saved weights/routing evidence does not prove that a changed
+    # implementation will reproduce unchosen actions. Check both public action
+    # choices and all possible second-stage observations/actions on each
+    # historically observed paired view, without inventing outcome labels.
+    views_seen = tuple(dict.fromkeys(event[1] for event in events))
+    queries = ((0,), (1,)) + tuple(
+        (first, state, second)
+        for first in (0, 1) for state in (0, 1) for second in (0, 1))
+    for views in views_seen:
+        for args in queries:
+            original, replay = (value.forecast(views, *args)
+                                for value in (expected, restored))
+            if (not (0 <= original <= 1 and 0 <= replay <= 1)
+                    or round(SCALE * original) != round(SCALE * replay)):
+                raise ValueError("Quine restored alternative-action forecast differs")
     return {"policy_sha256": digest(_checkpoint(restored)),
-            "readout_witnesses": len(_ledger(restored)),
+            "readout_witnesses": len(events),
+            "policy_queries": len(views_seen) * len(queries),
             "source_actions": 0, "scientific_pass": False}
 
 
