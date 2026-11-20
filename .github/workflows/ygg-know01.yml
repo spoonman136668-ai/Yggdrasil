@@ -192,6 +192,7 @@ jobs:
           mkdir "$RUNNER_TEMP/know06-amalgam-source"
           git archive "$AMALGAM" yggdrasil | tar -xf - -C "$RUNNER_TEMP/know06-amalgam-source"
           PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/native_cold_shadow.py --installed-session "$RUNNER_TEMP/know03-history-readonly" --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know06-cold-shadow-receipt.json"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/historical_functional_retention.py --installed-session "$RUNNER_TEMP/know03-history-readonly" --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know08-retention-receipt.json"
           test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
@@ -201,5 +202,6 @@ jobs:
           path: |
             ${{ runner.temp }}/know03-pairing-receipt.json
             ${{ runner.temp }}/know06-cold-shadow-receipt.json
+            ${{ runner.temp }}/know08-retention-receipt.json
           retention-days: 30
           if-no-files-found: error
