@@ -18,6 +18,14 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: GKD-01 exact Node on isolated contributor PR
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+      - name: GKD-01 frozen response-donor numerical checks (no teacher/runtime APIs)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: node research/contrib/chatgpt/GKD-01/run.mjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -49,4 +57,12 @@ jobs:
               print("YGG_G29_BUNDLE_SHA256=" + digest)
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
+      - name: GKD-01 exact Node on isolated contributor PR
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+      - name: GKD-01 frozen response-donor numerical checks (no teacher/runtime APIs)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: node research/contrib/chatgpt/GKD-01/run.mjs
       - run: git diff --exit-code
