@@ -12,6 +12,8 @@ permissions:
 
 jobs:
   exact_source_os:
+    # Prevent replay of consumed source-free primaries on later stacked PRs.
+    if: github.event.pull_request.head.ref == 'research/wsp214-gate-admission-20261119-training-gaps'
     name: WSP214 Python3.12 / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
