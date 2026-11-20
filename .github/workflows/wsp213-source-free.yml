@@ -11,6 +11,8 @@ permissions:
   contents: read
 jobs:
   source_exact:
+    # Prevent replay of consumed source-free primaries on later stacked PRs.
+    if: github.event.pull_request.head.ref == 'research/wsp213-matched-direct-weight-20261119-training-gaps'
     name: WSP213 Python3.12 / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
