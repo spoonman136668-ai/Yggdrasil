@@ -1,0 +1,541 @@
+{
+  "schema": "yggdrasil.gate18.strictly-unseen-interventions.v1",
+  "prereg_commit": "666a5ef577186e2ca94998f523c6b07de9c053cc",
+  "parent_sha": "a0cd5ef90cf3a7b931a3414cda831674ec148c91",
+  "design": {
+    "binary_inputs": 5,
+    "all_actions": 32,
+    "train_unique_actions": 24,
+    "withheld_unseen_actions": 8,
+    "training_events_per_world": 96,
+    "held_events_per_world": 8,
+    "small_model_persisted_bytes": 388,
+    "training_action_split_independent_of_evaluator_parent_masks": true,
+    "full_parent_bin_coverage_not_guaranteed": true
+  },
+  "families": {
+    "majority": {
+      "family": "majority3",
+      "seed_first": 71000,
+      "seed_last": 71047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.069657784,
+        "fixed_full": 0.069657784,
+        "truncated": 0.2058736084,
+        "flat": 0.25,
+        "parity_only": 0.2625468555,
+        "bayes": 0.0694289608,
+        "null": 0.25
+      },
+      "parents_exact": 94,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 96,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 768,
+      "held_true_parent_bins_uncovered": 0,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.069657784,
+          "flat": 0.25,
+          "bayes": 0.0694289608
+        },
+        "uncovered": null
+      },
+      "gain_vs_flat": {
+        "mean": 0.180342216,
+        "ci95": [
+          0.1676832543,
+          0.1930011776
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": 0.1928890715,
+        "ci95": [
+          0.1791800625,
+          0.2065980804
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": 0.0002288232,
+        "ci95": [
+          -0.003234753,
+          0.0036923995
+        ]
+      },
+      "work": {
+        "adaptive": 325824,
+        "fixed_full": 325824,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 153600,
+        "bayes": 239616
+      }
+    },
+    "mux": {
+      "family": "mux3",
+      "seed_first": 72000,
+      "seed_last": 72047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.0632830046,
+        "fixed_full": 0.0632830046,
+        "truncated": 0.2209261136,
+        "flat": 0.25,
+        "parity_only": 0.2648744447,
+        "bayes": 0.0593835801,
+        "null": 0.25
+      },
+      "parents_exact": 95,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 95,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 768,
+      "held_true_parent_bins_uncovered": 0,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.0632830046,
+          "flat": 0.25,
+          "bayes": 0.0593835801
+        },
+        "uncovered": null
+      },
+      "gain_vs_flat": {
+        "mean": 0.1867169954,
+        "ci95": [
+          0.1714829454,
+          0.2019510455
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": 0.2015914401,
+        "ci95": [
+          0.1861160102,
+          0.21706687
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": 0.0038994244,
+        "ci95": [
+          -0.003763197,
+          0.0115620459
+        ]
+      },
+      "work": {
+        "adaptive": 324352,
+        "fixed_full": 325632,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 152448,
+        "bayes": 239616
+      }
+    },
+    "random3": {
+      "family": "random_essential3",
+      "seed_first": 73000,
+      "seed_last": 73047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.0768013733,
+        "fixed_full": 0.0768013733,
+        "truncated": 0.1717683844,
+        "flat": 0.25,
+        "parity_only": 0.2303843089,
+        "bayes": 0.0635137351,
+        "null": 0.25
+      },
+      "parents_exact": 76,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 84,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 764,
+      "held_true_parent_bins_uncovered": 4,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.0758945742,
+          "flat": 0.25,
+          "bayes": 0.0625373672
+        },
+        "uncovered": {
+          "adaptive": 0.25,
+          "flat": 0.25,
+          "bayes": 0.2500000012
+        }
+      },
+      "gain_vs_flat": {
+        "mean": 0.1731986267,
+        "ci95": [
+          0.1583620555,
+          0.1880351979
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": 0.1535829357,
+        "ci95": [
+          0.1330012753,
+          0.174164596
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": 0.0132876382,
+        "ci95": [
+          0.0068650128,
+          0.0197102635
+        ]
+      },
+      "work": {
+        "adaptive": 310944,
+        "fixed_full": 326304,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 144320,
+        "bayes": 239616
+      }
+    },
+    "parity": {
+      "family": "parity3",
+      "seed_first": 74000,
+      "seed_last": 74047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.0591904939,
+        "fixed_full": 0.0591904939,
+        "truncated": 0.2660387816,
+        "flat": 0.25,
+        "parity_only": 0.0555719954,
+        "bayes": 0.0591904939,
+        "null": 0.25
+      },
+      "parents_exact": 96,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 96,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 764,
+      "held_true_parent_bins_uncovered": 4,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.0581914913,
+          "flat": 0.25,
+          "bayes": 0.0581914913
+        },
+        "uncovered": {
+          "adaptive": 0.25,
+          "flat": 0.25,
+          "bayes": 0.25
+        }
+      },
+      "gain_vs_flat": {
+        "mean": 0.1908095061,
+        "ci95": [
+          0.1812977498,
+          0.2003212624
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": -0.0036184985,
+        "ci95": [
+          -0.0134845839,
+          0.0062475868
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": 0,
+        "ci95": [
+          -1e-10,
+          0
+        ]
+      },
+      "work": {
+        "adaptive": 325632,
+        "fixed_full": 325632,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 159744,
+        "bayes": 239616
+      }
+    },
+    "pair": {
+      "family": "pair",
+      "seed_first": 75000,
+      "seed_last": 75047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.0498818445,
+        "fixed_full": 0.0498818445,
+        "truncated": 0.0498818445,
+        "flat": 0.25,
+        "parity_only": 0.0493108984,
+        "bayes": 0.050125212,
+        "null": 0.25
+      },
+      "parents_exact": 0,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 10,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 768,
+      "held_true_parent_bins_uncovered": 0,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.0498818445,
+          "flat": 0.25,
+          "bayes": 0.050125212
+        },
+        "uncovered": null
+      },
+      "gain_vs_flat": {
+        "mean": 0.2001181555,
+        "ci95": [
+          0.1877044308,
+          0.2125318802
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": -0.0005709461,
+        "ci95": [
+          -0.0058926641,
+          0.0047507719
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": -0.0002433675,
+        "ci95": [
+          -0.0003703134,
+          -0.0001164216
+        ]
+      },
+      "work": {
+        "adaptive": 215552,
+        "fixed_full": 325632,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 98304,
+        "bayes": 239616
+      }
+    },
+    "unary": {
+      "family": "unary",
+      "seed_first": 76000,
+      "seed_last": 76047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.0578581154,
+        "fixed_full": 0.0578581154,
+        "truncated": 0.0578581154,
+        "flat": 0.25,
+        "parity_only": 0.0571031359,
+        "bayes": 0.058482866,
+        "null": 0.25
+      },
+      "parents_exact": 0,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 8,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 768,
+      "held_true_parent_bins_uncovered": 0,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.0578581154,
+          "flat": 0.25,
+          "bayes": 0.058482866
+        },
+        "uncovered": null
+      },
+      "gain_vs_flat": {
+        "mean": 0.1921418846,
+        "ci95": [
+          0.175898236,
+          0.2083855332
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": -0.0007549796,
+        "ci95": [
+          -0.0015585376,
+          0.0000485785
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": -0.0006247505,
+        "ci95": [
+          -0.0012347721,
+          -0.000014729
+        ]
+      },
+      "work": {
+        "adaptive": 212992,
+        "fixed_full": 325632,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 98304,
+        "bayes": 239616
+      }
+    },
+    "independent": {
+      "family": "independent",
+      "seed_first": 77000,
+      "seed_last": 77047,
+      "seeds": 48,
+      "worlds": 96,
+      "scores": {
+        "adaptive": 0.2542462776,
+        "fixed_full": 0.2542462776,
+        "truncated": 0.2542462776,
+        "flat": 0.25,
+        "parity_only": 0.2542462776,
+        "bayes": 0.2570588786,
+        "null": 0.25
+      },
+      "parents_exact": 0,
+      "false_third_order_routes": 0,
+      "expanded_worlds": 96,
+      "cold_prediction_passes": 48,
+      "disjoint_action_split_passes": 48,
+      "exactly_matched_fixed_seeds": 48,
+      "held_true_parent_bins_covered": 768,
+      "held_true_parent_bins_uncovered": 0,
+      "held_coverage_brier": {
+        "covered": {
+          "adaptive": 0.2542462776,
+          "flat": 0.25,
+          "bayes": 0.2570588786
+        },
+        "uncovered": null
+      },
+      "gain_vs_flat": {
+        "mean": -0.0042462776,
+        "ci95": [
+          -0.0077872596,
+          -0.0007052956
+        ]
+      },
+      "gain_vs_parity": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "gain_vs_fixed": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "difference_vs_bayes": {
+        "mean": -0.002812601,
+        "ci95": [
+          -0.0060398422,
+          0.0004146402
+        ]
+      },
+      "work": {
+        "adaptive": 326400,
+        "fixed_full": 326400,
+        "truncated": 202752,
+        "flat": 0,
+        "parity_only": 153600,
+        "bayes": 239616
+      }
+    }
+  },
+  "gates": {
+    "majority_brier_max_0_14": true,
+    "mux_brier_max_0_14": true,
+    "random3_brier_max_0_17": true,
+    "parity_brier_max_0_14": true,
+    "majority_flat_gain_min_0_08": true,
+    "mux_flat_gain_min_0_08": true,
+    "random3_flat_gain_min_0_06": true,
+    "parity_flat_gain_min_0_08": true,
+    "flat_gain_paired_CI_lower_all": true,
+    "majority_parent_recovery_min_78": true,
+    "mux_parent_recovery_min_78": true,
+    "random3_parent_recovery_min_60": true,
+    "parity_parent_recovery_min_78": true,
+    "pair_regression_vs_truncated_max_0_015": true,
+    "unary_regression_vs_truncated_max_0_015": true,
+    "random_independent_brier_max_0_27": true,
+    "random_independent_spurious_triple_max_8": true,
+    "max_deficit_vs_bayes_0_02": true,
+    "structural_gain_vs_fixed_0_015": false,
+    "structural_fixed_CI_lower_positive": false,
+    "exact_cold_prediction_all": true,
+    "fully_disjoint_action_sets_all": true,
+    "equal_persisted_state_388": true
+  },
+  "summary": {
+    "max_bayes_deficit": 0.0132876382,
+    "true_parent_bins_unseen_total": 8
+  },
+  "withheld_action_signal": true,
+  "structural_superiority": false,
+  "verdict": "STRICTLY_UNSEEN_ACTION_DEVELOPMENT_ONLY",
+  "exclusions": {
+    "native_first_use": false,
+    "new_world_transfer": false,
+    "unknown_parent_bin_inference_proven": false,
+    "structural_superiority_accepted": false,
+    "process_memory_cost_measured": false
+  }
+}
