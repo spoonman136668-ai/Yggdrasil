@@ -1,0 +1,129 @@
+{
+  "schema": "yggdrasil.tgap25.structural-archive-adaptive-action-prereg.v1",
+  "date": "2026-11-20",
+  "role": "Independent synthetic contributor existing Yggdrasil PR #1327; canonical Amalgam #1278 sole owner. Issue #426 forbids protected original-world first-use.",
+  "prior": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "tgap24_prereg": "dfa9034184027d904579705e8ffbb8f630799c1d",
+    "tgap24_qualified": "c51cb75e2b6a35f44e2d64d0c565ef3cae070929",
+    "tgap24_run": 44736120158
+  },
+  "question": "Does reusable frozen causal-rule archive, trained on A and B, improve adaptive action-consequence decisions on A/B recurrences without hurting unfamiliar affine/non-affine laws, against equal-witness trained Bayesian and nonstructured controls?",
+  "private_world": {
+    "context": "3 observed raw binary bits c=0..7, at time t context=t%8; two permissible actions 0 or1",
+    "mechanism": "best action=f(c), private Boolean rule fixed for each episode. Reward Bernoulli .8 when selected action equals best, else .2; private exogenous SHA256(seed,rule,t) uniform coin independent of chosen action, making shared potential-outcome tape but revealing ONLY selected-action reward.",
+    "fit_worlds": [
+      {
+        "seed": 11101,
+        "rule": "x0",
+        "steps": 64,
+        "public_episode_index": 0
+      },
+      {
+        "seed": 11107,
+        "rule": "x1",
+        "steps": 64,
+        "public_episode_index": 1
+      }
+    ],
+    "held_worlds": [
+      {
+        "seed": 11201,
+        "rule": "x0"
+      },
+      {
+        "seed": 11209,
+        "rule": "x0"
+      },
+      {
+        "seed": 11213,
+        "rule": "x0"
+      },
+      {
+        "seed": 11303,
+        "rule": "x1"
+      },
+      {
+        "seed": 11311,
+        "rule": "x1"
+      },
+      {
+        "seed": 11317,
+        "rule": "x1"
+      },
+      {
+        "seed": 11401,
+        "rule": "parity3"
+      },
+      {
+        "seed": 11411,
+        "rule": "parity3"
+      },
+      {
+        "seed": 11423,
+        "rule": "parity3"
+      },
+      {
+        "seed": 11501,
+        "rule": "majority3"
+      },
+      {
+        "seed": 11503,
+        "rule": "majority3"
+      },
+      {
+        "seed": 11519,
+        "rule": "majority3"
+      }
+    ],
+    "held_total": 12,
+    "held_steps": 64,
+    "warmup_per_world": 16,
+    "scored_per_world": 48,
+    "fit_actions_per_policy": 128,
+    "held_actions_per_policy": 768,
+    "scored_actions_per_policy": 576,
+    "warmup_action": "(t//8)%2 so first two passes expose all 8 contexts × both actions",
+    "adaptive_action": "after t>=16: choose action1 iff P(best_action=1 at public c)>0.5; choose action0 iff <0.5; on exact tie action=(t%2). Each policy independently acts, sees its one own witnessed reward. All policies have same 48 adaptive action budget and same private underlying noise at given seed,rule,t; NO all-world teacher labels.",
+    "hidden_rule_table": "fitted rules x0 and x1; novel affine rule x0 XOR x1 XOR x2; novel non-affine majority of x0,x1,x2. Hidden function code and reward noise never provided to non-oracle learner."
+  },
+  "candidate": {
+    "name": "structural_archive",
+    "type": "Research-only numeric shared affine Boolean function posterior, NOT an original native GF2 model upgrade. 16 handcrafted affine hypotheses f(c)=bias XOR b0*x0 XOR b1*x1 XOR b2*x2, i.e. explicit inductive bias, NOT spontaneously discovered topology.",
+    "fit": "For each 64-action FIT episode, use fixed action=(t//8)%2, update log likelihood of all 16 hypotheses from witnessed reward only; freeze that episode's normalized posterior in one of 2 immutable archive slots. Never store hidden rule ID. All non-oracle controls observe identical 128 FIT source actions/outcomes.",
+    "held": "Clone both fixed archives plus one new uniform-affine online hypothesis component. Start mixture prior exactly 1/3 per archive A, archive B and fresh component; after every held witnessed reward, update component weights by Bayes likelihood, update ONLY fresh component's 16 hypothesis log likelihood; preserve archived FIT posteriors exactly, no hidden phase/switch/role.",
+    "cold": "Canonical sorted JSON fixed 16×2 archive weights, old readouts, source provenance, SHA256 and typed event-count controls; verify A and B archived predictions preserved exactly after held A/B/new worlds and cold restore.",
+    "no_fit": "Same three-component archive reader but all three component priors uniform over 16 affine hypotheses (no FIT learned weights). Same data after HELD warmup; scores separately.",
+    "no_replay": "A and B training episode indexes are public FIT boundaries only, not a held private law label."
+  },
+  "controls": [
+    "Conventional independent exact affine Bayesian predictor over same 16 uniform hypotheses with same FIT+held data but no reusable episode archive; equal function family and lower state, report possible candidate tie or loss",
+    "Full-truth-table Bayesian comparator over all 256 Boolean 3-bit laws, with two FIT-trained posterior archives, fresh uniform component and same mixture update; extra 16× representational capacity, no private rule given",
+    "Fully FIT-trained independent contextual Beta(1,1) counts over 8 observed contexts ×2 actions, then updated on held",
+    "Fully FIT-trained contextual rolling-last-8 Beta for each public context/action, then updated on held",
+    "Source-only no-learning action=t%2, no private rule reference",
+    "Private best-action oracle only as unfair ceiling; not a learner and excluded from gain claims"
+  ],
+  "metrics": {
+    "primary": "Expected per-action regret: 0.6 if chosen action differs from privately scored best action, else zero; mean over 576 held scored decisions across 12 predeclared worlds. Hidden rule may be used ONLY by evaluator to score after action is chosen.",
+    "secondary": [
+      "Realized reward from exactly one witnessed Bernoulli outcome per arm",
+      "Regret by return A/B vs new affine parity vs out-of-class majority, 3 worlds each",
+      "Trained archive vs same algorithm no-FIT gap on recurrence and all worlds",
+      "Whether old A/B archived action probabilities are byte/float-exact after all held actions and cold restore",
+      "All policies 128 FIT actions and 768 held actions, 192 warmup and 576 scored, no repeated first-use",
+      "Model state size bytes, time excluding checkout/CI and actual number of hypothesis likelihood updates; no speedup claim"
+    ]
+  },
+  "preregistered_thresholds": {
+    "H1": "Archive learned FIT improves A+B recurrence mean regret by >=0.060000 vs identical no-FIT archive",
+    "H2": "Archive learned FIT beats fully FIT contextual rolling-last-8 on novel affine parity mean regret by >=0.060000",
+    "H3": "Archive learned FIT does not worsen out-of-class majority mean regret vs contextual rolling by more than 0.060000",
+    "H4": "A and B archived action forecasts unchanged after HELD unknown-law updates, before/after independent cold restore; this is a storage invariant, not functional transfer proof",
+    "H5": "Archive overall mean regret is lower than the strongest fully fitted *equal-family* conventional affine Bayesian comparator by >=0.030000",
+    "verdict": "All H1..H5 required for DEVELOPMENT_PASS. Some->MIXED, zero->NO_GO. Separate scientific verdict ALWAYS SCIENTIFIC_NO_GO_SYNTHETIC; no threshold tuning/replay after first scored run."
+  },
+  "engineering": "Use existing YGG-KNOW01 six jobs: Linux/Windows focused, G29 source seal, mandatory full regressions both OS, old consumed source/Amalgam compatibility. Provenance and negative replay/source/cold checks. No new runner/CI owner or planned paid API.",
+  "science": "Source-only toy Boolean contexts and handcrafted true rule family, 12 worlds: not intelligence proof. Real scientific qualification needs unfamiliar original-world owner first-use, independent replication, matched fully fitted conventional baselines/information/actions/compute, action consequence/retention, and whole cost.",
+  "prohibitions": "Do not alter existing TGAP20..24 or KNOW20..23 frozen studies/thresholds, accepted main or owner checkpoint; no new controller, scheduler, paid API, protected first-use, merge, model promotion or separate PR."
+}
