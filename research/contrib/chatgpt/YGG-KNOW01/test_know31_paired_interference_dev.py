@@ -25,7 +25,7 @@ class TestKNOW31(unittest.TestCase):
         self.assertEqual(len(SEEDS), len(set(SEEDS)))
         self.assertEqual(len(MAPS) * len(SEEDS), 24)
         self.assertTrue(all(seed >= 16000 for seed in SEEDS))
-        self.assertIn("B-interference", protocol()["question"])
+        self.assertIn("B-specific", protocol()["question"])
 
     def test_source_mode_and_world_denials_without_frozen_witness(self):
         for kwargs in (
