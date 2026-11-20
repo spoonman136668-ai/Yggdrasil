@@ -1,0 +1,76 @@
+import hashlib,unittest
+from causal_revision import RepairBasis,features,context,SNAPSHOT_BYTES,HYPOTHESES
+from worlds import worlds,world,SEEDS,FAMILIES,REPS,FORBIDDEN,truth
+from compare import instantiate,BayesianPolynomial,Beta,Fragile,probe,ARMS
+
+class ResearchTests(unittest.TestCase):
+    def test_seed_disjoint(self):self.assertFalse(set(SEEDS)&set(FORBIDDEN))
+    def test_world_count(self):self.assertEqual(len(worlds()),24)
+    def test_public_manifest_hash(self):
+        for w in worlds():
+            self.assertEqual(w.public_sha256,hashlib.sha256(bytes(z for e in w.events for z in e.public())).hexdigest())
+    def test_world_scope(self):
+        with self.assertRaises(ValueError):world(929209101,FAMILIES[0],0)
+    def test_noise_exists(self):self.assertTrue(all(sum(w.flip_counts)>0 for w in worlds()))
+    def test_public_task_tags(self):
+        for w in worlds():
+            a,b,c=w.dwell
+            self.assertEqual([e.v for e in w.events], [0]*a+[1]*b+[0]*c)
+    def test_external_labels_not_passed(self):
+        e=worlds()[0].events[0]
+        self.assertEqual(len(e.public()),6)
+        self.assertFalse(hasattr(e,'family'))
+    def test_invalid_bit(self):
+        with self.assertRaises(ValueError):context('s',0,2,0)
+    def test_invalid_stage(self):
+        with self.assertRaises(ValueError):features('invalid',0,0)
+    def test_empty_prediction(self):self.assertEqual(RepairBasis().predict('y',0,1,0,1,0),.5)
+    def test_polynomial_table_size(self):
+        self.assertEqual(len(HYPOTHESES['y']),2048)
+        self.assertEqual(len(HYPOTHESES['s']),16)
+    def test_incremental_revision(self):
+        m=RepairBasis()
+        for _ in range(8):m.observe_event(0,0,1,1,0,1)
+        self.assertEqual(m.counts['y',0][6][1],8)
+        for _ in range(14):m.observe_event(0,0,1,1,0,0)
+        self.assertEqual(m.counts['y',0][6],[14,8])
+        self.assertNotEqual(m.predict('y',0,0,1,1,0),1.0)
+    def test_cold_custody_parity(self):
+        m=RepairBasis()
+        for i in range(19):m.observe_event(i%2,i%2,0,i%2,1,1)
+        raw=m.snapshot();n=RepairBasis.restore(raw)
+        self.assertEqual(raw,n.snapshot())
+        self.assertEqual(raw[:8],b'LR92BA1!')
+        self.assertEqual(len(raw),SNAPSHOT_BYTES)
+    def test_cold_predictions_all_public_contexts(self):
+        m=RepairBasis()
+        for w in worlds()[:1]:
+            for e in w.events[:25]:m.observe_event(*e.public())
+        n=RepairBasis.restore(m.snapshot())
+        for stage in ('s','y'):
+            for v in (0,1):
+                for s1 in (0,1):
+                    for x1 in (0,1):
+                        for s2 in (0,1):
+                            for x2 in (0,1):self.assertEqual(n.predict(stage,v,s1,x1,s2,x2),m.predict(stage,v,s1,x1,s2,x2))
+    def test_sha_tamper(self):
+        m=RepairBasis();x=m.snapshot()
+        with self.assertRaises(ValueError):RepairBasis.restore(x[:-1]+bytes([x[-1]^1]))
+    def test_bucket_independence(self):
+        m=RepairBasis()
+        for i in range(50):m.observe_event(0,i%2,(i>>1)%2,i%2,i%2,0)
+        p=[m.predict('y',0,0,1,0,0),m.predict('s',0,1,1)]
+        for i in range(50):m.observe_event(1,(i>>1)%2,i%2,1,0,i%2)
+        self.assertEqual(p,[m.predict('y',0,0,1,0,0),m.predict('s',0,1,1)])
+    def test_beta_initial(self):self.assertEqual(Beta().predict('y',0,1,0,1,0),.5)
+    def test_exact_symbolic_initial(self):self.assertTrue(.49<BayesianPolynomial().predict('y',0,0,1,1,0)<.51)
+    def test_negative_fragile(self):
+        m=Fragile();m.observe_event(0,0,1,1,0,1);m.observe_event(0,0,1,1,0,0)
+        self.assertIn(('y',0),m.invalid)
+    def test_arm_predeclared(self):self.assertEqual(len(ARMS),7)
+    def test_probe_pure(self):
+        w=worlds()[0];m=RepairBasis();before=m.snapshot();probe(w,m);self.assertEqual(m.snapshot(),before)
+    def test_snapshot_budget(self):self.assertLessEqual(len(RepairBasis().snapshot()),256)
+    def test_native_not_imported(self):self.assertNotIn('yggdrasil',str(RepairBasis.__module__))
+
+if __name__=='__main__':unittest.main()

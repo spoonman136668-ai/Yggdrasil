@@ -1,0 +1,180 @@
+"""LR-92BA frozen-source prequential contrast: noisy GF2 repair and strong controls."""
+from __future__ import annotations
+from collections import deque
+import hashlib,json,math,time
+from causal_revision import (RepairBasis, NOISE, LOGODDS, COMPLEXITY, HYPOTHESES,
+                             PRIORS, STAGE_KEYS, context, features)
+from worlds import SEEDS,FAMILIES,REPS,worlds,truth,Event
+
+ARMS=('repair_basis','exact_symbolic_bayes','beta_full','beta_window32','beta_decay24','fragile_contradiction','no_learning')
+CONTROLS=('exact_symbolic_bayes','beta_full','beta_window32','beta_decay24')
+
+class BayesianPolynomial:
+    """Exact posterior over every degree<=2 coefficient vector, all past public evidence.
+
+    Grammar is correctly specified for degree<=2 families, not for cubic worlds.
+    No true coefficient, family, phase, seed, or future label is passed.
+    """
+    def __init__(self):
+        self.logweights={k:[-COMPLEXITY*m.bit_count() for m in range(len(HYPOTHESES[k[0]]))] for k in [('s',0),('s',1),('y',0),('y',1)]}
+        self.records=[]
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        k=context(stage,v,s1,x1,s2,x2);ws=self.logweights[(stage,v)]
+        peak=max(ws)
+        # Full exact normalized posterior, not a single best-program approximation.
+        nums=den=0.
+        for index,score in enumerate(ws):
+            q=math.exp(score-peak)
+            den+=q
+            nums+=q*HYPOTHESES[stage][index][k]
+        return NOISE+(1-2*NOISE)*(nums/den)
+    def observe_event(self,v,s1,x1,s2,x2,y):
+        self.records.append((v,s1,x1,s2,x2,y))
+        for stage,value in [('s',s2),('y',y)]:
+            k=context(stage,v,s1,x1,s2,x2)
+            for i,pred in enumerate(HYPOTHESES[stage]):
+                self.logweights[stage,v][i]+=LOGODDS if pred[k]==value else -LOGODDS
+    def snapshot(self):return json.dumps(self.records,separators=(',',':')).encode('ascii')
+
+class Beta:
+    def __init__(self,window=None,halflife=None):
+        self.records=[];self.window=window;self.halflife=halflife
+    @staticmethod
+    def addr(stage,v,s1,x1,s2,x2):return (stage,v,s1,x1) if stage=='s' else (stage,v,s1,x1,s2,x2)
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        key=self.addr(stage,v,s1,x1,s2,x2)
+        observations=self.records[-self.window:] if self.window else self.records
+        pos=total=0.
+        for i,(public,k,val) in enumerate(observations):
+            if k!=key:continue
+            weight=2**(-(len(observations)-1-i)/self.halflife) if self.halflife else 1.
+            total+=weight;pos+=weight*val
+        return (1+pos)/(2+total)
+    def observe_event(self,v,s1,x1,s2,x2,y):
+        # Each episode contributes exactly one transition + one terminal label.
+        self.records.append(((v,s1,x1,s2,x2,y), self.addr('s',v,s1,x1,s2,x2),s2))
+        self.records.append(((v,s1,x1,s2,x2,y), self.addr('y',v,s1,x1,s2,x2),y))
+    def snapshot(self):return json.dumps(self.records,separators=(',',':')).encode('ascii')
+
+class Fragile:
+    """Strongly negative prior mechanism: one conflicting witness permanently invalidates bucket."""
+    def __init__(self):
+        self.values={(s,v):{} for s in STAGE_KEYS for v in (0,1)}
+        self.invalid=set();self.n=0
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        key=(stage,v)
+        if key in self.invalid:return .5
+        addr=context(stage,v,s1,x1,s2,x2)
+        return .5 if addr not in self.values[key] else float(self.values[key][addr])
+    def observe_event(self,v,s1,x1,s2,x2,y):
+        self.n+=1
+        for stage,value in [('s',s2),('y',y)]:
+            key=(stage,v);addr=context(stage,v,s1,x1,s2,x2)
+            if key in self.invalid:continue
+            if addr in self.values[key] and self.values[key][addr]!=value:self.invalid.add(key)
+            else:self.values[key][addr]=value
+    def snapshot(self):return json.dumps({'n':self.n,'invalid':sorted(self.invalid),'values':{str(k):v for k,v in self.values.items()}},sort_keys=True).encode()
+
+class NoLearning:
+    def __init__(self):self.n=0
+    def predict(self,*args):return .5
+    def observe_event(self,*args):self.n+=1
+    def snapshot(self):return str(self.n).encode()
+
+
+def instantiate(name):
+    if name=='repair_basis':return RepairBasis()
+    if name=='exact_symbolic_bayes':return BayesianPolynomial()
+    if name=='beta_full':return Beta()
+    if name=='beta_window32':return Beta(window=64) # 32 public episodes, 2 records/episode.
+    if name=='beta_decay24':return Beta(halflife=48) # 24 public episodes, 2 records/episode.
+    if name=='fragile_contradiction':return Fragile()
+    if name=='no_learning':return NoLearning()
+    raise ValueError('ARM_CONTRACT')
+
+
+def oracle_brier(p,true_outcome,noise=NOISE):
+    """Evaluator-only expected Brier on the next noisy public outcome."""
+    return (1-noise)*(p-true_outcome)**2+noise*(p-(1-true_outcome))**2
+
+
+def probe(world,model):
+    transition=[];terminal=[]
+    for s1 in (0,1):
+        for x1 in (0,1):
+            s2,_=truth(world.family,world.rep,0,s1,x1,0,0)
+            transition.append(oracle_brier(model.predict('s',0,s1,x1),s2))
+            for x2 in (0,1):
+                _,y=truth(world.family,world.rep,0,s1,x1,s2,x2)
+                terminal.append(oracle_brier(model.predict('y',0,s1,x1,s2,x2),y))
+    return {'transition':sum(transition)/len(transition),'terminal':sum(terminal)/len(terminal)}
+
+
+def one(world,arm):
+    model=instantiate(arm)
+    a,b,c=world.dwell;err={'A':[],'B':[],'return':[]};snap={};cold={}
+    start=time.perf_counter()
+    for i,e in enumerate(world.events):
+        if i in (a,a+b):
+            name='pre_B' if i==a else 'pre_return'
+            snap[name]=probe(world,model)
+            if arm=='repair_basis':
+                blob=model.snapshot();restored=RepairBasis.restore(blob)
+                if restored.snapshot()!=blob:raise AssertionError('COLD_BYTES')
+                for stage in STAGE_KEYS:
+                    for v in (0,1):
+                        for s1 in (0,1):
+                            for x1 in (0,1):
+                                for s2 in (0,1):
+                                    for x2 in (0,1):
+                                        p=(stage,v,s1,x1,s2,x2)
+                                        if restored.predict(*p)!=model.predict(*p):raise AssertionError('COLD_PREDICTION')
+                cold[name]=hashlib.sha256(blob).hexdigest()
+                model=restored
+        phase='A' if i<a else 'B' if i<a+b else 'return'
+        ps=model.predict('s',e.v,e.s1,e.x1,e.s2,e.x2)
+        py=model.predict('y',e.v,e.s1,e.x1,e.s2,e.x2)
+        err[phase].append(((ps-e.s2)**2,(py-e.y)**2))
+        model.observe_event(*e.public())
+    snap['post_return']=probe(world,model)
+    blob=model.snapshot()
+    if arm=='repair_basis':
+        if len(blob)>256 or RepairBasis.restore(blob).snapshot()!=blob:raise AssertionError('FINAL_CHECKPOINT_BUDGET')
+    avg=lambda es,i:sum(z[i] for z in es)/len(es)
+    ret=err['return'][:16]
+    return {'updates':len(world.events),'scores':{'A_terminal':avg(err['A'],1),'B_terminal':avg(err['B'],1),
+             'B_transition':avg(err['B'],0),'return16_terminal':avg(ret,1),'return16_transition':avg(ret,0)},
+            'probes':snap,'checkpoint_bytes':len(blob),'checkpoint_sha256':hashlib.sha256(blob).hexdigest(),
+            'cold_sha':cold,'elapsed_seconds':time.perf_counter()-start,
+            'diagnostics':model.diagnostics() if arm=='repair_basis' else None}
+
+
+def evaluate():
+    ws=worlds();rows=[]
+    for w in ws:
+        results={arm:one(w,arm) for arm in ARMS}
+        rows.append({'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':w.dwell,
+                     'public_sha256':w.public_sha256,'flips':w.flip_counts,'events':len(w.events),'models':results})
+    summary={str(seed):{arm:{metric:sum(row['models'][arm]['scores'][metric] for row in rows if row['seed']==seed)/12
+                             for metric in ('A_terminal','B_terminal','B_transition','return16_terminal')}
+                      for arm in ARMS} for seed in SEEDS}
+    decision={};
+    for seed in SEEDS:
+        d=summary[str(seed)];controls=tuple(d[c] for c in CONTROLS)
+        best_b=min(x['B_terminal'] for x in controls)
+        best_r=min(x['return16_terminal'] for x in controls)
+        c=d['repair_basis']
+        decision[str(seed)]=(c['return16_terminal']<=best_r-.01 and c['B_terminal']<=best_b+.01)
+    return {'schema':'lr92ba.noisy_causal_revision.dev.v1','worlds':len(rows),
+            'episodes_per_arm':sum(r['events'] for r in rows),'arms':list(ARMS),
+            'seed_go':decision,'decision':'DEVELOPMENT_GO' if all(decision.values()) else 'DEVELOPMENT_NO_GO',
+            'rows':rows,'seed_summary':summary,
+            'protected_first_use':False,'native_model_executed':False,'canonical_checkpoint_changed':False}
+
+if __name__=='__main__':
+    import sys
+    from pathlib import Path
+    if len(sys.argv)!=2:raise SystemExit('usage: compare.py RESULT.json')
+    r=evaluate()
+    Path(sys.argv[1]).write_text(json.dumps(r,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in r.items() if k not in ('rows','seed_summary')},sort_keys=True))
