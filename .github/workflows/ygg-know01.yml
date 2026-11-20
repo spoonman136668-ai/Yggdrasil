@@ -396,6 +396,16 @@ jobs:
             > "$RUNNER_TEMP/know25-x2-48-action-receipt.json"
           python -B -c 'import json,os,pathlib; root=pathlib.Path(os.environ["RUNNER_TEMP"]); a=json.loads((root/"know25-x2-24-action-receipt.json").read_text()); b=json.loads((root/"know25-x2-48-action-receipt.json").read_text()); assert a["schema"]=="yggdrasil.know25.x2-intervention-result.v1" and a["prereg_commit"]=="9155e5d62d6d5a0eb4f79fef22953e9e5e4f25da"; assert (a["fit_witnesses"],a["held_worlds"],a["held_witnesses_per_policy"],a["high_expected_queries_per_policy"])==(72,18,432,216); assert a["frozen_hypotheses"]["H1_no_x2_pair_identity"] and a["frozen_hypotheses"]["H2_no_x2_pair_bound"] and not a["protected_original_first_use"]; assert b["schema"]=="yggdrasil.know25.x2-probe-science-boundary.dev.v1" and b["prereg_commit"]=="219e59cdff6c26383fa4fb5277cad459f9caf0cf"; assert (b["fit_witnesses"],b["held_worlds"],b["held_witnesses_per_policy"],b["high_eval_queries_per_policy"])==(72,18,864,216); assert b["frozen_hypotheses"]["H1_no_x2_pairs_identical_and_floor"] and not b["first_use_426"]; assert a["engineering_gate"]==b["engineering_gate"]=="PASS"'
           test -z "$(git status --porcelain)"
+      - name: KNOW26 frozen unknown action mapping and cold cross-world transfer
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know26_protocol.json)" = 4044d67208e993339a75ab18bd0436261ca547f4
+          python -B research/contrib/chatgpt/YGG-KNOW01/unknown_action_affordance_dev.py \
+            > "$RUNNER_TEMP/know26-action-affordance-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know26-action-affordance-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know26.action-affordance-transfer-result.v1" and d["prereg_commit"]=="ba8d9a071a251f3061ac907c4cf5c611726d2221"; assert (d["fit_mapping_groups"],d["fit_witnesses_per_mapping"],d["held_worlds"],d["held_witnesses_per_policy"],d["high_eval_queries_per_policy"])==(3,108,24,768,96); assert d["engineering_gate"]=="PASS" and d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE" and d["protected_original_first_use"] is False and d["native_model_changed"] is False; assert all(z["fit_old_readouts_cold_exact"] for z in d["mapping_fit_evidence"].values())'
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -423,5 +433,6 @@ jobs:
             ${{ runner.temp }}/know24-anf-causal-identifiability-receipt.json
             ${{ runner.temp }}/know25-x2-24-action-receipt.json
             ${{ runner.temp }}/know25-x2-48-action-receipt.json
+            ${{ runner.temp }}/know26-action-affordance-receipt.json
           retention-days: 30
           if-no-files-found: error
