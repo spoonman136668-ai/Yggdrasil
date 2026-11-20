@@ -1,0 +1,613 @@
+{
+  "schema": "yggdrasil.gate22.causedrift-cold-reactivation.v1",
+  "prereg_commit": "a4ad408eb9e4032407962ac06e4b14bd3a8e290a",
+  "parent_commit": "eb44df75612be0aaa6ee388a08f308eb8fc8dc39",
+  "design": {
+    "seeds": 192,
+    "source_A": 64,
+    "phase_B_training": 48,
+    "return_A_training": 48,
+    "held_each_phase": 16,
+    "saved_state_bytes": 384,
+    "hidden_phase_change": true,
+    "oracle_info_advantaged": true
+  },
+  "groups": {
+    "xor_pair": {
+      "seeds": 32,
+      "seed_first": 121000,
+      "seed_last": 121031,
+      "held_B": {
+        "gated": 0.2187173491,
+        "frozen": 0.4116813754,
+        "growing": 0.2569602639,
+        "sliding": 0.0739412097,
+        "bayes": 0.0790920876,
+        "ungated": 0.1148270791,
+        "null": 0.25,
+        "oracle": 0.0669168683
+      },
+      "held_R": {
+        "gated": 0.0586781443,
+        "frozen": 0.0586781443,
+        "growing": 0.085408067,
+        "sliding": 0.0665030693,
+        "bayes": 0.0589286728,
+        "ungated": 0.1186032316,
+        "null": 0.25,
+        "oracle": 0.0586781443
+      },
+      "prequential_B": {
+        "gated": 0.3148191025,
+        "frozen": 0.4103792921,
+        "growing": 0.343386979,
+        "sliding": 0.1904380383,
+        "bayes": 0.1942382206,
+        "ungated": 0.1808913527,
+        "null": 0.25,
+        "oracle": 0.1397646833
+      },
+      "prequential_R": {
+        "gated": 0.0903973483,
+        "frozen": 0.051050508,
+        "growing": 0.0935913489,
+        "sliding": 0.1843786629,
+        "bayes": 0.0782284012,
+        "ungated": 0.2212200562,
+        "null": 0.25,
+        "oracle": 0.051050508
+      },
+      "ever_entered_new": 20,
+      "source_reactivated": 20,
+      "any_mode_switch": 20,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "local": 146,
+        "ungated": 170.375,
+        "global": 492,
+        "sliding": 492,
+        "bayes": 3936
+      },
+      "B_gain_vs_frozen": {
+        "mean": 0.1929640262,
+        "ci95": [
+          0.1240798769,
+          0.2618481755
+        ]
+      },
+      "B_gated_minus_sliding": {
+        "mean": 0.1447761394,
+        "ci95": [
+          0.0847673053,
+          0.2047849736
+        ]
+      },
+      "return_gain_vs_sliding": {
+        "mean": 0.007824925,
+        "ci95": [
+          0.0024276233,
+          0.0132222267
+        ]
+      },
+      "return_gain_vs_bayes": {
+        "mean": 0.0002505285,
+        "ci95": [
+          -0.0011587389,
+          0.0016597959
+        ]
+      },
+      "new_lag_mean": 18,
+      "return_lag_mean": 24
+    },
+    "mux3": {
+      "seeds": 32,
+      "seed_first": 122000,
+      "seed_last": 122031,
+      "held_B": {
+        "gated": 0.138157652,
+        "frozen": 0.3294140625,
+        "growing": 0.2412570115,
+        "sliding": 0.0833607873,
+        "bayes": 0.1107312666,
+        "ungated": 0.080993847,
+        "null": 0.25,
+        "oracle": 0.0635058206
+      },
+      "held_R": {
+        "gated": 0.062421875,
+        "frozen": 0.062421875,
+        "growing": 0.0824578812,
+        "sliding": 0.0852925322,
+        "bayes": 0.0651308514,
+        "ungated": 0.0929292281,
+        "null": 0.25,
+        "oracle": 0.062421875
+      },
+      "prequential_B": {
+        "gated": 0.2610060905,
+        "frozen": 0.3472526042,
+        "growing": 0.301871468,
+        "sliding": 0.1901676869,
+        "bayes": 0.1970944781,
+        "ungated": 0.1607568879,
+        "null": 0.25,
+        "oracle": 0.1558552315
+      },
+      "prequential_R": {
+        "gated": 0.0981384722,
+        "frozen": 0.0637239583,
+        "growing": 0.1013260243,
+        "sliding": 0.1877489405,
+        "bayes": 0.0864553889,
+        "ungated": 0.2057817111,
+        "null": 0.25,
+        "oracle": 0.0637239583
+      },
+      "ever_entered_new": 29,
+      "source_reactivated": 29,
+      "any_mode_switch": 29,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "local": 119.875,
+        "ungated": 159.4375,
+        "global": 492,
+        "sliding": 492,
+        "bayes": 3936
+      },
+      "B_gain_vs_frozen": {
+        "mean": 0.1912564105,
+        "ci95": [
+          0.1432138141,
+          0.2392990068
+        ]
+      },
+      "B_gated_minus_sliding": {
+        "mean": 0.0547968647,
+        "ci95": [
+          0.0214095316,
+          0.0881841979
+        ]
+      },
+      "return_gain_vs_sliding": {
+        "mean": 0.0228706572,
+        "ci95": [
+          0.0140709354,
+          0.031670379
+        ]
+      },
+      "return_gain_vs_bayes": {
+        "mean": 0.0027089764,
+        "ci95": [
+          0.0013098034,
+          0.0041081495
+        ]
+      },
+      "new_lag_mean": 4.5,
+      "return_lag_mean": 13.5
+    },
+    "essential3": {
+      "seeds": 32,
+      "seed_first": 123000,
+      "seed_last": 123031,
+      "held_B": {
+        "gated": 0.1655572165,
+        "frozen": 0.3368701775,
+        "growing": 0.2612704675,
+        "sliding": 0.0937124468,
+        "bayes": 0.1234617297,
+        "ungated": 0.1097898642,
+        "null": 0.25,
+        "oracle": 0.0741262534
+      },
+      "held_R": {
+        "gated": 0.0789465505,
+        "frozen": 0.0774713059,
+        "growing": 0.0979506121,
+        "sliding": 0.1014636832,
+        "bayes": 0.078686688,
+        "ungated": 0.1154675803,
+        "null": 0.25,
+        "oracle": 0.0774713059
+      },
+      "prequential_B": {
+        "gated": 0.2668115708,
+        "frozen": 0.3324488812,
+        "growing": 0.2937714807,
+        "sliding": 0.1907214163,
+        "bayes": 0.1978533161,
+        "ungated": 0.1748314287,
+        "null": 0.25,
+        "oracle": 0.1680517546
+      },
+      "prequential_R": {
+        "gated": 0.1011849443,
+        "frozen": 0.0634898245,
+        "growing": 0.1026444384,
+        "sliding": 0.1819412328,
+        "bayes": 0.0857508673,
+        "ungated": 0.1949015217,
+        "null": 0.25,
+        "oracle": 0.0634898245
+      },
+      "ever_entered_new": 31,
+      "source_reactivated": 30,
+      "any_mode_switch": 31,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "local": 118.96875,
+        "ungated": 158.3125,
+        "global": 492,
+        "sliding": 492,
+        "bayes": 3936
+      },
+      "B_gain_vs_frozen": {
+        "mean": 0.1713129609,
+        "ci95": [
+          0.121791032,
+          0.2208348899
+        ]
+      },
+      "B_gated_minus_sliding": {
+        "mean": 0.0718447697,
+        "ci95": [
+          0.0421768563,
+          0.1015126831
+        ]
+      },
+      "return_gain_vs_sliding": {
+        "mean": 0.0225171327,
+        "ci95": [
+          0.0128742797,
+          0.0321599856
+        ]
+      },
+      "return_gain_vs_bayes": {
+        "mean": -0.0002598625,
+        "ci95": [
+          -0.005012817,
+          0.0044930919
+        ]
+      },
+      "new_lag_mean": 2.75,
+      "return_lag_mean": 10.5
+    },
+    "unary": {
+      "seeds": 32,
+      "seed_first": 124000,
+      "seed_last": 124031,
+      "held_B": {
+        "gated": 0.0537286947,
+        "frozen": 0.4425381163,
+        "growing": 0.1924148088,
+        "sliding": 0.0560956922,
+        "bayes": 0.0570888878,
+        "ungated": 0.0537286947,
+        "null": 0.25,
+        "oracle": 0.0516612513
+      },
+      "held_R": {
+        "gated": 0.0656500582,
+        "frozen": 0.0661431357,
+        "growing": 0.1003230433,
+        "sliding": 0.067078868,
+        "bayes": 0.0649366898,
+        "ungated": 0.067078868,
+        "null": 0.25,
+        "oracle": 0.0661431357
+      },
+      "prequential_B": {
+        "gated": 0.1842778428,
+        "frozen": 0.4262978932,
+        "growing": 0.3008332355,
+        "sliding": 0.1615398441,
+        "bayes": 0.1652663177,
+        "ungated": 0.0977630215,
+        "null": 0.25,
+        "oracle": 0.1160090218
+      },
+      "prequential_R": {
+        "gated": 0.1161736711,
+        "frozen": 0.0560521025,
+        "growing": 0.1069654269,
+        "sliding": 0.1728895125,
+        "bayes": 0.0823892953,
+        "ungated": 0.1765259372,
+        "null": 0.25,
+        "oracle": 0.0560521025
+      },
+      "ever_entered_new": 32,
+      "source_reactivated": 31,
+      "any_mode_switch": 32,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "local": 99,
+        "ungated": 140.375,
+        "global": 492,
+        "sliding": 492,
+        "bayes": 3936
+      },
+      "B_gain_vs_frozen": {
+        "mean": 0.3888094217,
+        "ci95": [
+          0.3537402149,
+          0.4238786284
+        ]
+      },
+      "B_gated_minus_sliding": {
+        "mean": -0.0023669975,
+        "ci95": [
+          -0.0068598278,
+          0.0021258328
+        ]
+      },
+      "return_gain_vs_sliding": {
+        "mean": 0.0014288098,
+        "ci95": [
+          -0.0032002763,
+          0.0060578959
+        ]
+      },
+      "return_gain_vs_bayes": {
+        "mean": -0.0007133684,
+        "ci95": [
+          -0.0017439686,
+          0.0003172318
+        ]
+      },
+      "new_lag_mean": 0,
+      "return_lag_mean": 8.75
+    },
+    "stationary_essential3": {
+      "seeds": 32,
+      "seed_first": 125000,
+      "seed_last": 125031,
+      "held_B": {
+        "gated": 0.0575030744,
+        "frozen": 0.0559179688,
+        "growing": 0.049045679,
+        "sliding": 0.0970350477,
+        "bayes": 0.0584946635,
+        "ungated": 0.0935613385,
+        "null": 0.25,
+        "oracle": 0.0639531355
+      },
+      "held_R": {
+        "gated": 0.0599609375,
+        "frozen": 0.0599609375,
+        "growing": 0.0516075284,
+        "sliding": 0.0906281615,
+        "bayes": 0.0627494115,
+        "ungated": 0.0872275548,
+        "null": 0.25,
+        "oracle": 0.0599609375
+      },
+      "prequential_B": {
+        "gated": 0.0630809891,
+        "frozen": 0.0614908854,
+        "growing": 0.0581597192,
+        "sliding": 0.0933087488,
+        "bayes": 0.0642202547,
+        "ungated": 0.1386784593,
+        "null": 0.25,
+        "oracle": 0.1146665199
+      },
+      "prequential_R": {
+        "gated": 0.0629497337,
+        "frozen": 0.0623567708,
+        "growing": 0.0541004816,
+        "sliding": 0.0957326171,
+        "bayes": 0.0655753337,
+        "ungated": 0.0939299742,
+        "null": 0.25,
+        "oracle": 0.0623567708
+      },
+      "ever_entered_new": 3,
+      "source_reactivated": 3,
+      "any_mode_switch": 3,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "local": 140.75,
+        "ungated": 159.0625,
+        "global": 492,
+        "sliding": 492,
+        "bayes": 3936
+      },
+      "B_gain_vs_frozen": {
+        "mean": -0.0015851056,
+        "ci95": [
+          -0.0046919126,
+          0.0015217014
+        ]
+      },
+      "B_gated_minus_sliding": {
+        "mean": -0.0395319733,
+        "ci95": [
+          -0.0559601226,
+          -0.023103824
+        ]
+      },
+      "return_gain_vs_sliding": {
+        "mean": 0.030667224,
+        "ci95": [
+          0.0207254478,
+          0.0406090003
+        ]
+      },
+      "return_gain_vs_bayes": {
+        "mean": 0.002788474,
+        "ci95": [
+          0.0017360196,
+          0.0038409284
+        ]
+      },
+      "new_lag_mean": 44,
+      "return_lag_mean": 44.75
+    },
+    "independent_noise": {
+      "seeds": 32,
+      "seed_first": 126000,
+      "seed_last": 126031,
+      "held_B": {
+        "gated": 0.2814110138,
+        "frozen": 0.2712180403,
+        "growing": 0.2611798824,
+        "sliding": 0.3243537016,
+        "bayes": 0.2682679314,
+        "ungated": 0.3046203331,
+        "null": 0.25,
+        "oracle": 0.300825663
+      },
+      "held_R": {
+        "gated": 0.2826419923,
+        "frozen": 0.2712666945,
+        "growing": 0.2584189453,
+        "sliding": 0.3023031942,
+        "bayes": 0.2579392419,
+        "ungated": 0.2731505458,
+        "null": 0.25,
+        "oracle": 0.2712666945
+      },
+      "prequential_B": {
+        "gated": 0.2781539396,
+        "frozen": 0.2804629532,
+        "growing": 0.2681997832,
+        "sliding": 0.2822593012,
+        "bayes": 0.2650275905,
+        "ungated": 0.2798028758,
+        "null": 0.25,
+        "oracle": 0.2851938621
+      },
+      "prequential_R": {
+        "gated": 0.2720618144,
+        "frozen": 0.2731814506,
+        "growing": 0.2577632547,
+        "sliding": 0.2924067979,
+        "bayes": 0.264015926,
+        "ungated": 0.2856052554,
+        "null": 0.25,
+        "oracle": 0.2731814506
+      },
+      "ever_entered_new": 26,
+      "source_reactivated": 8,
+      "any_mode_switch": 26,
+      "cold_exact": 32,
+      "source_immutable": 32,
+      "held_disjoint": 32,
+      "mean_work": {
+        "local": 123.8125,
+        "ungated": 157.875,
+        "global": 492,
+        "sliding": 492,
+        "bayes": 3936
+      },
+      "B_gain_vs_frozen": {
+        "mean": -0.0101929735,
+        "ci95": [
+          -0.0238822988,
+          0.0034963518
+        ]
+      },
+      "B_gated_minus_sliding": {
+        "mean": -0.0429426878,
+        "ci95": [
+          -0.0634157065,
+          -0.0224696691
+        ]
+      },
+      "return_gain_vs_sliding": {
+        "mean": 0.0196612019,
+        "ci95": [
+          -0.0017949301,
+          0.0411173338
+        ]
+      },
+      "return_gain_vs_bayes": {
+        "mean": -0.0247027504,
+        "ci95": [
+          -0.0382050802,
+          -0.0112004206
+        ]
+      },
+      "new_lag_mean": 18.25,
+      "return_lag_mean": 33.75
+    }
+  },
+  "summary": {
+    "related_B_gain_vs_frozen_A": {
+      "mean": 0.2360857048,
+      "ci95": [
+        0.2062112391,
+        0.2659601706
+      ]
+    },
+    "related_B_gated_minus_sliding": {
+      "mean": 0.0672626941,
+      "ci95": [
+        0.0466192579,
+        0.0879061303
+      ]
+    },
+    "related_B_gated_minus_bayes": {
+      "mean": 0.0514467352,
+      "ci95": [
+        0.0305376231,
+        0.0723558473
+      ]
+    },
+    "related_R_gain_vs_sliding": {
+      "mean": 0.0136603812,
+      "ci95": [
+        0.0096468373,
+        0.0176739251
+      ]
+    },
+    "related_R_gain_vs_bayes": {
+      "mean": 0.0004965685,
+      "ci95": [
+        -0.0008213484,
+        0.0018144854
+      ]
+    },
+    "source_reactivated_related": 110,
+    "stationary_false_switch_trials": 3,
+    "noise_false_switch_trials": 26
+  },
+  "conditions": {
+    "related_B_gain_vs_frozen_A_min": true,
+    "related_B_gain_vs_frozen_A_ci_lower_positive": true,
+    "related_B_regression_vs_sliding_max": false,
+    "related_B_regression_vs_hazard_bayes_max": false,
+    "related_return_gain_vs_sliding_min": true,
+    "related_return_gain_vs_sliding_ci_lower_positive": true,
+    "related_return_gain_vs_hazard_bayes_min": false,
+    "related_return_gain_vs_hazard_bayes_ci_lower_positive": false,
+    "related_return_source_reactivated_fraction_min": true,
+    "stationary_false_mode_switch_trials_max_fraction": true,
+    "noise_false_mode_switch_trials_max_fraction": false,
+    "stationary_holdout_Brier_regression_vs_sliding_max": true,
+    "noise_holdout_Brier_regression_vs_null_max": false,
+    "all_held_disjoint": true,
+    "all_A_source_immutable": true,
+    "all_384byte_replay_exact": true
+  },
+  "verdict": "CHANGEPOINT_MIXED_OR_NEGATIVE_DEV",
+  "exclusions": {
+    "native_first_use": false,
+    "training_checkpoint_promotion": false,
+    "independent_replication": false,
+    "process_exit_restore": false,
+    "compute_matched": false,
+    "accepted_intelligence_gain": false,
+    "deployment": false
+  }
+}
