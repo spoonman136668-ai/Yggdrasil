@@ -25,6 +25,39 @@ def _selector(value):
     return hasattr(value, "system")
 
 
+def encode_selector_fraction(value):
+    """Canonical lossless fraction encoding, safe for large exact learned losses.
+
+    The fixed 1024-bit threshold is below Python's minimum decimal-digit
+    restriction and is independent of host environment settings. Existing
+    compact decimal receipts remain byte-identical. Hexadecimal represents
+    *all* remaining numerator/denominator bits, without quantizing evidence.
+    """
+    if not isinstance(value, Fraction):
+        raise ValueError("Quine selector fraction is not exact")
+    numerator, denominator = value.numerator, value.denominator
+    if max(numerator.bit_length(), denominator.bit_length()) <= 1024:
+        return str(value)
+    return f"hex:{hex(numerator)}/{hex(denominator)}"
+
+
+def decode_selector_fraction(token):
+    """Invert the public exact evidence format; reject noncanonical aliases."""
+    if type(token) is not str:
+        raise ValueError("Quine selector fraction token invalid")
+    try:
+        if token.startswith("hex:"):
+            numerator, denominator = token[4:].split("/")
+            value = Fraction(int(numerator, 16), int(denominator, 16))
+        else:
+            value = Fraction(token)
+    except (ValueError, ZeroDivisionError, TypeError) as exc:
+        raise ValueError("Quine selector fraction token invalid") from exc
+    if encode_selector_fraction(value) != token:
+        raise ValueError("Quine selector fraction is not canonical")
+    return value
+
+
 def _selector_receipt(value):
     """Canonical active-selector custody; a native checkpoint alone omits routing."""
     if (not callable(getattr(value, "forecast", None))
@@ -48,7 +81,8 @@ def _selector_receipt(value):
             if (type(pair) is not tuple or len(pair) != 2
                     or any(not isinstance(x, Fraction) for x in pair)):
                 raise ValueError("Quine selector evidence value invalid")
-            encoded.append([str(pair[0]), str(pair[1])])
+            encoded.append([encode_selector_fraction(pair[0]),
+                            encode_selector_fraction(pair[1])])
         records.append([list(key), encoded])
     return {
         "config": [value.window, value.minimum_count,
