@@ -158,6 +158,77 @@ def verify_selector_replay(expected, restored):
             "source_actions": 0, "scientific_pass": False}
 
 
+
+def diagnose_historical_action_divergence(anchor, candidate):
+    """Read-only policy-change screen, NOT a measured causal-retention gate.
+
+    Historical Brier only scores the action actually witnessed. A newly
+    updated policy may legitimately choose different unobserved actions,
+    so divergence is reported for source-qualified review, never vetoed.
+    Compare all distinct *historically observed* public paired views.
+    """
+    _require_policy_modes(anchor, candidate)
+    original = _ledger(anchor)
+    current = _ledger(candidate)
+    if not original or current[:len(original)] != original:
+        raise ValueError("Quine action diagnostic requires exact historic prefix")
+    old_pin = digest(_checkpoint(anchor))
+    new_pin = digest(_checkpoint(candidate))
+    seen = tuple(dict.fromkeys(event[1] for event in original))
+
+    def action_readout(value, views):
+        planner = value.plan if _selector(value) else _system(value).plan
+        if not callable(planner):
+            raise ValueError("Quine action diagnostic requires native planner")
+        result = planner(views if _selector(value) else views[0])
+        if type(result) is not dict:
+            raise ValueError("Quine action diagnostic requires binary plan")
+        first = result.get("first_action")
+        branches = result.get("second_actions")
+        if (type(first) is not int or first not in (0, 1)
+                or type(branches) not in (tuple, list) or len(branches) != 2
+                or any(type(row) not in (tuple, list) or len(row) != 2
+                       or any(type(action) is not int or action not in (0, 1)
+                              for action in row) for row in branches)):
+            raise ValueError("Quine action diagnostic requires binary plan")
+        return first, tuple(tuple(row) for row in branches)
+
+    changed = []
+    first_flips = 0
+    branch_flips = 0
+    for views in seen:
+        before = action_readout(anchor, views)
+        after = action_readout(candidate, views)
+        first_flip = before[0] != after[0]
+        second_flips = sum(a != b for row_a, row_b in
+                           zip(before[1], after[1], strict=True)
+                           for a, b in zip(row_a, row_b, strict=True))
+        first_flips += first_flip
+        branch_flips += second_flips
+        if first_flip or second_flips:
+            changed.append({
+                "public_view_sha256": digest(canonical(views)),
+                "first_action_changed": first_flip,
+                "contingent_second_action_flips": second_flips,
+            })
+
+    if (digest(_checkpoint(anchor)) != old_pin
+            or digest(_checkpoint(candidate)) != new_pin):
+        raise ValueError("Quine action diagnostic mutated a policy")
+    return {
+        "scope": "observed_public_views_unobserved_action_predictions",
+        "view_count": len(seen),
+        "changed_view_count": len(changed),
+        "first_action_flip_views": first_flips,
+        "contingent_second_action_flip_cells": branch_flips,
+        "changes": changed,
+        "historical_brier_implies_action_retention": False,
+        "true_action_utility_verified": False,
+        "source_actions": 0,
+        "scientific_pass": False,
+    }
+
+
 def _loss(value, event):
     """Two quantized Brier numerators for one witnessed transition and reward."""
     _, views, first, state, second, reward = event
