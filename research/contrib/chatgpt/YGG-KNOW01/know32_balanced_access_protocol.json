@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.know32.balanced-access-causal-retention-prereg.v1",
+  "date": "2026-11-20",
+  "experiment_id": "KNOW32",
+  "scope": {
+    "role": "independent_source_only_research_contributor",
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "existing_pr": 1327,
+    "canonical_owner_pr": 1278,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_head": "3fcb2b2c44f360b3d62e799eea80f9b5aa75cda6",
+    "frozen_before_code_or_outcome": true,
+    "original_first_use_issue_426": false,
+    "accepted_native_modified": false,
+    "merge": false,
+    "deployment": "NONE"
+  },
+  "motivation": "KNOW30 and KNOW31 held worlds used c=t%4 and a=t%4, leaving physical input4 unobserved for every allowed hidden action map. Test whether balanced public action coverage restores causal memory under observed B interference, rather than rerunning failed fixed-tape cohorts.",
+  "question": "With all eight physical inputs reachable per 16-action phase, can the original full-posterior A/B write-quarantine learner retain old A and recover after unannounced B better than the same-size approximate switching Bayes and a rolling-last8 model, including an unfamiliar B law in the same Boolean table family?",
+  "source": {
+    "mode": "engineering_fixture_only",
+    "private_hash_domain": "know32:private:coin:v1:{mapping_group}:{seed}:{t}",
+    "mapping_groups": [
+      0,
+      1,
+      2
+    ],
+    "seeds": [
+      17301,
+      17311,
+      17317,
+      17321,
+      17327,
+      17333,
+      17341,
+      17351
+    ],
+    "world_count": 24,
+    "known_B_seeds_first_four": true,
+    "known_B_rule": "H2=NOT(x0 AND x2)",
+    "unfamiliar_B_seeds_last_four": true,
+    "unfamiliar_B_rule": "H1=x1 XOR (x0 AND x2)",
+    "return_A_rule": "H0=x0 XOR (x1 AND x2)",
+    "public_observations": "At each t, policies see only c=t%4, selected opaque action a=floor(t/4)%4, and one Bernoulli consequence (.85 if hidden rule(c XOR private_map[a]) else .15). No phase/map/rule/private coin/future outcomes enter model.",
+    "phase": "A t0..15; hidden B t16..31; unannounced A t32..47. Also matched A-continuation fork from identical cold t16 prefix; fork is evaluator-only.",
+    "coin": "SHA256 private domain above, first unsigned64/2^64, shared exogenous coin across policies/forks at each (map,seed,t). Prefix generated once, then both forks deep-cold-cloned.",
+    "public_tape": "c=t%4; a=(t//4)%4; in each consecutive 16 steps every (c,a) pair occurs exactly once; each of the eight physical input positions is reached at least once under all six possible maps; 48 total steps per fork.",
+    "historical_FIT": "Exactly the previously consumed KNOW26 mapping prior 108 witnesses per map plus KNOW30 known A/H2-B labelled FIT 128 witnesses per map, provided equally to all FIT arms. A newly unfamiliar H1-B is NOT added to FIT. No reuse of prior HELD seeds.",
+    "held_first_use": "24 new source-only worlds; first-run only after frozen prereg, source/test qualification, exact G29 atlas seal, dual OS mandatory full final and original-source read-only compatibility. Unit tests must never open held synthetic outcomes. If uncertain execution/CI effects, fail closed; no replay."
+  },
+  "arms": [
+    "archive_original_KNOW30_Pair_write_quarantine",
+    "switching_bayes_original_KNOW30_Pair_fractional_approx_HMM",
+    "single_original_KNOW30_Single_full_posterior",
+    "rolling8_original_KNOW30_Single_prior_plus_last8_witnesses",
+    "unchanged_private_oracle_ineligible_for_science"
+  ],
+  "measure": {
+    "primary": "Mean held treatment return-A expected Brier after k=4 and k=8 witnessed return actions, q under H0, four evaluator-only held c4..7 no-op forecasts; compare separately per B family with fair same-information switching-HMM and rolling8.",
+    "secondary": [
+      "old-A slot true H0 expected Brier at t16, t32 before return, after k8; byte-cold clone A-slot digest/readouts; received vs assimilated witnesses; prequential B-phase Brier, A-continuation paired t32 drift, per-world and per-family paired losses",
+      "Physical input coverage by each public 16-step tape and map (all8), context4 no-op posterior after A, B and return; report observed physical coverage separately from predictive advantage",
+      "Runtime, stored checkpoint bytes, phase-belief, write quarantine counts, no-FIT and fully informed controls clearly labelled incomparable if added"
+    ],
+    "score": "Brier(q,p)=q*(1-q)+(p-q)^2; lower is better, no scorer labels used for learning.",
+    "sampling": "3 maps x8 fresh seeds=24 worlds, 12 with known H2 B and 12 with unfamiliar H1 B, 48 witnessed steps per fork. No population-significance claim from this small, structured cohort."
+  },
+  "budgets": {
+    "world_pairs": 24,
+    "steps_per_fork": 48,
+    "shared_prefix": 16,
+    "interference": 16,
+    "return": 16,
+    "unique_observed_consequences_per_world": 80,
+    "unique_observed_consequences_total": 1920,
+    "model_level_witnesses_per_arm_across_forks": 2304,
+    "observed_return_per_arm_per_treatment_world": 16,
+    "scoring_queries_per_readout": 4,
+    "history_per_mapping": 236,
+    "action_privilege": "Fixed public action tape identical for all methods; no action selection or differential intervention cost.",
+    "compute": "Record CPU and total wall; exact full 2-regime HMM not claimed, original switching baseline is mean-field approximation."
+  },
+  "frozen": {
+    "P0": "For EACH mapping candidate, each 16-step public phase tape reaches all 8 physical input positions, and all 16 public (c,a) pairs exactly once. Fail no scoring if not true.",
+    "P1": "At t16 archived A-slot has mean A-law high-context expected Brier <=0.235 across 24 worlds; else UNDERTRAINED baseline and no positive memory claim.",
+    "H1": "Mean archive B-treatment k8 return-A Brier <= BOTH approximate HMM and rolling8 by >=0.005 absolute in EACH B-law family of 12 worlds, with archive winning >=9/12 pairs against each in EACH family.",
+    "H2": "Live archive A-slot SHA and four high-context forecasts exactly equal immediately after common A-prefix t16 and after B-treatment t32 in ALL 24 worlds, no B-phase A writes. Frozen copy alone is insufficient.",
+    "H3": "Average treatment B-phase high-context expected Brier for candidate <= approximate HMM+0.005 on EACH B family; cannot trade away learning changed B.",
+    "H4": "All 24 worlds exact source identity, one A-prefix witnessed outcome per t, each fork receives sequential 48 public outcomes, held/private values denied to policy, independently cold-restored checkpoint byte and forecast equality, lower-level tampering and replay rejected, full Linux+Windows regression and read-only historical compatibility before one held run.",
+    "decision": "DEVELOPMENT_SUPPORTED if P0,P1,H1,H2,H3,H4 all true. Else DEVELOPMENT_MIXED_OR_NO_GO, UNDERTRAINED if P1 false, INVALID if P0/H4 fail. SCIENTIFIC_PASS_ALWAYS_FALSE for synthetic conventional prototype, no native causal gain/promotion. Preserve all negatives and consumed first-use.",
+    "stops": "No post-first-use tuning, extra seeds/actions, baseline substitution, threshold edits, replay or promotion."
+  }
+}
