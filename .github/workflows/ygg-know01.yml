@@ -842,6 +842,21 @@ jobs:
           assert d["deployment"] == "NONE"
           PY
           test -z "$(git status --porcelain)"
+      - name: Emit bounded aggregate metric summary for independent audit
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json, os, pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know36-noisy-two-bank-held.json"
+          d=json.loads(p.read_text())
+          brief={k:d[k] for k in ("prereg_commit","prereg_blob","fit_worlds",
+                 "held_worlds","fit_source_calls","held_unique_source_events",
+                 "model_events_per_arm","selected_hmm_hazard","fit_hmm_briers",
+                 "family_metrics","frozen_hypotheses","sham_false_switch_worlds",
+                 "live_A_retained_worlds","B_retained_worlds","development_verdict",
+                 "scientific","original_first_use_426","native_changed","deployment")}
+          print("YGG_KNOW36_SUMMARY="+json.dumps(brief,sort_keys=True))
+          PY
       - name: Preserve bounded synthetic result only, no real source/checkpoint
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
