@@ -1,0 +1,40 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-DEPENDENT-NULL-10",
+  "date": "2026-11-20",
+  "parent_commit": "efd5b5bbe273ca2c59f4c08182bdbedb14061fb5",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "scope": "Exact mathematical qualification of prior ENERGY-DELAY-07 NEW/NULL 3-lag false-action-effect rate. No empirical data, new seeds, native learner or original-model primary replay.",
+  "hypothesis": "Because all three lag outcomes share exogenous nuisance U, their false alarms are correlated. The exact FWER of the frozen max-of-3 smoothed action contrast will lie strictly between previous marginal/union bounds (12.920102%-38.7603066%); its risk far exceeds the nominal 5%. A conventional Fisher/Bonferroni control remains <=5% under a randomized sharp null.",
+  "frozen_source_identity": {
+    "generator_commit": "299f728e0fb6b397300286c935350cbdc7736193",
+    "generator_blob": "b6b282dfea714bc22b709058534e4bec49c9cc78",
+    "prior_exact_alloc_result_commit": "5e21295bf56a1968fd6bc2444ddc54bbf08e266c"
+  },
+  "model": "24 episodes, each with A~Bernoulli(1/2), U~Bernoulli(1/2) independent. Conditional on U, the three per-episode lag outcomes independently draw Bernoulli(4/5) if U=1 and Bernoulli(1/5) if U=0. Across episodes independent. Outcome proxy Z irrelevant to intervention contrast. No causal effect under NEW/NULL. A0/A1 counts random. This exactly matches the declared marginal/lag-dependence structure of frozen prior source, not the concrete outcomes of consumed seeds.",
+  "enumeration": "Enumerate n0=0..24, u0=0..n0, u1=0..24-n0. Each assignment/U profile weight C(24,n0) C(n0,u0) C(n1,u1) / 4^24. Given n_a,u_a, the single-lag success-count polynomial (1+4z)^u (4+z)^(n-u) / 5^n, action arms conditionally independent; across 3 lags conditionally independent given nuisance profile. For each latent profile compute exact probability that the frozen |Beta(0.5) action effect|>=0.30 at one lag, then conditional three-lag FWER 1-(1-p)^3. For the control use two-sided exact Fisher p<=1/60 and the same conditional computation. Sum over latent profiles with BigInt rational arithmetic.",
+  "exact_comparison": "With n1=24-n0, smoothed posterior action contrast D=(x1+.5)/(n1+1) - (x0+.5)/(n0+1); reject if 5*abs((2x1+1)*(n0+1)-(2x0+1)*(n1+1))>=3*(n0+1)*(n1+1). Fisher sums hypergeometric tables with mass <= observed, rejects if 60*sumTail <= C(24,x0+x1).",
+  "denominator": "4^24 * 5^72 for the exact 3-lag unconditional risk; one-lag 4^24 * 5^24; exact prior marginal numerators can simplify by 5^24.",
+  "controls": [
+    "Total latent-profile mass exactly 4^24",
+    "Each conditional polynomial sums to 5^n",
+    "Marginal single-lag heuristic EXACT match previous ENERGY-NULL-ALLOC-09 numerator 36366854681240 / 2^48",
+    "Marginal single-lag Fisher EXACT match previous numerator 2378762467116 / 2^48",
+    "Exact three-lag candidate FWER inside rigorous prior lower/upper 12.920102%-38.7603066%",
+    "Exact Fisher FWER <= prior 2.5353185866% union bound and <=5%",
+    "Three-lag FWER must not be manufactured from unconditional lag independence",
+    "No original primary replay, calibration threshold changes or tuned target changes"
+  ],
+  "stop": "If marginal parity or latent mass fails, mark INVALID and stop. If exact FWER <=5%, reject the hypothesized defect and preserve that negative. Do not alter prior scientific NO-GO regardless.",
+  "output": "Commit standalone executable, original exact result, independent postscore arithmetic auditor if tractable, provenance, README and PR body on existing draft #1346. No owner model or accepted-ref modification.",
+  "claim_boundary": "This is an exact probabilistic analysis under declared frozen source assumptions, not an independent runtime reproduction of original 36-world experiment, not source-science first-use and not evidence of native intelligence.",
+  "authority": {
+    "source_free_analytic": true,
+    "training": false,
+    "scientific_primary_trials": 0,
+    "owner_native_merge": false,
+    "controller": false,
+    "scheduler": false,
+    "accepted_main_write": false
+  }
+}
