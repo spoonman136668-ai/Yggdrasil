@@ -269,6 +269,64 @@ hard-coded requirement for a frozen old action that might prevent
 legitimate learning. Exact-source Linux/Windows full qualification
 is required before this readout is considered complete.
 
+## Observational action confounding — exact structural negative control
+
+A source-only, arithmetic diagnostic isolates a second limit of
+historical Brier-based retention certification: a model calibrated to
+**observationally logged actions** may not be calibrated to the
+consequences of an **intervention** on those actions.
+
+The existing, SHA256-pinned
+`research/contrib/chatgpt/CKAD-20/synthetic_world.py` declares
+`hidden = H`, `s1 = H xor E` with `P(E=1)=1/4`, transition
+`s2 = x1 xor T` (invariant family/regime 0) with
+`P(T=1|H=0)=1/8` and `P(T=1|H=1)=1/4`. Its *separate*
+`logged()` policy chooses `x1=H xor L` with `P(L=1)=1/16`.
+Consequently, even conditioning on the **public initial state**
+`s1`, the logged action leaks additional hidden information that
+is not furnished by `do(x1)`. These are the idealized independent
+uniform-byte source probabilities, **not** finite seeded empirical
+frequencies or an observed learning gain.
+
+The source-free `observational_action_identifiability.py` uses
+**exact `Fraction` arithmetic**, verifies the original world-law
+file SHA256 and analytically separates
+`P(s2=1 | s1,x1,logged)` from
+`P(s2=1 | s1,do(x1))`. The four exact cells are:
+
+| Public `(s1,x1)` | Do-intervention | Logged observational | Logged minus do |
+| --- | --- | --- | --- |
+| `(0,0)` | `5/32` | `47/368` | `-21/736` |
+| `(0,1)` | `27/32` | `37/48` | `-7/96` |
+| `(1,0)` | `7/32` | `7/48` | `-7/96` |
+| `(1,1)` | `25/32` | `277/368` | `-21/736` |
+
+By the proper-score decomposition, using an observationally
+perfect logged predictor for a future `do(x1)` query incurs
+**excess expected Brier** `(p_logged-p_do)^2`; balanced over four
+public context/action cells this is exactly
+`14945/4875264 ≈ 0.003065475`. That number is an **analytical
+population-level calibration gap**, not a performance measurement
+or an evidence of trained-model failure.
+
+Negative controls prove that the bias disappears if the logger
+randomizes the action independently of H or if transition noise
+no longer depends on H. The diagnostic **never calls
+`make_episode`, `logged`, `rollout`, the protected source,
+or the native model**. The earlier
+`selection_trial.py` is **not** this hidden-dependent logger;
+it uses public-context-balanced first/second actions and therefore
+must **not** be retroactively labeled confounded by this analysis.
+
+**Research implication:** A genuinely prospective native causal
+return experiment needs matched randomized/interventional
+public-action evidence, propensity/control audits, and
+action-consequence evaluation. Neither a low observational Brier,
+a preserved action decision, nor this analytical model proves
+retained causal decision utility. **No Quine veto/threshold was
+changed; no new learner or alternative owner was established.**
+Fresh protected source use and scientific promotion remain fenced.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
