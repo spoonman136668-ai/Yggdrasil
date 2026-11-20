@@ -1,0 +1,25 @@
+import json,tempfile,unittest
+from pathlib import Path
+from audit_saved_results import audit
+
+class TestReadOnlyAudit(unittest.TestCase):
+    def test_complete_result(self):
+        self.assertEqual(audit('development_result.json')['audit'],'PASS')
+    def test_sha_decline_tamper(self):
+        with tempfile.TemporaryDirectory() as d:
+            content=json.loads(Path('development_result.json').read_text())
+            content['rows'][0]['models']['repair_basis']['scores']['B_terminal']+=.001
+            p=Path(d)/'changed.json';p.write_text(json.dumps(content))
+            with self.assertRaises(AssertionError):audit(p)
+    def test_missing_world(self):
+        with tempfile.TemporaryDirectory() as d:
+            content=json.loads(Path('development_result.json').read_text());content['rows'].pop()
+            p=Path(d)/'missing.json';p.write_text(json.dumps(content))
+            with self.assertRaises(AssertionError):audit(p)
+    def test_false_scientific_pass(self):
+        with tempfile.TemporaryDirectory() as d:
+            content=json.loads(Path('development_result.json').read_text());content['decision']='DEVELOPMENT_GO'
+            p=Path(d)/'fake.json';p.write_text(json.dumps(content))
+            with self.assertRaises(AssertionError):audit(p)
+
+if __name__=='__main__':unittest.main()
