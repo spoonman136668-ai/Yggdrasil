@@ -280,6 +280,17 @@ jobs:
             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
             --output "$RUNNER_TEMP/know14-blind-regime-dev-receipt.json"
           test -z "$(git status --porcelain)"
+      - name: KNOW15 frozen factual-only regime cue leakage falsification
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/source_only_regime_leakage.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --know14-receipt "$RUNNER_TEMP/know14-blind-regime-dev-receipt.json" \
+            --output "$RUNNER_TEMP/know15-factual-only-regime-leakage-receipt.json"
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -295,5 +306,6 @@ jobs:
             ${{ runner.temp }}/know12-blind-role-dev-receipt.json
             ${{ runner.temp }}/know13-same-address-dev-receipt.json
             ${{ runner.temp }}/know14-blind-regime-dev-receipt.json
+            ${{ runner.temp }}/know15-factual-only-regime-leakage-receipt.json
           retention-days: 30
           if-no-files-found: error
