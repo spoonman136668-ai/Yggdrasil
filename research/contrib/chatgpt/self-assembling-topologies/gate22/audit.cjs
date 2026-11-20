@@ -15,7 +15,7 @@ assert.equal(result.verdict,"CHANGEPOINT_MIXED_OR_NEGATIVE_DEV");
 const cohorts={xor_pair:121000,mux3:122000,essential3:123000,unary:124000,
  stationary_essential3:125000,independent_noise:126000};
 const keys=["gated","frozen","growing","sliding","bayes","ungated","null","oracle"];
-let cold=0,held=0,source=0,sourceReturn=0;
+let cold=0,held=0,sourceReturn=0;
 for(const [family,seed]of Object.entries(cohorts)){
  const g=result.groups[family];assert.deepEqual([g.seeds,g.seed_first,g.seed_last],[32,seed,seed+31]);
  for(const stage of ["held_B","held_R","prequential_B","prequential_R"]){
