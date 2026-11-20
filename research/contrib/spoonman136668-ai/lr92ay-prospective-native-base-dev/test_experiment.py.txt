@@ -1,0 +1,161 @@
+"""Prospective source-only qualifications. No true native source or protected cohorts run."""
+import hashlib, json, math, unittest
+from worlds import SEEDS, FAMILIES, REPS, FORBIDDEN, NOISE, rule, world, worlds
+from experiment import ARMS, Beta, ShuffledBeta, NoLearning, SymbolicHMM, stage_slices, score, SOURCE_SHA, SOURCE_TREE
+
+class DummyNative:
+    """Harness-only test double. Cannot substantiate native performance."""
+    def __init__(self,events=(),stream=False):
+        self.events=tuple(events);self.stream=stream
+    def begin_stream(self):return DummyNative(self.events,True)
+    def forecast(self,view,first,next_state=None,second=None):return .5
+    context_forecast=forecast
+    def observe(self,identifier,views,row):
+        return DummyNative(self.events+((identifier,views,row),),self.stream)
+    def checkpoint(self):
+        return json.dumps({'schema':'dummy-only','n':len(self.events),'stream':self.stream,
+                           'ids':[v[0] for v in self.events]},sort_keys=True).encode()
+    @classmethod
+    def restore(cls,raw,sha):
+        assert hashlib.sha256(raw).hexdigest()==sha
+        v=json.loads(raw);return cls((('id',(),{}) for _ in range(v['n'])),v['stream']) if not v['ids'] else cls(tuple((i,(),{}) for i in v['ids']),v['stream'])
+
+class FreezeTests(unittest.TestCase):
+    def test_number_and_disjoint_seeds(self):
+        self.assertEqual(len(SEEDS),3);self.assertTrue(set(SEEDS).isdisjoint(FORBIDDEN))
+        self.assertNotIn(929209101,SEEDS)
+        self.assertEqual(len(worlds()),48)
+
+    def test_manifest_complete_and_nondisclosing(self):
+        for w in worlds():
+            self.assertIn(w.family,FAMILIES)
+            self.assertEqual(w.seed in SEEDS,True)
+            self.assertEqual(len(w.public),sum(w.dwell))
+            self.assertEqual(len(w.hidden_phase),len(w.public))
+            self.assertTrue(all(48<=v<=80 for v in w.dwell))
+            self.assertTrue(all(len(e.identifier)==64 for e in w.public))
+            self.assertEqual(len({e.identifier for e in w.public}),len(w.public))
+            self.assertTrue(all(e.views==((e.s1,e.views[0][1]),(e.s1,1-e.views[0][1])) for e in w.public))
+            self.assertTrue(all(set(e.row())=={'s1','x1','s2','x2','y'} for e in w.public))
+            self.assertEqual(w.hidden_phase[:w.dwell[0]],('A',)*w.dwell[0])
+            self.assertEqual(w.hidden_phase[w.dwell[0]:w.dwell[0]+w.dwell[1]],('B',)*w.dwell[1])
+            self.assertEqual(w.hidden_phase[-w.dwell[2]:],('Areturn',)*w.dwell[2])
+
+    def test_determinism_and_unique_worlds(self):
+        one=worlds();two=worlds()
+        self.assertEqual(tuple(w.public_sha256 for w in one),tuple(w.public_sha256 for w in two))
+        self.assertEqual(len(set(w.public_sha256 for w in one)),48)
+
+    def test_invalid_scope(self):
+        for arg in ((89051001,FAMILIES[0],0),(SEEDS[0],'notexisting',0),(SEEDS[0],FAMILIES[0],4)):
+            with self.assertRaises(ValueError):world(*arg)
+
+    def test_rules_are_binary_and_causal_variation(self):
+        for f in FAMILIES:
+            results={rule(f,0,s,v,x,state,action) for s in (0,1) for v in (0,1)
+                     for x in (0,1) for state in (0,1) for action in (0,1)}
+            self.assertGreaterEqual(len(results),3)
+            self.assertTrue(all(all(x in (0,1) for x in r) for r in results))
+
+    def test_no_private_data_in_public_events(self):
+        e=world(SEEDS[0],FAMILIES[0],0).public[0]
+        self.assertEqual(set(e.row()),{'s1','x1','s2','x2','y'})
+        self.assertFalse(hasattr(e,'phase'))
+        self.assertFalse(hasattr(e,'family'))
+        self.assertFalse(hasattr(e,'counterfactual'))
+        self.assertFalse(hasattr(e,'hidden_phase'))
+
+    def test_strong_exact_symbolic_grammar_is_not_true_family_input(self):
+        model=SymbolicHMM()
+        self.assertEqual(len(model.hypotheses),16)
+        self.assertAlmostEqual(sum(model.mass),1.0)
+        self.assertAlmostEqual(model.mass[0],1/16)
+        w=world(SEEDS[0],FAMILIES[0],0)
+        p1,p2=model.forecasts(w.public[0]);self.assertTrue(0<=p1<=1 and 0<=p2<=1)
+        model.observe(w.public[0]);self.assertEqual(model.episode_count,1)
+        self.assertAlmostEqual(sum(model.mass),1.0)
+        self.assertTrue(all(p>0 for p in model.mass))
+        self.assertNotIn(w.family,model.checkpoint().decode())
+
+    def test_hmm_no_phase_cues(self):
+        w=world(SEEDS[1],FAMILIES[-1],1)
+        h=SymbolicHMM()
+        for event in w.public[:35]:h.observe(event)
+        self.assertTrue(all(math.isfinite(x) for x in h.mass))
+        self.assertAlmostEqual(sum(h.mass),1)
+
+    def test_beta_predictions_before_learning(self):
+        w=world(SEEDS[0],FAMILIES[0],0)
+        for m in (Beta(),Beta(32),Beta(decay=2**(-1/24))):
+            self.assertEqual(m.transition(w.public[0]),.5)
+            self.assertEqual(m.terminal(w.public[0]),.5)
+            m.observe(w.public[0])
+            self.assertGreater(len(m.checkpoint()),0)
+
+    def test_beta_has_same_observed_public_inputs_as_symbolic(self):
+        w=world(SEEDS[0],FAMILIES[0],0)
+        beta=Beta(32);hmm=SymbolicHMM()
+        for e in w.public[:20]:
+            self.assertTrue(0<=beta.transition(e)<=1)
+            self.assertTrue(0<=beta.terminal(e)<=1)
+            a,b=hmm.forecasts(e)
+            self.assertTrue(0<=a<=1 and 0<=b<=1)
+            beta.observe(e);hmm.observe(e)
+
+    def test_native_ablation_activation_only_at_16(self):
+        w=world(SEEDS[0],FAMILIES[0],0)
+        a=score(w,'native_base',DummyNative)
+        b=score(w,'native_stream',DummyNative)
+        self.assertEqual(a['updates'],len(w.public));self.assertEqual(b['updates'],len(w.public))
+        self.assertNotEqual(a['checkpoint_sha256'],b['checkpoint_sha256'])
+        self.assertEqual(a['scores']['B']['terminal'],.25)
+        self.assertEqual(b['scores']['return16']['terminal'],.25)
+
+    def test_all_six_arms_complete_safely_with_dummy(self):
+        w=world(SEEDS[0],FAMILIES[0],0)
+        self.assertEqual(len(ARMS),8)
+        for name in ARMS:
+            out=score(w,name,DummyNative)
+            self.assertEqual(out['updates'],sum(w.dwell))
+            self.assertTrue(out['checkpoint_bytes']>0)
+            self.assertEqual(len(out['checkpoint_sha256']),64)
+            self.assertEqual(len(out['pre_return_sha256']),64)
+            for p in ('A','B','return16','return_all'):
+                for t in ('terminal','transition'):
+                    self.assertTrue(0<=out['scores'][p][t]<=1)
+
+    def test_no_implicit_phase_in_model_fields(self):
+        self.assertNotIn('hidden_phase',SymbolicHMM().__dict__)
+        self.assertTrue('symbolic_hmm' in ARMS and 'native_base' in ARMS)
+
+    def test_budget_and_pinned_identity(self):
+        self.assertEqual(len(SOURCE_SHA),40)
+        self.assertEqual(len(SOURCE_TREE),40)
+        self.assertTrue(0<NOISE<.5)
+
+    def test_forbidden_primary_worlds(self):
+        self.assertTrue(set((929209101,929209102,929209103)).isdisjoint(SEEDS))
+
+    def test_development_decision_not_from_dummy(self):
+        self.assertNotEqual(DummyNative.__name__,'NativeEpisodeExperience')
+
+    def test_shuffled_context_pseudorandom_and_no_leak(self):
+        w=world(SEEDS[2],FAMILIES[2],2)
+        shuffled=ShuffledBeta()
+        scrambled=[shuffled.scrambled(e) for e in w.public]
+        self.assertTrue(any(a.views!=b.views for a,b in zip(w.public,scrambled)))
+        self.assertTrue(all(a.s1==b.s1 and a.x1==b.x1 and a.s2==b.s2 and a.y==b.y
+                            for a,b in zip(w.public,scrambled)))
+        self.assertEqual(tuple(scrambled),tuple(shuffled.scrambled(e) for e in w.public))
+    def test_no_learning_is_constant(self):
+        w=world(SEEDS[0],FAMILIES[0],0)
+        m=NoLearning()
+        for e in w.public[:15]:
+            self.assertEqual((m.transition(e),m.terminal(e)),(.5,.5))
+            m.observe(e)
+        self.assertEqual(m.n,15)
+
+    def test_shape_missing_invalid(self):
+        with self.assertRaises(ValueError):world(None,FAMILIES[0],0)
+
+if __name__=='__main__':unittest.main()

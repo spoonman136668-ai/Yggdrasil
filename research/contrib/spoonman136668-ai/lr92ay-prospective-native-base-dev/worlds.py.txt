@@ -1,0 +1,92 @@
+"""LR-92AY disjoint source-free development worlds: two-stage binary public episodes.
+
+Evaluator-only hidden A/B/A timing and causal laws are never passed to a learner.
+Unfamiliar families exercise distinct parent structures, with no private first-use.
+"""
+from __future__ import annotations
+import hashlib, random
+from dataclasses import dataclass
+
+SEEDS = (90161101, 90161102, 90161103)
+FAMILIES = ('switch_chain', 'masked_transfer', 'disjoint_parent', 'interaction_rewrite')
+REPS = 4
+NOISE = 0.12
+FORBIDDEN = (73004303, 73004304, 74009171, 74009172, 75011801, 75011802,
+             76021921, 76021922, 77033101, 77033102, 88041001, 88041002,
+             89051001, 89051002, 929209101, 929209102, 929209103)
+
+
+def _rng(seed, family, rep, name):
+    digest = hashlib.sha256(f'LR92AY|{seed}|{family}|{rep}|{name}'.encode()).digest()
+    return random.Random(int.from_bytes(digest[:8], 'big'))
+
+
+def rule(family, variant, s1, v, x1, s2, x2):
+    """Candidate structural grammar; evaluator selects ONE hidden hypothesis.
+    The model never receives the true family/variant, switch times or phases.
+    """
+    if family == 'switch_chain':
+        return s1 ^ x1 ^ (v & variant), s2 ^ x2 ^ (v & x1)
+    if family == 'masked_transfer':
+        return (v & x1) ^ (s1 & (1 - variant)), (x2 & (s1 ^ v)) ^ s2 ^ variant
+    if family == 'disjoint_parent':
+        return (v ^ (x1 & s1) ^ variant), (s1 ^ x2 ^ (v & s2))
+    if family == 'interaction_rewrite':
+        return (s1 & v) ^ x1 ^ variant, (s2 & x2) ^ (s1 & x1) ^ v
+    raise ValueError('UNKNOWN_FAMILY')
+
+
+@dataclass(frozen=True)
+class Event:
+    identifier: str
+    views: tuple
+    s1: int
+    x1: int
+    s2: int
+    x2: int
+    y: int
+
+    def row(self):
+        return {'s1': self.s1, 'x1': self.x1, 's2': self.s2, 'x2': self.x2, 'y': self.y}
+
+
+@dataclass(frozen=True)
+class World:
+    seed: int
+    family: str
+    rep: int
+    dwell: tuple
+    public: tuple
+    hidden_phase: tuple
+    public_sha256: str
+
+
+def world(seed, family, rep):
+    if (type(seed) is not int or seed not in SEEDS or family not in FAMILIES
+            or type(rep) is not int or not 0 <= rep < REPS):
+        raise ValueError('LR92AY_SOURCE_SCOPE')
+    tim = _rng(seed, family, rep, 'dwell')
+    dwell = tuple(tim.randrange(48, 81) for _ in range(3))
+    obs = _rng(seed, family, rep, 'actions')
+    noise = _rng(seed, family, rep, 'noise')
+    public, phases = [], []
+    variant = rep & 1
+    for i in range(sum(dwell)):
+        phase = 'A' if i < dwell[0] else 'B' if i < sum(dwell[:2]) else 'Areturn'
+        s1, v, x1, x2 = (obs.randrange(2) for _ in range(4))
+        s2_clean, _ = rule(family, variant, s1, v, x1, 0, x2)
+        # B changes both revealed laws with an unannounced polarity inversion.
+        flip = int(phase == 'B')
+        s2 = s2_clean ^ flip ^ int(noise.random() < NOISE)
+        _, y_clean = rule(family, variant, s1, v, x1, s2, x2)
+        y = y_clean ^ flip ^ int(noise.random() < NOISE)
+        identifier = hashlib.sha256(f'LR92AY|{seed}|{family}|{rep}|{i}'.encode()).hexdigest()
+        public.append(Event(identifier, ((s1, v), (s1, 1-v)), s1, x1, s2, x2, y))
+        phases.append(phase)
+    payload = bytes(z for e in public for z in (e.s1, e.views[0][1], e.x1, e.s2, e.x2, e.y))
+    return World(seed, family, rep, dwell, tuple(public), tuple(phases), hashlib.sha256(payload).hexdigest())
+
+
+def worlds():
+    return tuple(world(seed, family, rep) for seed in SEEDS for family in FAMILIES
+                 for rep in range(REPS))
