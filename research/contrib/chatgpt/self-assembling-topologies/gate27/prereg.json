@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE27-INTERFERENCE-RESISTANT-CAUSAL-RULE-TRANSFER-20261120",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "disjoint-transfer-falsification",
+  "exact_parent_sha": "28f6ebe1552b52386e407248ddac8d576deb3be1",
+  "question": "Can an archived intervention-conditioned causal rule be retrieved without phase labels after interference and improve causal choices on never-trained feature vectors beyond equally informed independent Bayesian changepoint and source/recent controls?",
+  "hypothesis": "A source-preserving evidence-routed causal-rule archive will recover earlier A-specific intervention responses when the environment returns to A; unique cumulative gain requires outperforming a Bayesian-hazard model with equal input/action exposure, not merely the frozen source or memorized addresses.",
+  "worlds": {
+    "causal_features": 8,
+    "action_options": 2,
+    "observed_consequence": "binary reward after an actual chosen action",
+    "latent_rule": "one pair of 8 sensed binary parent features combined by XOR with hidden bias defines preferred action; opposite action lower reward; 10% public outcome noise",
+    "disjoint_seed_cohorts": [
+      [
+        "shifted_A_B_A",
+        401000,
+        32
+      ],
+      [
+        "stationary",
+        402000,
+        16
+      ],
+      [
+        "pure_noise",
+        403000,
+        16
+      ]
+    ],
+    "n_trials": 64,
+    "experience": "A96 public interventions/feedback events; B64; R64; externally generated balanced but world-independent action policy. Source model frozen after A, no B/R labels or hidden parent pair to learner; all arms receive exactly the same interventions and consequences.",
+    "holdout": "At B64 and R64 endpoints evaluate 32 previously unseen full 8-bit contexts per seed (not in A/B/R exposures or other held probes); choose an action before outcome observed; held outcomes are domain separated and never used to update source/active models.",
+    "context": "Each new physical sensor vector is an 8-bit state, unlike Gate26's fixed 16 addresses. Source and B worlds use independently chosen disjoint pairs of relevant sensor parents, bias; R repeats A rule with fresh never-seen features. No task-ID, phase labels, true causal graph, oracle reward or data-dependent split allowed."
+  },
+  "mechanism": {
+    "family": "tokenless intervention-conditioned Bayesian causal signatures; 56 hypotheses = 28 parent pairs ×2 XOR biases; fixed capacity",
+    "source_rule": "independently fit posterior over 56 causal hypotheses from A96 public action+consequence; freeze posterior bytes after A",
+    "active_rule": "fit identical posterior over recent last32 B/R public events; no global phase label",
+    "archive_router": "prequential evidence FIFO of last16 signed log likelihood ratio outcomes for source A versus recent rule. Before 8 post-A events use A. After 8, sigmoid(clip(sum signed evidence,-12,+12)) weights preserved source against active recent; update evidence after prediction and actual feedback only. Exact quantitative soft rule frozen in source before first result.",
+    "no_source_ablation": "same router and recent posterior, with archived source removed (predicts .5 until last8 recent observations)",
+    "controls": [
+      "independent 56-hypothesis full Bayesian changepoint posterior with fixed per-event hazard 1/64 and uniform reset",
+      "independent conventional Bayesian source/recency mixture with hazard 1/64 and source archive",
+      "globally refit last32 Bayesian posterior",
+      "fixed A source posterior",
+      "full-history Bayesian posterior",
+      "zero-data .5 null"
+    ],
+    "negative_controls": [
+      "stationary no-shift world",
+      "public outcome noise independent of action/sensors",
+      "source-only/read-only model"
+    ],
+    "compute": "All receive same A96 B64 R64 actual observed interventions and held feature splits; count candidate hypothesis posterior operations, acknowledge unequal compute; no FLOP or energy-matched claim.",
+    "capacity": "Compact deterministic JSON checkpoint <=20000 bytes (including SHA256 integrity wrapper), fixed 56-rule universe and at most 32 active recent events, 16 evidence values, 56-vector Bayesian hazard. No extra model weights or remote services.",
+    "cold": "Three independently started Python child processes per seed: A fit + serialize, B restore/update + serialize, R restore/update + readout. Verify same-process warm replay snapshot and held decisions. Temporary private checkpoint files, no repo model mutation or owner runner."
+  },
+  "metrics": {
+    "primary": "Matched related 32 paired seeds: B online prequential Brier over 64 action outcomes, R online prequential Brier over 64, R held action reward over 32 never-trained physical 8-bit contexts. Report paired 95% normal CIs and full per-cohort metrics.",
+    "secondary": "R held action-choice accuracy over 32 new contexts vs hidden best action (evaluator only), source functional restoration after two actual child-process exits, checkpoint SHA and byte preservation, stationary false activation, noise regression vs chance, compute/rule evaluations."
+  },
+  "frozen_thresholds": {
+    "related_R_held_reward_gain_vs_hazard_min": 0.02,
+    "related_R_held_reward_gain_vs_hazard_ci_lower_positive": true,
+    "related_R_held_reward_gain_vs_source_recent_mixture_min": 0.01,
+    "related_R_held_reward_gain_vs_source_recent_mixture_ci_lower_positive": true,
+    "related_R_held_reward_gain_vs_recent_global_min": 0.02,
+    "related_R_held_reward_gain_vs_recent_global_ci_lower_positive": true,
+    "related_R_unseen_best_action_accuracy_min": 0.7,
+    "related_B_prequential_regret_vs_hazard_max": 0.02,
+    "related_R_prequential_regret_vs_hazard_max": 0.02,
+    "related_R_held_reward_gain_vs_no_archive_min": 0.02,
+    "stationary_spurious_archive_rejection_fraction_max": 0.2,
+    "noise_held_brier_regression_vs_null_max": 0.02,
+    "cross_process_checkpoint_exact_all": true,
+    "cross_process_functional_replay_all": true,
+    "source_archive_unchanged_all": true,
+    "held_contexts_out_of_sample_all": true,
+    "equal_public_action_exposure_all": true,
+    "all_work_counts_finite": true
+  },
+  "classification_rules": {
+    "engineering": "Full identical-head Linux/Windows repo unittest, atlas, source replay and science audit pass",
+    "scientific_supported": "All 18 primary thresholds PASS, then only preliminary synthetic contribution; separate owner/native independently reproduced first-use required",
+    "scientific_negative": "Any criterion fails, preserve quantitative negatives and any bounded component passes; no promotion",
+    "invalid": "Primary score precedes committed frozen source/protocol, action/data inequality, held leak, true phase/oracle cue, after-score retune, or missing exact-source custody."
+  },
+  "authority": {
+    "research_only": true,
+    "keep_draft": true,
+    "canonical_amalgam_controller": false,
+    "accepted_ref_mutation": false,
+    "native_checkpoint_promotion": false,
+    "owner_runner_use": false,
+    "scheduler_or_paid_api": false
+  },
+  "limitations": "Standalone contributor prototype, not a change to native PublicCausalCells, canonical memory, or accepted Yggdrasil architecture. Process-exit evidence is host-local, not host-reboot/cross-host. Protocol's XOR family may be simple for Bayesian controls; zero data/matched info matters more than favorable results."
+}
