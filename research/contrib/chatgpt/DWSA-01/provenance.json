@@ -1,0 +1,44 @@
+{
+  "schema": "dwsa01.local-provenance.v1",
+  "pre_registration_commit": "6541fce463b8d6b868c1ccdef2ee01a557ad258b",
+  "source_snapshot_before_first_run": "f46122a5a2acb0c9dda4233a219e4c950abaeb7c",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "files": {
+    "dwsa.py": {
+      "git_blob_sha1": "9176a062a87e09a0d6394d04823d4f496c855dca",
+      "sha256": "8d4b69c8d0f2ba4d9292ead7d5a129473f878cb15fa0d50da221f8e614b304dd"
+    },
+    "test_dwsa.py": {
+      "git_blob_sha1": "9456fe4b7e86a6c8f9cbc2ce717001e8f8ae1d5a",
+      "sha256": "56ba44f336a674d4dcb75dde9774973f34bdd131ffdbb7dfebe68cc2064d87a8"
+    }
+  },
+  "environment": {
+    "python": "3.13.5",
+    "os": "Linux",
+    "kernel": "6.18.57",
+    "architecture": "x86_64",
+    "external_dependencies": "none",
+    "device": "CPU",
+    "teacher_inference": "zero; no executable teacher forward routine exists"
+  },
+  "post_run_input_manifest_note": "The following checksums were computed after the primary run for post hoc reproducibility; they were not frozen in prereg.json, so confirmatory use is disallowed.",
+  "post_run_synthetic_donor_hashes_float64_be": {
+    "seed_19": "e33411a057c3f92d1bcdd0c4cdd31b04081dccfa9175cecfe0dfbf5e8d76ce37",
+    "seed_41": "87a54c5553cd2d08487d5e6686d67cee0023d4576a48906f936d5a2a394b3c1a",
+    "seed_73": "368bd04179dcd6d3367f09021ca8bd27598f7463c7cbddaa1a5cc4b64b27e63e"
+  },
+  "evaluation_identity": "python -m unittest discover -s research/contrib/chatgpt/DWSA-01 -p 'test_dwsa.py' -v; python research/contrib/chatgpt/DWSA-01/dwsa.py",
+  "custody": {
+    "prereg_before_code_and_test": true,
+    "code_and_tests_before_first_primary_run": true,
+    "first_score_seen_before_input_artifact_hash_manifest": true,
+    "original_results_preserved": true,
+    "qualified_python312": false,
+    "qualified_windows": false,
+    "repo_full_regression": false,
+    "independent_g29": false,
+    "scientific_source_first_use": false,
+    "accepted_model_modified": false
+  }
+}
