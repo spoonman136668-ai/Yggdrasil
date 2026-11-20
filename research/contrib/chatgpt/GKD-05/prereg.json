@@ -1,0 +1,141 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GKD-05",
+  "date": "2026-11-20",
+  "contribution_class": "authentic-published-intervention-conditional-prediction-negative-control",
+  "exact_parent_sha": "bf66726249af7ce3b3c0fb60c54af5ab7fd80726",
+  "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "question": "Does a GPT-authored candidate protein-dependency mask improve cross-condition prediction of authentic measured protein concentrations over fully fitted conventional models trained on exactly the same public FIT groups?",
+  "hypothesis": "A donor-supplied sparse dependency mask might improve held intervention-condition conditional prediction by >=5% versus the VALID-selected strongest conventional full/quad/top2 model, but known-source literature leakage, confounding and source-mismatched interventions could falsify this. A same-mask conventional ridge comparator must tie the donor implementation exactly.",
+  "source": {
+    "dataset_name": "Sachs protein/phospholipid expressions from original 2005 flow cytometry interventions",
+    "doi": "10.5281/zenodo.7681811",
+    "url": "https://zenodo.org/records/7681811/files/sachs.zip?download=1",
+    "published_original": "K. Sachs et al., Science 308:523–529 (2005), doi:10.1126/science.1105809",
+    "curator": "Mathematical Research Data Initiative (Zenodo v2, 2023)",
+    "license": "CC BY 4.0, asserted by curator with original authors' permission",
+    "archive_basename": "sachs.zip",
+    "advertised_archive_md5": "d50ccd7f88bb3705bcf6eda3978bcc41",
+    "maximum_archive_bytes": 1048576,
+    "actual_archive_sha256": "TO_BE_RECORDED_FROM_FIRST_VERIFIED_DOWNLOAD",
+    "source_type": "public PREVIOUSLY PUBLISHED, previously used by many external researchers, not independent virgin-source first use. No CausalGym #426 original-world activity.",
+    "sources_screened": [
+      "https://zenodo.org/records/7681811",
+      "https://www.bnlearn.com/research/sachs05/index.html"
+    ],
+    "restrictions": "Include 9 stated original-experiment CSVs only; explicitly EXCLUDE five curator-described simulated intervention CSVs and Ground_Truth.csv from all fits/selection/probe labels."
+  },
+  "frozen_design": {
+    "schema": "11 exact columns case-sensitive: Raf,Mek,Plcg,PIP2,PIP3,Erk,Akt,PKA,PKC,P38,Jnk. If original CSV column spelling differs, FAIL_CLOSED; do not normalize headers after looking at labels. Each original group expected 707..927 rows, all finite; 9 exact names and no replacements.",
+    "original_groups": [
+      "cd3cd28.csv",
+      "cd3cd28icam2.csv",
+      "cd3cd28_aktinhib.csv",
+      "cd3cd28_g0076.csv",
+      "cd3cd28_psitect.csv",
+      "cd3cd28_u0126.csv",
+      "cd3cd28_ly.csv",
+      "pma.csv",
+      "b2camp.csv"
+    ],
+    "excluded_simulations": [
+      "cd3cd28icam2_aktinhib.csv",
+      "cd3cd28icam2_g0076.csv",
+      "cd3cd28icam2_psit.csv",
+      "cd3cd28icam2_u0126.csv",
+      "cd3cd28icam2_ly.csv"
+    ],
+    "fit_groups": [
+      "cd3cd28.csv",
+      "cd3cd28icam2.csv",
+      "cd3cd28_g0076.csv",
+      "cd3cd28_psitect.csv",
+      "pma.csv"
+    ],
+    "valid_groups": [
+      "cd3cd28_aktinhib.csv",
+      "cd3cd28_u0126.csv"
+    ],
+    "dev_groups": [
+      "cd3cd28_ly.csv",
+      "b2camp.csv"
+    ],
+    "target_molecules": [
+      "Erk",
+      "Akt",
+      "P38",
+      "Jnk"
+    ],
+    "donor_candidate_parent_maps": {
+      "Erk": [
+        "Raf",
+        "Mek"
+      ],
+      "Akt": [
+        "PIP3",
+        "Erk"
+      ],
+      "P38": [
+        "PKC",
+        "Plcg"
+      ],
+      "Jnk": [
+        "PKC",
+        "Plcg"
+      ]
+    },
+    "knowledge_provenance": "GPT-authored directed candidate mask, not a readout of original DAG or source graph. Assistant searched high-level Sachs public documentation before selecting these claims; therefore literature/source-exposure contamination is acknowledged. No claim this donor is blinded or genuinely new knowledge. No target label/heldout numerical data read before freeze.",
+    "target_task": "For a cell under a held-out published experimental condition, predict one measured protein target using the other ten simultaneously measured protein quantities. These contemporaneous measurements are available at inference. This is CONDITIONAL PREDICTION under distribution shift, NOT intervention-effect/graph discovery; target values, held group identity and intervention label are never provided as features.",
+    "feature_processing": "For every target independently, standardize 10 other protein inputs using pooled FIT-only mean and std; standardize target using FIT-only mean/std. Nonfinite, missing or zero std fail closed. Intercept unpenalized. Never condition on group ID, condition treatment cue, sample row order, target itself, other targets' outcomes or any graph truth.",
+    "regression": "Per target ordinary fully trained centered ridge minimizing sum squared normalized errors + alpha * ||coef||^2; fit once per candidate/control per alpha. Fitted normal equations via deterministic pivoted Gaussian elimination, no external linear algebra, same row budget and training subset.",
+    "alphas": [
+      0.001,
+      0.1,
+      1,
+      10,
+      100,
+      1000
+    ],
+    "selection": "Within each arm and target choose alpha by aggregate group-balanced normalized RMSE on the TWO validation groups only, tie -> smaller alpha. Choose strongest conventional arm globally by average equal-weight validation RMSE over four targets and two groups; tie -> arm order full_ridge,quadratic_ridge,top2_abs_correlation. Never use public DEV outcomes to select architecture or alpha.",
+    "controls": [
+      "fully fitted full 10-feature ridge on identical FIT cells",
+      "fully fitted quadratic ridge with the 10 inputs, 10 squares and 45 distinct pairwise interaction terms, all transformed with FIT means and standard deviations",
+      "fully fitted FIT-only top-2 absolute Pearson parent selector plus ridge (equal two predictors per target; no heldout selection)",
+      "same donated 2-parent mask with identical conventional ridge numerics (expected exact tie; report as equal-information strongest same-prior comparator)",
+      "fixed FIT target mean without other features",
+      "fixed wrong-parent sham maps target by cyclic shift of donor parents (same parent count), independently fit"
+    ],
+    "metric": "Equal-weight mean of 8 normalized RMSE values (4 targets x 2 DEV groups). Per-target normalized RMSE denominator is pooled FIT target std, not heldout statistics. Also report actual unnormalized MSE and RMSE per group, score no extrapolation claim. No bootstrap p-value over correlated single-cell rows. Score all arms once.",
+    "success": "PUBLIC_DEV_SIGNAL only if donor aggregate normalized RMSE at least 5% lower than VALID-selected strongest conventional arm, beats sham by >=5%, has no >5% per group-target regression, and nonregresses on 6 of 8. Source hash/9 real groups validated, 5 simulated excluded and exact same-mask conventional implementation ties to 1e-12.",
+    "negative": "PUBLIC_DEV_NO_GO if donor fails any frozen gain; preserve all per-target/group losses. Engineering fail if source packaging/checksum/schema invalid, synthetic source mistakenly included, target leakage, conventional not fully fit or invalid numeric.",
+    "scientific_pass": "ALWAYS FALSE; widely reused 2005 source, public group labels, assistant prior source-exposed, per-cell target cross-condition prediction is not causal intervention-effect evidence, no independent blind reproduction or native learner training.",
+    "budget": {
+      "groups": 9,
+      "targets": 4,
+      "alpha_grid": 6,
+      "dev_rows_max": 2000,
+      "archive_bytes_max": 1048576,
+      "resource": "GitHub-hosted Ubuntu/Windows source admission and regression, one original archive DEV score, zero paid calls, no owner runners or protected original-world actions"
+    },
+    "stopping": "One complete public DEV run; never adjust splits/parents/control/grid/threshold after seeing labels. If original source package differs from frozen schema, record SOURCE_PACKAGING_NO_GO and stop, do not silent adapt."
+  },
+  "authority": {
+    "research_only": true,
+    "owner_learner_promotion": false,
+    "accepted_main_mutation": false,
+    "original_protected_world_first_use": false,
+    "merge": false,
+    "scheduled_task": false,
+    "runner_owner_dispatch": false
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/GKD-05/**",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "classification": "PREREG_ONLY_SCIENTIFIC_UNVERIFIED",
+  "prior_synthetic_findings": "GKD-01/02/03/04 source-only synthetic engineering PASS; no prior robust/symbolic advantage; GKD-04 1024/1024 type-checked textbook symbolic tie. The present score must not be compared as an independent original-source novel intelligence gain."
+}
