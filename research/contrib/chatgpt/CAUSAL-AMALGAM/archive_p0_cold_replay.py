@@ -20,6 +20,7 @@ import quine_retention as guard
 from four_head_retention import (HEAD_NAMES, audit_old_heads,
                                  assess_one_witness_head_update)
 from headwise_consolidation import assess_bounded_blend
+from headwise_capsule import seal_capsule, restore_capsule
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import digest
 
@@ -173,6 +174,17 @@ def summarize_bounded_consolidation(samples):
                 or tuple(result.get("heads", {})) != HEAD_NAMES
                 or result.get("official_checkpoint_restore_supported") is not False):
             raise ValueError("G25_BLEND_CUSTODY")
+        receipt = sample.get("g26_cold_receipt")
+        if (type(receipt) is not dict
+                or receipt.get("schema") != "yggdrasil.amalgam.dev-headwise-cold-receipt.v1"
+                or receipt.get("source_checkpoint_pins_verified") is not True
+                or receipt.get("selected_head_bytes_recomputed") is not True
+                or receipt.get("head_count") != 4
+                or receipt.get("canonical_native_model_restored") is not False
+                or type(receipt.get("capsule_bytes")) is not int
+                or not 0 < receipt["capsule_bytes"] <= 262144
+                or receipt.get("scientific_pass") is not False):
+            raise ValueError("G26_RESEARCH_COLD_RECEIPT_CUSTODY")
         heads = result["heads"]
         if any(
             item.get("selected_alpha") not in (1.0, 0.75, 0.5, 0.25, 0.0)
@@ -194,6 +206,11 @@ def summarize_bounded_consolidation(samples):
         "sample_ordinals": list(CONSOLIDATION_ORDINALS),
         "samples": samples,
         "sample_count": len(samples),
+        "g26_rehydration_count": sum(
+            sample["g26_cold_receipt"]["selected_head_bytes_recomputed"]
+            for sample in samples),
+        "g26_rehydration_bytes_total": sum(
+            sample["g26_cold_receipt"]["capsule_bytes"] for sample in samples),
         "positive_transition_alpha_samples": positive_transition_samples,
         "in_sample_transition_fit_better_than_frozen_count": observed_transition_fit_improvement,
         "development_classification": ("DEV_MECHANISM_PROMISING" if promised
@@ -285,12 +302,22 @@ def replay_consumed_selector(start, source_directory):
         if index + 1 in CONSOLIDATION_ORDINALS:
             # G25 source-consumed shadow only. The newly witnessed label is
             # excluded from the frozen old-Brier weight interpolation selector.
+            capsule_raw, capsule_pin = seal_capsule(
+                start, previous.system, gate.system)
+            reconstructed_heads, cold_receipt = restore_capsule(
+                capsule_raw, capsule_pin,
+                start, previous.system, gate.system)
+            if (len(reconstructed_heads) != 4
+                    or cold_receipt["canonical_native_model_restored"] is not False
+                    or cold_receipt["capsule_bytes"] != len(capsule_raw)):
+                raise ValueError("G26_SIDECARE_RECONSTRUCT_FAILED")
             consolidation.append({
                 "ordinal": index + 1,
                 "phase": event["phase"],
                 "witness_sha256": packet,
                 "blend": assess_bounded_blend(
                     start, previous.system, gate.system),
+                "g26_cold_receipt": cold_receipt,
             })
 
     shadow_report = summarize_shadow(shadow)
