@@ -21,7 +21,7 @@ class TGap20Tests(unittest.TestCase):
                     self.assertIn(mechanism_bit(k, x, a), (0, 1))
 
     def test_one_persistent_world_and_sequential_witnesses(self):
-        for seed, op in TRAIN_WORLDS:
+        for seed, op, _public_world_id in TRAIN_WORLDS:
             events = world_events(seed, op, 64)
             self.assertEqual(len(events), 64)
             self.assertEqual(tuple(row[0] for row in events), tuple(range(64)))
