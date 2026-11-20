@@ -85,6 +85,22 @@ class EnvelopeTests(unittest.TestCase):
         self.assertFalse(result["owner_custody_verified"])
         self.assertEqual(result["source_actions"], 0)
 
+    def test_lossless_large_selector_custody_roundtrip(self):
+        """Real high-precision evidence must survive cumulative seal/recover."""
+        huge = Fraction((1 << 16000) + 1, (1 << 16000) + 3)
+        original = {(0, 0): ((huge, -huge),)}
+        self.anchor._evidence = original
+        self.active._evidence = original
+        self.quines = QUINE.select_quines(
+            self.anchor, {"mastered-A": (0, 12), "mastered-B": (12, 24)})
+        self.pin = digest(canonical(self.quines))
+        raw, pin = self.seal()
+        recovered = self.restore(raw, pin)
+        self.assertEqual(recovered["anchor"]._evidence, original)
+        self.assertEqual(recovered["active"]._evidence, original)
+        self.assertEqual(QUINE._selector_receipt(recovered["active"]),
+                         QUINE._selector_receipt(self.active))
+
     def test_idempotent_receipt_and_conflicting_id(self):
         raw, pin = self.seal(veto_receipts=[self.veto, self.veto])
         self.assertEqual(len(self.restore(raw, pin)["veto_receipts"]), 1)
