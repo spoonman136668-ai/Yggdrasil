@@ -1,0 +1,127 @@
+{
+  "schema": "yggdrasil.tgap22.slot-detection-vs-selection-vs-contamination.frozen-dev.v1",
+  "prereg_date": "2026-11-20",
+  "scoped_role": "Independent synthetic contributor in existing PR #1327; Amalgam #1278 alone owns canonical model/checkpoint/integration",
+  "prior_evidence": {
+    "tgap21_protocol_sha": "9b4eefddad364bc416511bba2a783401f1413b55",
+    "tgap21_qualified_run": 44725270893,
+    "tgap21_qualified_candidate": "7f78c756db6053303e2297def51b12c225ae4ed0",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "first_use_owner_issue": 426
+  },
+  "question": "Within the source-only two-slot memory that failed TGAP21, which evaluator interventions rescue return prediction: oracle return-slot selection, pristine earlier A slot restoration, both, or full regime routing? Do not infer native learning gain from privileged interventions.",
+  "law": "Same *frozen* TGAP21 single-world Bernoulli witness and two-slot research algorithm: role0 or role1 hidden; optimal arm flips at two privately selected boundaries; p(reward=1)=.8 when chosen arm optimal else .2; SHA256 seed:role:step exogenous outcome, no lookahead. Fixed action=step%2 for all policies.",
+  "fit": {
+    "seed": 8501,
+    "initial_role": 0,
+    "switches": [
+      24,
+      48
+    ],
+    "steps": 72,
+    "fit_action_count": 72,
+    "snapshot_A_after_step": 23,
+    "full_checkpoint_after_step": 71,
+    "predeclared_noise_domain": "unchanged tgap21:private:witness:v1"
+  },
+  "held": {
+    "worlds": [
+      {
+        "seed": 8603,
+        "role": 0,
+        "switches": [
+          15,
+          40
+        ]
+      },
+      {
+        "seed": 8621,
+        "role": 0,
+        "switches": [
+          21,
+          44
+        ]
+      },
+      {
+        "seed": 8647,
+        "role": 0,
+        "switches": [
+          17,
+          35
+        ]
+      },
+      {
+        "seed": 8663,
+        "role": 1,
+        "switches": [
+          15,
+          40
+        ]
+      },
+      {
+        "seed": 8681,
+        "role": 1,
+        "switches": [
+          21,
+          44
+        ]
+      },
+      {
+        "seed": 8699,
+        "role": 1,
+        "switches": [
+          17,
+          35
+        ]
+      }
+    ],
+    "steps_per_world": 64,
+    "held_witnesses_per_arm": 384,
+    "recurrence_brier_episodes": "steps from second switch to final step, equal observation tape for all arms",
+    "public_inputs": "one public world-step index, chosen action, past witnessed reward; private role/switches/noise ONLY evaluator or specifically labelled diagnostic oracles"
+  },
+  "arms": {
+    "baseline": "unchanged original TGAP21 fitted two-slot learner; model checkpoint carried into held, public world reset as before; no privileged truth",
+    "no_fit": "identical empty two-slot research learner",
+    "restore_only_oracle": "at second true switch, restore slot0 counts from FIT A snapshot; no active-slot override (privileged intervention; not fair)",
+    "route_only_oracle": "from second true switch to end, force active=0 before every prediction and witnessed update; preserve contaminated slot0 counts (privileged intervention; not fair)",
+    "route_plus_restore_oracle": "combine identical return-slot routing and FIT A pristine slot0 restoration at true second switch (privileged, not fair)",
+    "full_phase_oracle": "before each evaluation step, select slot0 in A/return and slot1 in B; use no hidden labels as training inputs, but this routing itself is privileged upper reference",
+    "rolling_8": "fully fitted rolling Beta control from identical 72 FIT events, cloned independently to each held world",
+    "bayes_hmm": "model-informed HMM 0.8/0.2 emission and hazard1/16 known ahead of time, fit on same 72 FIT observations; not equal structural information",
+    "source_only": "p=0.5; no learning"
+  },
+  "metrics": {
+    "primary": "Prequential Brier on final return segment, aggregated by *individual witnessed event* across six frozen worlds and 384 total actions per arm",
+    "secondary": [
+      "Overall prequential Brier",
+      "Initial role0 vs opposing role1 return Brier",
+      "At return, fraction of baseline predictions routed to slot0 (empirical)",
+      "Pristine A slot0 readout drift between initial A snapshot and after FIT B, independently verified with cold restore",
+      "Exact paired deltas in return Brier: route_only - baseline, restore_only - baseline, combined - baseline",
+      "Number of unmodified baseline switches and total action/observation count",
+      "Whole CPU execution wall-time excluding checkout, checkpoint bytes and hash"
+    ],
+    "reporting": "Each oracle variant explicitly evaluator-privileged and unusable as claim of scientific advantage. Report negative and contrary improvements without cherry-picking any families."
+  },
+  "frozen_decision_rules": {
+    "route_bottleneck": "If baseline return Brier minus route-only oracle Brier >=0.01, return-slot selection is a contributing bottleneck *on this synthetic cohort*.",
+    "contamination_bottleneck": "If baseline return Brier minus pristine-only Brier >=0.01, A slot contamination is a contributing bottleneck on this synthetic cohort.",
+    "interaction": "If neither individual oracle improves >=0.01 but combined improves >=0.01, report joint intervention interaction, NOT unique attribution.",
+    "full_router_reference": "Full phase router is a privileged ceiling and cannot be compared as a fair learner advantage; it may underperform due to corrupted FIT counts.",
+    "engineering": "Focused Linux/Windows tests plus exact G29 atlas sealed candidate, dual OS mandatory full regressions and original-source compatibility; source/protocol strict; all 6 worlds, 384 steps/arm; old TGAP21 frozen seeds never reused",
+    "science": "Always DEV_NO_GO_SYNTHETIC_DIAGNOSTIC_ONLY; independent model gain requires matching fully fitted conventional controls and owner-admitted external original-world first use with cold same-address retention, compute and independent replicate"
+  },
+  "controls_and_custody": {
+    "no_post_result_tuning": true,
+    "no_candidate_algorithm_change": true,
+    "source_only": true,
+    "no_original_real_world_data": true,
+    "no_native_accumulator_mutation": true,
+    "no_other_workstream_changes": true,
+    "no_controller_or_scheduler": true,
+    "no_new_pr_or_merge": true,
+    "no_canonical_checkpoint_promotion": true,
+    "no_paid_apis": true
+  }
+}
