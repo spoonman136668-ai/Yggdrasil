@@ -936,3 +936,75 @@ jobs:
           path: ${{ runner.temp }}/know37-local-hysteresis-first-use.json
           if-no-files-found: error
           retention-days: 30
+
+  know38-buffer-before-write-study:
+    # One entirely synthetic HELD first-use on a fresh cohort, no original #426.
+    # Requires exact first-attempt trigger and full cross-platform qualification.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know38): one-shot buffer-before-write held after full regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One prospective noisy local memory source first-use
+        shell: bash
+        env:
+          YGG_KNOW38_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know38_buffer_before_write_protocol.json")" = b672bb9efc6e178c470ec4a13cb43cead5695d95
+          test "$(git rev-parse "HEAD:$base/know38_buffer_before_write_dev.py")" = 453564111e23bcccf065cd40fa5a90c1080a234d
+          test "$(git rev-parse "HEAD:$base/test_know38_buffer_before_write_dev.py")" = 99ccb8a8ceb23c3026e4e7b87599886ba9dfa9c0
+          echo YGG_KNOW38_ALL_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know38_buffer_before_write_dev.py" > "$RUNNER_TEMP/know38-buffer-before-write-held.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know38-buffer-before-write-held.json").read_text())
+          assert d["schema"]=="yggdrasil.know38.buffer-before-write-result.dev.v1"
+          assert d["prereg_commit"]=="585a15b00a1c2237753c1c426b456f00b68100ff"
+          assert d["prereg_blob"]=="b672bb9efc6e178c470ec4a13cb43cead5695d95"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],d["held_unique_source_events"],d["model_events_per_arm"])==(12,24,3072,9216,10752)
+          assert len(d["worlds"])==24 and set(d["families"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==7
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit frozen aggregate result to original job receipt
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know38-buffer-before-write-held.json"
+          d=json.loads(p.read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_events","model_events_per_arm",
+                "selected_hmm_hazard","fit_hmm_briers","families","frozen_hypotheses",
+                "sham_false_switch_worlds","A_retained_worlds","B_retained_worlds",
+                "development_verdict","scientific","protected_original_world_first_use",
+                "native_model_changed","deployment")
+          print("YGG_KNOW38_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic result only
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW38-buffer-before-write-first-use
+          path: ${{ runner.temp }}/know38-buffer-before-write-held.json
+          if-no-files-found: error
+          retention-days: 30
