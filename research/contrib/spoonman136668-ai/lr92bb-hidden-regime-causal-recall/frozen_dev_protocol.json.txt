@@ -1,0 +1,131 @@
+{
+  "authority": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "central_amalgam_pr": 1278,
+    "controller_or_scheduler_changed": false,
+    "existing_contributor_pr": 1323,
+    "merge_or_deployment": false,
+    "native_research_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+    "native_source_modified": false,
+    "owner_checkpoint_continuity": "UNVERIFIED",
+    "owner_checkpoint_read_or_written": false,
+    "protected_worlds_consumed": false,
+    "repo": "spoonman136668-ai/Yggdrasil"
+  },
+  "hypothesis": "Dual sparse compositional causal programs with contradiction-triggered segmentation and evidence-only archival recall; not a global/local prediction-bank gate",
+  "manifest_sha256": "478e1388d6ad4d5585839603164c6760181bf5e17675149e0323bea749149cf6",
+  "outcome_read_at_freeze": false,
+  "protocol": {
+    "A_return": "first 16 observed terminal episodes after hidden A-return; clock evaluator-only",
+    "arms": [
+      "causal_recall",
+      "grammar_bayes",
+      "grammar_static",
+      "beta_full",
+      "beta_window32",
+      "beta_window64",
+      "beta_decay",
+      "logistic_poly",
+      "single_sparse",
+      "shuffled_context",
+      "no_learning"
+    ],
+    "candidate": "causal_recall",
+    "cold_recovery": "checksum-and-byte-identical checkpoint restore at evaluator A/B boundaries; no phase flag supplied to the model",
+    "memory": "candidate serialized fixed max 1056 bytes including SHA256; no external replay ledger",
+    "metric": "observed terminal outcome Brier, unweighted macro world then per-seed; lower better",
+    "prequential": "forecast before update on every publicly observed outcome",
+    "protected_primary_first_use": false,
+    "source_only": "synthetic off-owner evaluation using two-stage public (s1,x1,s2,x2,y) at constant view address",
+    "strong_controls": [
+      "grammar_bayes",
+      "grammar_static",
+      "beta_full",
+      "beta_window32",
+      "beta_window64",
+      "beta_decay",
+      "logistic_poly"
+    ],
+    "time": "end-to-end per-arm wallclock includes updates and checkpoint; record, do not normalize unverified compute"
+  },
+  "research_question": "Can a bounded archive synthesize and cold-recall previously unseen cubic causal relations without any public regime cue, under noisy same-address A->B->A return, with superior early return and no B regression vs strongest conventional and exact sparse-program Bayesian controls?",
+  "role": "independent Yggdrasil contributor only; no canonical learner, owner, training, integration or deployment",
+  "schema": "lr92bb.hidden-causal-synthesis-development-freeze.v1",
+  "source_sha256": {
+    "compare.py": "d36f5556ab6cd4476d549f5395afc4188a7122079dec46b888d97faabd71025e",
+    "controls.py": "d5f73bf1f77ded288dd3e2fa14138084053161284127db5e343bcc5090e06a38",
+    "freeze.py": "def1181c73d470884a9f620cf81b44e450f93c86bfe2b469fb98f9c0cc90037a",
+    "mechanism.py": "b61e479f09273ab8742a5e7366f8f68fb76ccdc230d7c2a4d87889530354bf05",
+    "test_mechanism.py": "37d19d270f42405fce0721578df59526e367824cb73cb516802b8cd01f1b9909",
+    "worlds.py": "ac860146646e4d252b9b6d563101c7c9be4accfe29b7c3db7e452b84ec677823"
+  },
+  "stop_rule": {
+    "development_go_iff": "For each of the two disjoint seed groups, candidate return16 Brier <= (minimum of six strong controls) - 0.01 AND candidate B Brier <= (minimum of six controls) + 0.01; 24/24 cold restore and <=1056-byte candidate checkpoint; all controls receive matched 5-bit public observations and action opportunities. Otherwise DEVELOPMENT_NO_GO.",
+    "no_posthoc_selection": "Never substitute single_sparse or the best native configuration as primary after scoring. No retuning on these exposed worlds.",
+    "statistical_claim": "Development GO is NOT independent SCIENTIFIC_PASS; requires new independent preregistered primary with fully trained conventional and exact symbolic, matched compute and resources, with qualified owner authority.",
+    "stop_on_negative": "Keep all null/out-of-class outcomes; no promotion, merge or protected first-use."
+  },
+  "worlds": {
+    "A_dwell_range": [
+      74,
+      95
+    ],
+    "B_dwell_range": [
+      70,
+      89
+    ],
+    "count": 24,
+    "families": [
+      "cubic_parent_rewrite",
+      "cubic_disjoint_parent",
+      "quartic_unfamiliar"
+    ],
+    "forbidden_prior_and_protected_seeds": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802,
+      76021921,
+      76021922,
+      77033101,
+      77033102,
+      88041001,
+      88041002,
+      89051001,
+      89051002,
+      90161101,
+      90161102,
+      90161103,
+      92111911,
+      92111912,
+      92111913,
+      93490111,
+      93490112,
+      929209101,
+      929209102,
+      929209103
+    ],
+    "no_phase_or_switch_cue": true,
+    "out_of_class_quartic_family": "quartic_unfamiliar",
+    "public_episodes_per_arm": 5496,
+    "replicates": 4,
+    "return_dwell_range": [
+      53,
+      74
+    ],
+    "same_public_view_address_across_A_B_A": true,
+    "seed_episode_counts": {
+      "94771101": 2773,
+      "94771102": 2723
+    },
+    "seeds": [
+      94771101,
+      94771102
+    ],
+    "terminal_label_noise_rate": 0.07,
+    "transition_noise_rate": 0.25,
+    "worlds_sha256": "478e1388d6ad4d5585839603164c6760181bf5e17675149e0323bea749149cf6"
+  }
+}

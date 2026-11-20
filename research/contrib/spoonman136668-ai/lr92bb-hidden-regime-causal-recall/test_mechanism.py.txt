@@ -1,0 +1,91 @@
+import hashlib
+import json
+import unittest
+from mechanism import BITSETS,FEATURES,PROGRAMS,Slot,CausalRecall,best_program,predict_program
+from controls import Beta,GrammarBayes,LogisticPolynomial
+from worlds import SEEDS,FAMILIES,FORBIDDEN,REPS,world,worlds,true_law
+from compare import ARMS,BASELINES,instantiate,one
+
+class TestDevelopmentContract(unittest.TestCase):
+    def test_disjoint(self):self.assertTrue(set(SEEDS).isdisjoint(FORBIDDEN))
+    def test_complete_scope(self):
+        a=worlds();self.assertEqual(len(a),24);self.assertEqual(len({(x.seed,x.family,x.rep) for x in a}),24)
+    def test_one_constant_address(self):
+        for w in worlds():
+            for e in w.events:
+                self.assertEqual(e.views(),((e.s1,0),(e.s1,1)))
+                self.assertEqual(set(e.row()),{'s1','x1','s2','x2','y'})
+    def test_exact_deterministic_world(self):
+        a=world(SEEDS[0],FAMILIES[1],1);b=world(SEEDS[0],FAMILIES[1],1)
+        self.assertEqual(a.public_sha256,b.public_sha256)
+    def test_world_boundary_not_in_event(self):
+        self.assertFalse(hasattr(worlds()[0].events[0],'phase'))
+        self.assertFalse(hasattr(worlds()[0].events[0],'family'))
+    def test_higher_order_true_laws(self):
+        # The unfamiliar quartic cannot be represented by any cubic program.
+        for rep in range(REPS):
+            truth=sum(true_law('quartic_unfamiliar',rep,0,c)<<c for c in range(16))
+            self.assertNotIn(truth,PROGRAMS)
+    def test_in_class_generated_from_mononomials(self):
+        for family in FAMILIES[:2]:
+            for regime in (0,1):
+                truth=sum(true_law(family,0,regime,c)<<c for c in range(16))
+                self.assertIn(truth,PROGRAMS)
+    def test_hidden_regimes_distinct(self):
+        for family in FAMILIES:
+            a=[true_law(family,0,0,i) for i in range(16)]
+            b=[true_law(family,0,1,i) for i in range(16)]
+            self.assertGreater(sum(x!=y for x,y in zip(a,b)),3)
+    def test_940_distinct_sparse_compositions(self):
+        self.assertEqual(len(BITSETS),940);self.assertEqual(len(set(PROGRAMS)),940)
+    def test_best_program_synthetic(self):
+        n0=[0]*16;n1=[0]*16
+        for c in range(16):
+            y=predict_program((1<<12)|(1<<2),c)
+            (n1 if y else n0)[c]=5
+        coef,err=best_program(n0,n1)
+        self.assertEqual(err,0)
+        self.assertTrue(all(predict_program(coef,c)==predict_program((1<<12)|(1<<2),c) for c in range(16)))
+    def test_public_input_validation(self):
+        m=CausalRecall()
+        with self.assertRaises(ValueError):m.observe(16,0)
+        with self.assertRaises(ValueError):m.observe(1,2)
+    def test_initial_predict_half(self):self.assertEqual(CausalRecall().predict(4),.5)
+    def test_cold_restore(self):
+        m=CausalRecall()
+        for i in range(25):m.observe(i%16,i%2)
+        z=m.snapshot();r=CausalRecall.restore(z)
+        self.assertEqual(z,r.snapshot())
+        self.assertEqual([m.predict(i) for i in range(16)],[r.predict(i) for i in range(16)])
+    def test_tampered_checkpoint(self):
+        raw=CausalRecall().snapshot()
+        with self.assertRaises(ValueError):CausalRecall.restore(raw[:-1]+bytes([raw[-1]^1]))
+    def test_checkpoint_budget(self):
+        m=CausalRecall()
+        for i in range(180):m.observe((i*7)%16,(i//9)&1)
+        self.assertLessEqual(len(m.snapshot()),1056)
+    def test_grammar_prior(self):self.assertAlmostEqual(GrammarBayes().predict(0),.5)
+    def test_grammar_online(self):
+        m=GrammarBayes()
+        for i in range(6):m.observe(0,1)
+        self.assertGreater(m.predict(0),.5)
+    def test_tabular_prior_and_update(self):
+        m=Beta();self.assertEqual(m.predict(0),.5)
+        m.observe(0,1);self.assertAlmostEqual(m.predict(0),2/3)
+    def test_logistic_training_positive(self):
+        m=LogisticPolynomial()
+        for _ in range(16):m.observe(0,1)
+        self.assertGreater(m.predict(0),.75)
+    def test_shuffled_negative_contract(self):
+        self.assertIn('shuffled_context',ARMS)
+    def test_no_dummy_as_actual_native(self):
+        self.assertNotIn('native_model',ARMS);self.assertTrue(set(BASELINES).issubset(ARMS))
+    def test_frozen_arm_count(self):self.assertEqual(len(ARMS),11)
+    def test_no_hidden_world_into_model(self):
+        e=worlds()[0].events[0];m=CausalRecall();m.observe(e.ctx(),e.y)
+        self.assertNotIn(str(SEEDS[0]),m.snapshot().decode('latin-1'))
+    def test_one_event_count(self):
+        e=worlds()[0].events[0];m=CausalRecall();m.observe(e.ctx(),e.y)
+        self.assertEqual(m.events,1)
+
+if __name__=='__main__':unittest.main()

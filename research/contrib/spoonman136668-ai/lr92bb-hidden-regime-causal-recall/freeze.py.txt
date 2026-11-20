@@ -1,0 +1,56 @@
+"""Pre-scoring source-lock procedure; never computes any prediction score."""
+from __future__ import annotations
+import hashlib,json
+from pathlib import Path
+from worlds import worlds,SEEDS,FAMILIES,FORBIDDEN
+from compare import ARMS,BASELINES
+here=Path(__file__).parent
+assert set(SEEDS).isdisjoint(FORBIDDEN)
+ws=worlds()
+manifest=[{'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':list(w.dwell),
+           'public_sha256':w.public_sha256,'events':len(w.events)} for w in ws]
+(here/'development_manifest.json').write_text(json.dumps(manifest,sort_keys=True,indent=2)+'\n')
+source_names=['mechanism.py','worlds.py','controls.py','compare.py','test_mechanism.py','freeze.py']
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+protocol={
+ 'schema':'lr92bb.hidden-causal-synthesis-development-freeze.v1',
+ 'role':'independent Yggdrasil contributor only; no canonical learner, owner, training, integration or deployment',
+ 'research_question':'Can a bounded archive synthesize and cold-recall previously unseen cubic causal relations without any public regime cue, under noisy same-address A->B->A return, with superior early return and no B regression vs strongest conventional and exact sparse-program Bayesian controls?',
+ 'hypothesis':'Dual sparse compositional causal programs with contradiction-triggered segmentation and evidence-only archival recall; not a global/local prediction-bank gate',
+ 'worlds':{'count':len(ws),'seeds':list(SEEDS),'families':list(FAMILIES),'replicates':4,
+           'public_episodes_per_arm':sum(len(w.events) for w in ws),
+           'seed_episode_counts':{str(s):sum(len(w.events) for w in ws if w.seed==s) for s in SEEDS},
+           'forbidden_prior_and_protected_seeds':list(FORBIDDEN),
+           'same_public_view_address_across_A_B_A':True,'no_phase_or_switch_cue':True,
+           'A_dwell_range':[74,95],'B_dwell_range':[70,89],'return_dwell_range':[53,74],
+           'terminal_label_noise_rate':.07,'transition_noise_rate':.25,
+           'out_of_class_quartic_family':'quartic_unfamiliar',
+           'worlds_sha256':sha(here/'development_manifest.json')},
+ 'protocol':{'arms':list(ARMS),'strong_controls':list(BASELINES),
+             'candidate':'causal_recall','prequential':'forecast before update on every publicly observed outcome',
+             'metric':'observed terminal outcome Brier, unweighted macro world then per-seed; lower better',
+             'A_return':'first 16 observed terminal episodes after hidden A-return; clock evaluator-only',
+             'cold_recovery':'checksum-and-byte-identical checkpoint restore at evaluator A/B boundaries; no phase flag supplied to the model',
+             'source_only':'synthetic off-owner evaluation using two-stage public (s1,x1,s2,x2,y) at constant view address',
+             'time':'end-to-end per-arm wallclock includes updates and checkpoint; record, do not normalize unverified compute',
+             'memory':'candidate serialized fixed max 1056 bytes including SHA256; no external replay ledger',
+             'protected_primary_first_use':False},
+ 'stop_rule':{
+  'development_go_iff':'For each of the two disjoint seed groups, candidate return16 Brier <= (minimum of six strong controls) - 0.01 AND candidate B Brier <= (minimum of six controls) + 0.01; 24/24 cold restore and <=1056-byte candidate checkpoint; all controls receive matched 5-bit public observations and action opportunities. Otherwise DEVELOPMENT_NO_GO.',
+  'statistical_claim':'Development GO is NOT independent SCIENTIFIC_PASS; requires new independent preregistered primary with fully trained conventional and exact symbolic, matched compute and resources, with qualified owner authority.',
+  'no_posthoc_selection':'Never substitute single_sparse or the best native configuration as primary after scoring. No retuning on these exposed worlds.',
+  'stop_on_negative':'Keep all null/out-of-class outcomes; no promotion, merge or protected first-use.'},
+ 'authority':{'repo':'spoonman136668-ai/Yggdrasil','existing_contributor_pr':1323,
+              'central_amalgam_pr':1278,'native_research_sha':'86264b41a08d49f558418c0fba367f3a2636befa',
+              'accepted_main':'5e74f8db85b2f5839c42148c0dfba69a88b1a2c9',
+              'owner_checkpoint_continuity':'UNVERIFIED',
+              'native_source_modified':False,'owner_checkpoint_read_or_written':False,
+              'protected_worlds_consumed':False,'controller_or_scheduler_changed':False,
+              'merge_or_deployment':False},
+ 'source_sha256':{p:sha(here/p) for p in source_names},
+ 'manifest_sha256':sha(here/'development_manifest.json'),
+ 'outcome_read_at_freeze':False
+}
+(here/'frozen_dev_protocol.json').write_text(json.dumps(protocol,sort_keys=True,indent=2)+'\n')
+print(json.dumps({'source_hashes':protocol['source_sha256'],'manifest_sha256':protocol['manifest_sha256'],
+                  'worlds':len(ws),'episodes_per_arm':protocol['worlds']['public_episodes_per_arm'],'status':'FROZEN_UNSCORED'},sort_keys=True))

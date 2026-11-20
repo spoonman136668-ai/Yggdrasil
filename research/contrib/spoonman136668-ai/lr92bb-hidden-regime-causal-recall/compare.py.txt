@@ -1,0 +1,95 @@
+"""Prospective source-free hidden-regime causal structure development study."""
+from __future__ import annotations
+import hashlib
+import json
+import math
+import sys
+import time
+from pathlib import Path
+from mechanism import CausalRecall,Slot,FEATURES,PROGRAMS
+from controls import Beta,GrammarBayes,NoLearning,LogisticPolynomial
+from worlds import SEEDS,FAMILIES,REPS,worlds,true_law
+
+ARMS=('causal_recall','grammar_bayes','grammar_static','beta_full','beta_window32',
+      'beta_window64','beta_decay','logistic_poly','single_sparse','shuffled_context','no_learning')
+BASELINES=('grammar_bayes','grammar_static','beta_full','beta_window32','beta_window64','beta_decay','logistic_poly')
+
+def instantiate(arm):
+    if arm in ('causal_recall','shuffled_context'):return CausalRecall()
+    if arm=='single_sparse':return Slot()
+    if arm=='grammar_bayes':return GrammarBayes(1/48)
+    if arm=='grammar_static':return GrammarBayes(0.)
+    if arm=='beta_full':return Beta()
+    if arm=='beta_window32':return Beta(window=32)
+    if arm=='beta_window64':return Beta(window=64)
+    if arm=='beta_decay':return Beta(discount=.98)
+    if arm=='logistic_poly':return LogisticPolynomial()
+    if arm=='no_learning':return NoLearning()
+    raise ValueError('ARM')
+
+def prediction(model,ctx,arm):
+    return model.predict(ctx)
+
+def observed(model,ctx,y,arm):
+    model.update(ctx,y) if arm=='single_sparse' else model.observe(ctx,y)
+
+def one(world,arm):
+    m=instantiate(arm)
+    errors={'A':[],'B':[],'return':[]};start=time.perf_counter();a,b,c=world.dwell
+    cold={};observed_switches=[];true_switches=(a,a+b)
+    for i,e in enumerate(world.events):
+        if i in true_switches:
+            # Restore is evaluator-controlled but must be indistinguishable to the learner.
+            if arm in ('causal_recall','shuffled_context'):
+                raw=m.snapshot();recover=CausalRecall.restore(raw)
+                assert recover.snapshot()==raw
+                assert all(recover.predict(j)==m.predict(j) for j in range(16))
+                m=recover;cold[str(i)]=hashlib.sha256(raw).hexdigest()
+        ctx=e.ctx()
+        if arm=='shuffled_context':ctx^=(int(e.identifier[:2],16)&15)
+        y=e.y;phase='A' if i<a else 'B' if i<a+b else 'return'
+        prob=prediction(m,ctx,arm)
+        assert 0<=prob<=1
+        errors[phase].append((prob-y)**2)
+        oldswitch=m.switches if arm in ('causal_recall','shuffled_context') else None
+        observed(m,ctx,y,arm)
+        if arm in ('causal_recall','shuffled_context') and m.switches!=oldswitch:observed_switches.append(i)
+    snap=m.snapshot() if arm!='single_sparse' else json.dumps(m.body(),sort_keys=True).encode()
+    if arm in ('causal_recall','shuffled_context'):
+        assert len(snap)<=1056
+        assert CausalRecall.restore(snap).snapshot()==snap
+    mean=lambda x:sum(x)/len(x)
+    return {'A':mean(errors['A']),'B':mean(errors['B']),
+            'return16':mean(errors['return'][:16]),'return_all':mean(errors['return']),
+            'checkpoint_bytes':len(snap),'checkpoint_sha256':hashlib.sha256(snap).hexdigest(),
+            'updates':len(world.events),'cold':cold,'observed_switches':observed_switches,
+            'elapsed_s':time.perf_counter()-start}
+
+def evaluate():
+    ws=worlds();rows=[]
+    for w in ws:
+        data={arm:one(w,arm) for arm in ARMS}
+        rows.append({'seed':w.seed,'family':w.family,'rep':w.rep,'public_sha256':w.public_sha256,
+                     'dwell':w.dwell,'events':len(w.events),'models':data})
+    seeds={}
+    for s in SEEDS:
+        subset=[r for r in rows if r['seed']==s]
+        seeds[str(s)]={a:{key:sum(r['models'][a][key] for r in subset)/len(subset)
+                             for key in ('A','B','return16','return_all')}
+                       for a in ARMS}
+    gates={}
+    for s in SEEDS:
+        x=seeds[str(s)];cand=x['causal_recall']
+        best_ret=min(x[a]['return16'] for a in BASELINES)
+        best_B=min(x[a]['B'] for a in BASELINES)
+        gates[str(s)]=cand['return16']<=best_ret-.01 and cand['B']<=best_B+.01
+    return {'schema':'lr92bb.no-public-regime-causal-recall.v1',
+            'native_model_executed':False,'protected_first_use':False,'owner_checkpoint_changed':False,
+            'worlds':len(ws),'events_per_arm':sum(len(w.events) for w in ws),
+            'status':'DEVELOPMENT_GO' if all(gates.values()) else 'DEVELOPMENT_NO_GO',
+            'seed_go':gates,'seed_summary':seeds,'rows':rows}
+
+if __name__=='__main__':
+    if len(sys.argv)!=2:raise SystemExit('usage: compare.py results.json')
+    r=evaluate();Path(sys.argv[1]).write_text(json.dumps(r,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in r.items() if k not in ('rows','seed_summary')},sort_keys=True))

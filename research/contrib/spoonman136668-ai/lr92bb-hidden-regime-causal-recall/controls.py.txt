@@ -1,0 +1,79 @@
+"""Conventional / exact-grammar prequential controls for LR-92BB."""
+from __future__ import annotations
+import hashlib
+import json
+import math
+from collections import deque
+from mechanism import BITSETS, PROGRAMS
+
+class Beta:
+    def __init__(self,window=None,discount=None):
+        self.records=[];self.window=window;self.discount=discount
+    def predict(self,ctx):
+        rows=self.records[-self.window:] if self.window else self.records
+        a=b=1.
+        for i,(c,y) in enumerate(rows):
+            if c==ctx:
+                wt=self.discount**(len(rows)-1-i) if self.discount is not None else 1.
+                a+=wt*y;b+=wt*(1-y)
+        return a/(a+b)
+    def observe(self,ctx,y):self.records.append((ctx,y))
+    def snapshot(self):return json.dumps(self.records,separators=(',',':')).encode()
+
+class GrammarBayes:
+    """Strong exact posterior over every <=3 nonconstant cubic monomials + bias.
+
+    The rule grammar and fixed hazard are known, but never the true program,
+    hidden change boundaries or phase labels. No teacher or future outcomes.
+    """
+    def __init__(self,hazard=1/48):
+        self.p=[1./len(PROGRAMS)]*len(PROGRAMS)
+        self.hazard=hazard
+        self.updates=0
+    def predict(self,ctx):
+        one=sum(w for w,truth in zip(self.p,PROGRAMS) if truth&(1<<ctx))
+        # Forecast BEFORE observing the current episode; account for the same
+        # latent hazard subsequently used in the Bayesian posterior update.
+        one=(1-self.hazard)*one+self.hazard*.5
+        return .07+.86*one
+    def observe(self,ctx,y):
+        h=self.hazard;uniform=h/len(self.p)
+        tmp=[((1-h)*w+uniform)*(.93 if ((truth>>ctx)&1)==y else .07)
+             for w,truth in zip(self.p,PROGRAMS)]
+        s=sum(tmp);self.p=[x/s for x in tmp];self.updates+=1
+    def snapshot(self):
+        # Include full exact finite hypothesis posterior as legitimate model state.
+        return json.dumps({'p':self.p,'updates':self.updates,'hazard':self.hazard},separators=(',',':')).encode()
+
+class NoLearning:
+    def __init__(self):self.count=0
+    def predict(self,ctx):return .5
+    def observe(self,ctx,y):self.count+=1
+    def snapshot(self):return str(self.count).encode()
+
+class LogisticPolynomial:
+    """Deterministic trained conventional polynomial logistic classifier.
+
+    Every new public example gets one SGD update. Each 8 public events,
+    refit for 6 chronological passes over the entire available public history.
+    No future labels, phase labels, regime IDs or teacher outputs.
+    """
+    def __init__(self):
+        self.weights=[0.]*15
+        self.records=[]
+    def predict(self,ctx):
+        from mechanism import FEATURES
+        z=sum(w*x for w,x in zip(self.weights,FEATURES[ctx]))
+        z=max(-20.,min(20.,z))
+        return 1/(1+math.exp(-z))
+    def _step(self,ctx,y):
+        from mechanism import FEATURES
+        d=y-self.predict(ctx)
+        for i,x in enumerate(FEATURES[ctx]):
+            self.weights[i]+=.14*d*x-.00012*self.weights[i]
+    def observe(self,ctx,y):
+        self.records.append((ctx,y));self._step(ctx,y)
+        if len(self.records)%8==0:
+            for _ in range(6):
+                for c,label in self.records:self._step(c,label)
+    def snapshot(self):return json.dumps({'weights':self.weights,'history':self.records},separators=(',',':')).encode()
