@@ -119,6 +119,48 @@ owner remains responsible for persistent receipt storage and authorization.
 Exact Linux and Windows qualification must PASS before claiming this
 engineering gate complete.
 
+## Already-consumed actual selector evidence replay (not a new trial)
+
+A separate historical selection trial is already archived in
+`selection-dev-01/{producer.json,trace.json,audit.json}`. It admitted
+**96 development witness episodes** to the same experimental Amalgam
+research line: its recorded verdict is **DEV_NO_GO**, the scored selector
+used native on **64/64** decisions and the full source trace shows
+**96/96 native** choices. The original selection mechanism did not earn
+predictive influence for either JEPA specialist on those actions.
+
+The P0 research cold-replay adapter can now **reconstruct** the
+original selection *evidence* from that same pinned already-consumed public
+trace, without calling the source or generating new observations.
+It validates the exact original trace digest, public action and paired-view
+addresses, all three prequential trained-forecaster scores before each
+historical accepted update, recorded selector origin and native-vs-JEPA
+gradient-step/witness count. It uses the existing, immutable Amalgam
+checkpoint restoration and `SpecialistSelection.replay` to reconstruct
+the **same** already-observed 96-event selector evidence a second time,
+then invokes the current `verify_selector_replay` over old witnessed
+and untaken public actions on the reconstructed **1,121-event** descendant.
+The research-only process does not retain or promote this historical
+negative descendant as the live owner state.
+
+**Important custody distinction:** Reconstructing evidence and an
+historical model from original charged receipts proves reproducibility
+under the source-trained architecture. The archived experimental P0
+checkpoint does **not** independently contain a separately saved,
+authenticated trained-selector state, and no owner lease is granted.
+The 96 historical gradient updates are deterministic **replay of
+consumed records**, not virgin scientific training or a restart of the
+canonical learner. On Windows, do not require whole-JEPA-joint SHA
+identity with the historically Linux-generated experimental report:
+native checkpoint exact hash and same-platform functional cold replay
+are required, while archived prediction-rounding may vary at most
+one 1e-6 unit. The original scientific DEV_NO_GO remains unchanged.
+
+This is not evidence of superior causal recall, no model promotion,
+and no authority to use protected original-world first-use. The
+same existing two-OS engineering regression must pass after this
+incremental contributor change.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
