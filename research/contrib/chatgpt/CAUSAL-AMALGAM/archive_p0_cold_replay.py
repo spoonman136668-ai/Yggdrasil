@@ -19,6 +19,7 @@ from specialist_selection import SpecialistSelection
 import quine_retention as guard
 from four_head_retention import (HEAD_NAMES, audit_old_heads,
                                  assess_one_witness_head_update)
+from headwise_consolidation import assess_bounded_blend
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import digest
 
@@ -31,6 +32,8 @@ EXPECTED_VIEWS = 8
 MODES = {"native": 0, "direct": 1, "temporal": 2}
 # Frozen before G24 diagnostics; original A→B→A 32/32/32 consumed phases.
 SHADOW_ORDINALS = (1, 8, 32, 33, 64, 65, 96)
+# Frozen G25 five original previously-consumed witness locations.
+CONSOLIDATION_ORDINALS = (1, 32, 33, 64, 96)
 
 
 def checked(directory, name, pin):
@@ -148,6 +151,61 @@ def summarize_shadow(samples):
     }
 
 
+
+def summarize_bounded_consolidation(samples):
+    """Exploratory gate only; original source decisions are never counterfactual."""
+    if (type(samples) is not list
+            or [x.get("ordinal") for x in samples] != list(CONSOLIDATION_ORDINALS)):
+        raise ValueError("G25_FROZEN_ORDINALS")
+    positive_transition_samples = 0
+    observed_transition_fit_improvement = 0
+    for sample in samples:
+        if (sample.get("phase") != (sample["ordinal"] - 1) // 32
+                or type(sample.get("witness_sha256")) is not str
+                or len(sample["witness_sha256"]) != 64):
+            raise ValueError("G25_SOURCE_SAMPLE_CUSTODY")
+        result = sample["blend"]
+        if (result.get("schema") != "yggdrasil.amalgam.dev-headwise-blend.v1"
+                or result.get("old_witness_count") != EXPECTED_EPISODES
+                or result.get("anchor_checkpoint_sha256") != EXPECTED_JOINT
+                or result.get("head_count") != 4
+                or tuple(result.get("heads", {})) != HEAD_NAMES
+                or result.get("official_checkpoint_restore_supported") is not False):
+            raise ValueError("G25_BLEND_CUSTODY")
+        heads = result["heads"]
+        if any(
+            item.get("selected_alpha") not in (1.0, 0.75, 0.5, 0.25, 0.0)
+            or item.get("old_drift", float("inf")) > 0.02 + 1e-12
+            for item in heads.values()
+        ):
+            raise ValueError("G25_OLD_HEAD_BOUND_OR_GRID")
+        transitions = (heads["direct_transition"], heads["temporal_transition"])
+        if any(item["selected_alpha"] > 0 for item in transitions):
+            positive_transition_samples += 1
+        if sum(item["new_witness_selected_brier"] for item in transitions) < (
+                sum(item["new_witness_frozen_head_brier"] for item in transitions)
+                - 1e-12):
+            observed_transition_fit_improvement += 1
+    promised = (positive_transition_samples >= 3
+                and observed_transition_fit_improvement >= 2)
+    return {
+        "gate": "JEPA_G25_CONSUMED_DEV_BLEND_COMPARISON",
+        "sample_ordinals": list(CONSOLIDATION_ORDINALS),
+        "samples": samples,
+        "sample_count": len(samples),
+        "positive_transition_alpha_samples": positive_transition_samples,
+        "in_sample_transition_fit_better_than_frozen_count": observed_transition_fit_improvement,
+        "development_classification": ("DEV_MECHANISM_PROMISING" if promised
+                                       else "DEV_MIXED_NO_GO"),
+        "source_first_use": False,
+        "new_world_actions": 0,
+        "real_vetoes_enforced": 0,
+        "new_learner_constructed": False,
+        "canonical_checkpoint_admitted": False,
+        "scientific_pass": False,
+    }
+
+
 def replay_consumed_selector(start, source_directory):
     """Reconstruct selector evidence from an already-consumed 96-event trace.
 
@@ -185,6 +243,7 @@ def replay_consumed_selector(start, source_directory):
     gate = SpecialistSelection(start, **config)
     counts = Counter()
     shadow = []
+    consolidation = []
     for index, event in enumerate(records):
         identifier, row = event["id"], event["row"]
         views = tuple(tuple(view) for view in event["views"])
@@ -222,8 +281,19 @@ def replay_consumed_selector(start, source_directory):
                 "witness_sha256": packet,
                 "head_guard": advice,
             })
+        if index + 1 in CONSOLIDATION_ORDINALS:
+            # G25 source-consumed shadow only. The newly witnessed label is
+            # excluded from the frozen old-Brier weight interpolation selector.
+            consolidation.append({
+                "ordinal": index + 1,
+                "phase": event["phase"],
+                "witness_sha256": packet,
+                "blend": assess_bounded_blend(
+                    start, previous.system, gate.system),
+            })
 
     shadow_report = summarize_shadow(shadow)
+    consolidation_report = summarize_bounded_consolidation(consolidation)
     checkpoint = gate.system.checkpoint()
     native = gate.system.native.checkpoint()
     if (len(gate.system.native._episode_reader()._ledger) != 1121
@@ -280,6 +350,7 @@ def replay_consumed_selector(start, source_directory):
         "policy_check": policy_check,
         "four_head_retention": four_head_retention,
         "shadow_guard_sensitivity": shadow_report,
+        "bounded_headwise_consolidation": consolidation_report,
         "native_action_drift": native_action_drift,
         "selector_action_drift": selector_action_drift,
         "selector_evidence_from_original_public_trace": True,
