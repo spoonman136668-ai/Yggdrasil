@@ -406,6 +406,17 @@ jobs:
             > "$RUNNER_TEMP/know26-action-affordance-receipt.json"
           python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know26-action-affordance-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know26.action-affordance-transfer-result.v1" and d["prereg_commit"]=="ba8d9a071a251f3061ac907c4cf5c611726d2221"; assert (d["fit_mapping_groups"],d["fit_witnesses_per_mapping"],d["held_worlds"],d["held_witnesses_per_policy"],d["high_eval_queries_per_policy"])==(3,108,24,768,96); assert d["engineering_gate"]=="PASS" and d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE" and d["protected_original_first_use"] is False and d["native_model_changed"] is False; assert all(z["fit_old_readouts_cold_exact"] for z in d["mapping_fit_evidence"].values())'
           test -z "$(git status --porcelain)"
+      - name: KNOW27 frozen source-blind online action selection and continuous A-B-A
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know27_online_action_policy_protocol.json)" = e82b78050e5c42cfa3dea2732a8ce944b83e8884
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know27_online_action_policy_dev.py)" = 3904e9f6cfc21eb944c99b7cba96cb292784154e
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B -c 'import json; from know27_online_action_policy_dev import proof; print(json.dumps(proof(),sort_keys=True))' \
+            > "$RUNNER_TEMP/know27-online-action-policy-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know27-online-action-policy-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know27.opaque-policy-source-result.v1" and d["prereg_commit"]=="e48bcdffadec0be864ae6192ce6429a2906a98cf"; assert (d["fit_witnesses_per_mapping"],d["held_stationary_worlds"],d["held_ABA_worlds"],d["held_stationary_actions_per_policy"],d["held_ABA_actions_per_policy"],d["high_eval_queries_per_policy"])==(108,24,6,768,192,96); assert len(d["hypotheses"])==6 and d["engineering_gate"]=="PASS" and d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"; assert d["accepted_native_modified"] is False and d["protected_original_first_use"] is False and d["deployment"]=="NONE"'
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -434,5 +445,6 @@ jobs:
             ${{ runner.temp }}/know25-x2-24-action-receipt.json
             ${{ runner.temp }}/know25-x2-48-action-receipt.json
             ${{ runner.temp }}/know26-action-affordance-receipt.json
+            ${{ runner.temp }}/know27-online-action-policy-receipt.json
           retention-days: 30
           if-no-files-found: error
