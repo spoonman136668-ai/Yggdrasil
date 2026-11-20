@@ -176,7 +176,7 @@ export function run(){
   const truncated=valid.b.subarray(0,-1);neg(()=>decode(truncated),'TRUNCATED');
   const signed=Buffer.from(valid.b);signed[0]=88;sha(signed.subarray(0,-32)).copy(signed,signed.length-32);neg(()=>decode(signed),'RESIGNED_HEADER');
   const badOp=Buffer.from(valid.b),offset=48+16*valid.claim.inputs.length;badOp[offset]=255;sha(badOp.subarray(0,-32)).copy(badOp,badOp.length-32);neg(()=>decode(badOp),'RESIGNED_OPCODE');
-  neg(()=>execute(valid.decoded,[100,1]),'OUTSIDE_DOMAIN');
+  neg(()=>execute(valid.decoded,[1000,1]),'OUTSIDE_DOMAIN');
   neg(()=>execute(valid.decoded,[NaN,1]),'NONFINITE_RUNTIME');
   const zeroDen=copy(donor.claims[2]);
   zeroDen.formula={op:'div',args:[{input:'k'},{input:'x'}]};
