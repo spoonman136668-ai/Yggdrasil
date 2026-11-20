@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "DWSA-01",
+  "contributor": "chatgpt",
+  "contribution_class": "successor-proposal",
+  "question": "Can a fixed-footprint native binary motif router be compiled solely from frozen donor weight tensors, without executing donor inference, and retain the donor artifact's known structural capabilities under valid neuron permutations and positive rescalings?",
+  "hypothesis": "A strict restricted-family two-layer ReLU donor with binary conjunction hidden units permits exact, deterministic weight-only compilation to a 101-byte native routing circuit across 8-bit inputs; valid positive diagonal/permutation gauge symmetries should preserve outcomes. This is mechanical feasibility only, not evidence of generic transfer or intelligence.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "WSP-200 draft PR #1325, final synthetic-development result through WSP-208: original GFP source unrun; frozen no-benefit controls preserved.",
+    "WSP-183 draft PR #1258: authentic aerodynamic data direct-weight repair worse than ARX; no native promotion."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/DWSA-01/**"
+  ],
+  "inputs": [
+    {
+      "name": "frozen deterministic synthetic donor weight artifacts and independent motif-rule specifications",
+      "sha256": null,
+      "source": "Synthetic data generated locally from Python standard-library Random seeds [19,41,73]; no outside model weights or licenses; manifest and hash recorded before primary run. This is a development harness and must not be described as pretrained-model transfer."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      19,
+      41,
+      73
+    ],
+    "split": "For each of 3 donor weight artifacts, exhaustive held combinations of 8 binary input coordinates: integers 0..255; no student tuning or test-informed selection. Donor compilation sees weights/biases/readout only, never truth labels or input-output pairs.",
+    "ordering": "Each source artifact has exactly 12 hidden binary conjunction motifs, each with 2 or 3 signed input literals chosen without replacement; per-hidden positive diagonal scales s in {1,2,4}; output weights are integer coefficients divided by scale. Report original and 3 deterministic permutation/rescaling variants per source. No donor forward pass anywhere.",
+    "data_budget": "0 donor calls, 0 labeled training examples; student evaluation is 3*4*256=3072 independent rule-spec input cases, 768 distinct input/world pairs. Synthetic donor-generation specifications are independent oracle source and are not supplied to compiler.",
+    "compute_budget": "One bounded CPU Python 3.12 standard-library run for preregistered seeds and variants, plus mechanical tests. No optimizer steps, GPUs, external services, online downloads, or additional model inference.",
+    "capacity": "8 binary input features, 2 action score channels, 16 fixed slots each 4 bytes (positive mask, negative mask, signed score0, signed score1), 4-byte magic, 1-byte gate count, 32-byte SHA-256 checksum = 101 fixed checkpoint bytes, always. Donor: 12*(8+1+2)*8=1056 bytes of float64 weights, biases and readout.",
+    "evaluator": "Exact integer score equality and action choice for each case against independently computed motif truth (not donor inference). Exact checkpoint restore and corruption rejection. Valid hidden unit permutation and positive rescaling invariance. Functional action agreement computed excluding oracle ties, with abstention coverage and mismatch count. Measure wall-clock times as diagnostic only.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Independent exact symbolic motif evaluator from generation specs: strongest exact capability control, expected to tie; a tie is not superiority.",
+    "No-donor zero-score abstention baseline.",
+    "Same-footprint sham donor with gate-output routes cyclically reassigned; use to test reliance on correct routing, not to claim universal advantage.",
+    "Reject unsupported donor shapes, mixed-magnitude hidden weights, incorrect biases, nonintegral readout products, missing source metadata and tampered checkpoint.",
+    "Every donor inference/function call must be absent; tests invoke only the native recipient, independent oracle, and weight-only compiler."
+  ],
+  "metrics": [
+    "native_scores_exact_over_3072",
+    "native_action_matches_non_tie",
+    "valid_gauge_score_mismatches",
+    "checkpoint_bytes=101",
+    "donor_serialized_bytes=1056",
+    "tamper_and_unsupported_rejection",
+    "symbolic_control_gap",
+    "sham_control_gap",
+    "total_compilation_and_evaluation_wall_seconds_diagnostic"
+  ],
+  "classification_rules": {
+    "supported": "DWSA_MECHANICAL_DEV_PASS iff all 3072 native score tuples equal independent rule oracle, all 3072 native decisions match, all three permuted/rescaled variants per world are identical to originals, fixed footprint 101 bytes, donor checkpoint >=10x larger, tamper and unsupported artifacts are rejected, and no donor inference is invoked. This is NEVER SCIENTIFIC_PASS for this synthetic source.",
+    "mixed": "DWSA_MECHANICAL_DEV_MIXED iff full evidence is valid but at least one capacity/compression/robustness criterion fails while source-only valid original scores still match.",
+    "negative": "DWSA_MECHANICAL_DEV_NO_GO iff a score mismatch occurs under supported donor family or a forbidden artifact is silently accepted. Preserve exact failure; no post-result adjustment to rules, seeds, thresholds or data.",
+    "invalid": "INVALID if oracle dependence enters compilation, donor inference is executed, prereg identity/dataset lineage fails, changes are made after outcome before scoring is frozen, or source/protocol not reproducible."
+  },
+  "original_science_gate": "A separate independently admitted, appropriately licensed genuine pretrained donor checkpoint, independent real-task ground truth, disjoint unfamiliar cases, 3 seeds, equal-information/capacity controls including fully trained conventional and exact structural compiler, cold retention/interference and all-in cost are required before any scientific superiority claim. No permission for source-first-use is granted by this protocol.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "donor forward passes or teacher-output queries",
+    "native accepted model writes",
+    "hidden source metadata or fabricated observed action/outcome counts"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "source_first_use": false
+  },
+  "integration_boundary": "Read-only proposed structural candidate at the boundary of yggdrasil/public_causal_cells.py. PublicCausalCells.observe MUST NOT be called with imported donor motifs; only independent witness-certified action outcomes can enter it. Unified Causal Intelligence Amalgam Work chat is sole canonical learner/integration coordinator.",
+  "preregistration_note": "Commit this file before producing or inspecting the primary outcome. No teacher model will be run at any stage."
+}
