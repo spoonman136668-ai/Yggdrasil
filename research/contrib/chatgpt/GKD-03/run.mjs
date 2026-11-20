@@ -97,6 +97,11 @@ function fittedOLS(w){
   const a=(sy*sxx-sx*sxy)/det,b=(w.length*sxy-sx*sy)/det;
   return x=>(a+b*z(x[0]))*base(x);
 }
+function identifiableWithinSuppliedGrammar(witnesses){
+  const f=witnesses.map(w=>z(w.x[0]));
+  const n=f.length,s=f.reduce((a,b)=>a+b,0),sq=f.reduce((a,b)=>a+b*b,0);
+  return n*sq-s*s>1e-12;
+}
 export function run(){
   let accepted=0,replays=0,conflicts=0,forgeries=0,naive=0,repairs=0,retained=0,cold=0;
   let sampleCheckpoint='';
@@ -147,11 +152,12 @@ export function run(){
       for(const e of observed)assert(admit(state,e),'PAIR_WITNESS');
       assert(hash(Buffer.from(observed.map(canon).join('|'))).toString('hex')===observedHash,'OBS_IDENTICAL');
       // No certified prediction from merely two observationally identical witnesses.
-      const certified=false;assert(!certified,'PAIR_OVERCONFIDENT');abstentions++;
+      const certified=identifiableWithinSuppliedGrammar(observed);assert(!certified,'PAIR_OVERCONFIDENT');abstentions++;
       const x11=sample(r,j);x11[0]=11;
       const third=signed('pair'+j+'_v11',3,x11,truth(x11));
       assert(admit(state,third),'THIRD_INTERVENTION');
-      const w=[...observed,third],model=candidate(w),sym=symbolic(w),ols=fittedOLS(w);
+      const w=[...observed,third];assert(identifiableWithinSuppliedGrammar(w),'PROBE_RANK');
+      const model=candidate(w),sym=symbolic(w),ols=fittedOLS(w);
       for(const voltage of [7,15]){
         const x=sample(r,j);x[0]=voltage,expected=truth(x),got=model(x);
         const d=rel(got,expected);maxError=Math.max(maxError,d);assert(d<=1e-9,'TEST_TRANSFER');correct++;
