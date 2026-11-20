@@ -1,0 +1,45 @@
+name: WSP-211 Source-Free Convergence Qualification
+on:
+  pull_request:
+    paths:
+      - 'research/contrib/chatgpt/WSP-211/**'
+      - '.github/workflows/wsp211-source-free.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    name: WSP211 Python 3.12 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact SHA receipt
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+          python --version
+      - name: Root full regression
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: WSP-200 inherited full regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-200 -p 'test_*.py' -v
+      - name: WSP-209 inherited regression
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-209 -p 'test_*.py' -v
+      - name: WSP-210 smoke ONLY; never replay invalid primary
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-210 -p 'test_00_smoke.py' -v
+      - name: WSP-211 disjoint convergence qualification
+        run: python -m unittest discover -s research/contrib/chatgpt/WSP-211 -p 'test_*.py' -v
+      - name: G29 source atlas
+        run: python scripts/build_code_atlas.py --check-if-present
+      - name: Clean checkout
+        run: git diff --exit-code
