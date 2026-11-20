@@ -51,9 +51,9 @@ class DWSA01Tests(unittest.TestCase):
             {},
             {"hidden": [], "bias": [], "readout": [[], []]},
             {**donor, "unknown": 1},
-            {**donor, "hidden": [r[:] for r in donor["hidden"][:17]],
-             "bias": donor["bias"][:17],
-             "readout": [ch[:17] for ch in donor["readout"]]},
+            {**donor, "hidden": donor["hidden"] + donor["hidden"][:5],
+             "bias": donor["bias"] + donor["bias"][:5],
+             "readout": [ch + ch[:5] for ch in donor["readout"]]},
             {**donor, "readout": [donor["readout"][0]]},
         ):
             with self.subTest(invalid=str(invalid)[:50]):
