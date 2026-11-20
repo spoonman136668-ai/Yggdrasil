@@ -246,6 +246,17 @@ jobs:
             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
             --output "$RUNNER_TEMP/know11-grounded-causal-dev-receipt.json"
           test -z "$(git status --porcelain)"
+      - name: KNOW12 frozen source-blind factual-role identification development trial
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/blind_fact_role_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know12-blind-role-dev-receipt.json"
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -258,5 +269,6 @@ jobs:
             ${{ runner.temp }}/know09-intervention-coverage-receipt.json
             ${{ runner.temp }}/know10-four-head-receipt.json
             ${{ runner.temp }}/know11-grounded-causal-dev-receipt.json
+            ${{ runner.temp }}/know12-blind-role-dev-receipt.json
           retention-days: 30
           if-no-files-found: error
