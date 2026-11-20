@@ -19,6 +19,18 @@ class FactsDouble:
                 "native_accepted":False,"verified_new_real_knowledge":False,
                 "can_write_causal_consequence":False}
 class Know18Tests(unittest.TestCase):
+    def test_native_typed_qpq_identifier_range_and_separation(self):
+        limit=1<<32
+        all_q=set()
+        for seed in SEEDS:
+            for q,p,o,ref in source_rows(seed):
+                self.assertTrue(type(q) is int and 0<=q<limit)
+                self.assertTrue(type(p) is int and 0<=p<limit)
+                self.assertTrue(type(o) is int and 0<=o<limit)
+                self.assertLess(q,o)
+                all_q.add(q)
+        self.assertEqual(len(all_q),34*len(SEEDS))
+
     def test_frozen_seed_isolation(self):
         self.assertEqual(TRAIN,(2111,2221))
         self.assertEqual(HELD_SEEDS,(2333,2441,2551))
