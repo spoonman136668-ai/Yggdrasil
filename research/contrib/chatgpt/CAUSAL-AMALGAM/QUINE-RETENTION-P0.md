@@ -203,6 +203,33 @@ for 96/96 actions, with 64/64 scored native and `DEV_NO_GO`. No
 protected original-world first-use, owner lease, merge or training
 restart is authorized by this fix.
 
+## Immutable cold-forecast readback reuse — source-free acceleration
+
+The first genuine 1,121-witness archived selector replay exposed a
+potentially material **whole-process cost** from rescoring old witnessed
+actions with the *same immutable restored policy*. The original
+`verify_selector_replay` checked historical witness losses via two
+forecast calls per archived event, then redundantly recomputed all ten
+public action/state queries per observed paired view.
+
+The research-only cold-restore checker now makes **one read per
+unique witnessed public view and query per policy** and stores the
+same existing 1e−6 quantized forecast. It still validates every old
+witness label against the matching cached old/new transition and
+reward Brier numerators, and checks both taken and untaken branches.
+No active Quine admission/veto path, learned weights, evidence,
+source events or scientific thresholds are changed.
+
+For the archived **1,121-event** real-selector descendant, eight
+distinct seen paired views give 80 queries per policy, versus
+`2*1121+80=2322` read calls per policy before, a **29.025× reduction
+in repeated forecast invocations**. A focused source-free unit test
+enforces exactly one call per unique view+query; prior cold-replay,
+untaken-action drift, selector/ledger tampering, and full final
+dual-OS regression must still pass. This is an **operation-count
+prediction**, not an independently measured end-to-end speedup.
+The archive is already consumed and remains `DEV_NO_GO`.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
