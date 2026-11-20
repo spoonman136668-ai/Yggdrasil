@@ -74,9 +74,14 @@ REPRODUCIBILITY
 ---------------
 Frozen originals: worlds.py.txt, experiment.py.txt, test_experiment.py.txt,
 dev_manifest.json.txt, frozen_dev_protocol.json.txt in this LR-92AY repo folder.
-Preserved current evidence: per_world_native_metrics.csv, full_native_result.json.gz.base64.txt
-(base64 gzip containing exact raw JSON), native_result_audit_receipt.json,
-and audit_native_saved.py.txt (read-only independent audits).
+Preserved permanent GitHub evidence: full_native_result.json.gz.base64.txt
+(base64 gzip containing exact 48-world, eight-arm raw JSON), this complete
+report and LR92AY_NATIVE_EXECUTION_RECEIPT.json.txt. The original CI audit
+receipt and full result remain additionally available in the GitHub Actions
+artifact ID above (7-day retention). A separate Python audit independently
+recalculated 96 conventional per-world predictions and all three stop rules,
+but its code and optional CSV were not published to this repo; do not
+misrepresent the temporary local copies as persistent repository files.
 Extract the five frozen .txt files in a separate temporary harness dir, preserving
 Git object bytes, strip only last .txt suffix, and use original native SHA/tree.
 Run preflight 19 tests; independent saved-result audit additionally recalculates
