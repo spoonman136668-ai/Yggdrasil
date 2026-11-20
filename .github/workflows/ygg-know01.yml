@@ -865,3 +865,73 @@ jobs:
           path: ${{ runner.temp }}/know36-noisy-two-bank-held.json
           if-no-files-found: error
           retention-days: 30
+
+  know37-local-hysteresis-study:
+    # One strictly synthetic held first use; exact source and first attempt only.
+    # Does not authorize protected original #426, native model or runner.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know37): one-shot accumulated local evidence after full final regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One frozen synthetic FIT and HELD, only after mandatory acceptance
+        shell: bash
+        env:
+          YGG_KNOW37_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_protocol.json")" = 5fdb34aafca11cfd41277dab655b7cbf3667371a
+          test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_dev.py")" = 13ca9533f339e1c7bd9768a443907e7fbbbc59c5
+          test "$(git rev-parse "HEAD:$base/test_know37_local_hysteresis_dev.py")" = 1ef8b9debe2f78b32ceba2b96b10307db62e2f79
+          PYTHONPATH=$base python -B "$base/know37_local_hysteresis_dev.py" > "$RUNNER_TEMP/know37-local-hysteresis-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know37-local-hysteresis-first-use.json").read_text())
+          assert d["schema"] == "yggdrasil.know37.hysteresis-result.dev.v1"
+          assert d["prereg_commit"] == "9d8d55225c217ba9af2a1ca22ee2f50ac16ec468"
+          assert d["prereg_blob"] == "5fdb34aafca11cfd41277dab655b7cbf3667371a"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],d["held_unique_source_events"],d["model_events_per_arm"]) == (12,24,3072,9216,10752)
+          assert len(d["worlds"]) == 24 and set(d["families"]) == {"B1","B2"}
+          assert len(d["frozen_hypotheses"]) == 7
+          assert d["scientific"] == "SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"] == "NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit bounded aggregate frozen metrics
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know37-local-hysteresis-first-use.json").read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_events","model_events_per_arm",
+                "selected_hmm_hazard","fit_hmm_briers","families","frozen_hypotheses",
+                "sham_false_switch_worlds","A_retained_worlds","B_retained_worlds",
+                "development_verdict","scientific","protected_original_world_first_use",
+                "native_model_changed","deployment")
+          print("YGG_KNOW37_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic result only
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW37-local-hysteresis-first-use
+          path: ${{ runner.temp }}/know37-local-hysteresis-first-use.json
+          if-no-files-found: error
+          retention-days: 30
