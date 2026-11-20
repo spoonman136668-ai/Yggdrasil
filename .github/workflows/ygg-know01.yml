@@ -1080,3 +1080,79 @@ jobs:
           path: ${{ runner.temp }}/know39-soft-deferred-held.json
           if-no-files-found: error
           retention-days: 30
+
+  know40-structural-action-study:
+    # Fresh unfamiliar synthetic causal graphs; NEVER source-owner #426.
+    # One run_attempt=1, after exact frozen-source and full dual-platform.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know40): one-shot unfamiliar intervention evaluation after full final qualification'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Disable Git autocrlf
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin exact frozen source before any synthetic FIT or HELD
+        shell: bash
+        env:
+          YGG_KNOW40_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know40_structural_action_protocol.json")" = 366f96e13a566520d399a78d54e838bf62a551b6
+          test "$(git rev-parse "HEAD:$base/know40_structural_action_dev.py")" = 1eec9017053005518687ed1284695ca471020241
+          test "$(git rev-parse "HEAD:$base/test_know40_structural_action_dev.py")" = 697e06962a24a98cd2f869da8b473f3ffefd5eae
+          test "$(git rev-parse "HEAD:$base/know39_soft_deferred_dev.py")" = 4b61ecf922626e55a80e8390e5a28a34a8ed474e
+          test "$(git rev-parse "HEAD:$base/know38_buffer_before_write_dev.py")" = 453564111e23bcccf065cd40fa5a90c1080a234d
+          test "$(git rev-parse "HEAD:$base/know36_noisy_retention_dev.py")" = 79484ead408dc1144b01897b7133a0e4c416ba55
+          echo YGG_KNOW40_ALL_FROZEN_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know40_structural_action_dev.py" > "$RUNNER_TEMP/know40-structural-intervention-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know40-structural-intervention-first-use.json"
+          d=json.loads(p.read_text())
+          assert d["schema"]=="yggdrasil.know40.structural-intervention-shadow-result.dev.v1"
+          assert d["prereg_commit"]=="e8344c2c3d797fcd304c8c866ac1f1fe7e058e52"
+          assert d["prereg_blob"]=="366f96e13a566520d399a78d54e838bf62a551b6"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],
+                  d["held_unique_source_calls"],d["arm_events_total"])==(12,24,3072,9216,10752)
+          assert len(d["worlds"])==24 and set(d["cohorts"])=={"B1","B2"}
+          assert set(d["hypotheses"])=={"P0","P1","H1","H2","H3","H4","H5","H6"}
+          assert d["scientific_gain_verified"] is False
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit bounded frozen original-source aggregate
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know40-structural-intervention-first-use.json").read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_calls","arm_events_total",
+                "selected_hazards","fit_briers","cohorts","hypotheses",
+                "A_retained_worlds","B_retained_worlds","sham_B_admission_worlds",
+                "development_verdict","scientific_gain_verified","caveat",
+                "protected_original_world_first_use","native_model_changed","deployment")
+          print("YGG_KNOW40_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Archive only bounded novel synthetic result
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW40-unfamiliar-intervention-first-use
+          path: ${{ runner.temp }}/know40-structural-intervention-first-use.json
+          if-no-files-found: error
+          retention-days: 30
