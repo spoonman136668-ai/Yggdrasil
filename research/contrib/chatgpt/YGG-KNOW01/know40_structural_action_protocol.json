@@ -1,0 +1,133 @@
+{
+  "schema": "yggdrasil.know40.unfamiliar-causal-intervention-shadow-prereg.v1",
+  "experiment": "KNOW40",
+  "frozen_date": "2026-11-20",
+  "authority": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1327,
+    "research_branch": "docs/ygg-independent-review-assessment-20261119",
+    "parent_head": "1bbadc2185970dabe3d89a9b67678fdc5c1ea34f",
+    "canonical_learner_owner": "Amalgam PR #1278",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "protected_original_world_issue_426": "NOT_AUTHORIZED",
+    "native_training": false,
+    "model_checkpoint_change": false,
+    "merge": false,
+    "owner_runner": false,
+    "scheduler": false,
+    "paid_api": false,
+    "deployment": "NONE"
+  },
+  "research_question": "Does the already-frozen KNOW39 probabilistic readout plus deferred writes generalize to previously unseen structural causal graphs and improve counterfactual intervention choice beyond fully fitted HMM and symbolic Bayesian hypotheses, under identical action/observation information?",
+  "novelty_boundary": "This is an entirely new frozen causal-structure challenge, not KNOW36–39's recurring truth tables or seeded replay; known model implementation is unchanged and Git blob pinned. Not native learning, not CausalGym, not active policy rollout. Score shadow intervention proposals before common forced action; outcomes remain causally affected by forced a.",
+  "scm": {
+    "context": "c=t%8; 3 observed binary context bits c0,c1,c2",
+    "action": "a=floor(t/8)%2 fixed forced by evaluator; both interventions are well-defined",
+    "physical_input": "x=c XOR (a<<1), resulting physical bits x0,x1,x2",
+    "outcome": "y∼Bernoulli(0.85 if f_graph(x)==1 else 0.15), with evaluator-only SHA256 coin",
+    "intervention_effect": "do(a) changes only x1, all other bits fixed; counterfactual q(c,0),q(c,1) are evaluated but counterfactual y is never opened",
+    "fit_templates": {
+      "F1": "x1",
+      "F2": "x0 XOR x1 XOR x2"
+    },
+    "held_templates": {
+      "H1": "x0 XOR (x1 AND x2)",
+      "H2": "(x0 AND x1) XOR x2"
+    },
+    "fit_worlds": "A=F1,B=F2 for F12, reversed for F21",
+    "held_worlds": "B1:A=H1,B=H2; B2:A=H2,B=H1",
+    "structural_disjointness": "H1/H2 both nonlinear context-dependent interactions; FIT F1/F2 linear; no held graph formula is a fit template. 4 of 8 contexts have nonzero action effects in each held law.",
+    "noise": {
+      "p1": 0.85,
+      "p0": 0.15,
+      "private_domain": "know40:synthetic:structural:v1:{seed}:{t}:{graph}"
+    },
+    "phase": "A[0,64)→B[64,128)→A[128,192)→B[192,256); shared A-only sham branch",
+    "information": "learners receive only public (t,x,y). Never graph label, phase, seed, true q, future or counterfactual sampled y."
+  },
+  "source": {
+    "fit": {
+      "F12": [
+        31013,
+        31019,
+        31033,
+        31051,
+        31063,
+        31069
+      ],
+      "F21": [
+        31111,
+        31121,
+        31127,
+        31139,
+        31147,
+        31153
+      ]
+    },
+    "held": {
+      "B1": [
+        32003,
+        32009,
+        32027,
+        32029,
+        32041,
+        32051,
+        32057,
+        32063,
+        32069,
+        32077,
+        32083,
+        32089
+      ],
+      "B2": [
+        32117,
+        32119,
+        32141,
+        32143,
+        32159,
+        32173,
+        32183,
+        32191,
+        32203,
+        32213,
+        32233,
+        32237
+      ]
+    },
+    "fit_worlds": 12,
+    "held_worlds": 24,
+    "fit_unique_source_calls": 3072,
+    "held_unique_source_calls": 9216,
+    "held_per_world_source_calls": 384,
+    "model_events_per_world_per_arm": 448,
+    "model_events_total_per_arm": 10752,
+    "source_first_use": "Fresh deterministic synthetic source only; prospective first attempt after exact Git source/experiment protocol, both OS focused, atlas seal, final full regression both OS and read-only historical compatibility; never execute source generator or proof during tests; no uncertain retry."
+  },
+  "methods": {
+    "candidate": "Exact unchanged KNOW39 SoftDeferred('soft', selected_hazard) source Git blob 4b61ecf922626e55a80e8390e5a28a34a8ed474e; state and code frozen before KNOW40",
+    "hmm": "Exact unchanged KNOW36 Comparator('hmm', hazard) two-head global HMM; hazard FIT-only chosen from [1/128,1/32,1/8] by pooled expected Brier on FIT t64..255",
+    "symbolic": "Conventional 256-state exhaustive Bayesian truth-table filter, all 2^8 possible Bernoulli structural laws, uniform prior, state transition mixture (1-h)posterior + h/256, likelihood .85/.15 from witnessed public x,y; separately FIT-optimize h on same three candidate hazards; strong but larger memory/compute than candidate.",
+    "lookup": "Conventional 8 Beta(1,1) per physical x, online every y; no state switching",
+    "buffer": "Exact unmodified KNOW38 buffered prewrite candidate, unchanged source",
+    "random": "Law-blind SHA256('know40:random-action:v1:'+t+':'+c) mod 2, evaluated as action-choice negative control; never changes common observed action sequence",
+    "oracle": "Evaluator-only max[q(c,0),q(c,1)], not trained control",
+    "fairness": "All actual learners observe identical forced t,x,y (FIT/HELD) and each forecasts both potential actions pre-observation. No model may choose the observations it receives. Symbolic uses more state and compute; report costs, do not claim equal capacity or active-intervention learning."
+  },
+  "scoring": {
+    "prequential": "For observed forced x score q(1-q)+(p-q)^2 before witnessing y; true q scorer-only",
+    "shadow_policy": "At each t, evaluate model p(c,do0),p(c,do1) and choose argmax (ties choose action0); regret=max[q(c,do0),q(c,do1)]-q(c,chosen). No counterfactual outcome is sampled or fed back, common actual forced action remains fixed.",
+    "metrics": "Family means and paired-world wins for B_first, A_return, B_second expected Brier and expected shadow-policy regret; check input-action 16 support per 16 events, nontrivial oracle opportunity (>=4/8 context action contrasts), cold state, posterior bank custody, false B memory admissions, byte/cost differences."
+  },
+  "hypotheses": {
+    "P0": "12 FIT +24 disjoint novel HELD, exact 3072 FIT and 9216 HELD novel source calls, exact 10752 model observations per arm, 16 forced (c,a) support per 16 events, 4/8 held action contrasts, no policy selection affects observed data, all arms cold-restorable",
+    "P1": "candidate A-prefix Brier <=0.23 in both held graph families",
+    "H1": "Second-B candidate mean shadow action regret at least 0.035 lower than BOTH fitted HMM and fitted symbolic in BOTH held families; >=9/12 paired-world regret wins over the better strong baseline in EACH family",
+    "H2": "Second-B candidate expected Brier <= min(fitted HMM,symbolic)-0.005 in BOTH families and >=9/12 paired-world Brier wins versus better baseline separately",
+    "H3": "Return-A candidate regret <= best strong baseline+0.02 AND candidate Brier <= fitted HMM+0.005 in BOTH families",
+    "H4": "Original A bank frozen t64 stays byte-identical through t192, B bank at t128 stays byte-identical through t192, all 24, exact checksum cold state/readout at t64/128/192/256",
+    "H5": "A-only sham false B admissions <=2/24 and max candidate checkpoint <4096 bytes",
+    "H6": "Second-B candidate mean regret at least .035 lower than BOTH lookup and unchanged KNOW38 in BOTH held families",
+    "decision": "DEVELOPMENT_SUPPORTED iff every P0,P1,H1,H2,H3,H4,H5,H6 passes. Else DEVELOPMENT_MIXED_OR_NO_GO. Regardless synthetic result: scientific_gain_verified=false, native SCiENTIFIC_PASS=false, DEPLOYMENT=NONE.",
+    "budget": "One synthetic held first use only, max 12 fit and 24 held worlds, no post-result retune or replay, stop and record every fail/negative. Original-world #426 first use not authorized."
+  }
+}
