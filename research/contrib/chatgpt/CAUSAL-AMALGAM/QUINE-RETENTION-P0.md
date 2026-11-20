@@ -86,6 +86,26 @@ changed tolerance, and stale anchor to the idempotent route. This is only
 research-branch integrity hardening: owner custody, fresh learning,
 scientific benefit, and accepted deployment remain UNVERIFIED.
 
+## Historical-score reuse for the bounded Quine guard (engineering only)
+
+The guard now computes anchor-versus-proposal transition and reward losses
+**once per retained witness for each policy**. It reuses those same exact
+integer loss numerators for all selected Quines, certified-regime averages,
+and the complete original historical prefix. This removes redundant forecast
+calls without changing source admission, the fixed +0.02 tolerance, accepted
+versus vetoed candidate state, current-versus-anchor custody, or the outside
+owner receipt obligation. The proposed active native model remains one shared
+cumulative state; this is not a new learner or selector.
+
+The source-free negative test enforces precisely **one evaluation per policy
+per historical witness** on the existing 24-witness/two-regime fixture:
+24 anchor calls + 24 candidate calls versus 64 + 64 before this change.
+That is a **2.667× reduction in forecast calls on this fixture**, not a
+measured end-to-end speedup, training improvement, or scientific gain.
+Existing admission/veto, replay, selector, source-pin and Linux/Windows full
+regression must also pass on the exact final candidate. No archived P0
+scientific source was reused as a new trial and no owner first-use occurred.
+
 ## Integrated continuation envelope (research candidate, November 19, 2026)
 
 The pure cumulative_checkpoint.py codec bundles the exact pre-existing native+four-JEPA-head checkpoint bytes with a separately pinned Quine manifest, trained selector routing configuration and evidence, rejected charged-witness receipts, historical functional readout hashes, and an explicit owner-supplied continuation cursor. Anchor and active core bytes are preserved without mutation, retraining or conversion. Identical veto receipts deduplicate; conflicting IDs, accepted/veto overlap, altered packets, forged weights and selector evidence fail closed on restore.
