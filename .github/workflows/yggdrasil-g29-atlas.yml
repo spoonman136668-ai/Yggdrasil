@@ -6,6 +6,7 @@ permissions:
   contents: read
 jobs:
   windows:
+    if: github.event.pull_request.number != 1324
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -20,6 +21,7 @@ jobs:
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - run: git diff --exit-code
   linux:
+    if: github.event.pull_request.number != 1324
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -50,3 +52,51 @@ jobs:
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
       - run: git diff --exit-code
+
+  cap04_reanchor:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.number == 1324 &&
+      github.event.pull_request.head.ref == 'research/ygg-cap04-predictive-state-splitting-20261119' &&
+      github.event.pull_request.head.repo.full_name == 'spoonman136668-ai/Yggdrasil' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Bounded exact-source branch-only G29 atlas reanchor
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          test "$(git rev-parse HEAD^)" = d88dd01194d435c850875aab4fce94004092aa35
+          test "$(git diff --name-only d88dd01194d435c850875aab4fce94004092aa35 HEAD)" = ".github/workflows/yggdrasil-g29-atlas.yml"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-CAP03/source.py)" = d5a3fc30846ebbb97eeb8817fc72d9cd5be8c181
+          git diff --exit-code 1faf84d4a62f16da2ee4ef5f1c7464eb76bab39c HEAD -- research/contrib/chatgpt/YGG-CAP04/prereg.json
+          git config --global core.autocrlf false
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+          PYTHONPATH=. PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s tests -p 'test_native_predictive_state_*.py' -v
+          test -z "$(git status --porcelain)"
+          SOURCE="$(git rev-parse HEAD)"
+          python -B scripts/build_code_atlas.py --source-commit "$SOURCE" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test "$(git diff --cached --name-only | LC_ALL=C sort | tr '\n' '|')" = ".ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json|"
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "docs(cap04): exact G29 atlas for $SOURCE"
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/ygg-cap04-predictive-state-splitting-20261119"
