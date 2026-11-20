@@ -1,0 +1,176 @@
+{
+  "schema": "yggdrasil.gate13.intervention-choice-synthetic-result.v1",
+  "prereg_commit": "756b97735c9042fcd2d1d3534c37ae240151d9e0",
+  "predecessor_sha": "d9353a780e4f9107002ce4dada4b48505c834bf9",
+  "families": {
+    "pair": {
+      "family": "pair",
+      "seed_first": 23000,
+      "seed_last": 23063,
+      "seeds": 64,
+      "worlds": 128,
+      "means": {
+        "active": 0.0744958968,
+        "balanced": 0.0933087723,
+        "random": 0.1169667217
+      },
+      "paired_balanced_minus_active": {
+        "mean": 0.0188128755,
+        "ci95": [
+          0.0068056767,
+          0.0308200743
+        ]
+      },
+      "paired_random_minus_active": {
+        "mean": 0.0424708249,
+        "ci95": [
+          0.0273304598,
+          0.0576111899
+        ]
+      },
+      "cold_restore_success": 64,
+      "cold_continuation_success": 64,
+      "context_A_preservation_success": 64,
+      "total_hypothesis_evaluations": {
+        "active": 6190592,
+        "balanced": 6190592,
+        "random": 6190592
+      },
+      "checkpoint_bytes": [
+        1874
+      ]
+    },
+    "unary": {
+      "family": "unary",
+      "seed_first": 24000,
+      "seed_last": 24031,
+      "seeds": 32,
+      "worlds": 64,
+      "means": {
+        "active": 0.0614142311,
+        "balanced": 0.0646689339,
+        "random": 0.0739332893
+      },
+      "paired_balanced_minus_active": {
+        "mean": 0.0032547028,
+        "ci95": [
+          -0.0094019911,
+          0.0159113967
+        ]
+      },
+      "paired_random_minus_active": {
+        "mean": 0.0125190582,
+        "ci95": [
+          -0.0041702958,
+          0.0292084122
+        ]
+      },
+      "cold_restore_success": 32,
+      "cold_continuation_success": 32,
+      "context_A_preservation_success": 32,
+      "total_hypothesis_evaluations": {
+        "active": 3095296,
+        "balanced": 3095296,
+        "random": 3095296
+      },
+      "checkpoint_bytes": [
+        1874
+      ]
+    },
+    "parity3": {
+      "family": "parity3",
+      "seed_first": 25000,
+      "seed_last": 25031,
+      "seeds": 32,
+      "worlds": 64,
+      "means": {
+        "active": 0.3329457529,
+        "balanced": 0.2970561383,
+        "random": 0.2908041391
+      },
+      "paired_balanced_minus_active": {
+        "mean": -0.0358896145,
+        "ci95": [
+          -0.0575704272,
+          -0.0142088019
+        ]
+      },
+      "paired_random_minus_active": {
+        "mean": -0.0421416138,
+        "ci95": [
+          -0.0668596178,
+          -0.0174236098
+        ]
+      },
+      "cold_restore_success": 32,
+      "cold_continuation_success": 32,
+      "context_A_preservation_success": 32,
+      "total_hypothesis_evaluations": {
+        "active": 3095296,
+        "balanced": 3095296,
+        "random": 3095296
+      },
+      "checkpoint_bytes": [
+        1874
+      ]
+    },
+    "random": {
+      "family": "random",
+      "seed_first": 26000,
+      "seed_last": 26031,
+      "seeds": 32,
+      "worlds": 64,
+      "means": {
+        "active": 0.3177706147,
+        "balanced": 0.2888839375,
+        "random": 0.2914905747
+      },
+      "paired_balanced_minus_active": {
+        "mean": -0.0288866771,
+        "ci95": [
+          -0.0473779353,
+          -0.010395419
+        ]
+      },
+      "paired_random_minus_active": {
+        "mean": -0.02628004,
+        "ci95": [
+          -0.0462140191,
+          -0.0063460608
+        ]
+      },
+      "cold_restore_success": 32,
+      "cold_continuation_success": 32,
+      "context_A_preservation_success": 32,
+      "total_hypothesis_evaluations": {
+        "active": 3095296,
+        "balanced": 3095296,
+        "random": 3095296
+      },
+      "checkpoint_bytes": [
+        1874
+      ]
+    }
+  },
+  "gates": {
+    "pair_gain_balanced_at_least_0_010": true,
+    "pair_gain_random_at_least_0_010": true,
+    "pair_CI_lower_balanced_positive": true,
+    "pair_CI_lower_random_positive": true,
+    "unary_worsening_at_most_0_010": true,
+    "parity_worsening_at_most_0_020": false,
+    "random_worsening_at_most_0_020": false,
+    "exact_cold_continuation_all": true,
+    "state_bytes_1874": true
+  },
+  "outcome": "ACTION_CHOICE_DEVELOPMENT_NO_GO_OR_MIXED",
+  "claims": {
+    "native_yggdrasil_first_use": false,
+    "model_structure_learned": false,
+    "candidate_family_known": true,
+    "actual_compute_advantage": false,
+    "checkpoint_bytes": 1874,
+    "full_process_RAM_measured": false
+  },
+  "work_note": "Each arm intentionally scans all 32 posterior-predictive actions per step; this equalizes measured hypothesis evaluations but overstates minimal required fixed/random cost."
+}
