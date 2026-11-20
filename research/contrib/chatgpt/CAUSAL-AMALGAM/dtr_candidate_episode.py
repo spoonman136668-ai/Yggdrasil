@@ -60,6 +60,35 @@ class PublicDTRCandidate:
     native_ingestion_authorized: bool = False
     canonical_model_updates: int = 0
 
+    def __post_init__(self):
+        # Prevent ordinary callers/dataclasses.replace from forging an
+        # attested or admissible episode out of this untrusted data class.
+        # This is a contract check, NOT a Python process security boundary.
+        if (self.schema != SCHEMA or self.source_repo != SOURCE_REPO
+                or self.source_commit_git_sha1 != SOURCE_COMMIT
+                or self.source_dtr_git_blob_sha1 != SOURCE_DTR_BLOB
+                or self.cvh10_bridge_git_blob_sha1 != CVH10_BRIDGE_BLOB
+                or self.independent_second_view_observed is not False
+                or self.terminal_after_is_source_observation is not False
+                or self.original_source_birth_attested is not False
+                or self.source_firstuse_execution_allowed is not False
+                or self.native_ingestion_authorized is not False
+                or self.canonical_model_updates != 0):
+            raise ValueError("DTR_CANDIDATE_ADMISSION_FORBIDDEN")
+        if (not pin(self.identifier) or not pin(self.candidate_packet_sha256)
+                or not pin(self.public_transcript_sha256)
+                or type(self.row_bits) is not tuple
+                or len(self.row_bits) != len(ROW_FIELDS)
+                or any(type(bit) is not int or bit not in (0, 1)
+                       for bit in self.row_bits)
+                or self.views != ((self.row_bits[0], 0),
+                                  (self.row_bits[0], 0))):
+            raise ValueError("DTR_CANDIDATE_PROVENANCE_OR_VIEW")
+        if digest(canonical([
+                self.identifier, self.views, self.as_row()
+        ])) != self.candidate_packet_sha256:
+            raise ValueError("DTR_CANDIDATE_PACKET_DRIFT")
+
     def as_row(self):
         """Return a NEW detached dictionary, never a stored mutable one."""
         return dict(zip(ROW_FIELDS, self.row_bits, strict=True))
