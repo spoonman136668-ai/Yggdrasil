@@ -1,0 +1,109 @@
+{
+  "schema": "yggdrasil.tgap21.same-address-recurrence-transfer-dev.v1",
+  "frozen_date": "2026-11-20",
+  "prior_qualified": {
+    "know20_run": 44722396414,
+    "tgap20_run": 44722208269,
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Does previously learned consequence knowledge, kept at ONE persistent public address during conflicting B, improve future A/B/A scenes compared with the identical untrained algorithm and fully fitted conventional controls?",
+  "custody": "Synthetic source-free research only in existing contributor PR #1327; original model untouched; canonical integration belongs only to Amalgam PR #1278. Protected first-use issue #426 NOT AUTHORIZED.",
+  "public": "One address, binary selected action and step counter; no hidden initial role, regime indicator, switching timestamp or noise read by any non-oracle model.",
+  "generative": "For initial private role r∈{0,1}, best arm r in A, 1-r in B, r on return. One irreversible action witness: Bernoulli p=.8 on best arm, .2 on worse arm. Exogenous deterministic hash of seed,role,step (not action), inaccessible to learners.",
+  "fit": {
+    "seed": 7501,
+    "initial_role": 0,
+    "stages": [
+      {
+        "stage": "A",
+        "steps": [
+          0,
+          23
+        ]
+      },
+      {
+        "stage": "B",
+        "steps": [
+          24,
+          47
+        ]
+      },
+      {
+        "stage": "return_A",
+        "steps": [
+          48,
+          71
+        ]
+      }
+    ],
+    "total_witnesses": 72,
+    "action_schedule": "action=step%2",
+    "snapshots": "A after step23; B after step47; full after step71"
+  },
+  "held": {
+    "worlds": [
+      {
+        "seed": 7601,
+        "role": 0,
+        "switches": [
+          16,
+          40
+        ]
+      },
+      {
+        "seed": 7607,
+        "role": 0,
+        "switches": [
+          20,
+          44
+        ]
+      },
+      {
+        "seed": 7613,
+        "role": 1,
+        "switches": [
+          16,
+          40
+        ]
+      },
+      {
+        "seed": 7621,
+        "role": 1,
+        "switches": [
+          20,
+          44
+        ]
+      }
+    ],
+    "steps_per_world": 64,
+    "witnesses_per_policy": 256,
+    "action_schedule": "step%2; all methods same action schedule and exogenous result sequence",
+    "reset": "public new-world reset only: learned two-slot persistent counts retained; active slot reset to 0; recent anomaly window cleared; no hidden data supplied"
+  },
+  "candidate": {
+    "label": "research-only bounded numeric two-slot Beta(1,1) recurrence memory, NOT original GF2 native",
+    "training": "each sequential witnessed outcome increments active slot's chosen-arm success/trial counts",
+    "surprise": "Before increment: anomaly if p>=.65 and outcome0 or p<=.35 and outcome1; toggle active slot if since_switch>=8 and three anomalies within last six, retain both slots",
+    "cold": "Canonical JSON + SHA256; validate source schema, integer counts, maximum bytes; exact restore",
+    "no_fit": "identical empty initialized two-slot memory on each held world; explicit no-FIT ablation"
+  },
+  "controls": [
+    "fully fitted stationary Beta(1,1) from same FIT 72 witnesses, counts reused held",
+    "fully fitted rolling-8 Beta(1,1) from same FIT 72 witness stream, queue reused held",
+    "fully fitted surprise reset Beta using same anomaly threshold and FIT observations",
+    "model-informed 2-state HMM with hazard 1/16, p=.8/.2 known; distinct extra structural information, reference not matched baseline",
+    "identical two-slot candidate zero-FIT ablation (not equal evidence)",
+    "source-only uninformed p=.5 negative"
+  ],
+  "primary_metric": "Mean prequential held Brier on 256 outcomes, each forecast before observed result",
+  "secondary": [
+    "Held known role0 vs opposite role1 prediction error",
+    "Return-segment Brier",
+    "Trained minus no-FIT Brier, including harm",
+    "Same-address A slot forecasts after B, after returning to A and independent cold restoration",
+    "Whole-process CPU time, model size, typed source controls, witness counts"
+  ],
+  "engineering_gate": "All frozen source/controls and sequence budgets verified, cold roundtrip and fail-closed negative tests; no result-dependent PASS",
+  "science_gate": "DEV_NO_GO unless original native model independently beats strongest fully trained matched equal-information controls on separately owner-admitted unfamiliar real-world first-use with old→changed→old functional retention and matched whole-process cost; impossible in this synthetic trial",
+  "exclusions": "No experimental cohort rewrites or post-result tuning, no new PR/controller/scheduler, no canonical model/first-use promotion, no paid API or merge."
+}
