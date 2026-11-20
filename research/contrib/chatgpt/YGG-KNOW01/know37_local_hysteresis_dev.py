@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import os
+import time
 from pathlib import Path
 from know33_local_metaplastic_dev import Beta, canonical, digest
 from know35_two_regime_bank_dev import TwoBankCells
@@ -216,6 +217,7 @@ def held_world(seed,family,hazard,witness=private_y):
         stages={stage:{k:[] for k in ARMS}
                 for stage in ("B_first","A_return","B_second")}
         initial_switch=ms["candidate"].switches
+        cost_ns={name:0 for name in ARMS}
         kept_A=True
         bank_B_at_128=None
         bank_B_at_192=None
@@ -226,7 +228,9 @@ def held_world(seed,family,hazard,witness=private_y):
             x=x_for(t)
             for name,m in ms.items():
                 stages[stage][name].append(brier(m.prob(x),q_for(law,x)))
+                started=time.perf_counter_ns()
                 m.observe(t,x,y)
+                cost_ns[name]+=time.perf_counter_ns()-started
             if t+1 in (128,192,256):
                 ms={k:cold(v) for k,v in ms.items()}
                 if branch=="treatment_B":
@@ -240,7 +244,8 @@ def held_world(seed,family,hazard,witness=private_y):
            "scores":{stage:{k:sum(v)/64 for k,v in d.items()}
                      for stage,d in stages.items()},
            "switches":ms["candidate"].switches-initial_switch,
-           "bytes":{k:len(v.checkpoint()) for k,v in ms.items()}
+           "bytes":{k:len(v.checkpoint()) for k,v in ms.items()},
+           "observation_ns":cost_ns
         }
     return {
        "seed":seed,"family":family,"A_prefix":A_prefix,
@@ -249,6 +254,7 @@ def held_world(seed,family,hazard,witness=private_y):
        "B_retained":bank_B_at_128==bank_B_at_192,
        "sham_false_switch":result["control_A"]["switches"]>0,
        "bytes":result["treatment_B"]["bytes"],
+       "observation_ns":result["treatment_B"]["observation_ns"],
        "source_calls":384,"model_events_per_arm":448,
     }
 
