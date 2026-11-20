@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-NATIVE-COLD-06",
+  "task_class": "engineering-native-read-only-boundary-test",
+  "statement": "Verify that current accepted main native PublicCausalCells (a conventional 16-slot source-observation counter) preserves retained policy function across an independent OS process and rejects corrupt checkpoints while showing active-slot interference under conflicting new observations.",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "verified_native_path": "yggdrasil/public_causal_cells.py",
+  "verified_native_git_blob_sha1": "5c9a9904e31688bebc2e53723569e1fb988a981f",
+  "existing_draft_pr": 1346,
+  "source_scope": "Read-only import of accepted native source plus new research harness in research/contrib/chatgpt/ENERGY-NATIVE-COLD-06; no edits to accepted public_causal_cells.py or to central Amalgam. Same Python source loaded in independently spawned fresh child interpreters.",
+  "frozen_protocol": {
+    "active_addresses": 7,
+    "retained_addresses": 9,
+    "phase_A": "On each active address, give 8 action0 successes and 8 action1 failures, so choose(0..6)==0. On retained 0..7, train 12 successes on preferred action (alternating 0/1 by address) and 12 failures on other. Retained 8 is a NULL arm-equal control: each action has 12 successes and 12 failures; choose==None, contrast==(0,576), Wilson abstains.",
+    "phase_B": "Retained addresses receive zero further observations. On each of 7 active addresses, add 64 action0 failures and 64 action1 successes, forcing choose==1 and overwriting old action preference for that same address. Do not infer that old conflicting action0 relationship is preserved.",
+    "process_boundary": "Save immutable 164-byte snapshots A and B to temporary storage; start a new Python interpreter for each using subprocess.run, imports same accepted source from PYTHONPATH, requires child to check full 16-address observed-action-contrast, choose, Wilson choose against frozen parent readouts and source Git SHA. Child must never fit or update.",
+    "negatives": "For A checkpoint, flip one payload bit, truncate one byte, and corrupt version magic, each must be rejected by a fresh child with exact PUBLIC_CAUSAL_CHECKPOINT_REJECTED. New empty cell choose, contrast and Wilson abstain; check invalid action, invalid outcome, invalid address, invalid retained flag rejected before any mutation.",
+    "custody": "At run inspect git hash-object exact accepted source. Source of standalone harness is committed to the same research PR before run. Deterministic no seeds: all observations are explicit, counts and expected outputs are defined in frozen prereg.",
+    "environment": "Python stdlib only. Runtime local process spawn allowed; does not dispatch GitHub Actions or self-hosted runner.",
+    "sample_sizes": {
+      "active_interference_addresses": 7,
+      "protected_retained_addresses": 9,
+      "checkpoint_phases": 2,
+      "corrupt_checkpoints": 3,
+      "null_controls": 1,
+      "invalid_inputs": 4
+    },
+    "expected": "Retained 9/9 identical full readout across A/B and fresh-process snapshots, active 7/7 reversed preferences as explicitly contradictory new data is ingested, 2/2 independent child restores identical predictions, 3/3 corrupt checkpoints rejected, 1/1 action-null abstentions, 4/4 bad inputs rejected with no checkpoint change.",
+    "precise_science_limit": "Native PublicCausalCells does not infer interventions from action-labeled correlations. PASS proves only bounded explicit-memory integrity and deliberately exposes active overwrite/interference; neither scientific causal discovery, novel generalization, retained learned inference, nor native Amalgam checkpoint lineages are proven."
+  },
+  "acceptance": {
+    "engineering_pass": "All frozen positive/negative checks and both independent-child checks pass and accepted-source hash exactly matches. Report CPU/wall and raw child receipts but do not call this scientific pass.",
+    "engineering_fail": "Any bad checkpoint accepted, retained readout changes unexpectedly, unrelated passive contamination, changed source identity, child restore mismatch, or native code drift.",
+    "scientific_pass": "UNAVAILABLE_BY_DESIGN"
+  },
+  "independence": {
+    "owner_controller": false,
+    "scheduler": false,
+    "main_write": false,
+    "model_accepted_state": false,
+    "scientific_first_use": false,
+    "live_checkpoint": false
+  },
+  "note": "This is a frozen engineering boundary proof, not another primary scientific cohort, and cannot establish general intelligence. Commit before harness, then exact source check, then run once. Store original structured engineering result on PR."
+}
