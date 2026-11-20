@@ -1,0 +1,2071 @@
+{
+  "experiment_id": "ENERGY-REMAP-11",
+  "prereg_commit": "d793d4b1ecfd940199eb9e51315f02b0b61b5d0c",
+  "frozen_source_commit": "ab203a45bd1e42a11a043055e4541d26e1676ced",
+  "frozen_source_blob": "8a5fbfa908edad48bb23804517c06bb645b5fda8",
+  "executed_exact_readback": true,
+  "original_primary_scored_once": true,
+  "primary": {
+    "schema": "yggdrasil.energy-remap11-result.v1",
+    "phase": "primary",
+    "seeds": [
+      95711,
+      95717,
+      95729,
+      95731,
+      95747,
+      95753,
+      95767,
+      95773,
+      95783,
+      95789,
+      95801,
+      95813
+    ],
+    "data_counts": {
+      "worlds": 36,
+      "old_training": 2592,
+      "new_training": 864,
+      "held": 41472
+    },
+    "summaries": {
+      "means": {
+        "directed_local_repair": {
+          "action0": 0.2935398811345785,
+          "action1": 0.5311272446689119,
+          "overall": 0.41233356290174505
+        },
+        "new_only_dirichlet": {
+          "action0": 0.4671952160493865,
+          "action1": 0.46653549382716375,
+          "overall": 0.4668653549382769
+        },
+        "permutation_bayes_pooled": {
+          "action0": 0.29171870199127015,
+          "action1": 0.527990680686752,
+          "overall": 0.409854691339011
+        },
+        "joint_permutation_change_bayes": {
+          "action0": 0.30764575972480845,
+          "action1": 0.4123368119369957,
+          "overall": 0.35999128583090195
+        },
+        "map_pooled": {
+          "action0": 0.2935398811345785,
+          "action1": 0.5311272446689119,
+          "overall": 0.41233356290174505
+        },
+        "privileged_target_oracle": {
+          "action0": 0.2300415740740738,
+          "action1": 0.21732706790123435,
+          "overall": 0.22368432098765434
+        }
+      },
+      "byMode": {
+        "SENSOR_REMAP": {
+          "worlds": 12,
+          "candidate_any_reset": 0,
+          "candidate_matching": 12,
+          "metrics": {
+            "directed_local_repair": 0.2860709366391173,
+            "new_only_dirichlet": 0.468628472222228,
+            "permutation_bayes_pooled": 0.2860710304723454,
+            "joint_permutation_change_bayes": 0.3035324617556578,
+            "map_pooled": 0.2860709366391173,
+            "privileged_target_oracle": 0.22756472222222265
+          }
+        },
+        "LOCAL_REWIRE": {
+          "worlds": 12,
+          "candidate_any_reset": 0,
+          "candidate_matching": 12,
+          "metrics": {
+            "directed_local_repair": 0.3941880930517283,
+            "new_only_dirichlet": 0.45642361111111684,
+            "permutation_bayes_pooled": 0.3941856262300627,
+            "joint_permutation_change_bayes": 0.34562635684535303,
+            "map_pooled": 0.3941880930517283,
+            "privileged_target_oracle": 0.22261101851851825
+          }
+        },
+        "OUT_FAMILY": {
+          "worlds": 12,
+          "candidate_any_reset": 0,
+          "candidate_matching": 11,
+          "metrics": {
+            "directed_local_repair": 0.5567416590143894,
+            "new_only_dirichlet": 0.47554398148148597,
+            "permutation_bayes_pooled": 0.5493074173146248,
+            "joint_permutation_change_bayes": 0.4308150388916952,
+            "map_pooled": 0.5567416590143894,
+            "privileged_target_oracle": 0.22087722222222217
+          }
+        }
+      },
+      "best_conventional": "joint_permutation_change_bayes",
+      "gap_best_minus_candidate": -0.0523422770708431,
+      "false_remap_repair_worlds": 0,
+      "old_snapshots_stable": 36,
+      "verdict": "MIXED_NO_GO",
+      "native_scientific_gain": false
+    },
+    "worlds": [
+      {
+        "seed": 95711,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2900309917355371,
+            "action1": 0.3032024793388441,
+            "overall": 0.29661673553718737
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4027777777777809,
+            "action1": 0.44013888888889124,
+            "overall": 0.4214583333333403
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.29003099234824425,
+            "action1": 0.3032024801037657,
+            "overall": 0.29661673622600115
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2919506147359283,
+            "action1": 0.30740406450048363,
+            "overall": 0.2996773396182045
+          },
+          "map_pooled": {
+            "action0": 0.2900309917355371,
+            "action1": 0.3032024793388441,
+            "overall": 0.29661673553718737
+          },
+          "privileged_target_oracle": {
+            "action0": 0.23722444444444418,
+            "action1": 0.22236333333333322,
+            "overall": 0.2297938888888892
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            2,
+            0,
+            3,
+            5,
+            4,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95711,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2392676767676773,
+            "action1": 0.5503041781450828,
+            "overall": 0.3947859274563841
+          },
+          "new_only_dirichlet": {
+            "action0": 0.431111111111113,
+            "action1": 0.4505555555555584,
+            "overall": 0.4408333333333399
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2392677654254929,
+            "action1": 0.5503039495235478,
+            "overall": 0.39478585747451855
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.25032767209335227,
+            "action1": 0.4090834592850994,
+            "overall": 0.32970556568922765
+          },
+          "map_pooled": {
+            "action0": 0.2392676767676773,
+            "action1": 0.5503041781450828,
+            "overall": 0.3947859274563841
+          },
+          "privileged_target_oracle": {
+            "action0": 0.18966888888888875,
+            "action1": 0.23425222222222203,
+            "overall": 0.21196055555555468
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            5,
+            4,
+            3,
+            2,
+            1,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95711,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2911214416896251,
+            "action1": 0.6918331037649187,
+            "overall": 0.49147727272727376
+          },
+          "new_only_dirichlet": {
+            "action0": 0.48652777777778033,
+            "action1": 0.4158333333333388,
+            "overall": 0.45118055555556136
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2912010258364919,
+            "action1": 0.6915660003848184,
+            "overall": 0.4913835131106571
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.30510632023949147,
+            "action1": 0.39920785958969085,
+            "overall": 0.35215708991459105
+          },
+          "map_pooled": {
+            "action0": 0.2911214416896251,
+            "action1": 0.6918331037649187,
+            "overall": 0.49147727272727376
+          },
+          "privileged_target_oracle": {
+            "action0": 0.23722444444444418,
+            "action1": 0.16589111111111085,
+            "overall": 0.20155777777777695
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            5,
+            1,
+            0,
+            2,
+            3,
+            4
+          ]
+        }
+      },
+      {
+        "seed": 95717,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2919823232323229,
+            "action1": 0.3734217171717178,
+            "overall": 0.3327020202020216
+          },
+          "new_only_dirichlet": {
+            "action0": 0.48930555555555877,
+            "action1": 0.5720833333333363,
+            "overall": 0.5306944444444444
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2919823322367569,
+            "action1": 0.3734217240270638,
+            "overall": 0.3327020281319143
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3032152787974412,
+            "action1": 0.4436276345271753,
+            "overall": 0.3734214566623041
+          },
+          "map_pooled": {
+            "action0": 0.2919823232323229,
+            "action1": 0.3734217171717178,
+            "overall": 0.3327020202020216
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22830777777777767,
+            "action1": 0.29666888888888826,
+            "overall": 0.2624883333333361
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            5,
+            2,
+            1,
+            3,
+            4
+          ]
+        }
+      },
+      {
+        "seed": 95717,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.31628787878787945,
+            "action1": 0.47417355371900743,
+            "overall": 0.39523071625343975
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4277777777777808,
+            "action1": 0.40972222222222504,
+            "overall": 0.4187500000000079
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.316291676252519,
+            "action1": 0.47415936149459065,
+            "overall": 0.39522551887355184
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3188341715909346,
+            "action1": 0.3394277094062955,
+            "overall": 0.32913094049861713
+          },
+          "map_pooled": {
+            "action0": 0.31628787878787945,
+            "action1": 0.47417355371900743,
+            "overall": 0.39523071625343975
+          },
+          "privileged_target_oracle": {
+            "action0": 0.2907244444444439,
+            "action1": 0.25208555555555523,
+            "overall": 0.27140500000000356
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            4,
+            1,
+            2,
+            3,
+            0,
+            5
+          ]
+        }
+      },
+      {
+        "seed": 95717,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.30001721763085676,
+            "action1": 0.8678546831955922,
+            "overall": 0.583935950413228
+          },
+          "new_only_dirichlet": {
+            "action0": 0.44013888888889385,
+            "action1": 0.47333333333333566,
+            "overall": 0.4567361111111169
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.302349762885348,
+            "action1": 0.8620271045113088,
+            "overall": 0.582188433698335
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3156523507852305,
+            "action1": 0.5048525536175174,
+            "overall": 0.41025245220137324
+          },
+          "map_pooled": {
+            "action0": 0.30001721763085676,
+            "action1": 0.8678546831955922,
+            "overall": 0.583935950413228
+          },
+          "privileged_target_oracle": {
+            "action0": 0.21641888888888872,
+            "action1": 0.18372444444444422,
+            "overall": 0.20007166666666584
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            3,
+            1,
+            5,
+            4,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95729,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.24621212121212321,
+            "action1": 0.26420454545454786,
+            "overall": 0.25520833333333354
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4290277777777829,
+            "action1": 0.4429166666666714,
+            "overall": 0.4359722222222302
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.24621212245888963,
+            "action1": 0.2642045470127382,
+            "overall": 0.2552083347358139
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.25502839285772816,
+            "action1": 0.2735355692959074,
+            "overall": 0.2642819810768195
+          },
+          "map_pooled": {
+            "action0": 0.24621212121212321,
+            "action1": 0.26420454545454786,
+            "overall": 0.25520833333333354
+          },
+          "privileged_target_oracle": {
+            "action0": 0.2015577777777776,
+            "action1": 0.22533555555555537,
+            "overall": 0.21344666666666576
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            2,
+            3,
+            5,
+            4,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95729,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.279470844811753,
+            "action1": 0.5485250229568424,
+            "overall": 0.41399793388429795
+          },
+          "new_only_dirichlet": {
+            "action0": 0.485833333333338,
+            "action1": 0.5018055555555583,
+            "overall": 0.4938194444444479
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.27947102348391417,
+            "action1": 0.5485250227405569,
+            "overall": 0.41399802311223743
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.29013579422425423,
+            "action1": 0.48199207902229585,
+            "overall": 0.3860639366232756
+          },
+          "map_pooled": {
+            "action0": 0.279470844811753,
+            "action1": 0.5485250229568424,
+            "overall": 0.41399793388429795
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22830777777777758,
+            "action1": 0.2550577777777774,
+            "overall": 0.24168277777777802
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            5,
+            1,
+            3,
+            2,
+            4,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95729,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.25886707988980906,
+            "action1": 0.7813073921028454,
+            "overall": 0.5200872359963306
+          },
+          "new_only_dirichlet": {
+            "action0": 0.39861111111111364,
+            "action1": 0.4788888888888922,
+            "overall": 0.43875000000000597
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2588673764124445,
+            "action1": 0.7813067285229792,
+            "overall": 0.5200870524677114
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.262085361355183,
+            "action1": 0.5818013632923862,
+            "overall": 0.42194336232377844
+          },
+          "map_pooled": {
+            "action0": 0.25886707988980906,
+            "action1": 0.7813073921028454,
+            "overall": 0.5200872359963306
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22830777777777758,
+            "action1": 0.20750222222222206,
+            "overall": 0.21790499999999904
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            2,
+            3,
+            5,
+            1,
+            4
+          ]
+        }
+      },
+      {
+        "seed": 95731,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2910353535353547,
+            "action1": 0.30678948576675635,
+            "overall": 0.2989124196510549
+          },
+          "new_only_dirichlet": {
+            "action0": 0.41111111111111454,
+            "action1": 0.47680555555556,
+            "overall": 0.4439583333333396
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.29103535464153696,
+            "action1": 0.306789487444209,
+            "overall": 0.2989124210428694
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2939618266661171,
+            "action1": 0.3138582925337875,
+            "overall": 0.3039100595999504
+          },
+          "map_pooled": {
+            "action0": 0.2910353535353547,
+            "action1": 0.30678948576675635,
+            "overall": 0.2989124196510549
+          },
+          "privileged_target_oracle": {
+            "action0": 0.2550577777777774,
+            "action1": 0.19561333333333314,
+            "overall": 0.22533555555555626
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            1,
+            5,
+            4,
+            3,
+            0,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95731,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2912936179981653,
+            "action1": 0.5080922865013773,
+            "overall": 0.39969295224977025
+          },
+          "new_only_dirichlet": {
+            "action0": 0.43875000000000297,
+            "action1": 0.44986111111111526,
+            "overall": 0.4443055555555626
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.29130920674400174,
+            "action1": 0.5080554313775504,
+            "overall": 0.39968231906077906
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3009475381385812,
+            "action1": 0.39503612921465964,
+            "overall": 0.3479918336766181
+          },
+          "map_pooled": {
+            "action0": 0.2912936179981653,
+            "action1": 0.5080922865013773,
+            "overall": 0.39969295224977025
+          },
+          "privileged_target_oracle": {
+            "action0": 0.21641888888888877,
+            "action1": 0.23722444444444418,
+            "overall": 0.22682166666666603
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            4,
+            5,
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95731,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.29003099173553615,
+            "action1": 0.8600493572084517,
+            "overall": 0.5750401744719951
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4443055555555596,
+            "action1": 0.4484722222222245,
+            "overall": 0.4463888888888965
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2901943962597557,
+            "action1": 0.8593584561986536,
+            "overall": 0.5747764262292053
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.29923625825506445,
+            "action1": 0.548331922800652,
+            "overall": 0.4237840905278621
+          },
+          "map_pooled": {
+            "action0": 0.29003099173553615,
+            "action1": 0.8600493572084517,
+            "overall": 0.5750401744719951
+          },
+          "privileged_target_oracle": {
+            "action0": 0.23425222222222197,
+            "action1": 0.2401966666666664,
+            "overall": 0.23722444444444568
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            4,
+            1,
+            0,
+            5,
+            3,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95747,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.26090449954086553,
+            "action1": 0.3133034894398541,
+            "overall": 0.28710399449035867
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5055555555555616,
+            "action1": 0.48861111111111327,
+            "overall": 0.4970833333333411
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2609047282296464,
+            "action1": 0.31330372242683624,
+            "overall": 0.2871042253282442
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3356309183185879,
+            "action1": 0.32826451460253664,
+            "overall": 0.33194771646056337
+          },
+          "map_pooled": {
+            "action0": 0.26090449954086553,
+            "action1": 0.3133034894398541,
+            "overall": 0.28710399449035867
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22236333333333316,
+            "action1": 0.23722444444444418,
+            "overall": 0.2297938888888894
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            5,
+            1,
+            3,
+            0,
+            2,
+            4
+          ]
+        }
+      },
+      {
+        "seed": 95747,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.33198461891643566,
+            "action1": 0.47718663911845827,
+            "overall": 0.40458562901744305
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5483333333333409,
+            "action1": 0.4768055555555569,
+            "overall": 0.5125694444444528
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.3320317239801046,
+            "action1": 0.47712038630073494,
+            "overall": 0.4045760551404142
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.39742372084262073,
+            "action1": 0.3973717617954532,
+            "overall": 0.39739774131903893
+          },
+          "map_pooled": {
+            "action0": 0.33198461891643566,
+            "action1": 0.47718663911845827,
+            "overall": 0.40458562901744305
+          },
+          "privileged_target_oracle": {
+            "action0": 0.26397444444444407,
+            "action1": 0.20155777777777759,
+            "overall": 0.23276611111111134
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            5,
+            0,
+            2,
+            1,
+            4
+          ]
+        }
+      },
+      {
+        "seed": 95747,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.28386134067952473,
+            "action1": 0.8420569329660307,
+            "overall": 0.5629591368227777
+          },
+          "new_only_dirichlet": {
+            "action0": 0.442916666666669,
+            "action1": 0.5275000000000023,
+            "overall": 0.4852083333333374
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2844864244397765,
+            "action1": 0.8407475434592735,
+            "overall": 0.5626169839495181
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2965783820354994,
+            "action1": 0.5852018235706168,
+            "overall": 0.4408901028030575
+          },
+          "map_pooled": {
+            "action0": 0.28386134067952473,
+            "action1": 0.8420569329660307,
+            "overall": 0.5629591368227777
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22533555555555543,
+            "action1": 0.2045299999999998,
+            "overall": 0.21493277777777686
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            4,
+            5,
+            1,
+            0,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95753,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.29347451790633705,
+            "action1": 0.3190713957759399,
+            "overall": 0.30627295684113665
+          },
+          "new_only_dirichlet": {
+            "action0": 0.42694444444444923,
+            "action1": 0.4955555555555593,
+            "overall": 0.46125000000000704
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.29347464589766753,
+            "action1": 0.31907154846210345,
+            "overall": 0.3062730971798892
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.29691532105045865,
+            "action1": 0.33464030990680904,
+            "overall": 0.31577781547863426
+          },
+          "map_pooled": {
+            "action0": 0.29347451790633705,
+            "action1": 0.3190713957759399,
+            "overall": 0.30627295684113665
+          },
+          "privileged_target_oracle": {
+            "action0": 0.1985855555555554,
+            "action1": 0.25208555555555523,
+            "overall": 0.2253355555555553
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            2,
+            1,
+            4,
+            0,
+            5,
+            3
+          ]
+        }
+      },
+      {
+        "seed": 95753,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.28630050505050436,
+            "action1": 0.4708448117539019,
+            "overall": 0.37857265840220167
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4013888888888916,
+            "action1": 0.4387500000000049,
+            "overall": 0.4200694444444511
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.28630052365561787,
+            "action1": 0.47084482153550083,
+            "overall": 0.3785726725955565
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2891152855668887,
+            "action1": 0.3392031272170929,
+            "overall": 0.31415920639199024
+          },
+          "map_pooled": {
+            "action0": 0.28630050505050436,
+            "action1": 0.4708448117539019,
+            "overall": 0.37857265840220167
+          },
+          "privileged_target_oracle": {
+            "action0": 0.23425222222222197,
+            "action1": 0.21641888888888872,
+            "overall": 0.2253355555555548
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            3,
+            4,
+            1,
+            5,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95753,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.31000344352617115,
+            "action1": 0.9339416896235095,
+            "overall": 0.6219725665748435
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4568055555555593,
+            "action1": 0.4505555555555579,
+            "overall": 0.4536805555555616
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.31902717020357285,
+            "action1": 0.9110358583419783,
+            "overall": 0.6150315142727809
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.32928763412287443,
+            "action1": 0.5713924792495112,
+            "overall": 0.4503400566861901
+          },
+          "map_pooled": {
+            "action0": 0.31000344352617115,
+            "action1": 0.9339416896235095,
+            "overall": 0.6219725665748435
+          },
+          "privileged_target_oracle": {
+            "action0": 0.25802999999999965,
+            "action1": 0.24911333333333305,
+            "overall": 0.25357166666666975
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            1,
+            3,
+            4,
+            2,
+            5,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95767,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.27574035812672093,
+            "action1": 0.2556244260789735,
+            "overall": 0.26568239210284317
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5225000000000031,
+            "action1": 0.42555555555555774,
+            "overall": 0.4740277777777847
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2757403591796169,
+            "action1": 0.255624426990298,
+            "overall": 0.26568239308495767
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2960705831755263,
+            "action1": 0.2613142377503056,
+            "overall": 0.2786924104629175
+          },
+          "map_pooled": {
+            "action0": 0.27574035812672093,
+            "action1": 0.2556244260789735,
+            "overall": 0.26568239210284317
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22236333333333316,
+            "action1": 0.18966888888888872,
+            "overall": 0.20601611111111023
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            2,
+            0,
+            5,
+            4,
+            3,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95767,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2445764462809931,
+            "action1": 0.5475206611570229,
+            "overall": 0.39604855371900566
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4311111111111141,
+            "action1": 0.5033333333333398,
+            "overall": 0.4672222222222252
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.24457915123198884,
+            "action1": 0.5475173265026542,
+            "overall": 0.3960482388673205
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2540888687363252,
+            "action1": 0.4198818634116398,
+            "overall": 0.33698536607398444
+          },
+          "map_pooled": {
+            "action0": 0.2445764462809931,
+            "action1": 0.5475206611570229,
+            "overall": 0.39604855371900566
+          },
+          "privileged_target_oracle": {
+            "action0": 0.20750222222222206,
+            "action1": 0.2431688888888886,
+            "overall": 0.22533555555555498
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            1,
+            4,
+            5,
+            2,
+            0,
+            3
+          ]
+        }
+      },
+      {
+        "seed": 95767,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2883953168044093,
+            "action1": 0.6875860881542679,
+            "overall": 0.4879907024793371
+          },
+          "new_only_dirichlet": {
+            "action0": 0.6023611111111145,
+            "action1": 0.4186111111111155,
+            "overall": 0.5104861111111089
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.35504425468234446,
+            "action1": 0.6227329485794697,
+            "overall": 0.4888886016309068
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.43011957926112043,
+            "action1": 0.4215602590620943,
+            "overall": 0.42583991916161157
+          },
+          "map_pooled": {
+            "action0": 0.2883953168044093,
+            "action1": 0.6875860881542679,
+            "overall": 0.4879907024793371
+          },
+          "privileged_target_oracle": {
+            "action0": 0.23722444444444418,
+            "action1": 0.1926411111111109,
+            "overall": 0.21493277777777686
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            5,
+            3,
+            1,
+            4,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95773,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.28211088154270114,
+            "action1": 0.24500688705234083,
+            "overall": 0.26355888429751856
+          },
+          "new_only_dirichlet": {
+            "action0": 0.48736111111111313,
+            "action1": 0.4408333333333362,
+            "overall": 0.46409722222222594
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.28211088232358805,
+            "action1": 0.2450068875170502,
+            "overall": 0.26355888492031876
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2975770748562951,
+            "action1": 0.25451525287080135,
+            "overall": 0.27604616386354663
+          },
+          "map_pooled": {
+            "action0": 0.28211088154270114,
+            "action1": 0.24500688705234083,
+            "overall": 0.26355888429751856
+          },
+          "privileged_target_oracle": {
+            "action0": 0.21939111111111095,
+            "action1": 0.21641888888888874,
+            "overall": 0.21790499999999904
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            1,
+            4,
+            2,
+            5,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95773,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.3108356290174454,
+            "action1": 0.5004017447199289,
+            "overall": 0.4056186868686869
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5176388888888943,
+            "action1": 0.5190277777777801,
+            "overall": 0.5183333333333374
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.31083598849733207,
+            "action1": 0.500401381060421,
+            "overall": 0.4056186847788761
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.33344206374604013,
+            "action1": 0.48750049155057024,
+            "overall": 0.4104712776483061
+          },
+          "map_pooled": {
+            "action0": 0.3108356290174454,
+            "action1": 0.5004017447199289,
+            "overall": 0.4056186868686869
+          },
+          "privileged_target_oracle": {
+            "action0": 0.19264111111111096,
+            "action1": 0.19858555555555535,
+            "overall": 0.19561333333333256
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            2,
+            3,
+            5,
+            4,
+            1,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95773,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.29958677685950214,
+            "action1": 0.7927571166207574,
+            "overall": 0.5461719467401325
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4069444444444476,
+            "action1": 0.5709722222222249,
+            "overall": 0.48895833333333777
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2995889913383725,
+            "action1": 0.7927461558830872,
+            "overall": 0.5461675736107368
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3015130185168298,
+            "action1": 0.6038811459020004,
+            "overall": 0.45269708220941546
+          },
+          "map_pooled": {
+            "action0": 0.29958677685950214,
+            "action1": 0.7927571166207574,
+            "overall": 0.5461719467401325
+          },
+          "privileged_target_oracle": {
+            "action0": 0.2461411111111108,
+            "action1": 0.21047444444444427,
+            "overall": 0.2283077777777788
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            1,
+            4,
+            5,
+            2,
+            3,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95783,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2765151515151528,
+            "action1": 0.24701561065197553,
+            "overall": 0.26176538108356273
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5273611111111134,
+            "action1": 0.4255555555555573,
+            "overall": 0.4764583333333361
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2765158429966826,
+            "action1": 0.24701638797315026,
+            "overall": 0.26176611548491324
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2949929443219071,
+            "action1": 0.2591669223729267,
+            "overall": 0.2770799333474176
+          },
+          "map_pooled": {
+            "action0": 0.2765151515151528,
+            "action1": 0.24701561065197553,
+            "overall": 0.26176538108356273
+          },
+          "privileged_target_oracle": {
+            "action0": 0.20750222222222206,
+            "action1": 0.17777999999999974,
+            "overall": 0.19264111111111032
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            5,
+            2,
+            0,
+            3,
+            4,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95783,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2914657943067037,
+            "action1": 0.5228994490358103,
+            "overall": 0.40718262167125485
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4083333333333361,
+            "action1": 0.42902777777778195,
+            "overall": 0.41868055555556244
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.291465987256312,
+            "action1": 0.5228990447673189,
+            "overall": 0.4071825160118152
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.29415296736086166,
+            "action1": 0.3765700817884468,
+            "overall": 0.33536152457465485
+          },
+          "map_pooled": {
+            "action0": 0.2914657943067037,
+            "action1": 0.5228994490358103,
+            "overall": 0.40718262167125485
+          },
+          "privileged_target_oracle": {
+            "action0": 0.249113333333333,
+            "action1": 0.18966888888888872,
+            "overall": 0.21939111111111015
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            5,
+            1,
+            3,
+            2,
+            4,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95783,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.30110766758494134,
+            "action1": 0.7915805785123957,
+            "overall": 0.5463441230486733
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4844444444444485,
+            "action1": 0.44430555555556056,
+            "overall": 0.46437500000000465
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.30466621160619567,
+            "action1": 0.7765255343254416,
+            "overall": 0.5405958729658156
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.32623331870650996,
+            "action1": 0.4643778705351295,
+            "overall": 0.39530559462081877
+          },
+          "map_pooled": {
+            "action0": 0.30110766758494134,
+            "action1": 0.7915805785123957,
+            "overall": 0.5463441230486733
+          },
+          "privileged_target_oracle": {
+            "action0": 0.22830777777777764,
+            "action1": 0.22830777777777764,
+            "overall": 0.2283077777777779
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            4,
+            5,
+            0,
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95789,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2993285123966961,
+            "action1": 0.2612201561065213,
+            "overall": 0.2802743342516073
+          },
+          "new_only_dirichlet": {
+            "action0": 0.45263888888889375,
+            "action1": 0.4311111111111162,
+            "overall": 0.4418750000000079
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2993285171445353,
+            "action1": 0.26122016198506065,
+            "overall": 0.28027433956479764
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3076228137910957,
+            "action1": 0.27115552949138105,
+            "overall": 0.28938917164124234
+          },
+          "map_pooled": {
+            "action0": 0.2993285123966961,
+            "action1": 0.2612201561065213,
+            "overall": 0.2802743342516073
+          },
+          "privileged_target_oracle": {
+            "action0": 0.249113333333333,
+            "action1": 0.1985855555555554,
+            "overall": 0.22384944444444368
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            4,
+            0,
+            1,
+            5,
+            2,
+            3
+          ]
+        }
+      },
+      {
+        "seed": 95789,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.31384871441689616,
+            "action1": 0.4957242883379264,
+            "overall": 0.4047865013774137
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5004166666666704,
+            "action1": 0.5037500000000045,
+            "overall": 0.5020833333333341
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.31385665053372536,
+            "action1": 0.4957087873227218,
+            "overall": 0.40478271892822465
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.32771443146695783,
+            "action1": 0.4035075019989329,
+            "overall": 0.3656109667329442
+          },
+          "map_pooled": {
+            "action0": 0.31384871441689616,
+            "action1": 0.4957242883379264,
+            "overall": 0.4047865013774137
+          },
+          "privileged_target_oracle": {
+            "action0": 0.263974444444444,
+            "action1": 0.16886333333333303,
+            "overall": 0.21641888888888794
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            1,
+            2,
+            3,
+            0,
+            4,
+            5
+          ]
+        }
+      },
+      {
+        "seed": 95789,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2334997704315895,
+            "action1": 0.9179005968778681,
+            "overall": 0.5757001836547301
+          },
+          "new_only_dirichlet": {
+            "action0": 0.42000000000000176,
+            "action1": 0.6602777777777805,
+            "overall": 0.5401388888888908
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.2335044967333748,
+            "action1": 0.9178907654974812,
+            "overall": 0.5756976311154277
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.24417822701037478,
+            "action1": 0.8325154368535854,
+            "overall": 0.5383468319319842
+          },
+          "map_pooled": {
+            "action0": 0.2334997704315895,
+            "action1": 0.9179005968778681,
+            "overall": 0.5757001836547301
+          },
+          "privileged_target_oracle": {
+            "action0": 0.1777799999999998,
+            "action1": 0.22830777777777764,
+            "overall": 0.20304388888888802
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            0,
+            2,
+            4,
+            5,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95801,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.30021808999081706,
+            "action1": 0.2538165748393044,
+            "overall": 0.27701733241505755
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5447222222222253,
+            "action1": 0.3958333333333364,
+            "overall": 0.4702777777777824
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.3002180900785168,
+            "action1": 0.25381657491964693,
+            "overall": 0.27701733249907806
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.31729387880553206,
+            "action1": 0.25711981696889546,
+            "overall": 0.28720684788720974
+          },
+          "map_pooled": {
+            "action0": 0.30021808999081706,
+            "action1": 0.2538165748393044,
+            "overall": 0.27701733241505755
+          },
+          "privileged_target_oracle": {
+            "action0": 0.27883555555555506,
+            "action1": 0.22236333333333322,
+            "overall": 0.2505994444444468
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            2,
+            4,
+            5,
+            1,
+            3
+          ]
+        }
+      },
+      {
+        "seed": 95801,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2578340220385692,
+            "action1": 0.5308195592286489,
+            "overall": 0.39432679063360493
+          },
+          "new_only_dirichlet": {
+            "action0": 0.43736111111111353,
+            "action1": 0.4436111111111152,
+            "overall": 0.4404861111111179
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.25783402267705047,
+            "action1": 0.5308195586397196,
+            "overall": 0.39432679065838094
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.2662624807123874,
+            "action1": 0.3894507484329227,
+            "overall": 0.32785661457265136
+          },
+          "map_pooled": {
+            "action0": 0.2578340220385692,
+            "action1": 0.5308195592286489,
+            "overall": 0.39432679063360493
+          },
+          "privileged_target_oracle": {
+            "action0": 0.21939111111111098,
+            "action1": 0.22830777777777764,
+            "overall": 0.22384944444444357
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            2,
+            1,
+            5,
+            4,
+            3,
+            0
+          ]
+        }
+      },
+      {
+        "seed": 95801,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.5845959595959551,
+            "action1": 0.6595213498622582,
+            "overall": 0.6220586547291145
+          },
+          "new_only_dirichlet": {
+            "action0": 0.48930555555556154,
+            "action1": 0.4325000000000044,
+            "overall": 0.4609027777777837
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.43620465117499413,
+            "action1": 0.658246411276735,
+            "overall": 0.5472255312258679
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3980555887830356,
+            "action1": 0.4631144133708929,
+            "overall": 0.430585001076964
+          },
+          "map_pooled": {
+            "action0": 0.5845959595959551,
+            "action1": 0.6595213498622582,
+            "overall": 0.6220586547291145
+          },
+          "privileged_target_oracle": {
+            "action0": 0.2401966666666664,
+            "action1": 0.21047444444444424,
+            "overall": 0.22533555555555504
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": false,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            4,
+            3,
+            5,
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95813,
+        "mode": "SENSOR_REMAP",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.33339072543618026,
+            "action1": 0.28208218549127834,
+            "overall": 0.30773645546372574
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5234722222222284,
+            "action1": 0.48930555555555905,
+            "overall": 0.5063888888888959
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.3333907268802972,
+            "action1": 0.28208218805839996,
+            "overall": 0.30773645746934747
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.39254224827024176,
+            "action1": 0.2973750416679269,
+            "overall": 0.34495864496908346
+          },
+          "map_pooled": {
+            "action0": 0.33339072543618026,
+            "action1": 0.28208218549127834,
+            "overall": 0.30773645546372574
+          },
+          "privileged_target_oracle": {
+            "action0": 0.2728911111111107,
+            "action1": 0.23425222222222197,
+            "overall": 0.2535716666666692
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            0,
+            1,
+            3,
+            5,
+            4,
+            2
+          ]
+        }
+      },
+      {
+        "seed": 95813,
+        "mode": "LOCAL_REWIRE",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.2102846648301213,
+            "action1": 0.46057162534435403,
+            "overall": 0.33542814508723623
+          },
+          "new_only_dirichlet": {
+            "action0": 0.4193055555555575,
+            "action1": 0.38055555555555814,
+            "overall": 0.3999305555555627
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.21028470583601305,
+            "action1": 0.46057153268213713,
+            "overall": 0.3354281192590773
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.22045134135384217,
+            "action1": 0.3131112753320134,
+            "overall": 0.266781308342928
+          },
+          "map_pooled": {
+            "action0": 0.2102846648301213,
+            "action1": 0.46057162534435403,
+            "overall": 0.33542814508723623
+          },
+          "privileged_target_oracle": {
+            "action0": 0.1718355555555553,
+            "action1": 0.1896688888888887,
+            "overall": 0.18075222222222148
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            2,
+            5,
+            4,
+            0,
+            3,
+            1
+          ]
+        }
+      },
+      {
+        "seed": 95813,
+        "mode": "OUT_FAMILY",
+        "old_training": 72,
+        "new_training": 24,
+        "held": 1152,
+        "anchor_count": 2,
+        "metric": {
+          "directed_local_repair": {
+            "action0": 0.3119547750229561,
+            "action1": 0.782369146005513,
+            "overall": 0.5471619605142374
+          },
+          "new_only_dirichlet": {
+            "action0": 0.5765277777777834,
+            "action1": 0.44291666666666873,
+            "overall": 0.5097222222222267
+          },
+          "permutation_bayes_pooled": {
+            "action0": 0.3122654901230018,
+            "action1": 0.7817942568740684,
+            "overall": 0.5470298734985355
+          },
+          "joint_permutation_change_bayes": {
+            "action0": 0.3415030795419856,
+            "action1": 0.5137746869434109,
+            "overall": 0.427638883242696
+          },
+          "map_pooled": {
+            "action0": 0.3119547750229561,
+            "action1": 0.782369146005513,
+            "overall": 0.5471619605142374
+          },
+          "privileged_target_oracle": {
+            "action0": 0.23127999999999982,
+            "action1": 0.21939111111111093,
+            "overall": 0.22533555555555485
+          }
+        },
+        "retained": true,
+        "candidate_changed": 0,
+        "mapping_correct": true,
+        "true_mapping_count": 24,
+        "truth_evaluation_only": {
+          "permutation": [
+            3,
+            4,
+            5,
+            2,
+            0,
+            1
+          ]
+        }
+      }
+    ],
+    "source_free": true,
+    "first_use_seeds_consumed": true,
+    "limitations": [
+      "All models see the same explicit OLD/NEW boundaries and 2 public sensor anchors",
+      "Correct sensor correspondence is hidden; per-world true mappings recorded only after fitting for audit",
+      "Candidate graph matching MAP and reset rule are conventional heuristics, not evidence of original intelligence",
+      "Joint Bayesian control marginalizes mapping and local resets; no expectation of superior Brier under correct source law",
+      "OLD readouts preserved in same-process JSON only, not independent-process cold memory",
+      "Run-time resource efficiency not qualified"
+    ]
+  },
+  "classification": "MIXED_NO_GO",
+  "independent_scientific_qualification": false
+}
