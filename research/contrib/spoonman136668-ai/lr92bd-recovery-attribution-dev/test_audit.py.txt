@@ -1,0 +1,44 @@
+from __future__ import annotations
+import copy,hashlib,json,tempfile,unittest
+from pathlib import Path
+import audit_saved
+
+HERE=Path(__file__).resolve().parent
+RAW=(HERE/'development_results.json').read_bytes()
+class AuditTests(unittest.TestCase):
+    def setUp(self):self.original=audit_saved.RESULT_SHA256
+    def tearDown(self):audit_saved.RESULT_SHA256=self.original
+    def _check_tamper(self,mutator):
+        value=json.loads(RAW);mutator(value)
+        raw=json.dumps(value,sort_keys=True,separators=(',',':')).encode()+b'\n'
+        audit_saved.RESULT_SHA256=hashlib.sha256(raw).hexdigest()
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'result.json';p.write_bytes(raw)
+            with self.assertRaises(AssertionError):audit_saved.audit(p)
+    def test_exact_saved_result_passes(self):
+        report=audit_saved.audit(HERE/'development_results.json')
+        self.assertEqual(report['status'],'PASS')
+        self.assertEqual(report['worlds'],24)
+        self.assertEqual(set(report['attribution'].values()),{'IDENTIFICATION_LIMITED'})
+    def test_raw_sha_mismatch_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'result.json';p.write_bytes(RAW+b' ')
+            with self.assertRaises(AssertionError):audit_saved.audit(p)
+    def test_world_removed_rejected(self):
+        self._check_tamper(lambda r:r['rows'].pop())
+    def test_malicious_gain_flag_rejected(self):
+        self._check_tamper(lambda r:r.__setitem__('scientific_gain_claimed',True))
+    def test_hidden_source_flag_rejected(self):
+        self._check_tamper(lambda r:r.__setitem__('protected_first_use',True))
+    def test_macro_forgery_rejected(self):
+        self._check_tamper(lambda r:r['seed_summary']['96774011']['dual_active'].__setitem__('return16',0.01))
+    def test_oracle_exaggeration_rejected(self):
+        self._check_tamper(lambda r:r['rows'][0]['models']['dual_active'].__setitem__('oracle_return16',.9))
+    def test_checkpoint_receipt_removal_rejected(self):
+        self._check_tamper(lambda r:r['rows'][0]['models']['dual_active'].__setitem__('cold',[]))
+    def test_wrong_attribution_label_rejected(self):
+        self._check_tamper(lambda r:r['seed_attribution']['96774012'].__setitem__('classification','SCIENTIFIC_PASS'))
+    def test_manifest_hash_tamper_rejected(self):
+        self._check_tamper(lambda r:r['rows'][0].__setitem__('public_input_sha256','0'*64))
+
+if __name__=='__main__':unittest.main()

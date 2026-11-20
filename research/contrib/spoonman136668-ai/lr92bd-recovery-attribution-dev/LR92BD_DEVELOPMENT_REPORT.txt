@@ -1,0 +1,166 @@
+LR-92BD — CAUSAL RETURN FAILURE ATTRIBUTION (DIAGNOSTIC, NOT LEARNER PROMOTION)
+============================================================================
+Date: 2026-11-20
+Repository: spoonman136668-ai/Yggdrasil
+Research role: independent contributor, existing draft PR #1323 only
+Sole cumulative integration coordinator: Unified Causal Intelligence Amalgam Work (PR #1278)
+Accepted main (unmodified): 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+Native Amalgam source (not executed/modified): 86264b41a08d49f558418c0fba367f3a2636befa
+Source-frozen BEFORE this experiment was scored: f9209018e9d55c4ea69086b917cee5d2266c31cb
+Exact frozen protocol Git blob: 6f8a910b4709df1159f4c7f72d1910206afc87c9
+Exact learner Git blob: 644f3171a34b5c4471c1dade71ff69dad8731455
+Original prior LR-92BC mechanism bytes: UNCHANGED; SHA-256 4169b3cdf2a4d92db3ee0125302285f4d886eb347f9db73af9721519279aff78
+
+QUESTION — FAILURE ATTRIBUTION, NOT NEW PERFORMANCE CLAIM
+---------------------------------------------------------
+Previously on LR-92BC, active interventions improved early-return Brier over
+random actions but failed strong exact/conventional controls. This study
+isolates whether failure was (1) missing/poor archived A causal hypotheses or
+(2) selecting the wrong existing causal hypothesis under a hidden return.
+
+The candidate, its update rules, its action selection, and all strong controls
+are copied byte-for-byte from the preceding LR-92BC study. Only the source-
+free world seeds/tag and a separately read-only diagnostic/evaluator change.
+No model redesign, threshold tuning, donor, new controller, training restart,
+accepted checkpoint or canonical native learner modification was attempted.
+
+FROZEN DESIGN / INFORMATION CUSTODY
+-----------------------------------
+Two new disjoint synthetic development seeds: 96774011 and 96774012.
+Two seeds x three families (cubic_rewrite, disjoint_cubic,
+quartic_out_of_class) x four replicate worlds = 24 worlds and 5,263 public
+two-stage episodes PER LEARNER. New smoke-only seed: 96774010.
+Existing/exposed LR-92AQ through LR-92BC and protected LR-92AP seeds excluded.
+Source-first Git freeze includes actual source SHA-256, development manifest,
+predefined attribution thresholds and evaluator-only-oracle semantics; frozen
+source files are unchanged after first scoring.
+
+Nine arms: dual_active, dual_passive and dual_coverage (identical learning
+state/update mechanism and different public intervention choices), exact
+256-program grammar-informed Bayesian HMM control, full-history Beta,
+window-32 Beta, decayed Beta, periodically trained full-history polynomial
+logistic, and no-learning random. All observe one public action-consequence
+episode per step, with identical public initial state and exogenous noise
+streams but different chosen actions. COMPUTE AND REALIZED INPUTS ARE NOT
+IDENTICAL; this is a source-free mechanistic DEVELOPMENT study, not a
+resource-matched independent scientific acceptance.
+
+Primary measured score: prequential EXPECTED terminal Brier over the SAME
+uniform 16-context evaluator-only panel, evaluated before the current public
+outcome. The learner receives only public s1, chosen x1, public s2, chosen x2
+and terminal y. A/B/return times, true causal coefficients, outcome tables,
+reference-panel counterfactual labels and oracle choice NEVER enter learner
+prediction, action selection or update.
+
+A **PRIVILEGED BEST-EXISTING-SLOT ORACLE** chooses at each step whichever of
+the model's already learned (0–2) slots has the lowest evaluator-true
+expected panel Brier. This is intentionally NOT implementable online:
+it uses the hidden true regime and complete evaluator panel to provide a
+*hindsight upper bound on performance* achievable by selecting the existing
+archive correctly, without inventing new learned coefficients. It cannot
+change action selection, training or memory. Its gain is not an intelligence
+improvement or permitted scientific-control arm.
+
+Frozen per-seed mechanistic categories:
+- ARCHIVE_ACCURACY_LIMITED if privileged oracle return16 > best strong
+  conventional/symbolic return16 +0.03;
+- IDENTIFICATION_LIMITED if actual minus oracle >=0.03 and oracle <=
+  best strong control return16 +0.01;
+- otherwise MIXED_OR_INDETERMINATE.
+Scientific PASS is NOT AVAILABLE for this diagnostic; no posthoc model choice
+or rule adjustment can turn its result into a learning claim.
+
+MEASURED RESULTS — BOTH DISJOINT SEEDS IDENTIFICATION_LIMITED
+-------------------------------------------------------------
+Observed prequential expected Brier (lower better), WORLD-MACRO:
+
+Arm                     B phase          First 16 A-return
+exact_bayes_active      0.096251         0.226551
+beta_full_coverage      0.241621         0.157152  <-- strongest realistic early-return control
+beta_window32_coverage  0.163518         0.251558
+beta_decay_coverage     0.178831         0.236544
+logistic_coverage       0.254639         0.196018
+dual_active             0.177730         0.215813
+  best-existing-slot evaluator oracle          0.080508  <-- NOT DEPLOYABLE
+dual_passive            0.167449         0.337635
+dual_coverage           0.149993         0.309707
+no_learning_random      0.250000         0.250000
+
+Breakdown by seed:
+Seed       actual active return16     hindsight best-slot    strongest control     actual-minus-oracle
+96774011          0.223998438              0.080508333          0.155158757            0.143490104
+96774012          0.207627083              0.080508333          0.159145869            0.127118750
+
+At hidden A-return onset, the currently active slot was WORSE on the true
+A reference panel than another stored slot in **24 of 24** worlds.
+Both stored slots were fully trained during all first16 A-return episodes
+in 24/24 worlds. The active model's chosen slot was worse than the
+privileged evaluator selection on average 40.365% of the first16 episodes.
+At the first return episode the actual forecast had 0.415640 expected
+Brier vs the best-existing-slot oracle 0.080508 expected Brier (world-macro).
+Two archived programs existed; retrieving the correct one under hidden
+regime identity was the major source of EARLY RETURN error in these worlds.
+
+Out-of-class qualification: on unfamiliar quartic worlds the privileged
+oracle early-return Brier is 0.111325, compared with the irreducible 7% noise
+Brier 0.065100 for the two representable cubic families. The archived model
+is therefore NOT perfectly expressive for every unfamiliar relation.
+The per-seed frozen categories nevertheless both classify as
+IDENTIFICATION_LIMITED because the best stored slot is predictive enough
+under the evaluator's full-truth selection.
+
+IMPORTANT CAUSAL INFERENCE LIMITATION
+--------------------------------------
+The privileged oracle explicitly knows what real learners CANNOT know
+before seeing return observations. In particular, an unannounced return
+is observationally ambiguous on its first step. The 0.080508 figure is a
+hindsight lower bound on error for this memory, not an achieved score, a
+feasible policy, proof of fast identifiable switching, an upper bound on
+Bayesian capability, or general intelligence. The exact Bayesian model
+beat the candidate substantially on B: 0.096251 vs 0.177730. The strongest
+conventional early-return control beat the actual learner: 0.157152 vs
+0.215813. The study does NOT justify deploying or integrating a model.
+
+ENGINEERING / EVIDENCE CHECKS
+-----------------------------
+15/15 pre-score smoke, action parity, source identity, invalid-input and
+cold checkpoint tests PASS. Additional 10/10 independent read-only saved-
+results/negative tests PASS = 25/25 local tests.
+Original candidate code hash equals preceding LR-92BC at every byte.
+For smoke-only worlds, instrumented diagnostic actual-policy forecasts,
+action sequence effects, checkpoint SHA, switches and predicted metrics match
+the original candidate evaluation with no evaluator oracle.
+
+Read-only saved-results audit PASS:
+- Result SHA256 a67d77b15f8a6e59704ac8449e8ba3e36a04b63e22baa218482a85b556fd7846
+- Exact frozen protocol SHA, source hashes and 24-world manifest verified
+- 5,263 public episodes per arm, 9 arms x 24 worlds = 216 results
+- 72 oracle bounding checks (three identical-state interventions x 24 worlds)
+- Two seed macro scores and frozen classification recomputed
+- Checkpoints and 2 cold receipt SHA values for all three candidate-policy arms
+- Result/authority/score tampering and missing-world negative controls rejected
+- Candidate final checkpoint mean 520.33 bytes, max 526 bytes, <1,056-byte limit
+The saved-results audit reconstructs aggregates and custody; it does NOT
+independently rerun every prequential model prediction. Full final native
+Linux/Windows regression and owner checkpoint custody remain UNVERIFIED.
+
+DISPOSITION & INTEGRATION
+-------------------------
+MECHANISTIC_DIAGNOSTIC=IDENTIFICATION_LIMITED in 2/2 development seeds.
+SCIENTIFIC_PASS=NO; SCIENTIFIC_GAIN_VERIFIED=FALSE; MODEL_PROMOTION=HOLD.
+This is not a continuation or retune of the failed LR-92BC candidate, and
+not a new accepted learner. The previous NO-GO outcome remains unchanged.
+
+The existing candidate's only conceivable native public seam for a *future*
+separately qualified finding is NativeCausalAmalgam.observe_experience ->
+NativeCumulativeLearner.observe_experience and NativeEpisodeExperience.
+context_forecast from Amalgam PR #1278. No semantics-preserving mapping or
+new native patch was implemented, and no owner checkpoint was touched.
+The next independent research hypothesis should test a deployable online
+return-identification policy using discriminating interventions, with no
+hidden label oracle, matched action and whole-process compute, fully trained
+conventional controls, and genuinely new source-first cohorts. Do not tune
+or reuse LR-92BD's exposed development worlds to qualify that future policy.
+
+All source, protocol, result, report and audit evidence belong in GitHub PR
+#1323; no user-facing chat artifacts. Sole coordinator remains Amalgam Work.
