@@ -18,6 +18,41 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: DWSA-06 exact Node version on hosted PR runner (no model or external APIs)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+      - name: DWSA-06 native 84-byte codec and fail-closed source tests
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        run: node --test research/contrib/chatgpt/DWSA-06/test_codec.mjs research/contrib/chatgpt/DWSA-06/test_qualify_source_cli.mjs
+      - name: DWSA-06 frozen pretrained checkpoint Node replay
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        run: node research/contrib/chatgpt/DWSA-06/test_real_checkpoint.mjs
+      - name: DWSA-06 stage Git-pinned public source and execute original Node scripts
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $Donor='149a2838309efe6ee5ec9e8c9689e4a321158b7d'
+          $Root=Join-Path $env:RUNNER_TEMP 'dwsa06-pinned-public-donor'
+          if(Test-Path -LiteralPath $Root){throw 'DWSA06_TEMP_SOURCE_ALREADY_EXISTS'}
+          git init -q $Root
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_GIT_INIT_FAILED'}
+          git -C $Root remote add origin https://github.com/MasanneckLab/neural-networks-explained.git
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_REMOTE_ADD_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf fetch --quiet --depth=1 origin $Donor
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_PINNED_FETCH_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf checkout --quiet --force --detach FETCH_HEAD
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_PINNED_CHECKOUT_FAILED'}
+          $Actual=(git -C $Root rev-parse HEAD | Out-String).Trim()
+          if($Actual -cne $Donor){throw 'DWSA06_SOURCE_COMMIT_DRIFT'}
+          $Model=Join-Path $Root 'public/assets/digit-model.json'
+          $Source=Join-Path $Root 'src/models.js'
+          $Train=Join-Path $Root 'scripts/train.mjs'
+          node research/contrib/chatgpt/DWSA-06/qualify_source_cli.mjs $Model $Source $Train
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_ORIGINAL_NODE_CLI_FAILED'}
+          Write-Output 'DWSA06_ORIGINAL_NODE_DUALOS=PASS'
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -49,4 +84,39 @@ jobs:
               print("YGG_G29_BUNDLE_SHA256=" + digest)
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
+      - name: DWSA-06 exact Node version on hosted PR runner (no model or external APIs)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.16.0'
+      - name: DWSA-06 native 84-byte codec and fail-closed source tests
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        run: node --test research/contrib/chatgpt/DWSA-06/test_codec.mjs research/contrib/chatgpt/DWSA-06/test_qualify_source_cli.mjs
+      - name: DWSA-06 frozen pretrained checkpoint Node replay
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        run: node research/contrib/chatgpt/DWSA-06/test_real_checkpoint.mjs
+      - name: DWSA-06 stage Git-pinned public source and execute original Node scripts
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $Donor='149a2838309efe6ee5ec9e8c9689e4a321158b7d'
+          $Root=Join-Path $env:RUNNER_TEMP 'dwsa06-pinned-public-donor'
+          if(Test-Path -LiteralPath $Root){throw 'DWSA06_TEMP_SOURCE_ALREADY_EXISTS'}
+          git init -q $Root
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_GIT_INIT_FAILED'}
+          git -C $Root remote add origin https://github.com/MasanneckLab/neural-networks-explained.git
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_REMOTE_ADD_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf fetch --quiet --depth=1 origin $Donor
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_PINNED_FETCH_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf checkout --quiet --force --detach FETCH_HEAD
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_PINNED_CHECKOUT_FAILED'}
+          $Actual=(git -C $Root rev-parse HEAD | Out-String).Trim()
+          if($Actual -cne $Donor){throw 'DWSA06_SOURCE_COMMIT_DRIFT'}
+          $Model=Join-Path $Root 'public/assets/digit-model.json'
+          $Source=Join-Path $Root 'src/models.js'
+          $Train=Join-Path $Root 'scripts/train.mjs'
+          node research/contrib/chatgpt/DWSA-06/qualify_source_cli.mjs $Model $Source $Train
+          if($LASTEXITCODE -ne 0){throw 'DWSA06_ORIGINAL_NODE_CLI_FAILED'}
+          Write-Output 'DWSA06_ORIGINAL_NODE_DUALOS=PASS'
       - run: git diff --exit-code
