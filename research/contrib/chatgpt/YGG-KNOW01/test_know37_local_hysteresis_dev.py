@@ -52,6 +52,8 @@ class Know37Unit(unittest.TestCase):
         w=held_world(99731,"B1",h,witness=fake)
         self.assertEqual(len(calls),384)
         self.assertEqual(w["model_events_per_arm"],448)
+        self.assertEqual(set(w["observation_ns"]),set(ARMS))
+        self.assertTrue(all(v>=0 for v in w["observation_ns"].values()))
         self.assertEqual(set(w["scores"]),{"B_first","A_return","B_second"})
 
     def test_bad_events_tamper_duplicate_and_cold(self):

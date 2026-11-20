@@ -896,7 +896,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
           base=research/contrib/chatgpt/YGG-KNOW01
           test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_protocol.json")" = 5fdb34aafca11cfd41277dab655b7cbf3667371a
-          test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_dev.py")" = 13ca9533f339e1c7bd9768a443907e7fbbbc59c5
+          test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_dev.py")" = 96a1ed5b7d05b19b7187aca6a5aa3a0ae4d00eaf
           test "$(git rev-parse "HEAD:$base/test_know37_local_hysteresis_dev.py")" = 1ef8b9debe2f78b32ceba2b96b10307db62e2f79
           PYTHONPATH=$base python -B "$base/know37_local_hysteresis_dev.py" > "$RUNNER_TEMP/know37-local-hysteresis-first-use.json"
           python -B - <<'PY'
