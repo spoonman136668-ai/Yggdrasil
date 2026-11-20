@@ -369,7 +369,7 @@ def _check_stage(seed,last,stage,rows):
     if len({r.event_id for r in rows})!=ROWS_PER_STAGE:
         raise ValueError("duplicate or invalid evidence IDs")
     for row,(event_id,actions,context) in zip(rows,desc):
-        if (row.event_id,row.actions,row.context)!=(event_id,actions,context) or
+        if ((row.event_id,row.actions,row.context)!=(event_id,actions,context) or
                 len(row.outcome)!=OUTPUTS or not all(map(math.isfinite,row.outcome))):
             raise ValueError("bad FIT evidence or wrong stage")
 
