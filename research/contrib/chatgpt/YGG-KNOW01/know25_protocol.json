@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.know25.x2-intervention-causal-identification-frozen-dev.v1",
+  "date": "2026-11-20",
+  "ownership": "Independent Yggdrasil research contributor in existing PR1327. Only Unified Amalgam Work PR1278 controls canonical training, checkpoint and integration. No new controller, merge, protected original first-use #426, paid API or scheduler.",
+  "question": "Does granting a new physical intervention that flips previously inaccessible input x2 allow observation-driven Bayesian GF2 hypotheses to distinguish identical-source causal worlds and improve expected high-context prediction, relative to strictly matched no-x2/passive/random policies and strong Bayesian controls?",
+  "prior": {
+    "know24_prereg": "1454d7b58875f5a50429e33979b0edfa5a1c7e88",
+    "know24_qualified_source": "8e882ec9cb42d1144b0c542d9f7d05e29d9b96f5",
+    "know24_result": "Unprobeable x2: nine base/variant private worlds exactly same observations; learned sparse ANF active high Brier .26097395 vs uniform .25. H3-H5 FAIL.",
+    "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "family": {
+    "public_context": "c=t%4, so x2=0 in all environmental public starting states; 3-bit c in 0..7; chosen intervention a=0 no flip, a=1 flip x0, a=2 flip x1, a=3 flip x2.",
+    "hidden_law": "Private Boolean f of effective context c xor (0,1,2,4)[action]. Base/variant private laws agree for x2=0 and disagree for every x2=1 query.",
+    "single_witness": "Only one y ~ Bernoulli(.85) if f(effective context)=1, else Bernoulli(.15), common private coin SHA256('know25:private:witness:v1:'+seed+':'+step), independent of action and withheld from all non-evaluator policies.",
+    "paired_worlds": "Same private seed used for base vs variant. No-x2 policies MUST produce identical action/outcome tapes and high forecasts; x2-enabled policies can receive different y on action 3, allowing identification. No labels, true law, coins or future outcomes supplied."
+  },
+  "fit": {
+    "source": "Exactly three previous KNOW24 FIT worlds, independently re-derived from the original public source-only FIT receipt, 24 passive a0 witnesses each (72 total). FIT learned sparse ANF prior using posterior means without reading private operator labels.",
+    "source_hash": "Original KNOW24 native-free causal hypothesis module sha and frozen source must remain unchanged; no reusing held seed."
+  },
+  "held_pairs": [
+    {
+      "base": "x0",
+      "variant": "x0_xor_x2",
+      "seeds": [
+        11711,
+        11717,
+        11719
+      ]
+    },
+    {
+      "base": "xor01",
+      "variant": "xor01_xor_x2",
+      "seeds": [
+        11801,
+        11807,
+        11813
+      ]
+    },
+    {
+      "base": "and01",
+      "variant": "and01_xor_x2",
+      "seeds": [
+        11903,
+        11909,
+        11911
+      ]
+    }
+  ],
+  "held_steps": 24,
+  "scoring": {
+    "worlds": 18,
+    "paired_seeds": 9,
+    "held_witnesses_per_policy": 432,
+    "high_expected_evaluator_queries_per_policy": 216,
+    "low_expected_evaluator_queries_per_policy": 216,
+    "scoring_procedure": "After each 24-action witnessed session score x2=1 four contexts × three permitted x0/x1/no-flip queries (no outcomes admitted); also score x2=0 same query count. Calculate E[(forecast-Y)^2]=q(1-q)+(forecast-q)^2 from private true q ∈ {.15,.85}. Each policy receives exactly 24 environmental observations per world. No held high eval outcome leaks into state.",
+    "pair_information": "If both policies' actions confined a∈{0,1,2}, same paired laws yield exactly identical tapes, and paired high Brier >=.25. With a3 these paired laws may become identifiable, but any claimed performance change must be measured rather than assumed."
+  },
+  "arms": {
+    "learned_anf_active_x2": "256-table exact Bayes with 8 ANF coefficients and the KNOW24 learned FIT prior; choose action among 0..3 by maximum expected Bernoulli uncertainty q*(1-q), deterministic tie smallest; update only from witnessed y.",
+    "learned_anf_no_x2": "Exactly same hypothesis model/FIT/score/budget, but action set 0..2, and same policy criterion; negative control.",
+    "learned_anf_passive": "Same model/FIT, fixed a0 on each of 24 steps.",
+    "learned_anf_random": "Same model/FIT, private-law-independent RNG seed derived only from public pair index; actions 0..3.",
+    "learned_anf_forced_x2": "Same model/FIT, fixed action a3 at every step (maximum direct x2 exposure but poorer low-context acquisition).",
+    "untrained_anf_active_x2": "Same exact 256 truth table/sparse initial ANF prior .25, no 72 FIT witnesses, action set 0..3.",
+    "uniform_full_bayes_active_x2": "Same exact 256 truth table with uniform .5 coefficient prior, same 0..3 interventions.",
+    "known_family_bayes_active_x2": "Six known paired truth-table hypotheses, uniform prior, same active action rule. Extra correct family structure; strongest informative benchmark, no hidden index.",
+    "low_context_beta": "Fully trained independent 8-target-cell Beta(1,1); access both x2=0 and x2=1 after action a3, same a0..3 selection and 24 outcomes; no fitted cross-world structural prior. At high eval all x2 target cells use witnessed counts or Beta unobserved .5.",
+    "source_only": "Always output .5, fixed a0. No outcome learning.",
+    "truth_oracle": "Private true q for scoring ceiling .1275, excluded from practical controls."
+  },
+  "metrics": [
+    "Expected Brier high and low across 216 evaluator-only held queries each",
+    "x2 intervention action count and returned high signal identifiable vs no-x2 pair",
+    "Paired same-seed tape hash and end-predictions equality for no-x2 model",
+    "Paired high forecast absolute differences for enabled intervention model",
+    "FIT/no-FIT effect and true high-gain vs original KNOW24 source-free limits",
+    "Exact strongest 256-uniform/known-six-family/contextual-Beta comparator",
+    "Cold restored model prior+events identity with strict malformed/tampered/replay/source negative controls",
+    "CPU proof-only runtime plus policy snapshot bytes; not whole system speed claim"
+  ],
+  "hypotheses": {
+    "H1": "All 9 paired NO-x2 modeled action/outcome tapes and high forecasts match exactly (regression non-leak).",
+    "H2": "NO-x2 paired expected high Brier >=.25-1e-8 on every paired seed (math lower bound).",
+    "H3": "X2-active learner issues at least 1 a3 probe in EVERY held world, and at least 72 a3 probes in 432 held actions total.",
+    "H4": "X2-active learned FIT candidate high expected Brier <= matched no-x2 candidate high Brier - .02000.",
+    "H5": "X2-active learned FIT candidate high expected Brier <= same-prior passive candidate high Brier - .02000.",
+    "H6": "X2-active FIT candidate high expected Brier <= .20000.",
+    "H7": "X2-active FIT candidate high expected Brier <= identical NO-FIT x2-active high Brier - .00500.",
+    "H8": "X2-active FIT candidate high expected Brier <= same-budget uniform full 256 Bayes high Brier - .01000.",
+    "verdict": "H1/H2 required for source/protocol ENGINEERING PASS. DEVELOPMENT_X2_IDENTIFICATION_SUPPORTED iff H3-H6 all pass; otherwise DEVELOPMENT_MIXED if one or more, else DEVELOPMENT_NO_GO. H7/H8 separate FIT/strong-baseline falsifiers, do not silently waive. Only SCIENCE_NO_GO_SYNTHETIC can result."
+  },
+  "limits": "One fresh frozen cohort and same prior, no post-score threshold/seed/action corrections. Causal source is synthetic; not original-world first-use, no mutation of original accepted Yggdrasil native learner or owner checkpoint, no merge or deployment. Independent conventional superiority under matched full information/capacity/compute and real-world cold transfer remain unverified.",
+  "qualification": "Same existing source-only YGG-KNOW01 workflow; source pin and atlas seal, Linux+Windows focused and mandatory full-final regression plus original consumed history/Amalgam compatibility; preserve bounded receipts in original workflow."
+}
