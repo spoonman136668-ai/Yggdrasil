@@ -2,7 +2,7 @@
 from fractions import Fraction
 import unittest
 
-from historical_functional_retention import canonical, fingerprint
+from historical_functional_retention import canonical, fingerprint, HISTORICAL_IMAGE_SHA
 
 
 class FakeEpisodeReader:
@@ -76,6 +76,10 @@ class Know08Tests(unittest.TestCase):
         self.assertFalse(actual["prequential"])
         self.assertFalse(actual["independent_heldout"])
         self.assertNotIn("scientific_pass", actual)
+
+    def test_existing_original_image_source_pin_not_transposed(self):
+        self.assertEqual(HISTORICAL_IMAGE_SHA,
+                         "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1")
 
     def test_json_canonicalization(self):
         self.assertEqual(canonical({"b": 1, "a": 2}),

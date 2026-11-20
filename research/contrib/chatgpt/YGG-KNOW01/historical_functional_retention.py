@@ -21,7 +21,7 @@ from explicit_view_projection import ExplicitPublicViewProjection, make_fixture_
 from real_image_pairing import bundle
 
 EXPECTED_WITNESSES = 1025
-HISTORICAL_IMAGE_SHA = "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a4cdae3d1"
+HISTORICAL_IMAGE_SHA = "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1"
 
 
 def canonical(value):
@@ -91,8 +91,7 @@ def prove(installed_session, joint_checkpoint):
 
     with open_installed_session(installed_session) as base:
         require(len(base._weights) == PINNED_ROWS == 21_343_681
-                and PINNED_PACKED_SHA ==
-                "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1",
+                and PINNED_PACKED_SHA == HISTORICAL_IMAGE_SHA,
                 "HISTORICAL_SOURCE_IDENTITY")
         first, last = (tuple(base._weights.row_at(i))
                        for i in (0, PINNED_ROWS - 1))
