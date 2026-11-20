@@ -1,0 +1,112 @@
+name: JEPA2 archived old-window retention source-only
+'on':
+  push:
+    branches:
+      - research/jepa2-05-old-window-retention-posthoc-20261119
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  atlas-seal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - name: Configure stable checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Seal source-only G29 atlas
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git merge-base HEAD d47182e97750ffecfd3a656a8ecd3db0ec640b62)" = d47182e97750ffecfd3a656a8ecd3db0ec640b62
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git commit -m 'docs(jepa2-old-windows): seal final G29 native source index'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          git push origin HEAD:refs/heads/research/jepa2-05-old-window-retention-posthoc-20261119
+  old-window-retention:
+    needs: atlas-seal
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-2022
+            platform: windows
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Byte-stable checkout of sealed source
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas-seal.outputs.final_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Original pinned numeric source dependencies
+        shell: bash
+        run: 'python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0'
+      - name: Immutable archived original source and prereg-before-implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas-seal.outputs.final_sha }}"
+          git diff --exit-code 7b0d9fd8c16b8e0433a632666cec88d8d008c19f HEAD -- yggdrasil research/contrib/chatgpt/YGG-JEPA2-05 research/contrib/chatgpt/YGG-RET01
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/prereg.json)" = "$(git rev-parse d47182e97750ffecfd3a656a8ecd3db0ec640b62:research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/prereg.json)"
+          python -B -c "import ast,pathlib; ast.parse(pathlib.Path('research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/window_map.py').read_text('utf-8'))"
+      - name: Reconstruct old-witness native retention map from consumed source only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/window_map.py --platform ${{ matrix.platform }} --output "$RUNNER_TEMP/jepa2-old-window/result.json"
+          test -s "$RUNNER_TEMP/jepa2-old-window/result.json"
+      - name: Full inherited dual-OS regression and G29 source index
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/CKAD-28 -p 'test_*.py' -v
+          for n in 31 32 33 33R 34 35 36 37; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/CKAD-$n" -p 'test_*.py' -v
+          done
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-RET02 -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-JEPA2-05 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: jepa2-old-window-${{ matrix.platform }}
+          path: ${{ runner.temp }}/jepa2-old-window/
+          if-no-files-found: warn
+          retention-days: 30
