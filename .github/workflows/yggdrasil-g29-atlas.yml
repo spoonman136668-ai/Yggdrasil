@@ -25,6 +25,10 @@ jobs:
         run: node research/contrib/chatgpt/self-assembling-topologies/gate11/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate11/result.json
       - name: Gate11 independent structural logic and receipt audit (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate11/audit.cjs
+      - name: Gate12 frozen hierarchical model-order exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate12/result.json
+      - name: Gate12 independent model-order logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/audit.cjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -63,4 +67,8 @@ jobs:
         run: node research/contrib/chatgpt/self-assembling-topologies/gate11/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate11/result.json
       - name: Gate11 independent structural logic and receipt audit (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate11/audit.cjs
+      - name: Gate12 frozen hierarchical model-order exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate12/result.json
+      - name: Gate12 independent model-order logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/audit.cjs
       - run: git diff --exit-code
