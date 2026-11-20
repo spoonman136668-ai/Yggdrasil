@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "id": "GATE14-MISSPECIFICATION-GUARDED-ACTIONS-20261120",
+  "parent_sha": "60538bf03ab8850dc0f70a9644d96e0c3e9da41a",
+  "pr": 1340,
+  "question": "Can a prequential out-of-model alarm and conservative action fallback reduce false confidence on unknown 3-parent/random outcomes while preserving known 2-parent intervention benefit?",
+  "hypothesis": "Guarded active outperforms balanced on true 2-parent held Brier by >=0.010 and positive paired 95% CI, degrades vs unguarded active <=0.008, and on parity3 and random OOD has Brier no worse than best balanced/random +0.015 and improves on unguarded active >=0.015 each. Exact continuation restores pass.",
+  "data": {
+    "synthetic": true,
+    "seeds": {
+      "pair": [
+        34000,
+        34063
+      ],
+      "unary": [
+        35000,
+        35031
+      ],
+      "parity3": [
+        36000,
+        36031
+      ],
+      "random": [
+        37000,
+        37031
+      ]
+    },
+    "worlds_per_seed": 2,
+    "context_labels": [
+      "A",
+      "B"
+    ],
+    "binary_control_inputs": 5,
+    "training_interventions_per_world": 12,
+    "held_actions_per_world": 32,
+    "held_labels": "32 possible actions, deterministic disjoint held-out noise domain, shared outcomes across arms, never updated into any learner",
+    "worlds": "Two-parent source = one of 10 non-unary Boolean functions of a sampled pair; unary copy/invert; 3-parent parity and independent fair random are not represented by learner grammar; 5% noise on deterministic sources."
+  },
+  "arms": {
+    "guarded": "Original 113-hypothesis Bayesian posterior; use balanced probe at zero-index training steps 3,7,11, otherwise entropy-max action unless alarm active, then balanced. Record prequential surprise when probability assigned to observed label < exp(-0.85); sticky alarm if >=3 surprises in latest six observations once six seen. If alarm, post-training predictions shrunk 50% toward 0.5.",
+    "active": "Original Gate13 entropy-max action and posterior forecast, no probes or defensive shrinkage.",
+    "balanced": "Original Gate13 deterministic (11*step+seed%32+13*context)%32 action schedule; same posterior.",
+    "random": "Original Gate13 independent deterministic seeded random action; same posterior.",
+    "damped_active": "Original Gate13 entropy-max action; held predictions always 0.8*p_model+0.2*0.5; isolates constant shrinkage effect."
+  },
+  "budget": {
+    "posterior": "Exactly same fixed 113 hypotheses and prior as Gate13: 3 order-zero p=.05,.5,.95, 10 unary, 100 genuinely two-parent Boolean, equal prior mass by model order. Assumes 5% label noise on deterministic sources.",
+    "information": "All policies choose only their own 12 intervention consequences; same deterministic action/visit keyed noisy response function and common held labels. No teacher or private true operator or parent leaks.",
+    "candidate_work": "Every policy computes posterior for all 32 candidate interventions at every action and updates all 113 posterior terms. This intentionally equalizes counted work; balanced/random could operate far cheaper in practice. No compute or energy advantage claim.",
+    "checkpoint": "Two contexts each: 113 float64 scores +32 uint8 visit counts +1 uint8 step +6 uint8 ring surprises +1 uint8 ring index +1 uint8 seen count +1 uint8 alarm = 946 bytes/context, 1892 total. All arms allocate same size.",
+    "cold": "After A then B, verify A unchanged; pack and independently restore twice, continue four A interventions with identical chosen actions, outcomes, packed state and predictions on every step; same-process synthetic continuation only."
+  },
+  "method": {
+    "entropy": "Choose maximum Bernoulli posterior predictive entropy; tie at 1e-12 resolved by fewest visits then lowest x. This is not generally identical to mutual information under a nonhomogeneous null hypothesis.",
+    "probes": "Balanced interventions on steps [3,7,11] for guarded only",
+    "alert": "After each observed response, store whether assigned posterior predictive probability to actual response is below exp(-0.85), ring length 6. After at least six samples, sticky alarm when >=3 recent surprises; no hidden data used.",
+    "fallback": "When alarm set, choose balanced instead of entropy for non-probe actions; at held evaluation predict 0.5*p_model+0.25.",
+    "fixed_shrink": "Damped active predicts 0.8*p_model+0.1.",
+    "eval": "Held Brier score mean over 2 worlds per seed; seeded paired 95% normal confidence intervals per family; lower is better."
+  },
+  "thresholds": {
+    "pair_gain_vs_balanced_min": 0.01,
+    "pair_CI_lower_vs_balanced_positive": true,
+    "pair_loss_vs_active_max": 0.008,
+    "parity_worsening_vs_best_balanced_random_max": 0.015,
+    "random_worsening_vs_best_balanced_random_max": 0.015,
+    "parity_gain_vs_active_min": 0.015,
+    "random_gain_vs_active_min": 0.015,
+    "unary_worsening_vs_best_control_max": 0.015,
+    "cold_restore_all": true,
+    "serialized_bytes_max": 1892
+  },
+  "classification": "All thresholds must pass for development-only guarded action finding. One failure is MIXED/NO_GO. No native Yggdrasil first-use, self-assembling topology, full-process compute advantage or scientific acceptance can be inferred.",
+  "controls": [
+    "active",
+    "balanced",
+    "random",
+    "damped_active",
+    "unary and true pair",
+    "parity3 and random OOD",
+    "cold continuation"
+  ],
+  "fences": {
+    "no_accepted_main_change": true,
+    "no_merge": true,
+    "no_checkpoint": true,
+    "no_controller_or_scheduled_tasks": true,
+    "no_paid_API": true,
+    "no_native_first_use": true,
+    "PR_1340_only": true
+  },
+  "source_sequence": "Commit prereg then source before primary data; seal results before adding audit or CI; never tune thresholds on observed seeds."
+}
