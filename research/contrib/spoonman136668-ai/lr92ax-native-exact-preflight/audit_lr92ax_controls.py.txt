@@ -1,0 +1,62 @@
+"""Independent read-only validator of frozen LR-92AX conventional-control CSV.
+
+Pass the committed CSV path. Place the exact committed worlds.py.txt beside this
+script as worlds.py in an isolated temporary work directory. NEVER imports or
+runs a native Yggdrasil learner or a protected source actor.
+"""
+from __future__ import annotations
+import csv,hashlib,math,sys
+from pathlib import Path
+from worlds import worlds
+
+CSV_SHA256='00f9fd27ca72178c419e5d15302a6046ac98086e1a04b04b7f54f5ef430214ab'
+FIELDS=('seed','family','rep','events','public_sha256','B_full','B_window32',
+        'return16_full','return16_window32','transitionB_full','transitionB_window32')
+
+def brier_independent(world,window):
+    observations=[];t=[];y=[]
+    for event in world.public:
+        recent=observations[-window:] if window is not None else observations
+        sk=('s',event.s1,event.views[0][1],event.x1)
+        yk=('y',event.s1,event.views[0][1],event.x1,event.s2,event.x2)
+        s=[r[1] for r in recent if r[0]==sk]
+        z=[r[3] for r in recent if r[2]==yk]
+        pt=(1+sum(s))/(2+len(s));py=(1+sum(z))/(2+len(z))
+        t.append((pt-event.s2)**2);y.append((py-event.y)**2)
+        observations.append((sk,event.s2,yk,event.y))
+    a,b,_=world.dwell
+    avg=lambda v,start,stop:sum(v[start:stop])/(stop-start)
+    return avg(y,a,a+b),avg(y,a+b,a+b+16),avg(t,a,a+b)
+
+def audit(path):
+    raw=Path(path).read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=CSV_SHA256:raise ValueError('LR92AX_CSV_SHA_DRIFT')
+    with Path(path).open(newline='') as f:
+        reader=csv.DictReader(f)
+        if tuple(reader.fieldnames)!=FIELDS:raise ValueError('LR92AX_COLUMNS_DRIFT')
+        rows=list(reader)
+    if len(rows)!=24:raise ValueError('LR92AX_WORLD_COUNT_DRIFT')
+    actual_worlds=worlds()
+    expected={(str(w.seed),w.family,str(w.rep)):w for w in actual_worlds}
+    seen=set();count=0
+    for r in rows:
+        key=(r['seed'],r['family'],r['rep'])
+        if key not in expected or key in seen:raise ValueError('LR92AX_WORLD_REBOUND')
+        seen.add(key);w=expected[key]
+        if r['public_sha256']!=w.public_sha256 or int(r['events'])!=len(w.public):
+            raise ValueError('LR92AX_PUBLIC_HASH_OR_COUNT_DRIFT')
+        count+=len(w.public)
+        for arm,window in (('full',None),('window32',32)):
+            b,ret,t=brier_independent(w,window)
+            for col,value in ((f'B_{arm}',b),(f'return16_{arm}',ret),(f'transitionB_{arm}',t)):
+                if not math.isclose(float(r[col]),value,rel_tol=0,abs_tol=5e-13):
+                    raise ValueError('LR92AX_SCORES_NOT_REPRODUCED:'+col)
+    if seen!=set(expected) or count!=2158:raise ValueError('LR92AX_INCOMPLETE_WORLDS')
+    return {'audit':'PASS','worlds':len(seen),'public_events_per_arm':count,
+            'arms':['beta_full','beta_window32'],'native_model_executed':False,
+            'protected_first_use':False,'csv_sha256':CSV_SHA256}
+
+if __name__=='__main__':
+    import json
+    if len(sys.argv)!=2:raise SystemExit('usage: audit_lr92ax_controls.py per_world_controls.csv')
+    print(json.dumps(audit(sys.argv[1]),sort_keys=True))
