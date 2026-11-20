@@ -1,5 +1,19 @@
 # GKD-07 — GPT donor prior versus a real historical randomized intervention
 
+## FINAL RESULT — SOURCE-ID NO-GO (not a scientific test)
+
+**The unique-identity source check failed before any treatment-effect model was fitted or evaluated.** The one exact source attempt at [CI #44829776242](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44829776242), source commit `3c6c18dde8ecaf3bc2cad81488216c711fb4c885`, stopped with `GKD07_FAIL_CLOSED:DATA_ID_UNIQUE`. First row numeric fields were parsed before the second row exposed the collision; no FIT/VALID/DEV folds or pseudo-outcome scores were produced. This cohort is not clean untouched first-use.
+
+A *subsequent source-metadata-only* audit of the pinned Rdatasets CSV (Git blob `1ea4da5f9f6106f984a5766376546fef662f7ae0`) found **445 records, one distinct `data_id` value, and 445 distinct `rownames` values**. The R package documentation labels `data_id` as an individual ID, but this particular export stores one dataset-wide value. No participant outcomes were analyzed by the metadata audit.
+
+**Do not silently switch to `rownames` and rerun GKD-07**. The original public dataset has been touched, and the prospective unique-ID split assumption failed. Preserve the original code, split, prior and negative result. This is source/schema failure, **not donor inferiority or superiority**; scientific effect remains `UNVERIFIED`. The separate earlier GKD-06 Sachs donor negative remains valid.
+
+Full machine-readable [source-only result](result.json) and [custody evidence](provenance.json) are archived. No accepted Yggdrasil model or weights were changed.
+
+---
+
+
+
 **Contributor research; prospective historical public DEV, not independent original-world first use.** Frozen preregistration FIRST: `872472cf6c068ac9b320491f83e2fd8fdf760564`, before any numeric NSW trial record was accessed. Accepted Yggdrasil native model `main@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9` untouched.
 
 ## Why this is a new question, not Sachs replay
