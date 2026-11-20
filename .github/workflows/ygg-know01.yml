@@ -338,6 +338,15 @@ jobs:
             > "$RUNNER_TEMP/know19-posterior-probe-utility-receipt.json"
           python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know19-posterior-probe-utility-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know19.synthetic-dev-result.v1"; assert d["training_witnessed_actions"]==352; assert d["scientific_gate"]=="DEV_NO_GO_SYNTHETIC_AND_STRONGEST_CONTROL"'
           test -z "$(git status --porcelain)"
+      - name: KNOW20 frozen noisy action-consequence and recurrent memory trial
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          python -B research/contrib/chatgpt/YGG-KNOW01/noisy_regime_memory_dev.py \
+            > "$RUNNER_TEMP/know20-noisy-regime-memory-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know20-noisy-regime-memory-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know20.noisy-action-dev-result.v1"; assert d["fit_witnessed_actions"]==192; assert d["held_actions_per_policy"]==576; assert d["old_A_prediction_drift"]==0; assert d["scientific_gate"]=="NOT_QUALIFIED_SYNTHETIC_DEVELOPMENT_ONLY"'
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -358,5 +367,6 @@ jobs:
             ${{ runner.temp }}/know17-learned-intervention-policy-receipt.json
             ${{ runner.temp }}/know18-raw-feature-utility-receipt.json
             ${{ runner.temp }}/know19-posterior-probe-utility-receipt.json
+            ${{ runner.temp }}/know20-noisy-regime-memory-receipt.json
           retention-days: 30
           if-no-files-found: error
