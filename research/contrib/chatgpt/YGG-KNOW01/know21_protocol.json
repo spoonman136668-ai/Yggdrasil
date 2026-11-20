@@ -1,0 +1,142 @@
+{
+  "schema": "yggdrasil.know21.unfamiliar-regime-schedules-frozen-dev.v1",
+  "date": "2026-11-20",
+  "purpose": "Falsify whether KNOW20's fixed two-slot memory earns a genuine return-regime advantage over matched rolling, reset and Bayesian controls when a causal rule switches at unseen timings.",
+  "research_role": "Independent contributor on existing Yggdrasil PR #1327, NOT Amalgam PR #1278 canonical learner owner",
+  "source": {
+    "parent_exact_pr_head": "e2de1a9d8223f0a7b164d6607ca4d31e5ad7b1ee",
+    "know20_prereg": "1015bac86eecf675b3d563da1a5b64f4b8cacc5a",
+    "original_model_untouched": true,
+    "protected_original_first_use_issue": 426,
+    "source_mode": "engineering_fixture_only",
+    "data": "separately generated source-free synthetic binary consequence stream; never original-world material",
+    "private_law": "Initial hidden best action r∈{0,1}, flips at frozen world-specific times; optimal action = r XOR (number of switches so far modulo2). Agent sees only public numeric scene ID, action, and one witnessed stochastic reward",
+    "no_private_leakage": "Neither active regime, shift times, true role nor exogenous reward coin supplied to non-oracle control",
+    "reward": "Bernoulli 0.8 if chosen action optimal, 0.2 otherwise; SHA256('know21:private:noise:v1:'+seed+':'+role+':'+step) common random number for each policy; noise never supplied as input",
+    "public_scene_alias": "KNOW20 six HELD public scene identifiers are reused as permitted state keys, one per scenario family. NEW held causal schedules and private noise seeds; NOT source-identity novelty or unfamiliar causal grammar."
+  },
+  "frozen_cases": [
+    {
+      "family": "early_return",
+      "switches": [
+        11,
+        29
+      ],
+      "replicates": [
+        7207,
+        7309
+      ]
+    },
+    {
+      "family": "late_return",
+      "switches": [
+        19,
+        37
+      ],
+      "replicates": [
+        7411,
+        7523
+      ]
+    },
+    {
+      "family": "early_odd_shifts",
+      "switches": [
+        8,
+        24,
+        37
+      ],
+      "replicates": [
+        7639,
+        7753
+      ]
+    },
+    {
+      "family": "short_four_switches",
+      "switches": [
+        6,
+        18,
+        30,
+        40
+      ],
+      "replicates": [
+        7867,
+        7979
+      ]
+    },
+    {
+      "family": "late_fast_return",
+      "switches": [
+        27,
+        36
+      ],
+      "replicates": [
+        8093,
+        8209
+      ]
+    },
+    {
+      "family": "middle_return",
+      "switches": [
+        10,
+        24
+      ],
+      "replicates": [
+        8317,
+        8431
+      ]
+    }
+  ],
+  "prior_know20_held_scenes": [
+    6451,
+    6581,
+    6703,
+    6823,
+    6947,
+    7069
+  ],
+  "roles": [
+    0,
+    1
+  ],
+  "budgets": {
+    "worlds": "12 independent private noise seeds ×2 roles=24",
+    "steps_per_world": 48,
+    "per_policy_actions": 1152,
+    "per_family_policy_actions": 192,
+    "one_action_one_witness": true,
+    "policy_reinit": "Fresh fixed-size model per held world, no previous held future, no teacher labels, no lookahead",
+    "old_task_check": "Within each world score initial, intervening, and returned segments on SAME persistent state, not a separately-keyed scene proxy"
+  },
+  "candidate": "Re-run KNOW20 NativeSparseRegimeMemory byte-identical from frozen parent, without editing parameters/thresholds or retrying hidden worlds.",
+  "matched_controls": [
+    "KNOW20 StationaryBeta",
+    "KNOW20 RollingBeta last8",
+    "KNOW20 ResetBeta",
+    "KNOW20 BayesianHMM known family p0.8/0.2 hazard1/16 without shift times",
+    "KNOW20 DeterministicRandom",
+    "KNOW20 PassiveZero",
+    "truth-aware Oracle separately flagged unfair"
+  ],
+  "metrics": {
+    "primary": "Expected regret/action =0.6 * fraction choosing suboptimal arm, aggregate all 1152 actions; lower better",
+    "secondary": [
+      "Return-only expected regret on final segment of even-flip schedules (20 worlds, both roles; excludes odd-flip family)",
+      "Per-family correct actions and loss",
+      "Realized reward and prequential Brier under shared exogenous noise",
+      "Switch count and forced-slot changes on same scene",
+      "Single-witness per step and deterministic repeated proof/receipt",
+      "Whole-script wall time and total model bytes, no claimed external cost"
+    ]
+  },
+  "hypotheses": {
+    "survival": "Native return-only expected regret at least 0.02 lower than the same-detector ResetBeta AND at least 0.01 lower than RollingBeta; otherwise NO_GO_RETURN_MEMORY.",
+    "overall": "Native overall regret at least 0.03 below StationaryBeta; report independently and do not combine into success after seeing outcome.",
+    "strongest_control": "Strong conventional Bayesian / rolling controls may win; never claim science gain unless fully matched strongest control is beaten in independent qualifying real source with withheld causal rules."
+  },
+  "gates": {
+    "engineering": "Source type controls and 1152 actions per policy, cold checkpoint and replay integrity inherited unchanged, exact source qualified in Linux/Windows CI; measured results recorded even if negative.",
+    "development": "Only if survival and overall hypotheses both satisfy fixed numeric thresholds, label RETURN_MEMORY_DEVELOPMENT_SUPPORTED; otherwise RETURN_MEMORY_NO_GO or MIXED according to frozen two predicates; no retuning.",
+    "scientific": "SCIENTIFIC_UNVERIFIED_OR_NO_GO regardless of synthetic development improvement; canonical Yggdrasil unaffected."
+  },
+  "stops": "One frozen protocol and cohort, no threshold/seed/shift/cost edits after primary run; preserve all negative evidence. Source-typed research-only; no merge, canonical train, controller, automatic execution outside existing contributor CI, paid APIs, protected first use or deployment."
+}
