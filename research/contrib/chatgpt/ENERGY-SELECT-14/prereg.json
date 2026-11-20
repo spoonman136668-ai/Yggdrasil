@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.external-research-frozen-protocol.v1",
+  "experiment_id": "ENERGY-SELECT-14",
+  "date_utc": "2026-11-20",
+  "kind": "source-free-contributor-active-intervention-falsifier",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "existing_draft_pr": 1346,
+  "previous_head": "dc0d42aa4806f94326b731a5f3a2f5be2db1987d",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "central_owner_pr": 1278,
+  "motivation": "ENERGY-REPAIR-POWER-13 proved 84 uniformly distributed NEW observations required for one specified categorical reset rule. Test whether actively selecting interventions at a 24-observation total budget is genuinely more effective, not threshold tuning or replay of ENERGY-REMAP-11.",
+  "mechanism": "Bounded causal-contradiction tournament: probe each state-action row once, then select the row with strongest positive reset/stay Bayes-factor contradiction, using only public outcomes.",
+  "hypothesis": "At equal observations and identical fitted readout, a local tournament beats fully computed myopic Bayesian information gain, round robin and random selection on held Brier by >=0.010 overall and has nonnegative improvement in every scenario. It must detect >=80% changed rows, generate <=5% per-world NULL false alarms, and preserve old readouts under independent cold reload. Otherwise NO_GO.",
+  "worlds": {
+    "states": 6,
+    "actions": 2,
+    "categories": 6,
+    "old_observations_per_row": 6,
+    "new_observations_per_policy_world": 24,
+    "held_observations_per_row": 96,
+    "preferred_category_probability": 0.88,
+    "other_category_probability": 0.024,
+    "scenario_families": [
+      "NULL",
+      "SINGLE_REWIRE",
+      "OUT_FAMILY_DOUBLE"
+    ],
+    "smoke_seed": 97801,
+    "primary_seeds": [
+      97711,
+      97717,
+      97729,
+      97731,
+      97747,
+      97753,
+      97767,
+      97773,
+      97783,
+      97789,
+      97807,
+      97813
+    ],
+    "common_random_stream": "For each world, row and sample ordinal, every policy observes the same categorical consequence. OLD/held observations shared across policies. Source truth withheld from selectors."
+  },
+  "policies": {
+    "tournament": "First cover every row once, then maximize positive log BF(reset/stay), stable tie by row index, add only 0.001/(1+new_count) exploration bonus.",
+    "bayesian_information_gain": "Choose row maximizing exact conditional mutual information between binary reset/stay and next outcome for same Dirichlet row model; stable tie by index.",
+    "round_robin": "Choose row step mod 12.",
+    "random": "Separate deterministic uniform row RNG."
+  },
+  "shared_estimator": "Every selector gets the same Bayesian Dirichlet(0.5) reset/stay posterior-predictive readout with prior reset=0.25; pooled OLD+NEW stay versus NEW-only reset, evidence-updated posterior odds. No source truth in fit; no extra observations for one arm.",
+  "source_law": "Each of 12 action rows has an independent initial preferred category with 0.88 probability. NULL preserves all preferred categories; SINGLE_REWIRE switches one randomly selected row to a different category; OUT_FAMILY_DOUBLE switches two distinct randomly selected rows. Old 6 samples/row; fixed 24 interventions/arm; 96 held consequences per row, source truth only in score auditor.",
+  "oracle": "True generative probabilities are a privileged score reference, never expected to be beaten.",
+  "measure": "Paired held multiclass Brier overall/per scenario, changed-row P(reset)>=0.8 detection, per-world NULL any-row false alerts, action traces, exactly 24 observations per arm, old readouts before/after independent-process cold JSON reload. Report CPU/wall as exploratory all-in, not an efficiency PASS without matched full process qualification.",
+  "frozen_decision": "NO_GO if <0.010 better Brier than best matched comparator overall, any scenario loses, detection <80%, NULL false-alert rate >5%, cold readout mismatch, source custody failure, or audit mismatch. Even positive synthetic result would be DEV_SIGNAL only; SCIENTIFIC_PASS requires independent owner source, repetition and model acceptance.",
+  "protocol": "Prereg commit before source commit; GitHub source blob readback before any smoke; separate smoke from one 12-seed x 3-scenario primary; independent result audit without primary replay; never post-tune, reuse consumed seeds or alter prior 36-world primary.",
+  "isolation": "Only additive files in existing draft PR #1346. No accepted main, Amalgam/native model, runner, scheduler, paid API, original source first-use, controller, merge, or deployment. Repo-only output, no chat artifacts."
+}

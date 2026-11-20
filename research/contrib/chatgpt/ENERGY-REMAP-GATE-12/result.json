@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.external-research-analytic-result.v1",
+  "experiment_id": "ENERGY-REMAP-GATE-12",
+  "prereg_commit": "48ecdd4f01fa625529a53702af98ed188bf8aa49",
+  "source_commit": "2e59fabca32ec13f2d64c4d36efedebd01136600",
+  "source_blob": "7ae8dae5d5a0388b3b57132b62c908099e5846a2",
+  "original_experiment_source_commit": "ab203a45bd1e42a11a043055e4541d26e1676ced",
+  "original_experiment_source_blob": "8a5fbfa908edad48bb23804517c06bb645b5fda8",
+  "original_result_commit": "43947609fc4ef7c8a7aff668d71704854a89d1b4",
+  "original_result_blob": "e31e7eb4b1b9d41295fcbfebc4ebe73a7284b2ed",
+  "original_world_count": 36,
+  "original_all_reset_counts_zero": true,
+  "preserved_source_readback_before_proof": true,
+  "original_science_seeds_rerun": false,
+  "proof": {
+    "experiment_id": "ENERGY-REMAP-GATE-12",
+    "source_free": true,
+    "mode": "EXACT_EXHAUSTIVE_INTEGER_PROOF",
+    "frozen_assumptions": {
+      "states": 6,
+      "old_per_row": 6,
+      "new_per_row": 2,
+      "alpha": "1/2",
+      "prior_reset": "1/4",
+      "required_posterior": "4/5"
+    },
+    "old_count_vectors": 462,
+    "new_two_sample_count_vectors_per_old": 21,
+    "checked_old_new_cases": 9702,
+    "repeat_new_cases": 2772,
+    "distinct_new_cases": 6930,
+    "exact_maximum_bayes_factor": {
+      "numerator": "15",
+      "denominator": "2",
+      "decimal": 7.5
+    },
+    "exact_maximum_reset_posterior": {
+      "numerator": "5",
+      "denominator": "7",
+      "decimal": 0.7142857142857143
+    },
+    "minimum_posterior_observed": 0.037037037037037035,
+    "threshold_bayes_factor_needed": {
+      "numerator": "12",
+      "denominator": "1",
+      "decimal": 12
+    },
+    "max_attainment_count": 2520,
+    "example_attaining_case": {
+      "old": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        6
+      ],
+      "newOutcomeLabels": [
+        0,
+        0
+      ],
+      "repeat": true
+    },
+    "cases_at_or_above_reset_threshold": 0,
+    "theorem": "ALL eligible old/new row count pairs have P(reset)<4/5; candidate's hard local repair is structurally impossible under its frozen 6 OLD / 2 NEW row quota, regardless of mapping or world.",
+    "proof": "For distinct new categories BF=(15/2)/((2ci+1)(2cj+1))<=15/2. For a repeated category BF=(45/2)/((2ci+1)(2ci+3))<=15/2. Prior reset odds=1/3, so posterior BF/(BF+3)<=5/7<4/5. Reset would require BF>=12. Equalities achieved when new categories each had zero old counts.",
+    "null_crosscheck": "Prior ENERGY-REMAP-11 result records zero candidate resets in all 36 worlds. Frozen experiment source not rerun.",
+    "project_scientific_status": "NEGATIVE_MECHANISM_IMPOSSIBILITY",
+    "engineering": "EXACT_ARITHMETIC_PASS",
+    "scientific_gain_verified": false,
+    "owner_model_updated": false,
+    "original_primary_replay": false,
+    "deployment": "NONE"
+  }
+}

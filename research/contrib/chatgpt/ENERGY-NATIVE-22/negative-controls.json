@@ -1,0 +1,54 @@
+{
+  "schema": "energy-native-22-negative-controls.v1",
+  "tested_guard_blob": "d2bc9d839234a2131ae62426a197601541badf96",
+  "exact_owner_source": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "pass": true,
+  "control_cases": [
+    {
+      "name": "exact_pin_good",
+      "expected_static_pass": true,
+      "observed_static_pass": true,
+      "negative_pass": true,
+      "failed_checks": []
+    },
+    {
+      "name": "reject_source_blob_mismatch",
+      "expected_static_pass": false,
+      "observed_static_pass": false,
+      "negative_pass": true,
+      "failed_checks": [
+        "exact_blob_amalgam",
+        "native_shared_update_is_the_one_entrypoint",
+        "native_pinned_cold_restore_existing"
+      ]
+    },
+    {
+      "name": "reject_missing_staged_transition",
+      "expected_static_pass": false,
+      "observed_static_pass": false,
+      "negative_pass": true,
+      "failed_checks": [
+        "staged_actions_and_observation_order"
+      ]
+    },
+    {
+      "name": "reject_wrong_synthetic_intervention_domain",
+      "expected_static_pass": false,
+      "observed_static_pass": false,
+      "negative_pass": true,
+      "failed_checks": [
+        "synthetic_direct_32_interventions"
+      ]
+    },
+    {
+      "name": "reject_stale_owner_commit",
+      "expected_static_pass": false,
+      "observed_static_pass": false,
+      "negative_pass": true,
+      "failed_checks": [
+        "contract_source_pin"
+      ]
+    }
+  ],
+  "limitations": "Five deterministic static checker controls: does not execute native Yggdrasil, perform cold functional restore, prove causal adapter, or establish scientific improvement."
+}

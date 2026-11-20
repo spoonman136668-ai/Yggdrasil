@@ -1,0 +1,114 @@
+{
+  "schema": "energy-native-22-static-compatibility.v1",
+  "owner_source_commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "source_tree_status": "exact five pinned Git blobs, independent of current future owner head",
+  "static_interface_pass": true,
+  "checks": [
+    {
+      "id": "contract_source_pin",
+      "pass": true,
+      "evidence": "86264b41a08d49f558418c0fba367f3a2636befa"
+    },
+    {
+      "id": "exact_blob_amalgam",
+      "pass": true,
+      "evidence": "yggdrasil/native_causal_amalgam.py @ 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952"
+    },
+    {
+      "id": "exact_blob_cumulative",
+      "pass": true,
+      "evidence": "yggdrasil/native_cumulative_learner.py @ 1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4"
+    },
+    {
+      "id": "exact_blob_episode",
+      "pass": true,
+      "evidence": "yggdrasil/native_episode_experience.py @ 5a18b00a4c4131526e71f51d63dfd9eb9471c81e"
+    },
+    {
+      "id": "exact_blob_staged",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/CAUSAL-AMALGAM/staged_public_readout.py @ 33b8513f3acaf87bda8e1f5a846d90a91c07dbc5"
+    },
+    {
+      "id": "exact_blob_retention",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/CAUSAL-AMALGAM/retention_guard.py @ 462b2d6f389e58a6922f0c627ce055844e0b37e2"
+    },
+    {
+      "id": "exact_blob_synthetic",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/ENERGY-FACTORS-21/experiment.js @ 5c2955056800123fd10c13bf5d1b7abc1e23a820"
+    },
+    {
+      "id": "cumulative_stage_only_pinned_packets",
+      "pass": true,
+      "evidence": "yggdrasil/native_cumulative_learner.py"
+    },
+    {
+      "id": "native_shared_update_is_the_one_entrypoint",
+      "pass": true,
+      "evidence": "yggdrasil/native_causal_amalgam.py"
+    },
+    {
+      "id": "native_pinned_cold_restore_existing",
+      "pass": true,
+      "evidence": "yggdrasil/native_causal_amalgam.py"
+    },
+    {
+      "id": "native_episode_binary_views",
+      "pass": true,
+      "evidence": "yggdrasil/native_episode_experience.py"
+    },
+    {
+      "id": "native_row_fields_are_staged",
+      "pass": true,
+      "evidence": "yggdrasil/native_episode_experience.py"
+    },
+    {
+      "id": "staged_actions_and_observation_order",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/CAUSAL-AMALGAM/staged_public_readout.py"
+    },
+    {
+      "id": "staged_transition_not_exogenous_action",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/CAUSAL-AMALGAM/staged_public_readout.py"
+    },
+    {
+      "id": "retention_guard_existing_read_only_prefix",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/CAUSAL-AMALGAM/retention_guard.py"
+    },
+    {
+      "id": "synthetic_direct_32_interventions",
+      "pass": true,
+      "evidence": "research/contrib/chatgpt/ENERGY-FACTORS-21/experiment.js"
+    },
+    {
+      "id": "synthetic_outcomes_are_not_native_experience_packets",
+      "pass": true,
+      "evidence": "No witnessed staged-episode mapping or native class usage in frozen Gate 21 source."
+    }
+  ],
+  "direct_synthetic_to_native_translation": "UNVERIFIED_FAIL_CLOSED",
+  "native_cold_process_test": "NOT_RUN",
+  "original_source_replay": "NOT_RUN",
+  "empirical_native_transfer": "NOT_RUN",
+  "full_regression": "NOT_RUN",
+  "scientific_pass": false,
+  "deployable": false,
+  "reason": "Gate21 directly intervenes on 32 five-bit contexts. Native witness contract has two staged binary actions, an observed intermediary state and an observed reward. There is no proven source-faithful five-bit do-action -> staged episode mapping. Static ABI checks cannot establish a native learning or retention gain.",
+  "existing_qualified_path": "Amalgam owner PR #1278: staged readouts, pinned observe_experience, checkpoint/restore, historical retention_guard.evaluate; requires owner-authorized sealed native parent checkpoints, action-matched original witnesses, fresh held transfer and independent cold restore.",
+  "action_required": "NONE for contributor. Native first-use, runner dispatch, checkpoint promotion and merges remain owner-gated.",
+  "contributor_pr_head_at_verification": "acb457d906949fe88bed765b55afb214b770212a",
+  "guard_git_blob": "d2bc9d839234a2131ae62426a197601541badf96",
+  "contract_git_blob": "2fb70f11a15ee6835475011e215f2314a2274031",
+  "source_sha_catalog": {
+    "yggdrasil/native_causal_amalgam.py": "287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952",
+    "yggdrasil/native_cumulative_learner.py": "1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4",
+    "yggdrasil/native_episode_experience.py": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/staged_public_readout.py": "33b8513f3acaf87bda8e1f5a846d90a91c07dbc5",
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/retention_guard.py": "462b2d6f389e58a6922f0c627ce055844e0b37e2",
+    "research/contrib/chatgpt/ENERGY-FACTORS-21/experiment.js": "5c2955056800123fd10c13bf5d1b7abc1e23a820"
+  }
+}

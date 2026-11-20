@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.energy-readonly-decision-analysis.v1",
+  "id": "ENERGY-DECISION-23",
+  "date_utc": "2026-11-20",
+  "purpose": "Quantify the sensitivity/specificity and operational loss tradeoff of already-frozen Gate21 95th vs 98th percentile causal change alarms and fully marginalized Bayesian 95th control; no new worlds, no cutoff tuning, no claim of improved intelligence.",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "contributor_pr": 1346,
+  "base_head": "040b707fb9f963f093368df3fa279a34b11718f7",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "amalgam_owner": "Amalgam PR #1278 solely authorized for native integration",
+  "source_result": {
+    "path": "research/contrib/chatgpt/ENERGY-FACTORS-21/result.json",
+    "git_blob": "fc4a3e86710c31d4043b2843ab9c39c6639b1ce8",
+    "experiment_source_commit": "b4970df3854c76ea7ccbcbc4d08a343f15d7fc4e",
+    "frozen_prereg_commit": "a83bf272c3ce9ea3869feb78d33e8afc348c5e57"
+  },
+  "cohort": "200 separate NULL calibration worlds and 384 held primary worlds already consumed; 96 NULL, 96 SINGLE_EDGE, 96 DOUBLE_EDGE and 96 NONLINEAR_AND at 20% flip noise; evaluate familiar changes on SINGLE+DOUBLE only, exclude out-of-family from decision-policy pass.",
+  "policies": [
+    {
+      "id": "candidate95",
+      "model": "old_top8_new_local2",
+      "fixed_cutoff": "p95"
+    },
+    {
+      "id": "candidate98",
+      "model": "old_top8_new_local2",
+      "fixed_cutoff": "p98"
+    },
+    {
+      "id": "full95",
+      "model": "old_full_new_global",
+      "fixed_cutoff": "p95"
+    },
+    {
+      "id": "full98",
+      "model": "old_full_new_global",
+      "fixed_cutoff": "p98"
+    },
+    {
+      "id": "candidate_global95",
+      "model": "old_top8_new_global",
+      "fixed_cutoff": "p95"
+    }
+  ],
+  "analysis": {
+    "exact_truth": "For each held world NULL=>unchanged, SINGLE/DOUBLE=>changed; NONLINEAR_AND excluded from matched XOR familiar analysis.",
+    "confusion": "Compute per-policy TP FN FP TN, overall and separately SINGLE/DOUBLE; no threshold changes.",
+    "paired": "Compute paired 2x2 correctness on SAME 192 changed and 96 NULL worlds (candidate95 vs candidate98, candidate95 vs full95) with two-sided exact discordance sign test for familiarity; report count, not imply external reproducibility.",
+    "uncertainty": "95% Wilson two-sided intervals for observed shifted recall and NULL false-alarm rates, including exact zero-alarm caution.",
+    "risk": "Expected policy loss L=p_change*(1-TPR)*C_FN+(1-p_change)*FPR*C_FP. Evaluate p_change=[0.01,0.05,0.10,0.25,0.50] and cost ratio C_FP/C_FN=[1,5,10,25]. Only illustrative sensitivity analysis, not calibrated real-world probabilities or action costs. Report crossover for candidate95 vs candidate98: p*=fpr95*ratio/(tpr95-tpr98+fpr95*ratio) with zero fpr98 from held; no use to tune source.",
+    "calibration": "Reconstruct pre-frozen candidate and full 95%/98% thresholds from 200 retained NULL calibration score rows before calculating held outcomes (ranks 191/197); if mismatch fail closed.",
+    "cross_source": "Verify original row counts, 24 OLD, 16 NEW, first 12 distinct contexts, original 6 model probabilities finite, exact source Git blob and archived verdict SCIENTIFIC_NO_GO.",
+    "presentation": "Report all four principal policy rows and risk matrix plus failure/limits, no cherry-picked best scenario.",
+    "negative_controls": "The separate audit must reject a modified calibration threshold and flipped primary truth label, without rerunning consumed worlds."
+  },
+  "verdict_contract": "ANALYSIS_ONLY. Scientific evidence NOT upgraded; native first-use, cold retention and measured intelligence gains remain UNVERIFIED. No new native model checkpoint, owner runner, scheduler, workflow, accepted main or merge. CI still atlas-index blocked."
+}

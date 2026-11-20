@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.external-research-result.v1",
+  "experiment_id": "ENERGY-TOPO-02",
+  "status": "LOCAL_PRIMARY_SOURCE_MATCHED_REPOSITORY_RECEIPT_SUMMARY_ONLY",
+  "phase": "PRIMARY",
+  "classification": "MIXED",
+  "scientific_superiority": "NO_GO",
+  "original_world_first_use": false,
+  "independent_reproduction": false,
+  "candidate_source_commit": "4ca7843a7a0e018f0f23d4f75570f1ef6a19174e",
+  "candidate_source_blob_sha1": "91c5e6f30e5fc568d15391e53286ff4993b65bd9",
+  "experiment_source_sha256": "201b04580777b9b7a862ecee419becadb2c8c0243c63c6fe47e68f5510c1f23f",
+  "prereg_commit": "b06823224bce2b21533e932f7f590f08ea5a8b87",
+  "primary_raw_sha256": "80e3c6cf0923f79eff0a1922dd775111d762584654499723f8cc0353835002d9",
+  "primary_raw_bytes": 41311,
+  "primary_raw_location": "local evaluation environment only; NOT stored in GitHub",
+  "source_free_synthetic": true,
+  "seeds": [
+    90311,
+    90319,
+    90343,
+    90349,
+    90367,
+    90379,
+    90401,
+    90403,
+    90407,
+    90421
+  ],
+  "scenarios": [
+    "INVERSE",
+    "SAME",
+    "INDEPENDENT"
+  ],
+  "worlds": 30,
+  "training_events": 540,
+  "held_events": 23040,
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "recorded_process_cpu_seconds": 0.281411188,
+  "aggregate_arms": {
+    "flux_local": {
+      "brier": 0.46544444444444444,
+      "unseen_brier": 0.7740555555555556,
+      "fit_and_eval_cpu_seconds": 0.03626755299999973
+    },
+    "exact_graph_bayes": {
+      "brier": 0.22882790020051436,
+      "unseen_brier": 0.3406359780248765,
+      "fit_and_eval_cpu_seconds": 0.11905763999999941
+    },
+    "row_markov": {
+      "brier": 0.6238389756944444,
+      "unseen_brier": 0.8333333333333334,
+      "fit_and_eval_cpu_seconds": 0.020071630999999424
+    },
+    "action_blind": {
+      "brier": 0.6298038194444444,
+      "unseen_brier": 0.8114583333333333,
+      "fit_and_eval_cpu_seconds": 0.019930534000000444
+    },
+    "uniform": {
+      "brier": 0.8333333333333334,
+      "unseen_brier": 0.8333333333333334,
+      "fit_and_eval_cpu_seconds": 0.019915280000000424
+    }
+  },
+  "scenario_brier_means": {
+    "INVERSE": {
+      "flux_local": 0.3458958,
+      "exact_graph_bayes": 0.1912388,
+      "row_markov": 0.6268229,
+      "correct_regime_count": 9
+    },
+    "SAME": {
+      "flux_local": 0.4006667,
+      "exact_graph_bayes": 0.1800187,
+      "row_markov": 0.6248698,
+      "correct_regime_count": 6
+    },
+    "INDEPENDENT": {
+      "flux_local": 0.6497708,
+      "exact_graph_bayes": 0.3152262,
+      "row_markov": 0.6198242,
+      "correct_regime_count": 4
+    }
+  },
+  "negative_controls": {
+    "false_same_action_effects": 4,
+    "possible": 10,
+    "correct_inverse": 9,
+    "possible_inverse": 10,
+    "cold_restore_prediction_equal_count": 30,
+    "worst_familiar_action0_brier_deterioration": 0.009166666666666656
+  },
+  "fit_eval_cpu_speedup_vs_exact": 3.2827591097750735,
+  "whole_process_speedup_qualified": false,
+  "frozen_rule_evaluation": {
+    "best_matched_control_brier": 0.22882790020051436,
+    "candidate_minus_control_brier": 0.2366165442439301,
+    "unseen_brier_better_than_row_markov": true,
+    "zero_false_effect_requirement": false,
+    "exact_bayes_superiority_requirement": false,
+    "efficiency_accuracy_noninferiority_requirement": false,
+    "accepted_science": false
+  },
+  "warnings": [
+    "Raw per-world primary receipt remains local; this file is a bounded derived summary, not a byte-identical upload.",
+    "Timings are fit+evaluation per arm, not independently isolated whole-process timings; 3.28x cannot qualify 2x full-process efficiency.",
+    "Cold-restored predictions across 30 single-world runs are not cross-world cumulative retention.",
+    "Primary cohort must not be rerun or retuned; independently reproduced science is not claimed.",
+    "Dual-platform G29 Atlas CI currently fails because indexed files changed, not because primary scoring failed."
+  ]
+}

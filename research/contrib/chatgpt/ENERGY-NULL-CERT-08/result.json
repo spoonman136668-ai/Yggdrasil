@@ -1,0 +1,43 @@
+{
+  "experiment_id": "ENERGY-NULL-CERT-08",
+  "source_commit": "c643843a85fe7791813ef9a017e8ae71909c39dc",
+  "source_blob": "ec713e3c7fb3a1406686e08a858f7dfc5fff17cf",
+  "prereg_commit": "f75f29a3829d7c07257b493c77bb7ca0421e00a4",
+  "result": {
+    "schema": "yggdrasil.energy-null-cert08.exact.v1",
+    "mode": "EXACT_RATIONAL_ANALYTIC",
+    "n_per_arm": 12,
+    "lag_count": 3,
+    "total_joint_count_tables": 169,
+    "probability_mass_conserved": true,
+    "individual_lag_heuristic_reject": {
+      "numerator": "2543252",
+      "denominator": "16777216",
+      "decimal": 0.15158963203430176
+    },
+    "independent_three_lag_heuristic_fwer": {
+      "numerator": "1838483799439951468352",
+      "denominator": "4722366482869645213696",
+      "decimal": 0.38931408777972654
+    },
+    "individual_lag_fisher_bonferroni_reject": {
+      "numerator": "114606",
+      "denominator": "16777216",
+      "decimal": 0.006831049919128418
+    },
+    "independent_three_lag_fisher_bonferroni_fwer": {
+      "numerator": "96116586035107632696",
+      "denominator": "4722366482869645213696",
+      "decimal": 0.020353478787334685
+    },
+    "fisher_rejecting_count_tables": 46,
+    "fisher_bound": ".05 familywise by union bound even under correlated lag outcomes if per-lag conditional randomization nulls hold",
+    "original_world_replayed": false,
+    "seed_consumed": 0,
+    "source_free": true,
+    "engineering": "EXACT_ARITHMETIC_PASS",
+    "scientific": "NOT_ESTABLISHED",
+    "deployment": "NONE",
+    "limitation": "Independent, balanced Bernoulli(1/2) null only. Does not compute the exact false declaration rate under the prior ENERGY-DELAY-07 generator with noisy proxy and conditional dependence."
+  }
+}

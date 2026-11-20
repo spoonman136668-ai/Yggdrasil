@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.external-research-frozen-protocol.v1",
+  "experiment_id": "ENERGY-CALIBRATE-18",
+  "date_utc": "2026-11-20",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "existing_draft_pr": 1346,
+  "previous_head": "c1a5b67541f76f2b3a3def5b6966b9813ff19238",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "sole_cumulative_integration_owner": "Amalgam PR #1278",
+  "question": "Can a calibrated compact local causal change detector avoid false structural repairs due to noisy observations while retaining sensitivity and matching full Bayesian inference at fewer counted hypothesis operations?",
+  "predecessor": "ENERGY-TRANSFER-17 NO_GO: 4/12 NULL false change declarations; 75% exact shifted-mask recovery. Do not replay seeds.",
+  "hypothesis_family": "62 nonzero five-bit XOR masks times two bias bits, known 15% flip noise. Uniform old prior; before NEW, P(CHANGE)=0.25. Under CHANGE, exp(-Hamming(mask,bias distance)) prior over all different new hypotheses, normalized per old hypothesis.",
+  "world_families": [
+    "NULL",
+    "SINGLE_EDGE",
+    "DOUBLE_EDGE",
+    "NONLINEAR_AND"
+  ],
+  "generative_law": "24 OLD observations from unknown XOR mask/bias. NEW 16 action-observation pairs on same deterministic schedule shared by every model: 12 distinct input contexts + 4 repeatable seeded contexts. NULL retains law; SINGLE toggles one mask bit; DOUBLE swaps one active and one inactive mask bit; NONLINEAR adds an unmodeled two-input AND interaction to old XOR.",
+  "smoke_seed": 90031,
+  "calibration_seed_start": 91001,
+  "calibration_seed_step": 11,
+  "calibration_seed_count": 120,
+  "primary_seed_start": 95003,
+  "primary_seed_step": 13,
+  "primary_seed_count": 60,
+  "primary_families": 4,
+  "held_test_worlds": 240,
+  "calibration": "Use 120 NULL-only worlds (not used in primary or smoke). Compute local and exact-full and MAP-full posterior P(change). Set each method's threshold at sorted zero-index max(0,min(n-1,ceil(0.97*(n+1))-1)). Alarm iff score strictly exceeds threshold. Freeze this threshold before primary; no retuning.",
+  "candidate": "Local MAP-anchored no-change versus radius<=2 structural-change hypothesis Bayes factor. Normalize exponential distance change prior over only considered local alternatives; report continuous posterior probability. Preserve OLD posterior and readout.",
+  "controls": [
+    "Full Bayes: marginalize OLD posterior over 62 hypotheses, 62 possible NEW hypotheses, transition prior excluding unchanged hypothesis; calibrated threshold on same NULL cohort.",
+    "Full MAP old structure + all 61 NEW changes with normalized transition prior; separately NULL calibrated.",
+    "Same full Bayes with fixed P(change)>=0.95 threshold.",
+    "Same local model with fixed P(change)>=0.80 threshold.",
+    "NEW-only maximum likelihood XOR structure vs OLD MAP without calibrated threshold.",
+    "Never-change no-alert control."
+  ],
+  "outcomes": "Primary NULL false alarms (60); SINGLE+DOUBLE changed detection (120); nonlinear out-of-family detection (60); binary-change event Brier from posterior score on 180 familiar worlds; old JSON same-process exact posterior/readout roundtrip; per-world 24 OLD +16 shared NEW and 12 distinct contexts; likelihood and transition operation counts (not runtime); include seven detection policies and world scores.",
+  "success": {
+    "false_alarm": "local calibrated alarms <= 5% on 60 NULL worlds",
+    "sensitivity": "local calibrated >=65% SINGLE+DOUBLE changed world TPR, and no worse than exact full calibrated TPR by >10 percentage points",
+    "score": "local event-Brier <= fully marginalized exact Bayesian event-Brier +0.025 on 180 familiar worlds",
+    "noise_reduction": "local calibrated NULL false alarm <= local fixed 0.80 alarm, and at least 10 percentage points better if fixed 0.80 NULL false alarm >=10%",
+    "operation_proxy": "full exact operation count / local operation count >=2.0 including OLD and NEW inference",
+    "integrity": "all 240 primary worlds 24 OLD/16 NEW, first 12 unique, same action/outcome trace; OLD posterior/readout identical after JSON serialization in same process; calibration and primary disjoint; frozen thresholds without retune.",
+    "rule": "All must pass for DEV_SIGNAL_UNQUALIFIED only. Otherwise SCIENTIFIC_NO_GO. Independent science/native acceptance always unavailable without separate source and owner qualification."
+  },
+  "procedure": "Commit prereg first, then independent executable, verify exact GitHub blob before smoke. Run one disjoint smoke, 120 NULL calibration, then one 60-seed x4-family primary. Audit without replay, retain negatives. No threshold revision, no seed reuse.",
+  "isolation": "Only additive source-free synthetic files on existing draft PR #1346. No native training, main, controller, owner runner, scheduled task, paid API, acceptance, checkpoint, model integration, deployment or merge."
+}

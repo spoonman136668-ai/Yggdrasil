@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.external-research-frozen-protocol.v1",
+  "id": "ENERGY-FACTORS-21",
+  "date_utc": "2026-11-20",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "pr": 1346,
+  "predecessor_head": "c9ed67b040bddd8d891be05926f7fa0f146ff1ec",
+  "base_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "independent_research_owner": "Energy Research contributor only, Amalgam PR #1278 sole cumulative integration authority",
+  "falsifiable_question": "At 20% observation noise, separate the effects of truncating the OLD posterior, restricting NEW candidate radius, and conservative alarm cutoffs on change detection at matched NULL-only calibration budgets.",
+  "frozen_design": {
+    "world_family": "Source-free five-bit binary XOR mask/bias (62 hypotheses), OLD 24 samples and NEW 16 fixed common input/outcome interventions, first 12 distinct inputs; 20% Bernoulli observation flip. Four families NULL, SINGLE_EDGE, DOUBLE_EDGE, NONLINEAR_AND (NEW XOR law with two-input AND outside 62 hypotheses).",
+    "hypothesis_prior": "Uniform OLD hypotheses, P(structural change)=0.25; conditional change transition kernel exp(-Hamming(mask XOR)-bias difference) with NEW!=OLD, normalized for every retained OLD anchor.",
+    "arms": [
+      "old_top8_new_local2",
+      "old_top8_new_global",
+      "old_full_new_local2",
+      "old_full_new_global",
+      "old_top4_new_local2",
+      "old_map_new_local2"
+    ],
+    "topk": "For top8/top4, rank OLD posterior descending; retain until cumulative posterior mass >=.95 or cap reached, then renormalize. Full retains all 62 OLD, map retains 1.",
+    "new_search": "local2 uses candidate NEW hypotheses with mask-bit Hamming <=2 and both bias options, excluding unchanged. global uses all 61 changed hypotheses; identical assumed transition kernel renormalized over considered alternatives.",
+    "smoke_seed": 200003,
+    "calibration": {
+      "seeds": {
+        "start": 210007,
+        "step": 31,
+        "count": 200
+      },
+      "family": "NULL",
+      "thresholds": [
+        "rank191of200_95pct",
+        "rank197of200_98pct"
+      ],
+      "strict_greater_than": true,
+      "raw_score_custody": true,
+      "rule": "For each arm sort the same independent 200 NULL-only calibration posterior-change scores. 95% cutoff ascending one-based rank ceil(.95*(200+1))=191; conservative 98% ascending rank ceil(.98*(201))=197. Never change after scoring held worlds."
+    },
+    "primary": {
+      "seeds": {
+        "start": 225011,
+        "step": 37,
+        "count": 96
+      },
+      "families": [
+        "NULL",
+        "SINGLE_EDGE",
+        "DOUBLE_EDGE",
+        "NONLINEAR_AND"
+      ],
+      "worlds": 384,
+      "old_per_world": 24,
+      "new_per_world": 16,
+      "first_distinct_new": 12,
+      "separation": "Disjoint from calibration, smoke and previous Gate14-20 seed sets; all arms receive exact same OLD observations and 16 NEW input/outcome pairs; latent source withheld from models."
+    },
+    "metrics": "For each of 6 arms and 2 fixed NULL-derived thresholds: held NULL false-alarm rate, changed familiar causal sensitivity across 192 SINGLE+DOUBLE worlds, nonlinear shift sensitivity on 96 out-of-family worlds; continuous event-posterior Brier on 288 familiar worlds; OLD selected hypothesis count/mass, 16 action/outcome trace, exact same-process JSON OLD posterior/readout roundtrip, likelihood/prior operation count proxy (not real speed).",
+    "tests": {
+      "factorial": "At each matched cutoff report top8global vs top8local2 (NEW search), fullLocal vs top8local (OLD truncation), fullGlobal vs fullLocal, fullGlobal vs top8global; only the first two identify single levers without mixing.",
+      "calibration": "For same posterior model, report 95pct vs 98pct cutoff effect on false alarms and sensitivity. These are pre-frozen alternatives, not per-primary tuning.",
+      "audit": "Store 200 raw NULL scores by arm; independently recompute both ranks and per-world metrics from retained primary rows, paired differences without regenerating consumed worlds."
+    }
+  },
+  "frozen_verdict": {
+    "mechanism_identified_signal": "A 95pct-calibrated single lever (NEW radius expanded at top8 OLD, or OLD full instead of top8 at local2 NEW) improves familiar change sensitivity >=0.12 (12 percentage points) vs old_top8_new_local2, AND has held NULL false-alarm rate <=0.08 and <= full_global NULL FPR +0.04, AND no deterioration of familiar event-Brier >0.025 compared with candidate. For attribution, 95pct other lever's gain must be at least 0.05 smaller than identified lever's gain. If both levers similar, result is nonisolated.",
+    "strong_control": "Best recovered low-cost candidate should be no more than 0.10 below full OLD/new global strong Bayesian familiar sensitivity at 95pct; otherwise engineering mechanism hint only and still NO_GO.",
+    "calibration_guard": "Both 95pct and 98pct threshold outcomes explicitly reported; primary cannot select the more favorable after seeing results.",
+    "classification": "All criteria => DEV_MECHANISM_SIGNAL_UNQUALIFIED only, not SCIENTIFIC_PASS; otherwise SCIENTIFIC_NO_GO. If none of the levers improves sensitivity enough, stop speculative threshold adjustment.",
+    "engineering": "Single frozen source after committed prereg; Git source readback before one disjoint smoke, 200-calibration and one 384-world primary. Save raw calibration scores, ALL primary posterior scores/action traces. Separate postscore arithmetic audit no simulation rerun. Full final regression on candidate SHA separately required."
+  },
+  "isolation": "Only additive research files in existing draft PR #1346. No merge, native training, accepted main, protected source, Amalgam checkpoint, owner runner, scheduled task, paid API, controller, or deployment."
+}

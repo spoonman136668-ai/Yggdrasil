@@ -1,0 +1,59 @@
+{
+  "schema": "yggdrasil.frozen-research-protocol.v1",
+  "id": "ENERGY-REPLICATION-20",
+  "date_utc": "2026-11-20",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "draft_pr": 1346,
+  "base_head": "fe469d48345bcbf51845f8141f5f95290af88143",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "native_integration_owner": "Amalgam PR #1278",
+  "question": "Does top-8 posterior mass preservation retain near-Bayes causal shift detection under separately implemented fresh synthetic worlds and both 15% and 20% observation noise, without exceeding full Bayes's calibrated false alarm rate by more than 2.5 points?",
+  "source_isolation": "Standalone newly authored JS simulator; no import of Gate19 source and no reuse of consumed seeds. Separate implementation by same research operator, NOT independent externally protected original-source reproduction.",
+  "regimes": [
+    {
+      "id": "flip15",
+      "noise": 0.15,
+      "cal_start": 120013,
+      "primary_start": 140021
+    },
+    {
+      "id": "flip20",
+      "noise": 0.2,
+      "cal_start": 160019,
+      "primary_start": 180043
+    }
+  ],
+  "cal_count_per_regime": 120,
+  "primary_seeds_per_regime": 60,
+  "seed_step": 29,
+  "cal_step": 23,
+  "smoke_seed": 119071,
+  "families": [
+    "NULL",
+    "SINGLE_EDGE",
+    "DOUBLE_EDGE",
+    "NONLINEAR_AND"
+  ],
+  "world_contract": "Five binary action inputs, 62 nonzero XOR mask+bias hypotheses. 24 OLD examples then fixed 16 NEW action-outcome pairs, first 12 distinct. SINGLE one mask bit toggle; DOUBLE swaps 1 active and 1 inactive mask bit; NONLINEAR adds a two-input AND interaction outside fitted XOR family. Independent hash/counter streams for old,new and deterministic action schedule. Source truth withheld.",
+  "prior": "Old hypothesis uniform; P(change)=0.25; NEW conditional change hypotheses weighted by exp(-Hamming(mask)-bias_difference) per OLD, each normalized.",
+  "arms": {
+    "top8": "Top old posterior prefix until 95% mass or cap8; conditional NEW search <=2 mask bit flips (allow both biases).",
+    "top4": "Same prior/transition with old cap4.",
+    "top1": "Same prior/transition with old MAP only.",
+    "full": "Exact full OLD posterior over 62, all 61 alternate NEW hypotheses per OLD, conventional strong control.",
+    "full_local": "Exact 62 OLD, NEW alternatives <=2 mask bit flips."
+  },
+  "calibration_rule": "For each model and noise regime separately, sort 120 fresh NULL-only scores; threshold at one-based rank 119 = ceil(0.98*(121)); classify change only if P(change)>cutoff. Save all calibration scores and replay-free audit. No primary-informed threshold changes.",
+  "primary_worlds": 480,
+  "calibration_worlds": 240,
+  "criteria": {
+    "false_alarm": "In BOTH noise regimes candidate NULL FPR <=0.05 and candidate FPR minus calibrated exact full Bayes FPR <=0.025.",
+    "familiar_recall": "BOTH regimes candidate recall >=0.70 at noise .15 and >=0.55 at .20 and within 0.10 of calibrated full Bayes.",
+    "event_brier": "BOTH regimes candidate Brier on familiar NULL+single+double <= full Bayes Brier+0.020.",
+    "ops": "BOTH regimes counted full OLD fit+readout+NEW likelihood+transition operations / candidate >=1.5.",
+    "integrity": "Every primary world 24 OLD and 16 NEW with first12 unique; same OLD/NEW for all arms, 100% OLD JSON posterior/readout parity. Raw calibration and primary actions archived.",
+    "nonlinear": "Report NONLINEAR_AND detector performance descriptively; no bonus for a favorable out-of-family result.",
+    "classification": "All required criteria pass in BOTH regimes => DEV_SIGNAL_UNQUALIFIED only; any miss => SCIENTIFIC_NO_GO. Never SCIENTIFIC_PASS or native checkpoint promotion."
+  },
+  "plan": "Commit prereg first. Freeze executable source second; read Git blob back before smoke or primary. One disjoint smoke, one 240-NULL calibration, one 480-world held primary. Save scores, world actions, and independent postscore arithmetic audit without replay. No new workflow/scheduler/runner/paid API or accepted model/owner/Amalgam/merge mutation."
+}

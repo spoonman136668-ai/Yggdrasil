@@ -1,0 +1,91 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-TOPO-02",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can bounded nonconservative cycle-topology inference from causal transition observations improve unfamiliar-state intervention prediction and cold retention beyond equally informed fully fitted conventional and exact graph-Bayesian controls?",
+  "hypothesis": "A point-estimate sparse directed-cycle flow model can identify previously unknown action-conditioned causal topology and carry that knowledge across unobserved action/state pairs. The equal-information exact graph-Bayesian model is the primary comparator and may dominate; that is a valid negative.",
+  "exact_parent_sha": "d5cd1b4826a5c3d836a1662f18d3094b9bbca1d0",
+  "accepted_main_at_freeze": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "spoonman136668-ai/Yggdrasil#1346",
+    "research/contrib/chatgpt/ENERGY-FLUX-01/RESULT.md@d5cd1b4826a5c3d836a1662f18d3094b9bbca1d0"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/ENERGY-TOPO-02/**"
+  ],
+  "inputs": [
+    {
+      "name": "synthetic six-node source-free directed-cycle generator protocol",
+      "sha256": "fe142f8cce9b3bef9734c3c7e06fc33be886466908eefd7a8c086cea7d39cd37",
+      "source": "the UTF-8 exact DATA_SPEC string in this preregistration and experiment.py; no original-world or user-data first use"
+    }
+  ],
+  "data_spec": "ENERGY-TOPO-02-v1|6-states|q=0.90|action0=cycle-successor|action1=INVERSE-or-SAME-or-INDEPENDENT|action0=2-per-state|action1=2-per-state-on-0,2,4|held=64-per-state-action|seeds=90311,90319,90343,90349,90367,90379,90401,90403,90407,90421",
+  "frozen_design": {
+    "seeds": [
+      90311,
+      90319,
+      90343,
+      90349,
+      90367,
+      90379,
+      90401,
+      90403,
+      90407,
+      90421
+    ],
+    "smoke_seeds": [
+      90301
+    ],
+    "worlds": "10 primary seeds x INVERSE/SAME/INDEPENDENT = 30 independent worlds; 6 observable state labels, separate random hidden 6-cycles; action 0 follows successor; action 1 follows inverse/same/independent successor; true edge probability .90, each alternative .02; labels randomly permuted per world, no hidden cycle/regime disclosed to learners",
+    "split": "For each world: 2 train transitions per state under action 0 and 2 under action 1 only for states 0,2,4 (18 training; 3 unseen action1 rows). Held 64 independent next-state outcomes for each of 6 states x 2 actions =768 held events/world. Training and held RNG streams SHA-256-keyed separately. 540 train and 23,040 held events total.",
+    "ordering": "Fit action0 witnesses first, inspect fixed action0 prediction vector, then fit action1 witnesses and evaluate after JSON cold restore; no held labels during fitting.",
+    "data_budget": "18 source observations per world per arm; no extra actions/data for any arm",
+    "compute_budget": "stdlib CPU only; one primary pass; max 30 worlds x 768 held events x all arms; no search or tune on primary outcomes; record per-arm wall and CPU timing, Python/platform, whole-process including graph enumeration, log memory/capacity",
+    "capacity": "6 states; all algorithms see same visible (state,action,next_state); candidate fixed four-sweep/two-start local cycle search with likelihood-scored inverse/same regimes and independent mode penalty 2.5*ln(18); approximated regime selection, not exact Bayesian posterior; exact Bayes enumerates all 120 directed Hamiltonian 6-cycles, marginalizes inverse/same/independent under equal scenario priors; conventional baseline fully fitted six-way Dirichlet(1) per state/action; no access to scenario labels.",
+    "evaluator": "full six-class multiclass Brier averaged over 768 held outcomes/world; unfamiliar action1 rows (1,3,5) separately; regime accuracy on INVERSE/INDEPENDENT and false action-effect under SAME; prediction deterioration for familiar action0 before/after action1; byte-identical serialized cold restore; measured whole-process training+prediction cost",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "equal-source fully fitted row-conditional Dirichlet(1) Markov transition model",
+    "fully informed exact graph Bayesian model with identical six-cycle structural family and equal INVERSE/SAME/INDEPENDENT model priors; integrated posterior marginal, no true regime labels",
+    "action-blind fitted six-class Dirichlet(1) row transition ablation",
+    "uniform six-class no-learning baseline",
+    "negative action-effect NULL control: SAME regime, true action0=action1",
+    "new 6-state labels, independent 6-cycle transfer: INDEPENDENT scenario"
+  ],
+  "metrics": [
+    "all-state/action multiclass Brier",
+    "unseen-action1-row multiclass Brier",
+    "scenario classification and false alarms",
+    "familiar action0 Brier before/after learning action1",
+    "cold restore exact prediction equality",
+    "all-in wall/CPU seconds plus fit/predict time under same host"
+  ],
+  "classification_rules": {
+    "supported": "Candidate must beat the lowest (best) aggregate held multiclass Brier among fully fitted row-Markov and exact Bayes by at least 0.01, OR achieve >=2.0x measured whole-process CPU improvement versus exact Bayes with candidate aggregate Brier <= Bayes+0.005; ALSO SAME false action-difference alarms must be 0/10, INVERSE correctly recovered >=7/10, action0 retention Brier deterioration <=0.01, and all cold restore identities pass. Independent source-owner first use and full native acceptance separately required.",
+    "mixed": "Candidate improves >=0.01 over unstructured fitted row-Markov on unseen-action1 rows but misses superiority/efficiency or negatives; exploratory source-free only.",
+    "negative": "All properly executed source-free results not meeting supported/mixed, including exact Bayesian dominance or negative-control failure.",
+    "invalid": "Unpinned or changed generator, nonidentical inputs, hidden topology/regime leakage, incorrect fully fitted Bayesian comparator, any post-primary tuning, missing test provenance, or mismatch between local executed and repository-frozen source identities. Infrastructure failures separate from science."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "replaying primary seeds"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "original_world_first_use": false
+  },
+  "preregistration_note": "Commit prereg before experimental code and any primary outcomes; commit/read back exact executable before primary scoring; distinct smoke seed only for engineering validation. No new PR; append independent evidence to existing draft PR #1346."
+}

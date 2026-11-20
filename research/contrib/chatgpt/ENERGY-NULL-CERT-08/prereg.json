@@ -1,0 +1,23 @@
+{
+  "schema": "yggdrasil.external-research-analysis-v1",
+  "experiment_id": "ENERGY-NULL-CERT-08",
+  "date": "2026-11-20",
+  "scope": "exact mathematical null diagnostic, no experimental primaries or new data",
+  "exact_parent": "49b6fb163bc7023d40bb7aced46e2ba1aeaf9b77",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor": "ENERGY-DELAY-07 one-use synthetic primary MIXED_NO_GO: 4/12 NULL false declarations, fixed threshold .30 over 3 lag slots; previous seeds are prohibited from replay.",
+  "claim": "Under a simplified balanced, independent Bernoulli(0.5) NULL, the maximum of three absolute Beta(.5)-posterior action contrasts exceeds .30 substantially more than 5% of the time. A two-sided exact Fisher test with Bonferroni alpha=.05/3 can bound the family-wise false-alarm rate by .05 for valid randomized action assignments; these are standard controls and do not constitute a novel causal learner.",
+  "hypothesis": "The fixed .30 contrast + max-of-three heuristic's exact familywise false-alarm probability exceeds 0.05 for n0=n1=12 independently randomized intervention outcomes, while Bonferroni-Fisher's upper bound is 0.05.",
+  "frozen_computation": {
+    "null_probability": "Outcomes independently distributed Bernoulli(1/2) for two balanced randomized arms with exactly n=12 each, for each of three independent lag channels. The original generator's nuisance Z and its potentially correlated outcome lags are deliberately NOT represented; this is a diagnostic not a post-hoc recalculation of original experiment.",
+    "effect_estimator": "Beta(0.5) posterior difference (successes_action1-successes_action0)/(n+1). Rejection whenever abs difference>=0.30 at any of 3 lags. Ties and >= use exact rational integer comparison 10*abs(x1-x0)>=3*(n+1).",
+    "fisher": "Two-sided Fisher exact hypergeometric conditional on combined successes and fixed n0=n1=n=12; p-value sums all tables with probability mass no greater than observed table. Exact significance threshold alpha/3=1/60, no effect-size add-on. Three lag channels; independent idealized exact FWER and unconditional union-bound <=1/20 even for correlated lag outcomes when per-lag nulls hold.",
+    "method": "Enumerate success counts x0,x1∈0..12 with exact binomial weights C(12,x0)C(12,x1)/2^24; compute 1-lag rejection probabilities as BigInt rational; independent 3-lag FWER as 1-(1-p)^3. Check total probability mass equals unity exactly. Compute both original heuristic and Fisher; no Monte Carlo, no source learner execution and no seed use.",
+    "controls": "Exact probability mass conservation; Fisher conditional sum<=1/60; alpha=.05 FWER upper bound; nonzero Fisher detections and strict calibrated-vs-uncalibrated separation; no original-world inputs.",
+    "pass_conditions": "Exact posterior-max FWER>1/20; exact Fisher/Bonferroni FWER<=1/20; exact mass conservation; all arithmetically verified. Failure blocks any claim that analytic model explains original 4/12 without caveat.",
+    "interpretation": "This demonstrates a design defect in null calibration of the heuristic under a simple independent null, NOT its precise false-alarm probability in the prior confounded generator. Bonferroni is conventional. No intelligence/causal discovery gain. A proposed calibrated variant behaviorally identical to a fully fitted conventional Fisher guard cannot claim novelty without new data or action-consequence benefit."
+  },
+  "native_interface": "No native integration; central Yggdrasil Amalgam PR #1278 is the sole owner. Source-free isolated independent contributor only.",
+  "prohibition": "No primary seed replay, no change to ENERGY-DELAY-07 frozen pass criteria. Keep this analytical certificate alongside prior NO-GO.",
+  "execution_rule": "Commit this prereg, commit deterministic verifier source, read back exact code, run once, and preserve result and provenance on existing draft PR #1346; no owner runner or scheduler."
+}

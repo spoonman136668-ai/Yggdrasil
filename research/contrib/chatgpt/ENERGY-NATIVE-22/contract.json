@@ -1,0 +1,51 @@
+{
+  "schema": "yggdrasil.energy-native-compatibility-contract.v1",
+  "id": "ENERGY-NATIVE-22",
+  "date_utc": "2026-11-20",
+  "scope": "Read-only contributor-side native interface qualification and semantic-transfer blocker. No new synthetic trial, no native learning action, no owner mutation.",
+  "contributor_pr": 1346,
+  "contributor_parent_sha": "d791481a479e23daa1580428133eb64687b1b9b2",
+  "amalgam_owner_pr": 1278,
+  "amalgam_owner_source_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "main_baseline_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_files": [
+    {
+      "path": "yggdrasil/native_causal_amalgam.py",
+      "git_blob": "287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952"
+    },
+    {
+      "path": "yggdrasil/native_cumulative_learner.py",
+      "git_blob": "1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4"
+    },
+    {
+      "path": "yggdrasil/native_episode_experience.py",
+      "git_blob": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e"
+    },
+    {
+      "path": "research/contrib/chatgpt/CAUSAL-AMALGAM/staged_public_readout.py",
+      "git_blob": "33b8513f3acaf87bda8e1f5a846d90a91c07dbc5"
+    },
+    {
+      "path": "research/contrib/chatgpt/CAUSAL-AMALGAM/retention_guard.py",
+      "git_blob": "462b2d6f389e58a6922f0c627ce055844e0b37e2"
+    }
+  ],
+  "source_contract": "NativeCausalAmalgam.observe_experience(identifier,views,row,source_sha256,packet_sha256) delegates to NativeCumulativeLearner, which admits pinned public staged episodes. Paired views contain two binary measurements per view. The public row fields are s1,x1,s2,x2,y; x1 and x2 are staged actions, s2 is an observed intermediate transition, y is an observed reward. Existing native checkpoint()/restore() and retention_guard.evaluate() are read-only qualification candidates.",
+  "research_mismatch": "Energy Gates 15–21 train on arbitrary 5-bit direct input-context interventions x in [0,31] with binary XOR and AND outcomes. These do not automatically correspond to native two-stage public do-action episodes. In particular s2 is observed, not directly chosen as another action; no evidence proves a source-faithful semantics-preserving conversion of 5-bit direct interventions into native staged episodes.",
+  "native_owner_only_next_gate": {
+    "hypothesis": "Does retaining multiple causal hypotheses in existing native readouts improve held causal consequence predictions after witnessed episodes under the same native evidence without loss of existing capabilities?",
+    "pre_registration": "Freeze the native source SHA/tree, parent checkpoint SHA, authenticated original public source, intervention policy and action budgets, retained-hypothesis representation and its byte budget, exact top-1 and fully trained conventional controls, intervention assignment, seeds/splits, held transfer and old-family windows, compute and stop thresholds BEFORE native first use.",
+    "native_operation": "Only existing Amalgam owner can authorize a bounded native shadow comparison. Use StagedPublicReadout.first_action before observing transition, observe_transition, second_action before observing reward, observe_reward once with provenance-pinned public packet. Do not encode latent truth labels or hidden transition mechanisms as observed s2/y.",
+    "controls": "Matched old witness prefix and newly revealed episodes, exact same actions/observations, full conventional Bayesian/posterior control, top-1 native control, capacity/compute and no-evidence/negative ablations, baseline native model. Read original forecasts before training.",
+    "checkpoint": "Use NativeCausalAmalgam.checkpoint() and restore() with exact parent native/donor SHA, source identity, canonical bytes and append-only witness prefix; independently cold restore two processes and dual OS by sole owner. Snapshot and readout parity are necessary but not sufficient for retention.",
+    "retention": "retention_guard.evaluate(anchor,candidate,historical_windows,max_brier_drift=Fraction(1,50)) is existing historical prefix diagnostic; also require fresh held familiar and novel-world function tests, interference and cold retention. No promotion based on historical probe alone.",
+    "scientific_pass": "Predeclared lower Brier/correct intervention consequence relative to strongest fully fitted matched control, reproduced across frozen seeds/source splits and independently qualified, no unbounded false repair, no significant retained-known regression, audit-grade provenance. A testing PASS alone is not a gain.",
+    "authority": "No acceptance, merge, runner, training, protected original first use, scheduled task, controller change or model checkpoint promotion from this contributor gate."
+  },
+  "checks": {
+    "source_pin": "All five file contents fetched from the same Amalgam owner candidate commit, blob SHAs match repository bytes.",
+    "functional_static": "The public actions, observed outcomes, source packet, checkpoint and retention signatures are present; no assumption that mere API occurrence proves full behavior.",
+    "direct_translation": "FAIL_CLOSED_UNVERIFIED until an owner-pinned native witness-level mapping of the 5-bit source into staged public episodes exists and survives negative controls.",
+    "promotion": "BLOCKED until owner executes accepted native source-backed protocol and scientific/custody gates."
+  }
+}

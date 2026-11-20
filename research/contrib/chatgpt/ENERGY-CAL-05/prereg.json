@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-CAL-05",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a bounded local/global contradiction gate retain sparse-change adaptation and improve global-change calibration compared with equally informed fitted Bayesian change-point controls, without false changes in null worlds?",
+  "hypothesis": "Under action-conditioned causal shifts, a thresholded breadth signal can activate global updating only when local contradiction evidence is widespread, avoiding hard local resets and protecting preshift readouts; this may beat separate local and global change point controls but should not beat a correctly specified oracle in expected Brier.",
+  "exact_parent_sha": "b94c128744c5dd581c990991cc04232badfc5161",
+  "accepted_main_at_freeze": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "spoonman136668-ai/Yggdrasil#1346",
+    "research/contrib/chatgpt/ENERGY-SHIFT-04/result.json@b94c128744c5dd581c990991cc04232badfc5161"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/ENERGY-CAL-05/**"
+  ],
+  "inputs": [
+    {
+      "name": "synthetic five-state causal shift generator",
+      "source": "stdlib-free JavaScript deterministic xorshift32 streams separately keyed per seed, scenario, phase, action, state; exact executable committed before running; no model weights or external data",
+      "sha256": null
+    }
+  ],
+  "frozen_design": {
+    "primary_seeds": [
+      93111,
+      93119,
+      93127,
+      93133,
+      93149,
+      93157,
+      93169,
+      93181,
+      93193,
+      93203,
+      93211,
+      93227
+    ],
+    "smoke_seeds": [
+      93097
+    ],
+    "scenarios": [
+      "LOCAL_SWAP",
+      "GLOBAL_REVERSE",
+      "NULL"
+    ],
+    "worlds": "12 seeds x 3 scenarios=36; observable 5 states, two actions; hidden random 5-state directed cycle per world; action0 unchanged cycle; preshift action1 inverse; postshift action1 swaps two source rows (LOCAL_SWAP), becomes forward cycle (GLOBAL_REVERSE), or stays inverse (NULL). Correct target p=.85, other four p=.0375. Five state names opaque; hidden labels never shown to learners.",
+    "train_split": "Per state/action: 4 preshift observations, then 3 postshift observations. Same witnesses to each arm. Held: 128 new independent outcomes per state/action, 1280/world, 46,080 total. No hidden source law/mode/swap indices given to any learner.",
+    "randomness": "32-bit xorshift PRNG seeded by FNV-1a hash of ASCII 'ENERGY-CAL-05|seed|mode|phase|action|state'. Fresh PRNG per world/phase/action/state. Hidden permutation by Fisher–Yates and two distinct uniformly sampled swapped rows. No reuse of ENERGY-SHIFT-04 original seeds.",
+    "capacity": "Fixed 2x5x5 Dirichlet row counts plus prereadout snapshots; per row exact Dirichlet(0.5) change Bayes factor from pre/post counts. Candidate: w_local=posterior-change(BF,prior=.25), w_global=posterior-change(sum ln BF,prior=.5); activate global when at least 4 of 5 action1 rows have w_local>=.65; otherwise use local weights. Candidate action1 prediction is w*post-reset predictive+(1-w)*pooled predictive, with w=max(w_local,w_global) for global activated rows. Action0 protected pooled predictions. This is a fixed-context gate, NOT exact Bayesian marginalization.",
+    "controls": [
+      "static pooled row Dirichlet(0.5)",
+      "post-reset row Dirichlet(0.5)",
+      "recency-weighted row Dirichlet(0.5), pre weight .25",
+      "fully fitted independent-row change Bayes pchange=.25 with soft reset/stay mixtures",
+      "fully fitted global change Bayes pchange=.5 from sum per-row log Bayes factors",
+      "fully fitted hierarchical Bayesian mixture of no-change/local-independent/global-change hypotheses with prior (.25,.50,.25), local-change Bernoulli prior .25 integrated exactly across five rows; this is the STRONGEST conventional control",
+      "correctly specified exact graph Bayesian oracle over all 24 hidden cycles and 12 shift hypotheses, equal 1/3 mode priors with uniform 1/10 swap choices within local mode, a source-family oracle floor only"
+    ],
+    "metric": "multiclass Brier held action1 primary; overall and by scenario, false trigger >=4 local rows under NULL, unchanged action0 readout Brier after post fitting, JSON roundtrip of preshift predictions, serialized size and CPU if available (otherwise efficiency UNVERIFIED). Matched train/held total plus each arm's prediction count.",
+    "budget": "Exactly 36 worlds 2,520 training events, 46,080 held events, one scored primary call; smoke only on disjoint seed 93097. No threshold adjustment, new optimizer search, original-world trials or additional model calls. No CI workflow dispatch. Record raw metric per world to repo if small.",
+    "deterministic_expected": true
+  },
+  "classification_rules": {
+    "supported": "Candidate improves post action1 Brier by >=0.01 against BEST of all fully fitted conventional arms INCLUDING hierarchical Bayes, and NULL false global triggers 0/12, all 36 preshift readouts byte-preserved by JSON, and action0 Brier within .01 of best protected conventional action0. Independent dual-OS science acceptance and genuine separate-process cold restore still distinct.",
+    "mixed": "Candidate improves >=.01 over weaker individual local or global change Bayes in either LOCAL_SWAP or GLOBAL_REVERSE but fails strongest overall or negative controls; no scientific gain.",
+    "negative": "Neither supported nor mixed but correct source, data and controls; report also negative-control false alarms.",
+    "invalid": "Missing/wrong strongest comparator, any source mismatch at execution, observed primary before prereg/source commit, tuning on outcomes, hidden-source leakage, replay or swapped train/held witnesses.",
+    "efficiency": "No efficiency success may be claimed without separately measured all-in cold fit, model selection, checkpoint restore, full prediction cost, memory and OS baseline. JS Date.now() coarse timing is diagnostic-only."
+  },
+  "prohibited_after_primary_run": [
+    "replay consumed primary seeds",
+    "alter priors, thresholds, controls or splits after results",
+    "weaken/omit hierarchical Bayes",
+    "claim exact Bayesian expected-Brier superiority as a novel mechanism",
+    "native model integration or canonical checkpoint mutation"
+  ],
+  "authority": {
+    "research_only": true,
+    "original_world_first_use": false,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "central_owner": "Unified Causal Intelligence Amalgam PR #1278"
+  },
+  "preregistration_note": "Must be remotely committed before any experimental source, smoke or primary. The exact executable file must be committed/read-back verified before a single primary run. Follow-up work stays on existing draft PR #1346."
+}

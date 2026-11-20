@@ -1,0 +1,2530 @@
+{
+  "schema": "yggdrasil.external-research-result.v1",
+  "experiment_id": "ENERGY-DELAY-07",
+  "prereg_first_commit": "eaae907828bbfeb365e39669774d476967134686",
+  "prereg_last_prescore_commit": "3f6988955faf0acdb938a78af4c851c4dc8e4c71",
+  "frozen_source_commit": "299f728e0fb6b397300286c935350cbdc7736193",
+  "frozen_source_blob": "b6b282dfea714bc22b709058534e4bec49c9cc78",
+  "executed_source_exact_readback": true,
+  "smoke_worlds": 3,
+  "scored_primary_once": true,
+  "primary": {
+    "experiment": "ENERGY-DELAY-07",
+    "phase": "primary",
+    "model_type": "energy-inspired delayed intervention flux",
+    "seeds": [
+      94211,
+      94219,
+      94229,
+      94237,
+      94243,
+      94253,
+      94261,
+      94273,
+      94283,
+      94291,
+      94307,
+      94319
+    ],
+    "data_counts": {
+      "worlds": 36,
+      "train_episodes": 3456,
+      "held_episodes": 18432,
+      "held_outcomes": 55296
+    },
+    "summary": {
+      "means": {
+        "flux_delayed": {
+          "old": 0.17824408438090578,
+          "new": 0.1881701820793617,
+          "overall": 0.1832071332301337
+        },
+        "intervention_beta": {
+          "old": 0.22359234789754742,
+          "new": 0.23914253446761227,
+          "overall": 0.2313674411825799
+        },
+        "intervention_z_beta": {
+          "old": 0.2005401773247729,
+          "new": 0.19955608103600503,
+          "overall": 0.20004812918038894
+        },
+        "all_z_beta": {
+          "old": 0.1915447617452582,
+          "new": 0.19355730909607138,
+          "overall": 0.19255103542066476
+        },
+        "actionblind_z_beta": {
+          "old": 0.2279076745081922,
+          "new": 0.21476393660811718,
+          "overall": 0.22133580555815466
+        },
+        "immediate_only_beta": {
+          "old": 0.2490771320874591,
+          "new": 0.23809471923953318,
+          "overall": 0.24358592566349616
+        },
+        "temporal_source_bayes": {
+          "old": 0.1722943393938476,
+          "new": 0.17675252564627805,
+          "overall": 0.1745234325200628
+        },
+        "privileged_truth_oracle": {
+          "old": 0.1488476562500004,
+          "new": 0.15152994791666696,
+          "overall": 0.15018880208333374
+        }
+      },
+      "families": {
+        "CONTRADICT": {
+          "count": 12,
+          "correct": 12,
+          "false_null": 0,
+          "policy_gain_mean": 1,
+          "scores": {
+            "flux_delayed": 0.17787795541634313,
+            "intervention_beta": 0.22499225954359928,
+            "intervention_z_beta": 0.19468057303713537,
+            "all_z_beta": 0.18669747604389267,
+            "actionblind_z_beta": 0.22619012398648405,
+            "immediate_only_beta": 0.24808993908473123,
+            "temporal_source_bayes": 0.16863351776479338,
+            "privileged_truth_oracle": 0.1496723090277782
+          }
+        },
+        "DELAY_SHIFT": {
+          "count": 12,
+          "correct": 12,
+          "false_null": 0,
+          "policy_gain_mean": 1,
+          "scores": {
+            "flux_delayed": 0.17489588107152054,
+            "intervention_beta": 0.2224482028522307,
+            "intervention_z_beta": 0.19225619106534994,
+            "all_z_beta": 0.18702792501131996,
+            "actionblind_z_beta": 0.22146620228733946,
+            "immediate_only_beta": 0.24385360065890724,
+            "temporal_source_bayes": 0.16928379239413346,
+            "privileged_truth_oracle": 0.148055555555556
+          }
+        },
+        "NULL": {
+          "count": 12,
+          "correct": 8,
+          "false_null": 4,
+          "policy_gain_mean": -0.3333333333333333,
+          "scores": {
+            "flux_delayed": 0.21173670975022144,
+            "intervention_beta": 0.2699871410070069,
+            "intervention_z_beta": 0.2117314790055297,
+            "all_z_beta": 0.2069465262330015,
+            "actionblind_z_beta": 0.19663548355052798,
+            "immediate_only_beta": 0.22234061797496094,
+            "temporal_source_bayes": 0.19234026677990748,
+            "privileged_truth_oracle": 0.15686197916666675
+          }
+        }
+      },
+      "best_non_oracle": "all_z_beta",
+      "brier_gain_vs_best_non_oracle": 0.00934390219053105,
+      "null_false_effects": 4,
+      "old_snapshot_retention": 36,
+      "verdict": "MIXED_NO_GO",
+      "guard_pass": false,
+      "correct_model_source_family_bayes": "reference_not_a_competition_target",
+      "native_scientific_gain": false
+    },
+    "worlds": [
+      {
+        "seed": 94211,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1777314840092463,
+            "new": 0.16449487281353664,
+            "overall": 0.17111317841139148
+          },
+          "intervention_beta": {
+            "old": 0.2193601737067649,
+            "new": 0.21277120315581818,
+            "overall": 0.21606568843129156
+          },
+          "intervention_z_beta": {
+            "old": 0.19409834050807842,
+            "new": 0.17745519567418996,
+            "overall": 0.1857767680911342
+          },
+          "all_z_beta": {
+            "old": 0.18790373708059638,
+            "new": 0.1696994565800177,
+            "overall": 0.17880159683030702
+          },
+          "actionblind_z_beta": {
+            "old": 0.2354229622057573,
+            "new": 0.22875069974076942,
+            "overall": 0.23208683097326335
+          },
+          "immediate_only_beta": {
+            "old": 0.2520695193786329,
+            "new": 0.24307103177622355,
+            "overall": 0.24757027557742825
+          },
+          "temporal_source_bayes": {
+            "old": 0.175379941381374,
+            "new": 0.15912923256680453,
+            "overall": 0.16725458697408926
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15447916666666708,
+            "new": 0.13885416666666686,
+            "overall": 0.14666666666666697
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6727272727272727
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.6153846153846154
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94211,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18001041666666703,
+            "new": 0.1851441333912035,
+            "overall": 0.18257727502893525
+          },
+          "intervention_beta": {
+            "old": 0.22040934429327305,
+            "new": 0.24778106508875794,
+            "overall": 0.2340952046910155
+          },
+          "intervention_z_beta": {
+            "old": 0.19390890157181717,
+            "new": 0.2040735801896514,
+            "overall": 0.1989912408807343
+          },
+          "all_z_beta": {
+            "old": 0.19342486363591757,
+            "new": 0.20487480948491377,
+            "overall": 0.19914983656041566
+          },
+          "actionblind_z_beta": {
+            "old": 0.22298749999999976,
+            "new": 0.2155355721932873,
+            "overall": 0.21926153609664353
+          },
+          "immediate_only_beta": {
+            "old": 0.23578924910241872,
+            "new": 0.23790227291016042,
+            "overall": 0.2368457610062896
+          },
+          "temporal_source_bayes": {
+            "old": 0.17196789989040306,
+            "new": 0.1797281249666742,
+            "overall": 0.17584801242853865
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15044270833333387,
+            "new": 0.1616406250000006,
+            "overall": 0.15604166666666722
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.47023809523809523
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.8461538461538461
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94211,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.16548251415068235,
+            "new": 0.2453698113714141,
+            "overall": 0.20542616276104822
+          },
+          "intervention_beta": {
+            "old": 0.21634513180272105,
+            "new": 0.27900816281487145,
+            "overall": 0.24767664730879627
+          },
+          "intervention_z_beta": {
+            "old": 0.19265898158851205,
+            "new": 0.22439073350694452,
+            "overall": 0.20852485754772832
+          },
+          "all_z_beta": {
+            "old": 0.1773648624932264,
+            "new": 0.21566944391545326,
+            "overall": 0.19651715320433982
+          },
+          "actionblind_z_beta": {
+            "old": 0.21943673541800093,
+            "new": 0.20678650394192163,
+            "overall": 0.21311161967996128
+          },
+          "immediate_only_beta": {
+            "old": 0.24106031453915508,
+            "new": 0.23862312186452228,
+            "overall": 0.23984171820183867
+          },
+          "temporal_source_bayes": {
+            "old": 0.16196770902827992,
+            "new": 0.1982909715651674,
+            "overall": 0.18012934029672367
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14731770833333363,
+            "new": 0.15015625000000007,
+            "overall": 0.14873697916666687
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.8392857142857143
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 0,
+          "amplitude": 0.4575163398692811
+        },
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": false,
+        "false_null": true,
+        "new_action_policy_gain": -1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94219,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18398333333333336,
+            "new": 0.17904375000000003,
+            "overall": 0.18151354166666667
+          },
+          "intervention_beta": {
+            "old": 0.20518984220907213,
+            "new": 0.2486959072788064,
+            "overall": 0.22694287474393926
+          },
+          "intervention_z_beta": {
+            "old": 0.188033693415638,
+            "new": 0.20615158543442233,
+            "overall": 0.19709263942503016
+          },
+          "all_z_beta": {
+            "old": 0.18920732035067836,
+            "new": 0.1874325190145505,
+            "overall": 0.1883199196826144
+          },
+          "actionblind_z_beta": {
+            "old": 0.24082916666666712,
+            "new": 0.21662083333333337,
+            "overall": 0.22872500000000026
+          },
+          "immediate_only_beta": {
+            "old": 0.252056040433925,
+            "new": 0.24058723958333295,
+            "overall": 0.24632164000862897
+          },
+          "temporal_source_bayes": {
+            "old": 0.17808948975516478,
+            "new": 0.16907711832778796,
+            "overall": 0.17358330404147637
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1565625000000004,
+            "new": 0.15096354166666714,
+            "overall": 0.1537630208333338
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6923076923076923
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.6180555555555556
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94219,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1735184226283859,
+            "new": 0.1725573278356485,
+            "overall": 0.1730378752320172
+          },
+          "intervention_beta": {
+            "old": 0.22247904339250493,
+            "new": 0.2162248182679022,
+            "overall": 0.21935193083020357
+          },
+          "intervention_z_beta": {
+            "old": 0.2236400536777208,
+            "new": 0.17811543782552094,
+            "overall": 0.20087774575162087
+          },
+          "all_z_beta": {
+            "old": 0.212289093258663,
+            "new": 0.17750001537022317,
+            "overall": 0.19489455431444305
+          },
+          "actionblind_z_beta": {
+            "old": 0.2336130380976088,
+            "new": 0.23749376085069498,
+            "overall": 0.23555339947415188
+          },
+          "immediate_only_beta": {
+            "old": 0.26183527259415146,
+            "new": 0.25613092193718684,
+            "overall": 0.25898309726566915
+          },
+          "temporal_source_bayes": {
+            "old": 0.16418136840783654,
+            "new": 0.16662917246174094,
+            "overall": 0.16540527043478873
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14718750000000047,
+            "new": 0.13729166666666703,
+            "overall": 0.14223958333333375
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.7692307692307693
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.9150326797385621
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94219,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1725954440519111,
+            "new": 0.20355931201995833,
+            "overall": 0.18807737803593472
+          },
+          "intervention_beta": {
+            "old": 0.22407225665748398,
+            "new": 0.27324647995102547,
+            "overall": 0.24865936830425472
+          },
+          "intervention_z_beta": {
+            "old": 0.19724472080498887,
+            "new": 0.23013717639833733,
+            "overall": 0.21369094860166307
+          },
+          "all_z_beta": {
+            "old": 0.1909936440082516,
+            "new": 0.22249817046714135,
+            "overall": 0.20674590723769648
+          },
+          "actionblind_z_beta": {
+            "old": 0.2282688045491681,
+            "new": 0.20355931201995833,
+            "overall": 0.2159140582845632
+          },
+          "immediate_only_beta": {
+            "old": 0.26137876987432357,
+            "new": 0.2318907249970903,
+            "overall": 0.2466347474357069
+          },
+          "temporal_source_bayes": {
+            "old": 0.16817662731180072,
+            "new": 0.19575909920021708,
+            "overall": 0.1819678632560089
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14783854166666716,
+            "new": 0.16187499999999996,
+            "overall": 0.15485677083333357
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6303030303030304
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94229,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17192562400053726,
+            "new": 0.17467765674277402,
+            "overall": 0.17330164037165563
+          },
+          "intervention_beta": {
+            "old": 0.2228230702003022,
+            "new": 0.21648483727810572,
+            "overall": 0.21965395373920393
+          },
+          "intervention_z_beta": {
+            "old": 0.19874626961244576,
+            "new": 0.17632154425475835,
+            "overall": 0.18753390693360206
+          },
+          "all_z_beta": {
+            "old": 0.20382424152450498,
+            "new": 0.17652251740265257,
+            "overall": 0.1901733794635788
+          },
+          "actionblind_z_beta": {
+            "old": 0.2247431861865736,
+            "new": 0.2303421827014597,
+            "overall": 0.22754268444401662
+          },
+          "immediate_only_beta": {
+            "old": 0.2458775153373337,
+            "new": 0.2540956124813274,
+            "overall": 0.24998656390933052
+          },
+          "temporal_source_bayes": {
+            "old": 0.16938887275961992,
+            "new": 0.16300937365376686,
+            "overall": 0.1661991232066934
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14627604166666713,
+            "new": 0.15304687500000044,
+            "overall": 0.14966145833333377
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.4702380952380952
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.6923076923076923
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94229,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17107190474214803,
+            "new": 0.17313583357303278,
+            "overall": 0.17210386915759038
+          },
+          "intervention_beta": {
+            "old": 0.218349358974359,
+            "new": 0.22968501300887653,
+            "overall": 0.22401718599161777
+          },
+          "intervention_z_beta": {
+            "old": 0.19431389702690974,
+            "new": 0.18802083333333341,
+            "overall": 0.19116736518012156
+          },
+          "all_z_beta": {
+            "old": 0.19075345372038496,
+            "new": 0.19510534215856487,
+            "overall": 0.19292939793947492
+          },
+          "actionblind_z_beta": {
+            "old": 0.22718952017549962,
+            "new": 0.2189317009779753,
+            "overall": 0.22306061057673743
+          },
+          "immediate_only_beta": {
+            "old": 0.2484102689045037,
+            "new": 0.2384466493780031,
+            "overall": 0.24342845914125344
+          },
+          "temporal_source_bayes": {
+            "old": 0.16328022655284785,
+            "new": 0.16998854602781813,
+            "overall": 0.166634386290333
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1289583333333336,
+            "new": 0.14549479166666712,
+            "overall": 0.13722656250000034
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6153846153846154
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.7636363636363637
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94229,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.19691108749616873,
+            "new": 0.2549093967013887,
+            "overall": 0.22591024209877872
+          },
+          "intervention_beta": {
+            "old": 0.21834844658708294,
+            "new": 0.2669862107878736,
+            "overall": 0.24266732868747823
+          },
+          "intervention_z_beta": {
+            "old": 0.19811186434450334,
+            "new": 0.21343509734623012,
+            "overall": 0.20577348084536673
+          },
+          "all_z_beta": {
+            "old": 0.23787319356031392,
+            "new": 0.2221257944334867,
+            "overall": 0.22999949399690034
+          },
+          "actionblind_z_beta": {
+            "old": 0.23722358749616915,
+            "new": 0.21325493706597232,
+            "overall": 0.22523926228107075
+          },
+          "immediate_only_beta": {
+            "old": 0.2457674319727889,
+            "new": 0.23301735709233548,
+            "overall": 0.2393923945325622
+          },
+          "temporal_source_bayes": {
+            "old": 0.16532707938266286,
+            "new": 0.201974609868917,
+            "overall": 0.18365084462578993
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1492708333333337,
+            "new": 0.17203125000000008,
+            "overall": 0.16065104166666688
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.8545454545454546
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.33986928104575165
+        },
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": false,
+        "false_null": true,
+        "new_action_policy_gain": -1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94237,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.175995551215278,
+            "new": 0.1870760198154652,
+            "overall": 0.1815357855153716
+          },
+          "intervention_beta": {
+            "old": 0.22045141841458835,
+            "new": 0.22494088613406796,
+            "overall": 0.22269615227432815
+          },
+          "intervention_z_beta": {
+            "old": 0.187843511672247,
+            "new": 0.2052104616238137,
+            "overall": 0.19652698664803037
+          },
+          "all_z_beta": {
+            "old": 0.18579298027695237,
+            "new": 0.1970967874640885,
+            "overall": 0.19144488387052042
+          },
+          "actionblind_z_beta": {
+            "old": 0.2238837348090278,
+            "new": 0.23985755012507148,
+            "overall": 0.23187064246704966
+          },
+          "immediate_only_beta": {
+            "old": 0.24967151552461217,
+            "new": 0.264941007942828,
+            "overall": 0.25730626173372007
+          },
+          "temporal_source_bayes": {
+            "old": 0.16748840233035678,
+            "new": 0.17954435521195836,
+            "overall": 0.17351637877115755
+          },
+          "privileged_truth_oracle": {
+            "old": 0.150182291666667,
+            "new": 0.16255208333333382,
+            "overall": 0.15636718750000042
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.5535714285714286
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.44848484848484843
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94237,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18264506590388838,
+            "new": 0.16708450705886804,
+            "overall": 0.17486478648137824
+          },
+          "intervention_beta": {
+            "old": 0.25748328845427043,
+            "new": 0.23135478303747484,
+            "overall": 0.24441903574587265
+          },
+          "intervention_z_beta": {
+            "old": 0.20824542261445486,
+            "new": 0.2090781882957176,
+            "overall": 0.20866180545508625
+          },
+          "all_z_beta": {
+            "old": 0.1944988722003074,
+            "new": 0.1846893027707359,
+            "overall": 0.18959408748552165
+          },
+          "actionblind_z_beta": {
+            "old": 0.2252187612064247,
+            "new": 0.21038204471245478,
+            "overall": 0.21780040295943973
+          },
+          "immediate_only_beta": {
+            "old": 0.2680123923888322,
+            "new": 0.23548807525429327,
+            "overall": 0.25175023382156275
+          },
+          "temporal_source_bayes": {
+            "old": 0.17949374996588133,
+            "new": 0.16282721634593963,
+            "overall": 0.17116048315591048
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15265625000000052,
+            "new": 0.1523958333333338,
+            "overall": 0.15252604166666717
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.9226190476190477
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.46153846153846145
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94237,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18120237775054504,
+            "new": 0.17974845100970416,
+            "overall": 0.1804754143801246
+          },
+          "intervention_beta": {
+            "old": 0.22186438246097342,
+            "new": 0.2513721495255587,
+            "overall": 0.23661826599326607
+          },
+          "intervention_z_beta": {
+            "old": 0.18800807823129237,
+            "new": 0.18407116087175623,
+            "overall": 0.1860396195515243
+          },
+          "all_z_beta": {
+            "old": 0.1899657111289252,
+            "new": 0.17997387116708977,
+            "overall": 0.1849697911480075
+          },
+          "actionblind_z_beta": {
+            "old": 0.2300284028097964,
+            "new": 0.17974845100970416,
+            "overall": 0.20488842690975026
+          },
+          "immediate_only_beta": {
+            "old": 0.2472344400337754,
+            "new": 0.19965294073854337,
+            "overall": 0.2234436903861594
+          },
+          "temporal_source_bayes": {
+            "old": 0.17709792191396245,
+            "new": 0.17946960713500784,
+            "overall": 0.17828376452448516
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15213541666666705,
+            "new": 0.14625000000000013,
+            "overall": 0.14919270833333362
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.7393939393939394
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94243,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1777245216277666,
+            "new": 0.18780527248304105,
+            "overall": 0.1827648970554038
+          },
+          "intervention_beta": {
+            "old": 0.2226813468442932,
+            "new": 0.2227842822161007,
+            "overall": 0.22273281453019692
+          },
+          "intervention_z_beta": {
+            "old": 0.2194113397794494,
+            "new": 0.19582900289745508,
+            "overall": 0.20762017133845223
+          },
+          "all_z_beta": {
+            "old": 0.20125016322303294,
+            "new": 0.20109421379993134,
+            "overall": 0.20117218851148214
+          },
+          "actionblind_z_beta": {
+            "old": 0.246772613960114,
+            "new": 0.24349277009689227,
+            "overall": 0.24513269202850316
+          },
+          "immediate_only_beta": {
+            "old": 0.2606843918174193,
+            "new": 0.254572815443753,
+            "overall": 0.25762860363058615
+          },
+          "temporal_source_bayes": {
+            "old": 0.17045870162939544,
+            "new": 0.1787384983784346,
+            "overall": 0.17459860000391503
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14158854166666712,
+            "new": 0.15018229166666708,
+            "overall": 0.1458854166666671
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.613095238095238
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.5393939393939394
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94243,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18178767866192738,
+            "new": 0.17217597113715313,
+            "overall": 0.17698182489954029
+          },
+          "intervention_beta": {
+            "old": 0.21854967948717943,
+            "new": 0.21364943546863172,
+            "overall": 0.21609955747790557
+          },
+          "intervention_z_beta": {
+            "old": 0.1920794474745192,
+            "new": 0.1811658254610439,
+            "overall": 0.18662263646778154
+          },
+          "all_z_beta": {
+            "old": 0.18678328213819395,
+            "new": 0.17042625144675927,
+            "overall": 0.1786047667924766
+          },
+          "actionblind_z_beta": {
+            "old": 0.2247893370846341,
+            "new": 0.21756686700323113,
+            "overall": 0.22117810204393262
+          },
+          "immediate_only_beta": {
+            "old": 0.23930184662982115,
+            "new": 0.2372978652781921,
+            "overall": 0.23829985595400663
+          },
+          "temporal_source_bayes": {
+            "old": 0.17925919169447357,
+            "new": 0.17043157205693174,
+            "overall": 0.17484538187570267
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14992187500000048,
+            "new": 0.13625000000000023,
+            "overall": 0.14308593750000034
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6153846153846154
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.613095238095238
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94243,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.168102304602644,
+            "new": 0.2381125000000001,
+            "overall": 0.20310740230132204
+          },
+          "intervention_beta": {
+            "old": 0.22164942365835213,
+            "new": 0.27926825068870526,
+            "overall": 0.25045883717352874
+          },
+          "intervention_z_beta": {
+            "old": 0.2080452732308201,
+            "new": 0.21151268686486935,
+            "overall": 0.2097789800478447
+          },
+          "all_z_beta": {
+            "old": 0.1912669216830525,
+            "new": 0.20462766161293863,
+            "overall": 0.19794729164799554
+          },
+          "actionblind_z_beta": {
+            "old": 0.2165790571414191,
+            "new": 0.1893750000000001,
+            "overall": 0.20297702857070962
+          },
+          "immediate_only_beta": {
+            "old": 0.24030701664583817,
+            "new": 0.22164450566268742,
+            "overall": 0.2309757611542628
+          },
+          "temporal_source_bayes": {
+            "old": 0.16595664729758583,
+            "new": 0.18323735443066327,
+            "overall": 0.17459700086412455
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14692708333333393,
+            "new": 0.1595312500000001,
+            "overall": 0.153229166666667
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.5654761904761905
+        },
+        "new_effect": {
+          "lag": 0,
+          "best": 1,
+          "amplitude": 0.33939393939393936
+        },
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": false,
+        "false_null": true,
+        "new_action_policy_gain": -1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94253,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1749836988124965,
+            "new": 0.17692916666666703,
+            "overall": 0.17595643273958175
+          },
+          "intervention_beta": {
+            "old": 0.21187831069246846,
+            "new": 0.22043619791666644,
+            "overall": 0.21615725430456745
+          },
+          "intervention_z_beta": {
+            "old": 0.19265446674537576,
+            "new": 0.18477896231192129,
+            "overall": 0.1887167145286485
+          },
+          "all_z_beta": {
+            "old": 0.19340511124508378,
+            "new": 0.18559743007084215,
+            "overall": 0.18950127065796296
+          },
+          "actionblind_z_beta": {
+            "old": 0.22930411369209555,
+            "new": 0.2224375000000001,
+            "overall": 0.22587080684604785
+          },
+          "immediate_only_beta": {
+            "old": 0.24495311998940272,
+            "new": 0.25220286458333313,
+            "overall": 0.24857799228636793
+          },
+          "temporal_source_bayes": {
+            "old": 0.1708891319120541,
+            "new": 0.17037916689226637,
+            "overall": 0.17063414940216023
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1444531250000005,
+            "new": 0.14041666666666705,
+            "overall": 0.14243489583333377
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.5163398692810457
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.79375
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94253,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17131627804421723,
+            "new": 0.17720833333333338,
+            "overall": 0.17426230568877532
+          },
+          "intervention_beta": {
+            "old": 0.22737402433425136,
+            "new": 0.21446622287968417,
+            "overall": 0.22092012360696778
+          },
+          "intervention_z_beta": {
+            "old": 0.1877893518518522,
+            "new": 0.18437534877232145,
+            "overall": 0.18608235031208684
+          },
+          "all_z_beta": {
+            "old": 0.18112163513791493,
+            "new": 0.18176725119968098,
+            "overall": 0.18144444316879796
+          },
+          "actionblind_z_beta": {
+            "old": 0.2209013896668144,
+            "new": 0.2264708333333332,
+            "overall": 0.2236861115000738
+          },
+          "immediate_only_beta": {
+            "old": 0.23897332095772653,
+            "new": 0.24596205621301745,
+            "overall": 0.24246768858537196
+          },
+          "temporal_source_bayes": {
+            "old": 0.16876900203717862,
+            "new": 0.16302237390484767,
+            "overall": 0.16589568797101314
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15382812500000045,
+            "new": 0.15239583333333387,
+            "overall": 0.15311197916666716
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.3575757575757576
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.5384615384615384
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94253,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18123471781397726,
+            "new": 0.170067681206597,
+            "overall": 0.1756511995102871
+          },
+          "intervention_beta": {
+            "old": 0.23262887671408403,
+            "new": 0.2591300843253968,
+            "overall": 0.2458794805197404
+          },
+          "intervention_z_beta": {
+            "old": 0.19865512746982492,
+            "new": 0.18228760596035284,
+            "overall": 0.19047136671508888
+          },
+          "all_z_beta": {
+            "old": 0.18723851780566578,
+            "new": 0.18080049824962152,
+            "overall": 0.18401950802764366
+          },
+          "actionblind_z_beta": {
+            "old": 0.22016904566034226,
+            "new": 0.170067681206597,
+            "overall": 0.19511836343346964
+          },
+          "immediate_only_beta": {
+            "old": 0.2474316831999633,
+            "new": 0.20120098549402401,
+            "overall": 0.2243163343469937
+          },
+          "temporal_source_bayes": {
+            "old": 0.1758479355358278,
+            "new": 0.16760483132304319,
+            "overall": 0.1717263834294355
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14901041666666723,
+            "new": 0.13921875000000003,
+            "overall": 0.14411458333333363
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6209150326797386
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94261,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17248947018297656,
+            "new": 0.1792377974112094,
+            "overall": 0.175863633797093
+          },
+          "intervention_beta": {
+            "old": 0.2129424931129477,
+            "new": 0.22574580867850105,
+            "overall": 0.21934415089572437
+          },
+          "intervention_z_beta": {
+            "old": 0.1838329081632655,
+            "new": 0.20416033709490752,
+            "overall": 0.19399662262908648
+          },
+          "all_z_beta": {
+            "old": 0.17906698421556103,
+            "new": 0.1830946183514901,
+            "overall": 0.18108080128352558
+          },
+          "actionblind_z_beta": {
+            "old": 0.22595232137315982,
+            "new": 0.21892495644380106,
+            "overall": 0.22243863890848045
+          },
+          "immediate_only_beta": {
+            "old": 0.245818683638224,
+            "new": 0.23585624152163395,
+            "overall": 0.240837462579929
+          },
+          "temporal_source_bayes": {
+            "old": 0.16610833417957305,
+            "new": 0.17470376024627543,
+            "overall": 0.1704060472129242
+          },
+          "privileged_truth_oracle": {
+            "old": 0.13911458333333374,
+            "new": 0.1469270833333338,
+            "overall": 0.14302083333333376
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.8303030303030303
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.6923076923076923
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94261,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.19701662430187417,
+            "new": 0.15344999999999967,
+            "overall": 0.17523331215093693
+          },
+          "intervention_beta": {
+            "old": 0.24362540154950876,
+            "new": 0.21685149754346164,
+            "overall": 0.2302384495464852
+          },
+          "intervention_z_beta": {
+            "old": 0.23177633480149848,
+            "new": 0.16443310391044907,
+            "overall": 0.19810471935597376
+          },
+          "all_z_beta": {
+            "old": 0.20645564081669,
+            "new": 0.15794097358499057,
+            "overall": 0.18219830720084026
+          },
+          "actionblind_z_beta": {
+            "old": 0.24450877212835442,
+            "new": 0.21326666666666683,
+            "overall": 0.22888771939751063
+          },
+          "immediate_only_beta": {
+            "old": 0.2556944434234925,
+            "new": 0.2544996055366589,
+            "overall": 0.2550970244800757
+          },
+          "temporal_source_bayes": {
+            "old": 0.1712424028474778,
+            "new": 0.15173577257259577,
+            "overall": 0.16148908771003678
+          },
+          "privileged_truth_oracle": {
+            "old": 0.13234375000000048,
+            "new": 0.13677083333333362,
+            "overall": 0.13455729166666705
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.5297619047619047
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.7678571428571429
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94261,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1790545154334977,
+            "new": 0.19683209564460183,
+            "overall": 0.18794330553904978
+          },
+          "intervention_beta": {
+            "old": 0.21333129606009063,
+            "new": 0.2681844008264463,
+            "overall": 0.2407578484432685
+          },
+          "intervention_z_beta": {
+            "old": 0.1851255716708462,
+            "new": 0.20699554098498907,
+            "overall": 0.19606055632791763
+          },
+          "all_z_beta": {
+            "old": 0.1901008643176769,
+            "new": 0.20638264750194227,
+            "overall": 0.1982417559098096
+          },
+          "actionblind_z_beta": {
+            "old": 0.22650874294384604,
+            "new": 0.19683209564460183,
+            "overall": 0.21167041929422395
+          },
+          "immediate_only_beta": {
+            "old": 0.2410098897549433,
+            "new": 0.2194688156439818,
+            "overall": 0.23023935269946252
+          },
+          "temporal_source_bayes": {
+            "old": 0.17264608296037362,
+            "new": 0.1838579023744863,
+            "overall": 0.17825199266742997
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15174479166666713,
+            "new": 0.1478125000000001,
+            "overall": 0.1497786458333336
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.613095238095238
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94273,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17091371916219822,
+            "new": 0.1747895833333332,
+            "overall": 0.17285165124776572
+          },
+          "intervention_beta": {
+            "old": 0.21247395833333335,
+            "new": 0.2310600021258502,
+            "overall": 0.22176698022959176
+          },
+          "intervention_z_beta": {
+            "old": 0.1942705912103995,
+            "new": 0.19588457021203085,
+            "overall": 0.19507758071121517
+          },
+          "all_z_beta": {
+            "old": 0.18994999231111723,
+            "new": 0.18744935619491096,
+            "overall": 0.18869967425301412
+          },
+          "actionblind_z_beta": {
+            "old": 0.21320915347568947,
+            "new": 0.21620833333333325,
+            "overall": 0.21470874340451138
+          },
+          "immediate_only_beta": {
+            "old": 0.23389556062135275,
+            "new": 0.23867777423469413,
+            "overall": 0.23628666742802343
+          },
+          "temporal_source_bayes": {
+            "old": 0.16850415094170948,
+            "new": 0.16368622266730345,
+            "overall": 0.1660951868045065
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15057291666666708,
+            "new": 0.14809895833333372,
+            "overall": 0.1493359375000004
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.69375
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.5535714285714286
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94273,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.168159456701094,
+            "new": 0.1646062500000002,
+            "overall": 0.16638285335054712
+          },
+          "intervention_beta": {
+            "old": 0.21487050475600555,
+            "new": 0.20808457931783794,
+            "overall": 0.21147754203692173
+          },
+          "intervention_z_beta": {
+            "old": 0.18737165035043743,
+            "new": 0.17666983052986804,
+            "overall": 0.18202074044015273
+          },
+          "all_z_beta": {
+            "old": 0.17457562070904356,
+            "new": 0.17379913992374388,
+            "overall": 0.17418738031639372
+          },
+          "actionblind_z_beta": {
+            "old": 0.21947449722237364,
+            "new": 0.2247041666666665,
+            "overall": 0.22208933194452007
+          },
+          "immediate_only_beta": {
+            "old": 0.24002304272648267,
+            "new": 0.2457667517006803,
+            "overall": 0.24289489721358148
+          },
+          "temporal_source_bayes": {
+            "old": 0.1617333401923148,
+            "new": 0.16128985635719437,
+            "overall": 0.1615115982747546
+          },
+          "privileged_truth_oracle": {
+            "old": 0.13989583333333383,
+            "new": 0.14289062500000044,
+            "overall": 0.14139322916666713
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.7450980392156863
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.6964285714285714
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94273,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1845012524847447,
+            "new": 0.20461573366377864,
+            "overall": 0.19455849307426165
+          },
+          "intervention_beta": {
+            "old": 0.25804944373582767,
+            "new": 0.2646850345167651,
+            "overall": 0.2613672391262964
+          },
+          "intervention_z_beta": {
+            "old": 0.236903061101466,
+            "new": 0.22326743197278895,
+            "overall": 0.23008524653712747
+          },
+          "all_z_beta": {
+            "old": 0.18531375268929884,
+            "new": 0.21199495691831483,
+            "overall": 0.1986543548038068
+          },
+          "actionblind_z_beta": {
+            "old": 0.24258185091338483,
+            "new": 0.20461573366377864,
+            "overall": 0.22359879228858173
+          },
+          "immediate_only_beta": {
+            "old": 0.29185072961868014,
+            "new": 0.22610835037832952,
+            "overall": 0.2589795399985048
+          },
+          "temporal_source_bayes": {
+            "old": 0.17035318027932078,
+            "new": 0.19779437379276163,
+            "overall": 0.18407377703604122
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14757812500000048,
+            "new": 0.15328125000000012,
+            "overall": 0.1504296875000003
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.7797619047619048
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94283,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17191846267534658,
+            "new": 0.16879784177119275,
+            "overall": 0.17035815222326967
+          },
+          "intervention_beta": {
+            "old": 0.21428349985827647,
+            "new": 0.20223437021732452,
+            "overall": 0.2082589350378005
+          },
+          "intervention_z_beta": {
+            "old": 0.18356201725481844,
+            "new": 0.1744900977366255,
+            "overall": 0.17902605749572195
+          },
+          "all_z_beta": {
+            "old": 0.18492175777643113,
+            "new": 0.1796329579867,
+            "overall": 0.1822773578815656
+          },
+          "actionblind_z_beta": {
+            "old": 0.219170768603442,
+            "new": 0.23022405761076684,
+            "overall": 0.22469741310710445
+          },
+          "immediate_only_beta": {
+            "old": 0.23754548584207302,
+            "new": 0.24652387156890102,
+            "overall": 0.242034678705487
+          },
+          "temporal_source_bayes": {
+            "old": 0.169311448372624,
+            "new": 0.15553542103244236,
+            "overall": 0.16242343470253318
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14419270833333386,
+            "new": 0.14666666666666714,
+            "overall": 0.1454296875000005
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6845238095238095
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.6303030303030304
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94283,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17440091860652238,
+            "new": 0.19824012515309974,
+            "overall": 0.18632052187981105
+          },
+          "intervention_beta": {
+            "old": 0.2062993096646938,
+            "new": 0.2198789026629936,
+            "overall": 0.2130891061638437
+          },
+          "intervention_z_beta": {
+            "old": 0.1834918748043922,
+            "new": 0.19809792862457495,
+            "overall": 0.19079490171448357
+          },
+          "all_z_beta": {
+            "old": 0.18618487134391895,
+            "new": 0.1977440200617283,
+            "overall": 0.19196444570282364
+          },
+          "actionblind_z_beta": {
+            "old": 0.22450834529691988,
+            "new": 0.23485142539736845,
+            "overall": 0.22967988534714415
+          },
+          "immediate_only_beta": {
+            "old": 0.24155767283208726,
+            "new": 0.2487902520859638,
+            "overall": 0.24517396245902554
+          },
+          "temporal_source_bayes": {
+            "old": 0.1683739590064854,
+            "new": 0.19074355027202006,
+            "overall": 0.17955875463925275
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1441927083333339,
+            "new": 0.16203125000000043,
+            "overall": 0.15311197916666716
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.8461538461538461
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.6303030303030304
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94283,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1773619744047744,
+            "new": 0.20089192708333345,
+            "overall": 0.18912695074405392
+          },
+          "intervention_beta": {
+            "old": 0.22057744439460633,
+            "new": 0.26269723865877675,
+            "overall": 0.24163734152669156
+          },
+          "intervention_z_beta": {
+            "old": 0.19839396158854142,
+            "new": 0.19585051359953717,
+            "overall": 0.19712223759403927
+          },
+          "all_z_beta": {
+            "old": 0.18826267464451088,
+            "new": 0.20522198349743248,
+            "overall": 0.1967423290709717
+          },
+          "actionblind_z_beta": {
+            "old": 0.22635898594267914,
+            "new": 0.20089192708333345,
+            "overall": 0.21362545651300632
+          },
+          "immediate_only_beta": {
+            "old": 0.24330315679840986,
+            "new": 0.22826930781558183,
+            "overall": 0.23578623230699583
+          },
+          "temporal_source_bayes": {
+            "old": 0.17592110027105776,
+            "new": 0.1863506849853105,
+            "overall": 0.1811358926281841
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15005208333333384,
+            "new": 0.15171875000000012,
+            "overall": 0.15088541666666697
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6274509803921569
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94291,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1822700095663264,
+            "new": 0.1936937500000001,
+            "overall": 0.18798187978316325
+          },
+          "intervention_beta": {
+            "old": 0.22658586174121076,
+            "new": 0.26949615176499053,
+            "overall": 0.24804100675310062
+          },
+          "intervention_z_beta": {
+            "old": 0.20994669596354165,
+            "new": 0.2501888824588475,
+            "overall": 0.23006778921119456
+          },
+          "all_z_beta": {
+            "old": 0.20269579224135195,
+            "new": 0.19822240650186163,
+            "overall": 0.2004590993716068
+          },
+          "actionblind_z_beta": {
+            "old": 0.22370030220895173,
+            "new": 0.2282500000000003,
+            "overall": 0.225975151104476
+          },
+          "immediate_only_beta": {
+            "old": 0.24893664595601964,
+            "new": 0.2580096193415639,
+            "overall": 0.2534731326487918
+          },
+          "temporal_source_bayes": {
+            "old": 0.17566562486137294,
+            "new": 0.17091556000560307,
+            "overall": 0.173290592433488
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14835937500000043,
+            "new": 0.15486979166666706,
+            "overall": 0.15161458333333375
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.7385620915032679
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.5686274509803921
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94291,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1766559578997476,
+            "new": 0.1847604166666663,
+            "overall": 0.18070818728320695
+          },
+          "intervention_beta": {
+            "old": 0.2259055531935,
+            "new": 0.22674804687499994,
+            "overall": 0.22632680003425
+          },
+          "intervention_z_beta": {
+            "old": 0.24293209970081917,
+            "new": 0.20166180394804525,
+            "overall": 0.2222969518244322
+          },
+          "all_z_beta": {
+            "old": 0.18729338861466863,
+            "new": 0.2090776742468855,
+            "overall": 0.19818553143077708
+          },
+          "actionblind_z_beta": {
+            "old": 0.2176148228965977,
+            "new": 0.2233625,
+            "overall": 0.22048866144829882
+          },
+          "immediate_only_beta": {
+            "old": 0.24659181398497357,
+            "new": 0.24639752604166662,
+            "overall": 0.24649467001332007
+          },
+          "temporal_source_bayes": {
+            "old": 0.16498839859646933,
+            "new": 0.17675155444728108,
+            "overall": 0.1708699765218752
+          },
+          "privileged_truth_oracle": {
+            "old": 0.139244791666667,
+            "new": 0.15929687500000048,
+            "overall": 0.1492708333333337
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6845238095238095
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.50625
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94291,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18818125000000022,
+            "new": 0.19160465972449103,
+            "overall": 0.18989295486224564
+          },
+          "intervention_beta": {
+            "old": 0.23919810157790947,
+            "new": 0.2508392679988663,
+            "overall": 0.24501868478838787
+          },
+          "intervention_z_beta": {
+            "old": 0.20694444444444457,
+            "new": 0.19887933132780033,
+            "overall": 0.20291188788612247
+          },
+          "all_z_beta": {
+            "old": 0.19674938846940285,
+            "new": 0.19767058194709108,
+            "overall": 0.19720998520824695
+          },
+          "actionblind_z_beta": {
+            "old": 0.23892083333333367,
+            "new": 0.19160465972449103,
+            "overall": 0.21526274652891234
+          },
+          "immediate_only_beta": {
+            "old": 0.26191881163708136,
+            "new": 0.20856557903629483,
+            "overall": 0.2352421953366881
+          },
+          "temporal_source_bayes": {
+            "old": 0.1860446364036916,
+            "new": 0.1925986624494106,
+            "overall": 0.18932164942655108
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1658072916666671,
+            "new": 0.16421875000000005,
+            "overall": 0.16501302083333358
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6153846153846154
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94307,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18535833333333354,
+            "new": 0.1673942057291661,
+            "overall": 0.17637626953124985
+          },
+          "intervention_beta": {
+            "old": 0.22166341145833313,
+            "new": 0.20858681512090552,
+            "overall": 0.21512511328961934
+          },
+          "intervention_z_beta": {
+            "old": 0.19832031142354237,
+            "new": 0.16911963222789153,
+            "overall": 0.18371997182571698
+          },
+          "all_z_beta": {
+            "old": 0.1939603448969255,
+            "new": 0.18114134542705976,
+            "overall": 0.18755084516199264
+          },
+          "actionblind_z_beta": {
+            "old": 0.2492041666666663,
+            "new": 0.21996826171875009,
+            "overall": 0.2345862141927082
+          },
+          "immediate_only_beta": {
+            "old": 0.26364609375,
+            "new": 0.23963039934142547,
+            "overall": 0.2516382465457127
+          },
+          "temporal_source_bayes": {
+            "old": 0.1798814037490405,
+            "new": 0.15991044984512462,
+            "overall": 0.16989592679708254
+          },
+          "privileged_truth_oracle": {
+            "old": 0.16098958333333388,
+            "new": 0.14588541666666696,
+            "overall": 0.15343750000000042
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.63125
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.696969696969697
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94307,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18054900808970484,
+            "new": 0.17666116365350173,
+            "overall": 0.1786050858716033
+          },
+          "intervention_beta": {
+            "old": 0.2359671733276644,
+            "new": 0.2218324829931971,
+            "overall": 0.22889982816043075
+          },
+          "intervention_z_beta": {
+            "old": 0.21710431134259267,
+            "new": 0.20199728129822547,
+            "overall": 0.20955079632040907
+          },
+          "all_z_beta": {
+            "old": 0.18267835941087018,
+            "new": 0.18718696391507886,
+            "overall": 0.1849326616629745
+          },
+          "actionblind_z_beta": {
+            "old": 0.22405824821826306,
+            "new": 0.21493731378406342,
+            "overall": 0.21949778100116324
+          },
+          "immediate_only_beta": {
+            "old": 0.2478877529572505,
+            "new": 0.23570219966090847,
+            "overall": 0.2417949763090795
+          },
+          "temporal_source_bayes": {
+            "old": 0.17766800461274845,
+            "new": 0.17084566062239792,
+            "overall": 0.1742568326175732
+          },
+          "privileged_truth_oracle": {
+            "old": 0.16958333333333384,
+            "new": 0.14901041666666714,
+            "overall": 0.15929687500000048
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6011904761904763
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.6845238095238095
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94307,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.17100410771719476,
+            "new": 0.20258749999999984,
+            "overall": 0.1867958038585973
+          },
+          "intervention_beta": {
+            "old": 0.22938589498299286,
+            "new": 0.2637383078231296,
+            "overall": 0.24656210140306123
+          },
+          "intervention_z_beta": {
+            "old": 0.19390988166099762,
+            "new": 0.21580889666521955,
+            "overall": 0.2048593891631086
+          },
+          "all_z_beta": {
+            "old": 0.18480600894496113,
+            "new": 0.2165213762371263,
+            "overall": 0.20066369259104375
+          },
+          "actionblind_z_beta": {
+            "old": 0.21588050803726758,
+            "new": 0.20258749999999984,
+            "overall": 0.2092340040186337
+          },
+          "immediate_only_beta": {
+            "old": 0.24206939139796255,
+            "new": 0.21709194184618286,
+            "overall": 0.2295806666220727
+          },
+          "temporal_source_bayes": {
+            "old": 0.17027480566142353,
+            "new": 0.19751627388760964,
+            "overall": 0.1838955397745166
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1503125000000005,
+            "new": 0.1751562500000001,
+            "overall": 0.1627343750000003
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.6369047619047619
+        },
+        "new_effect": null,
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 0,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94319,
+        "scenario": "CONTRADICT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.1846189287475347,
+            "new": 0.18059554822973176,
+            "overall": 0.18260723848863322
+          },
+          "intervention_beta": {
+            "old": 0.23118074686256493,
+            "new": 0.21667065263605442,
+            "overall": 0.22392569974930968
+          },
+          "intervention_z_beta": {
+            "old": 0.19954421104989262,
+            "new": 0.19657660451876088,
+            "overall": 0.19806040778432674
+          },
+          "all_z_beta": {
+            "old": 0.19713601694121183,
+            "new": 0.1933861037326073,
+            "overall": 0.19526106033690957
+          },
+          "actionblind_z_beta": {
+            "old": 0.22439460829635105,
+            "new": 0.21920434273363032,
+            "overall": 0.22179947551499068
+          },
+          "immediate_only_beta": {
+            "old": 0.24566199714131887,
+            "new": 0.24891079119775875,
+            "overall": 0.24728639416953882
+          },
+          "temporal_source_bayes": {
+            "old": 0.1777749999596082,
+            "new": 0.17897305434975266,
+            "overall": 0.17837402715468043
+          },
+          "privileged_truth_oracle": {
+            "old": 0.1503125000000005,
+            "new": 0.15760416666666718,
+            "overall": 0.15395833333333384
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.7636363636363637
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.7678571428571429
+        },
+        "true_new_effect": {
+          "lag": 1,
+          "best": 0
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94319,
+        "scenario": "DELAY_SHIFT",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18248569251112126,
+            "new": 0.1737265110557397,
+            "overall": 0.17810610178343048
+          },
+          "intervention_beta": {
+            "old": 0.21143229166666652,
+            "new": 0.22282158708295066,
+            "overall": 0.21712693937480862
+          },
+          "intervention_z_beta": {
+            "old": 0.1878753353851009,
+            "new": 0.2193851305954478,
+            "overall": 0.20363023299027436
+          },
+          "all_z_beta": {
+            "old": 0.1826741521389742,
+            "new": 0.20422335597253405,
+            "overall": 0.19344875405575412
+          },
+          "actionblind_z_beta": {
+            "old": 0.22676114992581511,
+            "new": 0.22009157586233127,
+            "overall": 0.22342636289407322
+          },
+          "immediate_only_beta": {
+            "old": 0.23662906047297572,
+            "new": 0.24385903191015534,
+            "overall": 0.2402440461915655
+          },
+          "temporal_source_bayes": {
+            "old": 0.17821770905945422,
+            "new": 0.1674121086941601,
+            "overall": 0.17281490887680717
+          },
+          "privileged_truth_oracle": {
+            "old": 0.14888020833333385,
+            "new": 0.1411979166666672,
+            "overall": 0.14503906250000054
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.81875
+        },
+        "new_effect": {
+          "lag": 2,
+          "best": 1,
+          "amplitude": 0.5393939393939394
+        },
+        "true_new_effect": {
+          "lag": 2,
+          "best": 1
+        },
+        "new_correct": true,
+        "false_null": false,
+        "new_action_policy_gain": 1,
+        "source_true_u_only_for_oracle": true
+      },
+      {
+        "seed": 94319,
+        "scenario": "NULL",
+        "old_n": 768,
+        "new_n": 768,
+        "score": {
+          "flux_delayed": {
+            "old": 0.18162493038279368,
+            "new": 0.2525414485773903,
+            "overall": 0.21708318948009198
+          },
+          "intervention_beta": {
+            "old": 0.22961471915154952,
+            "new": 0.320690104166667,
+            "overall": 0.27515241165910825
+          },
+          "intervention_z_beta": {
+            "old": 0.21465238015477694,
+            "new": 0.254141572567531,
+            "overall": 0.23439697636115397
+          },
+          "all_z_beta": {
+            "old": 0.1878282078750143,
+            "new": 0.21987132884837948,
+            "overall": 0.20384976836169688
+          },
+          "actionblind_z_beta": {
+            "old": 0.23450724798571235,
+            "new": 0.20030200124597766,
+            "overall": 0.217404624615845
+          },
+          "immediate_only_beta": {
+            "old": 0.261922413270577,
+            "new": 0.24255378512995787,
+            "overall": 0.25223809920026746
+          },
+          "temporal_source_bayes": {
+            "old": 0.19486673743706287,
+            "new": 0.22362883034629555,
+            "overall": 0.20924778389167922
+          },
+          "privileged_truth_oracle": {
+            "old": 0.15630208333333387,
+            "new": 0.16109375000000012,
+            "overall": 0.158697916666667
+          }
+        },
+        "old_retained": true,
+        "old_effect": {
+          "lag": 1,
+          "best": 1,
+          "amplitude": 0.3988095238095238
+        },
+        "new_effect": {
+          "lag": 1,
+          "best": 0,
+          "amplitude": 0.63125
+        },
+        "true_new_effect": {
+          "lag": -1,
+          "best": null
+        },
+        "new_correct": false,
+        "false_null": true,
+        "new_action_policy_gain": -1,
+        "source_true_u_only_for_oracle": true
+      }
+    ],
+    "limitations": [
+      "Observation episodes are confounded by hidden nuisance U; randomized episodes identify interventions in this synthetic task",
+      "Context labels OLD/NEW explicitly supplied; no hidden context discovery",
+      "The causal lag is an outcome timestamp in an independent episode, not a multi-step dynamical trajectory",
+      "Held outcome U is only available to privileged oracle, not other predictors",
+      "JSON roundtrip is in-process, not native fresh-process checkpoint",
+      "No complete whole-process cost comparison or native scientific first use"
+    ]
+  },
+  "science_classification": "MIXED_NO_GO",
+  "scope": "synthetic source-free contributor; no original native model, production state or owner PR changed"
+}

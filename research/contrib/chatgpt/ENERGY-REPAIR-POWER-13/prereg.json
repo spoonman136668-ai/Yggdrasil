@@ -1,0 +1,52 @@
+{
+  "schema": "yggdrasil.external-research-analytic-prereg.v1",
+  "experiment_id": "ENERGY-REPAIR-POWER-13",
+  "date_utc": "2026-11-20",
+  "class": "exact_probability_feasibility_not_science_first_use",
+  "existing_pr": 1346,
+  "expected_pr_head": "6ce1addecb90c8178b158466d551c46c3eba0f55",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "owner_amalgam_pr": 1278,
+  "original_source": "ENERGY-REMAP-11/experiment.mjs at ab203a45bd1e42a11a043055e4541d26e1676ced; blob 8a5fbfa908edad48bb23804517c06bb645b5fda8",
+  "original_impossibility": "ENERGY-REMAP-GATE-12: 6 OLD + 2 NEW yields P(reset)<=5/7, below frozen 4/5; exact 9,702 and 16,632 configuration audits PASS",
+  "hypothesis": "The hard-reset mechanism becomes mathematically reachable at 3 NEW observations per row, but an appropriate budget also needs to control false resets and yield adequate true-change detection. Under a 6-category 0.88-dominant categorical row model, determine analytically whether any m<=8 meets both power >=0.80 and Bonferroni 12-row familywise false-repair bound <=0.05.",
+  "mathematics": {
+    "states": 6,
+    "old_n": 6,
+    "new_n_candidates": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "prior": "symmetric Dirichlet(1/2), reset prior=1/4, stay prior=3/4",
+    "posterior_gate": "P(reset|old counts,new counts)>=4/5, equivalently reset-vs-stay Bayes factor>=12",
+    "exact_BF": "BF=(9)_m/(3)_m × product_i ((1/2)_{new_i}/(old_i+1/2)_{new_i}), where (a)_k is the rising factorial. Exact integer inequality from odd-number product factors: 9..(8+m) × ∏(2j+1) >= 12 × [3..(2+m)] × ∏(2*(old_i+j)+1) across each new category with j=0..new_i-1.",
+    "exact_reachability": "MAX BF=(9)_m/(3)_m if all NEW-observed categories had zero OLD counts; old_n=6 leaves >=5 zeros. Thus m=1 max BF=3, m=2 max BF=15/2, m=3 max BF=33/2=16.5; first activation should be m=3.",
+    "source_probabilities": "OLD outcomes independent categorical: target category 0 probability 110/125=0.88, each other category 3/125=0.024. NEW under stationary NULL same target=0; under local REWIRE changed target category=1 with probability 110/125, each other=3/125. Target identities are given ONLY to exact probability calculator, never to any learned candidate.",
+    "enumeration": "For each m, enumerate all OLD 6-count compositions (462), all NEW m-count compositions C(m+5,5), and weight by exact multinomial probabilities. Weight numerator old 6!∏p_i^{c_i}/c_i! and NEW m!∏p_i^{y_i}/y_i! over 125^(6+m), with p_i in {110,3}; compute exact total event mass, exact alarm counts under NULL and REWIRE.",
+    "false_risk": "12 independent or arbitrarily correlated eligible state-action rows: familywise false-reset risk upper bound min(1,12*P_single_false), union bound. This is a conservative bound, not an exact 12-row probability.",
+    "controls": "Compare previous m=2 proof max=5/7 and 0 false/true activations. Confirm source probability mass equals one for stationary and rewiring at each m. Verify actual cases meeting gate and achievable max BF. Keep Bayes decision as a conventional causal repair guard, not new intelligence."
+  },
+  "precommitted_decision": {
+    "feasibility_threshold": "A budget m in [1..8] is eligible for future science only if power(rewire)>=0.80 and FWER_upper=12*P(false_single)<=0.05. If none, do not run a further hard-reset scientific primary on this evidence budget.",
+    "choose_budget": "If >=1 m eligible, select smallest eligible m for future preregistrations, without tuning on prior ENERGY-REMAP-11 consumed seeds. Eligibility is NOT scientific effectiveness; stronger fully fitted joint Bayes remains the primary comparator.",
+    "followup": "A genuinely new algorithm would need different information, action choice, or representation and disjoint never-used source tasks, rather than merely changing m or an observed threshold. All native integrations owner-gated.",
+    "fail_conditions": "Any mismatch from original code/prior/gate, unbalanced source mass, float-based threshold ambiguity, no independent proof of max or provenance gaps.",
+    "scientific_pass": "UNAVAILABLE_BY_DESIGN: exact synthetic source-law design calculation only, not actual native learning, independent replica, unfamiliar transfer, cumulative retention or RSI."
+  },
+  "custody": {
+    "prereg_before_source": true,
+    "readback_frozen_source": true,
+    "one_deterministic_analytic_execution": true,
+    "no_primary_seed_consumption": true,
+    "no_original_model_action": true,
+    "no_runner_or_scheduler": true,
+    "repo_only_no_chat_artifacts": true
+  },
+  "confidentiality": "No hidden production sources, credentials or external paid APIs."
+}

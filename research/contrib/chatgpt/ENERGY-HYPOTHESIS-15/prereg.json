@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.external-research-frozen-protocol.v1",
+  "id": "ENERGY-HYPOTHESIS-15",
+  "utc_date": "2026-11-20",
+  "branch": "research/energy-flux01-nonconservative-causality-20261120",
+  "parent_sha": "cbaf41fa81de5010fc352ac21d1059e9fe7ebecf",
+  "owner": "independent Energy contributor",
+  "central_owner": "Yggdrasil Amalgam PR #1278",
+  "question": "Can bounded explicit local structural repair preserve familiar causal readouts and predict unfamiliar causal changes with less computation than a correctly modeled, fully fitted Bayesian active planner?",
+  "worlds": {
+    "input_bits": 5,
+    "latent_hypotheses": "all 31 nonempty XOR masks x 2 bias bits, 62 total",
+    "old_mask_popcount": [
+      2,
+      3
+    ],
+    "noisy_outcome_flip_probability": 0.1,
+    "old_samples": 24,
+    "new_actions_per_arm": 16,
+    "held_consequences_per_input": 20,
+    "scenario_families": [
+      "NULL",
+      "SINGLE_EDGE",
+      "DOUBLE_EDGE"
+    ],
+    "primary_seeds": [
+      88103,
+      88117,
+      88129,
+      88141,
+      88153,
+      88169,
+      88177,
+      88189,
+      88201,
+      88211,
+      88223,
+      88237
+    ],
+    "smoke_seed": 88091
+  },
+  "generative_source": "Deterministic seeded pseudorandom binary interventions: OLD parity of unknown mask and bias, then zero, one, or two edge-bit changes; truth never passed to learners; paired conditional outcome streams keyed by seed,scenario,input,observation ordinal. Old observations shared.",
+  "hypothesis_engine": "Estimate OLD_MAP from 24 OLD samples over 62 hypotheses with uniform old prior and known .10 noise. Preserve OLD readout immutable. NEW hypothesis prior for each hypothesis is exp(-HammingDistance(old_mask,mask)-bias_flip), normalized. Candidate first uses only mask distances <=1, dynamically expands to <=2 if cumulative negative log predictive likelihood per NEW observation exceeds .75 at or after observation 6. Re-score every prior NEW observation after expansion. Full Bayesian controls retain all 62 hypotheses at all times.",
+  "arms": {
+    "local_active": "Candidate truncated/expandable Bayes structure hypothesis committee; next context maximizing committee predictive binary entropy over 32 possible interventions.",
+    "full_bayes_ig": "Strong conventional full 62-hypothesis Bayesian active planner with identical prior/noise and same expected-entropy intervention score.",
+    "full_bayes_random": "Same full 62-hypothesis posterior with deterministic random intervention contexts.",
+    "local_on_bayes_trace": "Candidate local repair trained on identical consequences and intervention sequence produced by full_bayes_ig (estimator ablation)."
+  },
+  "measurement": "Per-arm averaged held binary Brier over 32 contexts x 20 held outcomes, per scenario and overall, shift-induced mask identification, false-positive change reports in NULL, old predictive retention after JSON serialize/reparse, exact action/observation counts, unique coverage, deterministic count of hypothesis-likelihood and query-prediction evaluations (cost proxy, not measured CPU).",
+  "success": "DEV_SIGNAL only if local_active Brier <= full_bayes_ig Brier + .015 overall and in every scenario; >=2.0x fewer counted hypothesis evaluations including OLD fit and all NEW fit/action/evaluation; >=80% correct changed-mask recovery on SINGLE_EDGE+DOUBLE_EDGE; <=5% per-world NULL false changes; 100% exact retained OLD readouts. Otherwise NO_GO. No scientific-pass claim without independent replica and native owner strong controls.",
+  "integrity": "One prereg commit, then one source commit, exact Git blob readback before smoke and primary; one disjoint smoke world per scenario then one frozen 12x3 primary only; no replay, no threshold tuning, no seed reuse. Preserve negatives.",
+  "isolation": "Source-free synthetic research contributor; append-only in existing draft PR #1346. No accepted main, native learned-state integration, owner loop, runner, schedules, paid APIs, scientific first-use, merge or deployment."
+}
