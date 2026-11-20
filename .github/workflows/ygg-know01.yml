@@ -600,8 +600,8 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_protocol.json)" = 38196b88ddedad232569212713203c39a5f1f557
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py)" = 5d78f7a31ac64dc463d9c84abeef382d07bc14c7
-          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know31_paired_interference_dev.py)" = 880d783181564f181ff0d7f1ec82ce57752ccc7a
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py)" = 9c54256485d639593d6f2b616728918ae0d2f011
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know31_paired_interference_dev.py)" = 1c7d56a0820551395fe162be5dac8ed700be8550
           PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py \
              > "$RUNNER_TEMP/know31-paired-interference-first-use.json"
           python -B - <<'PY'
