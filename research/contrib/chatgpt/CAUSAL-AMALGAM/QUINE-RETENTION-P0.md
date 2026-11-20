@@ -161,6 +161,48 @@ and no authority to use protected original-world first-use. The
 same existing two-OS engineering regression must pass after this
 incremental contributor change.
 
+## Exact large-rational selector custody — native research cold-replay qualification
+
+Actual archived `SpecialistSelection` source evidence stores **exact
+`Fraction`-valued** prediction-loss deltas. When these native probabilities
+are accumulated across existing witness histories, numerator and denominator
+bit lengths can exceed the default **4,300-decimal-digit Python security
+limit**. Our first real 96-witness selector replay exposed this in the
+research-only Quine `_selector_receipt`, which had formatted every
+fraction using `str(Fraction)`. Separately, the archived-replay adapter
+imported Unix-only `resource` indirectly from `selection_trial.py`;
+this made its source-free Windows tests fail. These were **engineering
+failures** on qualification run `44653186259`, not learning failures.
+
+The bounded repair uses the unchanged frozen selector configuration
+directly, without importing the original Unix-oriented trial runner.
+`encode_selector_fraction` keeps every previously valid small
+(≤1,024-bit numerator/denominator) decimal receipt **byte-identical**.
+Large fractions are represented losslessly as
+`hex:<signed-hex-numerator>/<positive-hex-denominator>`, with an
+explicit canonical inverse `decode_selector_fraction` used by the
+existing cumulative-envelope source-free restore callback. The exact
+numerator and denominator are preserved: there is **no clipping,
+decimal approximation, modified loss, different routing threshold or
+model-policy change**. Using a fixed bit cutoff makes the encoding
+independent of the local Python digit-limit setting and avoids globally
+disabling that restriction.
+
+New negative and retention tests cover **16,000-bit** original evidence,
+old decimal compatibility, noncanonical aliases, cross-object policy
+digests and full cumulative-envelope recovery with exact huge rational
+evidence. The candidate still must prove the actual original archived
+1,025+96-witness native/JEPA state and derived-selector policy readback
+on both Linux and Windows, including the original `DEV_NO_GO` outcome.
+
+**Policy custody is not scientific achievement:** selector evidence
+derived by replaying the original consumed 96 public episodes is not
+an independently authenticated owner-host selector checkpoint or virgin
+scientific learning. The original 96-episode archive selected native
+for 96/96 actions, with 64/64 scored native and `DEV_NO_GO`. No
+protected original-world first-use, owner lease, merge or training
+restart is authorized by this fix.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
