@@ -575,6 +575,9 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  # KNOW31_POST_FIRST_USE_ATTEMPT_NO_REPLAY: prior first-use was SKIPPED
+  # after atlas push contention; corrected source/test blobs were frozen
+  # BEFORE any held result, and this exact commit alone requests one trial.
   know31-paired-interference-study:
     if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know31): one-shot A-vs-B interference after full exact regression'"
     needs: [atlas, full-final, real-source-compatibility]
