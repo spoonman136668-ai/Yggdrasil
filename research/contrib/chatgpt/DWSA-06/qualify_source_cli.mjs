@@ -37,7 +37,9 @@ function qualify(paths) {
     record(blobSha(readFileSync(fullPath)) === pinnedSha, 'CODE_DRIFT_' + script);
     const result = spawnSync(process.execPath, [fullPath, ...paths], {
       cwd: HERE, encoding: 'utf8', shell: false, timeout: 60000, maxBuffer: 2 * 1024 * 1024,
-      env: {PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? ''},
+      env: Object.fromEntries(['PATH','HOME','SystemRoot','TEMP','TMP','USERPROFILE']
+        .filter(key => typeof process.env[key] === 'string')
+        .map(key => [key, process.env[key]])),
     });
     record(result.error === undefined && result.status === 0 && result.signal === null,
       'CHILD_FAILURE_' + script + '_EXIT_' + result.status);
