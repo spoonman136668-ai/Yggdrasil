@@ -574,3 +574,55 @@ jobs:
           path: ${{ runner.temp }}/know30-blind-archive-reactivation-receipt.json
           if-no-files-found: error
           retention-days: 30
+
+  know31-paired-interference-study:
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know31): one-shot A-vs-B interference after full exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Pin exact G29-sealed candidate
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Single prospective source-only two-fork causal attribution held first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_protocol.json)" = 38196b88ddedad232569212713203c39a5f1f557
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py)" = 5d78f7a31ac64dc463d9c84abeef382d07bc14c7
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know31_paired_interference_dev.py)" = 880d783181564f181ff0d7f1ec82ce57752ccc7a
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py \
+             > "$RUNNER_TEMP/know31-paired-interference-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know31-paired-interference-first-use.json"
+          d=json.loads(p.read_text())
+          assert d["schema"]=="yggdrasil.know31.paired-interference-result.v1"
+          assert d["prereg_original_commit"]=="22a197a61060a97a9aa45aecec78e85c71122600"
+          assert d["prereg_compat_revision"]=="4b392dad590bea0f6b236c4399039c1d9c369a36"
+          assert d["protocol_git_blob"]=="38196b88ddedad232569212713203c39a5f1f557"
+          assert (d["held_world_pairs"],d["per_method_fork_action_occurrences"],d["unique_private_events_across_worlds"])==(24,2304,1920)
+          assert len(d["paired_worlds"])==24 and len(d["per_method"])==4 and len(d["frozen_hypotheses"])==5
+          assert d["protected_original_first_use"] is False and d["accepted_native_modified"] is False and d["deployment"]=="NONE"
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve synthetic outcome only, not native data or model state
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW31-paired-interference-attribution-first-use
+          path: ${{ runner.temp }}/know31-paired-interference-first-use.json
+          if-no-files-found: error
+          retention-days: 30
