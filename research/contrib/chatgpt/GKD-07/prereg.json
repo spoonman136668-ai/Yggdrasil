@@ -1,0 +1,93 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GKD-07",
+  "date": "2026-11-20",
+  "contribution_class": "public-historical-randomized-intervention-effect-prior-test",
+  "baseline_pr_head": "452c812d3573e9cc8446d4375bf5c4904b52b0f4",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "question": "Does an assistant-authored structural claim about treatment-effect ordering improve prediction of genuine randomized job-training effects over equally trained conventional causal estimators, without reusing Sachs data or pretending to observe individual counterfactuals?",
+  "candidate_prior": "GPT-derived qualitative prior, explicitly UNVERIFIED: in historical NSW job training, individuals with both 1974 AND 1975 recorded earnings equal to zero have non-smaller average training effects on 1978 earnings than participants with any positive earnings. This is a speculative structural inequality, not a fact established by donor weights or causal data.",
+  "source": {
+    "name": "National Supported Work Demonstration (NSW) randomized 1970s job training experiment, Dehejia-Wahba subsample",
+    "primary": "LaLonde 1986, Evaluating the Econometric Evaluations of Training Programs with Experimental Data",
+    "secondary": "Cunningham Causal Inference: The Mixtape, causaldata::nsw_mixtape; NBER nswre74 treated/control",
+    "public_documentation": "https://www.rdocumentation.org/packages/causaldata/versions/0.1.3/topics/nsw_mixtape",
+    "github_owner_repo": "vincentarelbundock/Rdatasets",
+    "pinned_git_commit": "1dcc2bf5f955cc1224a3e1307256e1fe86b68dae",
+    "file_path": "csv/causaldata/nsw_mixtape.csv",
+    "url": "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/1dcc2bf5f955cc1224a3e1307256e1fe86b68dae/csv/causaldata/nsw_mixtape.csv",
+    "first_download_sha256": "RECORDED_AFTER_FROZEN_SOURCE_ADMISSION",
+    "expected_rows": 445,
+    "expected_treated": 185,
+    "expected_controls": 260,
+    "expected_schema": "11 columns data_id,treat,age,educ,black,hisp,marr,nodegree,re74,re75,re78, optionally Rdatasets first metadata column rownames (not a feature). All expected column names case-sensitive. No mirrors or alternative controls. Data must be finite; unique data_id.",
+    "information_contamination": "Historically published extensively and plausible GPT pretraining exposure. Not original external first use, no new randomized participants."
+  },
+  "protocol": {
+    "outcome": "re78, annual earnings in historical dollars; not individual potential outcome",
+    "treatment": "treat binary randomized assignment 1 versus 0. All original 445 experimental records only; no PSID/CPS observational comparators.",
+    "features_used": [
+      "re74",
+      "re75"
+    ],
+    "excluded_features": [
+      "age",
+      "educ",
+      "black",
+      "hisp",
+      "marr",
+      "nodegree",
+      "any group identifier other than data_id for deterministic splitting"
+    ],
+    "effect_group": "U=1 when re74==0 and re75==0, else U=0. No special cases based on heldout group outcome.",
+    "split": "Per treatment assignment separately sort individuals by SHA256 UTF8('GKD07-fold-v1|'+data_id); take treated FIT first 111, VALID next37, DEV last37; controls FIT first156, VALID next52, DEV last52. 267 FIT,89 VALID,89 DEV; no source numerical outcome used in splitting.",
+    "propensity": "Known experimental assignment fraction p=185/445, held constant in FIT/VALID/DEV.",
+    "pseudo_outcome": "For each VALID/DEV individual, Z = treat*re78/p - (1-treat)*re78/(1-p). Randomization gives E[Z|pretreatment covariates] = conditional treatment effect under assignment exchangeability; individual Z is NOT individual counterfactual.",
+    "candidate_estimator": "FIT-only within-U subgroup difference in treated and control re78 means. Impose donor U effect >= non-U effect via weighted isotonic pooling: if subgroup U effect < non-U, pool both to FIT pooled group effects weighted by subgroup FIT counts; otherwise retain subgroup effects. No tuning.",
+    "strong_controls": [
+      "FIT-only pooled randomized difference in means, constant for all DEV participants",
+      "FIT-only unconstrained two-U-group randomized difference-in-means; same data and 2 groups",
+      "FIT-only fully fitted ridge S-learner with intercept, treat, U, treat*U, log1p(re74), log1p(re75), treat*log1p(re74), treat*log1p(re75); ridge penalty alpha=1 on all nonintercept columns in outcome units / 10000, same features for treatment 0/1; effect is pred(T=1)-pred(T=0)",
+      "Reverse monotonic sham imposes effect_U <= effect_nonU on same FIT-only subgroup estimates",
+      "Same donor prior conventional deterministic implementation, intended exact equal-information tie (no claim independent algorithm)"
+    ],
+    "baseline_selection": "Select strongest of pooled, unconstrained, fully fitted ridge by minimum squared error on 89 VALID individuals using their pseudo-outcomes. Fixed control order breaks ties. Candidate donor and sham do not influence selection. No training on validation outcomes.",
+    "primary_score": "Mean square error across 89 DEV pseudo-outcomes, reported as RMSE in historical dollars, compared with frozen VALID-selected strongest conventional. Relative RMSE gain = 1 - donor_rmse / best_conventional_rmse.",
+    "uncertainty": "Exactly 2000 paired bootstrap resamples of 89 DEV participant indices with fixed xorshift32 seed 7007; calculate paired relative RMSE gain and the nearest-rank 2.5% and 97.5% percentiles. This is exploratory because single small historical cohort.",
+    "stratum_diagnostics": "Report separate DEV RMSE on U=1 and U=0 and on two predeclared DEV subgroups: first and second half by the sorted SHA256(data_id) order. No primary threshold respecification.",
+    "signal": "PUBLIC_DEV_SIGNAL only if >=5% donor RMSE gain against VALID-selected best conventional, >=5% gain against reverse-monotone sham, bootstrap lower 2.5 percentile gain >0, and donor nonregressing in each DEV half. Otherwise PUBLIC_DEV_NO_GO.",
+    "scientific_pass": "ALWAYS FALSE: historically reused public trial, GPT prior may recall dataset, small 89-person DEV, no multiple independent RCT replications, no native learner adaptation or actual new intervention action.",
+    "mismatch": "SOURCE_NO_GO if pinned original CSV has wrong fields, row counts, treatment balance, missing or nonfinite values, duplicate data_id, empty treatment subgroup; stop before DEV score and never silently substitute a different source.",
+    "budgets": {
+      "source_max_bytes": 150000,
+      "records": 445,
+      "fit": 267,
+      "valid": 89,
+      "dev": 89,
+      "bootstrap": 2000,
+      "paid_api_calls": 0,
+      "new_physical_interventions": 0,
+      "owner_runner_use": 0,
+      "model_runtime_teacher_calls": 0
+    },
+    "no_post_result_tuning": true
+  },
+  "contrasts": "Distinct from GKD-06 same-cell protein conditional prediction: this is a real historical randomized treatment effect; distinct from existing Yggdrasil source-free closed-loop mechanisms; no duplicate prior NSW experiment found in PR search.",
+  "authority": {
+    "research_only": true,
+    "source_first_use": false,
+    "native_training": false,
+    "accepted_main_changes": false,
+    "runner_or_scheduler_control": false,
+    "merge": false,
+    "deployment": false
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/GKD-07/**",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ]
+}
