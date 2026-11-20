@@ -278,3 +278,31 @@ retrospective, not a new scientific efficacy comparison. Preserve
 RD04_ENGINEERING_NO_GO and original all-world negative findings.
 The sole Amalgam coordinator decides any distinct future native
 hypothesis, validation and integration.
+
+
+## RD06 — static one-lag public-history identifiability certificate
+
+Frozen separately and **before** implementation in
+`RD06-FROZEN-IDENTIFIABILITY-CERTIFICATE.md`, commit
+`4fba6c248299ef39e510a4bdc0b152d48742430a`.
+The source-only mathematical audit does **not** train another model,
+create any new world, rescore RD04 as a fresh scientific experiment,
+or consume original protected source data. It uses only the same
+previously scored RD04 public action/consequence witnesses.
+
+`rd06_identifiability.py` computes the exact empirical minimum Brier
+for every static map of the existing public state/current action/s2/one
+previous action tuple to one terminal probability. That is a
+representational lower bound for the **static one-lag key class**,
+not a universal online information bound or a learner evaluation. A
+private evaluator's phase-tagged oracle is labelled strictly
+**unavailable** to the native learner and must not be promoted.
+The audit also distinguishes frozen A-prefix query fields from the
+live learner history; previous old-A probe drifts alone do not prove
+parameter forgetting because the query's implied history can differ
+after adaptation. All source and receipt tampering fails closed.
+
+The outcome is retrospective mathematical evidence only. The single
+cumulative Yggdrasil learner and its canonical checkpoint lineage are
+owned by the independent Unified Causal Intelligence Amalgam Work
+coordinator, not this research contributor.
