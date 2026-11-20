@@ -50,3 +50,128 @@ jobs:
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
       - run: git diff --exit-code
+
+  lr92ay-prospective-native-development:
+    # Temporary one-shot scoped CI qualification: no accepted/owner learner, first-use or scheduler.
+    if: github.event_name == 'pull_request' && github.event.pull_request.number == 1323
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout source-frozen independent development study
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 249e1b3a902894cded6727aac3cf8f6f69fc4d9c
+          path: contributor
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Checkout exact research-only native candidate code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 86264b41a08d49f558418c0fba367f3a2636befa
+          path: native
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact-source/seed freeze, 19 local checks, full eight-arm true native development run
+        timeout-minutes: 42
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C contributor rev-parse HEAD)" = "249e1b3a902894cded6727aac3cf8f6f69fc4d9c"
+          test "$(git -C native rev-parse HEAD)" = "86264b41a08d49f558418c0fba367f3a2636befa"
+          test "$(git -C native rev-parse 'HEAD^{tree}')" = "ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5"
+          test -z "$(git -C native status --porcelain)"
+          P=contributor/research/contrib/spoonman136668-ai/lr92ay-prospective-native-base-dev
+          H="$RUNNER_TEMP/lr92ay-frozen"
+          mkdir -p "$H"
+          for n in worlds experiment test_experiment; do cp "$P/$n.py.txt" "$H/$n.py"; done
+          cp "$P/dev_manifest.json.txt" "$H/dev_manifest.json"
+          cp "$P/frozen_dev_protocol.json.txt" "$H/frozen_dev_protocol.json"
+          cd "$H"
+          python -B - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          x=json.loads(Path('frozen_dev_protocol.json').read_text())
+          for name,expected in x['source_lock']['files'].items():
+              actual=hashlib.sha256(Path(name).read_bytes()).hexdigest()
+              assert actual==expected,(name,expected,actual)
+          assert x['experiment']['worlds']==48 and x['experiment']['events_per_arm']==9346
+          assert x['statistics']['stop_rule'].startswith('DEVELOPMENT_GO iff native_base')
+          assert x['authority']['protected_original_288_worlds'] is False
+          print('LR92AY_SOURCE_FROZEN_VERIFIED=PASS')
+          PY
+          python -B -m unittest -v test_experiment.py
+          python -B experiment.py --native-checkout "$GITHUB_WORKSPACE/native" \
+            --out "$RUNNER_TEMP/lr92ay_native_results.json"
+          python -B - "$RUNNER_TEMP/lr92ay_native_results.json" <<'PY'
+          import hashlib,json,math,sys
+          from pathlib import Path
+          r=json.loads(Path(sys.argv[1]).read_text())
+          m=json.loads(Path('dev_manifest.json').read_text())
+          assert r['source_sha']=='86264b41a08d49f558418c0fba367f3a2636befa'
+          assert r['source_tree']=='ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5'
+          assert r['worlds']==48 and r['events_per_arm']==9346
+          assert r['owner_checkpoint_changed'] is False and r['primary_worlds_consumed']==0
+          assert len(r['rows'])==len(m)==48
+          arms=('native_base','native_stream','beta_full','beta_window32','beta_decay24',
+                'symbolic_hmm','shuffled_context','no_learning')
+          controls=arms[2:6]
+          for x,a in zip(r['rows'],m):
+              assert x['seed']==a['seed'] and x['family']==a['family'] and x['rep']==a['rep']
+              assert x['public_sha256']==a['public_sha256'] and x['dwell']==a['dwell']
+              assert set(x['models'])==set(arms)
+              for arm in arms:
+                  model=x['models'][arm]
+                  assert model['updates']==a['events'] and model['checkpoint_bytes']>0
+                  assert len(model['checkpoint_sha256'])==len(model['pre_return_sha256'])==64
+                  for phase in ('A','B','return16','return_all'):
+                      for kind in ('transition','terminal'):
+                          p=model['scores'][phase][kind]
+                          assert math.isfinite(p) and 0<=p<=1
+          go=True
+          for seed in (90161101,90161102,90161103):
+              d=r['seed_summary'][str(seed)]
+              for arm in arms:
+                  for phase in ('B','return16'):
+                      actual=sum(row['models'][arm]['scores'][phase]['terminal']
+                                 for row in r['rows'] if row['seed']==seed)/16
+                      assert abs(actual-d[arm][phase])<1e-12
+              bb=min(d[arm]['B'] for arm in controls)
+              br=min(d[arm]['return16'] for arm in controls)
+              candidate=d['native_base']
+              won=candidate['return16']<=br-.01 and candidate['B']<=bb+.01
+              assert r['seed_go'][str(seed)]==won
+              go &= won
+              print('LR92AY_SEED',seed,'native_base_B',candidate['B'],'control_best_B',bb,
+                    'native_base_return16',candidate['return16'],'control_best_return16',br,
+                    'native_stream_B',d['native_stream']['B'],
+                    'native_stream_return16',d['native_stream']['return16'],
+                    'GO',won,flush=True)
+          decision='DEVELOPMENT_GO' if go else 'DEVELOPMENT_NO_GO'
+          assert decision==r['status']
+          digest=hashlib.sha256(Path(sys.argv[1]).read_bytes()).hexdigest()
+          print('LR92AY_REAL_NATIVE_RESULT_SHA256='+digest)
+          print('LR92AY_REAL_NATIVE_DECISION='+decision)
+          receipt={'audit':'PASS','native_source_sha':r['source_sha'],'native_tree':r['source_tree'],
+                   'worlds':48,'events_per_arm':9346,'arms':list(arms),'decision':decision,
+                   'protected_first_use':False,'owner_checkpoint_changed':False,
+                   'raw_results_sha256':digest}
+          Path(sys.argv[1]).with_name('lr92ay_native_audit.json').write_text(json.dumps(receipt,sort_keys=True)+'\n')
+          PY
+      - name: Preserve native development results in GitHub Actions only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: LR92AY-real-native-development-249e1b3a902894cded6727aac3cf8f6f69fc4d9c
+          path: |
+            ${{ runner.temp }}/lr92ay_native_results.json
+            ${{ runner.temp }}/lr92ay_native_audit.json
+          if-no-files-found: warn
+          retention-days: 7
