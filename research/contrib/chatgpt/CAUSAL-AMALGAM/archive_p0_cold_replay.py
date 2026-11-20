@@ -17,6 +17,7 @@ if str(HERE) not in sys.path:
 
 from specialist_selection import SpecialistSelection
 import quine_retention as guard
+from four_head_retention import audit_old_heads
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import digest
 
@@ -174,6 +175,9 @@ def replay_consumed_selector(start, source_directory):
             or gate.system.checkpoint() != reopened.system.checkpoint()):
         raise ValueError("P0_CONSUMED_SELECTOR_COLD_POLICY_DRIFT")
     policy_check = guard.verify_selector_replay(gate, reopened)
+    # Archived 1,025-witness old-task head-only functional retention: compare
+    # original P0 to the already-consumed 96-event descendant and its cold clone.
+    four_head_retention = audit_old_heads(start, gate.system, reopened_core)
     # Contrast the *original* P0 against its already-consumed negative
     # development descendant: differences are action-policy diagnostics,
     # never a claim that either action's unobserved consequence is correct.
@@ -199,6 +203,7 @@ def replay_consumed_selector(start, source_directory):
         "reconstructed_native_sha256": digest(native),
         "linux_exact_core_bytes_required_on_windows": False,
         "policy_check": policy_check,
+        "four_head_retention": four_head_retention,
         "native_action_drift": native_action_drift,
         "selector_action_drift": selector_action_drift,
         "selector_evidence_from_original_public_trace": True,
