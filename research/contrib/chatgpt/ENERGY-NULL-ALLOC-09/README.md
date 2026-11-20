@@ -50,3 +50,14 @@ The original 0.30 threshold remains **unacceptably susceptible to sampling noise
 - **ENGINEERING:** Mathematical source identity, exact mass enumeration, count-symmetry and null-rate arithmetic PASS; separate dual-platform G29 Atlas acceptance remains failing for draft PR research additions.
 - **SCIENTIFIC:** No new empirical gain or native model learning; original ENERGY-DELAY-07 MIXED_NO_GO stands.
 - **DEPLOYMENT:** None. No accepted main, Amalgam PR #1278, private runner, scheduler, owner checkpoint, or production ref changed.
+
+## Independent postscore arithmetic audit
+
+An independently implemented [four-cell multinomial auditor](audit.mjs), committed at `65257b457752a4a22cb2b56dd70f535e31a37a90` (Git blob `8c2b2b0d92d36f1c0a96eef46cd361fe8a5b26c3`), re-enumerates all 2,925 possible combinations of `(action0 failure, action0 success, action1 failure, action1 success)` summing to 24. It uses multinomial weights `24!/(n00!n01!n10!n11!)` over denominator `4^24` rather than the first executable's `Binomial(24,N0) × Binomial(N0,X0) × Binomial(N1,X1)` factorization. The exact one-lag heuristic and Fisher numerators **both matched the frozen repository result**, as did the correlated-three-lag union-bound numerators. **Independent arithmetic PASS, no synthetic-world or original primary replay.**
+
+To run only this deterministic mathematical audit against the committed evidence:
+```bash
+node --input-type=module -e "import('node:fs').then(async fs=>{const m=await import('./research/contrib/chatgpt/ENERGY-NULL-ALLOC-09/audit.mjs');const d=JSON.parse(fs.readFileSync('./research/contrib/chatgpt/ENERGY-NULL-ALLOC-09/result.json','utf8'));console.log(m.auditNullAllocation(d));})"
+```
+
+This verifies exact arithmetic and source custody, **not** independence of the earlier empirical outcome generator or native scientific learning.
