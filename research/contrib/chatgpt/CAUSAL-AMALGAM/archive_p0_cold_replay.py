@@ -167,6 +167,7 @@ def summarize_bounded_consolidation(samples):
         result = sample["blend"]
         if (result.get("schema") != "yggdrasil.amalgam.dev-headwise-blend.v1"
                 or result.get("old_witness_count") != EXPECTED_EPISODES
+                or result.get("old_ledger_sha256") != EXPECTED_LEDGER
                 or result.get("anchor_checkpoint_sha256") != EXPECTED_JOINT
                 or result.get("head_count") != 4
                 or tuple(result.get("heads", {})) != HEAD_NAMES

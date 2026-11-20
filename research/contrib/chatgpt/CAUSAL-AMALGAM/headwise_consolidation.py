@@ -12,6 +12,7 @@ from math import isfinite
 from four_head_retention import (
     _head_probability, _inspect, HEAD_NAMES, MAX_OLD_WITNESSES,
 )
+from yggdrasil.native_context_basis import canonical, digest
 
 ALPHAS_DESCENDING = (1.0, 0.75, 0.5, 0.25, 0.0)
 MAX_DRIFT = 0.02
@@ -131,7 +132,7 @@ def assess_bounded_blend(anchor, current, proposed):
         "replay_interventions": 0,
         "selected_weight_factors": list(ALPHAS_DESCENDING),
         "max_old_head_brier_drift": MAX_DRIFT,
-        "old_ledger_sha256": _inspect(anchor)[2],
+        "old_ledger_sha256": digest(canonical(old)),
         "anchor_checkpoint_sha256": a_pin,
         "current_checkpoint_sha256": c_pin,
         "proposed_checkpoint_sha256": p_pin,

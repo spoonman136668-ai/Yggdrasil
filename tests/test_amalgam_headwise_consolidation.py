@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import unittest
 
-from yggdrasil.native_context_basis import canonical
+from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist
 from yggdrasil.native_jepa_temporal import TemporalLatentSpecialist
 
@@ -66,6 +66,7 @@ class G25BlendTests(unittest.TestCase):
         self.assertEqual(tuple(result["heads"]), G25.HEAD_NAMES)
         self.assertEqual(result["head_count"], 4)
         self.assertEqual(result["old_witness_count"], 24)
+        self.assertEqual(result["old_ledger_sha256"], digest(canonical(_history())))
         self.assertEqual(result["source_actions"], 0)
         self.assertFalse(result["official_checkpoint_restore_supported"])
         self.assertFalse(result["repaired_learner_constructed"])
