@@ -1,7 +1,7 @@
 TITLE: Yggdrasil Source Atlas
 STATUS: ADVISORY NAVIGATION ONLY
 SOURCE_REPOSITORY: spoonman136668-ai/Yggdrasil
-SOURCE_COMMIT: a1a30c811cc00fa18f831fe289cbfd47a7b6b13e
+SOURCE_COMMIT: c4eb9edb087c3b5967fe5f1079efec9f5c454eae
 SCHEMA: yggdrasil.ice.source-locator.v1
 FILES: 125
 SYMBOLS: 424
