@@ -1,0 +1,155 @@
+"""LR-92AZ: frozen source-free, prequential causal constraint and cold retention evaluation."""
+from __future__ import annotations
+from collections import deque
+import csv,hashlib,json,math,sys,time
+from causal_basis import WitnessBasis,features
+from worlds import SEEDS,FAMILIES,REPS,worlds,truths
+
+ARMS=('witness_basis','exact_batch_gf2','beta_full','beta_window32','no_learning','shuffled_context')
+
+class BatchGF2:
+    """Exact symbolic control with all witnessed public equations and no compression."""
+    def __init__(self):self.records=[]
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        temp=WitnessBasis()
+        for item in self.records:
+            temp.observe(*item)
+        return temp.predict(stage,v,s1,x1,s2,x2)
+    def observe(self,*a):self.records.append(a)
+    def snapshot(self):return json.dumps(self.records,separators=(',',':')).encode('ascii')
+
+class Beta:
+    def __init__(self,window=None):self.records=[];self.window=window
+    def _key(self,stage,v,s1,x1,s2,x2):
+        return (stage,v,s1,x1) if stage=='s' else (stage,v,s1,x1,s2,x2)
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        k=self._key(stage,v,s1,x1,s2,x2)
+        prior=self.records[-self.window:] if self.window else self.records
+        vals=[a[-1] for a in prior if a[:-1]==k]
+        return (sum(vals)+1)/(len(vals)+2)
+    def observe(self,stage,v,s1,x1,s2,x2,y):
+        self.records.append((*self._key(stage,v,s1,x1,s2,x2),y))
+    def snapshot(self):return json.dumps(self.records,separators=(',',':')).encode('ascii')
+
+class NoLearning:
+    def __init__(self):self.count=0
+    def predict(self,*a):return .5
+    def observe(self,*a):self.count+=1
+    def snapshot(self):return str(self.count).encode()
+
+class Shuffled(WitnessBasis):
+    """Negative control: irreversibly scramble context at write/read by event identity."""
+    @staticmethod
+    def scramble(event):return int(hashlib.sha256(('AZ-SHUFFLE|'+event.identifier).encode()).hexdigest()[:2],16)&1
+
+
+def value(model,arm,e,stage):
+    v=Shuffled.scramble(e) if arm=='shuffled_context' else e.v
+    return model.predict(stage,v,e.s1,e.x1,e.s2,e.x2)
+
+
+def observe(model,arm,e):
+    v=Shuffled.scramble(e) if arm=='shuffled_context' else e.v
+    model.observe('s',v,e.s1,e.x1,e.s2,e.x2,e.s2)
+    model.observe('y',v,e.s1,e.x1,e.s2,e.x2,e.y)
+
+
+def instantiate(arm):
+    if arm in ('witness_basis','shuffled_context'):return WitnessBasis()
+    if arm=='exact_batch_gf2':return BatchGF2()
+    if arm=='beta_full':return Beta()
+    if arm=='beta_window32':return Beta(32*2) # 32 public episodes, 2 stage equations/episode
+    if arm=='no_learning':return NoLearning()
+    raise ValueError('ARM')
+
+
+def probe(world,model,arm):
+    """Counterfactual A-context *reachable* interventions, not oracle to model."""
+    transition=[];terminal=[]
+    for s1 in (0,1):
+        for x1 in (0,1):
+            s2,_=truths(world.family,world.rep,0,s1,x1,0,0)
+            transition.append((value_probe(model,arm,'s',0,s1,x1,s2,0)-s2)**2)
+            for x2 in (0,1):
+                _,y=truths(world.family,world.rep,0,s1,x1,s2,x2)
+                terminal.append((value_probe(model,arm,'y',0,s1,x1,s2,x2)-y)**2)
+    return {'transition':sum(transition)/len(transition),'terminal':sum(terminal)/len(terminal)}
+
+
+def value_probe(model,arm,stage,v,s1,x1,s2,x2):
+    # Shuffled negative cannot be assigned oracle event ID for a new probe.
+    # It uses the public v at query time, while its writes had scrambled contexts.
+    return model.predict(stage,v,s1,x1,s2,x2)
+
+
+def one(world,arm):
+    model=instantiate(arm)
+    a,b,c=world.dwell; err={'A':[],'B':[],'return':[]};snap={};audit={}
+    begin=time.perf_counter()
+    for j,e in enumerate(world.events):
+        if j in (a,a+b):
+            snap['pre_B' if j==a else 'pre_return']=probe(world,model,arm)
+            if arm in ('witness_basis','shuffled_context'):
+                raw=model.snapshot(); restored=WitnessBasis.restore(raw)
+                if restored.snapshot()!=raw:raise AssertionError('COLD_PARITY')
+                for x1 in (0,1):
+                    for s1 in (0,1):
+                        for x2 in (0,1):
+                            for stage in ('s','y'):
+                                if restored.predict(stage,0,s1,x1,0,x2)!=model.predict(stage,0,s1,x1,0,x2):
+                                    raise AssertionError('COLD_FORECAST')
+                model=restored
+                audit['cold_restore_sha_'+str(j)]=hashlib.sha256(raw).hexdigest()
+        phase='A' if j<a else 'B' if j<a+b else 'return'
+        ps=value(model,arm,e,'s');py=value(model,arm,e,'y')
+        err[phase].append(((ps-e.s2)**2,(py-e.y)**2))
+        observe(model,arm,e)
+    snap['post_return']=probe(world,model,arm)
+    blob=model.snapshot()
+    if arm=='witness_basis':
+        if len(blob)>1056:raise AssertionError('BYTE_BUDGET')
+        if WitnessBasis.restore(blob).snapshot()!=blob:raise AssertionError('FINAL_COLD_PARITY')
+    mean=lambda pairs,n:sum(x[n] for x in pairs)/len(pairs)
+    a16=err['return'][:16]
+    result={'arm':arm,'world_sha256':world.public_sha256,'episodes':len(world.events),
+            'B_transition':mean(err['B'],0),'B_terminal':mean(err['B'],1),
+            'return16_terminal':mean(a16,1),'return16_transition':mean(a16,0),
+            'A_terminal':mean(err['A'],1),'probe':snap,'checkpoint_bytes':len(blob),
+            'checkpoint_sha256':hashlib.sha256(blob).hexdigest(),
+            'cold_sha':audit,'elapsed_seconds':time.perf_counter()-begin}
+    if arm=='witness_basis':result['rank']=model.rank()
+    return result
+
+
+def evaluate():
+    ws=worlds()
+    rows=[]
+    for w in ws:
+        scores={name:one(w,name) for name in ARMS}
+        rows.append({'seed':w.seed,'family':w.family,'rep':w.rep,
+                     'public_sha256':w.public_sha256,'dwell':w.dwell,'models':scores})
+    summary={}
+    for seed in SEEDS:
+        subset=[x for x in rows if x['seed']==seed]
+        summary[str(seed)]={arm:{metric:sum(x['models'][arm][metric] for x in subset)/len(subset)
+                                 for metric in ('B_terminal','return16_terminal','A_terminal')}
+                            for arm in ARMS}
+    # Scientific criterion must beat STRONGEST exact symbolic AND conventional by >= .01
+    # on returned novel relationships in EVERY seed, with no B regression > .01.
+    go={}
+    for seed in SEEDS:
+        d=summary[str(seed)];c=d['witness_basis'];best=(min(d[k]['return16_terminal'] for k in ('exact_batch_gf2','beta_full','beta_window32')),
+                     min(d[k]['B_terminal'] for k in ('exact_batch_gf2','beta_full','beta_window32')))
+        go[str(seed)]=c['return16_terminal']<=best[0]-.01 and c['B_terminal']<=best[1]+.01
+    return {'schema':'lr92az.causal-witness-study.v1',
+            'status':'DEVELOPMENT_GO' if all(go.values()) else 'DEVELOPMENT_NO_GO',
+            'worlds':len(ws),'public_episodes_per_arm':sum(len(w.events) for w in ws),
+            'seed_go':go,'seed_summary':summary,'rows':rows,
+            'protected_first_use':False,'native_model_executed':False,'canonical_checkpoint_changed':False}
+
+if __name__=='__main__':
+    if len(sys.argv)!=2:raise SystemExit('usage: compare.py RESULT.json')
+    result=evaluate()
+    from pathlib import Path
+    Path(sys.argv[1]).write_text(json.dumps(result,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in result.items() if k not in ('rows','seed_summary')},sort_keys=True))

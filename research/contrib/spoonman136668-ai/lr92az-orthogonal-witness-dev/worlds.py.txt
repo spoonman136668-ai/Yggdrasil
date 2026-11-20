@@ -1,0 +1,73 @@
+"""LR-92AZ synthetic public two-stage interventions: independent A/B structure.
+
+IMPORTANT: public v distinguishes tasks; this tests cold retention and causal
+structural generalization, NOT blind hidden-switch detection. No real worlds.
+"""
+from __future__ import annotations
+from dataclasses import dataclass
+import hashlib,random
+SEEDS=(92111911,92111912,92111913)
+FAMILIES=('disjoint_parent','quadratic_rewrite','cubic_unfamiliar')
+REPS=4
+FORBIDDEN=(73004303,73004304,74009171,74009172,75011801,75011802,
+           76021921,76021922,77033101,77033102,88041001,88041002,
+           89051001,89051002,90161101,90161102,90161103,929209101,929209102,929209103)
+
+
+def rng(seed,family,rep,tag):
+    h=hashlib.sha256(f'LR92AZ|{seed}|{family}|{rep}|{tag}'.encode()).digest()
+    return random.Random(int.from_bytes(h[:8],'big'))
+
+
+def truths(family,rep,v,s1,x1,s2,x2):
+    b=rep&1
+    if family=='disjoint_parent':
+        if v==0:return s1^x1^b,s2^(s1&x2)^b
+        return x1^(s1&x1)^b,x1^x2^(s2&x2)^b
+    if family=='quadratic_rewrite':
+        if v==0:return (s1&x1)^s1^b,(s1&x2)^(s2&x1)^b
+        return x1^1^b,(s1&x1)^(s2&x2)^x2^b
+    if family=='cubic_unfamiliar':
+        if v==0:return s1^x1^b,(s1&x1&x2)^s2^b
+        return x1^b,(s1&x1&s2)^x2^b
+    raise ValueError('FAMILY')
+
+@dataclass(frozen=True)
+class Event:
+    identifier:str
+    v:int
+    s1:int
+    x1:int
+    s2:int
+    x2:int
+    y:int
+    def views(self):return ((self.s1,self.v),(self.s1,1-self.v))
+    def row(self):return {'s1':self.s1,'x1':self.x1,'s2':self.s2,'x2':self.x2,'y':self.y}
+
+@dataclass(frozen=True)
+class World:
+    seed:int
+    family:str
+    rep:int
+    dwell:tuple
+    events:tuple
+    public_sha256:str
+
+
+def world(seed,family,rep):
+    if seed not in SEEDS or family not in FAMILIES or type(rep) is not int or not 0<=rep<REPS:raise ValueError('WORLD_SCOPE')
+    dr=rng(seed,family,rep,'dwell'); dwell=(dr.randrange(34,45),dr.randrange(32,44),dr.randrange(22,31))
+    acts=rng(seed,family,rep,'public_actions')
+    events=[]
+    for i in range(sum(dwell)):
+        v=0 if i<dwell[0] or i>=dwell[0]+dwell[1] else 1
+        s1,x1,x2=(acts.randrange(2) for _ in range(3))
+        s2,_=truths(family,rep,v,s1,x1,0,x2)
+        _,y=truths(family,rep,v,s1,x1,s2,x2)
+        identifier=hashlib.sha256(f'LR92AZ|{seed}|{family}|{rep}|{i}'.encode()).hexdigest()
+        events.append(Event(identifier,v,s1,x1,s2,x2,y))
+    payload=bytes(z for e in events for z in (e.v,e.s1,e.x1,e.s2,e.x2,e.y))
+    return World(seed,family,rep,dwell,tuple(events),hashlib.sha256(payload).hexdigest())
+
+
+def worlds():return tuple(world(s,f,r) for s in SEEDS for f in FAMILIES for r in range(REPS))

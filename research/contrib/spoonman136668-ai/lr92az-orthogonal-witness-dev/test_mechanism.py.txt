@@ -1,0 +1,72 @@
+import hashlib, unittest
+from causal_basis import WitnessBasis,features
+from worlds import SEEDS,FAMILIES,REPS,FORBIDDEN,world,worlds
+from compare import BatchGF2,Beta,NoLearning,Shuffled,instantiate,probe,observe,value
+
+class TestWitnessBasis(unittest.TestCase):
+    def test_disjoint_seed_custody(self):
+        self.assertTrue(set(SEEDS).isdisjoint(FORBIDDEN));self.assertEqual(len(SEEDS),3)
+    def test_world_manifest_scope(self):
+        w=worlds();self.assertEqual(len(w),36);self.assertEqual(len({(x.seed,x.family,x.rep) for x in w}),36)
+    def test_determinism(self):
+        self.assertEqual(worlds()[3].public_sha256,worlds()[3].public_sha256)
+    def test_public_context_schema(self):
+        for w in worlds():
+            a,b,c=w.dwell
+            for i,e in enumerate(w.events):
+                self.assertEqual(e.views()[0][0],e.views()[1][0]);self.assertEqual(e.s1,e.row()['s1'])
+                self.assertEqual(e.v,0 if i<a or i>=a+b else 1)
+    def test_bad_bit(self):
+        with self.assertRaises(ValueError):features('s',1,2)
+    def test_bad_stage(self):
+        with self.assertRaises(ValueError):features('other',0,1)
+    def test_bad_outcome(self):
+        with self.assertRaises(ValueError):WitnessBasis().observe('s',0,1,1,0,0,2)
+    def test_unseen_forecast_half(self):self.assertEqual(WitnessBasis().predict('y',1,1,0,1,0),.5)
+    def test_linear_relation_recovered(self):
+        m=WitnessBasis()
+        for s in (0,1):
+            for x in (0,1):m.observe('s',0,s,x,0,0,s^x)
+        for s in (0,1):
+            for x in (0,1):self.assertEqual(m.predict('s',0,s,x),float(s^x))
+    def test_independent_address_cold(self):
+        m=WitnessBasis()
+        for s in (0,1):
+            for x in (0,1):m.observe('s',0,s,x,0,0,s^x)
+        forecast=m.predict('s',0,1,1)
+        for s in (0,1):
+            for x in (0,1):m.observe('s',1,s,x,0,0,s&x)
+        self.assertEqual(forecast,m.predict('s',0,1,1));self.assertEqual(m.predict('s',1,1,1),1)
+        self.assertEqual(m.snapshot(),WitnessBasis.restore(m.snapshot()).snapshot())
+    def test_reject_tamper(self):
+        blob=WitnessBasis().snapshot();broken=blob[:-1]+bytes([blob[-1]^1])
+        with self.assertRaises(ValueError):WitnessBasis.restore(broken)
+    def test_reject_contradiction(self):
+        m=WitnessBasis();self.assertTrue(m.observe('s',0,0,0,0,0,0))
+        self.assertFalse(m.observe('s',0,0,0,0,0,1))
+        self.assertEqual(WitnessBasis.restore(m.snapshot()).predict('s',0,0,0),.5)
+        self.assertIn('s0',m.invalid)
+    def test_exact_symbolic_parity(self):
+        w=worlds()[0];a,b,c=w.dwell
+        m=WitnessBasis();full=BatchGF2()
+        for e in w.events[:a]:
+            for stage,y in [('s',e.s2),('y',e.y)]:
+                args=(stage,e.v,e.s1,e.x1,e.s2,e.x2)
+                self.assertEqual(m.predict(*args),full.predict(*args))
+                m.observe(*args,y);full.observe(*args,y)
+        self.assertLess(len(m.snapshot()),len(full.snapshot()))
+    def test_full_history_tabular(self):
+        m=Beta();m.observe('s',0,0,1,1,0,1);self.assertAlmostEqual(m.predict('s',0,0,1),2/3)
+    def test_baseline_initial(self):self.assertEqual(NoLearning().predict('y',0,1,1,0,0),.5)
+    def test_shuffle_determinism(self):
+        w=worlds()[0];self.assertEqual(Shuffled.scramble(w.events[0]),Shuffled.scramble(w.events[0]))
+    def test_probe_no_future_updates(self):
+        w=worlds()[0];m=WitnessBasis();raw=m.snapshot();p=probe(w,m,'witness_basis')
+        self.assertIn('terminal',p);self.assertEqual(raw,m.snapshot())
+    def test_no_hidden_world_seed_into_learner(self):
+        w=worlds()[0];e=w.events[0];m=WitnessBasis();observe(m,'witness_basis',e)
+        self.assertNotIn(str(w.seed),m.snapshot().decode('latin1'))
+    def test_history_no_owner(self):
+        self.assertEqual(set(instantiate('witness_basis').buckets),{'s0','s1','y0','y1'})
+
+if __name__=='__main__':unittest.main()
