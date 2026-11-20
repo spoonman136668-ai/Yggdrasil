@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.know24.anf-identifiability-active-interventions-frozen-dev.v1",
+  "date": "2026-11-20",
+  "authority": "Independent Yggdrasil research PR1327. Amalgam PR1278 sole canonical learner owner. No original world first use #426, merge, deployment, controller, paid APIs, scheduler.",
+  "question": "Do three-bit structural causal hypotheses generalize from one-action consequences to withheld causal input x2, and can a learner detect that two private laws are observationally indistinguishable under available interventions?",
+  "reference": {
+    "TGAP24": "Known source-only operator transfer FAILED: fitted quarantined bank .21123509 vs same noFIT .18019129; known-family Bayesian .14179153.",
+    "base_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "model": "256 exact Boolean truth tables of three binary input bits, represented in GF(2) algebraic normal form with 8 coefficients. Native/tokenless research prototype only; original native model untouched.",
+  "context": "Public c=t%4 in 0..3, with x2=0. Policy selects action a=0 no flip, a=1 flip x0, a=2 flip x1. All interventions keep x2=0. Hidden causal operator f is not supplied to learners.",
+  "observations": "One y ~ Bernoulli(.85) if private f(c xor flip(a))=1, otherwise Bernoulli(.15); common private coin SHA256('know24:private:witness:v1:'+seed+':'+t), independent of action. Same coin within paired worlds and across policies.",
+  "fit": [
+    {
+      "seed": 11021,
+      "op": "x0",
+      "n": 24
+    },
+    {
+      "seed": 11029,
+      "op": "x1",
+      "n": 24
+    },
+    {
+      "seed": 11047,
+      "op": "xor01",
+      "n": 24
+    }
+  ],
+  "held_pairs": [
+    {
+      "a": "x0",
+      "b": "x0_xor_x2",
+      "seeds": [
+        11311,
+        11317,
+        11321
+      ]
+    },
+    {
+      "a": "xor01",
+      "b": "xor01_xor_x2",
+      "seeds": [
+        11411,
+        11417,
+        11421
+      ]
+    },
+    {
+      "a": "and01",
+      "b": "and01_xor_x2",
+      "seeds": [
+        11511,
+        11519,
+        11527
+      ]
+    }
+  ],
+  "budget": {
+    "fit_witnesses": 72,
+    "held_worlds": 18,
+    "held_witnesses_per_policy": 288,
+    "witnesses_per_world": 16,
+    "held_high_eval_queries_per_policy": 216,
+    "held_low_eval_queries_per_policy": 216
+  },
+  "fit_method": "For each of three independent FIT worlds, infer posterior on 256 functions from 24 passive action0 witnesses (no teacher label). At held start set ANF coefficient prior p_j=(2*.25+sum(three FIT posterior_E[coefficient_j]))/5, bounded to [.08,.92]. Store FIT posterior custody and restore cold.",
+  "held_candidate": "Exact 256-hypothesis Bayes with learned sparse ANF prior; at each available low context c choose action maximizing Bernoulli uncertainty predictive_q*(1-predictive_q), tie lowest action; update from ONE witnessed action reward only.",
+  "controls": [
+    "Same ANF Bayes with sparse p=.25 prior and no FIT",
+    "Uniform exact Bayes over all 256 Boolean truth tables (ANF coeff p=.5)",
+    "Trained-prior ANF Bayes with action0 passive",
+    "Trained-prior ANF Bayes with deterministically random public action",
+    "Independent four-low-context Beta(1,1), uncertainty-driven action",
+    "Strong prior-rich Bayesian restricted to six known paired operator hypotheses (no private operator label)",
+    "p=.5 source-only no-learning reference",
+    "Evaluator-only true-probability ceiling, NOT deployable"
+  ],
+  "eval": "After 16 witnessed low-context outcomes, score for each world four high c=4..7 times three actions 0/1/2, 12 evaluator-only queries (216 total), plus analogous 216 low-context queries. The scorer knows private true Bernoulli q and calculates expected Brier q*(1-q)+(forecast-q)^2; no eval y fed back. Identical seed and low truth table in each paired world MUST produce identical action/outcome sequences and high forecasts.",
+  "pair_proof": "For each indistinguishable same-seed law pair, private high-context Bernoulli q is .85 vs .15. Their shared forecast p has average expected Brier=.25+(p-.5)^2, hence >=.25. Any sub-.25 paired aggregate implies a leak or scorer defect.",
+  "thresholds": {
+    "H1": "9 paired-world witnessed action/outcome traces AND high forecasts exactly identical",
+    "H2": "Every policy high expected Brier >= .25-1e-8",
+    "H3": "Candidate high expected Brier <= .26000 (calibrated uncertainty, not knowledge)",
+    "H4": "Candidate high expected Brier <= same ANF noFIT high Brier - .01000",
+    "H5": "Candidate low expected Brier <= trained ANF passive low Brier - .01000"
+  },
+  "decision": "Engineering only if H1/H2 and cold exact source custody. Report H3/H4/H5 individually and negative transfer; development CALIBRATED only when H3 holds, otherwise NO_GO or MIXED. Never SCIENTIFIC_PASS from this synthetic source.",
+  "limits": "No x2 intervention or high-context outcome during learning; no unseen original-world first use; no accepted GF2 learner train; no held world relabel, threshold tuning, extra eval observations, canonical merge, deployment, scheduled task or paid API. Full exact-source Linux/Windows final regression and original-source compatibility required."
+}
