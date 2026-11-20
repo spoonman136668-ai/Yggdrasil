@@ -32,6 +32,38 @@ class ArchiveNativeReceiptTests(unittest.TestCase):
         q=report();q['seeds'][0]['stream'][-1]['evaluation']['trailing_mle']['reward_sum']=31
         a=m.audit(q)['checkpoints']['192']
         self.assertEqual(a['candidate_minus_best_control_rewards'],-11)
+    def test_original_source_phase_all_frozen_checkpoints(self):
+        # CKAD25 held evaluation uses previous completed episode at a boundary.
+        expected = {
+            0: 'context_switch_regime_0',
+            16: 'context_switch_regime_0',
+            32: 'context_switch_regime_0',
+            48: 'context_switch_regime_0',
+            64: 'terminal_switch_regime_0',
+            80: 'terminal_switch_regime_0',
+            96: 'context_switch_regime_1',
+            112: 'context_switch_regime_1',
+            128: 'context_switch_regime_1',
+            144: 'context_switch_regime_1',
+            160: 'invariant_regime_0',
+            176: 'invariant_regime_0',
+            192: 'invariant_regime_0',
+        }
+        self.assertEqual(set(expected), set(m.CHECKPOINTS))
+        for count, phase in expected.items():
+            with self.subTest(count=count):
+                self.assertEqual(m.checkpoint_source_phase(count), phase)
+        readout = m.audit(report())['checkpoints']
+        for count in (80, 96, 144, 160, 176, 192):
+            with self.subTest(readout_count=count):
+                self.assertEqual(readout[str(count)]['cohort_source_phase'], expected[count])
+
+    def test_source_phase_fails_closed_outside_frozen_clock(self):
+        for count in (True, False, None, -1, 49, 79, 81, 143, 145, 193):
+            with self.subTest(count=count):
+                with self.assertRaisesRegex(ValueError, 'CHECKPOINT_CLOCK'):
+                    m.checkpoint_source_phase(count)
+
     def test_science_flag_tamper_rejected_by_reader(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'fake.zip';p.write_bytes(b'untrusted')

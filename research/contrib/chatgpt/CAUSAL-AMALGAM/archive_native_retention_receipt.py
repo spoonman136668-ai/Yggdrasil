@@ -18,6 +18,26 @@ ARMS = ('coverage_active', 'original_active', 'uniform_random', 'coverage_random
         'exact_mixture', 'trailing_mle', 'pooled_replay', 'frozen_ckad24')
 SCORES = ('reward_sum', 'pooled_brier', 'terminal_brier', 'transition_brier')
 
+# CKAD25 original prereg: phase lengths 48/32/64/48. Held evaluation
+# uses world_at(protocol, 0 if count == 0 else count - 1), not the next episode.
+SOURCE_PHASE_ENDS = (
+    (48, 'context_switch_regime_0'),
+    (80, 'terminal_switch_regime_0'),
+    (144, 'context_switch_regime_1'),
+    (192, 'invariant_regime_0'),
+)
+
+
+def checkpoint_source_phase(count):
+    """Source phase used by the original held checkpoint readout."""
+    if type(count) is not int or count not in CHECKPOINTS:
+        raise ValueError('CHECKPOINT_CLOCK')
+    index = 0 if count == 0 else count - 1
+    for end, name in SOURCE_PHASE_ENDS:
+        if index < end:
+            return name
+    raise ValueError('SOURCE_PHASE')
+
 def read_archive(path):
     raw = Path(path).read_bytes()
     if hashlib.sha256(raw).hexdigest() != ZIP_SHA:
@@ -64,8 +84,7 @@ def audit(report):
         rewards = {arm: sum(x[arm]['reward_sum'] for x in points) for arm in ARMS}
         best = max(rewards[a] for a in ARMS if a != 'coverage_active')
         checkpoints[str(count)] = {
-            'cohort_source_phase': ('context_switch_regime_1' if count in (80, 96)
-                else 'invariant_regime_0' if count >= 144 else 'other'),
+            'cohort_source_phase': checkpoint_source_phase(count),
             'held_scored_episodes': 288,
             'reward_by_arm': rewards,
             'strongest_control_reward': best,
