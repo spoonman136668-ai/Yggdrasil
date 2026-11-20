@@ -1,0 +1,155 @@
+{
+  "schema": "yggdrasil.know34.contradiction-gated-cell-memory-prereg.v1",
+  "experiment_id": "KNOW34",
+  "date": "2026-11-20",
+  "author_role": "independent_research_contributor_not_canonical_learner",
+  "authority": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "existing_pr": 1327,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "source_parent": "ebfd081bf2fea452d9bdb6215b333a9469cb16f1",
+    "canonical_owner": "Amalgam PR #1278",
+    "source_only": true,
+    "protected_original_world_first_use": false,
+    "native_model_changed": false,
+    "no_merge": true,
+    "deployment": "NONE",
+    "no_scheduler": true,
+    "no_paid_api": true
+  },
+  "question": "Does evidence accumulation across local pairs preserve previously consolidated causal-cell state and reduce noise-triggered switching while retaining adaptation on novel B laws, outperforming rewired-neighbor, previous local-support and full two-head Bayesian controls?",
+  "source": {
+    "kind": "fresh_synthetic_local_cell_regimes_not_original",
+    "worlds": 24,
+    "seeds": [
+      19403,
+      19411,
+      19417,
+      19421,
+      19427,
+      19433,
+      19441,
+      19447,
+      19457,
+      19463,
+      19469,
+      19471,
+      19501,
+      19507,
+      19511,
+      19519,
+      19531,
+      19541,
+      19543,
+      19553,
+      19559,
+      19571,
+      19577,
+      19583
+    ],
+    "cohorts": [
+      {
+        "law": "B1",
+        "seeds": [
+          19403,
+          19411,
+          19417,
+          19421,
+          19427,
+          19433,
+          19441,
+          19447,
+          19457,
+          19463,
+          19469,
+          19471
+        ]
+      },
+      {
+        "law": "B2",
+        "seeds": [
+          19501,
+          19507,
+          19511,
+          19519,
+          19531,
+          19541,
+          19543,
+          19553,
+          19559,
+          19571,
+          19577,
+          19583
+        ]
+      }
+    ],
+    "private_coin_domain": "know34:private:coin:v1:{seed}:{t}",
+    "observable": "Only the public physical input x derived from c=t%8, a=floor(t/8)%2, and the witnessed y∈{0,1}; no source law, task ID, phase, switch point, score target or future outcome passed to model.",
+    "laws": {
+      "A": "x0 XOR (x1 AND x2)",
+      "B1": "x0 XOR x2 XOR (x1 AND x2)",
+      "B2": "(x0 AND x1) XOR (1-x2)"
+    },
+    "prior_P_true": 0.85,
+    "prior_P_false": 0.15,
+    "trajectory": "A for t0..63, then one deep-cold 64-step shared A prefix -> control A t64..191 vs treatment B1/B2 t64..127 then A t128..191. Shared private coin per seed,t across arms and both forks.",
+    "public_action_tape": "c=t%8, a=(floor(t/8)%2), x=c XOR (a<<1); each 16 steps has all 16 unique c,a pairs, x in 0..7 exactly twice.",
+    "held_first_use": "ONE new cohort per source candidate only after immutable protocol committed, mock/negative tests, pinned blobs, full Ubuntu/Windows regression, G29 atlas, historical compatibility; no HELD examples in tests; never rerun uncertain/consumed trial."
+  },
+  "candidate": {
+    "name": "local-evidence accumulation with consolidated slow cells",
+    "cell_count": 8,
+    "slow_A": "Beta(1,1) learned from first six witnessed examples PER CELL, then *permanently immutable* for that cell in this experiment. Local count is available; no global phase/event labels. This startup period is a declared stationarity assumption, not free general-purpose continual learning.",
+    "fast": "Each cell stores at most last six witnessed binary outcomes in a ring and produces local fast Beta(1+sum,1+len-sum); only actual observed outcomes enter ring. No additional learner or replay is permitted.",
+    "evidence": "For each cell with >=6 startup exposures, exact log Bayes factor BF = log Beta(1+k,1+n-k)-log Beta(1,1) - (k log p_slow + (n-k) log(1-p_slow)) from its last n<=6 actual witnessed outcomes (n may include startup history), with p_slow clamped to [0.05,0.95].",
+    "local_gate": "Each adjacent pair (0,1),(2,3),(4,5),(6,7) adds its two current per-cell log BF values; from slow switch to fast ONLY when sum >=6.0; from fast return to slow ONLY when sum <=1.0. Hysteresis, no global state, max 4 pair messages/step; gate may change only after an actual observation. Initial mode slow.",
+    "state": "8 independent slow Beta heads and 8 fast sliding windows length<=6, 4 local gate states, all hard bounded. Frozen slow A state is not automatically a functional retrieval gain.",
+    "counterfactual_eval": "For each of 16 public (context,action) pairs forecast using slow or fast head selected by the local gate of that input cell."
+  },
+  "controls": {
+    "rewired_same_budget": "Exactly same 8 slow heads, 8 length6 fast windows, 4 gate states and update rule, but pairs (0,4),(1,5),(2,6),(3,7), so same communication count and memory budget but different locality.",
+    "prior_local_support": "KNOW33 original Cells('candidate') unchanged, still receives same newly frozen public observations; no restoration of consumed KNOW33 held outcomes.",
+    "soft_switching_hmm": "KNOW33 Cells('hmm') with the same 8 two-Beta heads and hazard 1/32, same observed trajectory, fully trained online; approximate switching Bayes strong reference, not exact factorial.",
+    "rolling_last8": "KNOW33 Cells('rolling') as conventional recent history control, one ring per cell, consumes same events.",
+    "single_continuous": "KNOW33 Cells('single'), one Beta head per physical input, consumes same events.",
+    "resource_fairness": "Primary identical-cardinality cellular pairing comparison local-vs-rewired. Other controls have different serialized bytes/computational operations; report measured bytes and inferential differences. Even if candidate wins, development signal alone cannot be promoted to native scientific gain without same-cost controls."
+  },
+  "budgets": {
+    "paired_worlds": 24,
+    "unique_events_per_pair": 320,
+    "unique_source_events_total": 7680,
+    "prefix_observations": 64,
+    "interference_events": 64,
+    "return_events": 64,
+    "per_method_model_event_occurrences": 9216,
+    "eval_queries": 16,
+    "local_cells": 8,
+    "local_pairs": 4,
+    "history_slots_per_cell": 6,
+    "cells_beta_slow_heads": 8,
+    "max_memory_bytes_per_checkpoint": 8192,
+    "max_eval_episodes": 24
+  },
+  "metrics": {
+    "score": "Expected Brier q(1-q)+(p-q)^2 on 16 counterfactual public input/action pairs at fixed replay-free readout points; q from scoring-only true law.",
+    "primary": "A-law expected Brier after 16,32 and 48 witnessed return-to-A observations, separately across each 12-world B law cohort.",
+    "secondary": [
+      "A-law mean after 64 actual A prefix, and after B-interference before A-return",
+      "B-law mean 64-step prequential expected Brier during B stage, separately by B1/B2",
+      "Per-world paired wins at k32 and k48 vs HMM and rewired",
+      "Live consolidated slow-Beta byte-hash t64 vs t128, sham A-only false fast activations and counts of switching",
+      "Source event calls, checkpoint cold exact bytes+eight output predictions, operation/messages, serialized sizes, CPU wall and seeds."
+    ],
+    "notes": "B1 differs from A at 4/8 inputs; B2 differs at 6/8. Both are new source laws to this local cellular study; no protected physical-world novelty or generic unseen transfer claimed."
+  },
+  "frozen_hypotheses": {
+    "P0": "All 16 public context×action pairs are covered every 16 steps; all 8 input cells exactly twice, all private sources denied to policy and all 24 cohort seeds disjoint from KNOW33.",
+    "P1": "Candidate mean 64-witness A-prefix expected A Brier <=0.21 separately in B1 and B2 cohorts (must actually acquire useful A relation).",
+    "H1": "Candidate A-return mean expected Brier beats BOTH same-state rewired-pair control and switching HMM by at least 0.005 at BOTH k32 and k48, in EACH B cohort; wins >=9/12 worlds separately against each control at k48.",
+    "H2": "Actual in-use slow A Beta checkpoints remain bit exact from t64 through B interference t128 for all 24; explicit cold byte comparison, no frozen-copy substitution; benefit H1 remains independent.",
+    "H3": "B-stage mean prequential B-law Brier candidate <= HMM+0.005 in each cohort, preventing false 'success' by refusing to learn B.",
+    "H4": "At most 2/24 no-change control A-only branches experience any false fast-mode transition; all source/cohort event counts exact and cold readback passes. New HELD first use occurs only after full final regression and compatibility.",
+    "decision": "SOURCE_ONLY_DEV_SUPPORTED iff all P0,P1,H1,H2,H3,H4 pass; otherwise SOURCE_ONLY_DEV_NO_GO_OR_MIXED. Causal attribution requires H1 vs same-budget rewired neighbor. SCIENTIFIC_PASS is always false for synthetic non-native; no model/checkpoint promotion.",
+    "stops": "No post-result tuning of start-count=6, BF thresholds=6.0/1.0, windows, seeds, steps, laws or horizons; no rerun/first-use replay. If qualification fails, no HELD."
+  }
+}
