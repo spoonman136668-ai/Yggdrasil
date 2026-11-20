@@ -93,12 +93,15 @@ def aligned_originals(left: dict, right: dict) -> None:
                 raise ValueError("MH07_CROSS_OS_ORIGINAL_SCORE_DRIFT")
 
 
-def select(scores3) -> int:
+def select(scores3, allow_tied_archive: bool = False) -> int:
     if (len(scores3) != 3 or
             any(not math.isfinite(v) for v in scores3)):
         raise ValueError("MH07_MALFORMED_ACTION_SCORE")
     ordered = sorted(scores3)
-    if ordered[2] - ordered[1] <= EPS:
+    # A240 archived never-trained bank1 is legitimately all zeros. Its
+    # historical native first-index tie must be validated exactly, but a tied
+    # X240 mixed mask cannot qualify as a distinct supported policy.
+    if ordered[2] - ordered[1] <= EPS and not allow_tied_archive:
         raise ValueError("MH07_UNIDENTIFIABLE_TIED_POLICY")
     winner = 0
     for i in (1, 2):
@@ -133,7 +136,7 @@ def verify_stage(row: dict, stage: str) -> dict:
         scores = full["readouts"][mode]
         if digest(canonical(scores)) != identity[mode]["scores_sha256"]:
             raise ValueError("MH07_ORIGINAL_STAGE_SCORE_HASH_DRIFT")
-        actions = tuple(select(r) for r in scores)
+        actions = tuple(select(r, allow_tied_archive=True) for r in scores)
         if (sum(a == b for a, b in zip(actions, OLD)) / 4.0 !=
                 identity[mode]["a"] or
                 sum(a == b for a, b in zip(actions, MAPS[row["mapping"]])) / 4.0 !=
