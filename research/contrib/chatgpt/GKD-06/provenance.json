@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.external-research-provenance.v1",
+  "experiment_id": "GKD-06",
+  "date_utc": "2026-11-20",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "existing_pr": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1348",
+  "new_prereg_FIRST": "35cc14449fc1acd28ebb7bc16f8638cb9b7477d3",
+  "previous_GKD05_prereg": "aafab21d6b8997ffafd355de528c9eb1cd7dfa0a",
+  "previous_GKD05_source_rejection": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44825472870",
+  "zip_preview_manifest": "https://zenodo.org/records/7681811/preview/sachs.zip?include_deleted=0",
+  "source_advertised_md5": "d50ccd7f88bb3705bcf6eda3978bcc41",
+  "source_verified_md5": "d50ccd7f88bb3705bcf6eda3978bcc41",
+  "source_download_sha256": "42d3c5eef7804ce065dec7e16edebb606e0e5b4ae6298310e55e1ca053b959b2",
+  "source_url": "https://zenodo.org/records/7681811/files/sachs.zip?download=1",
+  "frozen_source_member_corrections": {
+    "cd3cd28icam2.csv": "cd3cd28_icam2.csv",
+    "Ground_Truth.csv": "GroundTruth.csv"
+  },
+  "frozen_model_reused_from_GKD05": [
+    {
+      "path": "research/contrib/chatgpt/GKD-05/admit.py",
+      "git_blob": "7f95b1ad1244b43884cdfa5b473d979456843016"
+    },
+    {
+      "path": "research/contrib/chatgpt/GKD-05/score.py",
+      "git_blob": "b5cae9715859b9406b65d889e640686378581573"
+    }
+  ],
+  "source_adaptation_git_blob": "e42f23cd610a16608457cce9f1a13294d6d9eb9c",
+  "original_single_run": {
+    "sha": "cac8d531de0e24f411cf74d2be2f3158ba1bc5dc",
+    "tree": "75fc422bdbf8d8210cad1b7f2a5235423a277744",
+    "run_id": 44827581368,
+    "linux_job_id": 136603997325,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44827581368",
+    "commit_subject": "research(GKD-06): SINGLE_PUBLIC_DEV_SCORE",
+    "repeat_count": 1,
+    "status": "GKD06_PUBLIC_SCORE_CONSUMED_NO_REPLAY"
+  },
+  "pre_original_source_offline_qualification": {
+    "run_id": 44827340353,
+    "url": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44827340353",
+    "head": "9b508de0cad213366f43352ab0517ffc2b30ac3e",
+    "linux": "PASS",
+    "windows": "PASS",
+    "root_python_tests_each": "54/54",
+    "source_atlas": "PASS",
+    "gkd01_to_06_source_free": "PASS"
+  },
+  "qualification_limits": "Original first complete public score is single GitHub-hosted Linux; Windows runs only source-free checks. Original source includes published, previously studied experimental conditions and is not blind original scientific first use.",
+  "actual_rows": {
+    "fit": 4201,
+    "valid": 1710,
+    "dev": 1555
+  },
+  "simulated_groups_excluded": 5,
+  "ground_truth_graph_excluded": true,
+  "valid_selected_control": "top2_abs_correlation",
+  "primary_dev_result": {
+    "donor_group_balanced_rmse": 0.4511370743603857,
+    "selected_conventional_rmse": 0.43935049027680434,
+    "donor_gain": -0.026827292433782013,
+    "donor_gain_vs_sham": 0.14235091796306998,
+    "nonregression_groups": 2,
+    "groups_total": 8,
+    "qualification": "PUBLIC_DEV_NO_GO"
+  },
+  "other_dev_arm_descriptive": {
+    "quadratic_ridge_rmse": 0.32182598449704874,
+    "not_primary_validation_selected": true
+  },
+  "negative_controls": "Strongest same-mask conventional ridge tied donor exactly. Donor outperformed source-shifted sham on aggregate but failed prespecified strongest comparator and 6/8 nonregression criteria.",
+  "source_contamination": "GPT could have pretrained Sachs literature; assistant reviewed high-level public dataset description before prereg; result does not prove unfamiliar donor transfer.",
+  "task_caveat": "Simultaneously observed other proteins used as inputs; task is condition-shift conditional prediction, not causal intervention effect, unknown-world action policy, retention, transfer or native intelligence.",
+  "runtime": {
+    "system": "GitHub-hosted Linux, Python 3.12, stdlib-only",
+    "paid_apis": 0,
+    "owner_runners": 0,
+    "model_teacher_calls": 0,
+    "real_live_environment_actions": 0
+  },
+  "scientific_gain_verified": false,
+  "scientific_pass": false,
+  "native_model_changed": false,
+  "accepted_main_modified": false,
+  "merge": false,
+  "deployment": false,
+  "completion_note": "Immutable archive of frozen result. No postresult parent-mask, split, hyperparameter, threshold, selection, or source-custody changes; do not rerun consumed historical public DEV."
+}
