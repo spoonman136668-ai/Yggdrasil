@@ -257,3 +257,24 @@ excuse to replace the source or re-register new seeds. This is not
 original-world first-use, scientifically accepted learning, or canonical
 Yggdrasil model integration. The sole Amalgam coordinator controls
 any future qualified native adoption.
+
+
+## RD05 — exact historical-context support, read-only postscore audit
+
+Frozen analysis before code at `RD05-FROZEN-RETROSPECTIVE-SUPPORT.md`
+(commit `2877aebbbe7fe53b963ee1a71ece4d920cd16393`). This
+does **not** create another world, run a new model, reopen RD04 scored
+cohorts as prospective, or change the original learner. Source-only
+`rd05_source_support.py` independently regenerates the two *consumed*
+RD04 public witnesses and checks the same original source SHA256 pins.
+
+It quantifies lifetime exact-context support available *before* each
+unfamiliar B-score observation, separates old A and preceding B support,
+and compares A/B overlapping exact historical keys with conflicting
+witnessed labels. A read-only AST check pins the fact that recent32
+changes only the evidence-selection window while prediction counts
+remain lifetime Beta tables (not windowed). All inferences are
+retrospective, not a new scientific efficacy comparison. Preserve
+RD04_ENGINEERING_NO_GO and original all-world negative findings.
+The sole Amalgam coordinator decides any distinct future native
+hypothesis, validation and integration.
