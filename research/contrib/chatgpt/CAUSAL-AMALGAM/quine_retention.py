@@ -120,25 +120,38 @@ def verify_selector_replay(expected, restored):
     if _checkpoint(expected) != _checkpoint(restored):
         raise ValueError("Quine restored active-policy custody differs")
     events = _ledger(expected)
-    for event in events:
-        if _loss(expected, event) != _loss(restored, event):
-            raise ValueError("Quine restored functional readout differs")
-
-    # Equality of saved weights/routing evidence does not prove that a changed
-    # implementation will reproduce unchosen actions. Check both public action
-    # choices and all possible second-stage observations/actions on each
-    # historically observed paired view, without inventing outcome labels.
+    # The checkpoint and selector state are immutable reads. Evaluate each
+    # distinct observed public view/action address exactly once per policy,
+    # not once for every historical witness carrying the same address.
+    # The resulting quantized probabilities also reproduce every charged
+    # binary transition/reward loss without rescoring costly learned routes.
     views_seen = tuple(dict.fromkeys(event[1] for event in events))
     queries = ((0,), (1,)) + tuple(
         (first, state, second)
         for first in (0, 1) for state in (0, 1) for second in (0, 1))
+    forecasts = {}
     for views in views_seen:
         for args in queries:
             original, replay = (value.forecast(views, *args)
                                 for value in (expected, restored))
-            if (not (0 <= original <= 1 and 0 <= replay <= 1)
-                    or round(SCALE * original) != round(SCALE * replay)):
+            if not (0 <= original <= 1 and 0 <= replay <= 1):
                 raise ValueError("Quine restored alternative-action forecast differs")
+            first, second = round(SCALE * original), round(SCALE * replay)
+            if first != second:
+                raise ValueError("Quine restored alternative-action forecast differs")
+            forecasts[views, args] = (first, second)
+
+    for event in events:
+        _, views, first, state, second, reward = event
+        if (type(state) is not int or state not in (0, 1)
+                or type(reward) is not int or reward not in (0, 1)):
+            raise ValueError("Quine witness has nonbinary labels")
+        old_t, new_t = forecasts[views, (first,)]
+        old_r, new_r = forecasts[views, (first, state, second)]
+        before = ((old_t - SCALE * state) ** 2, (old_r - SCALE * reward) ** 2)
+        after = ((new_t - SCALE * state) ** 2, (new_r - SCALE * reward) ** 2)
+        if before != after:
+            raise ValueError("Quine restored functional readout differs")
     return {"policy_sha256": digest(_checkpoint(restored)),
             "readout_witnesses": len(events),
             "policy_queries": len(views_seen) * len(queries),
