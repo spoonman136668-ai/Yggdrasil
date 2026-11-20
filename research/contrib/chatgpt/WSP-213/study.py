@@ -23,8 +23,30 @@ sys.path.insert(0, str(BASE / "WSP-211"))
 from learner import Learner, Sample, pair_group, group_bucket, fit_stage
 from source_free_partition import SYNTHETIC_DIGEST
 from source_free_targets import group_weighted_rmse
-from study import _pairs, _mse, _zero_score, ridge_scope
-from calibration import BlockedFullRefit
+# WSP-210 and WSP-213 both have a file named study.py. Import the exact
+# inherited WSP-210 source under a private name, then bind its names only for
+# WSP-211's unchanged qualified comparator import. Restore the original
+# "study" module immediately; do not shadow this WSP-213 evaluator globally.
+import importlib.util
+_spec = importlib.util.spec_from_file_location(
+    "wsp210_study_for_wsp213", BASE / "WSP-210" / "study.py")
+if _spec is None or _spec.loader is None:
+    raise RuntimeError("pinned conventional source unavailable")
+_parent = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_parent)
+_pairs = _parent._pairs
+_mse = _parent._mse
+_zero_score = _parent._zero_score
+ridge_scope = _parent.ridge_scope
+_previous_study = sys.modules.get("study")
+sys.modules["study"] = _parent
+try:
+    from calibration import BlockedFullRefit
+finally:
+    if _previous_study is None:
+        del sys.modules["study"]
+    else:
+        sys.modules["study"] = _previous_study
 
 SCHEMA = "wsp213.matched-direct-weight.source-free.v1"
 PREREG_SHA = "8b8f8deaf14ea256a311690e4ca59d4cc4110caa"
