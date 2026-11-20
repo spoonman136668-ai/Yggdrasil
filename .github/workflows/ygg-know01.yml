@@ -347,6 +347,16 @@ jobs:
             > "$RUNNER_TEMP/know20-noisy-regime-memory-receipt.json"
           python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know20-noisy-regime-memory-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know20.noisy-action-dev-result.v1"; assert d["fit_witnessed_actions"]==192; assert d["held_actions_per_policy"]==576; assert d["old_A_prediction_drift"]==0; assert d["scientific_gate"]=="NOT_QUALIFIED_SYNTHETIC_DEVELOPMENT_ONLY"'
           test -z "$(git status --porcelain)"
+      - name: KNOW21 frozen unseen causal switch timing and same-scene recurrence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/noisy_regime_memory_dev.py)" = 1dc871b4f8e1c9b5d517b7950271aae7a2c6205b
+          python -B research/contrib/chatgpt/YGG-KNOW01/unfamiliar_shift_regime_dev.py \
+            > "$RUNNER_TEMP/know21-unfamiliar-schedule-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know21-unfamiliar-schedule-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know21.unfamiliar-regime-schedules-result.v1"; assert d["prereg_commit"]=="371727480dc70686b25340a3653ebf6b826a1961"; assert d["held_worlds"]==24 and d["per_policy_actions"]==1152; assert d["scientific_gate"]=="DEV_ONLY_STRONGEST_CONTROL_AND_REAL_FIRST_USE_NOT_QUALIFIED" and d["protected_original_first_use"] is False'
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -368,5 +378,6 @@ jobs:
             ${{ runner.temp }}/know18-raw-feature-utility-receipt.json
             ${{ runner.temp }}/know19-posterior-probe-utility-receipt.json
             ${{ runner.temp }}/know20-noisy-regime-memory-receipt.json
+            ${{ runner.temp }}/know21-unfamiliar-schedule-receipt.json
           retention-days: 30
           if-no-files-found: error
