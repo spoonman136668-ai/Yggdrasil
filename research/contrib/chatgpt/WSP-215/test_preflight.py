@@ -54,8 +54,9 @@ class WSP215ExactPartitionPreflight(unittest.TestCase):
             m=cls(SYNTHETIC_DIGEST)
             checkpoint=m.checkpoint()
             self.assertEqual(cls.restore(checkpoint,SYNTHETIC_DIGEST).checkpoint(),checkpoint)
+            bad_source = "0"*64 if SYNTHETIC_DIGEST != "0"*64 else "1"*64
             with self.assertRaises(ValueError):
-                cls.restore(checkpoint,"f"*64)
+                cls.restore(checkpoint,bad_source)
             with self.assertRaises(ValueError):
                 cls.restore(checkpoint[:-1]+b" ",SYNTHETIC_DIGEST)
         with self.assertRaises(ValueError):
