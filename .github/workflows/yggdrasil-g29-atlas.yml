@@ -52,6 +52,9 @@ jobs:
       - name: GKD-06 frozen source manifest and unchanged fitting controls (offline)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
         run: python -B research/contrib/chatgpt/GKD-06/run.py --selftest
+      - name: GKD-07 historical RCT frozen prior and negative fixtures (offline)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: python -B research/contrib/chatgpt/GKD-07/run.py --selftest
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -139,4 +142,18 @@ jobs:
           fi
           echo "GKD06_PUBLIC_SCORE_SINGLE_COMMIT_GATE_ACCEPTED"
           python -B research/contrib/chatgpt/GKD-06/run.py --score-public
+      - name: GKD-07 historical RCT frozen prior and negative fixtures (offline)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        run: python -B research/contrib/chatgpt/GKD-07/run.py --selftest
+      - name: GKD-07 one-time historical randomized-effect public DEV score (Linux only)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$(git log -1 --pretty=%s)" != "research(GKD-07): SINGLE_PUBLIC_RCT_SCORE" ]; then
+            echo "GKD07_RCT_SCORE_NOT_TRIGGERED; original outcome labels not accessed"
+            exit 0
+          fi
+          echo "GKD07_RCT_ONE_SHOT_COMMIT_GATE_ACCEPTED"
+          python -B research/contrib/chatgpt/GKD-07/run.py --score-public
       - run: git diff --exit-code
