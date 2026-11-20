@@ -1,5 +1,8 @@
 # ENERGY-REMAP-11 — Causal topology under hidden sensor relabeling
 
+**Post-primary analytic correction (ENERGY-REMAP-GATE-12):** The [exact mathematical certificate](../ENERGY-REMAP-GATE-12/README.md) proves that the frozen 6-OLD/2-NEW, Dirichlet(0.5), prior-reset=0.25 setup has maximum possible P(reset)=**5/7=0.7143**, below its hard **0.80** gate. Exhaustive 9,702 unordered count cases and a separately derived 16,632 ordered-case audit both found **zero reachable activations**. Thus the experiment's 0/36 repairs were **inevitable by design**, not stochastic misses; the candidate's apparent benefit is **ordinary MAP sensor alignment**, not functioning causal-edge repair. Original 36-world primary scores, frozen prereg, consumed seeds and MIXED_NO_GO classification remain unchanged. No source was retuned or primary trial rerun.
+
+
 **20 November 2026 · Independent source-free Yggdrasil research · SCIENCE: MIXED_NO_GO · DEPLOYMENT: NONE**
 
 ## Question
