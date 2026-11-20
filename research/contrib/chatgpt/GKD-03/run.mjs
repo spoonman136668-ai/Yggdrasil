@@ -118,7 +118,8 @@ export function run(){
       if(c===0){
         const changed=signed(e.id,c,x,(etas[c]+0.1)*base(x));
         fails(()=>admit(s,changed),'CONFLICT');conflicts++;assert(encode(s).equals(initial),'CONFLICT_MUTATED');
-        fails(()=>admit(s,{...e,y:e.y+0.1}),'FORGERY');forgeries++;assert(encode(s).equals(initial),'FORGERY_MUTATED');
+        const invalidSig=Buffer.from(e.signature,'base64');invalidSig[0]^=1;
+        fails(()=>admit(s,{...e,signature:invalidSig.toString('base64')}),'FORGERY');forgeries++;assert(encode(s).equals(initial),'FORGERY_MUTATED');
       }
       const x2=next(),e2=signed('known'+seed+'_'+j+'_c'+c+'_b',c,x2,etas[c]*base(x2));
       assert(admit(s,e2),'SECOND');accepted++;
@@ -173,9 +174,14 @@ export function run(){
   fails(()=>admit(blank(),signed('x',0,[0,4,5,0,1,300,0],1)),'ZERO_BASE');
   fails(()=>admit(blank(),signed('x',0,[8,4,5,2,1,300,0],NaN)),'NONFINITE');
   fails(()=>admit(blank(),{...signed('x',0,[8,4,5,2,1,300,0],1),issuer:'impostor'}),'ISSUER');
+  const cap=blank(),test=[8,4,5,2,1,300,0],y=base(test);
+  for(let i=0;i<16;i++)assert(admit(cap,signed('capacity_'+i,0,test,y)),'CAP_ADD');
+  const full=encode(cap);
+  fails(()=>admit(cap,signed('capacity_16',0,test,y)),'LEDGER_EXHAUSTED');
+  assert(encode(cap).equals(full)&&encode(decode(full)).equals(full),'CAPACITY_COLD');
   assert(accepted===320&&replays===800&&conflicts===32&&forgeries===32&&naive===128&&repairs===32&&retained===32&&cold===64,'KNOWN_TARGETS');
   assert(pairs===16&&abstentions===32&&correct===64&&symbolicTies===64&&olsTies===64&&maxError<=1e-9,'PAIR_TARGETS');
-  const out={schema:'yggdrasil.gkd03.dev.v1',experiment:'GKD-03',preregistration_commit:'88c466ee61204ee85f2b7cc93fd56a9baa258167',classification:'ENGINEERING_DEV_PASS_SCIENTIFIC_ADVANTAGE_NO_GO',known_worlds:32,accepted_unique_witnesses:accepted,ignored_replays:replays,rejected_signed_conflicts:conflicts,rejected_forged_signatures:forgeries,original_gkd02_false_confidence_on_replay:naive,corrected_contexts:repairs,unrelated_contexts_retained:retained,cold_restores:cold,checkpoint_bytes:b.length,sample_checkpoint_sha256:sampleCheckpoint,indistinguishable_world_pairs:pairs,preprobe_abstentions:abstentions,postprobe_correct:correct,postprobe_symbolic_ties:symbolicTies,postprobe_ols_ties:olsTies,max_postprobe_relative_error:maxError,negative_guards_pass:6,teacher_runtime_calls:0,scientific_gain_verified:false,real_world_source_authenticated:false,native_integration:false,limitations:'Publicly embedded signing key is a fixture only; full event identity and trust require source authority. Polynomial feature is preprogrammed. Strongest symbolic and conventional OLS controls tie; no unfamiliar primitive or native intelligence gain.'};
+  const out={schema:'yggdrasil.gkd03.dev.v1',experiment:'GKD-03',preregistration_commit:'88c466ee61204ee85f2b7cc93fd56a9baa258167',classification:'ENGINEERING_DEV_PASS_SCIENTIFIC_ADVANTAGE_NO_GO',known_worlds:32,accepted_unique_witnesses:accepted,ignored_replays:replays,rejected_signed_conflicts:conflicts,rejected_forged_signatures:forgeries,original_gkd02_false_confidence_on_replay:naive,corrected_contexts:repairs,unrelated_contexts_retained:retained,cold_restores:cold,checkpoint_bytes:b.length,sample_checkpoint_sha256:sampleCheckpoint,indistinguishable_world_pairs:pairs,preprobe_abstentions:abstentions,postprobe_correct:correct,postprobe_symbolic_ties:symbolicTies,postprobe_ols_ties:olsTies,max_postprobe_relative_error:maxError,negative_guards_pass:7,teacher_runtime_calls:0,scientific_gain_verified:false,real_world_source_authenticated:false,native_integration:false,limitations:'Publicly embedded signing key is a fixture only; full event identity and trust require source authority. Polynomial feature is preprogrammed. Strongest symbolic and conventional OLS controls tie; no unfamiliar primitive or native intelligence gain.'};
   console.log(JSON.stringify(out,null,2));return out;
 }
 if(process.argv[1]?.endsWith('/GKD-03/run.mjs')||process.argv[1]?.endsWith('\\GKD-03\\run.mjs'))run();
