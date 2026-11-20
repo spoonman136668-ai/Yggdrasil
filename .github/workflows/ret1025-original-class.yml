@@ -95,7 +95,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Pinned original scientific dependencies
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+        run: >-
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
       - name: Exact final source and G29 controls
         shell: bash
         run: |
