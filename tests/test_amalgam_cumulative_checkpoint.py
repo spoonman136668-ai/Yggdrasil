@@ -27,7 +27,8 @@ def restore_core(raw, expected):
 
 def restore_selector(system, receipt):
     window, minimum, gain, rewards = receipt["config"]
-    history = {tuple(key): tuple((Fraction(a), Fraction(b)) for a, b in rows)
+    history = {tuple(key): tuple((QUINE.decode_selector_fraction(a),
+                                  QUINE.decode_selector_fraction(b)) for a, b in rows)
                for key, rows in receipt["evidence"]}
     selector = FakeSelector(system, history, minimum_gain=Fraction(gain))
     selector.window, selector.minimum_count = window, minimum
