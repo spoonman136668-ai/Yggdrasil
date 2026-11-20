@@ -213,6 +213,28 @@ class QuineRetentionTests(unittest.TestCase):
             QUINE.assess_update(self.anchor, self.current, two,
                                 self.manifest, self.pin)
 
+    def test_real_size_exact_fraction_custody_uses_lossless_hex(self):
+        """Do not disable Python's integer-digit limit for learned evidence."""
+        huge = Fraction((1 << 16000) + 1, (1 << 16000) + 3)
+        token = QUINE.encode_selector_fraction(huge)
+        self.assertTrue(token.startswith("hex:"))
+        self.assertEqual(QUINE.decode_selector_fraction(token), huge)
+        self.assertEqual(QUINE.encode_selector_fraction(Fraction(1, 2)), "1/2")
+        self.assertEqual(QUINE.decode_selector_fraction("1/2"), Fraction(1, 2))
+        with self.assertRaisesRegex(ValueError, "canonical"):
+            QUINE.decode_selector_fraction("2/4")
+        with self.assertRaisesRegex(ValueError, "canonical"):
+            QUINE.decode_selector_fraction("hex:0x1/0x2")
+
+        old = FakeSelector(self.anchor, {(0, 0): ((huge, -huge),)})
+        same = FakeSelector(FakeSystem(self.anchor.events),
+                            {(0, 0): ((huge, -huge),)})
+        other = FakeSelector(self.anchor,
+                             {(0, 0): ((huge + 1, -huge),)})
+        self.assertEqual(QUINE._checkpoint(old), QUINE._checkpoint(same))
+        self.assertNotEqual(QUINE._checkpoint(old), QUINE._checkpoint(other))
+        self.assertEqual(QUINE.verify_selector_replay(old, same)["source_actions"], 0)
+
     def test_selector_only_old_world_regression_vetoes_unchanged_native(self):
         anchor = FakeSelector(self.anchor)
         manifest = QUINE.select_quines(anchor, self.windows)
