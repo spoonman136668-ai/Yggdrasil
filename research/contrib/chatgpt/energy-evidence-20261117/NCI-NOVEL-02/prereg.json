@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.nci-novel02.public-variable-inclusion-development-prereg.v1",
+  "status": {
+    "candidate_code_written": false,
+    "source_generator_written": false,
+    "pilot_executed": false,
+    "primary_executed": false,
+    "source_commit_pinned": false,
+    "scientific_pass": false
+  },
+  "freeze_date": "2026-11-19",
+  "scope": "Independent source-free contributor; no owner-state actions or canonical Yggdrasil training",
+  "parent_research_commit": "15a03ed2c4a095df6ffb9c7c9290f15f5aa5ed0a",
+  "parent_nci01_result": "DEV_NO_GO",
+  "canonical_owner_source": "UNVERIFIED",
+  "central_integration": "Unified Causal Intelligence Amalgam Work chat only / PR #1278",
+  "source_rights": {
+    "synthetic_self_authored_only": true,
+    "original_CausalGym_first_use_authorized": false,
+    "owner_issue": 426,
+    "no_rival_trainers": true,
+    "no_paid_APIs": true
+  },
+  "hypothesis": "From four previously unseen public context variables with typed names and two action-role identifiers, an additive source-only learner can identify a truly relevant fourth variable by witnessed intervention consequences; it will outperform a frozen no-fourth-variable ablation on disjoint new laws while retaining preexisting old context capability.",
+  "research_separation": {
+    "previous_primary_seeds_consumed": [
+      481223,
+      481247,
+      481269,
+      481283
+    ],
+    "new_primary_seeds": [
+      592113,
+      592127,
+      592139,
+      592157
+    ],
+    "pilot_seed": 592101,
+    "unique_id_namespace": "nci-novel02",
+    "old_ids": [
+      "old.x0",
+      "old.x1",
+      "old.x2",
+      "old.x3",
+      "old.action_1",
+      "old.action_2"
+    ],
+    "new_ids": [
+      "new.x0",
+      "new.x1",
+      "new.x2",
+      "new.x3",
+      "new.action_1",
+      "new.action_2"
+    ],
+    "stage2_public_state": "s2",
+    "source_hidden_truth": "never transmitted to learner"
+  },
+  "study_design": {
+    "families": [
+      "novel_toggle",
+      "novel_guard",
+      "novel_cross",
+      "novel_parity4",
+      "unchanged",
+      "irrelevant_x3",
+      "unidentifiable_x3",
+      "outside_grammar"
+    ],
+    "novel_count": 4,
+    "per_seed_per_family_episodes": {
+      "OLD_FIT": 64,
+      "NEW_FIT": 96,
+      "VALID": 32,
+      "HELD_SHARED_PREQUENTIAL": 32,
+      "HELD_POLICY": 32,
+      "OLD_RETURN": 64
+    },
+    "actions_per_episode": 2,
+    "action_cap_per_arm_per_seed": 5120,
+    "source_episodes_per_arm_per_seed": 2560,
+    "source_noise_probability": 0.06,
+    "observed_actions": "Fixed random public seed tape for OLD_FIT, NEW_FIT, VALID and HELD_SHARED; held policy actions genuinely selected per arm, each choice sees only its own realized outcomes; no counterfactual trainer inputs.",
+    "held_source": "unseen stable phase-index IDs reserved; pilot excludes any primary seed",
+    "feature_discovery": "Boolean functions over all typed public context factors and currently observed action/current intermediate state; deduplicate by exact 2^k truth-table signature. Source must supply all values and identities without relevance labels.",
+    "grammar": "Constants, literals/NOT, parity of <=4 public inputs, two-input AND/OR, and (two-input AND/OR) XOR a third input. Cost = 0 for constants, 1 literal, n-1 for n parity, 2 for pair AND/OR, 3 for compound; no future labels or private law in hypotheses.",
+    "arms": [
+      "GATED_MAP_SOURCE_ONLY",
+      "EXACT_GRAMMAR_BMA_FULL_FACTORS",
+      "NO_FOURTH_FACTOR_EXACT_BMA",
+      "FULL_CONTEXT_BETA",
+      "BACKOFF_SUBSET_BETA",
+      "RECURRENT_CONTEXT_BETA",
+      "FROZEN_OLD"
+    ],
+    "planning_controls": [
+      "EQUAL_BUDGET_BALANCED_PUBLIC_ACTIONS",
+      "BMA_EXPECTED_UTILITY",
+      "SEEDED_RANDOM_POLICY"
+    ],
+    "candidate": "MAP with empirical posterior support over all grammar hypotheses; only allow fourth-variable causal identity if posterior support and out-of-class predictive fit meet frozen thresholds",
+    "policy": "For held policy evaluate all possible binary first actions using learned transition probabilities, conditional second actions using learned reward probabilities; optimize expected observed reward before feedback; tie prefer zero.",
+    "negative_controls": [
+      "unchanged old-law public role",
+      "new variable x3 is irrelevant",
+      "x3 has no observed variation and is not identifiable",
+      "nonrepresentable source law must not hallucinate certainty"
+    ]
+  },
+  "qualification": {
+    "pass_representation": "For each of four novel families in at least 3/4 new seeds, posterior support of x3 >=0.90 after NEW_FIT; stage2 also has a complete public state transition witness before prediction; novel-family mean prequential HELD Brier at least 10% lower than NO_FOURTH_FACTOR_EXACT_BMA and no >0.02 absolute OLD_RETURN Brier worsening versus frozen OLD model.",
+    "pass_scientific_dev": "Separate and stronger: candidate HELD_SHARED Brier at least 5% lower than strongest VALID-selected fully fitted same-public-factor control in at least 3/4 novel families, plus positive action reward delta in at least 3/4 novel families; same source/witness/compute/memory within declared budgets; no OLD_RETURN drift >+0.02; controls include independent conventional fit. This source-free DEV alone cannot be SCIENTIFIC_PASS.",
+    "failure": "Any unmet threshold = DEV_NO_GO for that gate. Report direct and control scores, per-seed outcomes, abstention counts, action counts, peak memory/CPU, and seed consumption; no post-result fixes.",
+    "uncertainty_rule": "When posterior x3 support <0.90 or latest 24 prequential rewards have Brier >0.15, return UNKNOWN; do not invent a new relation identity.",
+    "negative_rule": "In unidentifiable_x3, fourth-variable discovery must be UNKNOWN. Outside grammar must be UNKNOWN or fail the negative gate; report if not.",
+    "reproducibility": "GitHub source files and preflight verified at an immutable commit BEFORE primary scoring; prereg HEAD strictly ancestor of source commit; source and result separate commits; no source retuning on primary seeds.",
+    "runtime": "Source-free isolated Python stdlib only; no native checkpoint access, no protected source, no new owner or controller",
+    "side_effects": "Research data only; no accepted model weights, checkpoint, owner ref, first-use or deployment"
+  }
+}
