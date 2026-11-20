@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "ENERGY-61",
+  "project": "Yggdrasil",
+  "date": "2026-11-19",
+  "class": "external synthetic falsification",
+  "not_native_training": true,
+  "source_parent": "327d44d0038ac9600fb600ff7e92101b61ddb841",
+  "source_commit": "378a5445b59fbc46290c91f12c930ea2b1858555",
+  "source_archive_sha256": "e6bf6e1e52aaf654fc5fb477431c094ac3c9da87317e944fa2f2fb801a0a0afa",
+  "source_git_blob": "44d3e34ca2b82788025062192208046c621d4307",
+  "scorer_sha256": "492b9b3a10b8170ed50b17b631d31268626852a3ff785ca202963986ed4d0236",
+  "auditor_sha256": "a91e63928f3662539bde664b0c9a27a5d475818f37454d357d21cd972e123151",
+  "question": "Can a persistent sparse causal program learn previously unnamed Boolean compositions from do-consequences and improve nuisance-shift transfer over a conventional fully fitted SAME-LIBRARY ElasticNet, fresh OMP and softmax-memory controls, while retaining its old head?",
+  "design": {
+    "fresh_screen_seeds": [
+      103301,
+      103319
+    ],
+    "world_ids": [
+      0,
+      1
+    ],
+    "families": [
+      "xor_and",
+      "and_xor",
+      "conditional"
+    ],
+    "worlds": 12,
+    "reserved_primary_seeds": [
+      103401,
+      103419,
+      103433
+    ],
+    "primary_world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "primary_eligible_only_after_screen_promising": true,
+    "excluded_dev_seed": 999001,
+    "excluded_smoke_worlds": 3,
+    "excluded_smoke_audit_checks": 21603,
+    "smoke_candidate_cold_mse": 0.8249432617,
+    "smoke_matching_bank_enet_cold_mse": 0.5749162791,
+    "generator": "E61:v1 SHA256 keyed. Ten causal bits; two correlated/anticorrelated nuisance observed bits. Hidden XOR(AND,AND), AND(XOR,XOR), and 5-variable conditional gate; one shared factor + one changed stage-specific. Gaussian observation noise sigma .18; planted identities withheld.",
+    "unseen_causal_assignments_per_world": 352,
+    "observations_old": 80,
+    "observations_new": 80,
+    "held_old": 64,
+    "held_new": 64,
+    "held_cold": 64,
+    "learner_feature_bank": "12,012 authored AND/XOR pair and depth-two compositions on 12 observed variables; factor labels and planted supports withheld but primitive grammar PROVIDED; conditional 5-variable structure is outside maximum representation depth.",
+    "candidate": "Old four-term greedy sparse/ridge checkpoint. Preserve its OLD readout exactly; carry two OLD terms and fit two NEW residual-selected terms, using NEW 80 witnessed labels. NEW model scores NEW and COLD; OLD checkpoint scores OLD.",
+    "fully_trained_controls": [
+      "fresh_full_bank_omp: four terms on same 12012 bank",
+      "pooled_full_bank_omp: four terms old+new on same bank",
+      "fresh_composition_elasticnet: alpha .045 L1 .8 max_iter2000 tol1e-3 same 12012 bank",
+      "fresh_poly_elasticnet: fourth-degree polynomial input alpha .05 L1 .8 max_iter2500 tol1e-3",
+      "fresh_extra_trees: 96 trees depth14 leaf2",
+      "fresh_hgb: 95 iterations leaf11 learning rate .065",
+      "fresh_rbf_krr: alpha .23 gamma .18",
+      "softmax_old_fresh: conventional train-error-weighted old/fresh OMP snapshot mixture temperature .17"
+    ],
+    "negatives": [
+      "old_no_update (frozen old checkpoint)",
+      "shuffled_new (same program search on permuted NEW labels)"
+    ],
+    "observation_parity": "All methods see exactly the same 80 OLD and 80 NEW witnessed data. Some conventional controls use only NEW by design. Candidate and controls differ in model capacity and compute; no fair-compute superiority claims.",
+    "source_generator_audit": "Independent scorer and auditor source files with separately authored world reconstruction, greedy refitting and all conventional model refits; same underlying NumPy/scikit-learn solvers. Full original predictions and interventions required.",
+    "runtime": "Local single-thread CPU Python 3.13, numpy2.3.5, scipy1.17.0, sklearn1.8.0. One screen, single unchanged-source replay and independent audit. No paid API or official runner, controller or scheduler.",
+    "metric": "Per-world noisy held MSE on 64 disjoint old/new/cold interventions; pooled across 12 worlds, per seed and per mechanism family. Lower is better. Model compute timing is separate from whole process."
+  },
+  "gates": {
+    "cold_best": "candidate cold pooled MSE <= .95 * best pooled mean of fresh_full_bank_omp,pooled_full_bank_omp,fresh_poly_elasticnet,fresh_composition_elasticnet,fresh_extra_trees,fresh_hgb,fresh_rbf_krr,softmax_old_fresh",
+    "cold_same_bank_elasticnet": "candidate cold <= .95 * same-bank fresh_composition_elasticnet cold",
+    "cold_same_bank_omp": "candidate cold <= .95 * fresh_full_bank_omp cold",
+    "cold_softmax": "candidate cold <= .95 * softmax_old_fresh cold",
+    "seed_both": "candidate per-seed cold MSE STRICTLY lower than best competing method in both unseen seeds",
+    "family_at_most_10pct_worse": "candidate cold MSE <=1.10 * same-bank ElasticNet within each of 3 unseen causal families",
+    "cold_new_ratio": "candidate pooled cold MSE <=1.25 * candidate pooled NEW held MSE",
+    "old_exact": "candidate historical OLD predictions exactly equal old_no_update old checkpoint for EVERY case; 0 tolerance",
+    "shuffled_negative": "candidate cold MSE <=.8*shuffled_new cold MSE",
+    "pooled_omp_gain": "candidate cold MSE <=.95*pooled_full_bank_omp cold MSE"
+  },
+  "decision": {
+    "SCREEN_PROMISING": "Critical cold_best,cold_same_bank_elasticnet,cold_same_bank_omp,cold_softmax,seed_both,old_exact all PASS plus at least 9/10 total and independent auditor PASS. Only then optionally run separately frozen primary.",
+    "SCREEN_NO_GO": "Any critical gate fails OR fewer than 9/10 gates pass with sound source, held split and independent audit. Preserve negative outcomes; DO NOT consume primary seeds.",
+    "INVALID": "Evidence generated before GitHub source/prereg, source hash drift, held-label/hidden-structure leakage, missing fully trained controls, non-unique causal assignments, broken independent auditor, missing original receipts. Never misclassify INVALID as scientific negative.",
+    "UNVERIFIED": "Primary/screen or audit incomplete. No success/failure claim."
+  },
+  "prohibitions": [
+    "No tuning consumed screen seeds, weights, gates or extra post-hoc seeds",
+    "No accepted ref, runtime model weights, native Yggdrasil owner, research loop, controller, queue, runner, merge, deployment or scientific first-use",
+    "No claims of autonomous unrestricted operator invention or intelligence from researcher-supplied finite primitive basis"
+  ],
+  "source_frozen_prior_to_screen": true,
+  "smoke_disclosure": "Excluded seed 999001, 3 worlds, evaluated before freeze and negative vs matched ElasticNet. Exactly 21603 audit assertions PASS. Fresh seeds 103301/103319 NEVER evaluated at prereg."
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "yggdrasil.energy19.prereg.v1",
+  "classification": "mathematical integration-safety counterexample; no model learning or protected first-use",
+  "source_reference": "CKAD-20 two-stage binary next state and action planning, PR #1207 (read-only conceptual structure; no imported code or protected data)",
+  "hypothesis": "Using a single lowest-energy successful trajectory as the action-value proxy can select a lower-expected-reward first intervention even with perfect normalized probabilities; properly marginalized energy does not.",
+  "primary_case": "action0: next-state p=(1/2,1/2), best contingent second-action reward successes=(3/5,3/5); action1: p=(1/2,1/2), successes=(9/10,0)",
+  "prior_prediction": "expected planner action0 value 3/5 versus action1 9/20; optimistic single successful-witness path chooses action1, giving 3/20 absolute expected reward regret",
+  "development_sweep": "exhaustive 6^4 grid of conditional rewards in {0,1/5,2/5,3/5,4/5,1}; evaluate strict non-tied choices only",
+  "required_controls": ["exact expectation from full known world", "marginalized normalized energy from identical probabilities"],
+  "pass": "Demonstrate at least one exact regret counterexample with zero mismatches for normalized energy marginalization; no scientific performance promotion",
+  "stop_rules": "No tuning from score, no native code or controlled test set, record negative safety effect exactly"
+}

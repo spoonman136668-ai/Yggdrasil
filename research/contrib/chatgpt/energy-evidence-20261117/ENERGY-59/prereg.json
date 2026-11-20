@@ -1,0 +1,79 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "ENERGY-59",
+  "project": "Yggdrasil",
+  "date": "2026-11-19",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY; no native training, owners, accepted refs, scheduler, controller, queue, first use, merge, deployment",
+  "source_parent": "99756a3550f7cdcc0f34e982bfc7750b2d15d178",
+  "source_commit": "7563eb7471f97a0da2bbff4d1302905c8985fa8b",
+  "source_git_blob": "22964b3a98636c695ced089c3c9b760766a7aedb",
+  "source_tar_sha256": "999fc5bc1bfcc892af3bf9d16e0dca990fb1da6b535e48d452336f7f054b5205",
+  "scorer_sha256": "7bc7bbb204a058a424313a3562a48fda824e3cdebbea00e671f7fa5f5bb8138c",
+  "independent_auditor_sha256": "faf60818fe29b3a2cdfcec0583a31e819cfe22ca58f3d33fb8af909589dd2c62",
+  "hypothesis": "A persisted learned hypothesis-memory state that discovers regime identity from limited witnessed intervention consequences without explicit episode IDs can preserve historical causal readouts under interference. A support-consensus update rule should improve cold, old, and pooled prediction over the strongest matched historical snapshot model, conventional softmax retrieval and fully fitted conventional regressors.",
+  "design": {
+    "primary_seeds": [
+      101101,
+      101119,
+      101141
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": [
+      "return_old",
+      "return_middle",
+      "novel_composition"
+    ],
+    "worlds": 36,
+    "excluded_dev_seeds": [
+      998911,
+      998921
+    ],
+    "excluded_world_ids": [
+      0
+    ],
+    "excluded_cases": 6,
+    "observations": "12 observed binary input dimensions, 9 true causal action bits, 3 context-sensitive nuisance cues; 3 hidden regimes with randomized 64–88 witness count each; transitions unmarked in learner input; stream chronological raw (x,y) only, independent random 9-bit assignments for training, calibration and held.",
+    "truth": "Author-invented four signed hidden parity-of-two/three factors: 2 shared, 2 changed across contexts, including return-to-old, return-to-middle, and recomposition scenarios. Cues are intentionally correlated during training/query, independently random during held cold; observation noise normal(0,.16). Truth identity/coefficients used solely by evaluator/auditor.",
+    "observation_budget": "Every learner receives the same entire chronological stream (3 stages, roughly 228 witnessed outcomes) and, per query, an additional 12 labeled calibration interventions; 64 disjoint held actions per requested hidden regime A/B/C; three query sessions have separate calibration sequences but no generated regime name given to learner.",
+    "leakage": "Learners are not given A/B/C or changepoint index. The evaluator knows them for held-metric grouping; model fitting takes only x/y for stream/probe; held outcomes never used to select predictors. Query groups themselves reveal which samples belong to one calibration session and are not zero-shot.",
+    "candidate": "One JSON persisted memory object containing overlapping OMP4 hypotheses trained from unlabeled stream windows of exactly 64 consecutive observations at stride16, plus final window. At query choose lowest calibration-MSE historical snapshot, with 50/50 consensus of best two iff at least 3/4 selected Walsh supports agree and second calibration MSE minus first <.04. No generator regime identifiers consulted.",
+    "grammar": "Pre-supplied all pairwise/triple Walsh terms across all 12 bits (286 terms). This is finite authored grammar, not free discovery of causal operators.",
+    "controls": [
+      "best_snapshot — same snapshots and calibration, select lowest MSE without consensus, strongest capacity-matched control",
+      "softmax_memory — conventional calibrated exponential weighting of every same-capacity snapshot temperature .10",
+      "last_snapshot — most recent historical snapshot without memory retrieval",
+      "pooled_elasticnet — supervised standard ElasticNet alpha .035 L1 .85 over all stream plus probe, fully fit",
+      "recent_elasticnet — standard ElasticNet same config on most recent 80 stream plus probe, fully fit",
+      "pooled_krr — standard RBF KernelRidge alpha .2 gamma .2 fully fit on all stream plus probe",
+      "random_snapshot — negative selected from persistent snapshot bank by fixed seed/world/family index",
+      "shuffled_probes — negative: use reverse-ordered query consequences for memory retrieval"
+    ],
+    "compute": "Single CPU Python3.13.5 NumPy2.3.5 sklearn1.8.0; OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1; one prospective 36-world primary, one unchanged-source semantic replay, independently written auditor re-fitting all 9 methods and snapshots. Preserve all original world/arm/prediction receipts. No cost/Joule claims.",
+    "metric": "Unweighted per-world MSE on 64 held actions each of hidden regimes A, B, C, pooled across three; lower better. Report per-seed and family pooled means, matched best-snapshot errors, snapshot-state bytes, consensus decision fraction, selected snapshot indices and old-regime errors."
+  },
+  "frozen_gates": {
+    "cold_C_vs_matched_best_5pct": "Aggregate C-context cold MSE of candidate <=0.95 * aggregate C-context MSE of capacity-matched best_snapshot.",
+    "overall_vs_matched_best_5pct": "Pooled A/B/C candidate MSE <=0.95*pooled best_snapshot MSE.",
+    "overall_vs_strongest_other_5pct": "Pooled candidate MSE <=0.95*minimum pooled MSE among best_snapshot,softmax_memory,last_snapshot,pooled_elasticnet,recent_elasticnet,pooled_krr.",
+    "seed_stability_2of3": "Candidate pooled MSE strictly less than best conventional pooled MSE (minimum among all six nonnegative controls) in at least 2 of the 3 preregistered seed cohorts.",
+    "family_non_degradation_10pct": "Candidate pooled MSE <=1.10*matched best_snapshot pooled MSE for every family.",
+    "old_query_retention_vs_last_20pct": "Candidate A historical held MSE <=.8*last_snapshot A held MSE.",
+    "old_query_noninferiority_5pct": "Candidate A historical held MSE <=1.05*best_snapshot A held MSE.",
+    "shuffle_query_negative_20pct": "Candidate pooled MSE <=.8*shuffled_probes pooled MSE.",
+    "serializer_refit_audit": "Every world checkpoint JSON reserialized/read back, source-free independent refit all snapshot/control predictions and MSE within 1e-10; independently reconstruct keys and masks. No scorer import by auditor.",
+    "consensus_exercised_10pct": "At least 10% of 108 phase-query sessions use consensus rather than selecting one snapshot."
+  },
+  "classify": {
+    "DEVELOPMENT_PROVISIONAL_GO": "All ten frozen gates PASS and independent refit/audit and semantic replay PASS. This is still external synthetic development, never SCIENTIFIC_PASS or native acceptance.",
+    "DEVELOPMENT_NO_GO": "Any frozen gate FAIL on valid primary evidence with complete auditable scores; preserve without posthoc modification or tuning.",
+    "INVALID": "Source/protocol absent before primary; source mismatch; leak of episode IDs, hidden truth or held labels into fitting; missing strong control; held assignment overlap; broken refit audit; incomplete original receipts.",
+    "UNVERIFIED": "Missing or incomplete primary or audit; do not label scientific."
+  },
+  "protocol": "No post-result hyperparameter, threshold, seed list, controller, runner, accepted-ref, promotion or deployment action; keep primary negative if no improvement. Preserve all original results in existing draft #1210.",
+  "history": "Before source freeze, excluded seeds 998911 and 998921 were scored on 3 worlds each. Candidate vs matched best: 0.031196 vs 0.032461 and 0.029770 vs 0.028906 (mixed). Scorer changed only by deleting unused no-op loop before source commit. Primary seeds have not been evaluated."
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "ENERGY-58",
+  "date": "2026-11-19",
+  "project": "Yggdrasil",
+  "contribution_class": "prospective external synthetic falsification",
+  "scope": "EVIDENCE ONLY (not native training, accepted-science evidence, merge or production)",
+  "source_parent": "1e5cf4e89f4155b78c82d1310a7a93a77bea925c",
+  "source_commit": "9e57af260fd10951cefee775e397edadac16331d",
+  "source": {
+    "archive_path": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-58/source.tar.bz2",
+    "archive_sha256": "59ced6691c87e2f9df39bd32c6044e6d9a32d7f6894078c75a1576cd97ad3a20",
+    "git_blob": "ea6a0073e9c9cb2361a7b058d9f4f9144d236d8b",
+    "scorer_sha256": "163acef2b420bff4bc21361f90e34f74bd295d7a091b1d297554ed2e442b57dc",
+    "auditor_sha256": "7240bbdafb1f7ac536e07d3a6fa627e8c1bb6c7f85f5d58f403e91a2e412e205",
+    "restore_sha256": "7fa48ce886f6991d5a8058150814e40ec4fab8fdcd296e76a51f4ce263ce2dd2",
+    "restart_check_sha256": "4793c83bc8566138b29fc8ca5db3be1ae9d29c3a220048581836bf752a4b9c39",
+    "generator_name": "E58:three-episode-synthetic-v1",
+    "excluded_smoke_seeds": [
+      999211,
+      999227
+    ],
+    "excluded_world_ids": [
+      0
+    ],
+    "excluded_smoke_cases_each": 3,
+    "preprimary_smoke_audit_checks_each": 7888,
+    "primary_seeds": [
+      100181,
+      100193,
+      100207
+    ],
+    "primary_world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "primary_families": [
+      "persistent",
+      "edge_reversal",
+      "novel_triple"
+    ],
+    "primary_worlds": 36
+  },
+  "hypothesis": "Sharing only stable learned pair-relations across three sequential episodes should reduce held cold-transfer consequence loss at least 5% relative to the best directly matched fully trained stage-specific relations learner while preserving OLD and MIDDLE historical functional readouts across a fresh process restart.",
+  "dataset": {
+    "origin": "Self-authored synthetic causal interventions; generated from seeded numpy RNG, not native Yggdrasil or real-world data",
+    "inputs": "10 underlying independent do-action causal bits; 2 correlated observed nuisance cues subject to old/middle/new/cold context shifts. Learn only from actions and observed labeled consequences.",
+    "latent": "4 signed pair-parity primitives, stable pair relations, old-specific and middle/new edge changes; edge reversal in one family, previously unrepresented triple relation in another. Hidden truth reserved for evaluator.",
+    "interventions": "Exactly 508 distinct causal assignment identities (84 OLD training +84 MIDDLE training +84 NEW training +64 each held OLD/MIDDLE/NEW/COLD); no duplicate causal 10-bit do-action between phases.",
+    "labels": "Every fitted arm receives the identical 252 observed intervention consequences (84 per episode) and the same action observations. Ground-truth planted supports/weights and all 256 held labeled outcomes withheld during fitting.",
+    "features": "Candidate/structurally matched controls use 4 pair-parity primitive supports chosen by standard OMP on OLD factual labels and six pair products. Conventional full-basis ElasticNet receives 1..4 Walsh features, RBF KernelRidge receives raw 12 bits. Feature grammar is preauthored, NOT discovered operator language.",
+    "noise": "Independent Gaussian consequence noise sigma=0.20",
+    "family_cases": "3 family types ×4 world ids ×3 independent seed clusters; cold nuisance bits independent of causal variables."
+  },
+  "arms": {
+    "candidate": "cumulative_invariants: fit OLD OMP4 primitive supports; fit separate OLD/MIDDLE/NEW Ridge graph heads; identify shared edges from 3 episode training coefficients (abs>=.18, same sign, coefficient range<=.35). Fit stage-gated pooled Ridge alpha=.4 where shared edge coefficients are tied across 3 episodes and all other coefficients/biases stage-specific. Save all OLD/MIDDLE heads unchanged; NEW and COLD use final cumulative head.",
+    "matched_control": "separate_relations: same old OMP4 primitive supports, independent Ridge alpha=.4 on NEW facts; OLD and MIDDLE separate heads restored unchanged. Same observed 252 examples and same 10 graph features. Conventional legitimate capacity/budget match, no oracle.",
+    "strong_controls": [
+      "rehearsal_ridge: stage-indicator pooled regression on 3 episodes with NO invariant-shared edges; same graph features and full witness history",
+      "shared_all: unconditional tie of all six edge coefficients",
+      "full_elasticnet: full 1..4 Walsh basis per episode, alpha=.04,l1_ratio=.82,max_iter=1400,tol=.0005",
+      "rbf_kernel: separate RBF kernel ridge on all 12 action bits alpha=.15 gamma=.30",
+      "no_update: OLD and MIDDLE historical readouts, MIDDLE head used unchanged for NEW/COLD",
+      "shuffled_new: NEW labels shuffled before latest-stage fitting, same observed inputs"
+    ],
+    "sequential_memory": "Candidate reports old and middle frozen historical readouts and NEW/COLD final readout from JSON checkpoint. It is a multi-head episode-tagged design: preserving old functionality does not prove a single live mutable network can answer unknown epoch queries.",
+    "cold_restart": "For each case, spawn an isolated new Python -I process executing standard-library-only restore.py from serialized checkpoint JSON and held input actions. Compare OLD/MIDDLE/NEW/COLD readouts with original model predictions at atol 1e-11. No outcome labels passed to restore.py.",
+    "compute": "One 36-world primary, one unchanged-source replay and independent full refit audit; 36 fresh-process restart checks per primary. Single-thread Linux CPU Python3.13.5 NumPy2.3.5 SciPy1.17.0 scikit-learn1.8.0, exact source hashes; no paid APIs, native Yggdrasil runner, or protected first-use.",
+    "evaluation": "Held MSE per old, middle, new and cold context (64 held outcomes/context/world) plus per-seed and per-family cold transfer; deterministic non-timing semantic replay exact SHA256; independent generator, checkpoint and all arms refit; serialized checkpoint byte size; restart numerical equivalence."
+  },
+  "frozen_gates": {
+    "cold_gain_5pct_vs_matched": "candidate pooled cold MSE <=0.95*separate_relations pooled cold MSE (CRITICAL)",
+    "cold_gain_5pct_vs_rehearsal": "candidate pooled cold MSE <=0.95*rehearsal_ridge pooled cold MSE (CRITICAL)",
+    "cold_gain_10pct_vs_other_conventional": "candidate cold MSE <=0.90*min(full_elasticnet,rbf_kernel) pooled cold MSE",
+    "seed_stability_2_of_3": "candidate cold MSE strictly below separate_relations within >=2 of 3 independent seed cohorts (CRITICAL)",
+    "all_families_no_more_than_10pct_worse": "candidate cold MSE <=1.10*separate_relations cold MSE within each causal family",
+    "historical_old_middle_retention": "all 36 worlds candidate OLD and MIDDLE held predictions exactly identical to matched separate_relations readouts at max absolute difference <=1e-11",
+    "cold_20pct_better_than_no_update": "pooled candidate cold MSE <=0.80*no_update pooled cold MSE",
+    "cold_20pct_better_than_shuffled": "pooled candidate cold MSE <=0.80*shuffled_new pooled cold MSE",
+    "new_context_no_more_than_10pct_worse": "pooled candidate held-new MSE <=1.10*separate_relations held-new MSE",
+    "cold_restart_all_pass": "36 fresh isolated Python process checks all 4 context readouts within 1e-11; verifier exit 0",
+    "checkpoint_size_at_most_4kb": "max serialized JSON checkpoint <=4096 bytes"
+  },
+  "classification": {
+    "DEVELOPMENT_PROVISIONAL_GO": "All 11 frozen gates PASS; source-free independent model refit and full fresh-process restart audit both PASS, exact source replay PASS. External synthetic provisional only, native SCIENTIFIC_PASS not implied.",
+    "DEVELOPMENT_NO_GO": "Any frozen scientific gate fails with valid prereg, complete model controls and independent checks; preserve outcome, do NOT tune or rerun consumed seeds.",
+    "INVALID": "Missing/late prereg, source hash changes, label leakage, split duplicates, absent strong conventional controls, independent audit failure, or incomplete primary receipts. Infrastructure errors separately classified.",
+    "UNVERIFIED": "If scoring, audit or custody not completed do not report a scientific pass or result.",
+    "next_actions": "No model/accepted-ref/loop promotion or native training; no extra primary seeds or unfrozen threshold adaptations. If external GO, propose separate native qualification, not automatic integration."
+  },
+  "prior_disc": "Two pre-freeze excluded seed pilots 999211 and 999227 of 3 worlds each passed 7,888 independent checks; candidate cold 0.231393 vs separate 0.236672 and candidate cold 0.268797 vs separate 0.351242. This is candidate-selection context, NOT confirmatory evidence.",
+  "provenance_security": "No reused private user data, no credentials, no external paid API. Main, accepted research state and native Yggdrasil untouched."
+}

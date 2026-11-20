@@ -1,0 +1,152 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-65",
+  "date": "2026-11-19",
+  "project": "Yggdrasil",
+  "scope": "external synthetic independent research only; never native training, owner loop, accepted refs, merge or deployment",
+  "parent": "b4cf5fb070601bd5957f3cac02daee20c5e0fb03",
+  "source_commit": "4c798eae7409baa1d99e08c5f4e1848a7a3468e2",
+  "source_archive_git_blob": "9cb52c825ab7834e71045019862c11f8a51618c5",
+  "source_manifest": {
+    "README_sha256": "48569e3b91be5738d1c07fd2b443a52a45da47d7bfff696f4adfc1fd01f10f87",
+    "auditor_sha256": "d09a12db2ae81b44d9e8b5f4070f7f546e5e24b66d34127a58f0b86520ada371",
+    "excluded_smoke_case_ids": [
+      0
+    ],
+    "excluded_smoke_seed": 999551,
+    "experiment": "ENERGY-65",
+    "library_versions": {
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "sklearn": "1.8.0"
+    },
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "primary_reserved": [
+      107101,
+      107119,
+      107137
+    ],
+    "prospective_screen_seeds": [
+      999563,
+      999577
+    ],
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "scorer_sha256": "5bdb167862ab6979ead7aa05ec04dfbd86958b560808e25cb5c4e19dd141d760",
+    "source_tar_bytes": 6804,
+    "source_tar_sha256": "743c7198ed805e4f5330cca9b376eb26cf2b234f4de49ed51ff0e2a9f1bf9686"
+  },
+  "hypothesis": "A learner retaining three old learned pair factors and identifying one previously unprovided fourth-order effect by residualized intervention fitting reduces cold prediction MSE >=5% versus strongest fully fitted same-dictionary conventional learner on fresh unseen interventions, without loss of OLD functional readout.",
+  "candidate": "Learn 3 OLD supports by OMP on 28 pair-parity terms, store old frozen checkpoint, fit NEW Ridge on OLD supports and find a new fourth-order parity feature via residualized correlation over 70 authored quadruple Walsh candidates; jointly Ridge-refit 3 old supports plus discovered quad on the same 40 NEW observations.",
+  "dataset": {
+    "generated_by": "original author-owned deterministic intervention generator ENERGY-65 v1, no external content or protected native evaluator",
+    "mechanism_families": [
+      "single_new_quad",
+      "double_new_quad",
+      "novel_fifth"
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "bits": 8,
+    "assignments_per_world": 208,
+    "split_counts": {
+      "train_old": 60,
+      "train_new": 40,
+      "held_old": 36,
+      "held_new": 36,
+      "held_cold": 36
+    },
+    "disjoint_underlying_action_assignments": true,
+    "source_generator_seed_tuple": "[seed,658,family_id,world_id]",
+    "old_mechanism": "three hidden 2-bit signed parity factors",
+    "new_mechanism": "reweighted old factors plus one unseen 4-bit parity, two 4-bit parity, or one unseen 5-bit parity outside candidate degree-4 grammar",
+    "label_noise": "Gaussian stddev 0.18",
+    "leakage_guard": "planted truth and all held labels held by scorer, never supplied to model fit; oracle only a diagnostic and not a conventional comparator",
+    "novelty_limit": "The 70 4-way Walsh feature grammar is fully researcher-authored, and the fifth-order mechanism is deliberately outside it. This is not unrestricted invention."
+  },
+  "info_budget": "Every method observes exactly the same 60 old and 40 new consequence labels; each original causal action assignment appears once across five disjoint sets. Full matched controls use same pair/quad grammar and new data; observation parity does not mean equal compute.",
+  "arms": [
+    "factor_residual_quad",
+    "same_support_elasticnet",
+    "full_bank_elasticnet",
+    "full_bank_omp4",
+    "full_bank_ridge",
+    "softmax_old_fresh",
+    "old_support_no_quad",
+    "old_frozen",
+    "shuffled_new",
+    "oracle_basis"
+  ],
+  "strongest_controls": "Train-only 3-fold CV ElasticNet alpha .005/.025/.08 L1 .85 on candidate OLD supports + all 70 quads and separately on entire 98-term pair/quad bank; fully fitted OMP4 and Ridge1 on same full bank; train-label-weighted softmax frozen-old/fresh OMP. Never count oracle in eligible competition.",
+  "compute_runtime": "Python3.13.5 single-thread NumPy2.3.5 scipy1.17.0 scikit-learn1.8.0; OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1; one 24-world screen then independent separate refit audit and deterministic replay. No paid APIs, official runner, physical energy measurement.",
+  "dev_excluded": {
+    "seed": 999551,
+    "world_ids": [
+      0
+    ],
+    "world_count": 3,
+    "audit_checks": 5286,
+    "meaning": "pre-source-freeze development smoke, exploratory and ineligible"
+  },
+  "screening": {
+    "seeds": [
+      999563,
+      999577
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": 3,
+    "worlds": 24,
+    "previously_unconsumed": true
+  },
+  "primary_reserved": {
+    "seeds": [
+      107101,
+      107119,
+      107137
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": 3,
+    "worlds": 36,
+    "execute_only_if_screen_promising": true
+  },
+  "metrics": "Per-world MSE OLD/NEW/COLD on 36 withheld actions; pooled across worlds, per-seed/family COLD MSE, correct quad identity in single-new-quad worlds, exact old prediction retention, model-selection CV alpha and independent refit consistency.",
+  "frozen_gates": {
+    "cold_gain5_vs_best_strong_control": "Pooled candidate COLD MSE <= 0.95*minimum pooled COLD MSE of same_support_elasticnet, full_bank_elasticnet, full_bank_omp4, full_bank_ridge, softmax_old_fresh.",
+    "cold_gain5_vs_full_elasticnet": "Pooled candidate COLD MSE <= 0.95 * full_bank_elasticnet COLD MSE.",
+    "cold_gain5_vs_matched_elasticnet": "Pooled candidate COLD MSE <= 0.95 * same_support_elasticnet COLD MSE.",
+    "each_seed_better_than_best_other": "Candidate COLD MSE strictly below best other eligible fully trained control on EACH independent screen seed.",
+    "each_family_nondegradation10pct": "Candidate COLD MSE <=1.1*best other conventional COLD MSE in EACH mechanism family.",
+    "old_retention_exact": "All candidate OLD held predictions equal frozen-old readout vector at machine precision.",
+    "novel_quad_recovered_60pct": "Exact candidate quad identity equals planted quadruple in at least 60% of single-new-quad cases.",
+    "shuffled_negative20pct": "Candidate COLD MSE <=.80*shuffled-new-label negative COLD MSE.",
+    "over_old_frozen20pct": "Candidate COLD MSE <=.80*frozen-old-only COLD MSE."
+  },
+  "critical_gates": [
+    "cold_gain5_vs_best_strong_control",
+    "cold_gain5_vs_full_elasticnet",
+    "cold_gain5_vs_matched_elasticnet",
+    "each_seed_better_than_best_other"
+  ],
+  "decisions": {
+    "SCREEN_PROMISING": "ALL four critical screening gates and >=8 of 9 gates PASS, complete 24-world evidence and independent original-receipt audit PASS. Only then eligible for separate frozen 36-world primary; never native science acceptance.",
+    "SCREEN_NO_GO": "Any critical gate FAIL, or <8/9 PASS, with valid complete original audit. Stop and preserve negative; leave reserved primary unused.",
+    "INVALID": "Source/prereg AFTER prospective scoring, drift in code/seed/feature budget, planted hidden labels leaked to model, missing fully fitted matched controls, overlapping action assignments, invalid re-fit audit or incomplete receipt.",
+    "UNVERIFIED": "Missing screen results or incomplete audit, not a scientific verdict."
+  },
+  "freeze": "No post-screen candidate hyperparameter, threshold, grammar, seed, policy or capacity modification. Do not relabel negative as infrastructure failure. Exact source tar/manifest committed before this prereg and both precede fresh scores.",
+  "archival_path": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-65/",
+  "research_owner": "external contributor evidence only; Yggdrasil retains native qualification/acceptance authority"
+}

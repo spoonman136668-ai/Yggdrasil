@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-39",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can classical local Ising-energy annealing solve unfamiliar compositional signed-XOR constraint systems substantially faster than optimized exact classical solvers while retaining exact global-optimum quality and outperforming equal-start conventional descent?",
+  "hypothesis": "A fixed 12-start, 60-sweep classical annealer on a nonconvex frustrated binary factor graph will reach the true optimum on at least 90% of 36 fresh worlds, outperform equally initialized zero-temperature local descent by >=10 percentage points, random search by >=30 points, and solve at <=half the whole graph-generation-plus-solve wall time of exact HiGHS MILP and NumPy exhaustive enumeration.",
+  "exact_parent_sha": "623926aa14aa615dbfbe56ac9e5d4c28a0fcdc63",
+  "predecessor_evidence": [
+    "ENERGY-38 DEVELOPMENT_NO_GO, scored 54 synthetic causal worlds; energy-guided intervention selector failed 5/7 gates and lost exact causal-effect and compute efficiency comparisons. Parent archive at 623926aa14aa615dbfbe56ac9e5d4c28a0fcdc63."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-39/**"
+  ],
+  "inputs": [
+    {
+      "name": "Original synthetic frustrated weighted XOR2 constraint worlds",
+      "sha256": "7e95b250d63911d4b47c55ab62d67ed2acd06509fd2571095e9c91568e0bf1d8",
+      "source": "Self-authored deterministic SHA256-keyed source; no private data, protected model, paid API, or independent dataset."
+    }
+  ],
+  "source_freeze": {
+    "source_commit": "f6c7e217e4039a5ed961f5424f1e37d5d7f17657",
+    "code": "experiment.py.bz2",
+    "code_git_blob": "3b3520d641ebd66e6b8fcef1f5e2b96f853a1bcf",
+    "code_original_bytes": 9507,
+    "code_decompressed_sha256": "7e95b250d63911d4b47c55ab62d67ed2acd06509fd2571095e9c91568e0bf1d8",
+    "code_compressed_bytes": 3637,
+    "code_compressed_sha256": "933cfaf724d88c09b9d72e5773347d2399896d218c99192049e87f143198757a",
+    "independent_auditor": "audit.py.bz2",
+    "auditor_blob": "db136c62a9b8cf2144c3bab63a41d80ce00b1b83",
+    "auditor_original_bytes": 8033,
+    "auditor_decompressed_sha256": "61e66de9e444af7c991cb3800b20657e732b064aef35038e58689fc224cd03ec",
+    "auditor_compressed_bytes": 3150,
+    "auditor_compressed_sha256": "a4d21a367ef0dad897d0c42364e42fb88c67a6f4a9ac98d4d131a970b57a9da7"
+  },
+  "frozen_design": {
+    "primary_seeds": [
+      8209,
+      8221,
+      8231
+    ],
+    "smoke_only_excluded_seed": 99563,
+    "families": [
+      "erdos",
+      "modular",
+      "lattice"
+    ],
+    "variable_sizes": [
+      14,
+      18
+    ],
+    "world_ids": [
+      0,
+      1
+    ],
+    "world_count": 36,
+    "source_generator": "Connected cycle skeleton plus 2n additional edges per n variables; family-specific pair ordering (Erdos uniform SHA256 rank, modular same-block-priority, lattice short-ring-distance-priority) with stable hash tie, for exactly 3n edges. A planted hidden binary assignment sets edge parity; independent SHA256-keyed per-edge Bernoulli 22% parity frustration, positive integer weights 1..4. Solvers are given only complete public [(i,j,expected_xor,weight)] factors; planted assignment never passed to any solver.",
+    "all_methods": [
+      "anneal",
+      "greedy",
+      "random",
+      "highs",
+      "enumerate"
+    ],
+    "anneal": "Classical Ising Metropolis annealing, E(x)=sum_e w_e*[x_i XOR x_j != expected_e]; 12 deterministic seeded random starts, 60 sweeps, each sweep visits n variables in seeded random order; temperature geometrically from 3.0 down to 0.04; accepting downhill/neutral and uphill with exp(-deltaE/T). Record best encountered sweep state. No model training.",
+    "greedy": "Identical 12 starts and sweep order as anneal, same 60 sweeps, flips strictly improving only; no uphill flips. The annealer consumes additional random draws for Metropolis decisions, so subsequent proposal permutations can differ, but starts and number of sweeps match.",
+    "random": "12*(60+1)=732 independently sampled uniformly random complete assignments, score minimum, SHA256 seeded. Not exactly compute-matched; actual cost measured.",
+    "highs": "SciPy 1.17.0 HiGHS mixed-integer solver, exact binary x_i,carry z_e,parity p_e, equality x_i+x_j-2*z_e-p_e=0 for each factor; objective sum_e w_e*penalty, MILP time limit 2.0 seconds per graph, mip_rel_gap 0.0 and presolve true. Only status 0 success is an exact certification; failure/timeout must be recorded separately.",
+    "enumerate": "NumPy vectorized exhaustive search over 2^(n-1) assignments with global XOR symmetry fixed x0=0; true exact optimum verified by an independently implemented all-case oracle in audit.py.",
+    "evaluator": "Lowest total integer violated edge weight; an instance 'optimal' iff solver cost equals independently exhaustively verified global optimum. Track all 36 exact-optimal successes, total integer excess, per family 12 and per size 18, HiGHS certificate and dual bound parity. Higher-level causal learning, cumulative memory, unseen semantic reasoning or neural training are not scored.",
+    "time_definition": "Per policy sum across 36 worlds of measured graph-generation wall seconds (same per instance for each method) plus solver wall seconds including that solver's setup/evaluations. Also record pure solve time and complete all-arm experiment wall separately. No claim about physical Joules or GPU. Timings are single local environment observations, and threshold comparisons should not overstate statistical significance.",
+    "compute_budget": "12*60*n variable flip proposals per local-search policy; fixed 732 random candidates; HiGHS cutoff 2.0s per graph; exhaustive oracle full symmetry-reduced search; 36 worlds once, single unchanged-source replay allowed for determinism (timing excluded), independent full-audit with no model-source import.",
+    "hardware": "Linux CPU, Python 3.13.5, NumPy 2.3.5, SciPy 1.17.0, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1",
+    "deterministic_expected": "Graph construction, exact candidate costs and anneal/greedy/random scores deterministic for pinned versions; measured timings are not stable."
+  },
+  "controls": [
+    "NumPy symmetry-reduced exact exhaustive optimization (strong gold solver; all 36 graphs)",
+    "HiGHS MILP optimized exact classical solver under 2.0s timeout and zero gap",
+    "Fixed-capacity equal-start zero-temperature greedy coordinate descent",
+    "Uninformed independent random-state sampling"
+  ],
+  "metrics": [
+    "36-world exact optimum hit rate for each algorithm",
+    "gap in total violated weight over independently verified optimum",
+    "HiGHS exact solver certification and dual-bound congruence",
+    "12 worlds per family and 18 n=18 worlds optimum rates",
+    "cumulative whole-policy graph-generation-plus-solver component wall time versus exact baselines",
+    "complete all-method experiment wall time"
+  ],
+  "frozen_gates": {
+    "anneal_optimal_at_least_90pct": "Anneal hits independent global optimum on >=90% of all 36 graphs.",
+    "anneal_beats_greedy_10pp": "Anneal has >=10 percentage-point higher exact-optimum hit rate than greedy over 36.",
+    "anneal_beats_random_30pp": "Anneal has >=30 percentage-point higher exact-optimum hit rate than random sample over 36.",
+    "anneal_optimal_at_least_80pct_each_family": "Anneal optimal rate >=80% separately on all three graph families, 12 graphs each.",
+    "anneal_optimal_at_least_80pct_n18": "Anneal optimal rate >=80% on all n=18 graphs, 18 graphs.",
+    "energy_speed_2x_vs_exact_enumeration": "Anneal total generation+solve time <=50% of exhaustive enumeration generation+solve time over the same 36 graphs.",
+    "energy_speed_2x_vs_highs_exact": "All 36 HiGHS cases certified exact AND anneal total generation+solve time <=50% of exact HiGHS generation+solve time.",
+    "highs_certifies_every_instance": "HiGHS certifies an exact optimum on each of 36 cases; any timeout or non-certified result FAIL even when reference enumeration independently verifies the true optimum."
+  },
+  "classification_rules": {
+    "supported": "DEVELOPMENT_GO only if all 8 frozen gates PASS and independent source-free audit PASS; still not native Yggdrasil or SCIENTIFIC_PASS.",
+    "mixed": "Explicitly present all passing/failed gates and failure cause; no selective benchmark claims.",
+    "negative": "DEVELOPMENT_NO_GO for any failed gate with valid source, controls and scores. Preserve negative evidence without post-primary retuning.",
+    "invalid": "INVALID for source/prereg identity mismatch, seed/split/count drift, no exhaustive reference, code/data tampering, incorrect HiGHS assertion or failed independent audit. Distinguish code-atlas CI infrastructure failures from the valid scientific negative."
+  },
+  "prohibited_after_primary_run": [
+    "no score-informed parameter or threshold tuning",
+    "no seed substitution or graph family reweighting",
+    "no extra budgeted restarts/sweeps",
+    "no redefinition of time or performance numerator",
+    "no native model training",
+    "no accepted/main mutation",
+    "no research-loop/runner/scheduler/control authority",
+    "no merge, promotion or deployment"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Both scorer and independently authored auditor were committed first; the excluded smoke seed 99563 covered three worlds with 62 checks PASS. All 36 primary seeds have NOT been scored at this preregistration boundary. No optimizer parameter tuning on primary."
+}

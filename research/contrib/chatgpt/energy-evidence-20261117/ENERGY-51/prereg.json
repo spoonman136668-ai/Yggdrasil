@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-51",
+  "date": "2026-11-18",
+  "scope": "EXTERNAL SYNTHETIC RESEARCH ONLY; not official model training or accepted evidence",
+  "parent_sha": "2a48c3a916f5ef05c992bda522219d7d5be0fbe5",
+  "source_commit_sha": "9be7cfcbcdcc740abffa272220b2ba16a83cf371",
+  "source_git_blob": "a9f3bbe8acd7e9372945621dee9d1a0f035b3d67",
+  "source_packed_sha256": "25499ac492c10bacc9392eb97588cb862e1493f1d36293440184fd2c032a51d5",
+  "source_original_sha256": "76427457e5452585d07fc23b05e5a0812717d1e3d6a4ee2848cf982cde6b9c20",
+  "auditor_git_blob": "bc3f13b2371c69c84735cb62065cea16a7141514",
+  "auditor_packed_sha256": "1871246adadcfc4d2410adecdd132b12922c1a604a76929f721fb900b57c91ae",
+  "auditor_original_sha256": "73e27052ac44025dbf6deb509df623008c0c3dc055ec99756d640196e2f97483",
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-51/**"
+  ],
+  "question": "Can sequential sparse high-order Fourier factor discovery recover held 4/5-way causal relations with strong old-context retention and lower out-of-distribution prediction error than fully trained conventional learners on unfamiliar parity, threshold and conditional/modulo generators?",
+  "hypothesis": "The proposed learner recovers >=60% of exact 4/5-way parity supports, keeps old predictions intact, achieves >=10% lower cold MSE than strongest conventional, and does so stably and economically.",
+  "data": {
+    "origin": "Fresh self-authored synthetic do-interventions, not protected first-use or real-world data",
+    "generator": "SHA256 keyed E51:v1; 10 hidden causal action bits and two observed nuisance bits; 5 signed factors (3 shared, 1 old-only, 1 new-only) on first 10; Gaussian consequence noise sigma .25; nuisance correlation shifts old/new/cold; evaluation true supports and hidden held outcomes never supplied during fitting",
+    "families": [
+      "parity45",
+      "threshold",
+      "conditional_mod"
+    ],
+    "planted_factors": "4/5-bit parity; 5-bit majority/threshold; modulo 3; conditional gate. Hidden operators/signed coefficients not supplied to learner.",
+    "grammar_limit": "All Walsh parity monomials degree 1..5 on all 12 observed action bits, 1585 preauthored features, available to feature-based controls. Not unrestricted causal-operator invention.",
+    "assignment_provenance": "360 unique 10-bit causal assignments per world, disjoint across 72 old train/72 new train/72 held old/72 held new/72 held cold.",
+    "primary_seeds": [
+      9311,
+      9323,
+      9341
+    ],
+    "source_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families_count": 3,
+    "worlds": 36,
+    "excluded_smoke_seed": 99971,
+    "smoke_worlds": 3,
+    "independent_smoke_audit_checks": 38811
+  },
+  "methods": {
+    "candidate": "Frozen old six-term degree-penalized greedy sparse Fourier learner plus five-term new residual corrective learner, degree penalty factor (1+.045*(degree-1)), ridge .02, stop score<.03; corrections only on new/cold; source code defines fitting and prediction exactly.",
+    "controls": [
+      "Fully trained separate-context sklearn OMP6 over same Walsh dictionary",
+      "Fully trained separate-context ElasticNet alpha .035 l1 .85 max_iter 1100 tol .0005 over full Walsh dictionary",
+      "Fully trained independent old/new KernelRidge RBF alpha .20 gamma .30 raw actions",
+      "Fully trained old/new polynomial KernelRidge degree5 alpha .25 gamma 1/12 coef0 1",
+      "Fully trained old/new ExtraTrees 64 trees depth12 min_leaf2 raw actions",
+      "Frozen-old no-adaptation",
+      "Shuffled new-stage consequences negative"
+    ],
+    "information": "All methods receive identical 72 old + 72 new factual witnessed labels, and no held label, true support, model checkpoint or third-party API. Controls can have different capacity, reported explicitly. No active intervention selection.",
+    "compute": "36 primary worlds, one unchanged-source replay, independent auditor re-fits every arm. CPU single-thread NumPy 2.3.5, scikit-learn 1.8.0, SciPy 1.17.0, Python3.13.5. Per-arm time = fit and 3 held-predict times, not full machine work or Joules.",
+    "metric": "Per-world and aggregate noisy held outcome MSE on 72 old/new/cold disjoint actions; exact high-order parity support recall ignores non-parity planted rules; seed and family cold comparisons."
+  },
+  "frozen_gates": {
+    "cold_10pct_better_than_best_conventional": "candidate aggregate cold MSE <=0.9x best mean conventional cold MSE",
+    "higher_order_parity_recall_60pct": "candidate exact selected 4/5 parity feature support overlap with planted parity >=60%",
+    "old_frozen_retention_exact": "candidate old MSE equals identical no-adapt frozen old MSE within 1e-10",
+    "new_no_worse_than_best_conventional_5pct": "candidate new MSE <=1.05x best conventional new MSE",
+    "cold_at_least_20pct_better_than_shuffled": "candidate cold MSE <=.8x shuffled new-outcome learner cold MSE",
+    "seed_stability_2_of_3": "candidate cold MSE strictly below best separate conventional within >=2 of 3 seeds",
+    "cost_below_2x_separate_omp": "candidate measured fit+predict time <=2x conventional OMP6 fit+predict time",
+    "cold_vs_new_degradation_at_most_20pct": "candidate cold MSE <=1.2x own new MSE",
+    "every_family_at_most_10pct_worse_than_best": "candidate family cold MSE <=1.1x strongest conventional within EACH family"
+  },
+  "decision": {
+    "development_go": "All 9 gates PASS and independent audit PASS; this is not SCIENTIFIC_PASS",
+    "development_no_go": "Any gate FAIL with valid source, held isolation, label parity and independent audit",
+    "invalid": "Prereg after primary, source mismatch, split/held leakage, missing control, invalid score, missing independently verified full receipts or audit failure",
+    "primary_lock": "After scoring no tuning seeds, metrics, thresholds, data, capacities or posthoc preferred subsets.",
+    "no_promotion": "No native training, accepted-ref mutation, controller/scheduler/runner/queue activity, merge, autonomous loop promotion, deployment."
+  },
+  "source_status": "Pinned independent scorer and auditor committed at source SHA before prereg, excluded smoke passed; primary seeds not yet scored."
+}

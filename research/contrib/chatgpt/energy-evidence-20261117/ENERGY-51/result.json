@@ -1,0 +1,135 @@
+{
+  "aggregate": {
+    "elasticnet": {
+      "mse": {
+        "test_cold": 2.4571532165283094,
+        "test_new": 1.5727347983064297,
+        "test_old": 1.3929358819211979
+      },
+      "seconds": 0.5076228579991948
+    },
+    "extra_trees": {
+      "mse": {
+        "test_cold": 5.84339602101922,
+        "test_new": 5.444812703697398,
+        "test_old": 5.853457441386516
+      },
+      "seconds": 2.145082776997697
+    },
+    "no_adapt": {
+      "mse": {
+        "test_cold": 2.2244419527724846,
+        "test_new": 3.5011566812830224,
+        "test_old": 1.5952901527580596
+      },
+      "seconds": 0.044542109005305974
+    },
+    "poly_krr": {
+      "mse": {
+        "test_cold": 5.578040433508978,
+        "test_new": 5.1549521525515125,
+        "test_old": 5.500330988957831
+      },
+      "seconds": 0.04940878900288226
+    },
+    "rbf_krr": {
+      "mse": {
+        "test_cold": 4.103733714223882,
+        "test_new": 3.8904406641776745,
+        "test_old": 4.097724192717574
+      },
+      "seconds": 0.07697239199842443
+    },
+    "separate_omp": {
+      "mse": {
+        "test_cold": 2.977711513650387,
+        "test_new": 1.9639783259944084,
+        "test_old": 1.7751161697593143
+      },
+      "seconds": 0.08004744799836772
+    },
+    "shuffled_new": {
+      "mse": {
+        "test_cold": 5.939879846717108,
+        "test_new": 6.470792767536427,
+        "test_old": 1.5952901527580596
+      },
+      "seconds": 0.04523990199777472
+    },
+    "structural_energy": {
+      "mse": {
+        "test_cold": 3.2547713628717343,
+        "test_new": 2.159020668295036,
+        "test_old": 1.5952901527580596
+      },
+      "seconds": 0.05604221099838469
+    }
+  },
+  "audit_checks": 465468,
+  "classification": "DEVELOPMENT_NO_GO",
+  "date": "2026-11-18",
+  "deployed": false,
+  "evidence_kind": "frozen external synthetic primary",
+  "family_ratio_vs_best": {
+    "conditional_mod": 1.4817017081223067,
+    "parity45": 1.165366833300186,
+    "threshold": 1.2601703564947468
+  },
+  "gate_failed": 5,
+  "gate_passed": 4,
+  "gates": {
+    "cold_10pct_better_than_best_conventional": false,
+    "cold_at_least_20pct_better_than_shuffled": true,
+    "cold_vs_new_degradation_at_most_20pct": false,
+    "cost_below_2x_separate_omp": true,
+    "every_family_at_most_10pct_worse_than_best": false,
+    "higher_order_parity_recall_60pct": true,
+    "new_no_worse_than_best_conventional_5pct": false,
+    "old_frozen_retention_exact": true,
+    "seed_stability_2_of_3": false
+  },
+  "higher_order_parity_recall": 0.9270833333333334,
+  "id": "ENERGY-51",
+  "independent_audit_status": "PASS",
+  "interventions_per_world": {
+    "held_cold": 72,
+    "held_new": 72,
+    "held_old": 72,
+    "train_new": 72,
+    "train_old": 72
+  },
+  "methods": 8,
+  "native_accepted": false,
+  "parent_commit": "2a48c3a916f5ef05c992bda522219d7d5be0fbe5",
+  "prereg_commit": "b2b9743778f8cbd0bddf2ba03bfe1c8469bb631e",
+  "primary_full_original": {
+    "file": "scored.json.bz2",
+    "packed_bytes": 462101,
+    "packed_sha256": "1eff4e4cd0e429d19d1de1395522cda9480d595d3dc10cfd62aed601a4359254",
+    "raw_bytes": 2512977,
+    "raw_sha256": "acac0a6e9813b7d01436314593edec949673059165a6683b61c6e2698b3af741"
+  },
+  "replay_canonical_sha256": "093290b0f10b75aee7bd359d5e1ab35f61a1d65cc6d22af9b9673733a03b14af",
+  "replay_equal_without_timing": true,
+  "schema": "yggdrasil.energy51.result.v1",
+  "scientific_pass": false,
+  "seed_margin_vs_best": {
+    "9311": 0.782357759570361,
+    "9323": 0.6671081659462059,
+    "9341": 0.9433885135137072
+  },
+  "seeds": [
+    9311,
+    9323,
+    9341
+  ],
+  "source_commit": "9be7cfcbcdcc740abffa272220b2ba16a83cf371",
+  "total_held_per_context": 2592,
+  "training_claim": "Synthetic fitted learners only, not native Yggdrasil",
+  "world_receipts": {
+    "file": "world_scores.json.bz2",
+    "packed_sha256": "e4d1ff47bb87cc5a5f4c10d782fe660459f97381c1c27b5c0c3a727d91c34ad8",
+    "rows": 36
+  },
+  "worlds": 36
+}

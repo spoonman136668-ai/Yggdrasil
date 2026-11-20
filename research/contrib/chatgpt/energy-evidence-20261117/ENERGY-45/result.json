@@ -1,0 +1,198 @@
+{
+  "aggregate": {
+    "elasticnet": {
+      "cold_held": 0.17362593855953048,
+      "fit_s": 0.10538279099637293,
+      "new_held": 0.13507633622420562,
+      "old_held": 0.13953707044491576,
+      "pred_s": 0.40724967700225534
+    },
+    "forest": {
+      "cold_held": 2.8358370214219435,
+      "fit_s": 1.5003442599972914,
+      "new_held": 2.65485774797129,
+      "old_held": 2.768931641075594,
+      "pred_s": 0.5565008780049538
+    },
+    "full_omp7": {
+      "cold_held": 0.32118921589599847,
+      "fit_s": 0.05309044900241133,
+      "new_held": 0.14168385226475422,
+      "old_held": 0.13922890313368425,
+      "pred_s": 0.4061297289990762
+    },
+    "gated_replace": {
+      "cold_held": 0.11162990903469737,
+      "false_triggered_stable": 0,
+      "fit_s": 0.0805555019996973,
+      "new_held": 0.11038379080077092,
+      "nochange_gate_accuracy": 1.0,
+      "old_before": 0.11239857125013018,
+      "old_held": 0.11239857125013018,
+      "pred_s": 0.19115612300629437,
+      "replacement_exact_rate_changed": 1.0,
+      "triggered_changed": 27
+    },
+    "no_repair": {
+      "cold_held": 1.6187850585655306,
+      "fit_s": 0.0,
+      "new_held": 1.6019626247079528,
+      "old_held": 0.11239857125013018,
+      "pred_s": 0.18563307899785286
+    },
+    "omp_delta2": {
+      "cold_held": 0.16504172335128553,
+      "fit_s": 0.019760153996685403,
+      "new_held": 0.12409814050256239,
+      "old_held": 0.11239857125013018,
+      "pred_s": 0.1916630910072854
+    },
+    "omp_structural_memory": {
+      "cold_held": 0.13113804854634925,
+      "fit_s": 0.06235830300101952,
+      "new_held": 0.10855397925396533,
+      "old_held": 0.10392706535589916,
+      "pred_s": 0.39239828400059196
+    },
+    "ridge": {
+      "cold_held": 2.1953722484670357,
+      "fit_s": 0.07765811599711014,
+      "new_held": 1.9136561390052822,
+      "old_held": 2.1554485666700036,
+      "pred_s": 0.40374426699781907
+    },
+    "shuffled_gate": {
+      "cold_held": 4.171640045259322,
+      "fit_s": 0.07585144300719548,
+      "new_held": 4.219304416030009,
+      "old_held": 0.11239857125013018,
+      "pred_s": 0.1819386269980896
+    },
+    "stagewise_omp4": {
+      "cold_held": 0.32100362599222054,
+      "fit_s": 0.01789536000796943,
+      "new_held": 0.13722832274850477,
+      "old_held": 0.11239857125013018,
+      "pred_s": 0.19650894100232108
+    },
+    "unconditional_replace": {
+      "cold_held": 0.34298437658337955,
+      "fit_s": 0.07142722500248055,
+      "new_held": 0.3495634034437105,
+      "old_held": 0.11239857125013018,
+      "pred_s": 0.19457597899599932
+    }
+  },
+  "arms": [
+    "elasticnet",
+    "forest",
+    "full_omp7",
+    "gated_replace",
+    "no_repair",
+    "omp_delta2",
+    "omp_structural_memory",
+    "ridge",
+    "shuffled_gate",
+    "stagewise_omp4",
+    "unconditional_replace"
+  ],
+  "case_receipts": {
+    "bytes": 27058,
+    "git_blob": "4d36162a61962eb08c396169aea0e34233973616",
+    "path": "case_receipts.csv",
+    "rows": 36,
+    "sha256": "56f58705418db694cc8966ffa2f88846c20253896728ff6353d43de871e313f8"
+  },
+  "changed_worlds": 27,
+  "classification": "DEVELOPMENT_NO_GO",
+  "decision": {
+    "candidate_s": 0.27171162500599166,
+    "classification": "DEVELOPMENT_NO_GO",
+    "cold_best_conventional": 0.13113804854634925,
+    "fails": 2,
+    "gates": {
+      "cold_vs_stagewise_omp4_5pct": true,
+      "cold_vs_strongest_10pct": true,
+      "cost_max_3x_stagewise": true,
+      "nochange_false_gate_at_most_10pct": true,
+      "old_prediction_protected_1pct": true,
+      "old_vs_best_control_5pct": false,
+      "replaced_truth_support_70pct": true,
+      "seed_stability_2of3": false,
+      "sham_negative_new_20pct": true
+    },
+    "old_best_conventional": 0.10392706535589916,
+    "passes": 7,
+    "seed_wins": 1,
+    "stagewise_s": 0.2144043010102905
+  },
+  "deployment": "NONE",
+  "excluded_smoke_seed": 99847,
+  "experiment_id": "ENERGY-45",
+  "held_interventions_per_world_per_environment": 128,
+  "independent_audit": {
+    "all_old_new_cold_predictions_checked": true,
+    "audit_result_sha256": "f560bff2239508341b9a815c90a9912ee9d766c99bb92eef795be3eecf158ac5",
+    "checks": 154113,
+    "full_model_refit": true,
+    "source_recreated_from_independent_generator": true,
+    "status": "PASS",
+    "worlds": 36
+  },
+  "native_full_regression": "NOT RUN",
+  "native_model_training": false,
+  "per_seed": [
+    {
+      "best_control": "stagewise_omp4",
+      "best_control_cold_mse": 0.09308624604293357,
+      "candidate_cold_mse": 0.09308326037865318,
+      "seed": 8803
+    },
+    {
+      "best_control": "omp_structural_memory",
+      "best_control_cold_mse": 0.11279093794459283,
+      "candidate_cold_mse": 0.14594305050792344,
+      "seed": 8819
+    },
+    {
+      "best_control": "stagewise_omp4",
+      "best_control_cold_mse": 0.0958518491022864,
+      "candidate_cold_mse": 0.09586341621751547,
+      "seed": 8831
+    }
+  ],
+  "prereg_commit": "c57ebb9c8c8d62f1a806cd31e396718ef94b3c20",
+  "primary_original": {
+    "bytes": 200007,
+    "git_blob": "a9f0ab844a9c3fa87a27a1d4e88b7c68b5478664",
+    "packed_bytes": 31327,
+    "packed_sha256": "2fa2657af994e50e71f52aa247cdd8c4edafba6a04cb75128a4a87e4bcf92295",
+    "path": "scored.json.bz2",
+    "sha256": "46601621373db4ff6531bda4a36c8d4c50775b147df18137581a3f80d67c8347"
+  },
+  "primary_seeds": [
+    8803,
+    8819,
+    8831
+  ],
+  "replay": {
+    "canonical_bytes": 96245,
+    "canonical_sha256": "84e55203bf407496011257ad0acdc4dedb38373f49d693ca5b3d5412bbf52236",
+    "original_primary_sha256": "46601621373db4ff6531bda4a36c8d4c50775b147df18137581a3f80d67c8347",
+    "primary_wall_seconds": 6.388781731000563,
+    "replay_full_json_sha256": "29c62ce2b3e3e61a6e6e41f3e9c47178aa0f7b9a611c50f3e89bd32466366584",
+    "replay_wall_seconds": 6.466178947999651,
+    "semantic_match": true,
+    "status": "PASS"
+  },
+  "schema": "energy45.archive_result.v1",
+  "scientific_pass": false,
+  "source_commit": "2945114b2381b3673bd5e51084f4c591e6f91242",
+  "source_generation": "source-free synthetic finite 364-feature grammar",
+  "stable_worlds": 9,
+  "train_interventions_per_world": {
+    "new": 96,
+    "old": 96
+  },
+  "worlds": 36
+}

@@ -1,0 +1,136 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-63",
+  "date": "2026-11-19",
+  "project": "Yggdrasil",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "parent": "f8c5d137ff2d049213de2b4161b28b0e1301c412",
+  "source_commit": "b91e56278afdbd5005c25702933f001ade37d252",
+  "source_tar_git_blob": "8b2972f91ecf50e1546f97c9d2f7ce94fd34e1c0",
+  "source_tar_sha256": "1b300aa3caac9aa83196415811a10bfdc4be498fffecfda493edd4dd367dbeb5",
+  "scorer_sha256": "5acf19cb7d54cfc10c7cb537fbf5ea70ac7d1eb5e21802be3fcb19bf4b8571d8",
+  "auditor_sha256": "83ae13d1ac7426dcdb76690fc02bd254fc5b1987ad567d074a9853c53125a678",
+  "exclusion": {
+    "dev_seed": 998203,
+    "dev_world_ids": [
+      0
+    ],
+    "dev_families": [
+      "recombine",
+      "return_old",
+      "novel_quad"
+    ],
+    "dev_scored_before_freeze": true,
+    "dev_audit_pass": true,
+    "qualification_use": "SOURCE_SMOKE_ONLY"
+  },
+  "prospective": {
+    "screen_seeds": [
+      998269,
+      998281
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": [
+      "recombine",
+      "return_old",
+      "novel_quad"
+    ],
+    "screen_worlds": 24,
+    "primary_reserved_seeds": [
+      105101,
+      105119,
+      105137
+    ],
+    "primary_worlds_if_eligible": 36,
+    "primary_not_run": true
+  },
+  "hypothesis": "A bounded compositional causal-factor memory that reuses coefficients learned in three interfering historical contexts, without being given a regime ID at recovery, will outperform the strongest equal-information conventional calibrated snapshot retrieval and exact Bayesian posterior averaging over the IDENTICAL combinatorial factor memory on held cold intervention predictions.",
+  "data": {
+    "generator": "E63:counterfactual-factor-recombination-v1, contributor-created, synthetic, no third-party or private records",
+    "ten_causal_binary_variables": true,
+    "two_observed_nuisance_variables": true,
+    "world_unique_causal_assignments": 502,
+    "old_contexts": [
+      {
+        "name": "A",
+        "labels": 80
+      },
+      {
+        "name": "B",
+        "labels": 80
+      },
+      {
+        "name": "C",
+        "labels": 80
+      }
+    ],
+    "returning_context_calibration": 6,
+    "held_contexts": [
+      {
+        "name": "A",
+        "labels": 64
+      },
+      {
+        "name": "B",
+        "labels": 64
+      },
+      {
+        "name": "D",
+        "labels": 64
+      },
+      {
+        "name": "COLD",
+        "labels": 64
+      }
+    ],
+    "withheld_truth": "Hidden generator picks four pair-parity factors among ten intervention variables, context-specific signed coefficients, and return mechanisms; novel_quad contains a four-variable interaction unavailable in the pair basis. Two nuisance bits correlate with causal bits in A/B/C and become independent at COLD. No true supports/coefficients/episode ID/held outcomes supplied to any fit.",
+    "independence": "All 502 binary causal assignments unique per world. Observation noise Gaussian sigma 0.16; source-keyed deterministic seeds. Held and train/test assignment disjoint. Same data for all arms."
+  },
+  "methods": {
+    "candidate": "Independent factorwise choice among 81 combinations of four A/B/C coefficients learned from A support-selected OMP4 and per-stage Ridge. Minimize sum six-probe squared prediction error + .16 per factor not drawn from A. Frozen A/B historical readouts preserved.",
+    "strong_exact_control": "Fully computed Bayesian posterior predictive mean over same 81 coefficient combinations, fixed factor prior [.50,.25,.25] and Gaussian likelihood sigma .36. Identical learned factors/stage coefficients/observations; matched capacity and support.",
+    "other_arms": [
+      "factor_ridge (conventional prior-regularized Ridge on same four support variables)",
+      "softmax_memory (conventional exponential weighting over three stage models using the same six probe labels)",
+      "best_snapshot (same models, best probe MSE)",
+      "recent_elasticnet (all 66 pair features, fully fitted C+probe)",
+      "pooled_elasticnet (all 66 pair features, fully fitted A+B+C+probe)",
+      "recent_krr (fully fitted RBF KRR C+probe)",
+      "old_no_update",
+      "shuffled_probe (reversed probe outcomes negative)"
+    ],
+    "basis": "All 66 observed 12-bit pairwise Walsh features provided for primitive discovery; candidate selection limited to four OLD OMP4 selected supports, stage memory from Ridge; not unbounded native operator invention.",
+    "parity": "All ten arms receive same original 240 factual outcomes and six returning-context labeled probes. Model capacities and numerical CPU costs vary, so equality of compute is not assumed."
+  },
+  "runtime": "Python3.13.5 NumPy2.3.5 sklearn1.8.0 SciPy1.17.0, single-thread BLAS, no paid APIs; source-exact replay and independently authored audit",
+  "metrics": "Mean 64-action held return and cold MSE (lower better), per-seed and per-family held-cold MSE, old A/B history preserved, factor switches exercised.",
+  "frozen_screen_gates": {
+    "cold_gain5_vs_best_other": "candidate pooled cold MSE <=.95*lowest pooled cold MSE among factor_bayes,factor_ridge,softmax_memory,best_snapshot,recent_elasticnet,pooled_elasticnet,recent_krr.",
+    "cold_gain3_vs_exact_factor_bayes": "candidate pooled cold MSE <=.97*factor_bayes pooled cold MSE.",
+    "cold_gain3_vs_softmax_memory": "candidate pooled cold MSE <=.97*softmax_memory pooled cold MSE.",
+    "both_seeds_win_strongest": "candidate pooled cold MSE strictly below strongest non-negative control in BOTH 998269 and 998281 cohorts.",
+    "family_non_degradation_10pct": "candidate pooled cold MSE <=1.10*best non-negative control pooled cold MSE in EACH of three families.",
+    "old_exact_frozen": "historical A readout MSE for candidate matches original unmodified A checkpoint within 1e-10 in EVERY world.",
+    "shuffled_negative_20pct": "candidate pooled cold MSE <=.8*shuffled-probe pooled cold MSE.",
+    "factor_switches_exercised_20pct": "candidate changes at least one historical factor in at least 20% of worlds."
+  },
+  "classification": {
+    "SCREEN_PROMISING": "All four critical gates (cold_gain5_vs_best_other,cold_gain3_vs_exact_factor_bayes,cold_gain3_vs_softmax_memory,both_seeds_win_strongest) PASS plus >=7/8 total gates and 24/24 independent audit worlds PASS. Only then eligible for 36-world reserved primary; screen promising is NOT scientific pass.",
+    "SCREEN_NO_GO": "Any critical gate FAIL or fewer than 7/8 pass on valid 24-world data with passing independent audit; stop primary without post-result tuning.",
+    "INVALID": "Preregristration/source after scoring, source drift, held-label leakage, insufficient controls, assignment overlaps, incomplete receipts, independent audit mismatch.",
+    "DEVELOPMENT_PROVISIONAL_GO": "If eligible, full 36-world untouched primary passes all eight same gates and independent audit + deterministic replay. Still external synthetic developmental, not scientific acceptance."
+  },
+  "provenance_policy": "Original scorer JSON, all per-case raw predictions, hashable source and independent refit audit, exact-source replay, and negative outcome retained on existing draft PR #1210. Auditor does not import scorer but shares numerical dependencies and known generator; no native integration.",
+  "prohibited": [
+    "Do not reuse consumed seed for confirmatory tuning",
+    "Do not weaken frozen gates",
+    "No new PR or merge",
+    "No official Yggdrasil training/checkpoints/acceptance/first-use/runner/queue/controller/deployment",
+    "No claims of physical energy efficiency or general intelligence."
+  ]
+}

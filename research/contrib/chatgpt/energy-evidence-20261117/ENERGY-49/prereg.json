@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "id": "ENERGY-49",
+  "date": "2026-11-18",
+  "type": "prospective independent primary",
+  "scope": "EXTERNAL SYNTHETIC RESEARCH ONLY",
+  "source_parent": "9a1880b23db9d8cd512a4e5fb5a390ee97866f7c",
+  "analysis_source_commit": "1d9e23f7f90884f7cbf09c54490b55ded25ed0a8",
+  "experiment_source_bundle": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-48/source.tar.bz2",
+  "experiment_source_bundle_sha256": "8d43f865dd7ed341a7f24f88b9435dc523ab84f98e053e8b9907416ab3a10fc2",
+  "experiment_python_sha256": "1eba0deba70458a2f865776ea65ef53e10de02a592046e55f710b9c0fe28bb00",
+  "independent_auditor_sha256": "858875b13a21b0c3a734810721d46deaeff1a0d802d7ec43fd76510a9f839c88",
+  "prospective_aggregator": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-49/analyze49.py",
+  "prospective_aggregator_git_blob": "bb7ffc3bee8ad7c1ff3c0d11046263d3bc97310c",
+  "prospective_aggregator_sha256": "2547ac430b6bf5972f53810de1366cf4bede52caf9571ec9cceed615e2008216",
+  "hypothesis": "Simple unlabeled-action Hamming diversity acquisition can improve cold consequence prediction relative to randomly selected interventions while maintaining old-context accuracy and resource cost on new worlds.",
+  "motivation_and_selection_bias": "ENERGY-48 energy-disagreement selector failed two excluded exploratory screens (seeds 99913,99919). On those screens, Hamming diversity consistently beat random acquisition. Therefore this candidate was chosen using excluded exploratory data, NOT blind a priori. The fresh primary [9109,9127,9137] is reserved and has never been scored; do not use screen values as confirmatory evidence.",
+  "frozen_design": {
+    "primary_seeds": [
+      9109,
+      9127,
+      9137
+    ],
+    "source_world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "families": [
+      "parity2",
+      "parity3",
+      "mixed"
+    ],
+    "worlds": 36,
+    "changed_mechanisms": 27,
+    "unchanged_controls": 9,
+    "grammar": "Exactly 364 authored unary/pair/triple parity and pairwise AND factors on 12 intervention bits; first 10 causal, final 2 nuisance correlation cues; hidden 5 signed factors.",
+    "old_initial_witnesses_per_world": 96,
+    "new_initial_witnesses_per_world": 48,
+    "unlabeled_new_candidate_pool": 192,
+    "intervention_selection_budget": 24,
+    "total_witnessed_training_per_arm": 168,
+    "held_per_world": {
+      "old": 128,
+      "new": 128,
+      "cold": 128
+    },
+    "candidate": "Unlabeled Hamming-space max-min diversity relative to the initial 48 new-context actions, with stable lowest-index tie breaking, 24 selections, no use of new labels until after pool action indices are committed.",
+    "controls": [
+      "random 24 from same unlabeled 192 pool",
+      "fixed first 24 pool actions",
+      "four-model bootstrap ElasticNet uncertainty committee",
+      "dense old-new ElasticNet contradiction disagreement",
+      "sparse old-new OMP4 factor-energy contradiction disagreement",
+      "shuffled new-label sparse contradiction negative"
+    ],
+    "learners": [
+      "ElasticNet alpha=0.025,l1_ratio=0.85,max_iter=4000,tol=1e-5,fit_intercept=True, 728 stage-gated authored factors; all arms exactly same labeled examples",
+      "OMP7 fit_intercept=True with 7 nonzero coefficients on same 728 factors, all arms"
+    ],
+    "selection_source": "All policy choices depend only on the public action pool, 96 old plus 48 fixed new witnesses, never pool labels or held results. Pool labels are produced/revealed by the evaluator AFTER independent choice of 24 indices.",
+    "shared_info_and_compute": "Every policy learns from the same 96 old + 48 initial new witnesses and receives exactly 24 additional consequence labels, then retrains both downstream predictor families fully. Selection-cost timings measured; bootstrapped committee has extra fitting work charged to it.",
+    "evaluation": "Per-world old/new/cold held real-valued MSE, 27 changed vs nine unchanged, three independently seeded cohorts; compare identical downstream learner to isolate acquisition value.",
+    "timing": "Per-arm selection plus downstream ElasticNet fit/predict single-threaded Linux CPU elapsed, excluding common world generation, Python imports and audits. Report empirical costs, no physical Joule efficiency claims.",
+    "runtime": "Python 3.13.5, NumPy 2.3.5, sklearn 1.8.0, OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1, MKL_NUM_THREADS=1",
+    "run_budget": "One primary run 36 worlds, one unmodified-source semantic replay excluding timing, and one independent all-case/full-refit audit. No post-primary changes or additional seeds."
+  },
+  "frozen_gates": {
+    "critical": {
+      "cold_gain_5pct_vs_random": "Diversity+ElasticNet mean cold MSE <=0.95*random+ElasticNet mean cold MSE across 36.",
+      "seed_wins_2of3_vs_random": "Diversity+ElasticNet cold MSE strictly lower than random in >=2 of 3 independently seeded 12-world cohorts.",
+      "old_loss_at_most_2pct_vs_best": "Diversity old MSE <=1.02*minimum old MSE among all other fully evaluated same-learner selectors.",
+      "compute_at_most_1_3x_random": "Diversity selection+ElasticNet fit/predict aggregate wall <=1.30 times random same quantity.",
+      "nochange_cold_at_most_10pct_vs_random": "Nine no-change worlds mean cold MSE <=1.10 times random."
+    },
+    "supporting": {
+      "cold_gain_3pct_vs_best_other": "Diversity mean cold MSE <=.97*minimum cold MSE among all six other same-learner selectors.",
+      "changed_cold_gain_5pct_vs_random": "27 changed worlds mean diversity cold MSE <=.95*random.",
+      "shuffled_negative_gain_5pct": "Diversity cold mean MSE <=.95*shuffled sparse-consequence selector cold mean MSE.",
+      "omp7_cold_no_worse_than_random": "Diversity+OMP7 cold MSE <=random+OMP7 cold MSE."
+    }
+  },
+  "classification": {
+    "DEVELOPMENT_PROVISIONAL_GO": "All five critical gates PASS and at least two of four supporting gates PASS, and independently authored scorer/source/refit audit PASS. This still does NOT confer SCIENTIFIC_PASS, native Yggdrasil qualification, training-loop integration, or acceptance.",
+    "DEVELOPMENT_MIXED": "All five critical PASS but fewer than two supporting PASS, independent audit PASS. Preserves limited positive evidence without overpromotion.",
+    "DEVELOPMENT_NO_GO": "Any critical gate FAIL or invalid independent audit; audit failure specifically INVALID, not a valid scientific negative.",
+    "INVALID": "Any prereg/source commit ordering mismatch, consumed primary before protocol, changed arm/seed/hyperparameters, hidden pool label or held-data leakage, missing strong baseline, incorrect original-result custody or independent audit mismatch."
+  },
+  "audit_requirements": "Rebuild all world sources and hidden factors independently; reproduce 7 intervention-choice index lists for every world using only observable inputs; independently train and compare 14 downstream fits per world; verify every 128-sample prediction digest and three MSE. Check source bundle original SHA and same-score deterministic replay. Never treat a code-atlas CI failure as an independent scientific audit failure.",
+  "prohibitions": [
+    "No postscore selection of winning arm or revised threshold",
+    "No additional primary runs beyond deterministic replay",
+    "No Yggdrasil model native weight write or scientific first-use",
+    "No changing accepted/main refs, controller, scheduler, queue, run owner or merge"
+  ],
+  "authority": {
+    "external_research_only": true,
+    "native_scientific_first_use": false,
+    "accepted_ref_mutation": false,
+    "merge": false,
+    "deployment": false
+  },
+  "primary_not_yet_executed": true
+}

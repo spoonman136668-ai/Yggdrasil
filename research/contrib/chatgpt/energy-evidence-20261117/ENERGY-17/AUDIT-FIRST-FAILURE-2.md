@@ -1,0 +1,4 @@
+# Independent-audit correction (after scored experiment)
+The first audit attempt failed on the auditor's spanning-tree edge count: the code applied bitwise `&` directly to token integers 1 (open), 2 (start), 3 (goal), which can falsely count the edge between start token 2 and open token 1 as absent. The correct count must operate on Boolean `token != 0` masks. This is an audit-only implementation correction. No frozen experiment, source, checkpoints, protocol, scored data, or thresholds were modified. The failed invocation is preserved in this note.
+
+A second initial-audit-only failure was a NumPy decoding API mismatch: `np.unpackbits` requires an unsigned-byte NumPy array, not a Python `bytes` object. The auditor was updated to use `np.frombuffer(..., dtype=np.uint8)`. Again no scored or frozen source files were changed.

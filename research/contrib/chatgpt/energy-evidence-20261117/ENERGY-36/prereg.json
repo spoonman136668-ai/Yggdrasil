@@ -1,0 +1,101 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-36",
+  "contributor": "ChatGPT",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "70ae8db36ecb363a997bebeec5d35e1371d53b08",
+  "question": "Can active causal intervention selection using a six-bootstrap learned sparse-energy committee outperform cheaper fixed, random and fully trained conventional active selectors on genuinely disjoint held consequences at a fixed 96-label budget?",
+  "hypothesis": "Energy committee disagreement can select 16 causally discriminative witnessed x0=1 actions after 80 x0=0 observations, improving shifted held accuracy, preserved old knowledge and cost relative to strong conventional active acquisition and independently trained controls.",
+  "prior_results": "ENERGY-35 bridge information improved shifted learning, but paired energy constraints and speed failed; no results from ENERGY-35 reused as a primary input.",
+  "source": {
+    "filename": "experiment.py.bz2",
+    "compressed_sha256": "5362527acc6030ad450ac8cf8e3347b3c498220ffc269e52c22b6d6e99b1a093",
+    "compressed_git_blob": "7335991ba27cfc7908ea435f61480d4a1996c8b5",
+    "compressed_bytes": 4388,
+    "original_sha256": "320ffbe34409b1f9eb49219f22e0f136a933e4604480e153f3a1afaf863d7b7e",
+    "original_bytes": 12424
+  },
+  "dataset": {
+    "description": "Original source-generated eight-bit intervention causal worlds, independent seeds and held source splits; no external dataset, protected model, donor outputs or native Yggdrasil checkpoint used.",
+    "generator": "experiment.py",
+    "license": "experiment authored for the repository",
+    "seeds": [
+      7607,
+      7621,
+      7643
+    ],
+    "smoke_excluded": [
+      99089
+    ],
+    "world_ids": "0-7",
+    "families": [
+      "parity3",
+      "mixed",
+      "extended4"
+    ],
+    "world_count": 72
+  },
+  "frozen_design": {
+    "split": "Each world: 80 hash-sorted x0=0 training interventions and 16 other x0=0 held interventions; x0=1 candidates are the flipped bit0 counterpart of each of the 80 familiar training interventions; 48 x0=1 actions outside this candidate set are held for all policies. Every policy selects exactly 16 candidate actions without using their outcome, then sees their 16 independently noisy observed consequences. Held labels never fit.",
+    "action_selection": "All active selectors fit only 80 prior noisy consequences and all 80 visible candidate intervention patterns before choosing 16. A fixed deterministic committee of 6 bootstrap resamples; energy selector uses 6 max-margin sparse-energy learners, OMP selector uses 6 fitted conventional OMP12; Bernoulli vote disagreement 4p(1-p). Greedy select maximum score plus 0.05 min 7-bit Hamming diversity, stable SHA tie. Energy uncertainty is exp(-abs(raw margin)) plus same diversity. Fixed first16 and hash-random first16 are matched-budget controls.",
+    "source_law": "Hidden deterministic binary consequence: majority of three signed parity/AND features from fixed 190-feature parity degree1..4 and pairwise AND grammar; 10% observation bit flip per unique witnessed intervention. No hidden law, source index or candidate outcome in policy selection.",
+    "actions_and_outcomes_per_arm": 96,
+    "prior_old_obs": 80,
+    "selected_new_obs": 16,
+    "held_old_count": 16,
+    "held_new_count": 48,
+    "scored_worlds": 72,
+    "acquisition_selectors": [
+      "energy_committee",
+      "omp_committee",
+      "energy_uncertainty",
+      "paired_fixed",
+      "random"
+    ],
+    "fully_fitted_learners": [
+      "energy",
+      "omp12",
+      "ridge",
+      "logistic",
+      "tree"
+    ],
+    "capacity": "All feature learners receive same 190-dimensional basis, energy and OMP support<=12; ridge/logistic dense, decision tree max depth8. Energy: 48 margin epochs, top8 gradient and hard top12 pruning, step0.05. OMP=12 support; ridge alpha3; L2 logistic C1,max_iter500,tol1e-8; tree max_depth8.",
+    "compute_budget": "Source smoke only 99089, 3 cases; primary 72 worlds, 5 selectors x 5 fitted learners, 6 bootstrap committee fits per candidate active policy. Single-threaded CPU. No paid APIs. If performance fails, stop candidate without adjusting scored seeds.",
+    "evaluator": "Count correct sign of held noise-free causal consequence, fixed threshold zero. Per world 48 shifted + 16 familiar held for every policy/learner. Measure selection-time + final fit+inference per policy as the cost, plus whole experiment wall; use matched data budget, disclose variable computational cost.",
+    "expected_determinism": "All source splits, noise, action selection, bootstrap samples and predictions deterministic for pinned Python/Numpy/scikit-learn and single threads; timing fields excluded from semantic replay."
+  },
+  "controls": [
+    "Energy with random 16",
+    "Energy with fixed first 16",
+    "Energy with single-model uncertainty 16",
+    "Energy with conventional OMP committee selected 16",
+    "Fully trained OMP12, ridge, logistic, tree on the matched selected witness actions per selector",
+    "Shuffled observed-label negative control for selected energy policy"
+  ],
+  "gates": {
+    "active_accuracy_vs_strongest": "energy_committee + energy >=+3 percentage points shifted held accuracy over the best OTHER combination of the five selectors and five fully trained learners; denominator 72x48=3456",
+    "committee_vs_uncertainty": "energy_committee+energy >=+2pp shifted held over energy_uncertainty+energy",
+    "committee_vs_conventional_selector": "energy_committee+energy >=+1pp shifted held over omp_committee+energy (same final learner)",
+    "old_retention": "energy_committee+energy old held >=paired_fixed+energy old held minus 1 percentage point; denominator 72x16=1152",
+    "seed_stability": "In at least 2 of 3 fresh source seeds, energy committee+energy gains positive absolute shifted held correct over strongest OTHER selector/learner combination",
+    "shuffled_negative": "energy_committee+energy shifted accuracy >=5pp over label-shuffled version on same chosen actions",
+    "whole_policy_cost": "measured acquisition plus fitting-and-inference component time <=1.5 times random selector+OMP12 on same source cohort"
+  },
+  "classification_rules": {
+    "supported": "DEVELOPMENT_GO if and only if all seven frozen gates PASS; still not SCIENTIFIC_PASS or native Yggdrasil integration",
+    "mixed": "Report partial positives and all failed gates; no retroactive thresholds",
+    "negative": "DEVELOPMENT_NO_GO if any frozen gate fails, stop this mechanism on scored primary seeds",
+    "invalid": "Missing frozen source/protocol identity, hidden evaluator leakage, unequal witness budget, missing strong controls, nonreproducible scores or faulty scorer; retain invalid attempt instead of treating as science"
+  },
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "no_postprimary_tuning": true,
+  "protected_first_use": false,
+  "smoke_only_result": "3 excluded seed 99089 synthetic worlds executed locally with no source leak; primary seed population has not been scored at time of preregistration."
+}

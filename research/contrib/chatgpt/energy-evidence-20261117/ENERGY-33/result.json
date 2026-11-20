@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.energy33.result.v1",
+  "experiment_id": "ENERGY-33",
+  "classification": "DEVELOPMENT_NO_GO",
+  "source_sha256": "c9cd0ebcd1ef2d0e9c85c8ea481bd4b5bf5a90e3f4eb876dfc1c9bb90d0c4ce3",
+  "source_git_blob": "d0de3f100627e74dee89d34826431f551e2ee43a",
+  "prereg_commit": "c984207cf76dbb4379480f28e239de97035d26f9",
+  "primary_seeds": [
+    6067,
+    6073,
+    6089,
+    6101
+  ],
+  "world_count": 240,
+  "observations_per_world": 40,
+  "held_per_world": 12,
+  "counts_per_scenario": 80,
+  "holdouts_per_scenario": 960,
+  "accuracy_correct": {
+    "stationary": {
+      "cp_energy": 950,
+      "cp_bayes": 950,
+      "fixed_hazard": 951,
+      "recent16": 851,
+      "full_history": 960
+    },
+    "novel_change": {
+      "cp_energy": 626,
+      "cp_bayes": 626,
+      "fixed_hazard": 623,
+      "recent16": 661,
+      "full_history": 525
+    },
+    "familiar_switch": {
+      "cp_energy": 787,
+      "cp_bayes": 787,
+      "fixed_hazard": 786,
+      "recent16": 860,
+      "full_history": 578
+    }
+  },
+  "stationary_false_change_alarms": 7,
+  "stationary_total_worlds": 80,
+  "gates": {
+    "novel_gain_over_strongest": false,
+    "familiar_gain_over_strongest": false,
+    "stationary_retention": false,
+    "false_alarm_at_most_10pct": true,
+    "exact_energy_bayes_parity": true,
+    "energy_distinctive": false
+  },
+  "max_parity_error": 1.0047518372857667e-14,
+  "source_local_runtime": {
+    "python": "3.13.5",
+    "numpy": "2.3.5",
+    "cpu_only": true,
+    "one_primary_run_wall_seconds": 1.6824626800000715,
+    "energy_only_sum_seconds": 0.39991517100042984,
+    "bayes_reference_sum_seconds": 1.04586216500104,
+    "interpretation": "descriptive implementation timings; not whole-process or energy-specific speed advantage"
+  },
+  "full_local_scored_json_sha256": "92e3ab4426bbaf8864da1645559aa222652cc37ea9290ae4269285e7e8702de1",
+  "replay_semantic_sha256": "ab6faabfbb1f6da8e47e57dedf6ddc8227443736ea7fb8ebd36c027c7a13068d",
+  "semantic_replay": "PASS; excluded wall_seconds, per-case seconds and timing sums",
+  "independent_source_free_audit": "NOT EXECUTED",
+  "native_yggdrasil_regression": "NOT EXECUTED",
+  "scientific_pass": false,
+  "deployment": "NONE"
+}

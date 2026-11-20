@@ -1,0 +1,104 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "ENERGY-71",
+  "title": "Composable learned causal relation versus fully fitted conventional structure learners",
+  "date": "2026-11-19",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "status": "PREREG_FROZEN_PRE_SCORE",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "archive_pr": 1210,
+  "parent_commit": "653cde35449d34bca2ef417a794ece26558e4266",
+  "canonical_source": "experiment.py",
+  "source_sha256": "130d8b63461bddbee14ea28eb4dce91814b52ac6b48cd14996e4732ab5dd9ef7",
+  "source_size_bytes": 13328,
+  "source_language": "Python 3.13.5; NumPy 2.3.5, sklearn 1.8.0, SciPy 1.17.0; single-thread BLAS/OMP/MKL",
+  "earlier_excluded_smoke": {
+    "seed": 271099,
+    "families": [
+      "same_law",
+      "compose_sixth"
+    ],
+    "world_ids": [
+      0
+    ],
+    "status": "implementation smoke executed before freeze; no tuning from scored outcomes; do not include in gate"
+  },
+  "primary_screen": {
+    "seeds": [
+      271101,
+      271123,
+      271147,
+      271169
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "families": [
+      "same_law",
+      "compose_fifth",
+      "compose_sixth",
+      "unrelated_fifth"
+    ],
+    "worlds": 80,
+    "phase_order": [
+      "OLD training",
+      "NEW training",
+      "NEW validation",
+      "OLD return held",
+      "NEW cold held"
+    ],
+    "actions": 9,
+    "action_universe": 512,
+    "splits": {
+      "old_fit": 128,
+      "new_fit": 96,
+      "new_validation": 32,
+      "old_return_held": 64,
+      "new_cold_held": 64
+    },
+    "disjoint_action_identities_per_world": 384,
+    "noise_sigma": 0.22,
+    "source_laws": "OLD: one unknown 2-way parity coefficient +0.85 and one unknown disjoint 3-way parity coefficient -0.5; NEW: one fifth/sixth-order parity coefficient randomly ±0.7 (except same_law), built from OLD 2-way support plus unseen variables or entirely unrelated 5-way support in unrelated_fifth. Supports selected under independent numpy SeedSequence([seed,family_id,world_id,71]), not exposed to fitting."
+  },
+  "hypothesis": "A candidate that builds new 5th/6th-order relation proposals by composing OLD supports it actually learned with previously unused action variables, choosing an evidence-backed proposal, beats the strongest trained nonoracle control on disjoint held intervention consequences by >=5% MSE, with functional OLD-return MSE drift <=0.02 and competitive whole-process cost.",
+  "candidate": "2-term OLD OMP fit from 128 witnessed OLD interventions; construct every degree5/6 union of learned OLD support and other action bits (never planted support indices); train NEW residual one-factor fit on 96 actual observations, validate on 32 disjoint, admit if MSE gain>=0.005; refit on all128 NEW witnesses. OLD weights stored and restored read-only; no hidden oracle or held answer leakage.",
+  "controls": {
+    "full_sparse": "Same OLD baseline and 96/32 NEW validation, searches full preauthored 4th-6th-order Walsh dictionary with same one-factor fit/refit rule.",
+    "elasticnet": "Same OLD baseline, NEW residuals; all 4th-6th-order Walsh supports fitted ElasticNet l1=0.9, validation alphas 0.008/0.025/0.075, max_iter4000 tol1e-6, refit 128.",
+    "extra_trees": "Same OLD baseline and NEW residuals; raw 9 action bits+learned OLD prediction, fully fitted ExtraTrees with 96 trees, validation leaves2/5, refit NEW128, n_jobs1.",
+    "uniform_bayes": "Analytic conjugate Gaussian one-novel-feature mixture over all 4th-6th-order Walsh supports, known assumed noise sigma0.22, Gaussian coefficient prior precision0.1, explicit 50% null prior; matched128 NEW witnessed residuals.",
+    "old_only": "Same OLD learned readout without NEW adaptation.",
+    "shuffled": "Candidate composition proposal library from observed old support, but NEW train and validation residual outcomes separately shuffled by fixed source-keyed seed 7101; includes no correct NEW supervision.",
+    "oracle": "Only for result auditing; planted support never exposed to candidate or controls; no oracle modeled as fair arm."
+  },
+  "metrics": "Mean NEW cold held MSE (lower better), by seed and family; OLD return held MSE before/after checkpoint JSON cold restore (absolute); per-arm fit+inference elapsed on single CPU, includes common OLD fitting and feature generation; no measurement of physical energy. Source identity, per-world receipts, semantic replay required.",
+  "frozen_gates": {
+    "global_5pct": "candidate mean cold MSE <=0.95*minimum over full_sparse,elasticnet,extra_trees,uniform_bayes pooled.",
+    "three_of_four_seeds": "candidate cold MSE <=0.95*strongest eligible conventional within at least 3/4 seeds.",
+    "two_of_three_novel_families": "candidate <=0.95*strongest conventional in at least 2/3 novel families compose_fifth,compose_sixth,unrelated_fifth.",
+    "every_family_5pct_guard": "candidate <=1.05*strongest conventional within EVERY family including unchanged law.",
+    "old_return_abs_mse_regression_0p02": "every world's post-restore OLD held MSE <=pre-update OLD held MSE+0.02 absolute units.",
+    "shuffled_negative_20pct": "candidate pooled NEW held MSE <=0.8*shuffled negative.",
+    "max_twice_fastest_whole_process": "candidate summed cold fit+inference elapsed <=2x fastest conventional summed elapsed. Per-case runtime includes OLD fit; no wall physical energy claim."
+  },
+  "decision": "SCREEN_GO_DEVELOPMENT_ONLY if all seven pass AND independent source/case audit PASS; else SCREEN_NO_GO. Any source/split/seed/held leakage or drift -> INVALID. A screen GO never constitutes SCIENTIFIC_PASS or native Yggdrasil acceptance.",
+  "limitations": [
+    "Synthesized action-consequence worlds, not real outside environment",
+    "Cold means disjoint action identities within fitted law, not no-retraining zero-shot cross-world transfer",
+    "Old retention via frozen checkpoint is not shared-representation interference proof",
+    "Finite preauthored composition operator grammar, not open-ended relation invention",
+    "Trained controls differ in compute, while data/actions/old baseline are identical",
+    "No native Yggdrasil model/weight/owner/acceptance/first-use and no paid APIs"
+  ],
+  "isolation": [
+    "No original Yggdrasil scientific first-use",
+    "No merges, accepted main, model weights or native architecture updates",
+    "No controller, queue, runner, scheduler or deployment actions",
+    "No additional tuning on consumed screen seeds or rerunning screen after score",
+    "All negative outcomes preserved on current draft archive PR"
+  ]
+}

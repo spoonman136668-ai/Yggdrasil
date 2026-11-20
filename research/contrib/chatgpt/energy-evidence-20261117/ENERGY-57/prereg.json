@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-57",
+  "project": "Yggdrasil",
+  "date": "2026-11-19",
+  "contribution_class": "falsification",
+  "scope": "EXTERNAL SYNTHETIC RESEARCH ONLY",
+  "source_parent": "d656a6b64066d37c919ffa3f1e9ac84223801987",
+  "source_commit": "2d835e55131748a0cfcee28b27ad52e84dc39a8f",
+  "source_provenance": {
+    "archive": "source.tar.bz2",
+    "archive_blob": "92a956f6d25be943939d3ac8bac32cb92d4ee1e1",
+    "archive_sha256": "9a854558df61ff23f48befe229747e49e208f7c55ee7b91c38280f2253dada41",
+    "scorer_sha256": "d6584ea41afaaf2f86bdf5ab5d6b26f6872223ff16c7d0481a385a51b21d2b40",
+    "auditor_sha256": "2650ee998ffb7938c2ab9b91aaeac319cf58458e835c08e909418925f9dbd1b5",
+    "before_freeze_pilot_seeds": [
+      99557,
+      99563
+    ],
+    "before_freeze_pilot_source_ids": [
+      0
+    ],
+    "pilot_cases_each": 3,
+    "pilot_checks_each": 7280,
+    "screens_unseen_at_freeze": [
+      99619,
+      99637
+    ],
+    "primary_reserved": [
+      100019,
+      100043,
+      100057
+    ]
+  },
+  "hypothesis": "Retaining old causal factor supports and sharing only context-invariant learned factor RELATIONS lowers cold held-out consequence prediction MSE versus conventional full-basis learners and versus matched separate-context factor relation regressions, without overwriting old functionality.",
+  "design": {
+    "families": [
+      "stable_edges",
+      "flipped_relation",
+      "unseen_triple"
+    ],
+    "world_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "worlds_per_seed": 12,
+    "screen_seeds": [
+      99619,
+      99637
+    ],
+    "screen_worlds": 24,
+    "reserved_primary_seeds": [
+      100019,
+      100043,
+      100057
+    ],
+    "primary_worlds_if_eligible": 36,
+    "synthetic_generator": "E57:invariant-relational-v1, independent seeded 10-bit randomized do-actions, 2 observed nuisance cues; 4 hidden pair parity primitives among 8 of 10 causal/distractor bits; 2 shared relations, context-specific edge and optionally a sign flip or an entirely unmodeled new triple factor. Additive Gaussian noise sigma .20. Generator withheld roles/coefficients from learners.",
+    "assignments": "Exactly 408 unique underlying 10-bit causal actions per world: 96 old training,96 new training,72 held old,72 held new,72 held cold. Cold nuisance cues independent; old/new nuisance cues correlate/anticorrelate with source bits.",
+    "feature_grammar": "Learned old-only primitive pair support via OMP4 over all 66 2-way Walsh products of twelve observed bits; six pairwise products of four old-learned primitives. Selection and identity are not given by oracle; planted roles/relations only used after scoring. Conventional full OMP8/ElasticNet receive all 793 order<=4 Walsh products, plus fully trained RBF KernelRidge and 48-tree ExtraTrees.",
+    "candidate": "Fit OLD OMP4 and old Ridge based on selected 4 primitive pairs + 6 possible pair products. Freeze old predictions exactly. Independently fit OLD and NEW provisional Ridge and mark each of six relations invariant iff BOTH |coef|>=.20, signs equal and coefficient absolute difference <=.35. Fit pooled stage-specific primitive and changing-edge weights but shared invariant-edge weights by Ridge .4, then use NEW predictor for new+cold.",
+    "controls": [
+      "same selected primitive+relation basis, fully fitted SEPARATE OLD and NEW Ridge .3, same 192 labels (matched relation/no pool)",
+      "unconditionally pool all edges with same constrained Ridge .4",
+      "full order-4 Walsh OMP8 old/new",
+      "full order-4 Walsh ElasticNet alpha=.055 l1_ratio=.8 max_iter=2000 tol=.0005 old/new",
+      "RBF KernelRidge alpha .25 gamma .20 raw 12 observed bits old/new",
+      "48-tree ExtraTrees depth12 min_leaf2 on same labels raw bits old/new",
+      "frozen old relation model no-adaptation",
+      "shuffled NEW label relation refit negative"
+    ],
+    "information_and_budget": "Every arm sees identical 96 old +96 new factual action consequences; all held actions and labels disjoint; candidate old support selected ONLY from 96 old labels, learned invariant gate from witnessed OLD/NEW. No held labels, true support indices or generator roles provided during fit. No active action selection, no native Yggdrasil weights.",
+    "audit": "Separate audit.py independently reconstructs seeded source/latent truths/nuisance contexts, refits all nine methods, checks selected factor pairs and inferred invariant edges, all held predictions and source/held metrics, seed/family aggregates. Shares backend NumPy and scikit-learn; not fully independent scientific replication.",
+    "compute": "Single-core local Python 3.13.5, NumPy2.3.5, SciPy1.17.0, sklearn1.8.0, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1. One prospective two-seed screen and exact-source replay; no paid APIs or owner runner. No physical energy measurement. Process time includes source generation, fit, audit separately.",
+    "metric": "Mean per-world held old/new/cold MSE (lower better). Planted primitive pair exact support recall, selected invariant edge precision & recall against hidden true stage-invariant pair identities. Per-seed and per-family cold mean. Cases retain complete predictions/actions/labels for archive."
+  },
+  "frozen_screen_gates": {
+    "cold_vs_best_conventional_5pct": "Pooled candidate cold MSE <=.95 x minimum pooled cold MSE across full_omp/full_elasticnet/rbf_krr/extra_trees.",
+    "cold_vs_separate_relations_3pct": "Pooled candidate cold MSE <=.97 x same-discovered-factors fully fitted separate_relations cold MSE.",
+    "both_seed_wins_best_conventional": "Candidate cold MSE strictly better than best conventional full_omp/full_elasticnet/rbf_krr/extra_trees WITHIN EACH prospective seed.",
+    "both_seed_no_relational_damage": "Candidate cold <=1.02x matched separate_relations for BOTH seed cohorts.",
+    "primitive_support_recall_80pct": "Exact planted pair primitives among four old-support pair selections >=80% across 24 prospective worlds.",
+    "invariant_relation_precision_70pct": "Among graph relation edges selected for sharing, >=70% truly correspond to latent stage-invariant planted relation edges; if zero edges, FAIL.",
+    "invariant_relation_recall_65pct": "Candidate shared relations recover >=65% of all planted stage-invariant pair edges across worlds.",
+    "old_frozen_retention_exact": "Candidate old held MSE matches same old support/head in separate_relations and no_adapt in EVERY world to absolute 1e-10.",
+    "all_families_no_degrade_10pct": "Candidate pooled cold MSE <=1.10x strongest conventional method in EACH mechanism family.",
+    "shuffled_new_negative_20pct": "Candidate pooled cold MSE <=.80x sham-new-label relation learner cold MSE.",
+    "cold_vs_new_robust_150pct": "Candidate cold MSE <=1.50x candidate own held new MSE (nuisance distribution shift)."
+  },
+  "classification": {
+    "SCREEN_PROMISING": "Independent auditor PASS and all critical [cold_vs_best_conventional_5pct,cold_vs_separate_relations_3pct,both_seed_wins_best_conventional,invariant_relation_precision_70pct,old_frozen_retention_exact] PASS, with >=9 of 11 gates overall. Only then eligible for separate frozen 36-world primary; still NOT SCIENTIFIC_PASS.",
+    "SCREEN_NO_GO": "If any critical gate FAIL or <9/11 total PASS with fully valid independent audit/source, stop and preserve negative source+data without scoring reserved primary seeds.",
+    "INVALID": "Source not frozen before prospective score; mismatch SHA/branch/seed; any held labels/roles leaked to fitting; missing conventional controls or action parity; duplicate underlying causal action across train/held streams; audit disagreement; missing original case receipts. Never classify invalid infrastructure as negative science.",
+    "unverified": "If run or audit cannot finish, no positive/negative scientific conclusion; preserve limitation.",
+    "primary": "If screen promising, separately freeze primary gate rules on reserved 100019/100043/100057 before scoring and require same-source independent audit. No new tuning on consumed data."
+  },
+  "prohibitions": [
+    "No post-score hyperparameter/gate/seed changes",
+    "No further tuning on prospective seeds",
+    "No native Yggdrasil training, accepted ref mutations, runtime/controller/runner/queue/scheduler changes",
+    "No merge, promotion or deployment",
+    "No paid API or first-use scientific qualification"
+  ]
+}

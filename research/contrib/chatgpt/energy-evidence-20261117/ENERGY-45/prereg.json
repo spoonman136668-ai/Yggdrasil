@@ -1,0 +1,138 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-45",
+  "date": "2026-11-18",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "contributor": "chatgpt",
+  "question": "Does a contradiction-gated context-specific factor replacement discover and remove obsolete causal structures while protecting unaffected predictions, with better unfamiliar-world transfer than fully trained conventional controls?",
+  "hypothesis": "A frozen 0.12-MSE-improvement gate that can replace one old causal motif will preserve old-context held error within 1%, avoid ≥90% of false interventions in unchanged worlds, recover ≥70% of exact old-to-new factor replacements in changed worlds, and exceed the best fully trained conventional method by ≥10% cold MSE.",
+  "custody": {
+    "previous_archive_commit": "c8c4760cb5cc87aca057281afec638c85123e88c",
+    "source_commit": "2945114b2381b3673bd5e51084f4c591e6f91242",
+    "source_bundle_path": "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-45/source.tar.br",
+    "source_bundle_git_blob": "044aef93b34f020b00e9906bb8e4f00f29858d80",
+    "packed_sha256": "0951c0cb804c3f4bdd1ecf910926bb0b59d59007c9615e35c5aefd0cbb7f13e7",
+    "unpacked_tar_sha256": "7cfaa53341b6a29708133c10492e0a8bc06fcc4db795537eb0887c0e7f7484e3",
+    "experiment_py_sha256": "0f57e0ef01f69cfc94e6b31b355d628e27813bcbaf454d6c88f1eac643d77718",
+    "auditor_py_sha256": "947a47d93085c7478687d183edc8da7dc63a4ae56b8e6ac4bbc3b66e58c28213",
+    "unchanged_E43_generator_sha256": "48a798f75c1afc9701158edb4131d076dbe07f9dd3ad9374b9095ad2b47fe79f",
+    "unchanged_E43_auditor_source_sha256": "b838cf23568016d97c068c8ea0e1e818b9355ab3a28992d602d1cb4f4d775e61",
+    "source_kind": "Entirely synthetic, no native checkpoint, real-world data, paid API, GPU, first-use science or runtime controller."
+  },
+  "protocol": {
+    "seed_domains": {
+      "excluded_smoke_seed": 99847,
+      "primary_seeds": [
+        8803,
+        8819,
+        8831
+      ],
+      "world_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "families": [
+        "parity2",
+        "parity3",
+        "mixed"
+      ],
+      "primary_source_worlds": 36,
+      "preprimary_smoke_worlds": 6
+    },
+    "causal_generator": "12 externally intervened binary variables with 364 finite known unary/pair/triple parity and AND motifs; 10 latent causal bits with two correlation-shifting nuisance bits; 3 stable hidden factors plus an old-only and new-only factor, signed weights of magnitude .85–1.15; independent Gaussian consequence noise sigma=.3; the 4th world_id (3) has no actual mechanism change, only shifted nuisance cues. Independent generators re-create exact double-precision outcomes.",
+    "latent_support_source": "Hidden factor indices and coefficients are evaluator-only; old/new randomized interventions and observed training consequences are given to learners. A predefined finite grammar is available to models and is NOT claimed to be autonomously discovered.",
+    "train_per_world": {
+      "old_witnessed_interventions": 96,
+      "new_witnessed_interventions": 96,
+      "total": 192
+    },
+    "held_per_world": {
+      "old": 128,
+      "new": 128,
+      "cold": 128
+    },
+    "held_denominator_per_context": 4608,
+    "candidate": "Old-context OMP4 recovers four feature supports; freeze entire old predictor. For new context use first 72 new witness outcomes to estimate four-factor error, rank top24 alternatives by residual correlation, exhaustively evaluate 4×24 single-drop-and-add support replacements. Select based ONLY on last 24 new training outcomes; trigger if 24-label validation MSE improvement ≥0.12. When triggered, refit new-context selected four feature weights on all 96 new witness outcomes; otherwise use old selected four support identities refit from 96 new labels. Old context still uses immutable old coefficients. Changed context support may be replaced; cold observations use new-context model with no additional learning.",
+    "frozen_gate_threshold": 0.12,
+    "arms": [
+      "gated_replace (candidate)",
+      "unconditional_replace (same capacity but no contradiction gate, selects on all 96 new)",
+      "omp_delta2 (conventional 2-factor residual correction and frozen old predictor)",
+      "stagewise_omp4 (standard independent 4-feature OMP trained on 96 new, frozen old predictor)",
+      "omp_structural_memory (cumulative structural-memory OMP7)",
+      "full_omp7 (full 728-factor gated OMP7)",
+      "elasticnet (alpha=.025,l1_ratio=.85)",
+      "ridge (alpha=40)",
+      "forest (60 trees, depth9, minleaf3)",
+      "no_repair (frozen old predictor)",
+      "shuffled_gate (new witness outcomes shuffled, same replacement+gate and data budget)"
+    ],
+    "negative_controls": [
+      "world_id=3 no-change causal law with nuisance cue shift; fake gate must avoid intervention",
+      "new-consequence shuffled sham",
+      "unconditional forced replacement",
+      "no-repair fixed old state"
+    ],
+    "strong_controls": [
+      "stagewise new-context OMP4 exactly matches active new-context capacity and 192 total observed outcomes",
+      "conventional OMP2 residual corrective learner",
+      "best trained cumulative ElasticNet, OMP7 and structured-memory OMP7",
+      "Ridge and 60-tree Random Forest"
+    ],
+    "all_arms_equal_observation_access": true,
+    "metrics": [
+      "Mean disjoint old,new,cold held squared consequence error",
+      "Exact old-only deleted and new-only support added (changed-world rate)",
+      "No-change worlds with false gate (world id3)",
+      "old-context error after new learning vs original immutable checkpoint and best conventional control",
+      "per-seed cold MSE vs best independently fully trained control",
+      "single-core summed Python fit+predict wall time excluding shared old OMP4 prefit, source data generation, interpreter startup, audit and GitHub API"
+    ],
+    "runtime": "Local Linux CPU Python 3.13.5, NumPy 2.3.5, sklearn 1.8.0; OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1, no paid API/GPU.",
+    "allowed_execution": "One 36-world fixed primary, exactly one unchanged-source canonical semantic replay and independent all-world 11-arm audit. No postscore tuning; transient execution does not imply native scientific acceptance."
+  },
+  "frozen_gates": {
+    "cold_vs_strongest_10pct": "Candidate aggregate held-cold MSE <=0.90 × minimum mean cold MSE over fully fitted conventional omp_delta2,stagewise_omp4,omp_structural_memory,full_omp7,elasticnet,ridge,forest.",
+    "cold_vs_stagewise_omp4_5pct": "Candidate held-cold MSE <=0.95 × conventional stagewise_omp4 held cold MSE.",
+    "old_prediction_protected_1pct": "Candidate old-context MSE <=1.01 × immutable stage-one old-context MSE.",
+    "old_vs_best_control_5pct": "Candidate old-context MSE <=1.05 × best old-context MSE among fully fitted conventional controls.",
+    "replaced_truth_support_70pct": "In 27 actually changed worlds exact candidate deletion equals true old-only factor AND added support equals new-only factor, with gate triggered, at least 70% successes.",
+    "nochange_false_gate_at_most_10pct": "In 9 unchanged latent worlds, candidate must decline replacement at least 90% of the time.",
+    "sham_negative_new_20pct": "Candidate held new-context MSE <=0.80 × shuffled-label gate control new-context MSE.",
+    "seed_stability_2of3": "Strictly better candidate mean cold MSE than strongest independently trained conventional arm within at least two of three primary seeds.",
+    "cost_max_3x_stagewise": "Candidate accumulated locally measured fit+predict wall <= 3× stagewise_omp4 accumulated fit+predict wall (old OMP4 prefit shared, excluded for both)."
+  },
+  "classification": {
+    "development_go": "ALL NINE gates PASS AND independently authored full 36-world 11-arm refit audit PASS. Still not SCIENTIFIC_PASS/native training.",
+    "development_no_go": "One or more frozen gates fail with valid source, leakage controls and full independent audit. Preserve negative and do not tune primary seeds.",
+    "invalid": "Missing source before freeze, changed original source or controls, primary execution before this commit, hidden truth/held labels passed into learner, mismatched budgets, audit/refit failure or score/threshold error. Invalid infrastructure is not a valid science negative.",
+    "mixed": "Report all gates, controls, uncertainty/limited sample size and no selective promotion."
+  },
+  "preprimary_smoke": {
+    "seed": 99847,
+    "worlds": 6,
+    "changed_worlds": 3,
+    "no_change_worlds": 3,
+    "independent_audit": "PASS",
+    "checks": 25713,
+    "meaning": "Implementation qualification only; one excluded seed cannot satisfy multi-seed gate and not primary evidence."
+  },
+  "after_primary_prohibited": [
+    "No source, gate, seed, split or hyperparameter changes on consumed primary worlds",
+    "No more than one unchanged-source semantic replay",
+    "No native Yggdrasil checkpoint, research loop, scheduler, runner, queue, main, protected science first-use, merge or deployment"
+  ],
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "native_model_training": false,
+    "scientific_first_use": false,
+    "merge": false,
+    "promotion": false,
+    "scheduler_or_queue": false
+  },
+  "freeze_note": "Source and auditor exact Git blobs are on an existing draft external research branch at source_commit. Primary seeds [8803,8819,8831] have not been run before THIS prereg commit."
+}

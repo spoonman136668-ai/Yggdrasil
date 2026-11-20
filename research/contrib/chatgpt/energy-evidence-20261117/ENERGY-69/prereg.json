@@ -1,0 +1,79 @@
+{
+  "schema": "energy69.preregistered-development-screen.v1",
+  "name": "ENERGY-69: causal fourth-order parity block admission against fitted conventional controls",
+  "date": "2026-11-19",
+  "category": "source_free_external_synthetic_development_only",
+  "prior_evidence": "ENERGY-67 SCREEN_NO_GO; ENERGY-68 exact analytic feasibility only",
+  "method": "Joint four-feature block admission: OMP-like 5-feature path from first 48 new-world observed intervention effects, ridge alpha 0.3; candidate chooses k=4 only when 16 independent validation outcomes improve MSE by more than 0.01 absolute against k=0, otherwise k=0. The matched cv_path chooses validation-minimum k=0..5 from identical candidate path/fits and uses 64 observed outcomes for final ridge refit. No planted feature supports accessible in learner.",
+  "source_sha256": "fea1b3ea38c190aed31ba91f9a824db1f484219d475179d2beedbba002713393",
+  "source_bytes": 7654,
+  "source_language": "Python 3.13 NumPy 2.3.5 scikit-learn 1.8.0; OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1",
+  "pre_freeze_excluded_smoke": {
+    "seed": 210899,
+    "world_ids": [
+      0
+    ],
+    "families": [
+      "null",
+      "four"
+    ],
+    "used_for": "implementation compatibility and sanity only, not inference",
+    "decision": "exclude all scores; no source modification after this smoke"
+  },
+  "screen_seeds": [
+    210901,
+    210917,
+    210929
+  ],
+  "world_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "families": [
+    "null",
+    "two",
+    "four",
+    "four_plus_fifth"
+  ],
+  "case_count": 72,
+  "world_definition": "Nine intervenable independent ±1 inputs; 126 supplied quadruple Walsh features; random hidden distinct source supports 0,2,4 or 4 plus 1 fifth-order OUT-OF-GRAMMAR; coefficient magnitude 0.55 (fourth), 0.45 (fifth), Gaussian observation noise σ=0.30. SeedSequence([screen_seed, family_index, world_id, 69]) with NumPy PCG64. One randomized permutation of 512 assignments per world: train first48, validation next16, cold held next48 disjoint. Fresh generator for each world. Same 64 witnessed intervention outcomes given to each fit.",
+  "controls": [
+    "cv_path (exact same selected OMP path/fits, validation-select k=0..5)",
+    "fixed4 on same path",
+    "full 126-term ridge(alpha=.3)",
+    "fully fit ElasticNet l1=.8 alpha {0.01,0.05,0.2} validation chosen, max_iter=3000",
+    "shuffled-label greedy negative (same 48 train, no hold leakage)"
+  ],
+  "metrics": [
+    "mean cold held MSE across 72 independent cases",
+    "MSE by seed and family",
+    "fit+inference wall-clock seconds per arm on one core (descriptive only, feature-generation common cost assigned to each arm)",
+    "candidate/cv selected k, greedy path digest",
+    "disjoint intervention identities"
+  ],
+  "gate_rules": {
+    "strongest_5pct": "block4 mean cold MSE <= 0.95 * minimum across cv_path,fixed4,ridge126,elasticnet",
+    "every_seed_strongest": "block4 mean cold MSE strictly lower than each of four controls on EACH of 3 independent seeds",
+    "family_non_degradation_10pct": "block4 mean cold MSE <= 1.10 * strongest conventional control within EVERY family (including fifth-order OOG)",
+    "null_guard_10pct": "block4 no-signal/null cold MSE <= 1.10 * cv_path no-signal/null cold MSE",
+    "shuffled_negative_20pct": "block4 overall cold MSE <= 0.80 * shuffled negative overall cold MSE"
+  },
+  "classification": "DEVELOPMENT_GO_ONLY if all five gates true, otherwise DEVELOPMENT_NO_GO; a GO is never SCIENTIFIC_PASS; no reserved ENERGY-67 primary; no retune/retry on these seeds",
+  "limitations": [
+    "Synthetic generated worlds only",
+    "Cold means unseen intervention identities in same law, NOT cross-world or unknown-grammar transfer",
+    "Old-model frozen retention not measured",
+    "No native Yggdrasil, architecture integration, learning loop, first-use, or scientific acceptance",
+    "Validation selection not compute-equivalent to ElasticNet; no physical energy or guaranteed speed superiority"
+  ],
+  "isolation": [
+    "archive-only current PR #1210",
+    "no changed Yggdrasil code/weights or accepted main",
+    "no scheduler, owner, runner, external API, merge, deployment",
+    "do not retune post-result"
+  ]
+}

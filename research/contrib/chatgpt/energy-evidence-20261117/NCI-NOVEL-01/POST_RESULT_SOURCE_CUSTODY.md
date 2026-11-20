@@ -1,0 +1,9 @@
+# NCI-NOVEL-01 — Post-result source-code custody repair (not new science)
+
+NCI-NOVEL-01's full original Python source, preflight receipt, post-result report-only audit and raw 32-world primary-result JSON were originally retained as a local conversation source bundle. The exact code-byte SHA-256s were committed in `FROZEN_SOURCE_CHECKSUMS.json` at commit `78f95185bfc499ed2c3db02e1069fc7a299f8a9d` **before** primary scores. The original primary scored `15a03ed2c4a095df6ffb9c7c9290f15f5aa5ed0a` after the source freeze but **did not** include complete code files on GitHub.
+
+This addition now deposits the previously frozen source bytes and raw report into the **existing contributor archive** for independent reproduction. Each `source_files` SHA256/size in the earlier frozen GitHub manifest has been independently matched with the exact locally retained bytes before publication; primary raw report SHA256 `4fab0658cadb1636a0b3e649af0f5969175dbe119d6c90fab81254712a6d6f0b` also exactly matches the earlier published `RESULT_SUMMARY.json` checksum. No primary source, scores, thresholds, original negative findings, model, accepted branch, first-use ID or owner evidence are changed. No original-world or synthetic experiment is rerun here.
+
+This is **POST-RESULT source availability**, **NOT** a rewrite of preregistration chronology. The source publication alone cannot prove earlier source authenticity, full Linux/Windows CI, scientific superiority, or original-world qualification. NCI-NOVEL-01 remains **DEV_NO_GO** and is retired as a candidate. No installation or promotion.
+
+The existing `NCI-NOVEL-01/DEV_RESULT.md`, `RESULT_SUMMARY.json`, frozen design and separate NCI-NOVEL-02 sources retain their original content and identities. `source_archive/` is an immutable additive research custody location.

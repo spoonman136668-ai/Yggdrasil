@@ -1,0 +1,87 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-66",
+  "date": "2026-11-19",
+  "scope": "EXTERNAL_SYNTHETIC_RESEARCH_ONLY",
+  "contribution_class": "falsification",
+  "source_parent": "719b9199ace1dcc93d39d80805513773adebd535",
+  "source_commit": "488d351bc2d942b43926be758012f1c3fd28c6f8",
+  "source": {
+    "archive": "source.tar.bz2",
+    "sha256": "81c8aac1ca9e6cef267051fcb3664bb11515e2d5ded456e0d602badf0c0e1b6a",
+    "git_blob": "e9cfce1e57fdd8b4a0eccdd5e17efae779ae296f",
+    "scorer_sha256": "2f1db4e7d202baada49c7c2635a4b6ffd608d2f30611235c2a59dec9f7a12801",
+    "audit_sha256": "ec05440518e3dc77e00afd752cd52e7f1a7d12c6734b27c2a99dcd7dc03ad59c"
+  },
+  "hypothesis": "Sequentially learning TWO new fourth-order causal response factors from 48 new witnessed outcomes while freezing a 56-observation OLD readout reduces cold MSE >=5% versus the strongest fully trained conventional same-bank alternative, robust across unfamiliar synthetic mechanisms and both fresh seeds.",
+  "design": {
+    "screen_seeds": [
+      999637,
+      999659
+    ],
+    "screen_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "screen_families": [
+      "double_quad",
+      "triple_quad",
+      "double_quad_plus_fifth"
+    ],
+    "screen_worlds": 24,
+    "excluded_precommit_dev_seed": 999599,
+    "excluded_dev_ids": [
+      0
+    ],
+    "reserved_primary_seeds": [
+      108101,
+      108119,
+      108137
+    ],
+    "primary_worlds": 36,
+    "underlying_inputs": "8 controllable ±1 binary do-action variables; no unobserved input; 256 possible identities, 212 disjoint random assignments/world. OLD three signed pair-parity factors; NEW includes two fourth-order effects, three fourth-order effects, or two fourth plus one fifth outside bank; old coefficients drift. Gaussian output noise sigma0.18.",
+    "labels": "56 witnessed old, 48 witnessed new, 36 withheld old,36 withheld new,36 withheld cold. Cold is same NEW law on unseen causal action assignments, NOT unfamiliar natural environment or novel episode. Held labels/planted supports withheld from learners.",
+    "candidate": "OLD OMP3 over 28 supplied pairwise Walsh features, immutable OLD historical head, two residualized orthogonalized quadruple selections (70 authored four-way Walsh features), jointly refitted NEW Ridge alpha=.1 with old supports and two selected quads. This is preauthored bounded grammar, not operator invention.",
+    "controls": [
+      "train-only 3-fold cross-validated ElasticNet on same old-selected support + all 70 quad Walsh features (matched)",
+      "train-only 3-fold cross-validated full 98-feature pair+quad ElasticNet",
+      "fully fitted matched-bank OMP5",
+      "fully fitted full-bank OMP5",
+      "standard held-label-free softmax of frozen OLD and NEW full-bank OMP5 hypotheses",
+      "old-support-only Ridge",
+      "OLD frozen no adapt",
+      "shuffled NEW label Ridge negative",
+      "truth oracle Ridge diagnostics only, excluded from strongest comparison"
+    ],
+    "controls_share": "All arms given OLD56+NEW48 witnessed outcomes; some methods use only subset, different compute and capacity acknowledged. No held labels used for CV, selection, fitting. Standard fixed CV folds/alfa and coefficients in frozen scorer.",
+    "metrics": "World-weighted arithmetic held MSE OLD/NEW/COLD (lower better), by seed/family, double-quad exact two-support recall, immutable historical readout equality, shuffled negative.",
+    "compute": "Python3.13.5 NumPy2.3.5 sklearn1.8.0 single-thread CPU with OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1. Only one prospective screen, one exact source replay, separately implemented refit auditor; if and only if SCREEN_PROMISING, a 36-world separately qualified primary (not automatically authorized through this evidence). No physical energy claims."
+  },
+  "frozen_gates": {
+    "cold_gain5_strongest": "Candidate mean cold MSE <=0.95 * min mean cold MSE across matched_elasticnet/full_bank_elasticnet/matched_omp5/full_bank_omp5/softmax_memory.",
+    "cold_gain5_matched_elasticnet": "Candidate mean cold MSE <=.95*matched_elasticnet mean cold MSE.",
+    "cold_gain5_full_elasticnet": "Candidate mean cold MSE <=.95*full_bank_elasticnet mean cold MSE.",
+    "per_seed_strict_wins": "Candidate cold MSE strictly below minimum of all five strong controls in BOTH prospective seed cohorts.",
+    "each_family_nondegradation10pct": "Candidate mean cold MSE <=1.1*best among strong controls in EACH of three mechanism families.",
+    "double_quad_both_recall70pct": "Over double_quad family candidate selected feature overlap with two true planted quadruples / (2*number of double_quad worlds) >=.70.",
+    "old_exact": "All arms OLD held prediction vectors exactly identical to immutable OLD OMP3 readout in every world.",
+    "improvement20pct_old_frozen": "Candidate mean cold MSE <= .8 * frozen OLD readout mean cold MSE.",
+    "shuffled_negative20pct": "Candidate mean cold MSE <= .8 * shuffled NEW-label negative mean cold MSE."
+  },
+  "stop_rule": {
+    "SCREEN_PROMISING": "ALL four critical gates cold_gain5_strongest,cold_gain5_matched_elasticnet,per_seed_strict_wins,each_family_nondegradation10pct true; >=8 of 9 gates; independent auditor and exact source replay PASS. Screen promising does NOT mean scientific pass or native acceptance.",
+    "SCREEN_NO_GO": "Any of four critical gates fails or <8/9 pass on valid audited screen. Stop, preserve every original result, do not score reserved primary or retune consumed cohorts.",
+    "INVALID": "Source/prereg not on GitHub before fresh seeds, changed source/threshold/seed after scoring, missing fully trained controls, leakage, split/identity mismatch or audit failure."
+  },
+  "prohibitions": [
+    "No native Yggdrasil weights or training changes",
+    "No accepted refs or main mutation",
+    "No scheduler, queue, controller, runtime or deployment",
+    "No merge or additional autonomous learner",
+    "No post-result changes to model, seeds, thresholds or controls",
+    "No scoring primary seeds on a failed screen"
+  ],
+  "prereg_before_fresh_score": true
+}

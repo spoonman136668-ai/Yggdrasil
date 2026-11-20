@@ -1,0 +1,130 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ENERGY-37",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a single-pass sparse causal-energy gradient select informative interventions more accurately and at lower end-to-end policy cost than iterative and conventional trained selectors?",
+  "hypothesis": "From 80 witnessed familiar-context action consequences, a single source-label-only energy gradient with top-12 hard support can prioritize 16 new-context actions whose observed outcomes yield transferable causal decision accuracy superior to fully trained conventional and expensive committee alternatives at an equal 96-outcome budget.",
+  "exact_parent_sha": "966456fd95fbdafa77f2192e49ab565238134597",
+  "source_commit_sha": "aebfc1a36074c2591c6569c455edf79f775aa93c",
+  "predecessor_evidence": [
+    "ENERGY-36 DEVELOPMENT_NO_GO at 966456fd95fbdafa77f2192e49ab565238134597; six-bootstrap committee 2985/3456 shifted predictions, expensive relative to random OMP."
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/energy-evidence-20261117/ENERGY-37/**"
+  ],
+  "inputs": [
+    {
+      "name": "Original synthetic 8-bit intervention causal source generator",
+      "source": "fully source-contained SHA-256 deterministic code; no external or protected dataset",
+      "sha256": "e84d68cb79aa0cf5f58d72813a9eb5a400ec767384a4807cf411e69bb7773173"
+    }
+  ],
+  "code_freeze": {
+    "source_file": "experiment.py.bz2",
+    "source_git_blob": "ec4b5bb2aea00e3b24375f09ac04d706db119af1",
+    "original_source_sha256": "e84d68cb79aa0cf5f58d72813a9eb5a400ec767384a4807cf411e69bb7773173",
+    "original_bytes": 13077,
+    "compressed_sha256": "da9f3b5c047c7f42e1519d8451e6fdf72f61d2cd83a104ef4855046386ca814e",
+    "compressed_bytes": 4524,
+    "independent_audit_file": "audit.py.bz2",
+    "audit_git_blob": "a8a3da6afdb4d1fccefec0d9cd3496c931f9a960",
+    "audit_original_sha256": "bf982045b4acef4a4730d39866dc5b11ebeab2379eca5329be5aefc36bf348b6",
+    "audit_compressed_sha256": "d7d14341cb9f84fbe8bc6aab076e7ad283e0b64d66acd948c8fd2c8d03b29105"
+  },
+  "frozen_design": {
+    "primary_seeds": [
+      7703,
+      7723,
+      7753
+    ],
+    "smoke_only_excluded_seed": 99107,
+    "world_ids": "0..7",
+    "families": [
+      "parity3",
+      "mixed",
+      "extended4"
+    ],
+    "worlds": 72,
+    "source_law": "Signed 3-factor majority of 190 designed parity-degree1..4 and AND2 features on eight bit action patterns; deterministic per-action Bernoulli 10% witnessed corruption; hidden factors, signs, clean causal bits and held labels only evaluator-side.",
+    "data_budget": "Each policy acquires 80 independently witnessed x0=0 actions; 16 selected x0=1 actions from a common 80-candidate pool without seeing the chosen action's consequence before selection; 96 equal total outcomes per policy, plus 16 disjoint old held and 48 disjoint new held outcomes per world. All policies, within a policy, fit on identical observed action-outcome rows; across policies actions/outcomes differ.",
+    "split": "SHA256 context 'energy37-v1': choose old train from 128 x0=0 actions, first80 hash-ordered; next16 old held. Candidate x0=1 are counterparts of old training actions; remaining 48 x0=1 held. Deterministic order/noise evaluated from source; no held leakage.",
+    "selection_policies": [
+      "one_pass_energy",
+      "energy_committee",
+      "omp_committee",
+      "energy_uncertainty",
+      "omp_uncertainty",
+      "paired_fixed",
+      "random"
+    ],
+    "learners": [
+      "energy",
+      "omp12",
+      "ridge",
+      "logistic",
+      "tree"
+    ],
+    "total_selector_learner_arms": 35,
+    "algorithm": "One-pass selector computes a single mean(y*x) contrastive energy gradient on observed old actions, retains top12 coordinates, no iterative optimizer/ensemble or candidate outcomes. Query uncertainty exp(-abs(phi_candidate dot w)); greedily choose top16 with +0.05 min Hamming diversity secondary criterion. OMP uncertainty and iterative energy uncertainty each fit one model; the six-bootstrap energy/OMP committees fit six models for disagreement; fixed/random have no model-fitting selection. Every policy then fully retrains all five downstream learners.",
+    "capacity": "Same 190-feature dictionary for energy, OMP, Ridge and logistic. Both energy and OMP hard-support <=12. Energy 48 epochs, top8 gradient coordinates per epoch, step .05. OMP12 sklearn, Ridge alpha3, logistic C1 max_iter500 tol1e-8, decision tree max depth8. Committee six bootstrap replicates. No hyperparameter search using primary.",
+    "compute_budget": "72 worlds x 7 selectors x 5 trained downstream learners + shuffled-label negatives; single CPU, Python 3.13.5, NumPy 2.3.5, scikit-learn 1.8.0, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1. One primary run, one identical-source semantic replay, independent audit.",
+    "evaluator": "Noiseless binary causal held prediction; threshold positive score >0 predicts +1, otherwise -1. 72x48=3456 new held predictions per arm; 72x16=1152 old held. Measure query selection plus final model fitting/inference cost (seconds) per arm; this is local component cost only, not whole system cost.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Six-bootstrap energy committee (ENERGY-36 algorithm)",
+    "Six-bootstrap OMP12 committee",
+    "Single fully fitted energy uncertainty",
+    "Single fully fitted OMP12 uncertainty",
+    "SHA256 random 16 actions",
+    "First16 fixed paired actions",
+    "Fully retrained OMP12, Ridge, logistic, decision tree for every policy",
+    "Label-shuffled sparse energy negative control for every policy"
+  ],
+  "metrics": [
+    "shifted held accuracy vs best other complete selection+learner combination",
+    "vs iterative energy selector with same energy learner",
+    "vs OMP uncertainty with same energy learner",
+    "old-context retention vs fixed selector+energy",
+    "positive margin against strongest alternative in >=2 of 3 source seeds",
+    "shuffled-label negative",
+    "policy acquisition+fit component cost vs random+OMP12; whole process wall separately"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_GO only if every seven frozen gate passes; still external synthetic development, not native scientific approval",
+    "mixed": "List all gates and preserve negative or partial findings unmodified; no postscore reweighting",
+    "negative": "DEVELOPMENT_NO_GO on any failed gate, stop candidate and preserve primary outcome without rerunning seeds for tuning",
+    "invalid": "Cohort or source mismatch, missing strong matched controls, evaluator leakage, unequal witnessed outcome budget, source/score mismatch or failed independent audit; do not equate infrastructure failures with science."
+  },
+  "gates": {
+    "accuracy_vs_strongest": "One-pass selector+energy >=3 percentage points of held shifted accuracy above highest-performing alternative among all 34 other selector+trained-learner combinations, denominator 3456.",
+    "one_pass_vs_iterative": "One-pass selector+energy >=1 percentage point above iterative energy uncertainty selection+energy.",
+    "one_pass_vs_omp_selector": "One-pass selector+energy >=1 percentage point above conventional fitted OMP12 uncertainty selection+energy.",
+    "old_retention": "One-pass selector+energy old held correct within <=1pp below fixed first16 selection+energy, denominator 1152.",
+    "seed_stability": "Strict positive shifted correct margin over strongest other complete selector+learner for at least two of three primary seeds.",
+    "shuffled_negative": "One-pass selector+energy shifted held correct > its shuffled-training-label energy negative by 5 percentage points.",
+    "whole_policy_cost": "One-pass selector acquisition + final energy fit/prediction time <= 1.5x random selector + OMP12 final fit/prediction time aggregated across the same 72 worlds."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "postscore policy selection",
+    "capacity growth",
+    "extra data, compute or model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "protected native model first-use",
+    "accepted ref or main mutation",
+    "controller/scheduler/runner changes",
+    "deployment or merge"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Frozen after excluded smoke seed 99107 local PASS (3 smoke worlds and 339 independent audit assertions) and before *any* primary seed was evaluated. The source, evaluator and auditor are already committed at source_commit_sha."
+}
