@@ -1,0 +1,21 @@
+import json
+import tempfile
+import unittest
+from pathlib import Path
+from audit_saved_results import audit
+
+HERE=Path(__file__).parent
+ORIGINAL=HERE/'development_results.json'
+class TestAudit(unittest.TestCase):
+    def test_saved_results(self):self.assertEqual(audit(ORIGINAL)['audit'],'PASS')
+    def mutate(self,operation):
+        d=json.loads(ORIGINAL.read_text());operation(d)
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'tampered.json';p.write_text(json.dumps(d)+'\n')
+            with self.assertRaises(ValueError):audit(p)
+    def test_reject_forged_go(self):self.mutate(lambda d:d.update(status='DEVELOPMENT_GO'))
+    def test_reject_missing_world(self):self.mutate(lambda d:d['rows'].pop())
+    def test_reject_forged_conventional(self):self.mutate(lambda d:d['rows'][0]['models']['grammar_bayes'].update(B=.003))
+    def test_reject_modified_public_hash(self):self.mutate(lambda d:d['rows'][0].update(public_sha256='0'*64))
+    def test_reject_missing_cold(self):self.mutate(lambda d:d['rows'][0]['models']['causal_recall'].update(cold={}))
+if __name__=='__main__':unittest.main()

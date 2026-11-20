@@ -1,0 +1,54 @@
+"""LR-92AR comparison harness qualification WITHOUT disjoint seed first-use."""
+import copy
+import unittest
+from lr92ar_compare import ARMS, CONVENTIONAL, EXPECTED_SOURCE_SHA, score_one, summarize, verify_exact_sources
+from lr92ar_disjoint_dev import World, Step, SEEDS, FAMILIES
+
+class HarnessTests(unittest.TestCase):
+    def synthetic(self):
+        events=tuple(Step(i,i%7==0,i%2,((i//9)%2)^(i%2)) for i in range(144))
+        return World(0,'synthetic',0,(48,48,48),events,4)
+
+    def test_exact_dependencies(self):
+        self.assertEqual(verify_exact_sources(),EXPECTED_SOURCE_SHA)
+        self.assertEqual(len(EXPECTED_SOURCE_SHA),7)
+
+    def test_budget_cold_replay_all_arms(self):
+        w=self.synthetic()
+        for n,(cls,budget) in ARMS.items():
+            r=score_one(w,cls,budget)
+            self.assertEqual(r['updates'],144)
+            self.assertEqual(r['checkpoint_bytes'],budget+36)
+            self.assertEqual(r['learned_bytes'],budget)
+            for k in ('B','A_return_early16','A_return_late'):
+                self.assertGreaterEqual(r[k],0)
+                self.assertLessEqual(r[k],1)
+
+    def test_two_hypothesis_same_learned_state(self):
+        w=self.synthetic()
+        a=score_one(w,ARMS['CHR_candidate'][0],928)
+        b=score_one(w,ARMS['CHR_fixed_half'][0],928)
+        self.assertEqual(a['final_snapshot_sha256'],b['final_snapshot_sha256'])
+        self.assertEqual(a['pre_return_snapshot_sha256'],b['pre_return_snapshot_sha256'])
+
+    def test_comparator_scope_and_exact_bytes(self):
+        self.assertEqual(set(CONVENTIONAL),{'HMM_MAP_928','BOCPD_896','Full14_480','Window32_832'})
+        self.assertEqual(len(ARMS),7)
+        self.assertTrue(all(b<=928 for c,b in ARMS.values()))
+        self.assertTrue(all(c.restore(c().snapshot()).snapshot()==c().snapshot() for c,b in ARMS.values()))
+
+    def test_no_scientific_claim_at_synthetic_development(self):
+        w=self.synthetic()
+        def row(seed):
+            return {'seed':seed,'family':'synthetic','index':0,'models':{name:score_one(w,cls,b) for name,(cls,b) in ARMS.items()}}
+        # summary() intentionally requires the three expected families;
+        # synthetic fixtures cannot masquerade as the preregistered cohort.
+        with self.assertRaises(ZeroDivisionError):summarize([row(SEEDS[0]),row(SEEDS[1])])
+
+    def test_world_prequential_mean_accounting(self):
+        w=self.synthetic()
+        r=score_one(w,ARMS['CHR_candidate'][0],928)
+        weighted=(48*r['A']+16*r['A_return_early16']+32*r['A_return_late']+48*r['B'])/144
+        self.assertAlmostEqual(weighted,r['all'])
+
+if __name__=='__main__':unittest.main()

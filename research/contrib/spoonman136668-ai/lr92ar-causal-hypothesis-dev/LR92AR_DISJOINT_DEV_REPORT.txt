@@ -1,0 +1,165 @@
+LR-92AR — CAUSAL-HYPOTHESIS RETRIEVAL PIVOT, ONE-SHOT DISJOINT DEV
+====================================================================
+Date 2026-11-19. Existing Yggdrasil draft PR #1323, no native model edits.
+Baseline main: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+Parent failed YPT4 mechanism: 41ab5c347270a2f62747f55d748daec6610fc360
+Source/seed/hypothesis lock BEFORE new disjoint dev first-use:
+  fcf74a074948bf5b5fb5b5c246318172ff75ddc8
+Source/test/evaluation harness lock BEFORE new disjoint dev first-use:
+  2d089453f0acf8f380ca4959d6d59567c75a0f78
+These are distinct DEVELOPMENT seeds. NO protected scientific primary first-use.
+
+HYPOTHESIS AND FIXED PARAMETERS
+-------------------------------
+A tokenless, non-transformer, public-only per-address causal-hypothesis
+retriever might preserve old-A and adapt to B simultaneously, outperforming
+the strongest conventional control on return-to-A without sacrificing B.
+The model stores 16 independent addresses x 14 action/previous-two-actions
+contexts. Each address has one frozen first-48-public-observation hypothesis,
+a continually updating second hypothesis with per-context decay at 24
+counts, one Q8 Bayesian likelihood-ratio retrieval belief, and the 7-state
+two-action history code. Persistent learned/history bytes = archive 448 +
+adaptive 448 + history 16 + Q8 belief 16 = 928. Explicit versioned SHA256
+checkpoint = 964 bytes, no hidden phase, no global phase timer, no future
+input, no label before its prediction. Likelihood-ratio HAZARD = 1/32.
+Full candidate and parameters were locked on GitHub prior to scoring.
+A fixed-50/50 retrieval ablation uses identical training and produces
+IDENTICAL learned checkpoint hashes on all worlds; only inference gate varies.
+Archived-only readout is an evaluator-addressed counterfactual diagnostic,
+NOT a legitimate autonomous change-recognition predictor.
+
+SOURCE CUSTODY — EXACT LOCAL BYTES = ORIGINAL GITHUB BLOBS
+----------------------------------------------------------
+Candidate causal_hypothesis_retriever.py.txt:
+  2755988f1f18b0297e899cb08df7987554fff2be
+Candidate 10-test suite test_causal_hypothesis_retriever.py.txt:
+  5141999a2fafaa0e4701b8fa95db315f0bb3a016
+Disjoint DEV generator lr92ar_disjoint_dev.py.txt:
+  ecc7e1f5bfa6b099b96149ed49abd6b495755b7e
+Frozen dev plan frozen_disjoint_dev_plan.json.txt:
+  c670759040f4dee7d2c97ae991881ab90c5890b8
+One-shot comparison harness lr92ar_compare.py.txt:
+  d93683cfa109cbc8567e2f17c1d27319188d2fce
+Synthetic-only 6-test harness suite test_lr92ar_compare.py.txt:
+  115d52ef5edb07fcab6de8e0e5e83845cdabf4b8
+Exact original predecessor and comparator blobs copied byte-for-byte
+and SHA verified LOCALLY before running disjoint dev:
+  YPT4 original e2fca6e277efbf0bd3b77ba7e472e4b5432d205f
+  HMM MAP 41f3adcb8c12d540f3042ae03a6a9dbdd4d6e6f0
+  BOCPD896 96bb94e608d2062fb4cc488ed010f150b8325787
+  Full14/Window32 7a223f6b097eb6e461853685195ba4b89af2f2b6
+All five new source and test blobs independently read back from GitHub
+and match the byte-identical local engineering tests. Local Python 3.13.5
+Linux focused 16/16 PASS; including exact budgets, cold checkpoint parity,
+public-only forecasts, non-mutating invalid inputs, after-label updates,
+identical trained-state fixed-half ablation, exact upstream comparator
+provenance, no primary seeds, and unannounced-return no-cue prefix.
+
+DISJOINT DEVELOPMENT DESIGN
+---------------------------
+Two NEW, explicitly precommitted UNPROTECTED development seeds
+74009171 and 74009172, each x three causal relation families
+(XOR, AND, independent random14), x four distinct worlds = 24 worlds.
+There were 4,834 public prequential action-consequence observations per
+learner, total 33,838 across seven independently initialized learner arms.
+Each world has a separately randomized A->B->A schedule with private dwell
+times 48..88; 24/24 different schedules and both switches avoid public
+episode reset. All 14 temporal contexts appeared in every world.
+Label noise Bernoulli(0.15); each B outcome contradicts A at its temporal
+bin. Public action RNG independent of latent phase, same input and update
+tape to every model, no phase labels or evaluator-only relationships provided.
+First after-switch outcome is not identifiable without subsequent public
+evidence or a forbidden true-regime cue.
+Manifest SHA256, deterministic compact sorted JSON of disjoint world manifest:
+  8e456cffc37296fec9823de69ee6f6a349342789967149b2501587eed0fdf177
+
+Reproduce exactly from this folder's *.py.txt files (strip .txt) PLUS the
+four exact original control modules from LR-92AP (same PR):
+  public_dual_timescale_cells.py.txt
+  two_regime_hmm_control.py.txt
+  bounded_runlength_bocpd.py.txt
+  matched_tabular_controls.py.txt
+  python -m unittest -q test_causal_hypothesis_retriever.py test_lr92ar_compare.py
+  python lr92ar_compare.py > disjoint_dev_results.json
+  python audit_disjoint_receipt.py
+The final comparison was run ONCE after exact source/test/readback lock.
+Non-deterministic local wall-clock time fields may change on reproduction.
+All deterministic predictions, public inputs, and final snapshots can be
+recomputed with source SHA custody. Full one-shot raw JSON SHA256:
+  d195739737e2aeeb63179c65d889654d93a58b1bf62f9d0a0b1029a28926c771
+Canonical per-world 24-row CSV:
+  world_metrics.csv, Git blob 03b4d89262357bcaf2960289fa1fca104126e0f8
+  bytes 12,770; SHA256
+  1793138522ed3f15e7a864ad411980c6396a5bd47e959eea4905c3894262a7ee
+The committed read-only independent audit script hashes the exact CSV,
+verifies 24 distinct world keys, 4,834 observations, full 14-bin
+coverage, per-model finite metrics, seed-split comparator envelopes and the
+same DEVELOPMENT_NO_GO without rerunning or retuning any learner.
+Read-only audit local PASS at this one source/result hash.
+
+RESULTS — 24-WORLD MACRO PREQUENTIAL BRIER (LOWER IS BETTER)
+-----------------------------------------------------------
+Arm                      learned bytes  B phase  first16 returnA  late returnA
+CHR causal hypothesis       928        0.369823      0.201097      0.170850
+CHR fixed-half ablation     928        0.399723      0.192317      0.183965
+Hard-MAP HMM               928        0.224185      0.223769      0.158216
+Bounded runlength BOCPD    896        0.209645      0.273922      0.186086
+Full-history 14-bin         480        0.358244      0.247663      0.222985
+Window-32 14-bin           832        0.231563      0.355422      0.186871
+Original YPT4              928        0.391471      0.219128      0.203935
+
+Per-seed strongest-memory-matched conventional comparison (same fixed
+control set; choosing best score per phase is a POST-HOC descriptive envelope):
+SEED         returnA advantage CHR vs best conventional   B regression CHR vs best
+74009171     +0.032372                                 +0.155875
+74009172     +0.012973                                 +0.164480
+Both seed groups meet the *return* +0.01 condition, but both massively
+FAIL the B noninferiority requirement <=+0.01 (actual about +0.16).
+The Bayesian evidence retrieval gate is also WORSE than fixed 50/50 blend
+on early return: fixed - CHR = -0.008780 (required >=+0.005).
+Evidence gate improves B vs fixed blend by 0.029901 Brier, but that does
+NOT justify severe B regression versus conventional controls.
+The frozen multi-condition development criterion therefore FAILS:
+  LR92AR_DEVELOPMENT_NO_GO.
+Do not tune hazard, decay, archive budget, seeds, architecture or thresholds
+to manufacture a positive from these now-exposed disjoint development worlds.
+
+COLD-RETENTION VERSUS PREDICTION — NO ORACLE CLAIM
+--------------------------------------------------
+The CHR's actual phase-blind first returnA prediction Brier is 0.238966,
+whereas the EVALUATOR-ADDRESSED archived-only readout's Brier was 0.141131.
+This comparison intentionally asks for old-A when its return is known
+outside the model. It is NOT autonomous detection; the forecast at first
+unannounced return must be the same if B continued after identical prefix.
+The fixed-half ablation first-return Brier 0.179644 on these observed
+labels is a development comparison, NOT an information-theoretic oracle.
+
+COST / QUALIFICATION
+--------------------
+One local Linux Python 3.13.5 standard-library-only process elapsed
+0.310696 seconds inclusive of world generation, all seven learners'
+prequential predictions/updates and checkpoint processing (excludes
+Python interpreter startup). Aggregate per-model measured durations:
+  BOCPD896 0.2022 s; CHR 0.0154 s; fixed-half 0.0144 s;
+  HMM MAP 0.0136 s; Full14 0.0102 s; Window32 0.0151 s;
+  YPT4 0.0133 s.
+Not a qualified cross-OS, whole lifecycle, C++/GPU or native benchmark.
+Python heap/transient state may exceed serialized learned-state budgets.
+Full native mandatory regression and independent scientific first-use
+were NOT executed. GitHub G29 only checks atlas/source-index.
+
+STOP / NEXT RESEARCH TARGET
+---------------------------
+Engineering 16/16 local PASS, independent CSV audit PASS.
+Scientific DEVELOPMENT_NO_GO. Hypothesis archiving can improve early
+return but frozen two-bank/global posterior selection cannot jointly
+restore old-A and adapt quickly to B. Pursue per-context change evidence
+and archived causal relation selection with explicit retrieval uncertainty
+under a FRESH, independently frozen future development source; NEVER tune
+LR92AR using these now-consumed development worlds.
+This does not prove native Yggdrasil improvement, causal transfer, general
+intelligence, long-duration persistence, or RSI.
+Original LR-92AP protected 288 worlds remain UNCONSUMED; LR92AQ/AR
+scientific primary remains undefined and UNAUTHORIZED.
+Do not merge, deploy, change controller/owner/scheduler or restart native
+training on the strength of this external synthetic research.

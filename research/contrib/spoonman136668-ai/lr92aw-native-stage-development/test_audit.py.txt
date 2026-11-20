@@ -1,0 +1,14 @@
+import unittest
+from audit_saved_results import audit
+
+class AuditTests(unittest.TestCase):
+    def test_hash_drift_rejected(self):
+        with self.assertRaisesRegex(ValueError,'FULL_JSON_SHA_DRIFT'):
+            audit(b'{}',b'')
+    def test_empty_bytes_rejected(self):
+        with self.assertRaises(ValueError):audit(b'',b'')
+    def test_science_boundary(self):
+        from audit_saved_results import SEEDS,ARMS
+        self.assertEqual(SEEDS,(88041001,88041002))
+        self.assertNotIn('native_canonical',ARMS)
+if __name__=='__main__':unittest.main()

@@ -1,0 +1,118 @@
+{
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "arms": [
+    "native_base",
+    "native_stream",
+    "beta_full",
+    "beta_window32",
+    "beta_decay24",
+    "symbolic_hmm",
+    "shuffled_context",
+    "no_learning"
+  ],
+  "authority": {
+    "controller_scheduler": false,
+    "existing_ci_one_shot_frozen_dev": true,
+    "first_use_allowed": false,
+    "host_owner_checkpoint": false,
+    "live_canonical_training": false,
+    "main_merge": false,
+    "paid_api": false,
+    "protected_original_288_worlds": false
+  },
+  "contributor_pr": 1323,
+  "control_info": "Full and window-32 independent fitted Beta(1,1) conditional Bernoulli tables; exponentially decayed Beta with half-life 24; fixed grammar-supplied exact symbolic hidden Markov filter across all four families and two variants, phase unknown and hazard fixed 1/64. This symbolic control is granted a matching explicit grammar but NEVER the true family, variant, phase or switched outcomes. Shuffled-context negative control replaces only v with a hash of public event ID, no-learning predicts 1/2.",
+  "coordinator": "Unified Causal Intelligence Amalgam Work",
+  "date": "2026-11-19",
+  "decision_constraints": "This study remains synthetic development only. Prior LR-92AX experiment was scored; no reuse of any prior seeds. Stop tuning after first result, preserve null and unfavorable outcomes.",
+  "experiment": {
+    "dev_seeds": [
+      90161101,
+      90161102,
+      90161103
+    ],
+    "dwell_per_A_B_Areturn": "independent uniform integers from 48 through 80",
+    "events_per_arm": 9346,
+    "families": [
+      "switch_chain",
+      "masked_transfer",
+      "disjoint_parent",
+      "interaction_rewrite"
+    ],
+    "fixed_source_sha256": {
+      "dev_manifest.json": "b504b6ef3a0677851fc21c448ec0478357525c290b126fe7f8b9da0236f8076d",
+      "experiment.py": "7b8987838f37e076e53528b903ad831788c670b5f921ccda64917a2a61ceab64",
+      "test_experiment.py": "670d4caa515f4b8912af77c47fbfdf5d7336c1d454d067718038539daa0d4065",
+      "worlds.py": "dc9c4a0b1048a5aeed1130411f9107298ce27faa1b979b89ed0340d4faaae26e"
+    },
+    "forbidden_seeds": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802,
+      76021921,
+      76021922,
+      77033101,
+      77033102,
+      88041001,
+      88041002,
+      89051001,
+      89051002,
+      929209101,
+      929209102,
+      929209103
+    ],
+    "hidden_from_models": [
+      "seed",
+      "family",
+      "rep",
+      "dwell/phase",
+      "evaluator true law for chosen world",
+      "unobserved counterfactuals",
+      "future noise/outcomes"
+    ],
+    "noise": 0.12,
+    "public_schema": "two paired views ((s1,v),(s1,1-v)), stage1 s1/x1 -> revealed s2, stage2 x2 -> revealed y. One public event equals one paired two-stage native episode. Fixed public action tape shared across all arms.",
+    "reps_per_family_seed": 4,
+    "world_manifest_sha256": "b504b6ef3a0677851fc21c448ec0478357525c290b126fe7f8b9da0236f8076d",
+    "worlds": 48
+  },
+  "hypothesis": "Native base (no stream activation) improves early A-return retention across unfamiliar two-stage causal laws without catastrophic B adaptation relative to strongest admissible conventional and grammar-supplied exact symbolic controls. Compare explicitly to native stream, which was the failed original LR-92AX primary.",
+  "integration_pr": 1278,
+  "native_source_commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "native_source_tree": "ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5",
+  "primary_candidate": "native_base",
+  "schema": "lr92ay.native-base-prospective-development.v1",
+  "secondary_native_ablation": "native_stream",
+  "source_lock": {
+    "files": {
+      "dev_manifest.json": "b504b6ef3a0677851fc21c448ec0478357525c290b126fe7f8b9da0236f8076d",
+      "experiment.py": "7b8987838f37e076e53528b903ad831788c670b5f921ccda64917a2a61ceab64",
+      "test_experiment.py": "670d4caa515f4b8912af77c47fbfdf5d7336c1d454d067718038539daa0d4065",
+      "worlds.py": "dc9c4a0b1048a5aeed1130411f9107298ce27faa1b979b89ed0340d4faaae26e"
+    },
+    "manifest_contains_hidden_world_metadata": "evaluator/auditor only; learning arms do not receive",
+    "test_count_before_scoring": 19,
+    "test_status": "PASS"
+  },
+  "statistics": {
+    "budget": "48 worlds x 8 arms, at most 80*3 events per world; no protected source/pilot",
+    "comparison": "strongest of beta_full, beta_window32, beta_decay24, symbolic_hmm within each seed group; negative controls diagnostic only",
+    "estimator": "equal-weight macro mean across 16 worlds per development seed, 3 disjoint seeds",
+    "next_science_requires": "fresh first-use separate authorization, fully trained additional conventional controls, independent qual, mandatory cross-platform native regression before any integration",
+    "no_multiple_testing": "freeze primary native_base and controls; native_stream only precommitted secondary, cannot replace primary after scores",
+    "primary_metric": "mean observed terminal prequential Brier on first 16 A-return episodes, independently aggregated by seed group",
+    "secondary": [
+      "B phase terminal Brier",
+      "transition Brier",
+      "whole-process elapsed seconds",
+      "checkpoint bytes",
+      "cold checkpoint exact replay",
+      "source identity",
+      "per-world scores"
+    ],
+    "stop_rule": "DEVELOPMENT_GO iff native_base has A-return16 Brier at least 0.01 ABSOLUTE lower than the strongest applicable control and B-phase Brier no worse than strongest control +0.01, in EACH of 3 seed groups; else DEVELOPMENT_NO_GO. Cold restore SHA must match; no post-result choice of native_stream."
+  }
+}

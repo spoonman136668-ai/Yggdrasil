@@ -1,0 +1,190 @@
+"""ONE-SHOT LR-92AW dev scoring. Frozen before any result inspection.
+
+Public predictor receives (views, x1), then s2, then (x2), then y. Native
+learners are NOT imported or run. Scores use same public tape for every arm.
+Private world laws are touched ONLY by evaluator's analytical Brier diagnostics.
+"""
+from __future__ import annotations
+import hashlib
+import json
+import math
+import time
+from collections import defaultdict
+
+from native_stage_dev import (SEEDS,FAMILIES,REPS,development_worlds,
+                              StageStructureBayes, StageTabular, NoLearning)
+
+ARMS = ('structure_bayes', 'tabular_full', 'tabular_window32', 'no_learning')
+STAGES = ('A','B','A_return_early16','A_return_late','A_return_all','total')
+META = {
+    'schema':'lr92aw.native-stage-comparison.v1',
+    'source_model_blob':'a4ec046f683df3ff13235f1654db9c95c3c1fc96',
+    'source_tests_blob':'cac5ba1f176cd76f1d1621b80ac5a05e6220c85a',
+    'frozen_protocol_blob':'fd55daf57cd74599f0ad214ff08cbe6dc3745cc0',
+    'main':'5e74f8db85b2f5839c42148c0dfba69a88b1a2c9',
+    'source_locked_before_scoring_commit':'aa18440359effbf5b56197c36f7cf89a7fadab72',
+}
+
+
+def make_model(name):
+    if name=='structure_bayes':return StageStructureBayes()
+    if name=='tabular_full':return StageTabular()
+    if name=='tabular_window32':return StageTabular(window=32)
+    if name=='no_learning':return NoLearning()
+    raise ValueError('AW_ARM_NOT_FROZEN')
+
+
+def restore(name,raw):
+    if name=='structure_bayes':return StageStructureBayes.restore(raw)
+    if name=='tabular_full':return StageTabular.restore(raw)
+    if name=='tabular_window32':return StageTabular.restore(raw,window=32)
+    if name=='no_learning':return NoLearning.restore(raw)
+    raise ValueError('AW_ARM_NOT_FROZEN')
+
+
+def brier(p,y):
+    return (p-y)**2
+
+
+def expectation(p,q):
+    return q*(1-p)**2+(1-q)*p**2
+
+
+def ranges(dwell):
+    a,b,c=dwell
+    return {'A':(0,a),'B':(a,a+b),'A_return_early16':(a+b,a+b+16),
+            'A_return_late':(a+b+16,a+b+c),'A_return_all':(a+b,a+b+c),
+            'total':(0,a+b+c)}
+
+
+def evaluated_one(world,name):
+    # One fresh model per world. No cumulative cross-world training.
+    t0=time.perf_counter()
+    model=make_model(name)
+    terminal=[]; transition=[]; analytic=[]; oracle=[]; stage_transition=[]
+    pre_return_hash=None; cold_old_A=None; max_checkpoint=0
+    boundary=sum(world.dwell[:2])
+    for t,event in enumerate(world.public):
+        if t==boundary:
+            checkpoint=model.snapshot()
+            pre_return_hash=hashlib.sha256(checkpoint).hexdigest()
+            cold_copy=restore(name,checkpoint)
+            assert cold_copy.snapshot()==checkpoint
+            old=[]
+            # Evaluator-only cold A query. NOT valid autonomous phase recognition.
+            for s1 in (0,1):
+                for x1 in (0,1):
+                    for s2 in (0,1):
+                        for x2 in (0,1):
+                            view=((s1,0),(s1,1))
+                            p=cold_copy.predict_terminal(view,x1,s2,x2)
+                            q=world.terminal_A.prob((s1,x1,s2,x2))
+                            old.append(expectation(p,q))
+            cold_old_A=sum(old)/len(old)
+            assert model.snapshot()==checkpoint
+        before=model.snapshot() if t in (0,boundary,len(world.public)-1) else None
+        p_s2=model.predict_transition(event.views,event.x1)
+        if not 0<p_s2<1:raise AssertionError('AW_INVALID_STAGE1_FORECAST')
+        # Actual s2 arrives between stage-one and stage-two. Not an oracle.
+        p_y=model.predict_terminal(event.views,event.x1,event.s2,event.x2)
+        if not 0<p_y<1:raise AssertionError('AW_INVALID_STAGE2_FORECAST')
+        if before is not None:
+            assert model.snapshot()==before, 'AW_PREDICTION_MUTATED_STATE'
+        # True law used by evaluator only, NEVER passed to model method.
+        ph='B' if world.hidden_phase[t]=='B' else 'A'
+        q_s2,q_y=world.truth(ph,event.s1,event.x1,event.s2,event.x2)
+        transition.append(brier(p_s2,event.s2))
+        terminal.append(brier(p_y,event.y))
+        analytic.append(expectation(p_y,q_y))
+        oracle.append(q_y*(1-q_y))
+        stage_transition.append(expectation(p_s2,q_s2))
+        model.observe(event)
+        max_checkpoint=max(max_checkpoint,len(model.snapshot()))
+    raw=model.snapshot()
+    clone=restore(name,raw)
+    if clone.snapshot()!=raw:raise AssertionError('AW_COLD_RESTORE_DRIFT')
+    final=world.public[-1]
+    if clone.predict_terminal(final.views,final.x1,final.s2,final.x2)!=model.predict_terminal(final.views,final.x1,final.s2,final.x2):
+        raise AssertionError('AW_PREDICTION_RESTORE_DRIFT')
+    phase_ranges=ranges(world.dwell)
+    result={}
+    for label,(start,stop) in phase_ranges.items():
+        result[label]={
+            'terminal_observed_brier':sum(terminal[start:stop])/(stop-start),
+            'terminal_expected_brier':sum(analytic[start:stop])/(stop-start),
+            'terminal_oracle_reference_brier':sum(oracle[start:stop])/(stop-start),
+            'transition_observed_brier':sum(transition[start:stop])/(stop-start),
+            'transition_expected_brier':sum(stage_transition[start:stop])/(stop-start),
+            'count':stop-start
+        }
+    return {'arm':name,'results':result,'updates':len(world.public),
+            'cold_old_A_expected_brier_oracle_query':cold_old_A,
+            'pre_return_snapshot_sha256':pre_return_hash,
+            'final_snapshot_sha256':hashlib.sha256(raw).hexdigest(),
+            'final_checkpoint_bytes':len(raw),'max_checkpoint_bytes':max_checkpoint,
+            'elapsed_seconds':time.perf_counter()-t0}
+
+
+def mean(values):
+    assert values
+    return sum(values)/len(values)
+
+
+def run():
+    start=time.perf_counter()
+    worlds=development_worlds()
+    assert len(worlds)==24
+    rows=[]
+    for world in worlds:
+        entries={name:evaluated_one(world,name) for name in ARMS}
+        assert len({v['updates'] for v in entries.values()})==1
+        rows.append({'seed':world.seed,'family':world.family,'rep':world.rep,
+                     'public_sha256':world.public_digest(),'dwell':world.dwell,
+                     'models':entries})
+    summaries={}
+    for name in ARMS:
+        def summarize(part):
+            result={p:{k:mean([r['models'][name]['results'][p][k] for r in part])
+                for k in ('terminal_observed_brier','terminal_expected_brier',
+                  'terminal_oracle_reference_brier','transition_observed_brier',
+                  'transition_expected_brier')}
+                for p in STAGES}
+            result['cold_old_A_expected_brier_oracle_query']=mean([
+                r['models'][name]['cold_old_A_expected_brier_oracle_query'] for r in part])
+            return result
+        summaries[name]={
+            'all':summarize(rows),
+            'by_seed':{str(s):summarize([r for r in rows if r['seed']==s]) for s in SEEDS},
+            'by_family':{f:summarize([r for r in rows if r['family']==f]) for f in FAMILIES},
+            'total_updates':sum(r['models'][name]['updates'] for r in rows),
+            'total_seconds':sum(r['models'][name]['elapsed_seconds'] for r in rows),
+            'max_checkpoint_bytes':max(r['models'][name]['max_checkpoint_bytes'] for r in rows)}
+    def loss(name,seed,phase,metric='terminal_observed_brier'):
+        return summaries[name]['by_seed'][str(seed)][phase][metric]
+    seed_decision={}
+    for seed in SEEDS:
+        conventional=('tabular_full','tabular_window32')
+        best_B=min(loss(c,seed,'B') for c in conventional)
+        best_return=min(loss(c,seed,'A_return_early16') for c in conventional)
+        best_transition=min(loss(c,seed,'B','transition_observed_brier') for c in conventional)
+        candidate_B=loss('structure_bayes',seed,'B')
+        candidate_return=loss('structure_bayes',seed,'A_return_early16')
+        candidate_transition=loss('structure_bayes',seed,'B','transition_observed_brier')
+        seed_decision[str(seed)]={'candidate_B':candidate_B,
+            'best_control_B':best_B,'candidate_return_early16':candidate_return,
+            'best_control_return_early16':best_return,
+            'candidate_transition_B':candidate_transition,
+            'best_control_transition_B':best_transition,
+            'passed':candidate_B<=best_B-0.01 and candidate_return<=best_return-0.01
+                and candidate_transition<=best_transition+0.01}
+    go=all(x['passed'] for x in seed_decision.values())
+    return {'schema':'lr92aw.native-stage-result.v1','meta':META,
+            'worlds':len(rows),'events_per_arm':sum(r['models']['structure_bayes']['updates'] for r in rows),
+            'development_only':True,'scientific_pass_claimable':False,
+            'protected_primary_consumed':False,'status':'DEV_GO' if go else 'DEV_NO_GO',
+            'seed_decision':seed_decision,'models':summaries,'rows':rows,
+            'total_process_seconds':time.perf_counter()-start}
+
+
+if __name__=='__main__':
+    print(json.dumps(run(),indent=2,sort_keys=True))

@@ -1,0 +1,35 @@
+{
+  "schema": "lr92aw.prospective-dev-frozen.v1",
+  "experiment": "LR-92AW",
+  "status": "DEVELOPMENT_ONLY_SOURCE_LOCK_BEFORE_SCORING",
+  "date": "2026-11-19",
+  "parent_negative": "LR-92AU development NO-GO; LR-92AV action alias incompatibility",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "contributor_pr": 1323,
+  "central_coordinator_pr": 1278,
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "native_schema_source": {
+    "amalgam": "287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952",
+    "episode": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e"
+  },
+  "hypothesis": "Under the actual two-stage binary public observation schema, a conventional parent-set-integrating generative model predicts held outcomes and remains calibrated across unfamiliar stage mechanisms; evaluate whether structural adaptation beats strongest fully fitted full-table and windowed conventional controls without using hidden switch labels.",
+  "data": {
+    "seeds": [88041001,88041002],
+    "families": ["mediated","direct","mixed"],
+    "repetitions_per_seed_family":4,
+    "worlds":24,
+    "dwell_each_phase_inclusive": [48,80],
+    "noise":0.10,
+    "public_schema": "views=((s1,v),(s1,1-v)); s1,x1,s2,x2,y all binary; transition revealed between x1 and x2; outcome revealed after x2",
+    "hidden_truths": "phase, transition tables, terminal parent sets and tables, noise draws",
+    "phases": "unannounced variable A-B-A, no phase marker or learner reset at switches",
+    "actions": "phase-independent fixed public action tape shared by all learners: independent seeded x1 and x2; NO active action-value advantage claim",
+    "one_shot": true
+  },
+  "candidate": "stage_structure_bayes: all 4 and all 16 parent subsets with Beta(1,1) integrated conditional table likelihoods and sparsity prior exp(-0.65*k); source-free conventional reference, not native learner",
+  "comparators": ["stage_tabular_full","stage_tabular_window32","no_learning_0.5","evaluator_only_true_law_oracle_lower_bound"],
+  "endpoints": ["B and first16 A-return prequential terminal expected/observed Brier", "transition Brier", "both development seed groups separately", "cold saved-checkpoint and independent replay parity", "serialized bytes and compute"],
+  "continuation_rule": "Development GO only if structure_bayes B-phase and A-return-first16 terminal observed Brier <= min(control_full,control_window32) - 0.01 in EACH development seed group, and transition Brier does not regress >0.01; otherwise NO-GO and stop tuning these development worlds",
+  "primary": {"seeds":[],"worlds":null,"source_birth":false,"first_use_authorized":false,"protected_original_288_worlds_consumed":false},
+  "authority": {"main_write":false,"merge":false,"canonical_owner_change":false,"native_training":false,"source_first_use":false,"runner_or_scheduler_change":false,"paid_api":false}
+}

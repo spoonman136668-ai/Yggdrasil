@@ -1,0 +1,94 @@
+LR-92AX — SOURCE-LOCKED CONVENTIONAL CONTROLS, PRE-NATIVE RUN
+================================================================
+Date: 2026-11-19
+Repository: spoonman136668-ai/Yggdrasil
+Contributor PR: #1323 (draft, unmerged)
+Central Amalgam PR: #1278 (coordination only; no owner mutation)
+Contributor source head BEFORE THIS EVIDENCE: 0c9e1f6e413a5ecf4b167f024d1fd793b8c63cc2
+Native research code target (NOT RUN): 86264b41a08d49f558418c0fba367f3a2636befa
+Native target tree (NOT CHECKED OUT): ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5
+Frozen protocol Git blob: 8fe99fd95855b1f3071d6493fbc50a97d905b638
+World generator Git blob: 894a3f6c6a719d1b1803d32d10303b785573a4a5
+Comparison harness Git blob: 32c2169e314155e2b59924dace51d8aacd454396
+Frozen manifest Git blob: 6dd28f5bd834b0134ff85535588ff1e16fef1467
+
+ENGINEERING EXECUTION PERFORMED
+------------------------------
+- Executed the exact frozen conventional-control arms beta_full and beta_window32
+  using the committed world generator and compare harness in a temporary local
+  Python 3.13.5 stdlib runtime. No native learner was loaded.
+- All 24 deterministic disjoint development worlds, 2,158 public two-stage
+  events per arm; 24 prequential per-world score records for each of 2 arms.
+- Focused fixture and harness tests: 17/17 PASS.
+- A separately implemented read-only audit recomputed every B-phase and
+  return-stage transition and terminal Brier value before comparing against
+  the generated output. Audit PASS on 24/24 worlds and both arms.
+- Tampered CSV negative control: rejected by sha256 integrity check, PASS.
+- SHA-256 of committed CSV bytes:
+  00f9fd27ca72178c419e5d15302a6046ac98086e1a04b04b7f54f5ef430214ab
+- Git blob of committed CSV bytes:
+  bf4afd65adb51de13ad68be7cf1cf10219ab0c8d
+- Independent auditor Git blob:
+  1f1808826687eaeea7f8b43b9643f9affd6bd3de
+- No actual native module was invoked, no private owner/host checkpoint read,
+  no original protected primary cohort accessed, no source actor used.
+
+AGGREGATE DEVELOPMENT RESULTS
+-----------------------------
+The values below are macro-averages across WORLD scores (not pooled observations).
+Lower prequential observed Brier is better.
+
+                              B terminal    early A-return terminal    B transition
+beta_full                       0.2391555183         0.2099171915            0.3835419867
+beta_window32                   0.2296413119         0.2590312028            0.3234687477
+
+Two independent source-free development seed groups:
+Seed 89051001:
+  beta_full B terminal       0.2448222
+  beta_window32 B terminal   0.2361586
+  beta_full return16         0.1940151
+  beta_window32 return16     0.2452398
+Seed 89051002:
+  beta_full B terminal       0.2334888
+  beta_window32 B terminal   0.2231240
+  beta_full return16         0.2258193
+  beta_window32 return16     0.2728226
+
+Development interpretation: the 32-event conventional learner has LOWER B-phase
+prediction error by 0.0095142 on average, but the full-history learner has LOWER
+early-return error by 0.0491140. This is a conventional retention/adaptation
+tradeoff, not proof of a new causal mechanism. In both seed groups the same
+direction of the tradeoff holds. Both conventional controls have identical
+public information and updates and never receive hidden evaluator phases.
+
+SCIENCE / ACCEPTANCE
+--------------------
+SCIENTIFIC_PASS=UNVERIFIED. Native exact-base and native exact-stream arms have
+NOT EXECUTED. The frozen continuation rule requires the native_exact_stream arm
+to improve early-return terminal Brier by >=0.01 versus the best conventional
+arm in EACH development seed group AND remain within 0.01 of the best B-phase
+conventional score; it is not satisfied or falsified until the native run.
+This synthetic development cohort is now partly unblinded by the control
+results; do not tune candidate/thresholds, reuse for a post-hoc claim, or
+substitute it for genuinely disjoint scientific first-use.
+
+EXACT-SOURCE REPRODUCTION / NEXT EXECUTABLE GATE
+-------------------------------------------------
+1. In an isolated temp folder, copy committed:
+     worlds.py.txt -> worlds.py
+     native_exact_probe.py.txt -> native_exact_probe.py
+     test_native_exact_probe.py.txt -> test_native_exact_probe.py
+     audit_lr92ax_controls.py.txt -> audit_lr92ax_controls.py
+   Leave the Git repository source and its checkpoint unchanged.
+2. Run python -B -m unittest -v test_native_exact_probe.py
+   and python -B audit_lr92ax_controls.py per_world_controls.csv.
+3. For the four-arm native test ONLY, use an existing separately authorized,
+   clean exact-SHA checkout of Amalgam 86264b41, tree ac2a2596;
+   see frozen native_exact_probe.py.txt for its hard pin checks.
+   Do not run an executor, dispatch or mutate the owner lineage through
+   this research contributor branch.
+
+ENGINEERING: development controls and independent audit PASS; not full regression.
+SCIENTIFIC: conventional baseline verified; native learning gain UNVERIFIED.
+DEPLOYMENT: HOLD. Canonical owner checkpoint continuity CONTINUITY_UNVERIFIED.
+No controller, runner, scheduler, original first-use, merge or accepted ref changed.

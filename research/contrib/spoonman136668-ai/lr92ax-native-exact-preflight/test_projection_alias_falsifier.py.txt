@@ -1,0 +1,39 @@
+"""Exact deterministic math only, no native checkpoint or source actions."""
+import unittest
+from projection_alias_falsifier import paired_views,chosen_projection,analytic_witness,NOISE
+
+class ProjectionAliasTest(unittest.TestCase):
+    def test_public_views_satisfy_accepted_paired_coordinate(self):
+        for s in (0,1):
+            for v in (0,1):
+                x=paired_views(s,v)
+                self.assertEqual(x[0][0],x[1][0])
+                self.assertNotEqual(x[0][1],x[1][1])
+    def test_projection_learned_after_eight_witnesses(self):
+        p=[paired_views(i%2,(i//2)%2) for i in range(8)]
+        self.assertEqual(chosen_projection(p),0)
+        with self.assertRaises(ValueError):chosen_projection(p[:7])
+    def test_equal_public_projections_obscure_distinct_law(self):
+        for s in (0,1):
+            self.assertEqual(paired_views(s,0)[0][0],paired_views(s,1)[0][0])
+    def test_analytic_information_gap(self):
+        x=analytic_witness()
+        self.assertAlmostEqual(x['collapsed_expected_transition_brier'],.25)
+        self.assertAlmostEqual(x['fully_informed_expected_transition_brier'],.09)
+        self.assertAlmostEqual(x['irreducible_information_gap_on_this_law'],.16)
+    def test_protected_source_is_not_visited(self):
+        self.assertEqual(analytic_witness()['protected_worlds_used'],0)
+        self.assertEqual(analytic_witness()['native_models_executed'],0)
+    def test_invalid_public_view_is_rejected(self):
+        for s,v in [(2,0),(0,2),(True,1),(-1,0)]:
+            with self.assertRaises(ValueError):paired_views(s,v)
+    def test_exact_source_and_blob_pinned(self):
+        x=analytic_witness()
+        self.assertEqual(len(x['native_source_sha']),40)
+        self.assertEqual(x['native_episode_blob'],'5a18b00a4c4131526e71f51d63dfd9eb9471c81e')
+    def test_no_witness_scheduled_and_no_predictions(self):
+        self.assertEqual(NOISE.numerator,1)
+        self.assertEqual(NOISE.denominator,10)
+        self.assertIn('not a native model score',analytic_witness()['interpretation'])
+
+if __name__=='__main__':unittest.main()

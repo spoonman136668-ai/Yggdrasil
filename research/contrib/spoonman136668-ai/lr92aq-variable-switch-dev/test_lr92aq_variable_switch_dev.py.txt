@@ -1,0 +1,163 @@
+"""Development-only LR-92AQ contract tests; protected cohort unavailable."""
+import hashlib
+import json
+import unittest
+from dataclasses import fields
+from lr92aq_variable_switch_dev import (
+    DEVELOPMENT_SEEDS, FORBIDDEN_PRIOR_PRIMARY, FAMILIES, PATTERNS,
+    WORLDS_PER_SEED_FAMILY, EPISODE_LENGTH, MIN_DWELL, MAX_DWELL,
+    PublicObservation, development_world, fork_continuing_B,
+    score_public_world, development_manifest,
+)
+
+
+class PublicProbe:
+    def __init__(self):
+        self.predictions = 0
+        self.updates = 0
+        self.resets = 0
+        self.last = None
+
+    def end_episode(self):
+        self.resets += 1
+
+    def predict(self, address, action):
+        assert address == 0 and action in (0,1)
+        self.predictions += 1
+        return .5
+
+    def observe_step(self, address, action, outcome):
+        assert address == 0 and action in (0,1) and outcome in (0,1)
+        self.updates += 1
+        self.last = (action,outcome)
+
+
+class VariableSwitchTests(unittest.TestCase):
+    def test_strict_dev_scope_excludes_old_primary(self):
+        for seed in FORBIDDEN_PRIOR_PRIMARY + (1,0,True):
+            with self.assertRaises(ValueError):
+                development_world(seed,'xor',0)
+        for f in ('', 'schedule_oracle','XOR',None):
+            with self.assertRaises(ValueError):
+                development_world(DEVELOPMENT_SEEDS[0],f,0)
+        for idx in (-1, WORLDS_PER_SEED_FAMILY, True, .5):
+            with self.assertRaises(ValueError):
+                development_world(DEVELOPMENT_SEEDS[0],'xor',idx)
+
+    def test_public_surface_omits_private_phase_and_schedule(self):
+        self.assertEqual(tuple(x.name for x in fields(PublicObservation)),
+                         ('index','episode_start','action','outcome'))
+        public = development_world(DEVELOPMENT_SEEDS[0],'xor',0).public
+        self.assertNotIn('phase',public[0].__dict__)
+        self.assertNotIn('dwell_lengths',public[0].__dict__)
+        self.assertNotIn('bin_id',public[0].__dict__)
+
+    def test_all_24_worlds_deterministic_and_complete(self):
+        manifest = development_manifest()
+        self.assertEqual(len(manifest),24)
+        self.assertEqual(manifest,development_manifest())
+        self.assertEqual(len({r['public_input_sha256'] for r in manifest}),24)
+        for r in manifest:
+            self.assertEqual(r['visited_bins'],14)
+            self.assertEqual(len(r['public_input_sha256']),64)
+
+    def test_each_phase_dwell_unannounced_and_variable(self):
+        schedules=[]
+        for row in development_manifest():
+            a,b,c=row['lengths']
+            self.assertTrue(all(MIN_DWELL <= n <= MAX_DWELL for n in (a,b,c)))
+            self.assertNotEqual(a%EPISODE_LENGTH,0)
+            self.assertNotEqual((a+b)%EPISODE_LENGTH,0)
+            schedules.append((a,b,c))
+        self.assertGreaterEqual(len(set(schedules)),22)
+        self.assertGreaterEqual(len(set(a for a,_,_ in schedules)),10)
+        self.assertGreaterEqual(len(set(a+b for a,b,_ in schedules)),10)
+
+    def test_public_episodes_do_not_reset_at_switch(self):
+        for seed in DEVELOPMENT_SEEDS:
+            for family in FAMILIES:
+                for i in range(WORLDS_PER_SEED_FAMILY):
+                    w=development_world(seed,family,i)
+                    a,b,c=w.evaluator_only.dwell_lengths
+                    self.assertFalse(w.public[a].episode_start)
+                    self.assertFalse(w.public[a+b].episode_start)
+                    self.assertTrue(all(e.episode_start==(j%EPISODE_LENGTH==0)
+                                        for j,e in enumerate(w.public)))
+
+    def test_all_14_contexts_and_contradicting_clean_tables(self):
+        for seed in DEVELOPMENT_SEEDS:
+            for family in FAMILIES:
+                for i in range(WORLDS_PER_SEED_FAMILY):
+                    w=development_world(seed,family,i)
+                    ev=w.evaluator_only
+                    self.assertEqual(set(ev.bins),set(range(14)))
+                    self.assertTrue(all(x^y==1 for x,y in zip(ev.clean_A,ev.clean_B)))
+                    self.assertEqual(len(w.public),sum(ev.dwell_lengths))
+                    self.assertEqual(set(ev.phases),{'A','B','Areturn'})
+                    history=(2,2)
+                    for obs, code in zip(w.public,ev.bins):
+                        if obs.episode_start:history=(2,2)
+                        self.assertEqual(PATTERNS.index(history)*2+obs.action,code)
+                        history=(obs.action,history[0])
+
+    def test_counterfactual_no_cue_identical_public_prefix(self):
+        for seed in DEVELOPMENT_SEEDS:
+            for fam in FAMILIES:
+                w=development_world(seed,fam,0)
+                v=fork_continuing_B(w)
+                k=sum(w.evaluator_only.dwell_lengths[:2])
+                self.assertEqual(w.public[:k],v.public[:k])
+                self.assertEqual(w.public[k].action,v.public[k].action)
+                self.assertEqual(w.public[k].episode_start,v.public[k].episode_start)
+                self.assertEqual(w.public[k].index,v.public[k].index)
+                # Same pre-action evidence forces identical first prediction.
+                self.assertEqual(len(w.public),len(v.public))
+                self.assertEqual(w.evaluator_only.phases[k],'Areturn')
+                self.assertEqual(v.evaluator_only.phases[k],'Bcontinues')
+
+    def test_action_and_noise_paths_same_across_latent_futures(self):
+        w=development_world(DEVELOPMENT_SEEDS[0],'random14',2)
+        v=fork_continuing_B(w)
+        self.assertEqual(tuple(e.action for e in w.public),tuple(e.action for e in v.public))
+        self.assertEqual(w.evaluator_only.flipped,v.evaluator_only.flipped)
+        self.assertEqual(w.evaluator_only.bins,v.evaluator_only.bins)
+        k=sum(w.evaluator_only.dwell_lengths[:2])
+        self.assertTrue(all((e.outcome^f.outcome)==1 for e,f in zip(w.public[k:],v.public[k:])))
+
+    def test_prequential_harness_public_only_and_budget(self):
+        w=development_world(DEVELOPMENT_SEEDS[0],'and',1)
+        m=PublicProbe()
+        s=score_public_world(w,m)
+        self.assertEqual(s['observations'],len(w.public))
+        self.assertEqual(s['updates'],len(w.public))
+        self.assertEqual(m.updates,m.predictions)
+        self.assertEqual(m.resets,sum(e.episode_start for e in w.public))
+        self.assertAlmostEqual(s['all'],.25)
+        self.assertEqual(s['input_sha256'],w.public_tape_hash())
+
+    def test_label_reveal_only_after_prediction(self):
+        class Probe(PublicProbe):
+            def __init__(self):super().__init__();self.forecast_clock=[];self.observe_clock=[]
+            def predict(self,addr,act):self.forecast_clock.append(self.updates);return super().predict(addr,act)
+            def observe_step(self,addr,act,y):self.observe_clock.append(self.predictions);super().observe_step(addr,act,y)
+        m=Probe(); w=development_world(DEVELOPMENT_SEEDS[1],'xor',2)
+        score_public_world(w,m)
+        self.assertEqual(m.forecast_clock,list(range(len(w.public))))
+        self.assertEqual(m.observe_clock,list(range(1,len(w.public)+1)))
+
+    def test_error_on_invalid_forecast(self):
+        class Invalid(PublicProbe):
+            def predict(self,addr,act):return float('nan')
+        w=development_world(DEVELOPMENT_SEEDS[1],'xor',0)
+        with self.assertRaisesRegex(ValueError,'INVALID_FORECAST'):
+            score_public_world(w,Invalid())
+
+    def test_hash_independent_of_evaluator_annotations(self):
+        w=development_world(DEVELOPMENT_SEEDS[0],'random14',0)
+        digest=hashlib.sha256(bytes(z for e in w.public for z in
+               (int(e.episode_start),e.action,e.outcome))).hexdigest()
+        self.assertEqual(w.public_tape_hash(),digest)
+        self.assertEqual(w.public_tape_hash(),development_world(DEVELOPMENT_SEEDS[0],'random14',0).public_tape_hash())
+
+
+if __name__=='__main__':unittest.main()

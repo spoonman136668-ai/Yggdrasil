@@ -1,0 +1,139 @@
+"""LR-92BA: bounded contradiction-tolerant GF(2) causal relationship repair.
+
+Isolated source-free research cell; NOT native Yggdrasil learner integration.
+Uses only public (v, s1, x1, observed_s2, x2, observed_y); the phase
+boundary and true coefficients never enter this module.
+"""
+from __future__ import annotations
+import hashlib
+import math
+import struct
+
+MAGIC=b'LR92BA1!'
+NOISE=.12
+LOGODDS=math.log((1-NOISE)/NOISE)
+COMPLEXITY=.40
+SCORE_WEIGHT=8
+SCORE_PENALTY=1
+MIN_OBS=4
+MIN_DIAGNOSTIC=24
+MAX_BAD_RATE=.26
+# Exactly 4 x 2+16 x 2 public input addresses x two contexts x two outcomes.
+STAGE_KEYS={"s":4,"y":16}
+FEATURE_COUNT={"s":4,"y":11}
+MASK_LIMIT={"s":16,"y":2048}
+HEAD_SIZE=8+4+32
+COUNT_BYTES=80*2
+SNAPSHOT_BYTES=HEAD_SIZE+COUNT_BYTES+32
+
+
+def _bit(x):
+    if type(x) is not int or x not in (0,1):raise ValueError('BIT_CONTRACT')
+    return x
+
+
+def _stage(stage):
+    if stage not in ('s','y'):raise ValueError('STAGE_CONTRACT')
+    return stage
+
+
+def context(stage,v,s1,x1,s2=0,x2=0):
+    _stage(stage)
+    for x in (v,s1,x1,s2,x2):_bit(x)
+    return (s1<<1)|x1 if stage=='s' else (s1<<3)|(x1<<2)|(s2<<1)|x2
+
+
+def features(stage,s1,x1,s2=0,x2=0):
+    _stage(stage)
+    for x in (s1,x1,s2,x2):_bit(x)
+    z=(1,s1,x1,s1*x1) if stage=='s' else (1,s1,x1,s2,x2,s1*x1,s1*s2,s1*x2,x1*s2,x1*x2,s2*x2)
+    return sum(x<<i for i,x in enumerate(z))
+
+
+def feature_tables():
+    return {stage:tuple(features(stage,(k>>1)&1,k&1) if stage=='s' else features(stage,(k>>3)&1,(k>>2)&1,(k>>1)&1,k&1) for k in range(n)) for stage,n in STAGE_KEYS.items()}
+
+FEATURES=feature_tables()
+HYPOTHESES={stage:tuple(tuple((m & bits).bit_count()&1 for bits in FEATURES[stage]) for m in range(1<<FEATURE_COUNT[stage])) for stage in STAGE_KEYS}
+PRIORS={stage:tuple(-SCORE_PENALTY*m.bit_count() for m in range(1<<FEATURE_COUNT[stage])) for stage in STAGE_KEYS}
+
+
+def _key(stage,v):
+    _stage(stage);_bit(v)
+    return stage,v
+
+
+class RepairBasis:
+    """Persistent 160-byte public sufficient statistics; ephemeral coefficient search.
+
+    No hidden epoch, truth labels, future samples or store of full observations.
+    Evidence of noise/contradiction is retained as counts, not permanent invalidation.
+    """
+    def __init__(self):
+        self.counts={(s,v):[[0,0] for _ in range(n)] for s,n in STAGE_KEYS.items() for v in (0,1)}
+        self.observations=0
+        self.digest=b'\0'*32
+        self.scores={key:list(PRIORS[key[0]]) for key in self.counts}
+
+    def _best(self,stage,v):
+        key=_key(stage,v)
+        scores=self.scores[key]
+        mask=max(range(len(scores)),key=lambda i:scores[i])
+        record=self.counts[key]
+        bad=sum(rec[1-pred] for rec,pred in zip(record,HYPOTHESES[stage][mask]))
+        count=sum(sum(pair) for pair in record)
+        abstain=count>=MIN_DIAGNOSTIC and bad/count>MAX_BAD_RATE
+        return mask,bad,count,abstain
+
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        addr=context(stage,v,s1,x1,s2,x2)
+        mask,bad,count,abstain=self._best(stage,v)
+        if count<MIN_OBS or abstain:return .5
+        label=HYPOTHESES[stage][mask][addr]
+        return NOISE+(1-2*NOISE)*label
+
+    def observe(self,stage,v,s1,x1,s2,x2,value):
+        addr=context(stage,v,s1,x1,s2,x2);_bit(value)
+        key=_key(stage,v)
+        if self.counts[key][addr][value]>=65535:raise ValueError('COUNT_BUDGET')
+        self.counts[key][addr][value]+=1
+        for i,pred in enumerate(HYPOTHESES[stage]):
+            self.scores[key][i]+=SCORE_WEIGHT if pred[addr]==value else -SCORE_WEIGHT
+
+    def observe_event(self,v,s1,x1,s2,x2,y):
+        for x in (v,s1,x1,s2,x2,y):_bit(x)
+        self.observe('s',v,s1,x1,s2,x2,s2)
+        self.observe('y',v,s1,x1,s2,x2,y)
+        self.observations+=1
+        self.digest=hashlib.sha256(self.digest+bytes([v,s1,x1,s2,x2,y])).digest()
+
+    def diagnostics(self):
+        return {f'{s}{v}':dict(zip(('mask','mismatched','observations','abstaining'),self._best(s,v))) for s in STAGE_KEYS for v in (0,1)}
+
+    def snapshot(self):
+        arr=[n for stage in ('s','y') for v in (0,1) for cell in self.counts[stage,v] for n in cell]
+        if len(arr)!=80 or any(not 0<=n<=65535 for n in arr) or not 0<=self.observations<=2**32-1:raise ValueError('STATE_BUDGET')
+        if sum(sum(c) for v in (0,1) for c in self.counts['s',v])!=self.observations:raise ValueError('STATE_INVARIANT_S')
+        if sum(sum(c) for v in (0,1) for c in self.counts['y',v])!=self.observations:raise ValueError('STATE_INVARIANT_Y')
+        body=MAGIC+struct.pack('<I',self.observations)+self.digest+struct.pack('<80H',*arr)
+        return body+hashlib.sha256(body).digest()
+
+    @classmethod
+    def restore(cls,raw):
+        if type(raw) is not bytes or len(raw)!=SNAPSHOT_BYTES or raw[:8]!=MAGIC or hashlib.sha256(raw[:-32]).digest()!=raw[-32:]:raise ValueError('CHECKPOINT_HASH')
+        o=cls();o.observations=struct.unpack('<I',raw[8:12])[0];o.digest=raw[12:44]
+        vals=iter(struct.unpack('<80H',raw[44:-32]))
+        for s in ('s','y'):
+            for v in (0,1):
+                for cell in o.counts[s,v]:
+                    cell[:]=[next(vals),next(vals)]
+        for s in ('s','y'):
+            for v in (0,1):
+                key=s,v
+                for addr,cell in enumerate(o.counts[key]):
+                    for value,n in enumerate(cell):
+                        if n:
+                            for m,pred in enumerate(HYPOTHESES[s]):
+                                o.scores[key][m]+=n*(SCORE_WEIGHT if pred[addr]==value else -SCORE_WEIGHT)
+        if o.snapshot()!=raw:raise ValueError('CHECKPOINT_CANONICAL')
+        return o

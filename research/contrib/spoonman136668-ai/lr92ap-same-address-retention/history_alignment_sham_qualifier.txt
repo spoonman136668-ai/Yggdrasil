@@ -1,0 +1,86 @@
+LR-92AP — PAST-ONLY LAGGED-HISTORY ALIGNMENT SHAM (DEV ONLY)
+===========================================================
+Date: 2026-11-19
+Repository: spoonman136668-ai/Yggdrasil, draft PR #1323.
+Parent head: 1b7b88269615e5e50d234bdc1d57174486fc930c
+Baseline main: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+Scope: external development only, no native model change or first-use.
+
+PURPOSE
+-------
+Test whether a conventional 14-bin learner requires correctly aligned prior
+action history to learn a deliberately history-dependent causal relationship.
+This is an evidence/negative-control gate, NOT the primary A->B->A study.
+A previous end_episode() sham destroyed history; this gate instead replaces
+the previous-two-action context with two older, already observed public
+actions. Both learners receive the identical current public action, public
+outcome, order, number of events, architecture, and 480-byte memory budget.
+
+MECHANISM
+---------
+FullHistory14 reference Git blob:
+7a223f6b097eb6e461853685195ba4b89af2f2b6
+New source: history_alignment_sham.py.txt
+Git blob: ec055086fe6c167d57df9409c698f73d33cddb61
+SHA256: 030a47d21e3228f426d0b9837941ab8f101f3df27f139563f89e15eea4a01274
+New tests: test_history_alignment_sham.py.txt
+Git blob: e7d45931b40c1e0dc355d20a9f22dafdc09666e3
+SHA256: 79cc166984c3dc8d76ab05bdde7e41e0a1e6b9f21763de647542c909857f3b36
+All exact Git blob SHAs verified against bytes executed locally.
+Sham uses a lag-nine/two-action offset, never the current or a future action.
+It intentionally corrupts alignment, not event values; no phase or evaluator
+family labels are supplied to the learner. It is NOT an exhaustive offline
+permutation/randomization test of all possible histories.
+
+FIXTURE / DETERMINISTIC REPRODUCTION
+-----------------------------------
+Allowed development fixture seeds 73004303 and 73004304 ONLY.
+Each creates 1024 public action/outcome observations with iid binary action
+policy and conditional y = action XOR previous_action XOR action_two_back,
+plus 15% Bernoulli flip noise. Separate deterministic action/noise RNG.
+First 128 events are warmup; 896 prequential predictions scored. It is a
+stationary synthetic history-dependence task, NOT the A->B->A phase benchmark.
+No hyperparameter tuning and no LR-92AP 288-world primary data consumed.
+
+Under the same 1024-event stream and identical labels:
+seed        aligned Brier   misaligned Brier   different contexts / 1024
+73004303    0.13520144      0.25485697          792
+73004304    0.13923930      0.25563055          772
+Lower Brier is better. The sham's loss of history information is expected
+on this constructed XOR-with-history task, not evidence of novel transfer.
+The two corresponding public action/outcome SHA256 digests are:
+73004303 db169decc02a64b4dedbd7077603d7fd49affbeae1399b2ced4d243b7bea22e2
+73004304 8b8007dede2179abeb246a43fce616e5f3ea3b1b36609a06510b55a2a909dcc1
+
+EXACT EXECUTION AND QUALIFICATION
+---------------------------------
+Local isolated Linux Python 3.13.5:
+  copy matched_tabular_controls.py.txt to matched_tabular_controls.py
+  copy history_alignment_sham.py.txt to history_alignment_sham.py
+  copy test_history_alignment_sham.py.txt to test_history_alignment_sham.py
+  python -m unittest -v test_history_alignment_sham.py
+  python -c "from history_alignment_sham import *; [print(run(s)) for s in DEV_SEEDS]"
+Focused new tests 6/6 PASS (0.027s). Combined focused test discovery
+with the preexisting matched_tabular and bounded_bayesian source/test blobs
+ran 22/22 PASS (0.058s), checking snapshot parity, invalid-action atomicity,
+per-address eviction, immutability, byte budgets, deterministic replay,
+prefix-only sham, heldout-from-same-stream scoring, and fixture digest parity.
+All three source Git blob readbacks are exact, as are new source/test blobs.
+
+INTERPRETATION, LIMITS, STATUS
+------------------------------
+This validates that preserving aligned historical ACTIONS matters in a
+synthetic mechanism intentionally defined by prior actions. It does NOT
+validate A->B->A cold restoration, spontaneous regime recognition, held-out
+unfamiliar structures, RF32, correct Bayesian change-point inference, or
+native lifelong learning. This lagged-history ablation does not alone fully
+satisfy the original prereg's stronger history-PERMUTATION sham requirement.
+The fixed 64/64/64 prereg schedule still has a potential timing-information
+confound. More fully fitted controls and independent prospective source
+custody are required before even considering scientific first-use.
+
+ENGINEERING: local focused 22/22 PASS, GitHub G29 atlas only (pending this
+commit); mandatory native full regression NOT EXECUTED here.
+SCIENTIFIC: 288 protected worlds UNRUN, SCIENTIFIC_PASS UNVERIFIED.
+DEPLOYMENT: HOLD; no main, accepted ref, owner/controller, task, or runtime
+changed. Keep PR #1323 draft/unmerged.

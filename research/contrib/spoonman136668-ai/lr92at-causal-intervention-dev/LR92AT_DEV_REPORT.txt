@@ -1,0 +1,151 @@
+LR-92AT — EXPLICIT CAUSAL-PROGRAM HYPOTHESES AND DISCRIMINATING INTERVENTIONS
+============================================================================
+Date: 2026-11-19. External synthetic DEVELOPMENT ONLY. Yggdrasil draft PR #1323.
+Original accepted main: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9.
+Prior discontinued prediction-bank gating evaluation: a33b46870e666846a612ec89b04cd200317eeb17.
+Source-locked PRE-SCORING checkpoint: cebc485ae12eba72f1442595a1b0aec66e9782ce.
+No first-use, no Yggdrasil native training, no merge, controller, owner or runner change.
+
+RESEARCH MECHANISM
+------------------
+Eight explicit three-input Boolean causal-program hypotheses (hypotheses are
+specified in causal_programs.py.txt). An action is a fully specified binary
+intervention do(x0,x1,x2): there are eight possible settings. After selecting
+one setting, the learner sees one noisy binary consequence; it never sees
+an evaluator's hidden true-program ID or a heldout query label during learning.
+Bayesian updates persist eight float64 probabilities, 64 learned bytes,
+101-byte SHA256-checked versioned snapshot. Source-locked candidate selects
+interventions by minimizing exact two-step expected average Brier risk across
+all eight possible intervention probes, adapting the next step after seeing
+an outcome. It is fundamentally different from the failed archived/recent
+prediction-bank gates; no phase/clock/regime, no transformers or tokens.
+Static causal-program descriptions and planner compute ARE genuine resource
+costs but are not counted in the 64 learned bytes.
+
+FROZEN STUDY AND CUSTODY
+------------------------
+Protocol frozen_dev_protocol.json.txt and all four executable source/test
+bytes committed at source-lock SHA above BEFORE scored fixture execution.
+Two newly disjoint DEVELOPMENT seeds 76021921 and 76021922 (neither prior
+exposed LR-92AP/AQ/AR/AS dev seeds nor protected original primary seeds).
+Eight in-hypothesis programs plus two deliberately unfamiliar negative-control
+programs, three independent replications per (seed, program) = 60 worlds:
+48 known-hypothesis worlds + 12 unfamiliar-hypothesis worlds.
+Each learner: eight training interventions per world = 480 public action/
+consequence updates total, then eight heldout do-probe forecasts per world
+= 480 nontraining probes, with no query feedback to the learner. All models
+receive the same intervention budget, all possible actions and same fixed
+noise draw indexed by public step within a world; chosen actions deliberately
+differ across active-learning policies. Probe labels are an independent
+fixed draw, shared across methods, and their analytic expectation also scored.
+An 8-context independent tabular Beta learner gets a separate fully trained
+posterior but no structural inductive bias. No cross-world reuse of training.
+
+FROZEN COMPARISONS
+------------------
+1. CausalLookahead2, exact eight-program Bayesian posterior + 2-step planning.
+2. ExactBayesIG, same eight-program posterior + optimal one-step entropy gain.
+3. ExactBayesMyopicRisk, same posterior + one-step expected Brier minimization.
+4. ExactBayesRandom, same posterior + independent non-oracle random do-actions.
+5. TabularCoverage, independent Beta-Bernoulli fitted action-table with evenly
+   distributed intervention budget (32 persistent bytes).
+6. PermutedProgramSham, same Bayesian state and two-step planning but WRONG
+   pre-frozen mapping from input interventions to causal program predictions.
+
+Primary *development* endpoint: exact analytical expected Brier over all eight
+heldout potential intervention action probes after eight public updates,
+macro-averaged over 48 known-program worlds, stratified by the two dev seeds.
+Also score 12 out-of-hypothesis worlds and whole-policy local wall time.
+Development GO requires ALL: >=0.01 absolute gain vs the best of all four
+conventional comparator arms IN EACH seed; OOD expected Brier <= best
+conventional OOD +0.01; measured 60-world local policy wall-time <=2x
+fastest conventional arm. These criteria and their source/seed hashes were
+frozen before scoring. Their failure is DEV NO-GO; do not tune this cohort.
+No SCIENTIFIC_PASS possible with this synthetic dev dataset.
+
+SOURCE HASHES (COMMITTED BEFORE SCORING)
+----------------------------------------
+causal_programs.py.txt:       Git blob 2fc50bf2ea570e524abdcc524155a68d29ac9be6
+  SHA256 02b528f67159dd2f24c5e3a030ea7e6e7da8588c4f0ee6a08a95f686fec68e2c
+intervention_worlds.py.txt:  Git blob 6c89440779a33c60fd7b63781272ba3d0bb16ba5
+  SHA256 b465aa732a8b40ba8caff29b96ccb03f33a080a17619807f3ffc48a20cf1da19
+evaluate.py.txt:             Git blob 14a28fe8143e32ccbc0b30bd45144a6ff9f0b51b
+  SHA256 ca70bd3ea4cabf84e9ad794262479ff102f1426874483d808c00ee58dff0955a
+test_mechanism.py.txt:        Git blob f9f7ac6c10e6c060e72685ed79043d6a03797470
+  SHA256 e874c7916bcf40b2629a23f633a27139a723632054ff32f26b20864988473da4
+frozen_dev_protocol.json.txt: Git blob 7d22a43527c7744195b8dcbbc4cdd1cf46718f83
+  SHA256 3e0c5830ec90bef26e8e8639037d4f6ce16c5405753f8dc7675b72f01c058aa9
+All were independently read back from GitHub at exact pre-scoring commit,
+byte-for-byte Git blob hashes matching the executed local Python sources.
+
+ENGINEERING QUALIFICATION
+--------------------------
+Python 3.13, local Linux stdlib-only focused unit tests: 12/12 PASS.
+Guards include unique in-family/OOD program truths, posterior exact update,
+planner deterministic and nonmutating, distinct candidate/one-step choices,
+64/32-byte state budgets, checkpoint parity/corruption rejection, old seed
+and protected-primary refusal, 60 development worlds, heldout no-leakage,
+non-oracle random action seed and equal 8-intervention budgets per policy.
+Independent READ-ONLY results audit PASS: all 60 worlds, all six methods,
+480 observations and 480 probes per arm, all action/outcome tape consistency,
+eight heldout forecast probabilities, independently recomputed analytic and
+observed Brier, source-lock hashes, paired seed decisions and no first-use.
+
+RESULTS: POST-SOURCE-LOCK, ONE SCORED PASS, NO PARAMETER RETUNING
+-----------------------------------------------------------------
+State bytes and analytical heldout expected Brier (lower better):
+Method                  bytes   known 48 worlds    unfamiliar 12 worlds
+CausalLookahead2           64       0.135772         0.259503
+ExactBayesIG               64       0.138994         0.250133
+ExactBayesMyopicRisk       64       0.138581         0.258490
+ExactBayesRandom           64       0.148455         0.268389
+TabularCoverage            32       0.187847         0.200000
+PermutedProgramSham        64       0.235926         0.292897
+
+Observed heldout-label Brier for the same 48 in-hypothesis dev worlds:
+CausalLookahead2 0.151526, ExactBayesIG 0.157144,
+ExactBayesMyopicRisk 0.154100, ExactBayesRandom 0.158985,
+TabularCoverage 0.184896, PermutedProgramSham 0.249624.
+These differ from analytic expectations because only eight noisy heldout
+labels are independently sampled per world.
+
+Seed-specific expected Brier of candidate vs BEST conventional:
+seed 76021921: candidate 0.143107623; best conventional 0.140850829;
+              candidate advantage = -0.002256794 (REGRESSION).
+seed 76021922: candidate 0.128435890; best conventional 0.132773800;
+              candidate advantage = +0.004337910 (below +0.01 required).
+OOD best conventional expected score 0.200000 (TabularCoverage), candidate
+0.259503, absolute regret +0.059503 > allowed +0.01.
+60-world summed local policy time: candidate 1.6650 seconds, exact one-step
+BayesIG ~0.011 seconds, fastest conventional TabularCoverage ~0.0042s.
+Candidate/fastest ratio ~394x, far worse than frozen <=2x requirement.
+These times are one unreplicated local Python microbenchmark (includes policy
+planning, updates, snapshots) and are NOT full native cost qualification.
+
+Independent receipt: audit_receipt.json.txt; 60-per-world evidence in
+per_world_metrics.csv; all 60*6 model traces plus source scores and timing
+in full_results.json.gz.base64.txt (gzip data, base64 ASCII).
+Full uncompressed local results SHA256:
+e273814f2bc37baa0c52538e85d2cd1bbff8d85c12e459c557f48dbf54b2a30b
+Compact fixture-manifest SHA256:
+b050b8e35e56702829405f5d5ec8e775f312b9448038df54b3b5ee512363638f
+
+DECISION / NEXT MECHANISM
+--------------------------
+DEVELOPMENT_NO_GO. This does NOT refute explicit causal programs as a useful
+inductive bias: known-program expected Brier strongly beats tabular under
+sparse interventions, and fixed permuted-program sham degrades. But a
+conventional one-step Bayesian planner offers almost the same predictive
+performance at far lower planning cost; the catalog breaks on unfamiliar
+programs. No unique hypothesis-discovery, transfer or intelligence advantage.
+STOP retuning this two-step planner on these now exposed 60 worlds. The next
+falsifiable direction should test **building new causal hypotheses** after
+unknown interventions rather than only choosing actions among a fixed known
+catalog, compared with established structure-learning and active Bayesian
+controls, with a NEW frozen disjoint source/budget/owner science boundary.
+
+ENGINEERING: local 12/12 PASS, independent evidence audit PASS; cross-platform
+execution of .py.txt experiments and full native regression NOT RUN.
+SCIENCE: synthetic DEVELOPMENT_NO_GO, SCIENTIFIC_PASS NOT CLAIMABLE.
+DEPLOYMENT: HOLD, PR remains draft, no native/owner/control-plane mutation,
+no original LR-92AP 288-world protected data and no LR-92AT primary created.

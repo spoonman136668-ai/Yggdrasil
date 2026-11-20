@@ -1,0 +1,99 @@
+"""LR-92AP external-development *past-only lagged-history* negative control.
+
+This is NOT a trained new learner. Both arms are conventional FullHistory14,
+trained on exactly the same public action/outcome tape. The sham replaces the
+observed previous two actions with two **older, already public actions**,
+which destroys their temporal alignment without inventing hidden labels or
+accessing future events. The tape is non-primary development data only.
+
+This is a lagged-context sham, not an arbitrary offline permutation and not
+full native Yggdrasil science. The mismatch is evaluator-controlled; it is
+never offered to any other trainable model as a purported causal observation.
+"""
+from __future__ import annotations
+
+import hashlib
+import random
+from dataclasses import dataclass
+from matched_tabular_controls import FullHistory14
+
+# Existing unprotected fixture seeds, not LR-92AP primary seeds.
+DEV_SEEDS = (73004303, 73004304)
+LAG = 9
+WARMUP = 128
+TAPE_LENGTH = 1024
+
+
+def public_tape(seed: int, n: int = TAPE_LENGTH):
+    """Deterministic stream: y = action XOR last_action XOR second_last.
+
+    Bernoulli flip noise is exactly 0.15 by RNG probability (not exact sample
+    fraction). Random action generator and noise generator are separately
+    derived from the allowed fixture seed. No phase labels or novelty claim.
+    """
+    actions = random.Random(seed)
+    noise = random.Random(seed ^ 0xABCDEF)
+    history = [2, 2]
+    for index in range(n):
+        action = actions.randrange(2)
+        y = action ^ (history[0] if history[0] != 2 else 0) ^ (history[1] if history[1] != 2 else 0)
+        y ^= int(noise.random() < 0.15)
+        yield action, y
+        history = [action, history[0]]
+
+
+def surrogate_prior_actions(seen_actions: list[int]):
+    """Lag nine steps, never use current action or any unseen future action."""
+    if len(seen_actions) < LAG + 2:
+        return (2, 2)
+    return (seen_actions[-LAG], seen_actions[-LAG-1])
+
+
+@dataclass(frozen=True)
+class Score:
+    seed: int
+    aligned_brier: float
+    lagged_brier: float
+    events: int
+    score_events: int
+    different_histories: int
+    action_outcome_sha256: str
+    aligned_final_sha256: str
+    lagged_final_sha256: str
+
+
+def run(seed: int, length: int = TAPE_LENGTH, warmup: int = WARMUP) -> Score:
+    if seed not in DEV_SEEDS or not 0 <= warmup < length:
+        raise ValueError('HISTORY_SHAM_INVALID_FIXTURE')
+    honest = FullHistory14()
+    sham = FullHistory14()
+    public_actions: list[int] = []
+    trace = hashlib.sha256()
+    real_loss = []
+    sham_loss = []
+    mismatches = 0
+    for t, (action, public_outcome) in enumerate(public_tape(seed, length)):
+        # Source tape and action-outcome *labels* are identical in both arms.
+        # Both predictions occur before the public outcome is learned.
+        actual_prior = tuple(honest._history[:2])
+        fake_prior = surrogate_prior_actions(public_actions)
+        if actual_prior != fake_prior:
+            mismatches += 1
+        sham._history[:2] = bytes(fake_prior)
+        honest_p = honest.predict(0, action)
+        sham_p = sham.predict(0, action)
+        if t >= warmup:
+            real_loss.append((honest_p - public_outcome)**2)
+            sham_loss.append((sham_p - public_outcome)**2)
+        honest.observe_step(0, action, public_outcome)
+        sham.observe_step(0, action, public_outcome)
+        public_actions.append(action)
+        trace.update(bytes((action, public_outcome)))
+    return Score(
+        seed=seed, aligned_brier=sum(real_loss)/len(real_loss),
+        lagged_brier=sum(sham_loss)/len(sham_loss), events=length,
+        score_events=len(real_loss), different_histories=mismatches,
+        action_outcome_sha256=trace.hexdigest(),
+        aligned_final_sha256=hashlib.sha256(honest.snapshot()).hexdigest(),
+        lagged_final_sha256=hashlib.sha256(sham.snapshot()).hexdigest()
+    )

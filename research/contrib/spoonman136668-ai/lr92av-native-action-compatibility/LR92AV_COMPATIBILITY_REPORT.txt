@@ -1,0 +1,117 @@
+LR-92AV — NATIVE AMALGAM / LR-92AU ACTION SEMANTICS COMPATIBILITY GATE
+========================================================================
+Date: 2026-11-19. Scope: independent Yggdrasil research contributor,
+read-only verified source contract, no new model/training/owner or scheduler.
+
+LIVE SOURCE REFS AT INSPECTION
+------------------------------
+Main accepted baseline: 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9
+Central Amalgam candidate #1278: 86264b41a08d49f558418c0fba367f3a2636befa
+  yggdrasil/native_causal_amalgam.py Git blob
+    287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
+  yggdrasil/native_episode_experience.py Git blob
+    5a18b00a4c4131526e71f51d63dfd9eb9471c81e
+LR-92AU source before its one-shot development scoring:
+  6fc9841509ac255add5c6780b649e83f9886699c
+  causal_structure.py.txt Git blob
+    27391a0258287357472c689e88a2c94fa1346a09
+  worlds.py.txt Git blob
+    290eca5616190a0663f5946735c1cd5670ba5987
+LR-92AU negative evidence is already committed at 3c1d8afa4e15047d89001f6fe2c265711f5a05b4
+in the SAME draft research PR #1323. It is not scientifically accepted.
+
+EXACT-SOURCE CONTRACT CHECK
+---------------------------
+The four above Git blobs were fetched at their pinned exact refs,
+and the following matching code was VERIFIED, read-only:
+- Amalgam.plan(view) delegates to native.experience_context_plan(view).
+- Amalgam.observe_experience requires views[0][0] == views[1][0].
+- NativeEpisodeExperience._view demands exactly two binary values.
+- NativeEpisodeExperience._views demands exactly two such public views.
+- NativeEpisodeExperience row fields are (s1,x1,s2,x2,y), with two
+  binary interventions x1 and x2 for one TWO-STAGE public episode.
+- LR-92AU's ACTIONS = tuple(range(16)) are sixteen atomic four-bit
+  do-intervention masks, not sixteen independent context views.
+
+LIMITS AND CONTROLLED NEGATIVE WITNESS
+--------------------------------------
+(1) A pair of binary interventions x1,x2 has 2^2=4 distinct binary
+two-stage action sequences; the original LR-92AU scientific *development*
+task has 2^4=16 DISTINCT atomic intervention identities. Any direct
+16->4 mapping necessarily aliases actions. Moreover a two-stage
+action/transition is not automatically semantically equivalent to
+one simultaneous four-bit do-intervention.
+
+(2) The demonstrated illustrative map:
+  (mask&1, (mask>>1)&1)
+collapses four atomic masks into each of four native pair codes.
+For a synthetic deterministic causal effect y=(mask>>2)&1 and an equal
+prior over the four masks in each encoded class, two masks yield 0 and
+two yield 1. An alias-only first-forecast policy has an exact Bayes-optimal
+expected Brier 0.25, versus 0 if the full atomic intervention identity
+is supplied. The 0.25 gap is an ANALYTIC INFORMATION BOUND constructed
+for that example; it is NOT a native model observation, claimed gain or
+general Brier lower bound for every possible source law.
+
+(3) Separately, paired binary views that share the first coordinate
+have exactly 2^3=8 configurations; a hypothetical independent 4-bit
+PUBLIC CONTEXT would have 16 states, impossible to encode injectively
+in those paired views *alone*. IMPORTANT: LR-92AU's actual four bits
+are four do-action bits, NOT four context-view bits. Do not conflate
+this hypothetical context-source limit with the actual action mismatch.
+
+No admissible action-identity-preserving native adapter has been proven
+for these current source contracts. Encoding extra action bits through
+post-intervention s2/y, privately labeled data, or action-dependent
+pre-action views would change the observable process or leak information.
+This finding does NOT exclude a separately versioned new public
+action/context API, or mechanisms that carry different lawful history.
+It applies only to the pinned, unchanged native candidate seam.
+
+REPRODUCIBLE STANDALONE DEVELOPMENT TEST
+-----------------------------------------
+compatibility_gate.py.txt:
+  Git blob f20dcfcf69243c9abff7cb04954178aef904c685
+  SHA256 8646ccc02be89539b79763d57b436b3f143843002f647143f9c6e1544aacb5b8
+test_compatibility_gate.py.txt:
+  Git blob 244e569d44d79c91c3284bd764c256a426fc3163
+  SHA256 13f69257a735b74b3f7ef93b954f430a39031832af04e36af79a674a65b3abc4
+witness_receipt.json.txt:
+  Git blob 7be8c45ddb8ec029bd5a12fe267255a03f66c250
+  SHA256 68969b706c9920cf790df6ff6cbf4e736db17b6e0ad92ce185a18affe7b8665c
+These SHA-1 Git blob hashes MATCH local executed UTF8 files exactly.
+Offline Python 3.13.5 Linux: 10/10 focused unit tests PASS, compileall
+PASS. Tests cover actual cardinalities, equal source fingerprints,
+explicit collisions, synthetic counterfactual outcome disagreement,
+exact Bayes Brier, input rejection and no native owner mutation.
+Source SHA identity and contract predicates separately checked directly
+with GitHub connector at the exact pinned source refs. The tests are
+DEVELOPMENT mathematics and do NOT import/execute native Yggdrasil code.
+
+ENGINEERING: narrow source-contract audit PASS, 10/10 local focused PASS.
+MANDATORY full Linux+Windows native regression: UNVERIFIED / NOT RUN.
+SCIENTIFIC: NO claimed learned relationship, transfer or retention gain;
+  no stronger-control scientific PASS, no protected first-use.
+DEPLOYMENT: HOLD, no accepted refs, model, owner, native code, weights,
+  runner, scheduler, controller, or private host-local checkpoint changed.
+  LINEAGE01 #1322 owner-live continuity remains CONTINUITY_UNVERIFIED.
+
+ROUTE TO SOLE CENTRAL INTEGRATION COORDINATOR
+----------------------------------------------
+This research chat is CONTRIBUTOR ONLY. Submit this negative interface
+contract result to the existing Amalgam coordinator via repository.
+DO NOT merge failed LR-92AU state or create another canonical destination.
+If future independently source-qualified evidence demonstrates benefit
+of sixteen-action native causal learning, a versioned, provenance-checked
+public-intervention schema and explicit temporal semantics are required
+before any owner-approved integration, checkpoint migration, retained
+competence comparison or cold-restore qualification. Reuse existing
+NativeCausalAmalgam, NativeCumulativeLearner and NativeEpisodeExperience;
+do not create competing learners or owners. Protected new first-use remains
+BLOCKED under issue #426.
+
+Reproduce by copying the two exact *.py.txt source and test files
+without the final .txt suffix:
+  python -m unittest -v test_compatibility_gate.py
+  python -m compileall -q compatibility_gate.py test_compatibility_gate.py
+  python compatibility_gate.py > witness_receipt.json

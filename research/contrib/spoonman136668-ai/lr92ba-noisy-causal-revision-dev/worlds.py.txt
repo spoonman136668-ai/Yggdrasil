@@ -1,0 +1,65 @@
+"""LR-92BA source-free noise/contradiction public two-stage intervention worlds.
+
+Evaluator-only truth and phase metadata MUST NEVER enter the learner.
+Public v identifies independently learned A vs B task contexts; no hidden
+switch detection is claimed. Output labels are corrupted by Bernoulli flips.
+"""
+from __future__ import annotations
+from dataclasses import dataclass
+import hashlib,random
+SEEDS=(93490111,93490112)
+FAMILIES=('linear_disjoint','quadratic_new','cubic_unfamiliar')
+REPS=4
+FORBIDDEN=(73004303,73004304,74009171,74009172,75011801,75011802,76021921,76021922,77033101,77033102,88041001,88041002,89051001,89051002,90161101,90161102,90161103,92111911,92111912,92111913,929209101,929209102,929209103)
+
+
+def rng(seed,fam,rep,tag):
+    digest=hashlib.sha256(f'LR92BA|{seed}|{fam}|{rep}|{tag}'.encode()).digest()
+    return random.Random(int.from_bytes(digest[:8],'big'))
+
+
+def truth(family,rep,v,s1,x1,s2,x2):
+    b=rep&1
+    if family=='linear_disjoint':
+        if v==0:return s1^x1^b, s2^x2^b
+        return x1^b, s1^x1^x2^b
+    if family=='quadratic_new':
+        if v==0:return (s1&x1)^b, (s1&x2)^x1^s2^b
+        return s1^x1^b, (x1&x2)^(s1&s2)^b
+    if family=='cubic_unfamiliar':
+        if v==0:return s1^x1^b,(s1&x1&x2)^s2^b
+        return x1^b,(s1&x1&s2)^x2^b
+    raise ValueError('FAMILY')
+
+@dataclass(frozen=True)
+class Event:
+    v:int;s1:int;x1:int;s2:int;x2:int;y:int
+    def public(self):return (self.v,self.s1,self.x1,self.s2,self.x2,self.y)
+
+@dataclass(frozen=True)
+class World:
+    seed:int;family:str;rep:int;dwell:tuple;events:tuple;public_sha256:str;flip_counts:tuple
+
+
+def world(seed,family,rep):
+    if seed not in SEEDS or family not in FAMILIES or type(rep) is not int or rep not in range(REPS):raise ValueError('WORLD_SCOPE')
+    r=rng(seed,family,rep,'dwell');dwell=(r.randrange(54,67),r.randrange(48,63),r.randrange(35,46))
+    r=rng(seed,family,rep,'actions');noise=rng(seed,family,rep,'outcome_noise')
+    events=[];sflip=yflip=0
+    for i in range(sum(dwell)):
+        v=0 if i<dwell[0] or i>=dwell[0]+dwell[1] else 1
+        s1,x1,x2=(r.randrange(2) for _ in range(3))
+        s2,_=truth(family,rep,v,s1,x1,0,x2)
+        fs=noise.random()<.12
+        observed_s2=s2^int(fs);sflip+=int(fs)
+        _,y=truth(family,rep,v,s1,x1,observed_s2,x2)
+        # A deliberate burst of contradictory B observations; public, not oracle-detected.
+        burst=(v==1 and dwell[0]+8<=i<dwell[0]+20)
+        fy=noise.random() < (.27 if burst else .12)
+        yflip+=int(fy)
+        events.append(Event(v,s1,x1,observed_s2,x2,y^int(fy)))
+    digest=hashlib.sha256(bytes(b for e in events for b in e.public())).hexdigest()
+    return World(seed,family,rep,dwell,tuple(events),digest,(sflip,yflip))
+
+
+def worlds():return tuple(world(s,f,r) for s in SEEDS for f in FAMILIES for r in range(REPS))

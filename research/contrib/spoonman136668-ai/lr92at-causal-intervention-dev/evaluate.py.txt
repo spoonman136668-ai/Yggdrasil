@@ -1,0 +1,104 @@
+"""One-shot LR-92AT developmental causal-program intervention comparison.
+
+WARNING: This intentionally scores only frozen, disjoint development worlds.
+No scientific first-use or native Yggdrasil evaluation is performed.
+"""
+from __future__ import annotations
+from collections import defaultdict
+import hashlib
+import json
+import statistics
+import time
+from causal_programs import ProgramPosterior,TabularBeta,choose_intervention,ACTIONS,NOISE
+from intervention_worlds import development_worlds,source_manifest,TRAIN_INTERVENTIONS,DEV_SEEDS
+
+ARMS=('CausalLookahead2','ExactBayesIG','ExactBayesMyopicRisk','ExactBayesRandom',
+      'TabularCoverage','PermutedProgramSham')
+BASELINES=('ExactBayesIG','ExactBayesMyopicRisk','ExactBayesRandom','TabularCoverage')
+
+
+def _rng_int(seed, repetition, t):
+    # Random actions cannot encode evaluator-only mechanism identity.
+    s=f'LR92AT|{seed}|{repetition}|random-action|{t}'
+    return hashlib.sha256(s.encode()).digest()[0]%len(ACTIONS)
+
+
+def run_one(world, arm):
+    if arm not in ARMS:raise ValueError('UNKNOWN_ARM')
+    learner=TabularBeta() if arm=='TabularCoverage' else ProgramPosterior(sham=(arm=='PermutedProgramSham'))
+    started=time.perf_counter()
+    log=[]
+    for t in range(TRAIN_INTERVENTIONS):
+        if arm=='TabularCoverage':action=learner.choose()
+        else:
+            policy={'CausalLookahead2':'risk_two_step','ExactBayesIG':'bayes_ig',
+                    'ExactBayesMyopicRisk':'risk_myopic','ExactBayesRandom':'random',
+                    'PermutedProgramSham':'risk_two_step'}[arm]
+            rand=_rng_int(world.seed,world.repetition,t) if policy=='random' else None
+            action=choose_intervention(learner,policy,TRAIN_INTERVENTIONS-t,rand)
+        before=learner.snapshot()
+        p=learner.predict(action)
+        assert before==learner.snapshot()
+        y=world.outcome(action,t)
+        learner.observe(action,y)
+        log.append({'do':action,'prediction':p,'observed':y})
+    trained=learner.snapshot()
+    assert type(learner).restore(trained).snapshot()==trained
+    forecast=tuple(learner.predict(a) for a in ACTIONS)
+    assert learner.snapshot()==trained
+    elapsed=time.perf_counter()-started
+    predicted_brier=sum((p-y)**2 for p,y in zip(forecast,world.probe_labels))/len(ACTIONS)
+    expected_brier=sum(world.hidden_expected_brier(a,p) for a,p in enumerate(forecast))/len(ACTIONS)
+    return {'expected_probe_brier':expected_brier,'observed_probe_brier':predicted_brier,
+            'posterior_true':learner._weights[world.hidden_mechanism] if isinstance(learner,ProgramPosterior) and not world.ood else None,
+            'training_interventions':len(log),'unique_actions':len(set(i['do'] for i in log)),
+            'actions':tuple(i['do'] for i in log),'observed':tuple(i['observed'] for i in log),
+            'probe_forecasts':forecast,'checkpoint_sha256':hashlib.sha256(trained).hexdigest(),
+            'state_bytes':learner.LEARNED_BYTES,'checkpoint_bytes':len(trained),
+            'seconds_including_planning':elapsed}
+
+
+def run_all():
+    t0=time.perf_counter()
+    worlds=development_worlds()
+    assert len(worlds)==60
+    rows=[]
+    for w in worlds:
+        results={arm:run_one(w,arm) for arm in ARMS}
+        rows.append({'seed':w.seed,'mechanism':w.hidden_mechanism,'rep':w.repetition,
+                     'ood':w.ood,'results':results})
+    def mean_arm(arm,rows,key='expected_probe_brier'):
+        return statistics.mean(row['results'][arm][key] for row in rows)
+    summaries={}
+    for arm in ARMS:
+        summaries[arm]={
+            'mean_expected_brier_in':mean_arm(arm,[r for r in rows if not r['ood']]),
+            'mean_expected_brier_ood':mean_arm(arm,[r for r in rows if r['ood']]),
+            'mean_observed_brier_in':mean_arm(arm,[r for r in rows if not r['ood']],'observed_probe_brier'),
+            'total_seconds':sum(row['results'][arm]['seconds_including_planning'] for row in rows),
+            'mean_unique_actions':mean_arm(arm,rows,'unique_actions'),
+            'state_bytes':rows[0]['results'][arm]['state_bytes'],
+            'by_seed':{str(s):mean_arm(arm,[r for r in rows if not r['ood'] and r['seed']==s]) for s in DEV_SEEDS},
+        }
+    seed_best={str(seed):min(summaries[a]['by_seed'][str(seed)] for a in BASELINES) for seed in DEV_SEEDS}
+    delta={str(seed):seed_best[str(seed)]-summaries['CausalLookahead2']['by_seed'][str(seed)] for seed in DEV_SEEDS}
+    best_ood=min(summaries[a]['mean_expected_brier_ood'] for a in BASELINES)
+    # Development-only go/no-go; not a scientific acceptance decision.
+    go=(all(v>=.01 for v in delta.values()) and
+        summaries['CausalLookahead2']['mean_expected_brier_ood']<=best_ood+.01 and
+        summaries['CausalLookahead2']['total_seconds'] <= 2*min(summaries[a]['total_seconds'] for a in BASELINES))
+    manifest=json.dumps(source_manifest(),sort_keys=True,separators=(',',':')).encode()
+    return {'study':'LR92AT_explicit_program_counterfactual_intervention_DEV',
+            'worlds':len(worlds),'in_distribution_worlds':48,'ood_worlds':12,
+            'training_updates_per_arm':len(worlds)*TRAIN_INTERVENTIONS,
+            'heldout_query_points_per_arm':len(worlds)*len(ACTIONS),
+            'manifest_sha256':hashlib.sha256(manifest).hexdigest(),
+            'summaries':summaries,'rows':rows,
+            'decision':{'candidate_dev_go':go,'seedwise_advantage_vs_best_control':delta,
+                        'best_control_ood_expected_brier':best_ood,
+                        'prospective_primary_defined':False,'scientific_pass_claimable':False},
+            'total_wall_seconds':time.perf_counter()-t0}
+
+
+if __name__=='__main__':
+    print(json.dumps(run_all(),indent=2,sort_keys=True))

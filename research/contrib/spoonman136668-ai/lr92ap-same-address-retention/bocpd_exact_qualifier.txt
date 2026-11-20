@@ -1,0 +1,104 @@
+LR-92AP — UNTRUNCATED BETA-BERNOULLI BOCPD PREDICTIVE REFERENCE
+=================================================================
+2026-11-19. Existing Yggdrasil draft PR #1323, parent SHA bd7e988fe2ca35969da810381a28dba51a84091b.
+Main baseline SHA 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9.
+No source mutation in native Yggdrasil, no training restart, no primary first-use.
+
+PURPOSE
+-------
+Provide the missing fully Bayesian posterior-over-run-length reference,
+without confusing its HIGHER memory budget with the native 928-byte limit.
+A constant hazard 1/64 is fixed before any scored fixture. Each address has
+all observed candidate change-point positions, a normalized posterior mass
+over each, and 7 temporal patterns x 2 public actions x 2 Bernoulli outcomes
+with independent Beta(1,1) conditional likelihoods per contiguous segment.
+No MAP collapse, no truncation of the posterior within its explicit 512-public-
+event-per-address resource cap; predictions marginalize the posterior over
+run lengths and a possible changepoint just before the next public outcome.
+No future outcome, phase label, regime name, global clock or schedule input.
+This is a conventional BOCPD generative model with known hazard and Beta
+priors: not a trained hazard, not a distribution-free oracle, not an
+unbounded production system, not new native model training.
+
+RESOURCE ACCOUNTING
+-------------------
+The retained posterior grows by one change-point alternative per public
+event per address; at 192 observations the SHA256-checked portable snapshot
+is 13,428 bytes, strictly ABOVE the matched 928-byte state cap. Actual
+in-process Python heap is larger. Therefore this is a conventional
+OUT-OF-BUDGET REFERENCE, NOT eligible to be the strongest memory-matched
+baseline. It cannot be considered proof of memory-efficient superiority.
+The checkpoint is a versioned explicit binary format with SHA256; restore
+validates mass, counts, history, length, and trailing bytes.
+
+EXACT SOURCE AND QUALIFICATION
+------------------------------
+Source bocpd_exact_reference.py.txt:
+  Git blob 9443839a3c1083cc6a03b9d84ac6927a68f58b08
+  UTF8 bytes 6402, SHA256 19f7fbd5c2e5891bcd04ac2acc53a52621fc9d7e423d817ae5924bf2fbdd378a
+Tests test_bocpd_exact_reference.py.txt:
+  Git blob 05d6c637c53f4d1a9d8abba791af1881c827d8f1
+  UTF8 bytes 6315, SHA256 ebe5222c40d7cf3601d591648b52416bcd77846401e0cdfa1f36c8fbf5482a69
+Git blob SHA1 values match bytes actually executed locally; no script/fixture
+source was modified after score computation. Local isolated Python 3.13.5
+standard-library only: BOCPD focused 9/9 PASS; combined with existing exact
+matched-tabular tests 17/17 PASS; compileall PASS. Nine tests cover public
+read-before-observe, invalid input atomicity, restored checkpoint parity,
+bit-corruption rejection, per-address isolation, no run-length truncation,
+deterministic replay, protected-seed refusal, and deterministic fixture digests.
+Importantly, an INDEPENDENT brute force enumeration of all 2^(n-1) possible
+change-point segmentations for a separate six-observation short tape agreed
+with the BOCPD forecast to 12 decimal places. This independently qualifies
+the run-length recursion at small n; it does NOT substitute for full native
+regression or an independent original-source scientific qualification.
+
+Reproduction after verbatim copy of the .txt sources to *.py:
+  python -m unittest -v test_bocpd_exact_reference.py test_matched_tabular_controls.py
+  python -m compileall -q bocpd_exact_reference.py test_bocpd_exact_reference.py
+  python -c "from test_bocpd_exact_reference import SEEDS,evaluate; [print(s,evaluate(s)[:2]) for s in SEEDS]"
+
+DEVELOPMENT FIXTURE ONLY — SAME PUBLIC INPUTS AS RF32
+-----------------------------------------------------
+Two exposed, non-primary seeds 73004303 and 73004304. 64 A/64 B/64 A-return
+public action-consequence observations each, with episode history reset per
+observation (one temporal context); 15% Bernoulli observation noise.
+Model predictions are PREQUENTIAL, outcome visible only after forecast.
+Brier lower better.
+
+Seed         B all64          A-return first16       snapshot bytes
+73004303     0.206162335      0.268902421            13428
+73004304     0.151023681      0.246632456            13428
+
+Action/outcome stream SHA256:
+73004303 d605576ab052303c93377c839b7d9b2c34b2f35bc319998f7c4ce2b85c4ad71c
+73004304 43f68d889adb443707319acb92c4e6961d39a72141fe770f4ba04068a6121b57
+These exactly MATCH RF32's previously committed two fixture input digests.
+Full final snapshot SHA256:
+73004303 37b0356a7a4492a4d18f3877a821718f65a0b2f722eb9fc53c1e72d373961efc
+73004304 2360dc6a2d444fbfb2107f25482bbde5a504b3dc44aa4c09c8497efea690213d
+Local whole fixture (192 public predict/update and one snapshot):
+~0.010 s per seed on this Python 3.13.5 Linux environment; NOT qualified as
+cross-platform cost or direct native model efficiency comparison.
+
+COMPARATIVE NEGATIVE / CAUTION
+------------------------------
+Earlier hard-assignment HMM (928-byte match) B phase 0.20204/0.15312 and
+A-return 0.22774/0.20312 on exactly the same seeds. BOCPD B is comparable
+but A return worse. This is an expected limitation: standard BOCPD learns
+new segments but does not automatically recognize that a previously
+obsolete segment has returned. No hidden schedule/phase cue is available.
+The fixed original 64/64/64 protocol may reveal time to models explicitly
+using a schedule; do not use a schedule or silently change preregistration.
+
+Original protected cohort = 288 worlds across three seeds 929209101,
+929209102, 929209103; these are forbidden in the test fixture.
+All protected primary remains UNCONSUMED. Candidate, fully memory-matched
+strongest control and true 14-context variable-switch source still need
+their own source/qualification. The original PR protocol remains frozen.
+This result DOES NOT demonstrate general causal intelligence, cumulative
+training, unfamiliar relationship transfer or scientific superiority.
+
+ENGINEERING focused local 17/17 PASS; dual-platform source-in-.txt and
+mandatory native full regression UNVERIFIED pending exact-head CI.
+SCIENTIFIC science/no-go qualification UNVERIFIED, primary NOT RUN.
+DEPLOYMENT/ACCEPTED STATE: HOLD; PR DRAFT, no merge or owner/controller changes.

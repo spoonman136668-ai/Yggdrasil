@@ -1,0 +1,80 @@
+import json,unittest,hashlib
+from pathlib import Path
+from causal_structure import ParentHypotheses,Tabular16,_compact,ACTIONS
+from worlds import development_world,development_worlds,SEEDS,FAMILIES,FORBIDDEN,_essential
+from compare import expected_brier,run_one,ARMS
+
+class CausalConstructionTests(unittest.TestCase):
+    def test_all_protected_old_seeds_forbidden(self):
+        for s in FORBIDDEN+(0,True):
+            with self.assertRaises(ValueError):development_world(s,'pair',0)
+    def test_exact_24_disjoint_worlds(self):
+        worlds=development_worlds()
+        self.assertEqual(len(worlds),24)
+        self.assertEqual(len({(w.seed,w.family,w.rep) for w in worlds}),24)
+        self.assertEqual(worlds,development_worlds())
+    def test_unknown_truth_table_construction(self):
+        for w in development_worlds():
+            for m in (w.A,w.B):
+                self.assertIn(m.parents.bit_count(),(2,3))
+                self.assertTrue(_essential(m.table,m.parents.bit_count()))
+            self.assertNotEqual(w.A,w.B)
+    def test_no_phase_cue_at_boundaries(self):
+        for w in development_worlds():
+            self.assertTrue(all(20<=t<=28 for t in w.lengths))
+            self.assertEqual(len(w.noise),sum(w.lengths))
+            self.assertEqual(len(w.noise),len(set(range(sum(w.lengths)))))
+    def test_projection_semantics(self):
+        self.assertEqual(_compact(0b1011,0b1001),3)
+        self.assertEqual(_compact(0b1011,0b0011),3)
+        for a in ACTIONS:
+            for mask in range(1,16):self.assertLess(_compact(a,mask),1<<mask.bit_count())
+    def test_checkpoint_cold_restore(self):
+        m=ParentHypotheses()
+        for i in range(100):m.observe(i%16,(i//7)%2)
+        raw=m.snapshot();self.assertEqual(len(raw),70)
+        n=ParentHypotheses.restore(raw)
+        self.assertEqual(n.snapshot(),raw)
+        self.assertEqual([m.predict(a) for a in ACTIONS],[n.predict(a) for a in ACTIONS])
+    def test_checkpoint_invalid_fails_closed(self):
+        m=ParentHypotheses();before=m.snapshot()
+        for action,y in ((16,0),(True,0),(0,2),(0,True)):
+            with self.assertRaises(ValueError):m.observe(action,y)
+            self.assertEqual(m.snapshot(),before)
+        corrupt=bytearray(before);corrupt[5]^=1
+        with self.assertRaises(ValueError):ParentHypotheses.restore(bytes(corrupt))
+    def test_read_only_forecast_and_intervention_selection(self):
+        m=ParentHypotheses();b=m.snapshot()
+        for a in ACTIONS:self.assertTrue(0<m.predict(a)<1)
+        for policy in ('information','coverage'):
+            self.assertIn(m.choose(policy),ACTIONS)
+        self.assertEqual(m.snapshot(),b)
+    def test_tabular_baseline_fitted(self):
+        m=Tabular16()
+        for t in range(4):m.observe(1,1)
+        self.assertAlmostEqual(m.predict(1),5/6)
+        self.assertEqual(m.predict(0),.5)
+    def test_per_action_intervention_scope(self):
+        w=development_world(SEEDS[0],FAMILIES[0],0)
+        self.assertIn(w.observe(0,0),(0,1))
+        with self.assertRaises(ValueError):w.observe(-1,0)
+        with self.assertRaises(ValueError):w.observe(0,16)
+    def test_expected_brier_identity(self):
+        self.assertAlmostEqual(expected_brier(.5,.1),.25)
+        self.assertAlmostEqual(expected_brier(.1,.1),.09)
+    def test_fixed_sample_budget_and_blindness(self):
+        w=development_world(SEEDS[1],FAMILIES[1],1)
+        for arm in ARMS:
+            r=run_one(w,arm)
+            self.assertEqual(r['n_interventions'],sum(w.lengths))
+            self.assertLessEqual(r['learned_bytes'],928)
+            self.assertEqual(set(r['brier']),{'A','B','Areturn','Areturn_first8'})
+            self.assertTrue(all(0<=v<=1 for v in r['brier'].values()))
+    def test_no_self_assessed_science(self):
+        proto=json.loads(Path(__file__).with_name('frozen_dev_protocol.json').read_text())
+        self.assertEqual(proto['status'],'FROZEN_DEV_ONLY_PRIMARY_NOT_DEFINED')
+        self.assertFalse(proto['authority']['scientific_first_use'])
+        self.assertFalse(proto['authority']['native_training'])
+        self.assertEqual(proto['frozen']['dev_seeds'],list(SEEDS))
+
+if __name__=='__main__':unittest.main()

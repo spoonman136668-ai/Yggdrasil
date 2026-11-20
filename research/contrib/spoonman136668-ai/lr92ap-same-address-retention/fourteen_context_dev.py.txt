@@ -1,0 +1,168 @@
+"""LR-92AP isolated 14-context DEV fixture, NOT the protected primary.
+
+Only the two already disclosed development seeds are permitted. Three phase
+relations are evaluator-only; each learner receives only the same chronological
+public actions, episode boundaries and outcomes, AFTER prequential forecasts.
+No learned state, native Yggdrasil owner state or scientific cohort is touched.
+"""
+from __future__ import annotations
+
+from collections import deque
+from dataclasses import dataclass
+import hashlib
+import random
+
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+
+SEEDS = (73004303, 73004304)
+FAMILIES = ('xor', 'and', 'random14')
+PHASES = ('A', 'B', 'Areturn')
+PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+OBS_PER_PHASE = 64
+EVENTS = 3 * OBS_PER_PHASE
+EPISODE_LENGTH = 8
+NOISE = 0.15
+FAMILY_OFFSETS = {'xor': 0, 'and': 301, 'random14': 601}
+
+
+@dataclass(frozen=True)
+class Observation:
+    index: int
+    phase: str
+    episode_start: bool
+    action: int
+    outcome: int
+    bin_id: int
+    clean_A: int
+    clean_B: int
+
+
+def _clean_A(family: str, bin_id: int, mask: int) -> int:
+    prev_a, prev_b = PATTERNS[bin_id // 2]
+    act = bin_id % 2
+    prior_a = 0 if prev_a == 2 else prev_a
+    prior_b = 0 if prev_b == 2 else prev_b
+    if family == 'xor':
+        return act ^ prior_a ^ prior_b
+    if family == 'and':
+        return act & prior_a & prior_b
+    return (mask >> bin_id) & 1
+
+
+def public_fixture(seed: int, family: str) -> tuple[Observation, ...]:
+    if type(seed) is not int or seed not in SEEDS or family not in FAMILIES:
+        raise ValueError('LR92AP_DEV_FIXTURE_SCOPE')
+    family_offset = FAMILY_OFFSETS[family]
+    action_rng = random.Random(seed + family_offset)
+    noise_rng = random.Random((seed << 9) ^ family_offset ^ 0xB720B720)
+    mask = random.Random((seed << 7) ^ family_offset ^ 0x14C0FFEE).getrandbits(14)
+    prev = (2, 2)
+    observations = []
+    for i in range(EVENTS):
+        start = i % EPISODE_LENGTH == 0
+        if start:
+            prev = (2, 2)
+        phase = PHASES[i // OBS_PER_PHASE]
+        action = action_rng.randrange(2)
+        bin_id = PATTERNS.index(prev) * 2 + action
+        clean_A = _clean_A(family, bin_id, mask)
+        clean_B = clean_A ^ 1  # guaranteed contradictory per 14-bin cell
+        actual = clean_B if phase == 'B' else clean_A
+        outcome = actual ^ int(noise_rng.random() < NOISE)
+        observations.append(Observation(i, phase, start, action, outcome,
+                                        bin_id, clean_A, clean_B))
+        prev = (action, prev[0])
+    return tuple(observations)
+
+
+class FullHistory14Diagnostic:
+    """Only a fixture diagnostic; see committed FullHistory14 for formal control."""
+    def __init__(self):
+        self.counts = [[0, 0] for _ in range(14)]
+        self.history = (2, 2)
+
+    def end_episode(self):
+        self.history = (2, 2)
+
+    def predict(self, address, action):
+        bin_id = PATTERNS.index(self.history) * 2 + action
+        no, yes = self.counts[bin_id]
+        return (yes + 1) / (no + yes + 2)
+
+    def observe_step(self, address, action, outcome):
+        bin_id = PATTERNS.index(self.history) * 2 + action
+        self.counts[bin_id][outcome] += 1
+        self.history = (action, self.history[0])
+
+
+class Last32Diagnostic(FullHistory14Diagnostic):
+    """Unbounded-host diagnostic of sliding 32 events; not 832-byte source."""
+    def __init__(self):
+        super().__init__()
+        self.history_window = deque(maxlen=32)
+
+    def observe_step(self, address, action, outcome):
+        bin_id = PATTERNS.index(self.history) * 2 + action
+        if len(self.history_window) == 32:
+            old_bin, old_out = self.history_window.popleft()
+            self.counts[old_bin][old_out] -= 1
+        self.history_window.append((bin_id, outcome))
+        self.counts[bin_id][outcome] += 1
+        self.history = (action, self.history[0])
+
+
+def run(seed: int, family: str):
+    tape = public_fixture(seed, family)
+    models = {
+        'YPT4_original': PublicDualTimescaleCells(),
+        'bounded_BOCPD14': BoundedRunLengthBOCPD14(),
+        'full14_diagnostic': FullHistory14Diagnostic(),
+        'last32_diagnostic': Last32Diagnostic(),
+    }
+    losses = {name: {'A': [], 'B': [], 'Areturn16': [], 'Areturn48': []}
+              for name in models}
+    traced_bins = set()
+    stream_digest = hashlib.sha256()
+    cold_switch_equivalence = None
+    for item in tape:
+        if item.episode_start:
+            for model in models.values():
+                model.end_episode()
+        traced_bins.add(item.bin_id)
+        predictions = {name: model.predict(0, item.action)
+                       for name, model in models.items()}
+        if item.index == 128:  # before any A-return outcome is supplied
+            cold_switch_equivalence = {
+                name: {'p_if_A': pred, 'p_if_B': pred}
+                for name, pred in predictions.items()
+            }
+        key = 'A' if item.phase == 'A' else (
+            'B' if item.phase == 'B' else (
+                'Areturn16' if item.index < 144 else 'Areturn48'
+            ))
+        for name, pred in predictions.items():
+            assert 0 <= pred <= 1
+            losses[name][key].append((pred-item.outcome)**2)
+        stream_digest.update(bytes((int(item.episode_start), item.action, item.outcome)))
+        for model in models.values():
+            model.observe_step(0, item.action, item.outcome)
+    assert len(traced_bins) == 14
+    scores = {}
+    for name, buckets in losses.items():
+        scores[name] = {key: sum(vals)/len(vals) for key, vals in buckets.items()}
+    return {
+        'seed': seed, 'family': family,
+        'events': len(tape), 'visited_bins': sorted(traced_bins),
+        'digest': stream_digest.hexdigest(), 'scores': scores,
+        'cold_before_return': cold_switch_equivalence,
+        'candidate_snapshot_sha256': hashlib.sha256(models['YPT4_original'].snapshot()).hexdigest(),
+        'bocpd_snapshot_sha256': hashlib.sha256(models['bounded_BOCPD14'].snapshot()).hexdigest(),
+    }
+
+
+if __name__ == '__main__':
+    import json
+    for seed in SEEDS:
+        for family in FAMILIES:
+            print(json.dumps(run(seed, family), sort_keys=True))

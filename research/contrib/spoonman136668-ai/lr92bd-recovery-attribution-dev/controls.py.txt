@@ -1,0 +1,61 @@
+"""Prospective source-free exact symbolic and fully fitted conventional controls."""
+from __future__ import annotations
+import hashlib,json,math
+from worlds import PROGRAMS,FEATURES,P_TERMINAL
+
+class ExactProgramHMM:
+    """Exact posterior over all 256 grammar programs with Markov reset hazard."""
+    def __init__(self,hazard=1/72):
+        self.p=[1./len(PROGRAMS)]*len(PROGRAMS)
+        self.hazard=hazard;self.updates=0;self.cache=[.5]*16
+    def _cache(self):
+        h=self.hazard
+        self.cache=[P_TERMINAL+(1-2*P_TERMINAL)*((1-h)*sum(w for w,t in zip(self.p,PROGRAMS) if (t>>c)&1)+.5*h)
+                    for c in range(16)]
+    def predict(self,c):return self.cache[c]
+    def novelty(self,c):
+        p=self.predict(c);return p*(1-p)
+    def observe(self,c,y):
+        prior=[(1-self.hazard)*v+self.hazard/len(self.p) for v in self.p]
+        post=[v*((1-P_TERMINAL) if ((t>>c)&1)==y else P_TERMINAL) for v,t in zip(prior,PROGRAMS)]
+        total=sum(post);self.p=[z/total for z in post];self.updates+=1;self._cache()
+    def snapshot(self):return json.dumps({'p':self.p,'hazard':self.hazard,'updates':self.updates},separators=(',',':')).encode()
+
+class TabularBeta:
+    def __init__(self,window=None,discount=None):self.records=[];self.window=window;self.discount=discount
+    def predict(self,c):
+        rows=self.records[-self.window:] if self.window else self.records
+        a=b=1.
+        for i,(key,y) in enumerate(rows):
+            if key==c:
+                w=self.discount**(len(rows)-i-1) if self.discount else 1.
+                a+=w*y;b+=w*(1-y)
+        return a/(a+b)
+    def novelty(self,c):
+        rows=self.records[-self.window:] if self.window else self.records
+        return 1/(1+sum(key==c for key,y in rows))
+    def observe(self,c,y):self.records.append((c,y))
+    def snapshot(self):return json.dumps(self.records,separators=(',',':')).encode()
+
+class Logistic:
+    """Real fixed-capacity trained conventional, full-history periodic replay."""
+    def __init__(self):self.w=[0.]*len(FEATURES[0]);self.records=[]
+    def predict(self,c):
+        z=sum(w*x for w,x in zip(self.w,FEATURES[c]));z=max(-20.,min(20.,z))
+        return 1/(1+math.exp(-z))
+    def _step(self,c,y):
+        d=y-self.predict(c)
+        for i,x in enumerate(FEATURES[c]):self.w[i]+=.13*d*x-.0001*self.w[i]
+    def observe(self,c,y):
+        self.records.append((c,y));self._step(c,y)
+        if len(self.records)%12==0:
+            for _ in range(4):
+                for cc,yy in self.records:self._step(cc,yy)
+    def novelty(self,c):return 1/(1+sum(cc==c for cc,y in self.records))
+    def snapshot(self):return json.dumps({'w':self.w,'history':self.records},separators=(',',':')).encode()
+
+class NoLearning:
+    def __init__(self):self.updates=0
+    def predict(self,c):return .5
+    def observe(self,c,y):self.updates+=1
+    def snapshot(self):return str(self.updates).encode()

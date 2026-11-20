@@ -1,0 +1,74 @@
+"""Freeze prospective LR-92BD attribution diagnosis before any new scored world."""
+from __future__ import annotations
+import hashlib,json
+from pathlib import Path
+from worlds import SEEDS,FAMILIES,REPS,SMOKE_SEED,FORBIDDEN,worlds
+from diagnose import ARMS,DIAGNOSTIC_ARMS,STRONG_CONTROLS
+
+HERE=Path(__file__).resolve().parent
+SOURCES=('worlds.py','mechanism.py','controls.py','compare.py','diagnose.py','test_diagnose.py','freeze.py')
+SOURCE_HASHES={n:hashlib.sha256((HERE/n).read_bytes()).hexdigest() for n in SOURCES}
+assert len(SEEDS)==2 and not set(SEEDS)&set(FORBIDDEN) and SMOKE_SEED not in SEEDS
+WS=worlds();assert len(WS)==24
+MANIFEST=[{'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':w.dwell,'episodes':sum(w.dwell),
+           'public_input_sha256':w.public_input_sha256,
+           'truth_commitment_sha256':hashlib.sha256(f'{w.A}:{w.B}'.encode()).hexdigest()} for w in WS]
+assert len({(w['seed'],w['family'],w['rep']) for w in MANIFEST})==24
+manifest_text=json.dumps(MANIFEST,indent=2,sort_keys=True)+'\n'
+(HERE/'development_manifest.json').write_text(manifest_text)
+manifest_sha=hashlib.sha256(manifest_text.encode()).hexdigest()
+PROTOCOL={
+ 'schema':'lr92bd.frozen-attribution-study.v1',
+ 'research_role':'independent contributor to Yggdrasil only; not a model/coordinator/owner',
+ 'repository':'spoonman136668-ai/Yggdrasil',
+ 'contributor_pr':1323,'central_amalgam_pr':1278,
+ 'accepted_main':'5e74f8db85b2f5839c42148c0dfba69a88b1a2c9',
+ 'native_research_sha':'86264b41a08d49f558418c0fba367f3a2636befa',
+ 'previous_exposed_lr92bc_evidence_sha':'19908b20c74bcbd4710db29b5e1906d019e5a69f',
+ 'previous_candidate_byte_identical_sha':SOURCE_HASHES['mechanism.py'],
+ 'protected_original_first_use':False,'canonical_owner_state_access':False,
+ 'merge_or_deployment':False,'new_scheduler_or_runner':False,
+ 'research_question':'Does early A-return failure arise primarily because the archived causal program is inaccurate, or because the correct archived program is not selected in time?',
+ 'experiment':{
+   'source_free_synthetic':True,'seeds':SEEDS,'smoke_seed':SMOKE_SEED,
+   'families':FAMILIES,'replicates_per_family_seed':REPS,
+   'worlds':len(WS),'episodes_per_arm':sum(x['episodes'] for x in MANIFEST),
+   'no_public_phase_or_return_cue':True,
+   'same_public_two_stage_address':True,
+   'old_learner_source_unchanged':True,
+   'arms':ARMS,'privileged_diagnostic_arms':DIAGNOSTIC_ARMS,
+   'strong_reference_controls':STRONG_CONTROLS,
+   'public_info':'one s1 then x1, public s2 then x2, one public terminal y; no extra samples',
+   'scoring':'evaluator-only exact expected Brier on the SAME uniform 16-context panel before seeing current y',
+   'oracle':'purely retrospective lower bound chooses currently stored hypothesis with smallest true expected panel Brier; NEVER used to train/choose actions/predict live',
+   'candidate_budget_max_bytes':1056,'cold_restoration':'checksum + full forecast and policy parity',
+   'terminal_noise':.07,'transition_noise':.25,
+   'controls_full_training':'logistic periodically refitted with chronological public-history passes, exact 256-program hazard filter, three tabular baselines',
+   'compute':'wallclock per arm recorded; not assumed matched; no scientific efficiency gain',
+ },
+ 'frozen_diagnostic':{
+   'per_seed_strong_return_control':'minimum return16 Brier of five strong reference controls, per seed',
+   'identification_gap':'actual active return16 Brier minus privileged best-existing-slot return16 Brier',
+   'representation_gap':'privileged best-existing-slot return16 Brier minus best strong reference return16 Brier',
+   'archive_accuracy_limited':'privileged oracle return16 > best strong return16 +0.03',
+   'identification_limited':'actual minus oracle >=0.03 AND privileged oracle <= best strong return16 +0.01',
+   'mixed_or_indeterminate':'all other cases',
+   'per_seed_required':'diagnose each seed independently; never collapse discordant labels',
+   'secondary':'compare active/passive/coverage policies; freeze entire candidate state, archive fit at A-return boundary and fraction of first16 incorrect slot selections',
+   'negative_controls':'checkpoint corruption rejection; exact candidate/legacy source byte parity; live policy parity; oracle not exposed to public learner',
+   'caution':'The hindsight oracle is NOT a deployable predictor; its gain is a diagnostic upper bound, not scientific improvement or admissible integration evidence',
+ },
+ 'scientific_stop':{
+   'scientific_pass':'NOT_AVAILABLE: this is only a mechanistic diagnostic; do not claim scientific pass from any attribution outcome',
+   'protected_first_use':'BLOCKED under issue #426',
+   'no_retuning':'Freeze and score once on disjoint new development cohort; preserve negative/unfamiliar worlds',
+   'full_native_regression':'NOT_RUN; this study does not modify or instantiate actual native Yggdrasil',
+   'central_integration_authority':'Amalgam Work chat only; contributor may submit findings but not merge/promote',
+ },
+ 'manifest_sha256':manifest_sha,
+ 'source_sha256':SOURCE_HASHES,
+ 'results_inspected_at_freeze':False,
+}
+(HERE/'frozen_dev_protocol.json').write_text(json.dumps(PROTOCOL,indent=2,sort_keys=True)+'\n')
+print(json.dumps({'source_sha256':SOURCE_HASHES,'worlds':len(WS),
+                  'manifest_sha256':manifest_sha,'episodes_per_arm':PROTOCOL['experiment']['episodes_per_arm']},sort_keys=True))

@@ -1,0 +1,107 @@
+{
+  "authority": {
+    "canonical_checkpoint_read_write": false,
+    "controller": false,
+    "deploy": false,
+    "merge": false,
+    "new_scheduler": false,
+    "original_world_first_use": false,
+    "protected_primary_288_worlds": false,
+    "training_owner": false
+  },
+  "baselines": {
+    "arms": [
+      "witness_basis",
+      "exact_batch_gf2",
+      "beta_full",
+      "beta_window32",
+      "no_learning",
+      "shuffled_context"
+    ],
+    "beta_full": "fully conditioned conventional tabular Beta(1,1) all chronological history",
+    "beta_window32": "fully conditioned tabular Beta(1,1) last 32 public episodes",
+    "exact_batch_gf2": "strong exact symbolic control storing ALL public equations with the SAME causal degree2 algebra; no black-box advantage allowed",
+    "no_learning": "always 0.5",
+    "shuffled_context": "deterministic public-address scrambling at write, tests condition preservation"
+  },
+  "causal_question": "Does a compact rank-preserving GF(2) causal-witness basis retain a learned A relation while an independent B relation is acquired, and predict unseen reachable public interventions under a fixed <=1024-byte state? Does it compare to exact full-history symbolic control?",
+  "development": {
+    "A_B_Areturn_dwell": "34-44, 32-43, 22-30 public episodes; see fully frozen manifest",
+    "episodes_per_arm": 3668,
+    "families": [
+      "disjoint_parent",
+      "quadratic_rewrite",
+      "cubic_unfamiliar"
+    ],
+    "forbidden_prior_development_and_primary_seeds": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802,
+      76021921,
+      76021922,
+      77033101,
+      77033102,
+      88041001,
+      88041002,
+      89051001,
+      89051002,
+      90161101,
+      90161102,
+      90161103,
+      929209101,
+      929209102,
+      929209103
+    ],
+    "replicates_per_family_per_seed": 4,
+    "seeds": [
+      92111911,
+      92111912,
+      92111913
+    ],
+    "worlds": 36
+  },
+  "execution_role": "Independent experimental contributor, not canonical Yggdrasil learner or owner",
+  "frozen_before_scoring": true,
+  "frozen_decisions": {
+    "engineering_continue_only_if": "All 36 worlds, exact test/no hidden inputs, 100% cold SHA restore, candidate checkpoint <= 1056 bytes (includes 32-byte checksum), equal in-class forecasts to exact full-history symbolic; pre-B and pre-return A probe identical, and >=4x checkpoint reduction vs full symbolic at end, per world",
+    "scientific_pass_only_if": "Outperform strongest exact symbolic and fully trained conventional control by >=0.01 terminal A-return Brier in EACH seed group without B regression >0.01; matched info/actions; repeat on fresh independent science first-use after explicit owner authority",
+    "stop": "Report negative out-of-class results, contradiction/abstention, weaker Brier or no exact symbolic advantage; never tune exposed fixture results, never promote directly"
+  },
+  "limits": {
+    "no_hidden_phase_label_to_learner": true,
+    "no_teacher_predictions_to_learner": true,
+    "no_teacher_weights": true,
+    "noise_rate": 0,
+    "out_of_class": "cubic_unfamiliar beyond degree2, must detect contradictions and abstain rather than claim knowledge",
+    "public_context": "v=0 for A, v=1 for unrelated B, v=0 on return; PUBLIC TASK TAG. THIS DOES NOT TEST BLIND REGIME SWITCHING",
+    "representable": "Deterministic polynomial of degree <=2 over stage-reachable public features; not universal causal discovery"
+  },
+  "lineage": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "canonical_amalgam_pr": 1278,
+    "native_source": "86264b41a08d49f558418c0fba367f3a2636befa",
+    "no_native_source_modified": true,
+    "pr": 1323,
+    "repo": "spoonman136668-ai/Yggdrasil"
+  },
+  "manifest_sha256": "58005e41dc92fc9921950934c9b24a54b89fee78fa5fc9b85a4db723831362a0",
+  "metrics": {
+    "adaptation": "B terminal prequential Brier",
+    "cold_retention": "A reference probe Brier pre-B vs pre-return, no A examples during B",
+    "primary": "terminal first 16 A-return prequential Brier, macro averaged by world and by seed",
+    "resource": "wall clock per arm and event, including exact full-history symbolic re-solve",
+    "storage": "candidate final checkpoint bytes vs full-history exact symbolic ledger",
+    "structural_transfer": "counterfactual post-A/post-B/post-return reachable 8-way intervention terminal expected Brier"
+  },
+  "outcome_read": false,
+  "schema": "lr92az.sourcefree-orthogonal-causal-witness.v1",
+  "source_sha256": {
+    "causal_basis.py": "a554dc40fa065d9e1d40c8c5fe34adc28b0c66f8b1352cb1437a53da4497006e",
+    "compare.py": "fe85448ab1018f0a44638d82dd296c520b86dc9d20df4ae58ca8dcfbf9e1f711",
+    "test_mechanism.py": "6e8ad48482849f34a1d40ab00a6d06d109ed8c4aae1b21bd9b5fb04d2c6ae1bc",
+    "worlds.py": "ade249f7d22b9634e09919878484759b15324c03c0f66debdf76865eb5677829"
+  }
+}

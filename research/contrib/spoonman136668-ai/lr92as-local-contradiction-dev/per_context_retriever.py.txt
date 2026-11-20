@@ -1,0 +1,134 @@
+"""LR-92AS per-context archived-hypothesis retrieval, DEVELOPMENT only.
+
+Retains independently estimated archival Bernoulli relationship, adaptive
+current probability and Bayesian archive-selection evidence for each of 14
+public temporal contexts per address. No hidden phase, phase clock, tokens,
+transformer, oracle return marker or future outcome. Precisely 928 bytes
+persistent state. This exploratory mechanism is not native Yggdrasil code.
+"""
+from __future__ import annotations
+import hashlib
+
+class PerContextRetriever:
+    MAGIC = b'PCH1'
+    PATTERNS = ((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1))
+    LEARNED_BYTES = 928  # 448 archive + 224 active q8 + 224 weights + 32 history
+    CHECKPOINT_BYTES = 964
+    ARCHIVE_FREEZE = 48    # public observations / address, fixed before dev scoring
+    ADAPT_NUM = 1         # EMA update fraction 1/4 (no fit-on-test tuning)
+    ADAPT_DEN = 4
+    HAZARD_NUM = 1        # symmetric evidence reset toward uncertainty / 16
+    HAZARD_DEN = 16
+
+    def __init__(self):
+        self._archive = bytearray(448)
+        self._adaptive = bytearray([128]*224)
+        self._belief = bytearray([255]*224)
+        self._history = bytearray([2,2]*16)
+
+    @staticmethod
+    def _slot(address,retained):
+        if type(retained) is not bool or type(address) is not int or not 0<=address<(9 if retained else 7):
+            raise ValueError('PCH_INVALID_ADDRESS')
+        return address+(7 if retained else 0)
+
+    @staticmethod
+    def _bit(x):
+        if type(x) is not int or x not in (0,1):
+            raise ValueError('PCH_INVALID_BIT')
+        return x
+
+    def _index(self,slot,action):
+        hist=tuple(self._history[slot*2:slot*2+2])
+        if hist not in self.PATTERNS:raise ValueError('PCH_INVALID_HISTORY')
+        return slot*14+self.PATTERNS.index(hist)*2+action
+
+    def _archived(self,index):
+        n0,n1=self._archive[2*index:2*index+2]
+        return (n1+1)/(n0+n1+2)
+
+    def _frozen(self,slot):
+        return sum(self._archive[slot*28:(slot+1)*28])>=self.ARCHIVE_FREEZE
+
+    def _weight(self,index):
+        w=self._belief[index]/255
+        h=self.HAZARD_NUM/self.HAZARD_DEN
+        return h+(1-2*h)*w
+
+    def predict(self,address,action,*,retained=False):
+        slot=self._slot(address,retained)
+        index=self._index(slot,self._bit(action))
+        old=self._archived(index)
+        if not self._frozen(slot):return old
+        new=self._adaptive[index]/255
+        w=self._weight(index)
+        return w*old+(1-w)*new
+
+    def predict_archived(self,address,action,*,retained=False):
+        """Oracle-addressed counterfactual diagnostic, not autonomous forecast."""
+        slot=self._slot(address,retained)
+        return self._archived(self._index(slot,self._bit(action)))
+
+    def observe_step(self,address,action,public_outcome,*,retained=False):
+        slot=self._slot(address,retained)
+        action=self._bit(action)
+        y=self._bit(public_outcome)
+        index=self._index(slot,action)
+        frozen=self._frozen(slot)
+        if frozen:
+            w=self._weight(index)
+            p_old=self._archived(index)
+            p_new=self._adaptive[index]/255
+            a=w*(p_old if y else 1-p_old)
+            b=(1-w)*(p_new if y else 1-p_new)
+            self._belief[index]=max(0,min(255,round(255*a/(a+b))))
+        else:
+            self._archive[2*index+y]=min(255,self._archive[2*index+y]+1)
+        # One local adaptive probability and one local archive belief per bin.
+        q=self._adaptive[index]
+        self._adaptive[index]=max(0,min(255,round(((self.ADAPT_DEN-self.ADAPT_NUM)*q+self.ADAPT_NUM*255*y)/self.ADAPT_DEN)))
+        self._history[2*slot+1]=self._history[2*slot]
+        self._history[2*slot]=action
+
+    def end_episode(self):
+        self._history[:]=bytes([2,2]*16)
+
+    def snapshot(self):
+        raw=self.MAGIC+bytes(self._archive)+bytes(self._adaptive)+bytes(self._belief)+bytes(self._history)
+        assert len(raw)==self.LEARNED_BYTES+4
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,blob):
+        if (type(blob) is not bytes or len(blob)!=cls.CHECKPOINT_BYTES or
+                blob[:4]!=cls.MAGIC or hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError('PCH_CHECKPOINT_REJECTED')
+        if any(tuple(blob[900+i:902+i]) not in cls.PATTERNS for i in range(0,32,2)):
+            raise ValueError('PCH_INVALID_HISTORY')
+        if any(sum(blob[4+28*i:4+28*(i+1)])>cls.ARCHIVE_FREEZE for i in range(16)):
+            raise ValueError('PCH_ARCHIVE_INVALID')
+        out=cls()
+        out._archive[:]=blob[4:452]
+        out._adaptive[:]=blob[452:676]
+        out._belief[:]=blob[676:900]
+        out._history[:]=blob[900:932]
+        return out
+
+
+class FixedHalfContextBlend(PerContextRetriever):
+    """Identical state and update rules, fixed 50:50 retrieval at forecast."""
+    def predict(self,address,action,*,retained=False):
+        slot=self._slot(address,retained)
+        index=self._index(slot,self._bit(action))
+        old=self._archived(index)
+        if not self._frozen(slot):return old
+        return (old+self._adaptive[index]/255)/2
+
+
+class ActiveOnlyContext(PerContextRetriever):
+    """Identical state and update rules, archived causal belief never used."""
+    def predict(self,address,action,*,retained=False):
+        slot=self._slot(address,retained)
+        index=self._index(slot,self._bit(action))
+        if not self._frozen(slot):return self._archived(index)
+        return self._adaptive[index]/255

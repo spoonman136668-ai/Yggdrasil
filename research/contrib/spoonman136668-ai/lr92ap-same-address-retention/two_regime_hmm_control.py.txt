@@ -1,0 +1,101 @@
+"""LR-92AP development-only: phase-blind, fixed-memory two-regime HMM control.
+
+Conventional alternative to protected/recent gating, NOT a native Yggdrasil
+component or an approved primary-science baseline. The 928-byte learnable
+state contains 2*448 8-bit outcome counts, 16 byte-encoded history codes, and
+16 eight-bit posterior regime weights. Public actions and outcomes only.
+"""
+import hashlib
+
+
+class TwoRegimeHMM:
+    PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+    LEARNED_BYTES = 928
+    CHECKPOINT_BYTES = 964
+    MAGIC = b"LRH1"
+    HAZARD = 1.0 / 32.0
+
+    def __init__(self):
+        self._counts = [bytearray(448), bytearray(448)]
+        self._history = bytearray(16)  # index 0 == (2,2) per slot
+        self._w = bytearray([255] * 16)  # probability of regime 0
+
+    @staticmethod
+    def _slot(address, retained):
+        if type(retained) is not bool or type(address) is not int:
+            raise ValueError("HMM_INVALID_ADDRESS")
+        if not 0 <= address < (9 if retained else 7):
+            raise ValueError("HMM_INVALID_ADDRESS")
+        return address + (7 if retained else 0)
+
+    @staticmethod
+    def _bit(bit):
+        if type(bit) is not int or bit not in (0, 1):
+            raise ValueError("HMM_INVALID_BIT")
+        return bit
+
+    def _pos(self, slot, action):
+        h = self._history[slot]
+        if h > 6:
+            raise ValueError("HMM_INVALID_HISTORY")
+        return slot * 28 + h * 4 + action * 2
+
+    def _prior_and_likelihood(self, slot, pos):
+        p = self._w[slot] / 255.0
+        prior = (1 - self.HAZARD) * p + self.HAZARD * (1 - p)
+        means = []
+        for bank in self._counts:
+            n0, n1 = bank[pos], bank[pos + 1]
+            means.append((n1 + 1.0) / (n0 + n1 + 2.0))
+        return prior, means
+
+    def predict(self, address, action, *, retained=False):
+        slot = self._slot(address, retained)
+        pos = self._pos(slot, self._bit(action))
+        prior, (p0, p1) = self._prior_and_likelihood(slot, pos)
+        return prior * p0 + (1.0 - prior) * p1
+
+    def observe_step(self, address, action, public_outcome, *, retained=False):
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        y = self._bit(public_outcome)
+        pos = self._pos(slot, action)
+        prior, (p0, p1) = self._prior_and_likelihood(slot, pos)
+        likelihood0 = p0 if y else 1.0 - p0
+        likelihood1 = p1 if y else 1.0 - p1
+        a, b = prior * likelihood0, (1.0 - prior) * likelihood1
+        w = a / (a + b)
+        regime = 0 if w >= 0.5 else 1
+        self._w[slot] = max(0, min(255, round(w * 255)))
+        bank = self._counts[regime]
+        if bank[pos + y] == 255:
+            # Both counts are compressed without increasing memory; maintains
+            # posterior evidence bounded by what the 8-bit state can encode.
+            bank[pos] = (bank[pos] + 1) // 2
+            bank[pos + 1] = (bank[pos + 1] + 1) // 2
+        bank[pos + y] += 1
+        old0, _ = self.PATTERNS[self._history[slot]]
+        self._history[slot] = self.PATTERNS.index((action, old0))
+
+    def end_episode(self):
+        self._history[:] = bytes(16)
+
+    def snapshot(self):
+        raw = self.MAGIC + bytes(self._counts[0]) + bytes(self._counts[1]) + bytes(self._history) + bytes(self._w)
+        assert len(raw) == 932
+        return raw + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob):
+        if (type(blob) is not bytes or len(blob) != cls.CHECKPOINT_BYTES
+                or blob[:4] != cls.MAGIC
+                or hashlib.sha256(blob[:-32]).digest() != blob[-32:]):
+            raise ValueError("HMM_CHECKPOINT_REJECTED")
+        if any(x > 6 for x in blob[900:916]):
+            raise ValueError("HMM_INVALID_HISTORY")
+        out = cls()
+        out._counts[0][:] = blob[4:452]
+        out._counts[1][:] = blob[452:900]
+        out._history[:] = blob[900:916]
+        out._w[:] = blob[916:932]
+        return out

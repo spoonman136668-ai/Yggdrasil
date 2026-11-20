@@ -1,0 +1,86 @@
+"""Read-only LR-92AP fixed-schedule information leakage preflight.
+
+Exact public-prefix twins are observationally indistinguishable before the
+next label. This tool evaluates a toy mathematical bound, not real training.
+It must never generate or consume protected primary data.
+"""
+import hashlib
+import json
+from dataclasses import asdict, dataclass
+
+SEEDS = (929209101, 929209102, 929209103)
+LENGTHS = (64, 64, 64)
+NOISE = 0.15
+
+
+@dataclass(frozen=True)
+class Audit:
+    status: str
+    first_return_index: int
+    blind_expected_brier: float
+    oracle_expected_brier: float
+    first_step_excess_brier: float
+    protected_worlds_read: int
+    protocol_sha256: str
+
+
+def one_probability(phase, action):
+    if phase not in ('A', 'B') or type(action) is not int or action not in (0, 1):
+        raise ValueError('INVALID_PHASE_OR_ACTION')
+    y = action if phase == 'A' else 1-action
+    return NOISE + (1-2*NOISE)*y
+
+
+def brier_expectation(forecast, true_probability):
+    if not all(isinstance(p, (int, float)) and 0 <= p <= 1 for p in
+               (forecast, true_probability)):
+        raise ValueError('INVALID_PROBABILITY')
+    return true_probability*(1-forecast)**2+(1-true_probability)*forecast**2
+
+
+def phase_from_known_clock(step, lengths=LENGTHS):
+    if (type(step) is not int or step < 0 or len(lengths) != 3 or
+            any(type(n) is not int or n <= 0 for n in lengths) or
+            step >= sum(lengths)):
+        raise ValueError('INVALID_CLOCK')
+    return 'B' if lengths[0] <= step < sum(lengths[:2]) else 'A'
+
+
+def indistinguishable_first_step():
+    a, b = one_probability('A', 0), one_probability('B', 0)
+    p = (a+b)/2
+    blind = (brier_expectation(p,a)+brier_expectation(p,b))/2
+    oracle = (brier_expectation(a,a)+brier_expectation(b,b))/2
+    return (blind, oracle, blind-oracle)
+
+
+def audit(prereg, raw):
+    if (type(prereg) is not dict or type(raw) is not bytes or
+            prereg.get('schema') != 'external-research-prereg.v1' or
+            prereg.get('experiment_id') != 'LR-92AP'):
+        raise ValueError('WRONG_PROTOCOL')
+    data = prereg.get('disjoint_data', {})
+    if tuple(data.get('primary_seeds', [])) != SEEDS:
+        raise ValueError('PRIMARY_SEED_DRIFT')
+    schedule = data.get('phase_schedule', '')
+    policy = data.get('action_policy', '')
+    if not all(token in schedule for token in ('64 public A outcomes',
+          '64 contradicting B outcomes', '64 public A-return outcomes')) or \
+          'identical action/time/outcome evidence' not in policy:
+        raise ValueError('UNKNOWN_INFORMATION_CONTRACT')
+    blind, oracle, excess = indistinguishable_first_step()
+    return Audit('BLOCKED_FIXED_SCHEDULE_PHASE_LEAKAGE', 128, blind, oracle,
+                 excess, 0, hashlib.sha256(raw).hexdigest())
+
+
+def main(path):
+    with open(path, 'rb') as f:
+        raw=f.read()
+    return asdict(audit(json.loads(raw), raw))
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) != 2:
+        raise SystemExit('usage: schedule_leakage_guard.py prereg.json.txt')
+    print(json.dumps(main(sys.argv[1]), indent=2, sort_keys=True))

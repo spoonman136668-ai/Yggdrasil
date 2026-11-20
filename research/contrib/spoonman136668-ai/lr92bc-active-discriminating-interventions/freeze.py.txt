@@ -1,0 +1,72 @@
+"""Freeze LR-92BC development scope before scoring. Only derives manifest/meta."""
+from __future__ import annotations
+import hashlib,json
+from pathlib import Path
+from compare import ARMS,BASELINES
+from worlds import SEEDS,SMOKE_SEED,FAMILIES,REPS,FORBIDDEN,worlds,P_TERMINAL,P_TRANSITION
+
+ROOT=Path(__file__).resolve().parent
+SOURCES=('worlds.py','mechanism.py','controls.py','compare.py','test_mechanism.py','freeze.py')
+
+def digest(x):return hashlib.sha256(x).hexdigest()
+
+def freeze():
+    if not set(SEEDS).isdisjoint(FORBIDDEN) or SMOKE_SEED in SEEDS or SMOKE_SEED in FORBIDDEN:raise AssertionError('SEED_SCOPE')
+    items=[]
+    for w in worlds():
+        items.append({'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':w.dwell,
+                      'public_input_sha256':w.public_input_sha256,
+                      'private_truth_digest':digest(f'{w.A}:{w.B}'.encode()),
+                      'events':sum(w.dwell)})
+    if len(items)!=24:raise AssertionError('WORLD_COUNT')
+    raw=json.dumps(items,sort_keys=True,separators=(',',':')).encode('ascii')+b'\n'
+    manifest_sha=digest(raw)
+    hashes={p:digest((ROOT/p).read_bytes()) for p in SOURCES}
+    protocol={'schema':'lr92bc.active-intervention-source-free-development-freeze.v1',
+      'role':'Independent Yggdrasil research contributor only; Amalgam PR 1278 sole integration coordinator',
+      'ownership':{'repo':'spoonman136668-ai/Yggdrasil','research_pr':1323,
+        'accepted_main':'5e74f8db85b2f5839c42148c0dfba69a88b1a2c9',
+        'native_source':'86264b41a08d49f558418c0fba367f3a2636befa',
+        'canonical_owner_checkpoint':'UNVERIFIED', 'protected_original_first_use':False,
+        'canonical_checkpoint_read_or_written':False,'merged_or_deployed':False,
+        'new_runner_scheduler_controller':False,'native_model_executed':False},
+      'hypothesis':'Informative two-stage public interventions let a bounded archive discriminate previously learned A from hidden B and recover earlier than equally budgeted passive/archive controls',
+      'source_sha256':hashes,'manifest_sha256':manifest_sha,
+      'development':{'seeds':SEEDS,'smoke_only_seed':SMOKE_SEED,'excluded_previously_consumed_and_protected_seeds':FORBIDDEN,
+        'families':FAMILIES,'replications':REPS,'world_count':len(items),
+        'episodes_per_learner':sum(x['events'] for x in items),'terminal_flip_rate':P_TERMINAL,
+        'transition_flip_rate':P_TRANSITION,'A_dwell_range':(80,94),
+        'B_dwell_range':(75,90),'return_dwell_range':(46,57),
+        'hidden_phase_shared_public_address':True,'no_phase_to_learner':True,
+        'external_teacher':False,'per_step_first_action_options':2,'per_step_second_action_options':2,
+        'per_step_outcomes_observed':1,'common_random_exogenous_and_noise':True,
+        'policy_actions_are_not_identical_realized_observations':True,
+        'out_of_class':'quartic_out_of_class','source_only':True},
+      'arms':ARMS,'controls':BASELINES,
+      'information':{'learner_methods':'predict(ctx), choose_x1(s1), choose_x2(s1,x1,s2), observe(ctx,y)',
+        'learner_not_given':'world labels, phase schedule, ground truth law, future outcomes, counterfactual probe answers',
+        'one_public_two_stage_episode_per_arm_per_step':True,'equal_action_opportunities':True,
+        'matched_realized_observations':False,'common_noise_streams':True,
+        'probe':'evaluator-only phase-appropriate expected Brier over all sixteen public contexts before each interaction; same uniform reference distribution for all policies'},
+      'metric':{'primary':'First 16 early A-return mean expected terminal Brier on independent 16-context reference probe, macro world then seed',
+        'adaptation':'B-phase mean expected terminal Brier on the same reference probe',
+        'action_value':'Active candidate vs identical-state passive/random-action candidate on same fixed reference probe',
+        'secondary':'chosen-action observed prequential Brier, false switches, detection delay, quartic out-of-class, cold integrity, wall time and bytes',
+        'independent_checkpoint':'SHA256 + byte identical restore at evaluator-only phase boundaries; neither phase boundary supplied to learner'},
+      'stop_rule':{'candidate':'dual_active',
+         'development_go_only_if': 'In EACH of two disjoint seed groups: candidate early-return16 reference Brier <= minimum of SIX strong conventional/symbolic controls -0.01; candidate B reference Brier <= best-control B +0.01; candidate early-return16 <= identical-learning dual_passive -0.01; all 24 checkpoints restore and serialize <=1056 bytes.',
+         'no_post_result_selection':'dual_passive, dual_coverage, exact_bayes_active or others cannot be selected afterward as primary',
+         'negative_results':'Retain and report quartic out-of-class and failures; do not retune the exposed cohort or infer native intelligence',
+         'external_scientific_acceptance':'Development GO is not scientific PASS; primary independent first-use still blocked under issue #426 and full native dual-platform regression absent'},
+      'compute':'Record whole-process per-arm wall time. Equal action/observation opportunities do NOT imply matched computational budgets. No scientific efficiency claim without independently qualified compute-matched controls.',
+      'before_full_score':True,'full_score_evaluated_at_freeze':False,
+      'test_scope':'27 pre-score tests on only SMOKE_SEED=95820100; 24 development worlds enumerated for manifest without evaluating model performance'}
+    (ROOT/'development_manifest.json').write_bytes(raw)
+    (ROOT/'frozen_dev_protocol.json').write_bytes(json.dumps(protocol,indent=2,sort_keys=True).encode()+b'\n')
+    return protocol
+
+if __name__=='__main__':
+    p=freeze()
+    print(json.dumps({'seeds':p['development']['seeds'],'worlds':p['development']['world_count'],
+      'episodes_per_learner':p['development']['episodes_per_learner'],
+      'manifest_sha256':p['manifest_sha256'],'source_sha256':p['source_sha256']},sort_keys=True))

@@ -1,0 +1,71 @@
+"""Independent read-only audit of already scored LR-92AS development evidence.
+
+Does not construct any learner, regenerate any data, or rerun experiments.
+This must not be confused with independent cross-platform scientific approval.
+"""
+import csv
+import hashlib
+import json
+from pathlib import Path
+
+ARMS=('PCH_local','PCH_fixed_half','PCH_active_only','HMM_MAP_928','BOCPD_896',
+      'Full14_480','Window32_832','YPT4_negative')
+METRICS=('B','return_early16','return_first','return_late')
+
+def audit(result_file, csv_file):
+    raw=Path(result_file).read_bytes();summary=json.loads(raw)
+    rows=summary['world_rows']
+    assert summary['status']=='DISJOINT_DEV_ONLY'
+    assert summary['worlds']==24 and len(rows)==24
+    assert summary['manifest_sha256']=='c301bcbbca1414f5a2276b2f2b3e44aa4175c7b0214b435a0f4bf8b1993fbe6c'
+    assert summary['events_per_model']==4728
+    assert not summary['decision']['primary_used']
+    assert not summary['decision']['scientific_pass_claimable']
+    assert not summary['decision']['native_model_integrated']
+    assert summary['decision']['decision']=='LR92AS_DEVELOPMENT_NO_GO'
+    parsed=list(csv.DictReader(Path(csv_file).open(newline='')))
+    assert len(parsed)==24
+    manifest=set()
+    for r,c in zip(rows,parsed):
+        identity=(r['seed'],r['family'],r['index'])
+        assert identity not in manifest;manifest.add(identity)
+        assert (int(c['seed']),c['family'],int(c['index']))==identity
+        assert c['input_sha256']==r['input_sha256']
+        assert [int(c[f'dwell_{k}']) for k in ('A','B','return')]==r['dwell']
+        assert set(r['models'])==set(ARMS)
+        for name in ARMS:
+            m=r['models'][name]
+            assert m['updates']==sum(r['dwell'])
+            assert len(m['pre_return_snapshot_sha256'])==len(m['final_snapshot_sha256'])==64
+            assert m['checkpoint_bytes']==m['learned_bytes']+36
+            for k in METRICS:
+                assert abs(float(c[f'{name}.{k}'])-m[k])<=5.1e-10
+        assert r['models']['PCH_local']['final_snapshot_sha256']==r['models']['PCH_fixed_half']['final_snapshot_sha256']==r['models']['PCH_active_only']['final_snapshot_sha256']
+    assert sorted(set(s for s,_,i in manifest))==[75011801,75011802]
+    assert sorted(set(f for _,f,i in manifest))==['and','random14','xor']
+    assert all(len([x for x in manifest if x[0]==s and x[1]==f])==4 for s in (75011801,75011802) for f in ('and','random14','xor'))
+    assert all(summary['models'][n]['updates']==4728 for n in ARMS)
+    # Independently recompute the bounded decision from data, not a claimed flag.
+    seedwise={}
+    for s in (75011801,75011802):
+        group=[r for r in rows if r['seed']==s]
+        avg=lambda name,metric:sum(r['models'][name][metric] for r in group)/len(group)
+        best_b=min(avg(n,'B') for n in ('HMM_MAP_928','BOCPD_896','Full14_480','Window32_832'))
+        best_r=min(avg(n,'return_early16') for n in ('HMM_MAP_928','BOCPD_896','Full14_480','Window32_832'))
+        seedwise[str(s)]={'B_regression_vs_best_conventional':avg('PCH_local','B')-best_b,
+                          'return_gain_vs_best_conventional':best_r-avg('PCH_local','return_early16')}
+        for key,v in seedwise[str(s)].items():
+            assert abs(v-summary['decision']['seedwise'][str(s)][key])<1e-12
+    assert all(x['B_regression_vs_best_conventional']>.01 and x['return_gain_vs_best_conventional']<.01 for x in seedwise.values())
+    assert not summary['decision']['development_GO']
+    return {'status':'INDEPENDENT_READ_ONLY_AUDIT_PASS','source':'existing output files only',
+            'worlds':24,'events_per_model':4728,'learner_arms':len(ARMS),
+            'result_sha256':hashlib.sha256(raw).hexdigest(),
+            'csv_sha256':hashlib.sha256(Path(csv_file).read_bytes()).hexdigest(),
+            'exact_ablation_checkpoint_parity':True,'seedwise':seedwise,
+            'original_primary_consumed':False,'scientific_pass':False}
+
+if __name__=='__main__':
+    import sys
+    if len(sys.argv)!=3:raise SystemExit('usage: audit_result.py full_results.json world_metrics.csv')
+    print(json.dumps(audit(sys.argv[1],sys.argv[2]),indent=2,sort_keys=True))

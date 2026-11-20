@@ -1,0 +1,101 @@
+"""Read-only LR-92BD score/manifest/protocol custody audit.
+
+Does not import the learner or rerun the scored evaluation. Recomputes
+macro seed statistics and frozen attribution decisions from saved records.
+"""
+from __future__ import annotations
+import hashlib,json,math
+from pathlib import Path
+from worlds import worlds,SEEDS
+
+HERE=Path(__file__).resolve().parent
+RESULT_SHA256='a67d77b15f8a6e59704ac8449e8ba3e36a04b63e22baa218482a85b556fd7846'
+ARMS=('dual_active','dual_passive','dual_coverage','exact_bayes_active',
+      'beta_full_coverage','beta_window32_coverage','beta_decay_coverage',
+      'logistic_coverage','no_learning_random')
+CONTROLS=('exact_bayes_active','beta_full_coverage','beta_window32_coverage',
+          'beta_decay_coverage','logistic_coverage')
+
+
+def audit(result_path):
+    raw=Path(result_path).read_bytes()
+    assert hashlib.sha256(raw).hexdigest()==RESULT_SHA256,'RESULT_SHA_DRIFT'
+    results=json.loads(raw)
+    proto=json.loads((HERE/'frozen_dev_protocol.json').read_text())
+    manifest=json.loads((HERE/'development_manifest.json').read_text())
+    assert proto['results_inspected_at_freeze'] is False
+    assert hashlib.sha256((HERE/'development_manifest.json').read_bytes()).hexdigest()==proto['manifest_sha256']
+    for name,digest in proto['source_sha256'].items():
+        assert hashlib.sha256((HERE/name).read_bytes()).hexdigest()==digest,('SOURCE_DRIFT',name)
+    assert len(manifest)==results['worlds']==24 and len(results['rows'])==24
+    assert tuple(results['arms'])==ARMS
+    assert results['schema']=='lr92bd.causal-recovery-attribution.v1'
+    assert results['frozen_candidate_sha256']==proto['source_sha256']['mechanism.py']
+    for name in ('native_model_executed','protected_first_use','owner_checkpoint_changed','scientific_gain_claimed'):
+        assert results[name] is False,('AUTHORITY_FLAG',name)
+    assert results['diagnostic_classification_only'] is True
+    assert results['episodes_per_arm']==proto['experiment']['episodes_per_arm']
+    found=set();events=0;oracle_bounds=0
+    for row in results['rows']:
+        key=(row['seed'],row['family'],row['rep'])
+        assert key not in found,('DUPLICATE_WORLD',key)
+        found.add(key)
+        man=next(x for x in manifest if (x['seed'],x['family'],x['rep'])==key)
+        for k in ('public_input_sha256','truth_commitment_sha256','dwell'):
+            assert list(row[k])==list(man[k]) if k=='dwell' else row[k]==man[k],('MANIFEST_DRIFT',key,k)
+        assert row['episodes']==man['episodes']
+        assert set(row['models'])==set(ARMS)
+        events+=row['episodes']
+        for arm,model in row['models'].items():
+            assert model['updates']==row['episodes'] and model['checkpoint_bytes']>0
+            assert len(model['checkpoint_sha256'])==64
+            for metric in ('A','B','return16','return_all'):
+                assert 0<=model[metric]<=1 and math.isfinite(model[metric])
+            if arm.startswith('dual_'):
+                assert model['checkpoint_bytes']<=1056
+                assert len(model['cold'])==2
+                for c in model['cold']:
+                    assert len(c['sha256'])==64 and 0<c['bytes']<=1056
+                for phase in ('A','B','return16','return_all'):
+                    assert model['oracle_'+phase]<=model[phase]+1e-12
+                assert 0<=model['first16_wrong_slot_fraction']<=1
+                assert 0<=model['first16_two_trained_slots_fraction']<=1
+                assert model['return_boundary']['phase']=='return'
+                oracle_bounds+=1
+    assert len(found)==24 and events==results['episodes_per_arm']==5263
+    assert len(results['seed_summary'])==len(results['seed_attribution'])==len(SEEDS)
+    fresh={}
+    for seed in SEEDS:
+        cur=[r for r in results['rows'] if r['seed']==seed]
+        assert len(cur)==12
+        stored=results['seed_summary'][str(seed)]
+        for arm in ARMS:
+            for key in ('A','B','return16','return_all'):
+                avg=sum(r['models'][arm][key] for r in cur)/12
+                assert abs(avg-stored[arm][key])<=1e-12,('SEED_MACRO',seed,arm,key)
+            if arm.startswith('dual_'):
+                for key in ('oracle_return16','oracle_B','first16_wrong_slot_fraction',
+                            'first16_two_trained_slots_fraction'):
+                    v=sum(r['models'][arm][key] for r in cur)/12
+                    assert abs(v-stored[arm][key])<=1e-12
+        c=stored['dual_active'];best=min(stored[a]['return16'] for a in CONTROLS)
+        actual=c['return16'];oracle=c['oracle_return16']
+        classification=('ARCHIVE_ACCURACY_LIMITED' if oracle>best+.03 else
+            'IDENTIFICATION_LIMITED' if actual-oracle>=.03 and oracle<=best+.01 else
+            'MIXED_OR_INDETERMINATE')
+        saved=results['seed_attribution'][str(seed)]
+        assert saved['classification']==classification,('FROZEN_CLASSIFICATION',seed)
+        for name,expected in [('control_best_return16',best),('actual_return16',actual),
+            ('oracle_return16',oracle),('identification_gap',actual-oracle),
+            ('representation_gap',oracle-best)]:
+            assert abs(saved[name]-expected)<1e-12,('ATTRIBUTION_NUMBER',seed,name)
+        fresh[str(seed)]=classification
+    return {'status':'PASS','result_sha256':RESULT_SHA256,'worlds':24,
+        'episodes_per_arm':5263,'model_world_records':216,'oracle_lower_bound_records':oracle_bounds,
+        'attribution':fresh,'audit_only':True,'protected_first_use':False,
+        'scientific_gain_verified':False}
+
+if __name__=='__main__':
+    import sys
+    if len(sys.argv)!=2:raise SystemExit('usage: audit_saved.py saved_development_results.json')
+    print(json.dumps(audit(sys.argv[1]),sort_keys=True))

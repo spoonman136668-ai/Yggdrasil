@@ -1,0 +1,191 @@
+"""LR-92AQ variable-switch synthetic DEVELOPMENT source, not scientific first-use.
+
+Fixes LR-92AP's fixed-schedule shortcut by using independent, evaluator-only
+A/B/A dwell times. Public learners receive only public clock, episode boundary,
+current action and subsequent outcome; they never receive hidden phase/switch
+metadata, noise draws, latent relation tables, or a post-switch reset cue.
+No protected primary seed generator is defined or called by this module.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, fields
+import hashlib
+import random
+
+DEVELOPMENT_SEEDS = (73004303, 73004304)  # already disclosed LR-92AP DEV only
+FORBIDDEN_PRIOR_PRIMARY = (929209101, 929209102, 929209103)
+FAMILIES = ('xor', 'and', 'random14')
+WORLDS_PER_SEED_FAMILY = 4
+PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+EPISODE_LENGTH = 7
+MIN_DWELL, MAX_DWELL = 48, 88
+NOISE = 0.15
+
+
+@dataclass(frozen=True)
+class PublicObservation:
+    index: int  # time may be known; with random dwell time it is NOT a phase oracle
+    episode_start: bool
+    action: int
+    outcome: int  # only disclosed to the model AFTER forecasting
+
+
+@dataclass(frozen=True)
+class HiddenEvaluation:
+    """Evaluator-only object; NEVER pass to model.predict or .observe_step."""
+    family: str
+    development_seed: int
+    world_index: int
+    dwell_lengths: tuple[int, int, int]
+    phases: tuple[str, ...]
+    bins: tuple[int, ...]
+    clean_A: tuple[int, ...]
+    clean_B: tuple[int, ...]
+    flipped: tuple[int, ...]
+
+
+@dataclass(frozen=True)
+class World:
+    public: tuple[PublicObservation, ...]
+    evaluator_only: HiddenEvaluation
+
+    def public_tape_hash(self) -> str:
+        return hashlib.sha256(bytes(z for e in self.public for z in
+                                    (int(e.episode_start), e.action, e.outcome))).hexdigest()
+
+
+def _rng(seed: int, family: str, world_index: int, salt: int) -> random.Random:
+    family_code = FAMILIES.index(family)
+    return random.Random(((seed << 11) ^ (world_index << 17) ^
+                          (family_code << 25) ^ salt) & ((1 << 64) - 1))
+
+
+def _safe_inputs(seed, family, world_index):
+    if (type(seed) is not int or seed not in DEVELOPMENT_SEEDS or
+        type(world_index) is not int or not 0 <= world_index < WORLDS_PER_SEED_FAMILY or
+        type(family) is not str or family not in FAMILIES):
+        raise ValueError('LR92AQ_DEV_SCOPE_ONLY')
+
+
+def _lengths(seed, family, index) -> tuple[int, int, int]:
+    rng = _rng(seed, family, index, 0xD5A677)
+    while True:
+        lengths = tuple(rng.randint(MIN_DWELL, MAX_DWELL) for _ in range(3))
+        # All public episode starts are clock-driven and independent of phase.
+        # Prevent either switch itself from coinciding with a public reset.
+        if lengths[0] % EPISODE_LENGTH and sum(lengths[:2]) % EPISODE_LENGTH:
+            return lengths
+
+
+def _clean_A(family, bin_id, mask):
+    prev, prev2 = PATTERNS[bin_id // 2]
+    action = bin_id % 2
+    if family == 'xor':
+        return action ^ (0 if prev == 2 else prev) ^ (0 if prev2 == 2 else prev2)
+    if family == 'and':
+        return action & (0 if prev == 2 else prev) & (0 if prev2 == 2 else prev2)
+    return (mask >> bin_id) & 1
+
+
+def development_world(seed: int, family: str, world_index: int) -> World:
+    """Only exposed development fixtures. No prospective/protected source exists."""
+    _safe_inputs(seed, family, world_index)
+    dwell = _lengths(seed, family, world_index)
+    action_rng = _rng(seed, family, world_index, 0xAC710)
+    noise_rng = _rng(seed, family, world_index, 0xF1105)
+    relation_mask = _rng(seed, family, world_index, 0xABC14).getrandbits(14)
+    start_B, return_A = dwell[0], dwell[0] + dwell[1]
+    public = []
+    phases, bins, a_clean, b_clean, flips = [], [], [], [], []
+    history = (2, 2)
+    for i in range(sum(dwell)):
+        episode_start = i % EPISODE_LENGTH == 0
+        if episode_start:
+            history = (2, 2)
+        action = action_rng.randrange(2)
+        bin_id = 2 * PATTERNS.index(history) + action
+        ca = _clean_A(family, bin_id, relation_mask)
+        cb = 1 - ca
+        # Phase identity is evaluator-only; action/noise RNGs do not depend on phase.
+        phase = 'A' if i < start_B else ('B' if i < return_A else 'Areturn')
+        flip = int(noise_rng.random() < NOISE)
+        outcome = (cb if phase == 'B' else ca) ^ flip
+        public.append(PublicObservation(i, episode_start, action, outcome))
+        phases.append(phase)
+        bins.append(bin_id)
+        a_clean.append(ca)
+        b_clean.append(cb)
+        flips.append(flip)
+        history = (action, history[0])
+    evaluation = HiddenEvaluation(family, seed, world_index, dwell, tuple(phases),
+                                  tuple(bins), tuple(a_clean), tuple(b_clean), tuple(flips))
+    return World(tuple(public), evaluation)
+
+
+def fork_continuing_B(world: World) -> World:
+    """Counterfactual continuation with EXACT same public prefix/actions/noise.
+
+    Differs only in the evaluator's latent phase AFTER the B-to-A boundary.
+    Used to verify cold no-cue indistinguishability, NOT train models.
+    """
+    boundary = sum(world.evaluator_only.dwell_lengths[:2])
+    evaluator = world.evaluator_only
+    new_public = list(world.public)
+    new_phases = list(evaluator.phases)
+    for i in range(boundary, len(new_public)):
+        event = new_public[i]
+        new_public[i] = PublicObservation(event.index, event.episode_start,
+            event.action, evaluator.clean_B[i] ^ evaluator.flipped[i])
+        new_phases[i] = 'Bcontinues'
+    return World(tuple(new_public), HiddenEvaluation(evaluator.family,
+        evaluator.development_seed, evaluator.world_index,
+        evaluator.dwell_lengths, tuple(new_phases), evaluator.bins,
+        evaluator.clean_A, evaluator.clean_B, evaluator.flipped))
+
+
+def score_public_world(world: World, learner):
+    """Prequential public-only adapter: no hidden phase passed to learner.
+
+    Learner must implement .predict(address, action), .observe_step(address,
+    action, outcome), and .end_episode(). Outcomes become available only after
+    each forecast. The evaluator may compute phase-indexed losses afterwards.
+    """
+    squared = []
+    for observation in world.public:
+        if observation.episode_start:
+            learner.end_episode()
+        p = learner.predict(0, observation.action)
+        if type(p) not in (int, float) or not 0.0 <= p <= 1.0:
+            raise ValueError('LR92AQ_INVALID_FORECAST')
+        squared.append((p - observation.outcome)**2)
+        learner.observe_step(0, observation.action, observation.outcome)
+    lengths = world.evaluator_only.dwell_lengths
+    first, second = lengths[0], sum(lengths[:2])
+    return {
+        'B': sum(squared[first:second]) / lengths[1],
+        'A_return_early16': sum(squared[second:second+16]) / 16,
+        'A_return_remaining': sum(squared[second+16:]) / (lengths[2]-16),
+        'all': sum(squared) / len(squared),
+        'observations': len(squared),
+        'updates': len(squared),
+        'input_sha256': world.public_tape_hash(),
+    }
+
+
+def development_manifest():
+    """No scored protected world. Only public fixture summary and schedule hashes."""
+    rows = []
+    for seed in DEVELOPMENT_SEEDS:
+        for family in FAMILIES:
+            for i in range(WORLDS_PER_SEED_FAMILY):
+                world = development_world(seed, family, i)
+                hidden = world.evaluator_only
+                rows.append({'seed':seed,'family':family,'world_index':i,
+                    'lengths':hidden.dwell_lengths, 'public_input_sha256':world.public_tape_hash(),
+                    'visited_bins':len(set(hidden.bins))})
+    return tuple(rows)
+
+
+if __name__ == '__main__':
+    import json
+    print(json.dumps(development_manifest(), indent=2, sort_keys=True))

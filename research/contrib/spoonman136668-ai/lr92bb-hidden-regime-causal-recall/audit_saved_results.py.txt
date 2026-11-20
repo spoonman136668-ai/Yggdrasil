@@ -1,0 +1,129 @@
+"""Read-only LR-92BB evidence audit. Does NOT run any candidate learner.
+
+Reconstructs exact Bayesian and conventional per-event prequential forecasts
+from the frozen public generator independently of the comparison harness.
+"""
+from __future__ import annotations
+import hashlib,json,math
+from pathlib import Path
+from worlds import worlds,SEEDS,FAMILIES,REPS
+from mechanism import PROGRAMS,FEATURES
+
+HERE=Path(__file__).parent
+STRONG=('grammar_bayes','grammar_static','beta_full','beta_window32',
+        'beta_window64','beta_decay','logistic_poly')
+ALL=('causal_recall','grammar_bayes','grammar_static','beta_full','beta_window32',
+     'beta_window64','beta_decay','logistic_poly','single_sparse','shuffled_context','no_learning')
+
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+def conventional_or_symbolic(world,arm):
+    history=[]; weights=[1./len(PROGRAMS)]*len(PROGRAMS) if arm.startswith('grammar') else None
+    z=[0.]*15 if arm=='logistic_poly' else None
+    hazard=1/48 if arm=='grammar_bayes' else 0.
+    err={'A':[],'B':[],'return':[]};a,b,c=world.dwell
+    for i,event in enumerate(world.events):
+        ctx=event.ctx(); y=event.y
+        if arm.startswith('grammar'):
+            one=sum(p for p,mask in zip(weights,PROGRAMS) if (mask>>ctx)&1)
+            forecast=.07+.86*((1-hazard)*one+hazard*.5)
+            prior=[(1-hazard)*p+hazard/len(PROGRAMS) for p in weights]
+            posterior=[p*(.93 if ((mask>>ctx)&1)==y else .07) for p,mask in zip(prior,PROGRAMS)]
+            norm=sum(posterior);weights=[p/norm for p in posterior]
+        elif arm.startswith('beta'):
+            k=int(arm.split('window')[-1]) if arm.startswith('beta_window') else 0
+            rows=history[-k:] if k else history
+            numerator=1.;denominator=2.
+            for age,(old_ctx,old_y) in enumerate(reversed(rows)):
+                if old_ctx!=ctx:continue
+                w=.98**age if arm=='beta_decay' else 1.
+                numerator+=w*old_y;denominator+=w
+            forecast=numerator/denominator
+        elif arm=='logistic_poly':
+            def prob(context):
+                val=sum(a*b for a,b in zip(z,FEATURES[context]))
+                return 1/(1+math.exp(-max(-20,min(20,val))))
+            def update(context,label):
+                diff=label-prob(context)
+                for j,f in enumerate(FEATURES[context]):z[j]+=.14*diff*f-.00012*z[j]
+            forecast=prob(ctx)
+            update(ctx,y)
+            if (len(history)+1)%8==0:
+                for _ in range(6):
+                    for hctx,hy in (*history,(ctx,y)):update(hctx,hy)
+        else:raise ValueError('AUDIT_ARM')
+        phase='A' if i<a else 'B' if i<a+b else 'return'
+        err[phase].append((forecast-y)**2)
+        history.append((ctx,y))
+    return {'A':sum(err['A'])/len(err['A']),
+            'B':sum(err['B'])/len(err['B']),
+            'return16':sum(err['return'][:16])/16,
+            'return_all':sum(err['return'])/len(err['return'])}
+
+def audit(path):
+    source_lock=json.loads((HERE/'frozen_dev_protocol.json').read_text())
+    assert source_lock['outcome_read_at_freeze'] is False
+    assert source_lock['worlds']['seeds']==list(SEEDS)
+    for file,digest in source_lock['source_sha256'].items():
+        if sha(HERE/file)!=digest:raise ValueError('SOURCE_LOCK_DRIFT:'+file)
+    if sha(HERE/'development_manifest.json')!=source_lock['manifest_sha256']:
+        raise ValueError('MANIFEST_DRIFT')
+    raw=Path(path).read_bytes();r=json.loads(raw)
+    if r['schema']!='lr92bb.no-public-regime-causal-recall.v1':raise ValueError('SCHEMA')
+    if r['native_model_executed'] or r['protected_first_use'] or r['owner_checkpoint_changed']:
+        raise ValueError('AUTHORITY_DRIFT')
+    if r['worlds']!=24 or r['events_per_arm']!=5496 or len(r['rows'])!=24:
+        raise ValueError('COUNT_DRIFT')
+    manifest=json.loads((HERE/'development_manifest.json').read_text())
+    actual=worlds();seen=set();checked=0;cold=0;switches=[];totalbytes=[]
+    for row,w,meta in zip(r['rows'],actual,manifest):
+        key=(row['seed'],row['family'],row['rep'])
+        if key in seen or key!=(w.seed,w.family,w.rep):raise ValueError('WORLD_ORDER')
+        seen.add(key)
+        if row['public_sha256']!=w.public_sha256 or row['public_sha256']!=meta['public_sha256']:
+            raise ValueError('WORLD_SOURCE_DRIFT')
+        if row['events']!=len(w.events) or list(row['dwell'])!=list(w.dwell):raise ValueError('WORLD_PHASE')
+        if set(row['models'])!=set(ALL):raise ValueError('ARM_SET')
+        for arm,model in row['models'].items():
+            if model['updates']!=len(w.events) or model['checkpoint_bytes']<=0 or len(model['checkpoint_sha256'])!=64:
+                raise ValueError('CHECKPOINT_CUSTODY')
+            for m in ('A','B','return16','return_all'):
+                if type(model[m]) not in (float,int) or not math.isfinite(model[m]) or not 0<=model[m]<=1:
+                    raise ValueError('SCORE_RANGE')
+            if arm in STRONG:
+                expected=conventional_or_symbolic(w,arm)
+                for m,v in expected.items():
+                    if not math.isclose(v,model[m],rel_tol=0,abs_tol=2e-11):
+                        raise ValueError(f'CONTROL_MISMATCH:{key}:{arm}:{m}:{v}:{model[m]}')
+                checked+=1
+        candidate=row['models']['causal_recall'];totalbytes.append(candidate['checkpoint_bytes'])
+        if candidate['checkpoint_bytes']>1056:raise ValueError('BUDGET')
+        if set(candidate['cold'])!=set((str(w.dwell[0]),str(w.dwell[0]+w.dwell[1]))):
+            raise ValueError('COLD_RESTORE_MISSING')
+        if any(len(v)!=64 for v in candidate['cold'].values()):raise ValueError('COLD_SHA')
+        cold+=1;switches.append(tuple(candidate['observed_switches']))
+    if len(seen)!=24 or checked!=24*len(STRONG) or cold!=24:raise ValueError('INCOMPLETE_AUDIT')
+    for s in SEEDS:
+        group=[a for a in r['rows'] if a['seed']==s]
+        if len(group)!=12:raise ValueError('SEED_GROUP')
+        for arm in ALL:
+            for metric in ('A','B','return16','return_all'):
+                m=sum(a['models'][arm][metric] for a in group)/12
+                if abs(m-r['seed_summary'][str(s)][arm][metric])>2e-11:raise ValueError('MACRO_MISMATCH')
+        x=r['seed_summary'][str(s)]
+        go=x['causal_recall']['return16']<=min(x[a]['return16'] for a in STRONG)-.01 and x['causal_recall']['B']<=min(x[a]['B'] for a in STRONG)+.01
+        if go!=r['seed_go'][str(s)]:raise ValueError('SEED_GATE_MISMATCH')
+    status='DEVELOPMENT_GO' if all(r['seed_go'].values()) else 'DEVELOPMENT_NO_GO'
+    if status!=r['status']:raise ValueError('DECISION_FORGED')
+    return {'schema':'lr92bb.readonly-independent-results-audit.v1','audit':'PASS',
+            'results_sha256':hashlib.sha256(raw).hexdigest(),'worlds':24,
+            'events_per_arm':5496,'arms':len(ALL),'strong_controls_per_world_recomputed':checked,
+            'candidate_cold_restores_checked':cold,'candidate_max_checkpoint_bytes':max(totalbytes),
+            'worlds_with_at_least_two_switches':sum(len(s)>=2 for s in switches),
+            'worlds_with_early_false_switch':sum(bool(s and s[0]<row['dwell'][0]) for s,row in zip(switches,r['rows'])),
+            'primary_status':status,'native_executed':False,'protected_first_use':False}
+
+if __name__=='__main__':
+    import sys
+    if len(sys.argv)!=2:raise SystemExit('usage: audit_saved_results.py results.json')
+    print(json.dumps(audit(sys.argv[1]),indent=2,sort_keys=True))

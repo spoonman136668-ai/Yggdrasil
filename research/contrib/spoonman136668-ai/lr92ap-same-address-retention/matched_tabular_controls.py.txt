@@ -1,0 +1,169 @@
+"""LR-92AP external-development conventional 14-bin causal-memory controls.
+
+No hidden regime labels; all learning uses public action/outcome after a forecast.
+Two prior public actions define seven reachable history patterns. Exactly sixteen
+independent addresses (7 active, 9 retained) are supported. No native integration.
+"""
+from __future__ import annotations
+import hashlib
+
+PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+
+
+class _Base:
+    def __init__(self):
+        self._counts = bytearray(448)
+        self._history = bytearray([2, 2] * 16)
+
+    @staticmethod
+    def _slot(address: int, retained: bool) -> int:
+        if type(retained) is not bool or type(address) is not int or not 0 <= address < (9 if retained else 7):
+            raise ValueError('LRC_INVALID_ADDRESS')
+        return address + (7 if retained else 0)
+
+    @staticmethod
+    def _bit(value: int) -> int:
+        if type(value) is not int or value not in (0, 1):
+            raise ValueError('LRC_INVALID_BIT')
+        return value
+
+    def _code(self, slot: int, action: int) -> int:
+        hist = tuple(self._history[slot * 2:slot * 2+2])
+        try:
+            pattern = PATTERNS.index(hist)
+        except ValueError:
+            raise ValueError('LRC_INVALID_HISTORY') from None
+        return pattern * 4 + action * 2
+
+    def predict(self, address: int, action: int, *, retained: bool = False) -> float:
+        slot = self._slot(address, retained)
+        code = self._code(slot, self._bit(action))
+        pos = slot * 28 + code
+        n0, n1 = self._counts[pos], self._counts[pos+1]
+        return (n1 + 1.0) / (n0 + n1 + 2.0)
+
+    def _advance(self, slot: int, action: int) -> None:
+        self._history[slot*2+1] = self._history[slot*2]
+        self._history[slot*2] = action
+
+    def end_episode(self) -> None:
+        self._history[:] = bytes([2, 2] * 16)
+
+    def _validated(self, address, action, outcome, retained):
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        outcome = self._bit(outcome)
+        code = self._code(slot, action)
+        return slot, action, outcome, code
+
+
+class FullHistory14(_Base):
+    MAGIC = b'LRC1'
+    LEARNED_BYTES = 480
+    CHECKPOINT_BYTES = 4 + LEARNED_BYTES + 32
+
+    def observe_step(self, address: int, action: int, public_outcome: int, *, retained: bool = False) -> None:
+        slot, action, outcome, code = self._validated(address, action, public_outcome, retained)
+        pos = slot * 28 + code + outcome
+        self._counts[pos] = min(255, self._counts[pos] + 1)
+        self._advance(slot, action)
+
+    def snapshot(self) -> bytes:
+        raw = self.MAGIC + self._counts + self._history
+        assert len(raw) == self.CHECKPOINT_BYTES-32
+        return bytes(raw) + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob: bytes) -> 'FullHistory14':
+        if type(blob) is not bytes or len(blob) != cls.CHECKPOINT_BYTES or blob[:4] != cls.MAGIC or hashlib.sha256(blob[:-32]).digest() != blob[-32:]:
+            raise ValueError('LRC_CHECKPOINT_REJECTED')
+        hist = blob[452:484]
+        if any(tuple(hist[2*i:2*i+2]) not in PATTERNS for i in range(16)):
+            raise ValueError('LRC_INVALID_HISTORY')
+        model = cls()
+        model._counts[:] = blob[4:452]
+        model._history[:] = hist
+        return model
+
+
+class FixedWindow14(_Base):
+    """Exact sliding 32-public-observation window PER ADDRESS, 5-bit packed.
+
+    Ring 16*32 event codes * 5 bits = 320 bytes, counts 448, history 32,
+    occupied lengths 16, write heads 16 => 832 persistent bytes <= 928.
+    Event encodes the action's TWO-PREVIOUS-action context and public outcome,
+    so evictions update precisely the original temporal bin.
+    """
+    MAGIC = b'LRC2'
+    LEARNED_BYTES = 832
+    CHECKPOINT_BYTES = 4 + LEARNED_BYTES + 32
+
+    def __init__(self):
+        super().__init__()
+        self._ring = bytearray(320)
+        self._lengths = bytearray(16)
+        self._heads = bytearray(16)
+
+    def _ring_read(self, slot: int, index: int) -> int:
+        bit = (slot * 32 + index) * 5
+        byte = bit // 8
+        shift = bit % 8
+        return ((self._ring[byte] | (self._ring[byte+1] << 8 if byte+1 < 320 else 0)) >> shift) & 31
+
+    def _ring_write(self, slot: int, index: int, code: int) -> None:
+        bit = (slot * 32 + index) * 5
+        byte = bit // 8
+        shift = bit % 8
+        mask = 31 << shift
+        pair = self._ring[byte] | ((self._ring[byte+1] if byte+1 < 320 else 0) << 8)
+        pair = (pair & ~mask) | (code << shift)
+        self._ring[byte] = pair & 255
+        if byte+1 < 320:
+            self._ring[byte+1] = (pair >> 8) & 255
+
+    def observe_step(self, address: int, action: int, public_outcome: int, *, retained: bool = False) -> None:
+        slot, action, outcome, code = self._validated(address, action, public_outcome, retained)
+        event = code + outcome
+        head = self._heads[slot]
+        if self._lengths[slot] == 32:
+            old = self._ring_read(slot, head)
+            if old >= 28 or self._counts[slot*28+old] == 0:
+                raise ValueError('LRC_INVALID_RING')
+            self._counts[slot*28+old] -= 1
+        else:
+            self._lengths[slot] += 1
+        self._ring_write(slot, head, event)
+        self._heads[slot] = (head + 1) % 32
+        self._counts[slot*28+event] += 1
+        self._advance(slot, action)
+
+    def snapshot(self) -> bytes:
+        raw = self.MAGIC + self._counts + self._history + self._ring + self._lengths + self._heads
+        assert len(raw) == self.CHECKPOINT_BYTES-32
+        return bytes(raw) + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob: bytes) -> 'FixedWindow14':
+        if type(blob) is not bytes or len(blob) != cls.CHECKPOINT_BYTES or blob[:4] != cls.MAGIC or hashlib.sha256(blob[:-32]).digest() != blob[-32:]:
+            raise ValueError('LRC_CHECKPOINT_REJECTED')
+        m = cls()
+        m._counts[:] = blob[4:452]
+        m._history[:] = blob[452:484]
+        m._ring[:] = blob[484:804]
+        m._lengths[:] = blob[804:820]
+        m._heads[:] = blob[820:836]
+        if any(tuple(m._history[2*i:2*i+2]) not in PATTERNS for i in range(16)):
+            raise ValueError('LRC_INVALID_HISTORY')
+        for slot in range(16):
+            n, head = m._lengths[slot], m._heads[slot]
+            if n > 32 or head > 31 or (n < 32 and head != n):
+                raise ValueError('LRC_INVALID_RING')
+            rebuilt = [0]*28
+            for i in range(n):
+                event = m._ring_read(slot, i)
+                if event >= 28:
+                    raise ValueError('LRC_INVALID_RING')
+                rebuilt[event] += 1
+            if bytes(rebuilt) != m._counts[slot*28:slot*28+28]:
+                raise ValueError('LRC_INVALID_COUNTS')
+        return m

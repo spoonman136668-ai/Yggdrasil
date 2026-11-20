@@ -1,0 +1,20 @@
+import unittest,copy,json
+from pathlib import Path
+from audit_saved import audit
+ROOT=Path(__file__).resolve().parent
+
+class TestSavedAudit(unittest.TestCase):
+    def test_clean_saved_audit(self):self.assertEqual(audit(ROOT)['audit'],'PASS')
+    def altered(self,mutate):
+        v=json.loads((ROOT/'development_result.json').read_text());mutate(v)
+        with self.assertRaises(ValueError):audit(ROOT,v)
+    def test_refuse_forged_go(self):self.altered(lambda v:v.update(status='DEVELOPMENT_GO'))
+    def test_refuse_missing_world(self):self.altered(lambda v:v['rows'].pop())
+    def test_refuse_changed_world_hash(self):self.altered(lambda v:v['rows'][0].update(public_input_sha256='0'*64))
+    def test_refuse_false_primary_first_use(self):self.altered(lambda v:v.update(protected_first_use=True))
+    def test_refuse_changed_seed_score(self):self.altered(lambda v:v['seed_summary']['95820101']['dual_active'].update(return16=0.0))
+    def test_refuse_checkpoint_absence(self):self.altered(lambda v:v['rows'][0]['models']['dual_active'].update(cold={}))
+    def test_refuse_oversize_checkpoint(self):self.altered(lambda v:v['rows'][0]['models']['dual_active'].update(checkpoint_bytes=100000))
+    def test_refuse_fewer_updates(self):self.altered(lambda v:v['rows'][0]['models']['dual_active'].update(updates=1))
+
+if __name__=='__main__':unittest.main()

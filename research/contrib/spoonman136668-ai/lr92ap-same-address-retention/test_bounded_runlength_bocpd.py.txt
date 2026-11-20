@@ -1,0 +1,202 @@
+"""LR-92AP independent fixture-only tests; never import protected primary."""
+import hashlib
+import math
+import random
+import unittest
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14 as Learner
+
+DEV_SEEDS=(73004303,73004304)
+
+
+def fixture(seed):
+    if seed not in DEV_SEEDS:
+        raise ValueError('LRB_PROTECTED_SEED_FORBIDDEN')
+    rng=random.Random(seed)
+    for phase in ('A','B','Areturn'):
+        for t in range(64):
+            action=rng.randrange(2)
+            outcome=int((action if phase!='B' else 1-action) ^ (rng.random()<0.15))
+            yield phase,t,action,outcome
+
+
+def evaluate(seed):
+    model=Learner()
+    losses={'B':[], 'Areturn':[]}
+    trace=hashlib.sha256()
+    cold=None
+    for phase,t,action,outcome in fixture(seed):
+        model.end_episode()  # matches other released single-bin fixtures
+        if phase=='Areturn' and t==0:
+            cold=model.snapshot()
+        pred=model.predict(0,action)
+        if phase=='B' or (phase=='Areturn' and t<16):
+            losses[phase].append((pred-outcome)**2)
+        trace.update(bytes((action,outcome)))
+        model.observe_step(0,action,outcome)
+    return ({k:sum(v)/len(v) for k,v in losses.items()},trace.hexdigest(),
+            hashlib.sha256(model.snapshot()).hexdigest(),
+            hashlib.sha256(cold).hexdigest())
+
+
+class BOCPDTests(unittest.TestCase):
+    def test_initial_budget_and_roundtrip(self):
+        model=Learner()
+        self.assertLessEqual(model.LEARNED_BYTES,928)
+        self.assertEqual(model.LEARNED_BYTES,896)
+        self.assertEqual(model.CHECKPOINT_BYTES,932)
+        self.assertEqual(len(model.snapshot()),932)
+        self.assertEqual(model.snapshot(),Learner.restore(model.snapshot()).snapshot())
+        for s in range(16):
+            self.assertEqual(sum(model._posterior[s*32:s*32+32]),255)
+            self.assertEqual(model._posterior[s*32],255)
+        self.assertEqual(model.predict(0,0),0.5)
+
+    def test_beta_posterior_and_changed_context(self):
+        m=Learner()
+        m.end_episode();m.observe_step(0,1,1)
+        m.end_episode()
+        self.assertAlmostEqual(m.predict(0,1),m.HAZARD*0.5+(1-m.HAZARD)*2/3)
+        self.assertAlmostEqual(m.predict(0,0),1/2)
+        self.assertEqual(m._posterior[1],255)
+        self.assertEqual(m._posterior[0],0)
+
+    def test_independent_short_tape_partition_enumeration(self):
+        # Independent exact Beta-Bernoulli partition marginalization; the
+        # quantized posterior is expected to agree only approximately.
+        import math
+        tape=((0,1),(1,0),(0,0),(1,1),(1,1),(0,1))
+        h=Learner.HAZARD
+        model=Learner()
+        for n in range(len(tape)+1):
+            for requested in (0,1):
+                if n==0:
+                    expected=0.5
+                else:
+                    weights=[];means=[]
+                    for mask in range(1<<(n-1)):
+                        boundaries=[0]+[j for j in range(1,n) if mask & (1<<(j-1))]+[n]
+                        switches=len(boundaries)-2
+                        mass=h**switches*(1-h)**((n-1)-switches)
+                        for lo,hi in zip(boundaries[:-1],boundaries[1:]):
+                            for act in (0,1):
+                                ys=[y for a,y in tape[lo:hi] if a==act]
+                                pos=sum(ys);neg=len(ys)-pos
+                                mass*=math.exp(math.lgamma(pos+1)+math.lgamma(neg+1)-math.lgamma(len(ys)+2))
+                        recent=[y for a,y in tape[boundaries[-2]:n] if a==requested]
+                        means.append((1+sum(recent))/(2+len(recent)))
+                        weights.append(mass)
+                    expected=h*0.5+(1-h)*sum(w*v for w,v in zip(weights,means))/sum(weights)
+                model.end_episode()
+                self.assertAlmostEqual(model.predict(0,requested),expected,delta=0.015)
+            if n<len(tape):
+                a,y=tape[n];model.end_episode();model.observe_step(0,a,y)
+
+    def test_posterior_support_memory_and_mutation_free_predict(self):
+        m=Learner()
+        for t in range(210):
+            m.end_episode()
+            snap=m.snapshot()
+            p=m.predict(0,t%2)
+            self.assertTrue(0.0<=p<=1.0 and math.isfinite(p))
+            self.assertEqual(m.snapshot(),snap)
+            m.observe_step(0,t%2,(t//19)%2)
+            self.assertEqual(sum(m._posterior[:32]),255)
+            self.assertEqual(m._length[0],min(32,t+1))
+            self.assertEqual(m.snapshot(),Learner.restore(m.snapshot()).snapshot())
+
+    def test_public_invalid_input_atomic(self):
+        m=Learner()
+        for i in range(16):
+            m.observe_step(i if i<7 else i-7, i%2, i%2,retained=i>=7)
+        original=m.snapshot()
+        for a,b,y,retained in ((7,0,1,False),(9,0,1,True),(-1,0,1,False),
+                                (0,2,1,False),(0,1,2,False),(0,1,1,1),
+                                (True,1,0,False),(0,1,True,False)):
+            with self.assertRaises(ValueError):m.observe_step(a,b,y,retained=retained)
+            self.assertEqual(m.snapshot(),original)
+        for a,b,retained in ((7,0,False),(0,2,False),(0,1,1)):
+            with self.assertRaises(ValueError):m.predict(a,b,retained=retained)
+            self.assertEqual(m.snapshot(),original)
+
+    def test_checkpoint_tampering_even_rehashed(self):
+        m=Learner()
+        for t in range(61):m.observe_step(0,t%2,t%2)
+        for bad_index,bad_value,err in ((4,9,'INVALID_HISTORY'),(356,99,'INVALID_RING'),
+                                         (372,99,'INVALID_RING'),(388,255,'INVALID_POSTERIOR'),
+                                         (36,255,'INVALID_EVENT')):
+            b=bytearray(m.snapshot());b[bad_index]=bad_value
+            b[-32:]=hashlib.sha256(b[:-32]).digest()
+            with self.assertRaisesRegex(ValueError,err):Learner.restore(bytes(b))
+        c=bytearray(m.snapshot());c[5]^=1
+        with self.assertRaisesRegex(ValueError,'CHECKPOINT_REJECTED'):
+            Learner.restore(bytes(c))
+        with self.assertRaises(ValueError):Learner.restore(m.snapshot()[:-1])
+
+    def test_all_addresses_independent_and_contexts(self):
+        m=Learner()
+        for round_id in range(47):
+            for s in range(16):
+                retained=s>=7
+                address=s-7 if retained else s
+                # Include the full 7 prior-action contexts: never reset.
+                action=((round_id*3+s//3)//2)%2
+                m.observe_step(address,action,int(s%2==0),retained=retained)
+        snap=m.snapshot()
+        restored=Learner.restore(snap)
+        self.assertEqual(snap,restored.snapshot())
+        for s in range(16):
+            retained=s>=7;addr=s-7 if retained else s
+            for act in (0,1):
+                self.assertEqual(m.predict(addr,act,retained=retained),
+                                 restored.predict(addr,act,retained=retained))
+        self.assertEqual(sum(m._length),16*32)
+
+    def test_ring_pack_decode_and_context_bins(self):
+        m=Learner()
+        for s in range(16):
+            for t in range(32):
+                m._ring_write(s,t,(s*3+t*7)%28)
+        for s in range(16):
+            for t in range(32):
+                self.assertEqual(m._ring_read(s,t),(s*3+t*7)%28)
+
+    def test_deterministic_replay_without_future_leakage(self):
+        a=Learner();b=Learner()
+        tape=[((i*3+(i//13))%2,(i*17+i//29)%2) for i in range(240)]
+        for i,(act,outcome) in enumerate(tape):
+            if i%13==0:a.end_episode();b.end_episode()
+            self.assertEqual(a.predict(0,act),b.predict(0,act))
+            a.observe_step(0,act,outcome)
+            b.observe_step(0,act,outcome)
+            if i==155:
+                b=Learner.restore(b.snapshot())
+        self.assertEqual(a.snapshot(),b.snapshot())
+
+    def test_unchanged_prefix_same_predictions(self):
+        tape=list(fixture(DEV_SEEDS[0]))
+        a=Learner();b=Learner()
+        for phase,t,act,outcome in tape[:110]:
+            a.end_episode();b.end_episode()
+            self.assertEqual(a.predict(0,act),b.predict(0,act))
+            a.observe_step(0,act,outcome)
+            b.observe_step(0,act,outcome)
+        self.assertEqual(a.snapshot(),b.snapshot())
+        # Their future labels are irrelevant before the new public observation.
+        before=a.snapshot()
+        self.assertEqual(a.predict(0,0),b.predict(0,0))
+        self.assertEqual(a.snapshot(),before)
+
+    def test_fixture_scope_digest_and_finite(self):
+        for seed in DEV_SEEDS:
+            out=evaluate(seed)
+            self.assertEqual(out,evaluate(seed))
+            for value in out[0].values():
+                self.assertTrue(math.isfinite(value) and 0.0<=value<=1.0)
+            self.assertEqual(set(out[0]),{'B','Areturn'})
+            self.assertEqual(len(out[1]),64)
+            self.assertEqual(len(out[2]),64)
+            self.assertEqual(len(out[3]),64)
+        for bad in (929209101,929209102,929209103,0):
+            with self.assertRaises(ValueError):list(fixture(bad))
+
+if __name__=='__main__':unittest.main()

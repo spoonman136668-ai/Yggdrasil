@@ -1,0 +1,138 @@
+"""LR-92AX: execute ACTUAL native NativeEpisodeExperience at pinned Amalgam SHA.
+
+Source-free isolated DEV experiment only, never owner-held lineage. The CLI
+requires a local exact-SHA repository checkout, does no network fetch, and
+refuses unpinned code or a different branch. It does not call source actors,
+make native controller changes, or load live owner weights.
+"""
+from __future__ import annotations
+import argparse,hashlib,json,subprocess,sys,time
+from pathlib import Path
+from worlds import SEEDS,FAMILIES,REPS,worlds
+
+SOURCE_SHA='86264b41a08d49f558418c0fba367f3a2636befa'
+SOURCE_TREE='ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5'
+SOURCE_BLOBS={
+ 'yggdrasil/native_episode_experience.py':'5a18b00a4c4131526e71f51d63dfd9eb9471c81e',
+ 'yggdrasil/native_context_basis.py':'d5159e9b7ba196ee283ae7140faa031d4b7c4291',
+ 'yggdrasil/native_relation_memory.py':'d92b82a33619b2240936be6cea1b8f2d0af17e7a',
+ 'yggdrasil/public_causal_cells.py':'de8722f38d987ef7bcb4b7a0c23466b8e6f25712',
+}
+ARMS=('native_exact_base','native_exact_stream','beta_full','beta_window32')
+
+def _git(repo,*args):
+    return subprocess.check_output(['git','-C',str(repo),*args],stderr=subprocess.DEVNULL).decode().strip()
+
+def require_native_checkout(repo):
+    repo=Path(repo).resolve()
+    if _git(repo,'rev-parse','HEAD')!=SOURCE_SHA or _git(repo,'rev-parse','HEAD^{tree}')!=SOURCE_TREE:
+        raise ValueError('LR92AX_NATIVE_SOURCE_SHA_DRIFT')
+    if _git(repo,'status','--porcelain'):
+        raise ValueError('LR92AX_DIRTY_NATIVE_CHECKOUT')
+    for path,sha in SOURCE_BLOBS.items():
+        if _git(repo,'hash-object',str(repo/path))!=sha or _git(repo,'rev-parse','HEAD:'+path)!=sha:
+            raise ValueError('LR92AX_NATIVE_BLOB_DRIFT:'+path)
+    return repo
+
+def import_native(repo):
+    require_native_checkout(repo)
+    if 'yggdrasil.native_episode_experience' in sys.modules:
+        raise ValueError('LR92AX_NATIVE_PREIMPORTED')
+    sys.path.insert(0,str(repo))
+    from yggdrasil.native_episode_experience import NativeEpisodeExperience
+    return NativeEpisodeExperience
+
+class Counts:
+    """Strong context/action full-history and window-32 tabular Beta(1,1) control."""
+    def __init__(self,window=None):self.window=window;self.obs=[]
+    def _prob(self,kind,ctx):
+        obs=self.obs[-(2*self.window):] if self.window is not None else self.obs
+        rows=[z for z in obs if z[0]==kind and z[1]==ctx]
+        return (1+sum(z[2] for z in rows))/(2+len(rows))
+    def transition(self,e):return self._prob('s',(e.views[0][0],e.views[0][1],e.x1))
+    def terminal(self,e):return self._prob('y',(e.views[0][0],e.views[0][1],e.x1,e.s2,e.x2))
+    def observe(self,e):
+        self.obs.append(('s',(e.views[0][0],e.views[0][1],e.x1),e.s2))
+        self.obs.append(('y',(e.views[0][0],e.views[0][1],e.x1,e.s2,e.x2),e.y))
+    def checkpoint(self):return json.dumps(self.obs,separators=(',',':')).encode()
+
+
+def stage_ranges(world):
+    a,b,c=world.dwell
+    return {'A':(0,a),'B':(a,a+b),'return_first16':(a+b,a+b+16),
+            'return_all':(a+b,a+b+c)}
+
+def evaluate(world,arm,native_cls):
+    native=arm.startswith('native_')
+    model=native_cls() if native else Counts(None if arm=='beta_full' else 32)
+    mid=sum(world.dwell[:2]); p_s=[];p_y=[];saved=None;prev=None;start=time.perf_counter()
+    for index,event in enumerate(world.public):
+        if arm=='native_exact_stream' and index==16:
+            model=model.begin_stream()
+        if index==mid:
+            saved=model.checkpoint()
+            if native:
+                clone=native_cls.restore(saved,hashlib.sha256(saved).hexdigest())
+                assert clone.checkpoint()==saved
+                forecast_method='context_forecast' if arm=='native_exact_stream' else 'forecast'
+                assert getattr(clone,forecast_method)(event.views[0],event.x1)==getattr(model,forecast_method)(event.views[0],event.x1)
+        if native:
+            forecast_method='context_forecast' if arm=='native_exact_stream' and index>=16 else 'forecast'
+            forecast=getattr(model,forecast_method)
+            pt=float(forecast(event.views[0],event.x1))
+            py=float(forecast(event.views[0],event.x1,event.s2,event.x2))
+        else:pt=model.transition(event);py=model.terminal(event)
+        if not (0<=pt<=1 and 0<=py<=1):raise ValueError('LR92AX_INVALID_FORECAST')
+        p_s.append((pt-event.s2)**2);p_y.append((py-event.y)**2)
+        if native:
+            successor=model.observe(event.identifier,event.views,event.row())
+            if successor is model:raise ValueError('LR92AX_MISSING_PUBLIC_UPDATE')
+            model=successor
+        else:model.observe(event)
+    final=model.checkpoint()
+    if native:
+        clone=native_cls.restore(final,hashlib.sha256(final).hexdigest())
+        assert clone.checkpoint()==final
+    scores={phase:{'terminal':sum(p_y[a:b])/(b-a),'transition':sum(p_s[a:b])/(b-a)}
+            for phase,(a,b) in stage_ranges(world).items()}
+    return {'arm':arm,'scores':scores,'updates':len(world.public),
+            'pre_return_sha256':hashlib.sha256(saved).hexdigest(),
+            'checkpoint_sha256':hashlib.sha256(final).hexdigest(),
+            'checkpoint_bytes':len(final),'elapsed_seconds':time.perf_counter()-start}
+
+def run(repo):
+    Native=import_native(repo)
+    records=[];all_worlds=worlds()
+    assert len(all_worlds)==24
+    for w in all_worlds:
+        models={name:evaluate(w,name,Native) for name in ARMS}
+        assert all(m['updates']==len(w.public) for m in models.values())
+        records.append({'seed':w.seed,'family':w.family,'rep':w.rep,
+                        'public_sha256':w.public_sha256,'lengths':w.dwell,'models':models})
+    def macro(arm,phase,target='terminal',sub=None):
+        seq=(r for r in records if sub is None or r['seed']==sub)
+        v=[r['models'][arm]['scores'][phase][target] for r in seq]
+        return sum(v)/len(v)
+    seed_summary={}
+    for s in SEEDS:
+        parts={arm:{phase:macro(arm,phase,sub=s) for phase in ('B','return_first16')}
+               for arm in ARMS}
+        seed_summary[str(s)]=parts
+    decision=all(seed_summary[str(s)]['native_exact_stream']['return_first16']
+                 <= min(seed_summary[str(s)][c]['return_first16'] for c in ('beta_full','beta_window32'))-.01
+                 and seed_summary[str(s)]['native_exact_stream']['B']
+                 <= min(seed_summary[str(s)][c]['B'] for c in ('beta_full','beta_window32'))+.01
+                 for s in SEEDS)
+    return {'schema':'lr92ax.native-exact-source-free-dev.v1','source_sha':SOURCE_SHA,
+            'native_blobs':SOURCE_BLOBS,'status':'DEVELOPMENT_GO' if decision else 'DEVELOPMENT_NO_GO',
+            'worlds':24,'events_per_arm':sum(len(w.public) for w in all_worlds),
+            'primary_worlds_consumed':0,'canonical_training_changed':False,
+            'seed_summary':seed_summary,'rows':records}
+
+def main():
+    a=argparse.ArgumentParser();a.add_argument('--native-checkout',required=True,type=Path)
+    a.add_argument('--out',required=True,type=Path);args=a.parse_args()
+    ret=run(args.native_checkout)
+    args.out.write_text(json.dumps(ret,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in ret.items() if k not in ('rows','seed_summary')},sort_keys=True))
+if __name__=='__main__':main()

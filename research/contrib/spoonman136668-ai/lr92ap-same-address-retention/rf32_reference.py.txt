@@ -1,0 +1,162 @@
+"""LR-92AP: fully refitted RF32 *out-of-budget* prediction reference.
+
+External, synthetic, non-primary development only. This class NEVER runs
+Yggdrasil native training. A 32-tree random forest per address is fully
+refitted on all previously observed public actions and outcomes after EVERY
+new observation. Predictions are made with the preceding fitted forest.
+
+Features: current public action and two prior public actions, in that order.
+There are no phase/time labels, unobserved outcomes, future inputs, oracle
+switch flags or cross-address data. The complete 32-tree sklearn estimator
+and all examples are retained in working memory; it is NOT within the
+928-byte matched-state budget and must not compete as a matched control.
+
+scikit-learn 1.8.0 is the frozen reference environment. Pin numpy/scipy and
+Python versions when running cross-platform qualification; do not equate
+reproducible deterministic Python state with cross-platform model parity.
+"""
+from __future__ import annotations
+
+import hashlib
+import struct
+
+from sklearn.ensemble import RandomForestClassifier
+
+
+class RF32Reference:
+    MAGIC = b'RFR1'
+    N_TREES = 32
+    MAX_ROWS = 65535
+    ACTIVE_SLOTS = 7
+    RETAINED_SLOTS = 9
+    SLOTS = 16
+    MAX_MATCHED_STATE_BYTES = 928  # NOTE: RF32 exceeds this; not a matched arm.
+    FEATURE_ORDER = ('action', 'previous_action', 'second_previous_action')
+
+    def __init__(self):
+        self._rows = [[] for _ in range(self.SLOTS)]
+        self._history = [[2, 2] for _ in range(self.SLOTS)]
+        self._forests = [None] * self.SLOTS
+        self.fit_events = 0
+
+    @staticmethod
+    def _bit(value):
+        if type(value) is not int or value not in (0, 1):
+            raise ValueError('RF32_INVALID_BIT')
+        return value
+
+    @classmethod
+    def _slot(cls, address, retained):
+        if type(retained) is not bool or type(address) is not int:
+            raise ValueError('RF32_INVALID_ADDRESS')
+        if not 0 <= address < (cls.RETAINED_SLOTS if retained else cls.ACTIVE_SLOTS):
+            raise ValueError('RF32_INVALID_ADDRESS')
+        return address + (cls.ACTIVE_SLOTS if retained else 0)
+
+    @classmethod
+    def _fit(cls, rows, slot):
+        if not rows:
+            return None
+        model = RandomForestClassifier(
+            n_estimators=cls.N_TREES,
+            criterion='gini',
+            max_depth=None,
+            max_features=None,  # all 3 public input features are eligible
+            min_samples_leaf=1,
+            bootstrap=True,
+            random_state=73004300 + slot,
+            n_jobs=1,
+        )
+        model.fit([list(r[:3]) for r in rows], [r[3] for r in rows])
+        return model
+
+    @staticmethod
+    def _proba_one(forest, features):
+        if forest is None:
+            return 0.5
+        # The public stream may contain only one class so far.
+        if len(forest.classes_) == 1:
+            return float(forest.classes_[0] == 1)
+        idx = list(forest.classes_).index(1)
+        return float(forest.predict_proba([features])[0][idx])
+
+    def predict(self, address, action, *, retained=False):
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        return self._proba_one(self._forests[slot], [action] + self._history[slot])
+
+    def observe_step(self, address, action, public_outcome, *, retained=False):
+        slot = self._slot(address, retained)
+        action = self._bit(action)
+        outcome = self._bit(public_outcome)
+        if len(self._rows[slot]) >= self.MAX_ROWS:
+            raise ValueError('RF32_ROWS_EXHAUSTED')
+        row = (action, *self._history[slot], outcome)
+        # Calculate fully fitted replacement *before* changing learned state.
+        new_rows = self._rows[slot] + [row]
+        new_model = self._fit(new_rows, slot)
+        self._rows[slot] = new_rows
+        self._forests[slot] = new_model
+        self._history[slot] = [action, self._history[slot][0]]
+        self.fit_events += 1
+
+    def end_episode(self):
+        self._history = [[2, 2] for _ in range(self.SLOTS)]
+
+    @property
+    def training_rows(self):
+        return sum(len(rows) for rows in self._rows)
+
+    @property
+    def fitted_trees(self):
+        return self.N_TREES * sum(bool(rows) for rows in self._rows)
+
+    def snapshot(self):
+        # Portable observed training tape, NOT the complete compiled forest.
+        # Restore fully refits each nonempty address; never unpickle input.
+        data = bytearray(self.MAGIC)
+        for h in self._history:
+            data.extend(h)
+        for rows in self._rows:
+            data.extend(struct.pack('>H', len(rows)))
+            for row in rows:
+                data.extend(row)
+        return bytes(data) + hashlib.sha256(data).digest()
+
+    @classmethod
+    def restore(cls, snapshot):
+        if type(snapshot) is not bytes or len(snapshot) < 4 + 32 + 16*2 + 32:
+            raise ValueError('RF32_CHECKPOINT_REJECTED')
+        if (snapshot[:4] != cls.MAGIC or
+                hashlib.sha256(snapshot[:-32]).digest() != snapshot[-32:]):
+            raise ValueError('RF32_CHECKPOINT_REJECTED')
+        data = snapshot[:-32]
+        restored = cls()
+        histories = []
+        for slot in range(cls.SLOTS):
+            h = tuple(data[4+2*slot:6+2*slot])
+            if h not in ((2,2), (0,2), (1,2), (0,0), (0,1), (1,0), (1,1)):
+                raise ValueError('RF32_INVALID_HISTORY')
+            histories.append(list(h))
+        ptr = 36
+        for slot in range(cls.SLOTS):
+            if ptr+2 > len(data):
+                raise ValueError('RF32_CHECKPOINT_REJECTED')
+            n = struct.unpack('>H', data[ptr:ptr+2])[0]
+            ptr += 2
+            if ptr + 4*n > len(data):
+                raise ValueError('RF32_CHECKPOINT_REJECTED')
+            rows = [tuple(data[ptr+4*i:ptr+4*i+4]) for i in range(n)]
+            ptr += 4*n
+            for a, prev, prev2, y in rows:
+                if a not in (0,1) or prev not in (0,1,2) or prev2 not in (0,1,2) or y not in (0,1):
+                    raise ValueError('RF32_INVALID_ROW')
+                if (prev,prev2) not in ((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1)):
+                    raise ValueError('RF32_INVALID_ROW_HISTORY')
+            restored._rows[slot] = rows
+            restored._forests[slot] = cls._fit(rows, slot)
+        if ptr != len(data):
+            raise ValueError('RF32_CHECKPOINT_REJECTED')
+        restored._history = histories
+        restored.fit_events = restored.training_rows
+        return restored

@@ -1,0 +1,185 @@
+"""LR-92AT isolated tokenless causal-program intervention learners.
+
+Explicit hypotheses express causal functions of three independently
+intervenable binary variables. No Yggdrasil native model/runtime is changed.
+No hidden ground-truth hypothesis ID, future outcome or probe label is used
+by an acting learner. Candidate optimizes expected two-action predictive
+risk; all Bayesian controls receive the same eight programs and prior.
+"""
+from __future__ import annotations
+import hashlib
+import math
+import struct
+
+NOISE = .15
+ACTIONS = tuple(range(8))
+NAMES = ('x0', 'x1', 'x2', 'xor01', 'and02', 'or12', 'and01_xor2', 'or01_and2')
+OOD_NAMES = ('parity3', 'majority3')
+
+
+def _formula(name, x):
+    a,b,c = (x & 1), ((x >> 1) & 1), ((x >> 2) & 1)
+    return {
+        'x0': a, 'x1':b, 'x2':c, 'xor01':a^b,
+        'and02':a&c, 'or12':b|c,
+        'and01_xor2':(a&b)^c,
+        'or01_and2':(a|b)&c,
+        'parity3':a^b^c,
+        'majority3':int(a+b+c>=2),
+    }[name]
+
+TABLES = tuple(tuple(_formula(n,x) for x in ACTIONS) for n in NAMES)
+OOD_TABLES = tuple(tuple(_formula(n,x) for x in ACTIONS) for n in OOD_NAMES)
+assert len(set(TABLES+OOD_TABLES)) == len(TABLES)+len(OOD_TABLES)
+SHAM_ACTION_MAP = (3,7,0,6,2,5,1,4)  # frozen permutation (no labels)
+SHAM_TABLES = tuple(tuple(t[a] for a in SHAM_ACTION_MAP) for t in TABLES)
+
+
+def _likelihood(bit, y):
+    return (1-NOISE) if bit == y else NOISE
+
+
+class ProgramPosterior:
+    """Eight weighted explicit causal programs, 64 persistent float64 bytes.
+
+    Exact conditional Bayes filtering under fixed Bernoulli observation noise.
+    The 8 program truth tables are static architecture, NOT learned state.
+    """
+    MAGIC = b'PAT1'
+    LEARNED_BYTES = 64
+    CHECKPOINT_BYTES = 101
+
+    def __init__(self, *, sham=False):
+        self._weights = tuple([1/8]*8)
+        self._tables = SHAM_TABLES if sham else TABLES
+        self._sham = bool(sham)
+
+    @staticmethod
+    def _action(action):
+        if type(action) is not int or action not in ACTIONS:
+            raise ValueError('PAT_INVALID_INTERVENTION')
+        return action
+
+    def predict(self, action):
+        self._action(action)
+        return sum(w * (NOISE + (1-2*NOISE)*t[action])
+                   for w,t in zip(self._weights,self._tables))
+
+    def posterior_if(self, action, y):
+        self._action(action)
+        if type(y) is not int or y not in (0,1):
+            raise ValueError('PAT_INVALID_LABEL')
+        raw=[w*_likelihood(t[action],y) for w,t in zip(self._weights,self._tables)]
+        s=sum(raw)
+        return tuple(v/s for v in raw)
+
+    def observe(self, action, label):
+        nxt=self.posterior_if(action,label)
+        self._weights=nxt
+
+    def snapshot(self):
+        raw=self.MAGIC+bytes((int(self._sham),))+struct.pack('>8d',*self._weights)
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob):
+        if (type(blob) is not bytes or len(blob)!=101 or blob[:4]!=cls.MAGIC or
+                blob[4] not in (0,1) or hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError('PAT_INVALID_CHECKPOINT')
+        w=struct.unpack('>8d',blob[5:-32])
+        if not all(math.isfinite(x) and 0<=x<=1 for x in w) or abs(sum(w)-1)>1e-12:
+            raise ValueError('PAT_INVALID_POSTERIOR')
+        model=cls(sham=bool(blob[4]))
+        model._weights=tuple(w)
+        return model
+
+
+def _entropy(p):
+    return -p*math.log2(p)-(1-p)*math.log2(1-p) if 0<p<1 else 0.0
+
+
+def _probs(weights, tables):
+    return [sum(w*(NOISE+(1-2*NOISE)*t[a]) for w,t in zip(weights,tables))
+            for a in ACTIONS]
+
+
+def _posterior(weights, tables, action, label):
+    v=[w*_likelihood(t[action],label) for w,t in zip(weights,tables)]
+    norm=sum(v)
+    return tuple(x/norm for x in v)
+
+
+def _risk(weights, tables):
+    """Mean Bayes predictive Brier risk across all eight possible do-actions."""
+    return sum(p*(1-p) for p in _probs(weights,tables))/8
+
+
+def _one_action_risk(weights, tables, action):
+    p=_probs(weights,tables)[action]
+    return ((1-p)*_risk(_posterior(weights,tables,action,0),tables) +
+             p*_risk(_posterior(weights,tables,action,1),tables))
+
+
+def choose_intervention(model, policy, remaining, random_action=None):
+    """No true hypothesis or label argument can reach any decision policy."""
+    if type(remaining) is not int or remaining<1:
+        raise ValueError('PAT_INVALID_REMAINING')
+    if policy == 'random':
+        return model._action(random_action)
+    if policy == 'bayes_ig':
+        p=_probs(model._weights,model._tables)
+        return max(ACTIONS,key=lambda a:(_entropy(p[a])- _entropy(NOISE),-a))
+    if policy == 'risk_myopic':
+        return min(ACTIONS,key=lambda a:(_one_action_risk(model._weights,model._tables,a),a))
+    if policy == 'risk_two_step':
+        if remaining==1:
+            return choose_intervention(model,'risk_myopic',1)
+        def expected_two(a):
+            p=_probs(model._weights,model._tables)[a]
+            post0=_posterior(model._weights,model._tables,a,0)
+            post1=_posterior(model._weights,model._tables,a,1)
+            value0=min(_one_action_risk(post0,model._tables,b) for b in ACTIONS)
+            value1=min(_one_action_risk(post1,model._tables,b) for b in ACTIONS)
+            return (1-p)*value0+p*value1
+        return min(ACTIONS,key=lambda a:(expected_two(a),a))
+    raise ValueError('PAT_INVALID_POLICY')
+
+
+class TabularBeta:
+    """Independent fully fitted Beta(1,1) Bernoulli predictor per do-action."""
+    MAGIC=b'TAB1'
+    LEARNED_BYTES=32
+    CHECKPOINT_BYTES=68
+
+    def __init__(self):
+        self._counts=[[0,0] for _ in ACTIONS]
+
+    def predict(self, action):
+        ProgramPosterior._action(action)
+        n0,n1=self._counts[action]
+        return (n1+1)/(n0+n1+2)
+
+    def observe(self, action, y):
+        ProgramPosterior._action(action)
+        if type(y) is not int or y not in (0,1):
+            raise ValueError('TAB_INVALID_LABEL')
+        if self._counts[action][y]>=65535:
+            raise ValueError('TAB_CAPACITY')
+        self._counts[action][y]+=1
+
+    def choose(self):
+        return min(ACTIONS,key=lambda a:(sum(self._counts[a]),a))
+
+    def snapshot(self):
+        raw=self.MAGIC+struct.pack('>16H',*(v for c in self._counts for v in c))
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,blob):
+        if (type(blob) is not bytes or len(blob)!=68 or blob[:4]!=cls.MAGIC or
+                hashlib.sha256(blob[:-32]).digest()!=blob[-32:]):
+            raise ValueError('TAB_CHECKPOINT')
+        m=cls()
+        v=struct.unpack('>16H',blob[4:-32])
+        m._counts=[list(v[i:i+2]) for i in range(0,16,2)]
+        return m

@@ -1,0 +1,97 @@
+{
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "canonical_owner_state_access": false,
+  "central_amalgam_pr": 1278,
+  "contributor_pr": 1323,
+  "experiment": {
+    "arms": [
+      "dual_active",
+      "dual_passive",
+      "dual_coverage",
+      "exact_bayes_active",
+      "beta_full_coverage",
+      "beta_window32_coverage",
+      "beta_decay_coverage",
+      "logistic_coverage",
+      "no_learning_random"
+    ],
+    "candidate_budget_max_bytes": 1056,
+    "cold_restoration": "checksum + full forecast and policy parity",
+    "compute": "wallclock per arm recorded; not assumed matched; no scientific efficiency gain",
+    "controls_full_training": "logistic periodically refitted with chronological public-history passes, exact 256-program hazard filter, three tabular baselines",
+    "episodes_per_arm": 5263,
+    "families": [
+      "cubic_rewrite",
+      "disjoint_cubic",
+      "quartic_out_of_class"
+    ],
+    "no_public_phase_or_return_cue": true,
+    "old_learner_source_unchanged": true,
+    "oracle": "purely retrospective lower bound chooses currently stored hypothesis with smallest true expected panel Brier; NEVER used to train/choose actions/predict live",
+    "privileged_diagnostic_arms": [
+      "dual_active",
+      "dual_passive",
+      "dual_coverage"
+    ],
+    "public_info": "one s1 then x1, public s2 then x2, one public terminal y; no extra samples",
+    "replicates_per_family_seed": 4,
+    "same_public_two_stage_address": true,
+    "scoring": "evaluator-only exact expected Brier on the SAME uniform 16-context panel before seeing current y",
+    "seeds": [
+      96774011,
+      96774012
+    ],
+    "smoke_seed": 96774010,
+    "source_free_synthetic": true,
+    "strong_reference_controls": [
+      "exact_bayes_active",
+      "beta_full_coverage",
+      "beta_window32_coverage",
+      "beta_decay_coverage",
+      "logistic_coverage"
+    ],
+    "terminal_noise": 0.07,
+    "transition_noise": 0.25,
+    "worlds": 24
+  },
+  "frozen_diagnostic": {
+    "archive_accuracy_limited": "privileged oracle return16 > best strong return16 +0.03",
+    "caution": "The hindsight oracle is NOT a deployable predictor; its gain is a diagnostic upper bound, not scientific improvement or admissible integration evidence",
+    "identification_gap": "actual active return16 Brier minus privileged best-existing-slot return16 Brier",
+    "identification_limited": "actual minus oracle >=0.03 AND privileged oracle <= best strong return16 +0.01",
+    "mixed_or_indeterminate": "all other cases",
+    "negative_controls": "checkpoint corruption rejection; exact candidate/legacy source byte parity; live policy parity; oracle not exposed to public learner",
+    "per_seed_required": "diagnose each seed independently; never collapse discordant labels",
+    "per_seed_strong_return_control": "minimum return16 Brier of five strong reference controls, per seed",
+    "representation_gap": "privileged best-existing-slot return16 Brier minus best strong reference return16 Brier",
+    "secondary": "compare active/passive/coverage policies; freeze entire candidate state, archive fit at A-return boundary and fraction of first16 incorrect slot selections"
+  },
+  "manifest_sha256": "9200c01d10145ae53a911dfdbe7f9cf959b799ad064c3dfff129d0b75f2756b8",
+  "merge_or_deployment": false,
+  "native_research_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "new_scheduler_or_runner": false,
+  "previous_candidate_byte_identical_sha": "4169b3cdf2a4d92db3ee0125302285f4d886eb347f9db73af9721519279aff78",
+  "previous_exposed_lr92bc_evidence_sha": "19908b20c74bcbd4710db29b5e1906d019e5a69f",
+  "protected_original_first_use": false,
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "research_question": "Does early A-return failure arise primarily because the archived causal program is inaccurate, or because the correct archived program is not selected in time?",
+  "research_role": "independent contributor to Yggdrasil only; not a model/coordinator/owner",
+  "results_inspected_at_freeze": false,
+  "schema": "lr92bd.frozen-attribution-study.v1",
+  "scientific_stop": {
+    "central_integration_authority": "Amalgam Work chat only; contributor may submit findings but not merge/promote",
+    "full_native_regression": "NOT_RUN; this study does not modify or instantiate actual native Yggdrasil",
+    "no_retuning": "Freeze and score once on disjoint new development cohort; preserve negative/unfamiliar worlds",
+    "protected_first_use": "BLOCKED under issue #426",
+    "scientific_pass": "NOT_AVAILABLE: this is only a mechanistic diagnostic; do not claim scientific pass from any attribution outcome"
+  },
+  "source_sha256": {
+    "compare.py": "ed41cc96896c4f39a3df58564f48257e0a70e8a67eb3e75f27efba44a809ad96",
+    "controls.py": "4c9af2a41d0f801936f5c1aa0ca39b67d1a49b273bd7af3e7639f21cdd7a41d4",
+    "diagnose.py": "6ea64d40e4d3a6c1403610a84eb50348305ae74c029c7ad4173e296ce9d8b1c9",
+    "freeze.py": "58621be0e84ae4c078f53f34b0bb053d1a7fbc9a403df7e82c0cd74a0516307f",
+    "mechanism.py": "4169b3cdf2a4d92db3ee0125302285f4d886eb347f9db73af9721519279aff78",
+    "test_diagnose.py": "972aad0261d47cc3f4d615aa60d7d5c7cea7b2bc5982d3de4b7dbe99d9e281c6",
+    "worlds.py": "d2927e4d0b762a0ab9c14cb34121a191ac57873a323d004e5e39161e4ac8eb74"
+  }
+}

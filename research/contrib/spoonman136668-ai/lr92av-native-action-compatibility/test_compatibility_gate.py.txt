@@ -1,0 +1,40 @@
+import unittest
+from compatibility_gate import (AMALGAM_BLOB, EXPERIENCE_BLOB,
+ LR92AU_ACTION_BLOB, LR92AU_WORLD_BLOB, paired_views,
+ binary_action_sequences, encode_action, action_groups, proof)
+
+class CompatibilityTests(unittest.TestCase):
+ def test_source_pins(self):
+  self.assertTrue(all(len(s)==40 and all(c in '0123456789abcdef' for c in s)
+     for s in (AMALGAM_BLOB,EXPERIENCE_BLOB,LR92AU_ACTION_BLOB,LR92AU_WORLD_BLOB)))
+ def test_paired_public_view_domain(self):
+  views=paired_views()
+  self.assertEqual(len(set(views)),8)
+  self.assertTrue(all(a[0]==b[0] for a,b in views))
+ def test_two_action_steps_domain(self):
+  self.assertEqual(set(binary_action_sequences()),{(0,0),(0,1),(1,0),(1,1)})
+ def test_original_sixteen_action_masks(self):
+  self.assertEqual(set(range(16)),set(m for g in action_groups() for m in g))
+ def test_four_action_collisions(self):
+  groups=action_groups()
+  self.assertEqual(tuple(map(len,groups)),(4,4,4,4))
+  self.assertTrue(all(len(set(encode_action(m) for m in g))==1 for g in groups))
+ def test_discriminating_outcome_in_every_collided_group(self):
+  self.assertTrue(all(sorted((m>>2)&1 for m in g)==[0,0,1,1] for g in action_groups()))
+ def test_exact_equal_prior_loss(self):
+  self.assertEqual(proof()['mathematical_gap'],.25)
+  self.assertEqual(proof()['alias_expected_brier'],.25)
+  self.assertEqual(proof()['distinct_action_expected_brier'],0)
+ def test_invalid_mask(self):
+  for m in (-1,16,True,None,'1',1.0):
+   with self.assertRaises(ValueError):encode_action(m)
+ def test_no_native_or_protected_execution(self):
+  p=proof()
+  self.assertEqual(p['model_runs'],0)
+  self.assertEqual(p['protected_worlds_read'],0)
+  self.assertFalse(p['owner_checkpoint_changed'])
+ def test_deterministic_decision(self):
+  self.assertEqual(proof(),proof())
+  self.assertIn('NO_DIRECT_BINARY_AMALGAM_ADAPTER',proof()['decision'])
+
+if __name__=='__main__': unittest.main()

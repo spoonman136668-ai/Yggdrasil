@@ -1,0 +1,44 @@
+{
+  "schema": "lr92ar-disjoint-dev.v1",
+  "experiment": "LR-92AR",
+  "status": "SOURCE_LOCK_BEFORE_DISJOINT_DEV_FIRST_SCORE; NOT_SCIENTIFIC_PRIMARY",
+  "parent_negative": "Yggdrasil PR 1323 LR-92AQ YPT4 development no-go at 41ab5c347270a2f62747f55d748daec6610fc360",
+  "candidate": "CausalHypothesisRetriever in causal_hypothesis_retriever.py",
+  "mechanism": "16 slots each store a frozen 48-observation causal hypothesis plus a continually adapting 14-bin hypothesis and one quantized Bayes posterior belief per slot. Symmetric hazard 1/32; active per-bin count decay threshold 24. No hidden regime, oracle return cue, extra phase clock, global controller or extra learned state.",
+  "budget_learned_history_bytes": 928,
+  "development_seed_scope": [74009171, 74009172],
+  "forbidden_previous_primary_seeds": [929209101, 929209102, 929209103],
+  "dev_worlds_per_seed_family": 4,
+  "families": ["xor", "and", "random14"],
+  "total_dev_worlds": 24,
+  "variable_phase_lengths_uniform_inclusive": [48, 88],
+  "episode_length": 7,
+  "label_noise_probability": 0.15,
+  "no_switch_cue": true,
+  "no_beyond_public_history": true,
+  "contradiction_disambiguation": "First unannounced A-return forecast cannot distinguish identical-prefix continued B. Count this separately; archive oracle readout is not a permitted online predictor.",
+  "comparators": [
+    "LR-92AR FixedHalfBlend (same exact learned state and updates as evidence-gated candidate)",
+    "LR-92AQ existing fully trained under-928-byte two-regime HMM (best development return-A)",
+    "LR-92AQ existing fully trained under-928-byte bounded BOCPD (best development B)",
+    "LR-92AQ existing fixed-memory full-history and 32-window counts",
+    "Original LR-92AP YPT4 gate (negative predecessor)"
+  ],
+  "endpoints": {
+    "primary_dev": "Macro average within each seed first 16 returning-A prequential Brier, excluding any use of hidden phase while forecasting",
+    "B_noninferiority": "Macro average within each seed on B-phase Brier",
+    "retention_diagnostic": "Explicit archived hypothesis prediction before observing return-A labels; this is oracle-addressed diagnostic only, never counted as online prediction",
+    "no_cue_identifiability": "First return-A observation reported separately, without grading impossible boundary classification",
+    "cost": "Training+forecast+checkpoint restore elapsed and exact 928-byte state, both initialized per world",
+    "negative_controls": "FixedHalfBlend identical learning state, strong conventional controls, fresh seed family stratification"
+  },
+  "dev_continue_only_if": [
+    "candidate early-return Brier at least 0.01 below best conventional control in EACH of 2 development seed groups",
+    "candidate B-phase Brier no worse than best conventional B control +0.01 in EACH seed group",
+    "fixed-half-blend evidence gate ablation worse by at least 0.005 early-return Brier pooled, without an offsetting B degradation",
+    "all 24 worlds scored without rerun/retuning, source and tape hashes recorded, no labels/phase leaked, cold restore parity, bytes <=928"
+  ],
+  "failure_rule": "Any failed criterion yields LR92AR_DEVELOPMENT_NO_GO; preserve negative; no revising seeds/thresholds/hazards after scoring.",
+  "protected_primary": {"seeds": [], "created": false, "used": false, "first_use_authorized": false},
+  "authority": {"native_integration": false, "owner_runner_controller_change": false, "merge": false, "main": false, "scientific_first_use": false, "paid_api": false}
+}

@@ -1,0 +1,41 @@
+"""Pre-score harness tests on synthetic in-memory tiny examples only."""
+import unittest
+from native_stage_dev import Event, StageStructureBayes, StageTabular, NoLearning
+from compare import ARMS, STAGES, make_model, restore, ranges, brier, expectation, META
+
+class ComparisonTests(unittest.TestCase):
+    def test_frozen_four_arms(self):
+        self.assertEqual(ARMS,('structure_bayes','tabular_full','tabular_window32','no_learning'))
+    def test_frozen_protocol_source_pin(self):
+        self.assertEqual(META['source_locked_before_scoring_commit'],
+            'aa18440359effbf5b56197c36f7cf89a7fadab72')
+    def test_no_learning_baseline(self):
+        self.assertEqual(brier(.5,0),.25)
+        self.assertAlmostEqual(expectation(.5,.1),.25)
+        self.assertAlmostEqual(expectation(.1,.1),.09)
+    def test_ranges_no_future_scoring(self):
+        r=ranges((48,55,62))
+        self.assertEqual(r['A_return_early16'],(103,119))
+        self.assertEqual(r['total'],(0,165))
+    def test_public_prequential_and_restore(self):
+        e=Event('a'*64,((0,0),(0,1)),0,1,0,1,1)
+        for n in ARMS:
+            m=make_model(n)
+            p=m.predict_transition(e.views,e.x1)
+            q=m.predict_terminal(e.views,e.x1,e.s2,e.x2)
+            self.assertEqual((p,q),(.5,.5))
+            before=m.snapshot()
+            self.assertEqual(before,m.snapshot())
+            m.observe(e)
+            raw=m.snapshot()
+            obj=restore(n,raw)
+            self.assertEqual(obj.snapshot(),raw)
+    def test_unknown_arm_failclosed(self):
+        with self.assertRaises(ValueError):make_model('native_runtime')
+    def test_no_private_truth_import(self):
+        import inspect,compare
+        source=inspect.getsource(compare)
+        self.assertNotIn('native_causal_amalgam import',source)
+        self.assertNotIn('owner_checkpoint',source)
+
+if __name__=='__main__':unittest.main()

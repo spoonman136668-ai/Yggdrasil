@@ -1,0 +1,73 @@
+"""LR-92AX: read-only analytic capacity check for pinned native episode projection.
+
+This is NOT native execution, model qualification, or scientific first-use.
+It proves an information constraint for a particular synthetic law, source
+pinned to Amalgam PR #1278, without inventing a new learner or outcome data.
+"""
+from __future__ import annotations
+from itertools import product
+from fractions import Fraction
+
+NATIVE_SOURCE_SHA='86264b41a08d49f558418c0fba367f3a2636befa'
+NATIVE_EPISODE_BLOB='5a18b00a4c4131526e71f51d63dfd9eb9471c81e'
+TESTED_GENERATOR_BLOB='894a3f6c6a719d1b1803d32d10303b785573a4a5'
+NOISE=Fraction(1,10)
+
+def paired_views(s1,v):
+    if type(s1)is not int or s1 not in (0,1) or type(v)is not int or v not in (0,1):
+        raise ValueError('AX_INVALID_PUBLIC_VIEW')
+    return ((s1,v),(s1,1-v))
+
+def chosen_projection(public_views):
+    """Reproduce only source-visible paired-view mismatch selection criterion.
+
+    Source native_episode_experience.py:179-186 selects coordinate with fewer
+    mismatches after 8 witnessed records, provided the counts differ.
+    """
+    if len(public_views)<8:
+        raise ValueError('AX_TOO_FEW_PUBLIC_VIEWS')
+    mismatch=tuple(sum(pair[0][k]!=pair[1][k] for pair in public_views[:8])
+                    for k in (0,1))
+    if mismatch[0]==mismatch[1]:return None
+    return int(mismatch[1]<mismatch[0])
+
+def expected_brier(p,q):
+    return q*(1-p)**2+(1-q)*p*p
+
+def analytic_witness():
+    views=[paired_views(i%2,(i//2)%2) for i in range(8)]
+    assert chosen_projection(views)==0
+    pairs=[]
+    for s1,x1 in product((0,1),repeat=2):
+        # The native projected episode's transition slot sees only s1 and x1;
+        # the source-frozen NEW_PARENT law uses v as an additional parent.
+        public_a=paired_views(s1,0);public_b=paired_views(s1,1)
+        assert public_a[0][0]==public_b[0][0]
+        assert public_a[0][1]!=public_b[0][1]
+        mean=(NOISE+(1-2*NOISE)*(s1^x1))
+        opposite=(NOISE+(1-2*NOISE)*(s1^x1^1))
+        avg=(mean+opposite)/2
+        collapsed=(expected_brier(avg,mean)+expected_brier(avg,opposite))/2
+        informed=(expected_brier(mean,mean)+expected_brier(opposite,opposite))/2
+        pairs.append((s1,x1,float(collapsed),float(informed)))
+    collapsed=sum(p[2] for p in pairs)/len(pairs)
+    oracle=sum(p[3] for p in pairs)/len(pairs)
+    assert abs(collapsed-.25)<1e-15
+    assert abs(oracle-.09)<1e-15
+    return {'schema':'lr92ax.projected-view-bound.v1',
+            'native_source_sha':NATIVE_SOURCE_SHA,
+            'native_episode_blob':NATIVE_EPISODE_BLOB,
+            'candidate_generator_git_blob':TESTED_GENERATOR_BLOB,
+            'public_paired_views':8,
+            'native_chosen_projection':0,
+            'collapsed_expected_transition_brier':collapsed,
+            'fully_informed_expected_transition_brier':oracle,
+            'irreducible_information_gap_on_this_law':collapsed-oracle,
+            'noise_probability':float(NOISE),
+            'native_models_executed':0,'protected_worlds_used':0,
+            'interpretation':'Analytic two-public-view alias witness; not a native model score or generalized bound',
+            'decision':'NATIVE_ONE_BIT_PROJECTION_CANNOT_IDENTIFY_V_DEPENDENT_CONSEQUENCE_IN_THIS_FIXTURE'}
+
+if __name__=='__main__':
+    import json
+    print(json.dumps(analytic_witness(),sort_keys=True,indent=2))

@@ -1,0 +1,110 @@
+{
+  "arms": [
+    "repair_basis",
+    "exact_symbolic_bayes",
+    "beta_full",
+    "beta_window32",
+    "beta_decay24",
+    "fragile_contradiction",
+    "no_learning"
+  ],
+  "authority": {
+    "canonical_checkpoint": false,
+    "controller": false,
+    "deploy": false,
+    "merge": false,
+    "paid_api": false,
+    "protected_first_use": false,
+    "scheduler": false,
+    "training_restart": false
+  },
+  "central_amalgam_pr": 1278,
+  "contributor_pr": 1323,
+  "data": {
+    "A_B_A_return_dwell": "A 54..66, B 48..62, A-return 35..45 events",
+    "episodes_per_arm": 3738,
+    "families": [
+      "linear_disjoint",
+      "quadratic_new",
+      "cubic_unfamiliar"
+    ],
+    "forbidden": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802,
+      76021921,
+      76021922,
+      77033101,
+      77033102,
+      88041001,
+      88041002,
+      89051001,
+      89051002,
+      90161101,
+      90161102,
+      90161103,
+      92111911,
+      92111912,
+      92111913,
+      929209101,
+      929209102,
+      929209103
+    ],
+    "manifest_sha256": "76e3c16d6f067ef24204259dd85f64e5c6b958edbd605ab754bca92f0c66dcc1",
+    "outcome_label_noise": "stage s2 .12; stage y .12, and stage y 0.27 during 12 B observations",
+    "public_context": "v=0 A/return, v=1 B (not hidden-regime detection)",
+    "replicates": 4,
+    "seeds": [
+      93490111,
+      93490112
+    ],
+    "worlds": 24
+  },
+  "engineering_pass_if": "all focused tests pass, exact source/manifest hashed, 24 worlds equal public episodes, 100% cold checkpoint/forecast parity, checkpoint <=256 bytes, no owner state; candidate has no future labels",
+  "freeze_rule": "DEVELOPMENT_GO iff repair_basis first16 A-return macro Brier <= strongest-control first16 -0.01 AND B macro Brier <= strongest-control B +0.01 IN EVERY seed group; bounded checkpoint and cold restoration PASS; protected science remains blocked",
+  "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "manifest_public_label_scores_read": false,
+  "mechanism": {
+    "GF2_features": "degree<=2, two public contexts and two stages; online full-hypothesis integer score, candidate MAP; contradiction rate diagnostic abstention",
+    "capacity": 236,
+    "checkpoint": "80 public outcome counters uint16, 32-byte public ledger digest, 32-byte sha checksum, 8-byte version magic, 4-byte count; 236 bytes exactly",
+    "mask_complexity_penalty": 1,
+    "max_bad_rate": 0.26,
+    "min_count": 4,
+    "min_diagnostic": 24,
+    "noise_assumption": 0.12,
+    "score_weight": 8
+  },
+  "native_source_modified": false,
+  "native_source_reference": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "predeclared_metrics": {
+    "adaptation": "prequential terminal Brier B-phase",
+    "counterfactual": "A reachable 8 point expected noisy-outcome Brier before B vs before A-return",
+    "memory": "checkpoint size and cold SHA parity",
+    "negative_controls": "fragile contradiction and no learning",
+    "primary": "prequential terminal Brier first 16 A-return observations",
+    "transition": "B transition prequential Brier",
+    "whole_process_cost": "per-world arm time and checkpoint bytes; reported not equated to matched compute"
+  },
+  "role": "independent_research_contributor",
+  "schema": "lr92ba.noisy-causal-witness-revision.dev.v1",
+  "scientific_acceptance": "NOT POSSIBLE from this synthetic development study. Protected original-world first-use requires separate authority under issue #426 and owner custody verification.",
+  "scientific_question": "Can bounded degree2 GF2 syndrome-repaired causal hypotheses preserve familiar causal relationships across contradictory noisy B experience and predict unfamiliar reachable public interventions with less than 256 bytes of learned state?",
+  "source_sha256": {
+    "causal_revision.py": "fca5477307f2c14ff3b14edfcd8849cf5041ece7ff0b25fec9c4bec259b80d73",
+    "compare.py": "2e59b4bdae208ba01849fd31beadb4684f0a1f9b547d26f12f0c2cdee4d3aa03",
+    "test_mechanism.py": "41c0504d5d49c090e54da6b4f2a85f93103270ca5385598e6254bff5223b1bb6",
+    "worlds.py": "9d4600815db7febf34daabafe60746e84abdfb17fa3106d35b24d4b49c6ce604"
+  },
+  "state": "FROZEN_BEFORE_SCORING",
+  "stop_if": "no frozen gain, out-of-class failure, unreliable contradiction abstention, runtime too costly, or source drift: preserve negative without retuning on exposed fixture",
+  "strong_controls": [
+    "exact_symbolic_bayes",
+    "beta_full",
+    "beta_window32",
+    "beta_decay24"
+  ]
+}

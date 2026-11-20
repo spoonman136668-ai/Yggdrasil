@@ -1,0 +1,210 @@
+"""One-shot, existing-fixture-only LR-92AQ 24-world conventional comparison.
+
+No new seeds, no model modifications, no post-hoc tuning, no protected-world
+creation, no cross-world training, no science first-use. All learner methods
+see public actions, public episode boundaries and observed outcomes AFTER
+predictions. Evaluator-only phase and clean truth used only after scoring.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import statistics
+import time
+from collections import defaultdict
+
+from lr92aq_variable_switch_dev import (
+    DEVELOPMENT_SEEDS, FAMILIES, WORLDS_PER_SEED_FAMILY, development_world,
+    development_manifest, fork_continuing_B,
+)
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+from matched_tabular_controls import FullHistory14, FixedWindow14
+from two_regime_hmm_control import TwoRegimeHMM
+from bounded_bayesian_controls import SoftHMM14, ApproxBayesChangePoint14
+from random_gate_control import RandomGateDualTimescaleCells
+
+LEARNERS = {
+    'YPT4_candidate': (PublicDualTimescaleCells, 928),
+    'BOCPD896': (BoundedRunLengthBOCPD14, 896),
+    'Full14_480': (FullHistory14, 480),
+    'Window32_832': (FixedWindow14, 832),
+    'HMM_MAP_928': (TwoRegimeHMM, 928),
+    'HMM_soft_928': (SoftHMM14, 928),
+    'ChangePoint_approx_928': (ApproxBayesChangePoint14, 928),
+    'RandomGate_928': (RandomGateDualTimescaleCells, 928),
+}
+SCORE_KEYS = ('A', 'B', 'A_return_first', 'A_return_early16',
+              'A_return_late', 'A_return_full', 'all')
+FIXTURE_MANIFEST_SHA256 = '89aebc45577d146b5f74600faa170b442db713a8c33b32caa7dd2e83868a44d1'
+MAX_PERSISTENT = 928
+CONVENTIONAL_CONTROLS = ('BOCPD896', 'Full14_480', 'Window32_832',
+                         'HMM_MAP_928', 'HMM_soft_928', 'ChangePoint_approx_928')
+NEGATIVE_SHAMS = ('RandomGate_928',)
+
+
+def _phase_slices(dwell):
+    a, b, c = dwell
+    return {'A': (0, a), 'B': (a, a+b),
+            'A_return_first': (a+b, a+b+1),
+            'A_return_early16': (a+b, a+b+16),
+            'A_return_late': (a+b+16, a+b+c),
+            'A_return_full': (a+b, a+b+c),
+            'all': (0, a+b+c)}
+
+
+def _mean(values):
+    assert values
+    return sum(values) / len(values)
+
+
+def evaluate_one(world, learner_name):
+    cls, budget = LEARNERS[learner_name]
+    time_started = time.perf_counter()
+    model = cls()
+    assert len(model.snapshot()) == budget + 36
+    losses = []
+    forecasts = []
+    switch_a, return_a = world.evaluator_only.dwell_lengths[:2]
+    return_a += switch_a
+    archived_first_forecast = None
+    archived_first_brier = None
+    pre_return_snapshot = None
+    replay_first_prediction = None
+    for i, obs in enumerate(world.public):
+        if obs.episode_start:
+            model.end_episode()
+        if i == return_a:
+            pre_return_snapshot = model.snapshot()
+        pred = model.predict(0, obs.action)
+        assert 0 <= pred <= 1
+        if i == return_a:
+            clone = cls.restore(pre_return_snapshot)
+            replay_first_prediction = clone.predict(0, obs.action)
+            assert pred == replay_first_prediction
+            if hasattr(model, 'predict_protected'):
+                before = model.snapshot()
+                archived_first_forecast = model.predict_protected(0, obs.action)
+                assert model.snapshot() == before
+                archived_first_brier = (archived_first_forecast - obs.outcome)**2
+        if i in (0, 5, switch_a, return_a, len(world.public)-1):
+            snapshot = model.snapshot()
+            assert model.predict(0, obs.action) == pred
+            assert snapshot == model.snapshot()  # prequential read-only
+        forecasts.append(pred)
+        losses.append((pred - obs.outcome)**2)
+        model.observe_step(0, obs.action, obs.outcome)
+    final_snap = model.snapshot()
+    elapsed = time.perf_counter() - time_started
+    assert cls.restore(final_snap).snapshot() == final_snap
+    cuts = _phase_slices(world.evaluator_only.dwell_lengths)
+    scores = {label: _mean(losses[lo:hi]) for label, (lo, hi) in cuts.items()}
+    return {
+        'scores': scores,
+        'counts': {label:hi-lo for label,(lo,hi) in cuts.items()},
+        'first_forecast': forecasts[return_a],
+        'replayed_first_forecast': replay_first_prediction,
+        'archived_first_forecast': archived_first_forecast,
+        'archived_first_brier': archived_first_brier,
+        'pre_return_checkpoint_sha256': hashlib.sha256(pre_return_snapshot).hexdigest(),
+        'final_checkpoint_sha256': hashlib.sha256(final_snap).hexdigest(),
+        'state_bytes': budget,
+        'checkpoint_bytes': len(final_snap),
+        'updates': len(world.public),
+        'elapsed_seconds': elapsed,
+    }
+
+
+def run_all():
+    process_started = time.perf_counter()
+    manifest = development_manifest()
+    manifest_digest = hashlib.sha256(json.dumps(manifest,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    assert manifest_digest == FIXTURE_MANIFEST_SHA256, 'DEVELOPMENT_MANIFEST_DRIFT'
+    assert len(manifest) == 24
+    worlds = []
+    for seed in DEVELOPMENT_SEEDS:
+        for family in FAMILIES:
+            for index in range(WORLDS_PER_SEED_FAMILY):
+                world = development_world(seed, family, index)
+                assert len(set(world.evaluator_only.bins)) == 14
+                fork = fork_continuing_B(world)
+                k = sum(world.evaluator_only.dwell_lengths[:2])
+                assert world.public[:k] == fork.public[:k]
+                assert world.public[k].action == fork.public[k].action
+                assert not world.public[k].episode_start
+                worlds.append((seed, family, index, world))
+    generator_seconds = time.perf_counter() - process_started
+    rows = []
+    for seed,family,index,world in worlds:
+        record = {'seed':seed, 'family':family, 'index':index,
+                  'public_sha256':world.public_tape_hash(),
+                  'dwell_lengths':list(world.evaluator_only.dwell_lengths),
+                  'models':{}}
+        for model_name in LEARNERS:
+            record['models'][model_name] = evaluate_one(world, model_name)
+        rows.append(record)
+    assert len(rows) == 24
+    total_events = sum(sum(x['dwell_lengths']) for x in rows)
+    assert total_events == 4966
+    summaries = {}
+    for model_name in LEARNERS:
+        per_model = [r['models'][model_name] for r in rows]
+        summary = {key:_mean([x['scores'][key] for x in per_model]) for key in SCORE_KEYS}
+        summary['total_elapsed_seconds'] = sum(x['elapsed_seconds'] for x in per_model)
+        summary['total_updates'] = sum(x['updates'] for x in per_model)
+        summary['state_bytes'] = LEARNERS[model_name][1]
+        summary['by_seed'] = {
+            str(seed):{k:_mean([r['models'][model_name]['scores'][k] for r in rows if r['seed']==seed])
+                       for k in SCORE_KEYS}
+            for seed in DEVELOPMENT_SEEDS}
+        summary['by_family'] = {
+            family:{k:_mean([r['models'][model_name]['scores'][k] for r in rows if r['family']==family])
+                       for k in SCORE_KEYS}
+            for family in FAMILIES}
+        summaries[model_name] = summary
+    candidate = summaries['YPT4_candidate']
+    controls = {k:summaries[k] for k in CONVENTIONAL_CONTROLS}
+    negative_controls = {k:summaries[k] for k in NEGATIVE_SHAMS}
+    best = min(controls, key=lambda name: controls[name]['A_return_early16'])
+    best_B = min(controls,key=lambda name:controls[name]['B'])
+    delta = controls[best]['A_return_early16'] - candidate['A_return_early16']
+    # Secondary, descriptive envelope: best control for return within EACH seed.
+    seed_deltas = {str(seed): min(v['by_seed'][str(seed)]['A_return_early16']
+                                  for v in controls.values())
+                           -candidate['by_seed'][str(seed)]['A_return_early16']
+                   for seed in DEVELOPMENT_SEEDS}
+    noninferiority = candidate['B'] <= controls[best_B]['B'] + .01
+    # No scientific PASS is possible from exposed development seeds alone.
+    diagnostic_GO = (delta >= .01 and all(v>=.01 for v in seed_deltas.values())
+                     and noninferiority)
+    # All cold first-step forecasts are phase-blind: same checkpoint/prefix
+    # cannot indicate which of two indistinguishable hidden worlds follows.
+    return {
+        'study':'LR-92AQ_variable_switch_preprimary_dev',
+        'status':'DEVELOPMENT_ONLY',
+        'manifest_sha256':manifest_digest,
+        'worlds':len(rows),'events_per_model':total_events,
+        'cohort':'two previously public development seeds; no primary consumed',
+        'generator_seconds': generator_seconds,
+        'total_process_seconds': time.perf_counter() - process_started,
+        'conventional_controls': list(CONVENTIONAL_CONTROLS),
+        'negative_controls': list(NEGATIVE_SHAMS),
+        'models':summaries,
+        'decision':{
+            'strongest_pooled_return_control_posthoc':best,
+            'strongest_pooled_B_control_posthoc':best_B,
+            'candidate_return_advantage_vs_best_pooled':delta,
+            'candidate_return_advantage_vs_seedwise_best_posthoc':seed_deltas,
+            'candidate_B_noninferiority_vs_best_B':noninferiority,
+            'candidate_diagnostic_GO':diagnostic_GO,
+            'random_gate_ablation_return_brier': negative_controls['RandomGate_928']['A_return_early16'],
+            'random_gate_ablation_B_brier': negative_controls['RandomGate_928']['B'],
+            'scientific_pass_claimable':False,
+            'primary_first_use_permitted':False,
+        },
+        'rows':rows,
+    }
+
+
+if __name__ == '__main__':
+    print(json.dumps(run_all(),indent=2,sort_keys=True))

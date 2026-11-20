@@ -1,0 +1,90 @@
+"""One-shot LR-92AU no-catalog causal-parent construction and repair screen.
+
+All comparators receive the same number of action/outcome interactions. Actions
+may differ because each policy selects them; no hidden phase or truth leaks to
+an acting learner. Metric is analytic heldout potential-outcome Brier risk.
+"""
+from __future__ import annotations
+import hashlib,json,statistics,time
+from causal_structure import ACTIONS,ParentHypotheses,Tabular16
+from worlds import development_worlds,SEEDS,FAMILIES,REPS
+
+ARMS=('ConstructiveInfo','ConstructiveCoverage','FullTabularCoverage','SlidingTabularCoverage')
+BASELINES=('FullTabularCoverage','SlidingTabularCoverage','ConstructiveCoverage')
+METRICS=('A','B','Areturn','Areturn_first8')
+
+
+def expected_brier(p,q):
+    return q*(1-p)**2+(1-q)*p*p
+
+
+def _probe(model,world,phase):
+    before=model.snapshot() if hasattr(model,'snapshot') else None
+    b=sum(expected_brier(model.predict(a),world.truth(phase,a)) for a in ACTIONS)/16
+    if before is not None:assert model.snapshot()==before
+    return b
+
+
+def run_one(world,arm):
+    if arm not in ARMS:raise ValueError('AU_UNKNOWN_ARM')
+    if arm.startswith('Constructive'):
+        model=ParentHypotheses();policy='information' if arm=='ConstructiveInfo' else 'coverage'
+    else:
+        model=Tabular16(window=(arm=='SlidingTabularCoverage'));policy='coverage'
+    started=time.perf_counter();forecasts={};recover={};actions=[];outcomes=[];prediction_losses=[]
+    lengths=world.lengths
+    boundaries=(lengths[0],sum(lengths[:2]),sum(lengths))
+    for step in range(sum(lengths)):
+        phase='A' if step<boundaries[0] else ('B' if step<boundaries[1] else 'Areturn')
+        action=model.choose(policy)
+        p=model.predict(action)
+        y=world.observe(step,action)
+        prediction_losses.append((p-y)**2)
+        actions.append(action);outcomes.append(y)
+        model.observe(action,y)
+        if step+1 in boundaries:
+            forecasts[phase]=_probe(model,world,phase)
+            recover[phase]=(model.parent_map()==(world.B.parents if phase=='B' else world.A.parents)) if hasattr(model,'parent_map') else None
+    # Report first 8 observed A-return losses separately. Phase is evaluator-only.
+    f=boundaries[1]
+    early=sum(prediction_losses[f:f+8])/8
+    delta=time.perf_counter()-started
+    return {'brier':{**forecasts,'Areturn_first8':early},'parent_recovery':recover,
+        'actions_sha256':hashlib.sha256(bytes(actions)).hexdigest(),
+        'observed_sha256':hashlib.sha256(bytes(outcomes)).hexdigest(),
+        'n_interventions':len(actions),'unique_interventions':len(set(actions)),
+        'learned_bytes':model.LEARNED_BYTES if hasattr(model,'LEARNED_BYTES') else model.learned_bytes,
+        'checkpoint_sha256':hashlib.sha256(model.snapshot()).hexdigest() if hasattr(model,'snapshot') else None,
+        'wall_seconds':delta}
+
+
+def run_all():
+    start=time.perf_counter();worlds=development_worlds()
+    assert len(worlds)==24
+    rows=[]
+    for w in worlds:
+        scores={arm:run_one(w,arm) for arm in ARMS}
+        rows.append({'seed':w.seed,'family':w.family,'rep':w.rep,'lengths':w.lengths,
+            'A_parent_mask':w.A.parents,'B_parent_mask':w.B.parents,'arms':scores})
+    summary={}
+    for arm in ARMS:
+        summary[arm]={
+            **{metric:statistics.mean(r['arms'][arm]['brier'][metric] for r in rows) for metric in METRICS},
+            'by_seed':{str(s):{metric:statistics.mean(r['arms'][arm]['brier'][metric] for r in rows if r['seed']==s) for metric in METRICS} for s in SEEDS},
+            'parent_recovery':{phase:statistics.mean(r['arms'][arm]['parent_recovery'][phase] for r in rows) if arm.startswith('Constructive') else None for phase in ('A','B','Areturn')},
+            'seconds':sum(r['arms'][arm]['wall_seconds'] for r in rows),
+            'bytes':rows[0]['arms'][arm]['learned_bytes']}
+    seed_deltas={str(s):{metric:min(summary[arm]['by_seed'][str(s)][metric] for arm in BASELINES)-summary['ConstructiveInfo']['by_seed'][str(s)][metric] for metric in ('A','B','Areturn')} for s in SEEDS}
+    ablation_advantage=summary['ConstructiveCoverage']['Areturn']-summary['ConstructiveInfo']['Areturn']
+    go=(all(all(value>=.01 for value in metrics.values()) for metrics in seed_deltas.values())
+        and ablation_advantage>=.005 and summary['ConstructiveInfo']['parent_recovery']['A']>=.5
+        and summary['ConstructiveInfo']['seconds']<=5*min(summary[x]['seconds'] for x in BASELINES))
+    return {'experiment':'LR-92AU','status':'DEVELOPMENT_ONLY','worlds':24,
+        'actions_per_arm':sum(sum(x['lengths']) for x in rows),
+        'summary':summary,'rows':rows,
+        'decision':{'development_go':go,'seedwise_advantage_vs_best_controls':seed_deltas,
+                    'intervention_information_advantage_vs_coverage':ablation_advantage,
+                    'scientific_pass':False,'native_training':False,'protected_primary_consumed':False},
+        'total_wall_seconds':time.perf_counter()-start}
+
+if __name__=='__main__':print(json.dumps(run_all(),sort_keys=True,indent=2))

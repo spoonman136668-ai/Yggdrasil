@@ -1,0 +1,138 @@
+"""Independent read-only audit of LR-92AZ scored results.
+
+Does not import causal_basis.py or compare.py; never creates another model
+checkpoint/owner, never invokes an external source or a protected actor.
+"""
+from __future__ import annotations
+import copy,hashlib,math,json
+from pathlib import Path
+from worlds import worlds,SEEDS,FAMILIES,REPS
+
+RESULT_SHA='d2445e0506abcf1be53e80a088044ab9571fb646ed3a73cef170b3ecb4e93b84'
+SCHEMA='lr92az.causal-witness-study.v1'
+ARMS=('witness_basis','exact_batch_gf2','beta_full','beta_window32','no_learning','shuffled_context')
+
+
+def bits(stage,e):
+    s,x,r,z=e.s1,e.x1,e.s2,e.x2
+    arr=(1,s,x,s*x) if stage=='s' else (1,s,x,r,z,s*x,s*r,s*z,x*r,x*z,r*z)
+    return sum(b<<k for k,b in enumerate(arr))
+
+
+def reduce(rows,mask,answer):
+    for pivot in sorted(rows,reverse=True):
+        if mask&(1<<pivot):
+            x,y=rows[pivot];mask^=x;answer^=y
+    return mask,answer
+
+
+def symbolic_eval(world):
+    rows={('s',0):{},('s',1):{},('y',0):{},('y',1):{}}
+    invalid=set()
+    histories=[]
+    sums={arm:{part:[0.,0.,0] for part in ('A','B','return16')}
+          for arm in ('exact_batch_gf2','beta_full','beta_window32','no_learning')}
+    a,b,c=world.dwell
+    for i,e in enumerate(world.events):
+        part='A' if i<a else 'B' if i<a+b else 'return16'
+        for k,(stage,y) in enumerate((('s',e.s2),('y',e.y))):
+            key=(stage,e.v);mask=bits(stage,e)
+            if key in invalid:sy=.5
+            else:
+                x,yy=reduce(rows[key],mask,0);sy=.5 if x else float(yy)
+            index_key=((stage,e.v,e.s1,e.x1) if stage=='s' else
+                       (stage,e.v,e.s1,e.x1,e.s2,e.x2))
+            full=[r[-1] for r in histories if r[:-1]==index_key]
+            w32=[r[-1] for r in histories[-64:] if r[:-1]==index_key]
+            pred={'exact_batch_gf2':sy,
+                  'beta_full':(sum(full)+1)/(len(full)+2),
+                  'beta_window32':(sum(w32)+1)/(len(w32)+2),
+                  'no_learning':.5}
+            for arm,p in pred.items():
+                # A-return metric only covers earliest 16 return observations.
+                if part=='return16' and i>=a+b+16:continue
+                v=sums[arm][part]
+                v[k]+=(p-y)**2
+                if k==0:v[2]+=1
+            histories.append((*index_key,y))
+            if key not in invalid:
+                x,yy=reduce(rows[key],mask,y)
+                if x:rows[key][x.bit_length()-1]=(x,yy)
+                elif yy:invalid.add(key)
+    def metric(arm,part,stage):
+        count=a if part=='A' else b if part=='B' else 16
+        return sums[arm][part][stage]/count
+    return {arm:{'A_terminal':metric(arm,'A',1),
+                 'B_terminal':metric(arm,'B',1),
+                 'B_transition':metric(arm,'B',0),
+                 'return16_terminal':metric(arm,'return16',1),
+                 'return16_transition':metric(arm,'return16',0)}
+            for arm in sums}
+
+
+def audit(source, expected_sha=RESULT_SHA):
+    raw=Path(source).read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=expected_sha:raise ValueError('RESULT_SHA_DRIFT')
+    r=json.loads(raw)
+    if (r.get('schema')!=SCHEMA or r['worlds']!=36 or r['protected_first_use'] is not False
+        or r['native_model_executed'] is not False or r['canonical_checkpoint_changed'] is not False):
+        raise ValueError('RESULT_SCHEMA_DRIFT')
+    ws=worlds()
+    if sum(len(w.events) for w in ws)!=r['public_episodes_per_arm'] or len(r['rows'])!=len(ws):
+        raise ValueError('RESULT_COUNT_DRIFT')
+    known=set();storage=[];prediction_equal=0;cold_equal=0
+    for record,w in zip(r['rows'],ws):
+        key=(w.seed,w.family,w.rep)
+        if key in known or (record['seed'],record['family'],record['rep'])!=key:
+            raise ValueError('RESULT_WORLD_ORDER_DRIFT')
+        known.add(key)
+        if record['public_sha256']!=w.public_sha256 or tuple(record['dwell'])!=w.dwell:
+            raise ValueError('RESULT_WORLD_IDENTITY_DRIFT')
+        m=record['models']
+        if set(m)!=set(ARMS):raise ValueError('RESULT_MODEL_SET_DRIFT')
+        for arm,row in m.items():
+            if row['episodes']!=len(w.events) or row['world_sha256']!=w.public_sha256 or row['checkpoint_bytes']<1:
+                raise ValueError('MODEL_PUBLIC_IDENTITY')
+            if len(row['checkpoint_sha256'])!=64 or any(not math.isfinite(row[f]) or row[f]<0 or row[f]>1
+                for f in ('B_terminal','B_transition','return16_terminal','return16_transition','A_terminal')):
+                raise ValueError('MODEL_BRIER_OR_CHECKPOINT')
+        reference=symbolic_eval(w)
+        for arm,metrics in reference.items():
+            for metric,actual in metrics.items():
+                if abs(m[arm][metric]-actual)>1e-12:
+                    raise ValueError('MODEL_REFERENCE_MISMATCH:'+arm+':'+metric+':'+str(key))
+        candidate,exact=m['witness_basis'],m['exact_batch_gf2']
+        for metric in ('A_terminal','B_terminal','return16_terminal','B_transition','return16_transition'):
+            if abs(candidate[metric]-exact[metric])>1e-12:raise ValueError('BASIS_NOT_EXACT_CONTROL')
+        prediction_equal+=1
+        if candidate['probe']['pre_B']!=candidate['probe']['pre_return']:
+            raise ValueError('OLD_TASK_FORGOTTEN_DURING_B')
+        cold_equal+=1
+        if len(candidate['cold_sha'])!=2 or candidate['checkpoint_bytes']>1056:
+            raise ValueError('COLD_OR_BUDGET_DRIFT')
+        ratio=exact['checkpoint_bytes']/candidate['checkpoint_bytes']
+        if ratio<4:raise ValueError('NOT_FOURFOLD_COMPRESSION')
+        storage.append(ratio)
+    if len(known)!=36 or r['seed_go']!={str(seed):False for seed in SEEDS} or r['status']!='DEVELOPMENT_NO_GO':
+        raise ValueError('FROZEN_SCIENCE_DECISION_DRIFT')
+    for seed in SEEDS:
+        grp=[x for x in r['rows'] if x['seed']==seed]
+        if len(grp)!=12:raise ValueError('SEED_SCOPE')
+        for arm in ARMS:
+            for metric in ('B_terminal','return16_terminal','A_terminal'):
+                val=sum(x['models'][arm][metric] for x in grp)/12
+                if abs(val-r['seed_summary'][str(seed)][arm][metric])>1e-12:
+                    raise ValueError('SEED_MACRO_RECOMPUTE_FAIL')
+    return {'audit':'PASS','worlds':36,'episodes_per_arm':r['public_episodes_per_arm'],
+            'exact_symbolic_arms_verified':36,'conventional_arm_recomputations':36*3,
+            'retention_no_drift_worlds':cold_equal,
+            'predictive_parity_worlds':prediction_equal,
+            'min_compression_ratio':min(storage),'mean_compression_ratio':sum(storage)/len(storage),
+            'scientific_status':'DEVELOPMENT_NO_GO',
+            'native_executed':False,'protected_first_use':False,
+            'results_sha256':expected_sha}
+
+if __name__=='__main__':
+    import sys
+    if len(sys.argv)!=2:raise SystemExit('usage: audit_saved_results.py development_results.json')
+    print(json.dumps(audit(sys.argv[1]),sort_keys=True))

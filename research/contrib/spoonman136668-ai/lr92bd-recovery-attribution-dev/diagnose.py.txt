@@ -1,0 +1,139 @@
+"""LR-92BD frozen native-schema *standalone* forensic attribution test.
+
+The learner is byte-identical to LR-92BC. This code compares its actual
+prequential forecast with an IMPOSSIBLE-TO-DEPLOY evaluator oracle that picks
+whichever of its existing slots has smaller expected error against the hidden
+true phase. No oracle selection, true coefficients or phase ID is ever fed to
+learning or intervention selection. This is diagnostic, not a learning claim.
+"""
+from __future__ import annotations
+import hashlib, json, math, sys, time
+from pathlib import Path
+from worlds import SEEDS,FAMILIES,REPS,SMOKE_SEED,worlds,world,random_for,ctx
+from compare import one,choose_x1,choose_x2
+from mechanism import ActiveRecall
+
+ARMS=('dual_active','dual_passive','dual_coverage','exact_bayes_active',
+      'beta_full_coverage','beta_window32_coverage','beta_decay_coverage',
+      'logistic_coverage','no_learning_random')
+STRONG_CONTROLS=('exact_bayes_active','beta_full_coverage',
+                 'beta_window32_coverage','beta_decay_coverage','logistic_coverage')
+DIAGNOSTIC_ARMS=('dual_active','dual_passive','dual_coverage')
+
+
+def archive_probe(w,m,phase):
+    """Privileged reference scores, never exposed to model/policy."""
+    candidates=[(k,w.expected_brier(slot.predict,phase)) for k,slot in enumerate(m.slots)
+                if slot is not None]
+    assert candidates
+    # Stable tie-break on index. This is an offline *truth-revealing* lower
+    # bound on the best currently stored hypothesis, not feasible online.
+    chosen,loss=min(candidates,key=lambda p:(p[1],p[0]))
+    return chosen,loss
+
+
+def diagnostic_one(w,arm):
+    if arm not in DIAGNOSTIC_ARMS:raise ValueError('DIAGNOSTIC_ARM')
+    m=ActiveRecall();rng=random_for(w.seed,w.family,w.rep,'policy-common-random-coin')
+    A,B,R=w.dwell;actual={t:[] for t in ('A','B','return')};oracle={t:[] for t in ('A','B','return')}
+    incorrect={t:[] for t in ('A','B','return')};slots={t:[] for t in ('A','B','return')}
+    boundary=[];snapshots=[];changes=[];start=time.perf_counter()
+    for i in range(A+B+R):
+        if i in (A,A+B):
+            raw=m.snapshot();restored=ActiveRecall.restore(raw)
+            assert raw==restored.snapshot()
+            assert all(restored.predict(c)==m.predict(c) for c in range(16))
+            assert all(restored.intervention_score(c,'active')==m.intervention_score(c,'active') for c in range(16))
+            m=restored
+            snapshots.append({'index':i,'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+        phase='A' if i<A else 'B' if i<A+B else 'return';truth=1 if phase=='B' else 0
+        actual[phase].append(w.expected_brier(m.predict,truth))
+        chosen,minimum=archive_probe(w,m,truth)
+        oracle[phase].append(minimum)
+        incorrect[phase].append(int(chosen!=m.active))
+        slots[phase].append(sum(s is not None and s.fitted() for s in m.slots))
+        if i in (A,A+B):
+            boundary.append({'event':i,'phase':phase,'best_slot_loss':minimum,
+                             'actual_loss':actual[phase][-1],
+                             'model_active':m.active,'privileged_best_slot':chosen,
+                             'available_trained_slots':slots[phase][-1],
+                             'slot_losses':[w.expected_brier(s.predict,truth) if s else None for s in m.slots]})
+        s1=w.initial[i]
+        x1=choose_x1(m,arm,s1,i,rng)
+        s2=(s1^x1)^w.trans_noise[i]
+        x2=choose_x2(m,arm,s1,x1,s2,i,rng)
+        rs2,y=w.response(i,s1,x1,x2)
+        assert s2==rs2
+        before=len(m.switches)
+        m.observe(ctx(s1,x1,s2,x2),y)
+        if len(m.switches)>before:changes.append(i)
+    raw=m.snapshot();assert raw==ActiveRecall.restore(raw).snapshot()
+    mean=lambda v:sum(v)/len(v)
+    final={'A':mean(actual['A']),'B':mean(actual['B']),
+           'return16':mean(actual['return'][:16]),'return_all':mean(actual['return']),
+           'oracle_A':mean(oracle['A']),'oracle_B':mean(oracle['B']),
+           'oracle_return16':mean(oracle['return'][:16]),
+           'oracle_return_all':mean(oracle['return']),
+           'first16_wrong_slot_fraction':mean(incorrect['return'][:16]),
+           'first16_two_trained_slots_fraction':mean([int(v==2) for v in slots['return'][:16]]),
+           'return_boundary':boundary[-1], 'B_boundary':boundary[0],
+           'wrong_return_first_episode':incorrect['return'][0],
+           'switches':changes,'updates':A+B+R,
+           'checkpoint_bytes':len(raw),'checkpoint_sha256':hashlib.sha256(raw).hexdigest(),
+           'cold':snapshots,'elapsed_s':time.perf_counter()-start}
+    # Oracle only chooses from *actual* learned hypotheses. It cannot make
+    # a poor stored program more accurate, and it cannot affect actions.
+    for key in ('A','B','return16','return_all'):
+        assert final['oracle_'+key]<=final[key]+1e-12
+    return final
+
+
+def evaluate(subset=None):
+    ws=tuple(subset) if subset is not None else worlds();rows=[]
+    for w in ws:
+        metrics={}
+        for arm in ARMS:
+            metrics[arm]=diagnostic_one(w,arm) if arm in DIAGNOSTIC_ARMS else one(w,arm)
+        rows.append({'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':w.dwell,
+                     'public_input_sha256':w.public_input_sha256,
+                     'truth_commitment_sha256':hashlib.sha256(f'{w.A}:{w.B}'.encode()).hexdigest(),
+                     'episodes':sum(w.dwell),'models':metrics})
+    summary={};classification={}
+    for seed in sorted({w.seed for w in ws}):
+        cur=[r for r in rows if r['seed']==seed]
+        summary[str(seed)]={a:{k:sum(row['models'][a][k] for row in cur)/len(cur)
+                                for k in ('A','B','return16','return_all')}
+                            for a in ARMS}
+        for arm in DIAGNOSTIC_ARMS:
+            summary[str(seed)][arm].update({k:sum(row['models'][arm][k] for row in cur)/len(cur)
+                for k in ('oracle_return16','oracle_B','first16_wrong_slot_fraction',
+                          'first16_two_trained_slots_fraction')})
+        candidate=summary[str(seed)]['dual_active']
+        strong=min(summary[str(seed)][a]['return16'] for a in STRONG_CONTROLS)
+        actual=candidate['return16'];oracle=candidate['oracle_return16']
+        # This frozen classification is mechanistic/retrospective and
+        # NOT a scientific promotion test.
+        if oracle>strong+.03:category='ARCHIVE_ACCURACY_LIMITED'
+        elif actual-oracle>=.03 and oracle<=strong+.01:category='IDENTIFICATION_LIMITED'
+        else:category='MIXED_OR_INDETERMINATE'
+        classification[str(seed)]={'classification':category,
+                                  'control_best_return16':strong,
+                                  'actual_return16':actual,
+                                  'oracle_return16':oracle,
+                                  'identification_gap':actual-oracle,
+                                  'representation_gap':oracle-strong}
+    return {'schema':'lr92bd.causal-recovery-attribution.v1',
+            'frozen_candidate_sha256':SOURCE_SHA256_CANDIDATE,
+            'worlds':len(ws),'episodes_per_arm':sum(r['episodes'] for r in rows),
+            'arms':ARMS,'seed_summary':summary,'seed_attribution':classification,'rows':rows,
+            'native_model_executed':False,'protected_first_use':False,
+            'owner_checkpoint_changed':False,
+            'scientific_gain_claimed':False,
+            'diagnostic_classification_only':True}
+
+SOURCE_SHA256_CANDIDATE='4169b3cdf2a4d92db3ee0125302285f4d886eb347f9db73af9721519279aff78'
+
+if __name__=='__main__':
+    if len(sys.argv)!=2:raise SystemExit('usage: diagnose.py output.json')
+    result=evaluate();Path(sys.argv[1]).write_text(json.dumps(result,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in result.items() if k not in ('rows','seed_summary')},sort_keys=True))

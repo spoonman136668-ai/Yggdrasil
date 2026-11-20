@@ -1,0 +1,117 @@
+"""LR-92AP pre-primary *development* candidate; not installed in Yggdrasil.
+
+Fixed 16-address tokenless, public-only dual-time causal memory. The protected
+bank stops updating after a per-address public-observation budget; the recent
+bank adapts to causal drift. No phase labels or hidden outcomes are available.
+Engineering feasibility only. A matched-control primary has NOT been run.
+"""
+from __future__ import annotations
+
+import hashlib
+
+
+class PublicDualTimescaleCells:
+    ACTIVE_SLOTS = 7
+    RETAINED_SLOTS = 9
+    PATTERNS = ((2, 2), (0, 2), (1, 2), (0, 0), (0, 1), (1, 0), (1, 1))
+    MAGIC = b"YPT4"  # explicit incompatible new format; never migrate YPC1/YPT3
+    LEARNED_AND_HISTORY_BYTES = 928
+    CHECKPOINT_BYTES = 4 + 928 + 32
+    PROTECTED_LIMIT = 48
+    RECENT_WINDOW = 32
+
+    def __init__(self):
+        # One bank: 16 addresses * 7 history pairs * 2 actions * 2 outcomes
+        self._protected = bytearray(448)
+        self._recent = bytearray(448)
+        self._history = bytearray([2, 2] * 16)
+
+    @classmethod
+    def _addr(cls, address: int, retained: bool) -> int:
+        if type(retained) is not bool:
+            raise ValueError("YPT4_RETAINED_INVALID")
+        limit = cls.RETAINED_SLOTS if retained else cls.ACTIVE_SLOTS
+        if type(address) is not int or not 0 <= address < limit:
+            raise ValueError("YPT4_ADDRESS_INVALID")
+        return address + (cls.ACTIVE_SLOTS if retained else 0)
+
+    @staticmethod
+    def _bit(value: int, kind: str) -> int:
+        if type(value) is not int or value not in (0, 1):
+            raise ValueError("YPT4_" + kind + "_INVALID")
+        return value
+
+    def _offset(self, address: int, action: int) -> int:
+        prior = tuple(self._history[2 * address:2 * address + 2])
+        try:
+            p = self.PATTERNS.index(prior)
+        except ValueError:
+            raise ValueError("YPT4_INVALID_HISTORY") from None
+        return address * 28 + p * 4 + action * 2
+
+    @staticmethod
+    def _p(bank: bytearray, pos: int) -> float:
+        misses, successes = bank[pos], bank[pos + 1]
+        return (successes + 1.0) / (misses + successes + 2.0)
+
+    def predict(self, address: int, action: int, *, retained: bool = False) -> float:
+        """Prequential P(public outcome=1); does not mutate or see phase."""
+        slot = self._addr(address, retained)
+        arm = self._bit(action, "ACTION")
+        pos = self._offset(slot, arm)
+        p0 = self._p(self._protected, pos)
+        p1 = self._p(self._recent, pos)
+        n1 = self._recent[pos] + self._recent[pos + 1]
+        if n1 >= 8 and abs(p1 - p0) >= 0.20:
+            return p1
+        if n1 >= 4:
+            return 0.75 * p0 + 0.25 * p1
+        return p0
+
+    def predict_protected(self, address: int, action: int, *, retained: bool = False) -> float:
+        """Explicit cold archived-memory readout, not a phase-aware policy."""
+        pos = self._offset(self._addr(address, retained), self._bit(action, "ACTION"))
+        return self._p(self._protected, pos)
+
+    def observe_step(self, address: int, action: int, public_outcome: int, *,
+                     retained: bool = False) -> None:
+        """Update only after the real public outcome; advance episode clock."""
+        slot = self._addr(address, retained)
+        arm = self._bit(action, "ACTION")
+        outcome = self._bit(public_outcome, "OUTCOME")
+        pos = self._offset(slot, arm) + outcome
+        start = slot * 28
+        if sum(self._protected[start:start + 28]) < self.PROTECTED_LIMIT:
+            self._protected[pos] = min(255, self._protected[pos] + 1)
+        # Decay the recent counts in the same empirical bin when saturated.
+        bin_start = pos - outcome
+        if sum(self._recent[bin_start:bin_start + 2]) >= self.RECENT_WINDOW:
+            for j in (bin_start, bin_start + 1):
+                self._recent[j] = (self._recent[j] + 1) // 2
+        self._recent[pos] = min(255, self._recent[pos] + 1)
+        self._history[2 * slot + 1] = self._history[2 * slot]
+        self._history[2 * slot] = arm
+
+    def end_episode(self) -> None:
+        self._history[:] = bytes([2, 2] * 16)
+
+    def snapshot(self) -> bytes:
+        raw = self.MAGIC + bytes(self._protected) + bytes(self._recent) + bytes(self._history)
+        assert len(raw) == self.CHECKPOINT_BYTES - 32
+        return raw + hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls, blob: bytes) -> "PublicDualTimescaleCells":
+        if (type(blob) is not bytes or len(blob) != cls.CHECKPOINT_BYTES or
+                blob[:4] != cls.MAGIC or
+                hashlib.sha256(blob[:-32]).digest() != blob[-32:]):
+            raise ValueError("YPT4_CHECKPOINT_REJECTED")
+        history = blob[900:932]
+        if len(history) != 32 or any(tuple(history[i:i + 2]) not in cls.PATTERNS
+                                    for i in range(0, 32, 2)):
+            raise ValueError("YPT4_INVALID_HISTORY")
+        item = cls()
+        item._protected[:] = blob[4:452]
+        item._recent[:] = blob[452:900]
+        item._history[:] = history
+        return item

@@ -1,0 +1,110 @@
+"""Read-only LR-92BC frozen-results custody, macro-score and stop-rule audit.
+
+Does not import a learner or run any scientific episode. Does not recompute
+per-step forecasts; verifies saved records, exact manifest and seed summaries.
+"""
+from __future__ import annotations
+import hashlib,json,math,statistics
+from pathlib import Path
+
+ARMS=('dual_active','dual_passive','dual_coverage','exact_bayes_active','exact_bayes_random',
+      'beta_full_coverage','beta_window32_coverage','beta_decay_coverage',
+      'logistic_coverage','no_learning_random')
+CONTROLS=('exact_bayes_active','exact_bayes_random','beta_full_coverage',
+          'beta_window32_coverage','beta_decay_coverage','logistic_coverage')
+SOURCES=('worlds.py','mechanism.py','controls.py','compare.py','test_mechanism.py','freeze.py')
+SMOKE_SEED=95820100
+SEEDS=(95820101,95820102)
+
+def require(condition,message):
+    if not condition:raise ValueError('LR92BC_AUDIT_'+message)
+
+def sha256(raw):return hashlib.sha256(raw).hexdigest()
+
+def audit(root,raw=None):
+    root=Path(root)
+    manifest_raw=(root/'development_manifest.json').read_bytes()
+    proto=json.loads((root/'frozen_dev_protocol.json').read_text())
+    require(proto['schema']=='lr92bc.active-intervention-source-free-development-freeze.v1','PROTOCOL')
+    require(sha256(manifest_raw)==proto['manifest_sha256'],'MANIFEST_HASH')
+    require(all(sha256((root/n).read_bytes())==proto['source_sha256'][n] for n in SOURCES),'SOURCE_DRIFT')
+    require(proto['before_full_score'] is True and proto['full_score_evaluated_at_freeze'] is False,'SOURCE_ORDER')
+    require(tuple(proto['development']['seeds'])==SEEDS,'SEED_SCOPE')
+    require(proto['development']['smoke_only_seed']==SMOKE_SEED,'SMOKE_SCOPE')
+    require(proto['ownership']['protected_original_first_use'] is False,'PROTECTED_SCOPE')
+    manifest=json.loads(manifest_raw)
+    require(len(manifest)==24,'MANIFEST_SIZE')
+    ref={ (int(v['seed']),v['family'],int(v['rep'])):v for v in manifest }
+    require(len(ref)==24 and set(k[0] for k in ref)==set(SEEDS),'MANIFEST_KEYS')
+    require(sum(v['events'] for v in manifest)==5310,'MANIFEST_EPISODES')
+    if raw is None:raw=(root/'development_result.json').read_bytes()
+    if isinstance(raw,(str,dict)):
+        if isinstance(raw,str):raw=raw.encode('utf-8')
+        else:raw=json.dumps(raw).encode('utf-8')
+    r=json.loads(raw)
+    require(r['schema']=='lr92bc.active-causal-identification.v1','RESULT_SCHEMA')
+    require(r['worlds']==24 and r['episodes_per_arm']==5310,'WORLD_COUNT')
+    require(tuple(r['arms'])==ARMS and tuple(proto['arms'])==ARMS and tuple(proto['controls'])==CONTROLS,'ARMS')
+    require(r['native_model_executed'] is False and r['protected_first_use'] is False and r['owner_checkpoint_changed'] is False,'AUTHORITY')
+    require(len(r['rows'])==24,'ROWS')
+    seen=set();totals={a:0 for a in ARMS};bytes_candidate=[];switch_lags={}
+    for row in r['rows']:
+        key=(row['seed'],row['family'],row['rep'])
+        require(key in ref and key not in seen,'WORLD_IDENTITY');seen.add(key)
+        m=ref[key]
+        require(tuple(row['dwell'])==tuple(m['dwell']) and row['episodes']==m['events'],'WORLD_DWELL')
+        require(row['public_input_sha256']==m['public_input_sha256'],'PUBLIC_INPUT_HASH')
+        require(row['worlds_secret_table_sha256']==m['private_truth_digest'],'EVALUATOR_TRUTH_HASH')
+        require(set(row['models'])==set(ARMS),'MODELS')
+        A,B,C=row['dwell']
+        for arm in ARMS:
+            v=row['models'][arm]
+            require(v['arm']==arm and v['updates']==m['events'] and v['episodes']==m['events'],'UPDATES')
+            totals[arm]+=v['updates']
+            for metric in ('A','B','return16','return_all','chosen_B','chosen_return16'):
+                require(type(v[metric]) in (float,int) and math.isfinite(v[metric]) and 0.0651-1e-10<=v[metric]<=1,'BRIER_BOUNDS_'+metric)
+            require(type(v['elapsed_s'])in(float,int) and math.isfinite(v['elapsed_s']) and v['elapsed_s']>=0,'TIME')
+            require(type(v['checkpoint_bytes']) is int and v['checkpoint_bytes']>0 and len(v['checkpoint_sha256'])==64,'CHECKPOINT')
+            require(type(v['switches']) is list and all(type(x)is int and 0<=x<m['events'] for x in v['switches']),'SWITCH_EVENTS')
+            if arm.startswith('dual_'):
+                require(set(v['cold'])=={str(A),str(A+B)} and all(len(z)==64 for z in v['cold'].values()),'COLD_RECEIPT')
+                require(v['checkpoint_bytes']<=1056,'BUDGET')
+                if arm=='dual_active':
+                    bytes_candidate.append(v['checkpoint_bytes'])
+                    detect=[x-(A+B) for x in v['switches'] if x>=A+B]
+                    switch_lags[key]=min(detect) if detect else None
+            else:require(v['cold']=={},'UNEXPECTED_COLD')
+    require(seen==set(ref) and all(n==5310 for n in totals.values()),'TOTALS')
+    require(set(r['seed_summary'])=={str(x) for x in SEEDS},'SEED_SUMMARY')
+    require(set(r['seed_go'])=={str(x) for x in SEEDS},'SEED_GO_KEYS')
+    independent_go={}
+    for seed in SEEDS:
+        worldrows=[x for x in r['rows'] if x['seed']==seed]
+        require(len(worldrows)==12,'SEED_REPS')
+        for arm in ARMS:
+            for metric in ('A','B','return16','return_all','chosen_B','chosen_return16'):
+                mean=sum(x['models'][arm][metric] for x in worldrows)/len(worldrows)
+                require(math.isclose(mean,r['seed_summary'][str(seed)][arm][metric],abs_tol=5e-13,rel_tol=0),'SEED_MACRO')
+        x=r['seed_summary'][str(seed)]
+        c=x['dual_active'];best_r=min(x[a]['return16'] for a in CONTROLS)
+        best_b=min(x[a]['B'] for a in CONTROLS)
+        won=c['return16']<=best_r-.01 and c['B']<=best_b+.01 and c['return16']<=x['dual_passive']['return16']-.01
+        require(r['seed_go'][str(seed)] is won,'STOP_SEED')
+        independent_go[str(seed)]=won
+    status='DEVELOPMENT_GO' if all(independent_go.values()) else 'DEVELOPMENT_NO_GO'
+    require(r['status']==status,'STOP_DECISION')
+    return {'audit':'PASS','frozen_study':'lr92bc.active-causal-identification.v1',
+            'development_status':status,'worlds':24,'episodes_per_arm':5310,
+            'seed_go':independent_go,'source_and_manifest':'SHA256_PASS',
+            'matched_action_opportunities':True,'identical_realized_actions':False,
+            'model_executed_by_auditor':False,'primary_first_use':False,
+            'candidate_checkpoint_mean_bytes':sum(bytes_candidate)/24,
+            'candidate_checkpoint_max_bytes':max(bytes_candidate),
+            'candidate_post_return_switch_event_worlds':sum(v is not None for v in switch_lags.values()),
+            'candidate_post_return_switch_event_within16_worlds':sum(v is not None and v<16 for v in switch_lags.values()),
+            'result_sha256':sha256(raw)}
+
+if __name__=='__main__':
+    import sys
+    if len(sys.argv)!=2:raise SystemExit('usage: audit_saved.py /path/to/repo-experiment-folder')
+    print(json.dumps(audit(sys.argv[1]),indent=2,sort_keys=True))

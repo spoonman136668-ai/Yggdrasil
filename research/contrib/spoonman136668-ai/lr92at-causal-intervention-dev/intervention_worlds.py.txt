@@ -1,0 +1,82 @@
+"""LR-92AT bounded disjoint DEVELOPMENT causal-intervention worlds.
+
+The evaluator holds latent causal mechanism truth, action/noise tapes and
+non-training query labels. The learner interface is only do(action)->binary
+outcome AFTER the intervention has been selected. No model sees hidden ID.
+No legacy protected LR-92AP cohort is accessible from this generator.
+"""
+from __future__ import annotations
+from dataclasses import dataclass
+import hashlib
+import random
+from causal_programs import ACTIONS, TABLES, OOD_TABLES, NOISE
+
+DEV_SEEDS=(76021921,76021922)
+LEGACY_DEVELOPMENT=(73004303,73004304,74009171,74009172,75011801,75011802)
+PROTECTED=(929209101,929209102,929209103)
+REPLICATES=3
+TRAIN_INTERVENTIONS=8
+PROBE_ACTIONS=8
+
+
+def _seed(seed, mech, repetition, salt):
+    return int.from_bytes(hashlib.sha256(
+        f'LR92AT|{seed}|{mech}|{repetition}|{salt}'.encode()).digest()[:8],'big')
+
+
+@dataclass(frozen=True)
+class World:
+    seed: int
+    hidden_mechanism: int  # evaluator only
+    repetition: int
+    train_noise: tuple[int, ...]
+    probe_labels: tuple[int, ...]
+
+    @property
+    def ood(self):return self.hidden_mechanism>=len(TABLES)
+
+    def _table(self):
+        return (TABLES+OOD_TABLES)[self.hidden_mechanism]
+
+    def outcome(self, action, step):
+        """Reveal ONE public observed consequence only AFTER selecting do(action)."""
+        if type(action) is not int or action not in ACTIONS or type(step) is not int or not 0<=step<TRAIN_INTERVENTIONS:
+            raise ValueError('WORLD_INVALID_INTERVENTION')
+        return self._table()[action]^self.train_noise[step]
+
+    def hidden_expected_brier(self, action, forecast):
+        """Evaluator-only analytical score on fixed, untrained do-queries."""
+        if type(action) is not int or action not in ACTIONS or not 0 <= forecast <= 1:
+            raise ValueError('WORLD_INVALID_PROBE')
+        true_p=NOISE+(1-2*NOISE)*self._table()[action]
+        return true_p*(1-forecast)**2+(1-true_p)*forecast**2
+
+
+def make_world(seed,mechanism,repetition):
+    if (type(seed) is not int or seed not in DEV_SEEDS or
+        type(mechanism) is not int or not 0<=mechanism<len(TABLES)+len(OOD_TABLES) or
+        type(repetition) is not int or not 0<=repetition<REPLICATES):
+        raise ValueError('LR92AT_DEV_ONLY_UNAUTHORIZED_INPUT')
+    train=random.Random(_seed(seed,mechanism,repetition,'train-noise'))
+    query=random.Random(_seed(seed,mechanism,repetition,'probe-noise'))
+    noise=tuple(int(train.random()<NOISE) for _ in range(TRAIN_INTERVENTIONS))
+    table=(TABLES+OOD_TABLES)[mechanism]
+    probe=tuple(table[a]^int(query.random()<NOISE) for a in ACTIONS)
+    return World(seed,mechanism,repetition,noise,probe)
+
+
+def development_worlds():
+    return tuple(make_world(seed,h,r) for seed in DEV_SEEDS
+                 for h in range(len(TABLES)+len(OOD_TABLES)) for r in range(REPLICATES))
+
+
+def source_manifest():
+    """Authoritative development-only world identifier and noise/query digests.
+
+    Identifiers of new prospective primary seeds do NOT exist.
+    """
+    return tuple({'seed':w.seed,'mechanism':w.hidden_mechanism,'repetition':w.repetition,
+                  'ood':w.ood,
+                  'train_noise_sha256':hashlib.sha256(bytes(w.train_noise)).hexdigest(),
+                  'probe_sha256':hashlib.sha256(bytes(w.probe_labels)).hexdigest()}
+                 for w in development_worlds())

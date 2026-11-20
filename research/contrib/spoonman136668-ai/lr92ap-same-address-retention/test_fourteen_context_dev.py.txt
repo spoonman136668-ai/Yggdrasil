@@ -1,0 +1,93 @@
+"""No protected 288-world primary seed in this module or import path."""
+import unittest
+import hashlib
+from fourteen_context_dev import (
+    public_fixture, run, SEEDS, FAMILIES, PHASES,
+    OBS_PER_PHASE, PATTERNS, EVENTS, EPISODE_LENGTH,
+    _clean_A, FullHistory14Diagnostic, Last32Diagnostic,
+)
+from public_dual_timescale_cells import PublicDualTimescaleCells
+from bounded_runlength_bocpd import BoundedRunLengthBOCPD14
+
+
+class FourteenContextTests(unittest.TestCase):
+    def test_scope_rejects_primary_and_uncommitted_tuning(self):
+        for seed in (929209101, 929209102, 929209103, 1, 0, True):
+            with self.assertRaises(ValueError):public_fixture(seed, 'xor')
+        for family in ('NEW', '', 'schedule-aware'):
+            with self.assertRaises(ValueError):public_fixture(SEEDS[0], family)
+
+    def test_exact_14_bins_and_phase_data_public(self):
+        for seed in SEEDS:
+            for family in FAMILIES:
+                tape = public_fixture(seed, family)
+                self.assertEqual(len(tape), EVENTS)
+                self.assertEqual(len(set(item.bin_id for item in tape)), 14)
+                self.assertEqual([len([v for v in tape if v.phase == p]) for p in PHASES], [64]*3)
+                self.assertTrue(all(0 <= v.bin_id < 14 and v.action in (0,1) and
+                                    v.outcome in (0,1) for v in tape))
+                self.assertTrue(all(v.clean_A != v.clean_B for v in tape))
+                self.assertEqual(sum(v.episode_start for v in tape), EVENTS//EPISODE_LENGTH)
+
+    def test_first_two_actions_reset_only_on_public_episode(self):
+        for seed in SEEDS:
+            for family in FAMILIES:
+                tape = public_fixture(seed, family)
+                history = (2,2)
+                for i,v in enumerate(tape):
+                    if v.episode_start:history=(2,2)
+                    self.assertEqual(v.bin_id, PATTERNS.index(history)*2+v.action)
+                    history = (v.action, history[0])
+
+    def test_14_relation_is_deterministic_and_conflicting(self):
+        for seed in SEEDS:
+            for family in FAMILIES:
+                a = public_fixture(seed,family)
+                self.assertEqual(a, public_fixture(seed,family))
+                pairs = {v.bin_id:(v.clean_A,v.clean_B) for v in a}
+                self.assertEqual(len(pairs),14)
+                self.assertTrue(all(pair[0]^pair[1] == 1 for pair in pairs.values()))
+
+    def test_observed_label_not_used_in_forecast(self):
+        for cls in (PublicDualTimescaleCells, BoundedRunLengthBOCPD14):
+            m=cls()
+            tape=public_fixture(SEEDS[0], 'random14')
+            for obs in tape[:48]:
+                if obs.episode_start:m.end_episode()
+                before=m.snapshot()
+                p=m.predict(0,obs.action)
+                self.assertEqual(before,m.snapshot())
+                self.assertTrue(0 <= p <= 1)
+                m.observe_step(0,obs.action,obs.outcome)
+            self.assertEqual(cls.restore(m.snapshot()).snapshot(),m.snapshot())
+
+    def test_full14_and_last32_are_true_prequential_diagnostics(self):
+        for cls in (FullHistory14Diagnostic,Last32Diagnostic):
+            m=cls()
+            for obs in public_fixture(SEEDS[1], 'and'):
+                if obs.episode_start:m.end_episode()
+                before = tuple(tuple(c) for c in m.counts)
+                p=m.predict(0,obs.action)
+                self.assertEqual(before,tuple(tuple(c) for c in m.counts))
+                self.assertTrue(0 <= p <= 1)
+                m.observe_step(0,obs.action,obs.outcome)
+            self.assertGreater(sum(sum(c) for c in m.counts),0)
+            if cls is Last32Diagnostic:
+                self.assertEqual(sum(sum(c) for c in m.counts),32)
+
+    def test_all_six_replays_deterministic_with_cold_identifiability(self):
+        for seed in SEEDS:
+            for family in FAMILIES:
+                r=run(seed,family)
+                self.assertEqual(r,run(seed,family))
+                self.assertEqual(r['events'],192)
+                self.assertEqual(r['visited_bins'],list(range(14)))
+                self.assertEqual(len(r['digest']),64)
+                for item in r['scores'].values():
+                    self.assertEqual(set(item),{'A','B','Areturn16','Areturn48'})
+                    self.assertTrue(all(0<=x<=1 for x in item.values()))
+                # The same observable past cannot reveal A vs continued B.
+                for value in r['cold_before_return'].values():
+                    self.assertEqual(value['p_if_A'],value['p_if_B'])
+
+if __name__=='__main__': unittest.main()

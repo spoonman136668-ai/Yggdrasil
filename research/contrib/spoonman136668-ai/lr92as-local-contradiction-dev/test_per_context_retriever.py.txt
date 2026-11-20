@@ -1,0 +1,90 @@
+"""Mechanism-only negative and invariance tests, no scored disjoint worlds."""
+import hashlib
+import random
+import unittest
+from per_context_retriever import PerContextRetriever, FixedHalfContextBlend, ActiveOnlyContext
+from lr92as_disjoint_dev import SEEDS, FAMILIES, INSTANCES, world, manifest
+
+class PerContextTests(unittest.TestCase):
+    def test_928_bytes_and_snapshot(self):
+        for cls in (PerContextRetriever,FixedHalfContextBlend,ActiveOnlyContext):
+            m=cls();self.assertEqual(m.LEARNED_BYTES,928)
+            self.assertEqual(len(m.snapshot()),964)
+            self.assertEqual(m.snapshot(),cls.restore(m.snapshot()).snapshot())
+            self.assertEqual(m.predict(0,0),.5)
+    def test_validation_nonmutating(self):
+        m=PerContextRetriever();snap=m.snapshot()
+        for addr,act,y,r in ((7,0,0,False),(9,0,0,True),(0,2,0,False),(0,0,2,False),(True,0,0,False),(0,1,1,1)):
+            with self.assertRaises(ValueError):m.observe_step(addr,act,y,retained=r)
+            self.assertEqual(snap,m.snapshot())
+    def test_predict_archived_readonly(self):
+        m=PerContextRetriever();snap=m.snapshot()
+        self.assertEqual(m.predict_archived(0,1),.5)
+        self.assertEqual(m.snapshot(),snap)
+    def test_replay_checkpoint_all_slots(self):
+        a=PerContextRetriever();b=PerContextRetriever()
+        for t in range(1500):
+            s=t%16; addr=s if s<7 else s-7;retained=s>=7
+            action=(t//7+t)%2;y=(t//9+2*t//13)%2
+            for m in (a,b):
+                if t%13==0:m.end_episode()
+                p=m.predict(addr,action,retained=retained)
+                self.assertTrue(0<=p<=1)
+                m.observe_step(addr,action,y,retained=retained)
+            if t%157==0:b=PerContextRetriever.restore(b.snapshot())
+        self.assertEqual(a.snapshot(),b.snapshot())
+        self.assertEqual(sum(a._archive),16*a.ARCHIVE_FREEZE)
+    def test_corruption_and_rehashed_semantic_validation(self):
+        m=PerContextRetriever();raw=bytearray(m.snapshot());raw[32]^=1
+        with self.assertRaises(ValueError):PerContextRetriever.restore(bytes(raw))
+        raw=bytearray(m.snapshot());raw[900]=4
+        raw[-32:]=hashlib.sha256(raw[:-32]).digest()
+        with self.assertRaisesRegex(ValueError,'INVALID_HISTORY'):PerContextRetriever.restore(bytes(raw))
+    def test_cell_local_belief_and_conflicting_relation(self):
+        m=PerContextRetriever()
+        for t in range(48):
+            m.end_episode();m.observe_step(0,0,0)
+        m.end_episode()
+        self.assertTrue(m._frozen(0))
+        old = m._belief[0]; untouched=m._belief[1]
+        for _ in range(10):
+            m.end_episode();m.observe_step(0,0,1)
+        self.assertNotEqual(m._belief[0],old)
+        self.assertEqual(m._belief[1],untouched)
+    def test_ablation_state_identical(self):
+        a=PerContextRetriever();b=FixedHalfContextBlend();c=ActiveOnlyContext()
+        for t in range(180):
+            for m in (a,b,c):
+                m.end_episode();m.observe_step(0,t%2,(t//7)%2)
+        self.assertEqual(a.snapshot(),b.snapshot())
+        self.assertEqual(a.snapshot(),c.snapshot())
+    def test_no_primary_fixtures_or_clock_cue(self):
+        for bad in (929209101,929209102,929209103,74009171,74009172,73004303,True):
+            with self.assertRaises(ValueError):world(bad,'xor',0)
+        self.assertEqual(len(manifest()),24)
+        self.assertEqual(len({tuple(x['dwell']) for x in manifest()}),24)
+        for s in SEEDS:
+            for f in FAMILIES:
+                for i in range(INSTANCES):
+                    w=world(s,f,i)
+                    self.assertEqual(w.context_coverage,14)
+                    a,b,_=w.dwell
+                    self.assertFalse(w.public[a].reset)
+                    self.assertFalse(w.public[a+b].reset)
+    def test_first_step_unannounced_twin(self):
+        w=world(SEEDS[0],'and',0)
+        boundary=sum(w.dwell[:2]);m=PerContextRetriever()
+        for o in w.public[:boundary]:
+            if o.reset:m.end_episode()
+            m.observe_step(0,o.action,o.outcome)
+        snap=m.snapshot();fore=m.predict(0,w.public[boundary].action)
+        clone=PerContextRetriever.restore(snap)
+        self.assertEqual(fore,clone.predict(0,w.public[boundary].action))
+    def test_novel_state_vs_ypt4(self):
+        a=PerContextRetriever()
+        self.assertEqual(a.MAGIC,b'PCH1')
+        self.assertEqual(len(a._belief),224)
+        self.assertEqual(len(a._adaptive),224)
+        self.assertEqual(len(a._archive),448)
+
+if __name__=='__main__':unittest.main()

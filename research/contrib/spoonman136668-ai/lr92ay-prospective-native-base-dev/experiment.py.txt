@@ -1,0 +1,231 @@
+"""LR-92AY: frozen prospective native base vs stream source-free study.
+
+Run ONLY on an exact clean source checkout at the pinned Amalgam SHA; create
+fresh isolated NativeEpisodeExperience objects, not owner checkpoints.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, math, subprocess, sys, time
+from pathlib import Path
+from dataclasses import replace
+from worlds import FAMILIES, SEEDS, NOISE, rule, worlds
+
+SOURCE_SHA = '86264b41a08d49f558418c0fba367f3a2636befa'
+SOURCE_TREE = 'ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5'
+SOURCE_BLOBS = {
+    'yggdrasil/native_episode_experience.py': '5a18b00a4c4131526e71f51d63dfd9eb9471c81e',
+    'yggdrasil/native_context_basis.py': 'd5159e9b7ba196ee283ae7140faa031d4b7c4291',
+    'yggdrasil/native_relation_memory.py': 'd92b82a33619b2240936be6cea1b8f2d0af17e7a',
+    'yggdrasil/public_causal_cells.py': 'de8722f38d987ef7bcb4b7a0c23466b8e6f25712',
+}
+ARMS = ('native_base', 'native_stream', 'beta_full', 'beta_window32',
+        'beta_decay24', 'symbolic_hmm', 'shuffled_context', 'no_learning')
+HAZARD = 1/64
+
+
+def _git(root, *args):
+    return subprocess.check_output(['git','-C',str(root),*args],stderr=subprocess.DEVNULL).decode().strip()
+
+
+def import_native(root):
+    root = Path(root).resolve()
+    if _git(root, 'rev-parse', 'HEAD') != SOURCE_SHA or _git(root,'rev-parse','HEAD^{tree}') != SOURCE_TREE:
+        raise ValueError('SOURCE_COMMIT_OR_TREE_DRIFT')
+    if _git(root,'status','--porcelain'):
+        raise ValueError('DIRTY_NATIVE_CHECKOUT')
+    for path, sha in SOURCE_BLOBS.items():
+        if _git(root,'hash-object',str(root/path)) != sha or _git(root,'rev-parse','HEAD:'+path) != sha:
+            raise ValueError('NATIVE_BLOB_DRIFT:'+path)
+    if 'yggdrasil.native_episode_experience' in sys.modules:
+        raise ValueError('NATIVE_PREIMPORTED')
+    sys.path.insert(0,str(root))
+    from yggdrasil.native_episode_experience import NativeEpisodeExperience
+    return NativeEpisodeExperience
+
+
+class Beta:
+    def __init__(self,window=None, decay=None):
+        self.window, self.decay, self.events = window, decay, []
+
+    def _score(self, key, target, current):
+        subset = self.events[-self.window:] if self.window else self.events
+        yes=den=0.0
+        for j, event in enumerate(subset):
+            k = ('s',event.s1,event.views[0][1],event.x1) if target=='s' else (
+                  'y',event.s1,event.views[0][1],event.x1,event.s2,event.x2)
+            if key!=k: continue
+            weight = (self.decay ** (len(subset)-1-j)) if self.decay else 1.0
+            den += weight
+            yes += weight*(event.s2 if target=='s' else event.y)
+        return (1+yes)/(2+den)
+
+    def transition(self,e):return self._score(('s',e.s1,e.views[0][1],e.x1),'s',e)
+    def terminal(self,e):return self._score(('y',e.s1,e.views[0][1],e.x1,e.s2,e.x2),'y',e)
+    def observe(self,e):self.events.append(e)
+    def checkpoint(self):
+        return json.dumps([[e.identifier,e.s1,e.views[0][1],e.x1,e.s2,e.x2,e.y]
+                           for e in self.events],separators=(',',':')).encode()
+
+
+class ShuffledBeta(Beta):
+    """Negative control: replace each event's public v with independent pinned
+    pseudo-random context, preserving actions and revealed outcomes.
+    """
+    @staticmethod
+    def scrambled(e):
+        noise = hashlib.sha256(('LR92AY-SHUFFLE|' + e.identifier).encode()).digest()[0] & 1
+        return replace(e,views=((e.s1,noise),(e.s1,1-noise)))
+    def transition(self,e):return super().transition(self.scrambled(e))
+    def terminal(self,e):return super().terminal(self.scrambled(e))
+    def observe(self,e):return super().observe(self.scrambled(e))
+
+
+class NoLearning:
+    def __init__(self):self.n=0
+    def transition(self,e):return .5
+    def terminal(self,e):return .5
+    def observe(self,e):self.n+=1
+    def checkpoint(self):return str(self.n).encode()
+
+
+class SymbolicHMM:
+    """Strong exact symbolic control: provided a candidate RULE grammar but
+    not actual family, variant, phase label, switch times, or future outcomes.
+    Two-stage observations, known noise, and hidden Markov switch hazard.
+    Model mismatch should be reported (grammar is privileged prior knowledge).
+    """
+    def __init__(self):
+        self.hypotheses = tuple((f,v,p) for f in FAMILIES for v in (0,1) for p in (0,1))
+        self.mass = [1/len(self.hypotheses)]*len(self.hypotheses)
+        self.episode_count=0
+
+    def _prior(self):
+        # Predict hidden phase transition at an episode boundary; family/variant fixed.
+        out=[]
+        for i,(f,v,p) in enumerate(self.hypotheses):
+            alternate=self.hypotheses.index((f,v,1-p))
+            out.append((1-HAZARD)*self.mass[i]+HAZARD*self.mass[alternate])
+        return out
+
+    def _joint(self,e):
+        prior=self._prior()
+        return [(prior[i], self._preds(h,e)) for i,h in enumerate(self.hypotheses)]
+
+    @staticmethod
+    def _preds(h,e):
+        family,variant,phase=h
+        s2,y=rule(family,variant,e.s1,e.views[0][1],e.x1,e.s2,e.x2)
+        return NOISE+(1-2*NOISE)*(s2^phase), NOISE+(1-2*NOISE)*(y^phase)
+
+    def forecasts(self,e):
+        joint=self._joint(e)
+        p_s=sum(m*x[0] for m,x in joint)
+        # Reveal transition before terminal prediction; update phase/grammar belief
+        conditioned=[]
+        for mass,(ps,py) in joint:
+            ls=ps if e.s2 else 1-ps
+            conditioned.append(mass*ls)
+        z=sum(conditioned)
+        py=sum((m/z)*x[1] for m,(_,x) in zip(conditioned,joint))
+        return p_s, py
+
+    def observe(self,e):
+        new=[]
+        for mass,(ps,py) in self._joint(e):
+            ls=ps if e.s2 else 1-ps
+            ly=py if e.y else 1-py
+            new.append(mass*ls*ly)
+        total=sum(new)
+        if not total>0:raise ValueError('INVALID_HMM_MASS')
+        self.mass=[m/total for m in new]
+        self.episode_count+=1
+
+    def checkpoint(self):
+        return json.dumps({'probabilities':self.mass,'n':self.episode_count},separators=(',',':')).encode()
+
+
+def stage_slices(world):
+    a,b,c=world.dwell
+    return {'A':(0,a),'B':(a,a+b),'return16':(a+b,a+b+16),'return_all':(a+b,a+b+c)}
+
+
+def score(world,arm,native_cls):
+    is_native=arm.startswith('native_')
+    model=(native_cls() if is_native else SymbolicHMM() if arm=='symbolic_hmm' else
+           NoLearning() if arm=='no_learning' else ShuffledBeta() if arm=='shuffled_context' else
+           Beta(None if arm in ('beta_full','beta_decay24') else 32,
+                2**(-1/24) if arm=='beta_decay24' else None))
+    p_s=[];p_y=[];n=len(world.public); saved=None;begin=time.perf_counter()
+    for index,e in enumerate(world.public):
+        if arm=='native_stream' and index==16:
+            model=model.begin_stream()
+        if index==sum(world.dwell[:2]):
+            saved=model.checkpoint()
+            if is_native:
+                restored=native_cls.restore(saved,hashlib.sha256(saved).hexdigest())
+                assert restored.checkpoint()==saved
+        if is_native:
+            forecast=(model.context_forecast if arm=='native_stream' and index>=16 else model.forecast)
+            pt=float(forecast(e.views[0],e.x1))
+            py=float(forecast(e.views[0],e.x1,e.s2,e.x2))
+        elif arm=='symbolic_hmm': pt,py=model.forecasts(e)
+        else:pt,py=model.transition(e),model.terminal(e)
+        if not (math.isfinite(pt) and math.isfinite(py) and 0<=pt<=1 and 0<=py<=1):
+            raise ValueError('INVALID_PREDICTION')
+        p_s.append((pt-e.s2)**2);p_y.append((py-e.y)**2)
+        if is_native:
+            successor=model.observe(e.identifier,e.views,e.row())
+            if successor is model:raise ValueError('NATIVE_UPDATE_NOT_ADMITTED')
+            model=successor
+        else:model.observe(e)
+    raw=model.checkpoint()
+    if is_native:
+        restored=native_cls.restore(raw,hashlib.sha256(raw).hexdigest())
+        assert restored.checkpoint()==raw
+    def mean(x,a,b):return sum(x[a:b])/(b-a)
+    return {'arm':arm,'updates':n,'scores':{k:{'transition':mean(p_s,a,b),'terminal':mean(p_y,a,b)}
+            for k,(a,b) in stage_slices(world).items()},'checkpoint_bytes':len(raw),
+            'pre_return_sha256':hashlib.sha256(saved).hexdigest(),
+            'checkpoint_sha256':hashlib.sha256(raw).hexdigest(),
+            'elapsed_seconds':time.perf_counter()-begin}
+
+
+def evaluate(native_cls):
+    records=[];ws=worlds()
+    assert len(ws)==48
+    for w in ws:
+        models={arm:score(w,arm,native_cls) for arm in ARMS}
+        assert all(m['updates']==len(w.public) for m in models.values())
+        records.append({'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':w.dwell,
+                        'public_sha256':w.public_sha256,'models':models})
+    seed_summary={}
+    for seed in SEEDS:
+        cohort=[r for r in records if r['seed']==seed]
+        seed_summary[str(seed)]={arm:{p:sum(x['models'][arm]['scores'][p]['terminal'] for x in cohort)/len(cohort)
+                                for p in ('B','return16')} for arm in ARMS}
+    controls=tuple(a for a in ARMS if not a.startswith('native_'))
+    per_seed=[]
+    for seed in SEEDS:
+        d=seed_summary[str(seed)]
+        best_b=min(d[c]['B'] for c in controls)
+        best_r=min(d[c]['return16'] for c in controls)
+        native=d['native_base']
+        go=native['return16']<=best_r-.01 and native['B']<=best_b+.01
+        per_seed.append(go)
+    return {'schema':'lr92ay.prospective-native-dev.v1','status':'DEVELOPMENT_GO' if all(per_seed) else 'DEVELOPMENT_NO_GO',
+            'source_sha':SOURCE_SHA,'source_tree':SOURCE_TREE,'native_blobs':SOURCE_BLOBS,
+            'worlds':len(records),'events_per_arm':sum(len(w.public) for w in ws),
+            'primary_worlds_consumed':0,'owner_checkpoint_changed':False,
+            'controls':controls,'seed_summary':seed_summary,'seed_go':dict(zip(map(str,SEEDS),per_seed)),
+            'rows':records}
+
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--native-checkout',required=True,type=Path)
+    p.add_argument('--out',required=True,type=Path)
+    args=p.parse_args()
+    Native=import_native(args.native_checkout)
+    result=evaluate(Native)
+    args.out.write_text(json.dumps(result,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in result.items() if k not in ('rows','seed_summary')},sort_keys=True))
+
+if __name__=='__main__':main()

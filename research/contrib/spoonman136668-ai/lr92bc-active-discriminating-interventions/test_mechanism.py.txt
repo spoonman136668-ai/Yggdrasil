@@ -1,0 +1,63 @@
+import unittest,hashlib,math
+from worlds import *
+from mechanism import ActiveRecall,Slot
+from controls import ExactProgramHMM,TabularBeta,Logistic,NoLearning
+from compare import ARMS,BASELINES,instantiate,choose_x1,choose_x2,one
+
+class TestExperiment(unittest.TestCase):
+    def test_scope_seeds(self):self.assertTrue(set(SEEDS).isdisjoint(FORBIDDEN))
+    def test_disjoint_24_worlds(self):self.assertEqual(len(worlds()),24)
+    def test_unique_keys(self):self.assertEqual(len({(w.seed,w.family,w.rep) for w in worlds()}),24)
+    def test_world_reproducible(self):self.assertEqual(worlds()[7],worlds()[7])
+    def test_no_oracle_episode_fields(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0)
+        self.assertEqual(w.response(0,w.initial[0],0,1)[0],w.initial[0]^w.trans_noise[0])
+        self.assertTrue(set(('seed','family','dwell','A','B')).isdisjoint(set(('s1','x1','s2','x2','y'))))
+    def test_public_view_constant(self):self.assertEqual(((0,0),(0,1)),((0,0),(0,1)))
+    def test_program_grammar_unique(self):self.assertEqual(len(set(PROGRAMS)),256)
+    def test_program_grammar_has_cubic(self):self.assertNotEqual(PROGRAMS[1<<5],PROGRAMS[0])
+    def test_input_contract_bad(self):
+        with self.assertRaises(ValueError):ActiveRecall().observe(16,1)
+    def test_input_contract_bad_label(self):
+        with self.assertRaises(ValueError):ActiveRecall().observe(0,2)
+    def test_new_model_predicts_half(self):self.assertEqual(ActiveRecall().predict(0),.5)
+    def test_dual_cold_roundtrip(self):
+        m=ActiveRecall()
+        for i in range(50):m.observe(i%16,int(i%4==0))
+        snap=m.snapshot()
+        self.assertEqual(ActiveRecall.restore(snap).snapshot(),snap)
+    def test_checkpoint_tamper(self):
+        m=ActiveRecall();s=m.snapshot()
+        with self.assertRaises(ValueError):ActiveRecall.restore(s[:-1]+bytes([s[-1]^1]))
+    def test_trial_no_future(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0);m=ActiveRecall();prior=m.snapshot()
+        choose_x1(m,'dual_active',w.initial[0],0,random_for(w.seed,w.family,w.rep,'policy-common-random-coin'))
+        self.assertEqual(m.snapshot(),prior)
+    def test_candidate_vs_passive_same_update_logic(self):self.assertIs(type(instantiate('dual_active')),type(instantiate('dual_passive')))
+    def test_candidate_vs_coverage_same_update_logic(self):self.assertIs(type(instantiate('dual_active')),type(instantiate('dual_coverage')))
+    def test_fixed_action_budget(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0)
+        for name in ('dual_active','dual_passive','exact_bayes_active','beta_window32_coverage'):
+            r=one(w,name);self.assertEqual(r['updates'],sum(w.dwell))
+    def test_hidden_phase_public_independent(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0);self.assertEqual(w.initial[w.dwell[0]],w.initial[w.dwell[0]])
+        m=ActiveRecall();self.assertFalse(hasattr(m,'phase'))
+    def test_cold_at_evaluator_boundaries(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0);r=one(w,'dual_active');self.assertEqual(len(r['cold']),2)
+    def test_fixed_probe_lower_bound(self):
+        w=world(SMOKE_SEED,'cubic_rewrite',0);table=w.A
+        score=w.expected_brier(lambda c:.93 if (table>>c)&1 else .07,0)
+        self.assertAlmostEqual(score,.0651)
+    def test_exact_bayes_prior_half(self):self.assertAlmostEqual(ExactProgramHMM().predict(2),.5)
+    def test_exact_bayes_updates(self):
+        m=ExactProgramHMM();m.observe(1,0);self.assertEqual(m.updates,1)
+    def test_baseline_trained(self):
+        m=Logistic();m.observe(0,1);self.assertNotEqual(m.predict(0),.5)
+    def test_all_arm_names(self):self.assertEqual(len(set(ARMS)),10)
+    def test_controls_available(self):self.assertEqual(len(BASELINES),6)
+    def test_out_of_class_quartic(self):
+        self.assertTrue(any(z.family=='quartic_out_of_class' for z in worlds()))
+    def test_checkpoint_overlong_rejected(self):
+        with self.assertRaises(ValueError):ActiveRecall.restore(b'X'*1100)
+
+if __name__=='__main__':unittest.main()

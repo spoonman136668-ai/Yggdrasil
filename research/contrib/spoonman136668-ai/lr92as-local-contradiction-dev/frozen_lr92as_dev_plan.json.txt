@@ -1,0 +1,94 @@
+{
+  "architecture": "16 independent addresses; 14 reachable previous-two-action/current-action causal bins per address; no tokens, transformers, phase labels, switch clock or future outcomes.",
+  "authority": {
+    "main_edit": false,
+    "merge": false,
+    "native_integration": false,
+    "owner_runner_controller_scheduler_change": false,
+    "paid_api": false,
+    "scientific_first_use": false
+  },
+  "candidate": "PerContextRetriever",
+  "constants": {
+    "adaptive_fraction": "1/4",
+    "archive_freeze_public_events": 48,
+    "episode_period": 7,
+    "hazard": "1/16",
+    "noise_probability": "0.15",
+    "phase_dwell_max": 88,
+    "phase_dwell_min": 48
+  },
+  "controls": [
+    "HMM_MAP_928",
+    "BOCPD_896",
+    "Full14_480",
+    "Window32_832"
+  ],
+  "dev_continue_only_if": [
+    "Each development seed has >=0.01 absolute first16-return Brier benefit vs the best memory-matched conventional control in that seed",
+    "Each seed candidate B-phase Brier <= seedwise best conventional B Brier +0.01",
+    "Candidate pooled return early16 Brier at least 0.005 better than BOTH exact-state fixed half and active-only ablations",
+    "Candidate pooled B Brier <= the better of ablations +0.01",
+    "Exact 24 worlds, all 14 contexts/world, 928 bytes, equal public action/outcomes, frozen source parity, deterministic checkpoint restore"
+  ],
+  "dev_manifest_sha256": "c301bcbbca1414f5a2276b2f2b3e44aa4175c7b0214b435a0f4bf8b1993fbe6c",
+  "development_seed_scope": [
+    75011801,
+    75011802
+  ],
+  "experiment": "LR-92AS",
+  "failure_rule": "If any condition fails, LR92AS_DEVELOPMENT_NO_GO and preserve negative. No tuning these exposed seeds after scoring.",
+  "families": [
+    "xor",
+    "and",
+    "random14"
+  ],
+  "forbidden_previous_development_seeds": [
+    73004303,
+    73004304,
+    74009171,
+    74009172
+  ],
+  "forbidden_previous_primary_seeds": [
+    929209101,
+    929209102,
+    929209103
+  ],
+  "hypothesis": "Per-temporal-bin archival causal hypothesis, fast adaptive local probability and local online Bayesian evidence weighting improve joint unexpected B adaptation and old-A retrieval vs strongest memory-matched controls and prediction-only ablations.",
+  "lineage": "LR-92AR NO_GO at Yggdrasil PR 1323 SHA 787e463b2c3b38c796e53f4d08882372f90844b9; no retraining or repeat tests on consumed seeds",
+  "negative_ablations": [
+    "PCH_fixed_half",
+    "PCH_active_only"
+  ],
+  "negative_predecessor": [
+    "YPT4_negative"
+  ],
+  "protected_primary": {
+    "authorized": false,
+    "created": false,
+    "seeds": [],
+    "used": false
+  },
+  "schema": "lr92as-disjoint-development.v1",
+  "score": "Paired first 16 A-return prequential Brier per seed and B-phase Brier. Current return first-step no-cue prediction separated; protected archived prediction diagnostic not scored as autonomous.",
+  "source_git_blobs": {
+    "bounded_runlength_bocpd.py": "96bb94e608d2062fb4cc488ed010f150b8325787",
+    "lr92as_compare.py": "53cec520075b9e258d3ab50e91d01c939b93dae2",
+    "lr92as_disjoint_dev.py": "c2e2e78dbad5fdf64df7cac7d7d859aed6c1d1fe",
+    "matched_tabular_controls.py": "7a223f6b097eb6e461853685195ba4b89af2f2b6",
+    "per_context_retriever.py": "27b4dfe54590fe0918c862df0edc277a80b52e2a",
+    "public_dual_timescale_cells.py": "e2fca6e277efbf0bd3b77ba7e472e4b5432d205f",
+    "two_regime_hmm_control.py": "41f3adcb8c12d540f3042ae03a6a9dbdd4d6e6f0"
+  },
+  "state_allocation_bytes": {
+    "adaptive_Q8_probability_per_context": 224,
+    "archive_binary_counts": 448,
+    "history_2_actions_per_address": 32,
+    "per_context_Q8_archive_belief": 224,
+    "total": 928
+  },
+  "status": "SOURCE_LOCKED_BEFORE_DEV_SCORE",
+  "total_development_public_events": 4728,
+  "total_development_worlds": 24,
+  "worlds_per_seed_family": 4
+}

@@ -1,0 +1,108 @@
+"""LR-92AZ experimental parity-witness basis; NOT native model integration.
+
+Constructs causal constraints from public two-stage interventions. Retains only
+linearly independent witnesses, separately by observable context/stage. No
+oracle phase/switch label, no candidate full-function catalog, no checkpoint
+replacement. Domain: deterministic GF(2) monomials of degree <=2.
+"""
+from __future__ import annotations
+import hashlib, json
+
+MAGIC='lr92az.constraint_basis.v1'
+MAX_BYTES=1024
+
+
+def features(stage,s1,x1,s2=0,x2=0):
+    for a in (s1,x1,s2,x2):
+        if type(a) is not int or a not in (0,1):raise ValueError('BIT_CONTRACT')
+    if stage=='s':
+        monomials=(1,s1,x1,s1*x1)
+    elif stage=='y':
+        monomials=(1,s1,x1,s2,x2,s1*x1,s1*s2,s1*x2,x1*s2,x1*x2,s2*x2)
+    else: raise ValueError('STAGE_CONTRACT')
+    return sum(z<<i for i,z in enumerate(monomials))
+
+
+def _key(stage,v):
+    if stage not in ('s','y') or type(v) is not int or v not in (0,1):raise ValueError('CONTEXT_CONTRACT')
+    return f'{stage}{v}'
+
+
+class WitnessBasis:
+    """Four independent rank-preserving, checksum-custodied algebraic memories.
+
+    Actual input identity is public context bit v. A/B phase indices and
+    evaluator-only causal labels are never supplied.
+    """
+    def __init__(self):
+        self.buckets={k:{} for k in ('s0','s1','y0','y1')}
+        self.count=0
+        self.contradictions=0
+        self.invalid=set()
+
+    @staticmethod
+    def _reduce(rows,mask,y):
+        for pivot in sorted(rows, reverse=True):
+            if mask & (1<<pivot):
+                old,label=rows[pivot]
+                mask ^= old
+                y ^= label
+        return mask,y
+
+    def predict(self,stage,v,s1,x1,s2=0,x2=0):
+        x=features(stage,s1,x1,s2,x2)
+        key=_key(stage,v)
+        if key in self.invalid:return .5
+        mask,y=self._reduce(self.buckets[key],x,0)
+        return .5 if mask else float(y)
+
+    def observe(self,stage,v,s1,x1,s2,x2,outcome):
+        if type(outcome) is not int or outcome not in (0,1):raise ValueError('OUTCOME_CONTRACT')
+        key=_key(stage,v);mask=features(stage,s1,x1,s2,x2)
+        rows=self.buckets[key]
+        self.count+=1
+        if key in self.invalid:return False
+        mask,y=self._reduce(rows,mask,outcome)
+        if not mask:
+            if y:
+                self.contradictions+=1
+                self.invalid.add(key) # Stop making deterministic claims for contradicted relation
+            return not bool(y)
+        rows[mask.bit_length()-1]=(mask,y)
+        return True
+
+    def snapshot(self):
+        body={'schema':MAGIC,'count':self.count,'contradictions':self.contradictions,
+              'invalid':sorted(self.invalid),
+              'buckets':{k:[[p,m,y] for p,(m,y) in sorted(v.items())] for k,v in self.buckets.items()}}
+        raw=json.dumps(body,sort_keys=True,separators=(',',':')).encode('ascii')
+        if len(raw)>MAX_BYTES:raise ValueError('CAPACITY_EXCEEDED')
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,raw):
+        if type(raw) is not bytes or len(raw)<33 or len(raw)>MAX_BYTES+32 or hashlib.sha256(raw[:-32]).digest()!=raw[-32:]:
+            raise ValueError('CHECKPOINT_HASH')
+        try:
+            d=json.loads(raw[:-32]);o=cls()
+            if (set(d)!={'schema','count','contradictions','invalid','buckets'} or d['schema']!=MAGIC
+                or set(d['buckets'])!=set(o.buckets) or type(d['count']) is not int or d['count']<0
+                or type(d['contradictions']) is not int or d['contradictions']<0
+                or type(d['invalid']) is not list or d['invalid']!=sorted(set(d['invalid']))
+                or not set(d['invalid'])<=set(o.buckets) or d['contradictions']!=len(d['invalid'])):
+                raise ValueError('CHECKPOINT_SCHEMA')
+            for key,rows in d['buckets'].items():
+                bound=4 if key[0]=='s' else 11
+                if not isinstance(rows,list) or len(rows)>bound:raise ValueError('CHECKPOINT_RANK')
+                for r in rows:
+                    if (type(r) is not list or len(r)!=3 or any(type(z) is not int for z in r)
+                        or r[0]<0 or r[0]>=bound or r[1].bit_length()!=r[0]+1 or r[2] not in (0,1)
+                        or r[0] in o.buckets[key]): raise ValueError('CHECKPOINT_ROW')
+                    o.buckets[key][r[0]]=(r[1],r[2])
+            o.count=d['count'];o.contradictions=d['contradictions'];o.invalid=set(d['invalid'])
+            if o.snapshot()!=raw:raise ValueError('CHECKPOINT_CANONICAL')
+            return o
+        except (TypeError,KeyError,UnicodeError,json.JSONDecodeError) as e:
+            raise ValueError('CHECKPOINT_DECODE') from e
+
+    def rank(self): return {k:len(rows) for k,rows in self.buckets.items()}

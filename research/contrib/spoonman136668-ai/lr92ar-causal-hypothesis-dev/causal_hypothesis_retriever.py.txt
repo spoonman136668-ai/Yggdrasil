@@ -1,0 +1,107 @@
+"""LR-92AR experimental causal-hypothesis archive and contradiction retriever.
+Development only; 928-byte persistent state; no regime-clock, hidden phase,
+future label or oracle cue. Explicit separate frozen and adaptive 14-bin
+causal hypotheses with online likelihood-ratio retrieval belief.
+"""
+import hashlib
+
+class CausalHypothesisRetriever:
+    MAGIC = b'CHR1'
+    PATTERNS = ((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1))
+    LEARNED_BYTES = 928  # archive 448 + adaptive 448 + history 16 + belief 16
+    CHECKPOINT_BYTES = 964
+    ARCHIVE_FREEZE = 48
+    ADAPTIVE_LIMIT = 24
+    HAZARD = 1/32
+
+    def __init__(self):
+        self._archive = bytearray(448)
+        self._adaptive = bytearray(448)
+        self._history = bytearray(16)
+        self._belief = bytearray([255]*16)
+
+    @staticmethod
+    def _slot(address,retained):
+        if type(retained) is not bool or type(address) is not int or not 0<=address<(9 if retained else 7):
+            raise ValueError('CHR_INVALID_ADDRESS')
+        return address+(7 if retained else 0)
+
+    @staticmethod
+    def _bit(x):
+        if type(x) is not int or x not in (0,1):
+            raise ValueError('CHR_INVALID_BIT')
+        return x
+
+    def _pos(self,slot,action):
+        code=self._history[slot]
+        if code>=7:raise ValueError('CHR_INVALID_HISTORY')
+        return slot*28+code*4+action*2
+
+    @staticmethod
+    def _p(bank,pos):
+        return (bank[pos+1]+1)/(bank[pos]+bank[pos+1]+2)
+
+    def _weight(self,slot):
+        w=self._belief[slot]/255
+        return self.HAZARD+(1-2*self.HAZARD)*w
+
+    def _pair(self,pos):
+        return self._p(self._archive,pos),self._p(self._adaptive,pos)
+
+    def predict(self,address,action,*,retained=False):
+        slot=self._slot(address,retained);pos=self._pos(slot,self._bit(action))
+        pa,pb=self._pair(pos)
+        if sum(self._archive[slot*28:(slot+1)*28])<self.ARCHIVE_FREEZE:return pa
+        w=self._weight(slot)
+        return w*pa+(1-w)*pb
+
+    def predict_archived(self,address,action,*,retained=False):
+        """Counterfactual archive diagnostic ONLY, not autonomous prediction."""
+        slot=self._slot(address,retained)
+        return self._p(self._archive,self._pos(slot,self._bit(action)))
+
+    def observe_step(self,address,action,public_outcome,*,retained=False):
+        slot=self._slot(address,retained);action=self._bit(action);y=self._bit(public_outcome)
+        pos=self._pos(slot,action)
+        pa,pb=self._pair(pos)
+        frozen=sum(self._archive[slot*28:(slot+1)*28])>=self.ARCHIVE_FREEZE
+        if frozen:
+            w=self._weight(slot)
+            a=w*(pa if y else 1-pa)
+            b=(1-w)*(pb if y else 1-pb)
+            self._belief[slot]=min(255,max(0,round(255*a/(a+b))))
+        else:
+            self._archive[pos+y]=min(255,self._archive[pos+y]+1)
+            self._belief[slot]=255
+        if self._adaptive[pos]+self._adaptive[pos+1]>=self.ADAPTIVE_LIMIT:
+            self._adaptive[pos]=(self._adaptive[pos]+1)//2
+            self._adaptive[pos+1]=(self._adaptive[pos+1]+1)//2
+        self._adaptive[pos+y]=min(255,self._adaptive[pos+y]+1)
+        prior,_=self.PATTERNS[self._history[slot]]
+        self._history[slot]=self.PATTERNS.index((action,prior))
+
+    def end_episode(self):self._history[:]=bytes(16)
+
+    def snapshot(self):
+        raw=self.MAGIC+bytes(self._archive)+bytes(self._adaptive)+bytes(self._history)+bytes(self._belief)
+        assert len(raw)==self.LEARNED_BYTES+4
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,raw):
+        if type(raw) is not bytes or len(raw)!=cls.CHECKPOINT_BYTES or raw[:4]!=cls.MAGIC or hashlib.sha256(raw[:-32]).digest()!=raw[-32:]:
+            raise ValueError('CHR_CHECKPOINT_REJECTED')
+        if any(x>=7 for x in raw[900:916]):raise ValueError('CHR_INVALID_HISTORY')
+        m=cls();m._archive[:]=raw[4:452];m._adaptive[:]=raw[452:900]
+        m._history[:]=raw[900:916];m._belief[:]=raw[916:932]
+        if any(sum(m._archive[i*28:(i+1)*28])>cls.ARCHIVE_FREEZE for i in range(16)):
+            raise ValueError('CHR_ARCHIVE_INVALID')
+        return m
+
+class FixedHalfBlend(CausalHypothesisRetriever):
+    """Identical learning, fixed 50/50 retrieval ablation."""
+    def predict(self,address,action,*,retained=False):
+        slot=self._slot(address,retained);pos=self._pos(slot,self._bit(action))
+        pa,pb=self._pair(pos)
+        if sum(self._archive[slot*28:(slot+1)*28])<self.ARCHIVE_FREEZE:return pa
+        return (pa+pb)/2

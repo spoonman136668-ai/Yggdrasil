@@ -1,0 +1,151 @@
+"""Read-only independent LR-92AU frozen-development result audit.
+
+Never imports the learner, generated-world implementation or scorer. It checks
+saved scored evidence against the published source-lock protocol and recomputes
+the actual frozen stop decision. It cannot request additional labels.
+"""
+from __future__ import annotations
+import csv,hashlib,json,math,statistics
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parent
+ARMS=('ConstructiveInfo','ConstructiveCoverage','FullTabularCoverage','SlidingTabularCoverage')
+CONTROLS=tuple(a for a in ARMS if a!='ConstructiveInfo')
+SCORES=('A','B','Areturn','Areturn_first8')
+SEEDS=(77033101,77033102)
+FAMILIES=('pair','triple','sparse_random')
+BYTES={'ConstructiveInfo':34,'ConstructiveCoverage':34,
+       'FullTabularCoverage':64,'SlidingTabularCoverage':33}
+
+
+def audit(directory=ROOT):
+    root=Path(directory)
+    protocol=json.loads((root/'frozen_dev_protocol.json').read_text())
+    result_bytes=(root/'development_results.json').read_bytes()
+    doc=json.loads(result_bytes)
+    assert protocol['schema']=='lr92au.frozen-development-protocol.v1'
+    assert protocol['status']=='FROZEN_DEV_ONLY_PRIMARY_NOT_DEFINED'
+    assert protocol['frozen']['dev_seeds']==list(SEEDS)
+    assert doc['status']=='DEVELOPMENT_ONLY' and doc['experiment']=='LR-92AU'
+    assert doc['worlds']==len(doc['rows'])==24
+    assert not doc['decision']['development_go']
+    assert doc['decision']['scientific_pass'] is False
+    assert doc['decision']['protected_primary_consumed'] is False
+    assert doc['decision']['native_training'] is False
+    assert protocol['primary']['seeds']==[]
+    assert all(not v for v in protocol['authority'].values())
+
+    hashes={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+            for name in protocol['frozen']['source_sha256']}
+    assert hashes==protocol['frozen']['source_sha256']
+    identity=set()
+    totals=[]
+    for row in doc['rows']:
+        seed,family,rep=row['seed'],row['family'],row['rep']
+        assert seed in SEEDS and family in FAMILIES and type(rep) is int and 0<=rep<4
+        assert (seed,family,rep) not in identity
+        identity.add((seed,family,rep))
+        assert len(row['lengths'])==3 and all(20<=n<=28 for n in row['lengths'])
+        n=sum(row['lengths'])
+        totals.append(n)
+        assert set(row['arms'])==set(ARMS)
+        for arm,value in row['arms'].items():
+            assert value['n_interventions']==n
+            assert value['learned_bytes']==BYTES[arm]
+            assert len(value['checkpoint_sha256'])==64
+            assert len(value['actions_sha256'])==64 and len(value['observed_sha256'])==64
+            assert 1<=value['unique_interventions']<=16
+            assert all(type(value['brier'][metric]) in (int,float) and
+                       0<=value['brier'][metric]<=1 and math.isfinite(value['brier'][metric])
+                       for metric in SCORES)
+            assert set(value['brier'])==set(SCORES)
+            assert set(value['parent_recovery'])=={'A','B','Areturn'}
+    assert len(identity)==24
+    assert identity=={(s,f,i) for s in SEEDS for f in FAMILIES for i in range(4)}
+    total_actions=sum(totals)
+    assert total_actions==doc['actions_per_arm']==1752
+
+    # Independent macro-mean recomputation, not importing experimental model.
+    recomputed={}
+    for arm in ARMS:
+        recomputed[arm]={metric:statistics.mean(r['arms'][arm]['brier'][metric] for r in doc['rows'])
+                         for metric in SCORES}
+        for metric in SCORES:
+            assert abs(recomputed[arm][metric]-doc['summary'][arm][metric])<1e-12
+        assert doc['summary'][arm]['bytes']==BYTES[arm]
+        for seed in SEEDS:
+            for metric in SCORES:
+                expected=statistics.mean(r['arms'][arm]['brier'][metric] for r in doc['rows'] if r['seed']==seed)
+                assert abs(doc['summary'][arm]['by_seed'][str(seed)][metric]-expected)<1e-12
+    seed_deltas={}
+    for seed in SEEDS:
+        sid=str(seed)
+        seed_deltas[sid]={}
+        for metric in ('A','B','Areturn'):
+            best=min(doc['summary'][control]['by_seed'][sid][metric] for control in CONTROLS)
+            margin=best-doc['summary']['ConstructiveInfo']['by_seed'][sid][metric]
+            seed_deltas[sid][metric]=margin
+            assert abs(doc['decision']['seedwise_advantage_vs_best_controls'][sid][metric]-margin)<1e-12
+    ablation_margin=recomputed['ConstructiveCoverage']['Areturn']-recomputed['ConstructiveInfo']['Areturn']
+    assert abs(doc['decision']['intervention_information_advantage_vs_coverage']-ablation_margin)<1e-12
+    recovered=statistics.mean(int(r['arms']['ConstructiveInfo']['parent_recovery']['A']) for r in doc['rows'])
+    assert abs(recovered-doc['summary']['ConstructiveInfo']['parent_recovery']['A'])<1e-12
+    wall=doc['summary']['ConstructiveInfo']['seconds']
+    fastest=min(doc['summary'][arm]['seconds'] for arm in CONTROLS)
+    expected_go=(all(all(v>=.01 for v in ms.values()) for ms in seed_deltas.values()) and
+                 ablation_margin>=.005 and recovered>=.5 and wall<=5*fastest)
+    assert expected_go is doc['decision']['development_go'] is False
+    return {
+        'status':'PASS', 'result':'DEVELOPMENT_NO_GO',
+        'source_sha256':hashes,
+        'full_results_sha256':hashlib.sha256(result_bytes).hexdigest(),
+        'independent_source_lock_verified':True,
+        'worlds':24,'labels_per_arm':total_actions,
+        'samples_in_each_arm':total_actions,
+        'recomputed_macro_brier':recomputed,
+        'recomputed_seed_margins':seed_deltas,
+        'retrieval_information_advantage':ablation_margin,
+        'recovered_A_parent_mask_rate':recovered,
+        'candidate_seconds':wall,'fastest_control_seconds':fastest,
+        'candidate_dev_go':False,
+        'protected_primary_first_use':False,
+        'science_pass':False,
+    }
+
+
+def write_world_csv(directory=ROOT):
+    root=Path(directory)
+    doc=json.loads((root/'development_results.json').read_text())
+    keys=['seed','family','rep','dwell_A','dwell_B','dwell_Areturn','true_A_parents','true_B_parents',
+          'arm','A','B','Areturn','Areturn_first8','parent_recovery_A','parent_recovery_B',
+          'parent_recovery_Areturn','n_interventions','unique_interventions',
+          'learned_bytes','actions_sha256','observed_sha256','checkpoint_sha256']
+    p=root/'per_world_metrics.csv'
+    with p.open('w',newline='') as f:
+        out=csv.DictWriter(f,fieldnames=keys,lineterminator='\n');out.writeheader()
+        for row in doc['rows']:
+            for arm,r in row['arms'].items():
+                out.writerow({'seed':row['seed'],'family':row['family'],'rep':row['rep'],
+                    'dwell_A':row['lengths'][0],'dwell_B':row['lengths'][1],
+                    'dwell_Areturn':row['lengths'][2],
+                    'true_A_parents':row['A_parent_mask'],'true_B_parents':row['B_parent_mask'],
+                    'arm':arm, **r['brier'],
+                    'parent_recovery_A':r['parent_recovery']['A'],
+                    'parent_recovery_B':r['parent_recovery']['B'],
+                    'parent_recovery_Areturn':r['parent_recovery']['Areturn'],
+                    'n_interventions':r['n_interventions'],
+                    'unique_interventions':r['unique_interventions'],
+                    'learned_bytes':r['learned_bytes'],
+                    'actions_sha256':r['actions_sha256'],
+                    'observed_sha256':r['observed_sha256'],
+                    'checkpoint_sha256':r['checkpoint_sha256']})
+    return p
+
+
+if __name__=='__main__':
+    receipt=audit()
+    (ROOT/'audit_receipt.json').write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+    write_world_csv()
+    print(json.dumps({'status':receipt['status'],'result':receipt['result'],
+        'worlds':receipt['worlds'],'labels_per_arm':receipt['labels_per_arm'],
+        'full_results_sha256':receipt['full_results_sha256']},sort_keys=True))

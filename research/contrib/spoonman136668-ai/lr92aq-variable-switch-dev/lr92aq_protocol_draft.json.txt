@@ -1,0 +1,75 @@
+{
+  "schema": "lr92aq.experimental-design-draft.v1",
+  "experiment_id": "LR-92AQ",
+  "status": "DEVELOPMENT_ONLY_NOT_FROZEN_FOR_PRIMARY",
+  "date": "2026-11-19",
+  "parent_frozen_protocol": {
+    "experiment_id": "LR-92AP",
+    "pr": 1323,
+    "prereg_git_blob": "828c84f3505d6362dfa4f6c40c0a7dd83f447bc9",
+    "base_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "original_cohort_status": "288 protected worlds untouched; no original protocol edit"
+  },
+  "purpose": "Test phase-blind, same-address causal relationship adaptation and old-A retrieval under unannounced variable-time A-to-B-to-A reversal without a deterministic switch clock.",
+  "architecture": "No native integration; 16 isolated 14-bin action-history slots; non-token, non-transformer public-action/consequence learners; checkpoint and budgets must be measured independently.",
+  "developer_fixtures": {
+    "seeds": [73004303, 73004304],
+    "families": ["xor", "and", "random14"],
+    "world_indices_per_family_seed": 4,
+    "total_worlds": 24,
+    "unprotected_label_events": 4966,
+    "manifest_sha256": "89aebc45577d146b5f74600faa170b442db713a8c33b32caa7dd2e83868a44d1",
+    "producer": "lr92aq_variable_switch_dev.py.txt",
+    "public_interface": ["index", "episode_start", "action", "outcome_after_prediction"],
+    "hidden_only": ["phase", "switch_times", "family", "relation_table", "potential_outcomes", "noise_flip"],
+    "phase_lengths": "Independently drawn integers in [48,88] inclusive, rejection conditioned on neither transition coinciding with a public 7-action episode boundary; never provided to any learner",
+    "public_episodes": "every 7 actions, independently of phase; no special reset at a switch",
+    "noise": 0.15,
+    "action_policy": "phase-independent deterministic RNG; identical public action/outcome tape for every comparator in each world",
+    "information_boundary": "all forecasts before current outcome; future actions/outcomes/phase labels withheld",
+    "counterfactual_cold_twin": "same public history and next action at first unannounced A-return, versus continued-B future, with separate hidden evaluation truths"
+  },
+  "prospective_primary": {
+    "status": "NOT_DEFINED_NOT_AUTHORIZED_NOT_CONSUMED",
+    "source_birth_committed": false,
+    "primary_seeds": [],
+    "primary_world_count": null,
+    "official_scientific_first_use_authorized": false,
+    "source_lock_required": true,
+    "custodian_or_owner_approval_required": true
+  },
+  "planned_comparators": [
+    "original YPT4 fixed-memory candidate",
+    "fixed-memory 14-bin full-history count learner",
+    "fixed-memory exact-window-32 context learner",
+    "bounded Bayesian run-length model <=928 bytes",
+    "two-regime HMM/mixture <=928 bytes, including stronger fully fitted conventional alternative",
+    "random-gate same-memory and same-updates sham",
+    "history permutation preserving labels and actions",
+    "untruncated BOCPD and fully refitted RF32 as out-of-budget predictive references"
+  ],
+  "proposed_endpoints_not_locked_for_primary": {
+    "early_return": "first 16 A-return Brier, reported separately from first unannounced return outcome",
+    "initial_unannounced_return": "first-step Brier is an identifiability diagnostic, NOT an oracle-aware scientific superiority target",
+    "adaptation": "all B-phase Brier and remaining A-return Brier, plus per-family and per-seed stratification",
+    "cold_retention": "pre-return old-A counterfactual query after B, without updating the model and without telling it which future is true; clearly mark counterfactual readout versus current-regime prediction",
+    "candidate_go_criterion": "Proposed >0.01 absolute paired Brier benefit over the strongest fully trained memory-matched conventional model in each independent frozen primary seed stratum, without B-phase or random14 non-inferiority worsening >0.01; freeze exact criteria before any first-use",
+    "controls": "frozen matched observations/actions/compute, current action and past two actions available equally; no schedule feature or evaluator metadata to candidate or controls",
+    "confidence": "prospective source-locked paired world-level bootstrap, independent seeds and measured full-process cost, not development seed selection"
+  },
+  "required_before_any_scientific_run": [
+    "independently approved source and data birth hashes for new disjoint cohort",
+    "frozen owner-accepted protocol, thresholds, seeds and compute/stop budget",
+    "exact source SHA and complete conventional-control suite",
+    "full mandatory native regression at same candidate SHA if native integration is proposed",
+    "independent authorized scientific first-use and custody; no competing learner owner"
+  ],
+  "change_permissions": {
+    "merge": false,
+    "main_write": false,
+    "native_training": false,
+    "first_use": false,
+    "owner_runner_controller_scheduler_change": false,
+    "paid_api": false
+  }
+}

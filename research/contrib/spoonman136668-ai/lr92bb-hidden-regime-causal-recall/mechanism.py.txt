@@ -1,0 +1,159 @@
+"""LR-92BB: bounded explicit sparse causal program induction and cold recall.
+
+A two-slot structural archive discovers polynomial causal laws from chronological
+public intervention consequences. No public phase label, change boundary or true
+coefficient is provided. Independent research cell, never an owner model.
+"""
+from __future__ import annotations
+import hashlib
+import itertools
+import json
+import math
+
+SCHEMA = 'lr92bb.sparse-causal-recall.v1'
+FEATURE_NAMES=('1','s1','x1','s2','x2','s1*x1','s1*s2','s1*x2',
+               'x1*s2','x1*x2','s2*x2','s1*x1*s2','s1*x1*x2','s1*s2*x2','x1*s2*x2')
+BITSETS=tuple(sum(1<<i for i in c)|intercept
+              for degree in range(4)
+              for c in itertools.combinations(range(1,len(FEATURE_NAMES)),degree)
+              for intercept in (0,1))
+# A program is synthesized from <=3 NONCONSTANT monomials plus optional bias.
+# Complement-paired grammar ensures a neutral prior for every input context.
+assert len(BITSETS)==940
+
+def feature(ctx):
+    s1=(ctx>>3)&1; x1=(ctx>>2)&1; s2=(ctx>>1)&1; x2=ctx&1
+    return (1,s1,x1,s2,x2,s1*x1,s1*s2,s1*x2,x1*s2,x1*x2,s2*x2,
+            s1*x1*s2,s1*x1*x2,s1*s2*x2,x1*s2*x2)
+
+FEATURES=tuple(feature(ctx) for ctx in range(16))
+PROGRAMS=tuple(sum((sum(f[i] for i in range(15) if (bits>>i)&1)%2)<<ctx
+                   for ctx,f in enumerate(FEATURES)) for bits in BITSETS)
+PROGRAM_INDEX={p:i for i,p in enumerate(PROGRAMS)}
+assert len(PROGRAMS)==940
+
+def predict_program(bits:int,ctx:int)->int:
+    return ((sum(FEATURES[ctx][i] for i in range(15) if bits&(1<<i)))&1)
+
+def best_program(n0:list[int],n1:list[int]):
+    """Robust minimum-disagreement sparse polynomial; deterministic tie-break."""
+    weight=[a-b for a,b in zip(n0,n1)]
+    baseline=sum(n1)
+    best=(10**9,0,0)
+    for idx,truth in enumerate(PROGRAMS):
+        score=baseline
+        t=truth
+        while t:
+            lb=t&-t; score+=weight[lb.bit_length()-1];t-=lb
+        key=(score,BITSETS[idx].bit_count(),idx)
+        if key<best:best=key
+    return BITSETS[best[2]],best[0]
+
+class Slot:
+    def __init__(self):
+        self.n0=[0]*16;self.n1=[0]*16;self.count=0
+        self.coef=0;self.mistakes=0;self.rerank_at=0
+
+    def update(self,ctx,y):
+        counts=self.n1 if y else self.n0
+        counts[ctx]+=1;self.count+=1
+        # Refit with all observations in this stored regime. Bounded 2 x 16 x 2 state.
+        if self.count>=6 and (self.count<=24 or self.count-self.rerank_at>=4):
+            self.coef,self.mistakes=best_program(self.n0,self.n1)
+            self.rerank_at=self.count
+
+    def label(self,ctx):return predict_program(self.coef,ctx)
+    def ready(self):return self.count>=12
+    def predict(self,ctx):
+        if not self.ready():return .5
+        # Fixed 7% noise likelihood; an explicit prediction not a hidden-phase cue.
+        return .93 if self.label(ctx) else .07
+
+    def body(self):return {'n0':self.n0,'n1':self.n1,'count':self.count,
+                           'coef':self.coef,'mistakes':self.mistakes,'rerank_at':self.rerank_at}
+    @classmethod
+    def parse(cls,d):
+        if set(d)!={'n0','n1','count','coef','mistakes','rerank_at'}:raise ValueError('SLOT_SCHEMA')
+        o=cls()
+        for k in ('n0','n1'):
+            a=d[k]
+            if not isinstance(a,list) or len(a)!=16 or any(type(v)!=int or not 0<=v<=4096 for v in a):raise ValueError('SLOT_COUNTS')
+            setattr(o,k,a[:])
+        for k in ('count','coef','mistakes','rerank_at'):
+            if type(d[k]) is not int or d[k]<0:raise ValueError('SLOT_INT')
+            setattr(o,k,d[k])
+        if o.count!=sum(o.n0)+sum(o.n1) or o.coef not in BITSETS or o.rerank_at>o.count:raise ValueError('SLOT_STATE')
+        return o
+
+class CausalRecall:
+    """Two induced structure slots. Contradictions drive regime segmentation.
+
+    No oracle phase, public task tag or external teacher. The structure slot
+    prior remains fixed when a new hidden law is suspected. The archived law
+    may be recalled on its own public prediction likelihoods.
+    """
+    def __init__(self):
+        self.slots=[Slot(),None];self.active=0;self.tension=0.
+        self.log_alt=0.;self.switches=0;self.events=0;self.history=[]
+
+    def predict(self,ctx):
+        if type(ctx)!=int or not 0<=ctx<16:raise ValueError('CONTEXT')
+        return self.slots[self.active].predict(ctx)
+
+    def observe(self,ctx,y):
+        if type(ctx)!=int or not 0<=ctx<16 or type(y)!=int or y not in (0,1):raise ValueError('PUBLIC_INPUT')
+        m=self.slots[self.active]
+        alt_idx=1-self.active;alt=self.slots[alt_idx]
+        # Pre-update contradiction, no future outcome peek.
+        if m.ready():
+            conflict=int(m.label(ctx)!=y)
+            self.tension=max(0.,self.tension+conflict-.19)
+            if alt is not None and alt.ready():
+                self.log_alt=max(-12.,min(12.,self.log_alt+(
+                    (2*(int(alt.label(ctx)==y))-1)*1.45 if alt.label(ctx)!=m.label(ctx) else -.2)))
+            else:self.log_alt=0.
+        if alt is not None and alt.ready() and self.log_alt>=3.5:
+            # Return to previously learned hypothesis, with no rewrite of old slot.
+            self.active=alt_idx;m=alt;self.tension=0.;self.log_alt=0.;self.switches+=1
+            self.history.append(self.events)
+            self.history=self.history[-16:]
+        elif self.tension>=3.8 and alt is None and m.count>=24:
+            # Public contradiction sequence induces the second causal hypothesis.
+            self.slots[alt_idx]=Slot();self.active=alt_idx;m=self.slots[alt_idx]
+            self.tension=0.;self.log_alt=0.;self.switches+=1
+            self.history.append(self.events)
+            self.history=self.history[-16:]
+        elif self.tension>=5.5 and alt is not None and alt.ready():
+            # Without proof of a return, conservatively fall back to the more
+            # supported archived hypothesis. Both are retained.
+            self.tension=0.
+        m.update(ctx,y);self.events+=1
+
+    def snapshot(self):
+        d={'schema':SCHEMA,'slots':[s.body() if s else None for s in self.slots],
+           'active':self.active,'tension_q':round(self.tension,6),
+           'log_alt_q':round(self.log_alt,6),'switches':self.switches,
+           'events':self.events,'history':self.history}
+        raw=json.dumps(d,sort_keys=True,separators=(',',':')).encode()
+        if len(raw)>1024:raise ValueError('BUDGET')
+        return raw+hashlib.sha256(raw).digest()
+
+    @classmethod
+    def restore(cls,raw):
+        if not isinstance(raw,bytes) or len(raw)<33 or len(raw)>1056 or hashlib.sha256(raw[:-32]).digest()!=raw[-32:]:raise ValueError('SHA')
+        d=json.loads(raw[:-32]);o=cls()
+        if set(d)!={'schema','slots','active','tension_q','log_alt_q','switches','events','history'} or d['schema']!=SCHEMA:raise ValueError('SCHEMA')
+        if not isinstance(d['slots'],list) or len(d['slots'])!=2 or d['slots'][0] is None:raise ValueError('SLOTS')
+        o.slots=[Slot.parse(x) if x is not None else None for x in d['slots']]
+        for k in ('active','switches','events'):
+            if type(d[k])!=int or d[k]<0:raise ValueError('INDEX')
+            setattr(o,k,d[k])
+        if o.active not in (0,1) or o.slots[o.active] is None:raise ValueError('ACTIVE')
+        for k,n in (('tension_q','tension'),('log_alt_q','log_alt')):
+            if type(d[k]) not in (int,float) or not math.isfinite(d[k]):raise ValueError('FLOAT')
+            setattr(o,n,d[k])
+        if type(d['history'])!=list or any(type(v)!=int or v<0 for v in d['history']):raise ValueError('HISTORY')
+        o.history=d['history'];o.switches=d['switches'];o.events=d['events']
+        if o.events!=sum(s.count for s in o.slots if s):raise ValueError('EVENT_CUSTODY')
+        if o.snapshot()!=raw:raise ValueError('NONCANONICAL_CHECKPOINT')
+        return o

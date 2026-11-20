@@ -1,0 +1,122 @@
+"""LR-92AP preprimary, prospectively specified online history-PERMUTATION sham.
+
+Control changes only which PAST public actions occupy the two prior-action
+context slots. Both arms receive identical chronological public actions,
+outcomes and update counts. The evaluator's permutation RNG and 32-element
+read-only past buffer are NOT trainable/model state. No primary cohort is used.
+
+This is a randomized, past-only, online permutation of history-context slots,
+not a permutation of outcome labels, not access to the future, and not a
+proof of independent causal generalization. Does not modify native Yggdrasil.
+"""
+from __future__ import annotations
+
+import hashlib
+import random
+from dataclasses import asdict, dataclass
+from matched_tabular_controls import FullHistory14
+
+DEV_SEEDS = (73004303, 73004304)
+LENGTH = 1024
+WARMUP = 128
+POOL = 32
+PERM_SALT = 0x34A7D19
+
+
+def public_tape(seed: int, family: str, length: int = LENGTH):
+    """Fixture-only family; public labels are emitted AFTER forecasts.
+
+    XOR history: y = action xor previous-action xor second-previous-action.
+    Action-only negative: y = action. All labels receive Bernoulli(0.15)
+    flips from an independently seeded source. No hidden phase switches.
+    """
+    if seed not in DEV_SEEDS or family not in ('history_xor', 'action_only') or length <= WARMUP:
+        raise ValueError('PERM_INVALID_FIXTURE')
+    actions = random.Random(seed ^ 0x981CAB)
+    noise = random.Random(seed ^ (0xFE5A13 if family == 'history_xor' else 0x12EE56))
+    history = [2, 2]
+    for _ in range(length):
+        a = actions.randrange(2)
+        if family == 'history_xor':
+            target = a ^ (0 if history[0] == 2 else history[0]) ^ (0 if history[1] == 2 else history[1])
+        else:
+            target = a
+        y = target ^ int(noise.random() < 0.15)
+        yield a, y
+        history = [a, history[0]]
+
+
+def permuted_history(past_actions: list[int], rng: random.Random):
+    """Choose two distinct *past indices* under a fresh uniform permutation.
+
+    This is seeded independently of labels; no current action or future source
+    is consulted. Missing-start history is encoded by 2 as in FullHistory14.
+    """
+    if len(past_actions) == 0:
+        return (2, 2)
+    pool = past_actions[-POOL:]
+    if len(pool) == 1:
+        return (pool[-1], 2)
+    indices = list(range(len(pool)))
+    rng.shuffle(indices)
+    return (pool[indices[0]], pool[indices[1]])
+
+
+@dataclass(frozen=True)
+class Receipt:
+    seed: int
+    family: str
+    n_observations: int
+    n_scored: int
+    n_different_histories: int
+    aligned_brier: float
+    permuted_brier: float
+    action_outcome_sha256: str
+    aligned_checkpoint_sha256: str
+    sham_checkpoint_sha256: str
+
+
+def evaluate(seed: int, family: str, length: int = LENGTH, warmup: int = WARMUP) -> Receipt:
+    if seed not in DEV_SEEDS or family not in ('history_xor', 'action_only') or not 0 <= warmup < length or length <= WARMUP:
+        raise ValueError('PERM_INVALID_FIXTURE')
+    clean = FullHistory14()
+    sham = FullHistory14()
+    permutation = random.Random(seed ^ PERM_SALT)
+    observed_actions: list[int] = []
+    tape_digest = hashlib.sha256()
+    clean_errors = []
+    permuted_errors = []
+    altered = 0
+    for t, (action, public_y) in enumerate(public_tape(seed, family, length)):
+        # The sham uses only the public prefix; both models forecast before y.
+        true_history = tuple(clean._history[:2])
+        fake_history = permuted_history(observed_actions, permutation)
+        altered += int(true_history != fake_history)
+        sham._history[:2] = bytes(fake_history)
+        p = clean.predict(0, action)
+        q = sham.predict(0, action)
+        if t >= warmup:
+            clean_errors.append((p-public_y)**2)
+            permuted_errors.append((q-public_y)**2)
+        clean.observe_step(0, action, public_y)
+        sham.observe_step(0, action, public_y)
+        observed_actions.append(action)
+        tape_digest.update(bytes((action, public_y)))
+    return Receipt(
+        seed=seed, family=family, n_observations=length,
+        n_scored=len(clean_errors), n_different_histories=altered,
+        aligned_brier=sum(clean_errors)/len(clean_errors),
+        permuted_brier=sum(permuted_errors)/len(permuted_errors),
+        action_outcome_sha256=tape_digest.hexdigest(),
+        aligned_checkpoint_sha256=hashlib.sha256(clean.snapshot()).hexdigest(),
+        sham_checkpoint_sha256=hashlib.sha256(sham.snapshot()).hexdigest(),
+    )
+
+
+def fixture_summary():
+    return [asdict(evaluate(seed, family)) for family in ('history_xor', 'action_only') for seed in DEV_SEEDS]
+
+
+if __name__ == '__main__':
+    import json
+    print(json.dumps(fixture_summary(), indent=2, sort_keys=True))

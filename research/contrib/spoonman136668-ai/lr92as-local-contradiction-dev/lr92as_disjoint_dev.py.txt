@@ -1,0 +1,75 @@
+"""LR-92AS disjoint, evaluator-private A/B/A variable-switch DEVELOPMENT tape.
+
+Only two explicitly predeclared unprotected dev seeds are accepted. No prior
+LR-92AP primary seed is allowed. The current action is independent of phase;
+no switch-time, latent relation or future outcome is supplied to learners.
+"""
+from dataclasses import dataclass
+import hashlib
+import random
+
+SEEDS = (75011801, 75011802)
+FAMILIES = ('xor','and','random14')
+INSTANCES = 4
+PATTERNS = ((2,2),(0,2),(1,2),(0,0),(0,1),(1,0),(1,1))
+NOISE = .15
+EPISODE = 7
+
+@dataclass(frozen=True)
+class Step:
+    index: int
+    reset: bool
+    action: int
+    outcome: int
+
+@dataclass(frozen=True)
+class World:
+    seed: int
+    family: str
+    index: int
+    dwell: tuple
+    public: tuple
+    context_coverage: int
+    def digest(self):
+        return hashlib.sha256(bytes(v for o in self.public for v in (int(o.reset),o.action,o.outcome))).hexdigest()
+
+def _rng(seed,family,index,domain):
+    raw=f'LR92AS-DISJOINT-DEV-v1|{seed}|{family}|{index}|{domain}'.encode()
+    return random.Random(int.from_bytes(hashlib.sha256(raw).digest()[:8],'big'))
+
+def _causal(family,binid,mask):
+    a,b=PATTERNS[binid//2]
+    current=binid%2
+    if family=='xor':return current^(0 if a==2 else a)^(0 if b==2 else b)
+    if family=='and':return current&(0 if a==2 else a)&(0 if b==2 else b)
+    return (mask>>binid)&1
+
+def world(seed,family,index):
+    if type(seed) is not int or seed not in SEEDS or type(family) is not str or family not in FAMILIES or type(index) is not int or not 0<=index<INSTANCES:
+        raise ValueError('LR92AS_UNAUTHORIZED_DEVELOPMENT_SEED_OR_WORLD')
+    clock=_rng(seed,family,index,'schedule')
+    while True:
+        dwell=tuple(clock.randint(48,88) for _ in range(3))
+        if dwell[0]%EPISODE!=0 and (dwell[0]+dwell[1])%EPISODE!=0:break
+    actionrng=_rng(seed,family,index,'action')
+    noiserng=_rng(seed,family,index,'noise')
+    mask=_rng(seed,family,index,'relation').getrandbits(14)
+    obs=[];seen=set();history=(2,2)
+    a_end=dwell[0];b_end=sum(dwell[:2])
+    for t in range(sum(dwell)):
+        reset=t%EPISODE==0
+        if reset:history=(2,2)
+        action=actionrng.randrange(2)
+        binid=PATTERNS.index(history)*2+action
+        seen.add(binid)
+        target=_causal(family,binid,mask)
+        if a_end<=t<b_end:target^=1
+        observed=target^int(noiserng.random()<NOISE)
+        obs.append(Step(t,reset,action,observed))
+        history=(action,history[0])
+    return World(seed,family,index,dwell,tuple(obs),len(seen))
+
+def manifest():
+    return [{'seed':s,'family':f,'index':i,'dwell':world(s,f,i).dwell,
+             'coverage':world(s,f,i).context_coverage,'digest':world(s,f,i).digest()}
+            for s in SEEDS for f in FAMILIES for i in range(INSTANCES)]

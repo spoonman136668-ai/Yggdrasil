@@ -1,0 +1,17 @@
+import unittest,tempfile,json
+from pathlib import Path
+from audit_saved_results import audit,RESULT_SHA,symbolic_eval
+from worlds import worlds
+class TestAudit(unittest.TestCase):
+    def test_exact_known_world(self):
+        x=symbolic_eval(worlds()[0]);self.assertIn('exact_batch_gf2',x)
+    def test_audit_pass(self):
+        r=audit('development_results.json');self.assertEqual(r['audit'],'PASS');self.assertEqual(r['worlds'],36)
+    def test_corruption_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'bad.json';data=Path('development_results.json').read_bytes()
+            path.write_bytes(data[:-2]+b'!\n')
+            with self.assertRaisesRegex(ValueError,'RESULT_SHA_DRIFT'):audit(path)
+    def test_cannot_authorize_owner(self):
+        r=audit('development_results.json');self.assertFalse(r['native_executed']);self.assertFalse(r['protected_first_use'])
+if __name__=='__main__':unittest.main()
