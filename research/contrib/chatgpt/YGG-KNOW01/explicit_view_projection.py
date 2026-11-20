@@ -155,11 +155,17 @@ class ExplicitPublicViewProjection:
                  "INVALID_EVIDENCE_CLASS")
         pair = self._bindings.get(key)
         self.checkpoint()
-        eligible = pair is not None and kind != "UNSUPPORTED_ABSTAIN"
+        # Factual membership and usable shadow plan inputs are separate.
+        # Pair-unique mappings can still alias the actual plan(view) input.
+        # Never export an ambiguous mapped view to downstream readout clients.
+        ambiguous = pair is not None and pair[0] in self._ambiguous_plan_views
+        eligible = (pair is not None and kind != "UNSUPPORTED_ABSTAIN"
+                    and not ambiguous)
         return {
             "schema": SCHEMA, "classification": (
                 "SYNTHETIC_VIEW_PROPOSAL_ONLY" if eligible else
                 "ABSTAIN_UNKNOWN_FACT" if kind == "UNSUPPORTED_ABSTAIN" else
+                "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW" if ambiguous else
                 "ABSTAIN_NO_EXPLICIT_VIEW_MAP"),
             "source_fact_kind": kind,
             "qpq": list(key),

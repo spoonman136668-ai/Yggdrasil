@@ -134,8 +134,9 @@ class Know04Tests(unittest.TestCase):
         projection, native, facts = node(entries=colliding)
         native_before, facts_before = native.checkpoint(), facts.checkpoint()
         proposed = projection.query(1, 2, 3)
-        self.assertEqual(proposed["classification"], "SYNTHETIC_VIEW_PROPOSAL_ONLY")
-        self.assertEqual(proposed["paired_public_views"], [[0, 1], [0, 0]])
+        self.assertEqual(proposed["classification"], "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
+        self.assertIsNone(proposed["paired_public_views"])
+        self.assertEqual(proposed["source_fact_kind"], "HISTORICAL_STORED_QPQ")
         output = projection.shadow_plan(1, 2, 3)
         self.assertEqual(output["classification"], "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
         self.assertFalse(output["native_plan_called"])
@@ -155,10 +156,45 @@ class Know04Tests(unittest.TestCase):
                    for i, pair in enumerate(views)]
         projection, native, _ = node(entries=entries)
         self.assertEqual(projection.query(1, 2, 3)["classification"],
-                         "SYNTHETIC_VIEW_PROPOSAL_ONLY")
+                         "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
+        self.assertIsNone(projection.query(1, 2, 3)["paired_public_views"])
         output = projection.shadow_plan(1, 2, 3)
         self.assertEqual(output["classification"], "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
         self.assertEqual(native.plan_calls, 0)
+
+    def test_factual_membership_survives_projection_abstention(self):
+        colliding = rows() + [[[11, 12, 13], [[0, 1], [0, 1]]]]
+        projection, native, facts = node(entries=colliding)
+        before = (native.checkpoint(), facts.checkpoint())
+        factual = projection._bridge.fact(1, 2, 3)
+        self.assertEqual(factual["evidence_kind"], "HISTORICAL_STORED_QPQ")
+        output = projection.query(1, 2, 3)
+        self.assertEqual(output["classification"], "ABSTAIN_AMBIGUOUS_NATIVE_PLAN_VIEW")
+        self.assertIsNone(output["paired_public_views"])
+        self.assertEqual(output["source_fact_kind"], "HISTORICAL_STORED_QPQ")
+        self.assertEqual(native.plan_calls, 0)
+        self.assertEqual((native.checkpoint(), facts.checkpoint()), before)
+
+    def test_unknown_fact_precedes_ambiguous_projection_abstention(self):
+        colliding = rows() + [[[11, 12, 13], [[0, 1], [0, 1]]]]
+        facts = FakeFacts()
+        facts.answer = {**facts.hist_fact(), "classification": "UNKNOWN_ABSTAIN",
+                        "witnessed": False}
+        projection, native, _ = node(entries=colliding, facts=facts)
+        output = projection.query(1, 2, 3)
+        self.assertEqual(output["classification"], "ABSTAIN_UNKNOWN_FACT")
+        self.assertIsNone(output["paired_public_views"])
+        self.assertEqual(native.plan_calls, 0)
+
+    def test_nonambiguous_query_remains_source_only_shadow_proposal(self):
+        projection, native, facts = node()
+        original = (native.checkpoint(), facts.checkpoint())
+        response = projection.query(1, 2, 3)
+        self.assertEqual(response["classification"], "SYNTHETIC_VIEW_PROPOSAL_ONLY")
+        self.assertEqual(response["paired_public_views"], [[0, 1], [0, 0]])
+        self.assertFalse(response["real_semantic_grounding"])
+        self.assertFalse(response["native_training_performed"])
+        self.assertEqual((native.checkpoint(), facts.checkpoint()), original)
 
     def test_view_shape_enforces_native_two_bit_constraints(self):
         bads = [
