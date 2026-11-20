@@ -51,7 +51,7 @@ jobs:
           git merge-base --is-ancestor 34c8a94e328bb7cdba1927df35223a40e0559b0b HEAD
           test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
           git diff --name-only 86264b41a08d49f558418c0fba367f3a2636befa HEAD |
-            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={"research/contrib/chatgpt/CAUSAL-AMALGAM/RET1025-ORIGINAL-CLASS.md","research/contrib/chatgpt/CAUSAL-AMALGAM/ret1025_original_class.py","tests/test_amalgam_ret1025_original_class.py",".github/workflows/ret1025-original-class.yml"}; assert a==e,(a,e)'
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={"research/contrib/chatgpt/CAUSAL-AMALGAM/RET1025-ORIGINAL-CLASS.md","research/contrib/chatgpt/CAUSAL-AMALGAM/ret1025_original_class.py","tests/test_amalgam_ret1025_original_class.py",".github/workflows/ret1025-original-class.yml",".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert a==e,(a,e)'
           test -z "$(git status --porcelain --untracked-files=all)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           git add -- .ice/code-atlas.json .ice/code-atlas.ice .ice/code-atlas.html
