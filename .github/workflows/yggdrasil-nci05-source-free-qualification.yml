@@ -1,4 +1,4 @@
-name: NCI05 and NCI06 source-free research qualification
+name: NCI05 NCI06 NCI07 source-free research qualification
 on:
   pull_request:
 permissions:
@@ -19,6 +19,7 @@ jobs:
           python-version: "3.12"
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-05 -p "test_*.py" -v
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-06 -p "test_*.py" -v
+      - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-07 -p "test_*.py" -v
       - run: python research/contrib/chatgpt/NCI-NOVEL-06/dev256_screen.py
       - run: python -m unittest discover -s tests -p "test_*.py" -v
       - run: python scripts/build_code_atlas.py --check-if-present
@@ -38,6 +39,7 @@ jobs:
           python-version: "3.12"
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-05 -p "test_*.py" -v
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-06 -p "test_*.py" -v
+      - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-07 -p "test_*.py" -v
       - run: python research/contrib/chatgpt/NCI-NOVEL-06/dev256_screen.py
       - run: python -m unittest discover -s tests -p "test_*.py" -v
       - run: python scripts/build_code_atlas.py --check-if-present
