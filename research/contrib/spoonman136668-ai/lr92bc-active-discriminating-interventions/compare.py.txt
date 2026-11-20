@@ -1,0 +1,125 @@
+"""Source-free prequential test: action-value of bounded archive under hidden A/B/A."""
+from __future__ import annotations
+import hashlib,json,math,random,sys,time
+from pathlib import Path
+from worlds import SEEDS,FAMILIES,REPS,P_TRANSITION,ctx,worlds,random_for
+from mechanism import ActiveRecall
+from controls import ExactProgramHMM,TabularBeta,Logistic,NoLearning
+
+ARMS=('dual_active','dual_passive','dual_coverage','exact_bayes_active',
+      'exact_bayes_random','beta_full_coverage','beta_window32_coverage',
+      'beta_decay_coverage','logistic_coverage','no_learning_random')
+BASELINES=('exact_bayes_active','exact_bayes_random','beta_full_coverage',
+           'beta_window32_coverage','beta_decay_coverage','logistic_coverage')
+
+def instantiate(arm):
+    if arm.startswith('dual_'):return ActiveRecall()
+    if arm.startswith('exact_bayes'):return ExactProgramHMM()
+    if arm=='beta_full_coverage':return TabularBeta()
+    if arm=='beta_window32_coverage':return TabularBeta(window=32)
+    if arm=='beta_decay_coverage':return TabularBeta(discount=.975)
+    if arm=='logistic_coverage':return Logistic()
+    if arm=='no_learning_random':return NoLearning()
+    raise ValueError('ARM')
+
+
+def action_score(model,arm,c):
+    if arm=='dual_active':return model.intervention_score(c,'active')
+    if arm.startswith('dual_'):return model.intervention_score(c,'coverage')
+    if arm.startswith('exact_bayes'):return model.novelty(c)
+    if arm.endswith('_coverage'):return model.novelty(c)
+    return .0
+
+
+def choose_x1(model,arm,s1,i,rng):
+    if arm.endswith('passive') or arm.endswith('_random'):
+        return rng.randrange(2)
+    def score(x1):
+        total=0.
+        for s2 in (0,1):
+            ps=P_TRANSITION if s2!=(s1^x1) else 1-P_TRANSITION
+            total+=ps*max(action_score(model,arm,ctx(s1,x1,s2,x2)) for x2 in (0,1))
+        return total
+    a,b=score(0),score(1)
+    return (i&1) if abs(a-b)<1e-12 else int(b>a)
+
+
+def choose_x2(model,arm,s1,x1,s2,i,rng):
+    if arm.endswith('passive') or arm.endswith('_random'):return rng.randrange(2)
+    a=action_score(model,arm,ctx(s1,x1,s2,0))
+    b=action_score(model,arm,ctx(s1,x1,s2,1))
+    return ((i>>1)&1) if abs(a-b)<1e-12 else int(b>a)
+
+
+def one(w,arm):
+    m=instantiate(arm);rng=random_for(w.seed,w.family,w.rep,'policy-common-random-coin')
+    n=sum(w.dwell);A,B,R=w.dwell;errors={p:[] for p in ('A','B','return')}
+    chosen={p:[] for p in ('A','B','return')}
+    checkpoint={};start=time.perf_counter();changes=[]
+    for i in range(n):
+        if i in (A,A+B) and arm.startswith('dual_'):
+            # This evaluator-only timed operation is NOT a signal to the learner;
+            # cold restore must preserve every prediction and selection state.
+            buf=m.snapshot();copy=ActiveRecall.restore(buf)
+            if copy.snapshot()!=buf or any(copy.predict(c)!=m.predict(c) for c in range(16)):
+                raise AssertionError('COLD_RESTORE_IDENTITY')
+            if any(copy.intervention_score(c,'active')!=m.intervention_score(c,'active') for c in range(16)):
+                raise AssertionError('COLD_POLICY_PARITY')
+            m=copy;checkpoint[str(i)]=hashlib.sha256(buf).hexdigest()
+        phase='A' if i<A else 'B' if i<A+B else 'return'
+        true_phase=0 if phase!='B' else 1
+        # Neutral evaluator probe uses 16 contexts; no candidate sees truth.
+        fixed=w.expected_brier(m.predict,true_phase)
+        errors[phase].append(fixed)
+        s1=w.initial[i]
+        x1=choose_x1(m,arm,s1,i,rng)
+        s2=(s1^x1)^w.trans_noise[i]
+        x2=choose_x2(m,arm,s1,x1,s2,i,rng)
+        realized_s2,y=w.response(i,s1,x1,x2)
+        if s2!=realized_s2:raise AssertionError('TWO_STAGE_TRANSITION_MISMATCH')
+        c=ctx(s1,x1,s2,x2)
+        prior=m.predict(c)
+        chosen[phase].append((prior-y)**2)
+        prev=len(m.switches) if arm.startswith('dual_') else None
+        m.observe(c,y)
+        if arm.startswith('dual_') and len(m.switches)>prev:changes.append(i)
+    final=m.snapshot()
+    if arm.startswith('dual_'):
+        if len(final)>1056 or ActiveRecall.restore(final).snapshot()!=final:raise AssertionError('FINAL_CHECKPOINT')
+    avg=lambda v:sum(v)/len(v)
+    return {'arm':arm,'episodes':n,'A':avg(errors['A']),'B':avg(errors['B']),
+            'return16':avg(errors['return'][:16]),'return_all':avg(errors['return']),
+            'chosen_B':avg(chosen['B']),'chosen_return16':avg(chosen['return'][:16]),
+            'checkpoint_bytes':len(final),'checkpoint_sha256':hashlib.sha256(final).hexdigest(),
+            'cold':checkpoint,'switches':changes,'updates':n,'elapsed_s':time.perf_counter()-start}
+
+
+def evaluate(world_subset=None):
+    ws=tuple(world_subset) if world_subset is not None else worlds()
+    rows=[]
+    for w in ws:
+        outcomes={arm:one(w,arm) for arm in ARMS}
+        rows.append({'seed':w.seed,'family':w.family,'rep':w.rep,'dwell':w.dwell,
+                     'public_input_sha256':w.public_input_sha256,
+                     'worlds_secret_table_sha256':hashlib.sha256((str(w.A)+':'+str(w.B)).encode()).hexdigest(),
+                     'episodes':sum(w.dwell),'models':outcomes})
+    summaries={};go={}
+    for seed in sorted({w.seed for w in ws}):
+        subset=[r for r in rows if r['seed']==seed]
+        summaries[str(seed)]={a:{k:sum(r['models'][a][k] for r in subset)/len(subset)
+                                 for k in ('A','B','return16','return_all','chosen_B','chosen_return16')}
+                              for a in ARMS}
+        x=summaries[str(seed)];candidate=x['dual_active'];best_r=min(x[a]['return16'] for a in BASELINES);best_b=min(x[a]['B'] for a in BASELINES)
+        go[str(seed)]=(candidate['return16']<=best_r-.01 and candidate['B']<=best_b+.01
+                       and candidate['return16']<=x['dual_passive']['return16']-.01)
+    return {'schema':'lr92bc.active-causal-identification.v1',
+            'worlds':len(ws),'episodes_per_arm':sum(r['episodes'] for r in rows),
+            'arms':ARMS,'status':'DEVELOPMENT_GO' if all(go.values()) else 'DEVELOPMENT_NO_GO',
+            'seed_go':go,'seed_summary':summaries,'rows':rows,
+            'native_model_executed':False,'owner_checkpoint_changed':False,
+            'protected_first_use':False}
+
+if __name__=='__main__':
+    if len(sys.argv)!=2:raise SystemExit('usage: compare.py result.json')
+    res=evaluate();Path(sys.argv[1]).write_text(json.dumps(res,sort_keys=True,separators=(',',':'))+'\n')
+    print(json.dumps({k:v for k,v in res.items() if k not in ('seed_summary','rows')},sort_keys=True))

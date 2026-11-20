@@ -1,0 +1,118 @@
+"""LR-92BC standalone bounded causal bank with active discriminating interventions.
+
+No hidden phase is supplied. Two learned compositional programs are induced
+from public action-consequence observations; the bank remains research-only.
+"""
+from __future__ import annotations
+import hashlib,json,math
+from worlds import PROGRAMS,ctx,P_TERMINAL,P_TRANSITION
+
+MAGIC='lr92bc.active-archive.v1'
+MAX_BYTES=1056
+
+class Slot:
+    def __init__(self):
+        self.n0=[0]*16;self.n1=[0]*16;self.n=0;self.program_id=0;self.ranked_at=0
+    def fitted(self):return self.n>=20
+    def _fit(self):
+        # Known 7% label-noise likelihood makes MAP equivalent to minimizing
+        # observed mismatches, with deterministic low-complexity tie-break.
+        best=(10**9,10**9,10**9)
+        for i,table in enumerate(PROGRAMS):
+            mistakes=sum(self.n0[c] if (table>>c)&1 else self.n1[c] for c in range(16))
+            score=(mistakes,i.bit_count(),i)
+            if score<best:best=score
+        self.program_id=best[2];self.ranked_at=self.n
+    def observe(self,c,y):
+        (self.n1 if y else self.n0)[c]+=1;self.n+=1
+        if self.n>=8 and (self.n<=24 or self.n-self.ranked_at>=4):self._fit()
+    def predict(self,c):
+        if not self.fitted():return .5
+        return .93 if (PROGRAMS[self.program_id]>>c)&1 else .07
+    def body(self):return {'n0':self.n0,'n1':self.n1,'n':self.n,'program_id':self.program_id,'ranked_at':self.ranked_at}
+    @classmethod
+    def parse(cls,d):
+        if type(d) is not dict or set(d)!={'n0','n1','n','program_id','ranked_at'}:raise ValueError('BAD_SLOT_SCHEMA')
+        s=cls()
+        for k in ('n0','n1'):
+            v=d[k]
+            if type(v) is not list or len(v)!=16 or any(type(x) is not int or not 0<=x<=8192 for x in v):raise ValueError('BAD_SLOT_COUNTER')
+            setattr(s,k,v[:])
+        for k in ('n','program_id','ranked_at'):
+            if type(d[k]) is not int:raise ValueError('BAD_SLOT_INT')
+            setattr(s,k,d[k])
+        if s.n!=sum(s.n0)+sum(s.n1) or s.program_id not in range(256) or not 0<=s.ranked_at<=s.n:raise ValueError('BAD_SLOT_CUSTODY')
+        return s
+
+class ActiveRecall:
+    def __init__(self):
+        self.slots=[Slot(),None];self.active=0;self.surprise=0.;self.alt_log_odds=0.
+        self.events=0;self.switches=[];self.last16=[]
+    def _alt(self):return self.slots[1-self.active]
+    def predict(self,c):
+        if type(c) is not int or not 0<=c<16:raise ValueError('BAD_CTX')
+        return self.slots[self.active].predict(c)
+    def predict_alt(self,c):
+        a=self._alt();return a.predict(c) if a else .5
+    def novelty(self,c):
+        s=self.slots[self.active]
+        return 1/(1+s.n0[c]+s.n1[c])
+    def separation(self,c):
+        a=self.slots[self.active];b=self._alt()
+        if not(a.fitted() and b and b.fitted()):return self.novelty(c)
+        return abs(a.predict(c)-b.predict(c))+.02*self.novelty(c)
+    def intervention_score(self,c,mode):
+        return self.separation(c) if mode=='active' else self.novelty(c)
+    def observe(self,c,y):
+        if type(c) is not int or c not in range(16) or type(y) is not int or y not in (0,1):raise ValueError('INVALID_PUBLIC_OBSERVATION')
+        slot=self.slots[self.active]
+        alt=self._alt()
+        if slot.fitted():
+            # 7% noise under each learned hypothesis, no oracle switch cue.
+            incorrect=int(((PROGRAMS[slot.program_id]>>c)&1)!=y)
+            self.surprise=max(0.,self.surprise+incorrect-.25)
+            if alt and alt.fitted():
+                lp=math.log((alt.predict(c) if y else 1-alt.predict(c))/
+                            (slot.predict(c) if y else 1-slot.predict(c)))
+                self.alt_log_odds=max(-9.,min(9.,self.alt_log_odds+lp+.02))
+        if alt and alt.fitted() and self.alt_log_odds>=3.0:
+            self.active=1-self.active
+            slot=self.slots[self.active];self.surprise=0.;self.alt_log_odds=0.
+            self.switches.append(self.events)
+        elif self.slots[1] is None and slot.n>=28 and self.surprise>=3.5:
+            # Freeze archived model, learn a distinct hypothesis from last 16
+            # public experiences only; no hidden phase boundary identified.
+            new=Slot()
+            for cc,yy in self.last16:new.observe(cc,yy)
+            self.slots[1]=new;self.active=1;slot=new
+            self.surprise=0.;self.alt_log_odds=0.;self.switches.append(self.events)
+        slot.observe(c,y)
+        self.last16.append((c,y));self.last16=self.last16[-16:]
+        self.events+=1
+    def snapshot(self):
+        body={'schema':MAGIC,'slots':[x.body() if x else None for x in self.slots],
+              'active':self.active,'surprise':round(self.surprise,8),
+              'alt_log_odds':round(self.alt_log_odds,8),
+              'events':self.events,'switches':self.switches[-16:],'last16':self.last16}
+        raw=json.dumps(body,sort_keys=True,separators=(',',':')).encode('ascii')
+        if len(raw)+32>MAX_BYTES:raise ValueError('CHECKPOINT_BUDGET')
+        return raw+hashlib.sha256(raw).digest()
+    @classmethod
+    def restore(cls,raw):
+        if type(raw) is not bytes or not 33<=len(raw)<=MAX_BYTES or hashlib.sha256(raw[:-32]).digest()!=raw[-32:]:raise ValueError('CHECKPOINT_HASH')
+        try:
+            d=json.loads(raw[:-32]);v=cls()
+            if type(d) is not dict or set(d)!={'schema','slots','active','surprise','alt_log_odds','events','switches','last16'} or d['schema']!=MAGIC:raise ValueError('CHECKPOINT_SCHEMA')
+            if type(d['slots']) is not list or len(d['slots'])!=2 or d['slots'][0] is None:raise ValueError('CHECKPOINT_SLOTS')
+            v.slots=[Slot.parse(s) if s is not None else None for s in d['slots']]
+            if type(d['active']) is not int or d['active'] not in (0,1) or v.slots[d['active']] is None:raise ValueError('CHECKPOINT_ACTIVE')
+            v.active=d['active'];v.events=d['events'];v.switches=d['switches'];v.last16=[tuple(x) for x in d['last16']]
+            if type(v.events) is not int or v.events<0 or type(v.switches) is not list or len(v.switches)>16 or any(type(x)is not int or not 0<=x<v.events for x in v.switches):raise ValueError('CHECKPOINT_EVENTS')
+            if type(d['last16']) is not list or len(v.last16)>16 or any(len(x)!=2 or type(x[0]) is not int or x[0] not in range(16) or type(x[1]) is not int or x[1] not in (0,1) for x in v.last16):raise ValueError('CHECKPOINT_HISTORY')
+            for k in ('surprise','alt_log_odds'):
+                f=d[k]
+                if type(f) not in (int,float) or not math.isfinite(f):raise ValueError('CHECKPOINT_FLOAT')
+                setattr(v,k,float(f))
+            if v.snapshot()!=raw:raise ValueError('CHECKPOINT_NONCANONICAL')
+            return v
+        except (TypeError,KeyError,UnicodeError,json.JSONDecodeError) as e:raise ValueError('CHECKPOINT_DECODE') from e

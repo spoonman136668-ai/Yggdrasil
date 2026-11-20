@@ -1,0 +1,141 @@
+{
+  "arms": [
+    "dual_active",
+    "dual_passive",
+    "dual_coverage",
+    "exact_bayes_active",
+    "exact_bayes_random",
+    "beta_full_coverage",
+    "beta_window32_coverage",
+    "beta_decay_coverage",
+    "logistic_coverage",
+    "no_learning_random"
+  ],
+  "before_full_score": true,
+  "compute": "Record whole-process per-arm wall time. Equal action/observation opportunities do NOT imply matched computational budgets. No scientific efficiency claim without independently qualified compute-matched controls.",
+  "controls": [
+    "exact_bayes_active",
+    "exact_bayes_random",
+    "beta_full_coverage",
+    "beta_window32_coverage",
+    "beta_decay_coverage",
+    "logistic_coverage"
+  ],
+  "development": {
+    "A_dwell_range": [
+      80,
+      94
+    ],
+    "B_dwell_range": [
+      75,
+      90
+    ],
+    "common_random_exogenous_and_noise": true,
+    "episodes_per_learner": 5310,
+    "excluded_previously_consumed_and_protected_seeds": [
+      73004303,
+      73004304,
+      74009171,
+      74009172,
+      75011801,
+      75011802,
+      76021921,
+      76021922,
+      77033101,
+      77033102,
+      88041001,
+      88041002,
+      89051001,
+      89051002,
+      90161101,
+      90161102,
+      90161103,
+      92111911,
+      92111912,
+      92111913,
+      93490111,
+      93490112,
+      94771101,
+      94771102,
+      929209101,
+      929209102,
+      929209103
+    ],
+    "external_teacher": false,
+    "families": [
+      "cubic_rewrite",
+      "disjoint_cubic",
+      "quartic_out_of_class"
+    ],
+    "hidden_phase_shared_public_address": true,
+    "no_phase_to_learner": true,
+    "out_of_class": "quartic_out_of_class",
+    "per_step_first_action_options": 2,
+    "per_step_outcomes_observed": 1,
+    "per_step_second_action_options": 2,
+    "policy_actions_are_not_identical_realized_observations": true,
+    "replications": 4,
+    "return_dwell_range": [
+      46,
+      57
+    ],
+    "seeds": [
+      95820101,
+      95820102
+    ],
+    "smoke_only_seed": 95820100,
+    "source_only": true,
+    "terminal_flip_rate": 0.07,
+    "transition_flip_rate": 0.25,
+    "world_count": 24
+  },
+  "full_score_evaluated_at_freeze": false,
+  "hypothesis": "Informative two-stage public interventions let a bounded archive discriminate previously learned A from hidden B and recover earlier than equally budgeted passive/archive controls",
+  "information": {
+    "common_noise_streams": true,
+    "equal_action_opportunities": true,
+    "learner_methods": "predict(ctx), choose_x1(s1), choose_x2(s1,x1,s2), observe(ctx,y)",
+    "learner_not_given": "world labels, phase schedule, ground truth law, future outcomes, counterfactual probe answers",
+    "matched_realized_observations": false,
+    "one_public_two_stage_episode_per_arm_per_step": true,
+    "probe": "evaluator-only phase-appropriate expected Brier over all sixteen public contexts before each interaction; same uniform reference distribution for all policies"
+  },
+  "manifest_sha256": "cf096788d95996adbe3f4c3f95ad9116d1b8a399b803b87fe14f89e3ae03f60d",
+  "metric": {
+    "action_value": "Active candidate vs identical-state passive/random-action candidate on same fixed reference probe",
+    "adaptation": "B-phase mean expected terminal Brier on the same reference probe",
+    "independent_checkpoint": "SHA256 + byte identical restore at evaluator-only phase boundaries; neither phase boundary supplied to learner",
+    "primary": "First 16 early A-return mean expected terminal Brier on independent 16-context reference probe, macro world then seed",
+    "secondary": "chosen-action observed prequential Brier, false switches, detection delay, quartic out-of-class, cold integrity, wall time and bytes"
+  },
+  "ownership": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "canonical_checkpoint_read_or_written": false,
+    "canonical_owner_checkpoint": "UNVERIFIED",
+    "merged_or_deployed": false,
+    "native_model_executed": false,
+    "native_source": "86264b41a08d49f558418c0fba367f3a2636befa",
+    "new_runner_scheduler_controller": false,
+    "protected_original_first_use": false,
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "research_pr": 1323
+  },
+  "role": "Independent Yggdrasil research contributor only; Amalgam PR 1278 sole integration coordinator",
+  "schema": "lr92bc.active-intervention-source-free-development-freeze.v1",
+  "source_sha256": {
+    "compare.py": "ed41cc96896c4f39a3df58564f48257e0a70e8a67eb3e75f27efba44a809ad96",
+    "controls.py": "4c9af2a41d0f801936f5c1aa0ca39b67d1a49b273bd7af3e7639f21cdd7a41d4",
+    "freeze.py": "c017b392e3cbac440df78236680dc605ea7fddf39579dca6fba2196fb0e574ca",
+    "mechanism.py": "4169b3cdf2a4d92db3ee0125302285f4d886eb347f9db73af9721519279aff78",
+    "test_mechanism.py": "1714b2298621abdbd9e99284c627a711bf5a33e57c5a247f424619a01d8c43f7",
+    "worlds.py": "a74c670c2509230353f5416349a026ccfb81e8cbaf7a471d73e60597e8eb101c"
+  },
+  "stop_rule": {
+    "candidate": "dual_active",
+    "development_go_only_if": "In EACH of two disjoint seed groups: candidate early-return16 reference Brier <= minimum of SIX strong conventional/symbolic controls -0.01; candidate B reference Brier <= best-control B +0.01; candidate early-return16 <= identical-learning dual_passive -0.01; all 24 checkpoints restore and serialize <=1056 bytes.",
+    "external_scientific_acceptance": "Development GO is not scientific PASS; primary independent first-use still blocked under issue #426 and full native dual-platform regression absent",
+    "negative_results": "Retain and report quartic out-of-class and failures; do not retune the exposed cohort or infer native intelligence",
+    "no_post_result_selection": "dual_passive, dual_coverage, exact_bayes_active or others cannot be selected afterward as primary"
+  },
+  "test_scope": "27 pre-score tests on only SMOKE_SEED=95820100; 24 development worlds enumerated for manifest without evaluating model performance"
+}

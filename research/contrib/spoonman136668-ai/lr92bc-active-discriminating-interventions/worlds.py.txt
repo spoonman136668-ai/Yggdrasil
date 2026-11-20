@@ -1,0 +1,114 @@
+"""Source-free two-stage environments with hidden A/B/A and counterfactual action noise.
+
+Only visible public episode (s1,x1,s2,x2,y) passes to learners. World labels,
+truth-table masks, switch times and noise streams are evaluator-only.
+"""
+from __future__ import annotations
+import hashlib, random
+from dataclasses import dataclass
+
+SEEDS = (95820101, 95820102)
+SMOKE_SEED = 95820100
+FAMILIES = ('cubic_rewrite', 'disjoint_cubic', 'quartic_out_of_class')
+REPS = 4
+FORBIDDEN = (73004303,73004304,74009171,74009172,75011801,75011802,
+             76021921,76021922,77033101,77033102,88041001,88041002,
+             89051001,89051002,90161101,90161102,90161103,
+             92111911,92111912,92111913,93490111,93490112,
+             94771101,94771102,929209101,929209102,929209103)
+P_TRANSITION = .25
+P_TERMINAL = .07
+
+
+def random_for(seed, family, rep, tag):
+    b=hashlib.sha256(f'LR92BC|{seed}|{family}|{rep}|{tag}'.encode()).digest()
+    return random.Random(int.from_bytes(b[:8], 'big'))
+
+
+def ctx(s1,x1,s2,x2):
+    return (s1<<3)|(x1<<2)|(s2<<1)|x2
+
+
+def monomials(c):
+    s1,x1,s2,x2=((c>>i)&1 for i in (3,2,1,0))
+    return (1, s1, x1, s2, x2, s1*x1*x2, s1*s2*x2, x1*s2*x2)
+
+FEATURES=tuple(monomials(c) for c in range(16))
+# Intercept plus 7 native Boolean monomials, no complete truth tables given to candidate.
+PROGRAMS=tuple(sum((sum(f[i] for i in range(8) if (bits>>i)&1)&1)<<c
+                   for c,f in enumerate(FEATURES)) for bits in range(256))
+assert len(set(PROGRAMS))==256
+
+
+def true_tables(seed,family,rep):
+    r=random_for(seed,family,rep,'function-selection')
+    if family=='cubic_rewrite':
+        a=(1<<5)|(1<<2)|(rep&1)
+        b=(1<<6)|(1<<4)|((rep>>1)&1)
+    elif family=='disjoint_cubic':
+        a=(1<<7)|(1<<1)|(rep&1)
+        b=(1<<5)|(1<<3)|((rep>>1)&1)
+    elif family=='quartic_out_of_class':
+        a=(1<<5)|(1<<2)|(rep&1)
+        b=(1<<6)|(1<<4)|((rep>>1)&1)
+    else:raise ValueError('FAMILY')
+    if family=='quartic_out_of_class':
+        quartic=sum(((PROGRAMS[a]>>c)&1 ^ int(all((c>>i)&1 for i in (3,2,1,0))))<<c for c in range(16))
+        return quartic,PROGRAMS[b]
+    return PROGRAMS[a],PROGRAMS[b]
+
+
+@dataclass(frozen=True)
+class World:
+    seed:int
+    family:str
+    rep:int
+    dwell:tuple[int,int,int]
+    A:int
+    B:int
+    initial:tuple[int,...]
+    trans_noise:tuple[int,...]
+    output_noise:tuple[int,...]
+    public_input_sha256:str
+
+    def phase(self,i):
+        return 0 if i<self.dwell[0] or i>=self.dwell[0]+self.dwell[1] else 1
+
+    def response(self,i,s1,x1,x2):
+        if i<0 or i>=sum(self.dwell):raise ValueError('TIME_BOUNDS')
+        if any(type(v) is not int or v not in (0,1) for v in (s1,x1,x2)):
+            raise ValueError('BIT_INPUT')
+        s2=(s1^x1)^self.trans_noise[i]
+        table=self.A if self.phase(i)==0 else self.B
+        y=((table>>ctx(s1,x1,s2,x2))&1)^self.output_noise[i]
+        return s2,y
+
+    def expected_brier(self,program,phase):
+        """Expected fixed 16-context panel; evaluator only, never action selection."""
+        table=self.A if phase==0 else self.B
+        vals=[]
+        for c in range(16):
+            y=(table>>c)&1
+            p=program(c)
+            if not 0<=p<=1:raise ValueError('BAD_FORECAST')
+            vals.append(P_TERMINAL*(p-(1-y))**2+(1-P_TERMINAL)*(p-y)**2)
+        return sum(vals)/16
+
+
+def world(seed,family,rep):
+    if seed not in (*SEEDS,SMOKE_SEED) or family not in FAMILIES or type(rep) is not int or rep not in range(REPS):raise ValueError('WORLD_SCOPE')
+    z=random_for(seed,family,rep,'dwell')
+    dwell=(z.randrange(80,95),z.randrange(75,91),z.randrange(46,58))
+    n=sum(dwell)
+    r=random_for(seed,family,rep,'public-exogenous-state')
+    s1=tuple(r.randrange(2) for _ in range(n))
+    r=random_for(seed,family,rep,'transition-coin')
+    tn=tuple(int(r.random()<P_TRANSITION) for _ in range(n))
+    r=random_for(seed,family,rep,'terminal-coin')
+    yn=tuple(int(r.random()<P_TERMINAL) for _ in range(n))
+    raw=bytes(v for i in range(n) for v in (s1[i],tn[i],yn[i]))
+    a,b=true_tables(seed,family,rep)
+    return World(seed,family,rep,dwell,a,b,s1,tn,yn,hashlib.sha256(raw).hexdigest())
+
+
+def worlds():return tuple(world(s,f,r) for s in SEEDS for f in FAMILIES for r in range(REPS))
