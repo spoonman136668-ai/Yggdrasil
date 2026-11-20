@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-214B",
+  "date": "2026-11-19",
+  "role": "independent research contributor; Amalgam owner alone controls canonical learner",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "sha": "03630cd7561995bb1f888729b660a703348664e7",
+    "pr": 1339,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "hypothesis": "WSP213's direct-weight underperformance partly arises from strict 75% sign-consistency and abs(mean residual)>=1 admission, not just 25%-of-new-address update budget. Filling the identical 25% eligible-address budget by predeclared consensus ranking improves cumulative B0 retention and new pair-group held predictions over strict admission and equally budgeted surprise/random ranking.",
+  "design": {
+    "freeze": "This JSON commit is the freeze BEFORE any new WSP214 source code or primary world evaluated.",
+    "worlds": [
+      {
+        "seed": 21411,
+        "topology": "hub",
+        "n": 24
+      },
+      {
+        "seed": 21412,
+        "topology": "complete",
+        "n": 12
+      },
+      {
+        "seed": 21413,
+        "topology": "hub",
+        "n": 24
+      },
+      {
+        "seed": 21414,
+        "topology": "complete",
+        "n": 12
+      }
+    ],
+    "prohibited_cohorts": "Never re-evaluate WSP210 invalid primary 21011-14, WSP211 calibration 21101-02, WSP212 consumed 21201-04 or WSP213 primary 21301-04. WSP214A split-invalid seeds 21401-21404.",
+    "synthetic_target": "Independent hidden rank4 integer factor arrays component sha256('WSP214B\\0'+seed+'\\0'+allele+'\\0'+pos+'\\0'+dimension).digest()[0] % 7 - 3, target same-allele dot/9. Never expose factors or targets except according to FIT stage.",
+    "splits": "Existing WSP200 canonical whole pair group FIT B0-B3 stage order; held PUBLIC_DEV pair labels only generated after all arms complete B3; original GFP, VALID and RESERVED never opened.",
+    "rank": 4,
+    "ridge": 0.2,
+    "initialization": "inherited WSP200 hash-signed .01 factors, identical across all arms",
+    "learning": "B0 full 16 coordinate sweeps for non-conventional arms, B1-B3 exactly 2 sweeps of per-arm active address set; identical stage FIT rows. Full-refit conventional 8-sweep plateau checks <=100 at every stage.",
+    "arms": [
+      "strict_original: inherited WSP200 contradiction mode, 0.75 residual sign agreement, abs(mean)>=1 and ceil(25% of new addresses) cap.",
+      "budgeted_consensus: for every newly observed address with >=2 distinct observation IDs, choose min(ceil(new_address_count/4), eligible_count); deterministic ranking descending nonzero-sign agreement, then abs(mean residual), then mean absolute residual, then UTF8 address.",
+      "budgeted_surprise: exactly same K eligible addresses, sorted by descending mean absolute residual then UTF8 address.",
+      "budgeted_random: exactly same K eligible addresses, sorted by sha256('WSP214-RANDOM-v1\\0'+stage+'\\0'+address), then UTF8 address.",
+      "always: inherited WSP200 update all newly observed addresses, 2 sweeps after B0; higher write-count reference only.",
+      "no_update: inherited WSP200 original B0 training then no later writes; regression/negative.",
+      "full_refit: inherited qualified WSP211 BlockedFullRefit, all cumulative evidence, exact normal equations and plateau; strongest conventional control.",
+      "zero: standardized zero readout only; unfitted negative."
+    ],
+    "gate_diagnostic": "Before each strict_original B1-B3 update, compute per-address residual using strict model only from current new FIT batch. Record new address count, eligible count (>=2 unique IDs), strictly sign-consistent >=0.75, abs(mean)>=1, intersection eligible and both threshold, full K, original strict selected count. Counts are descriptive, no oracle or held labels.",
+    "budget": "The three budgeted arms match K exactly stage-by-stage and all perform exactly two coordinate sweeps; strict original is allowed fewer writes by design. Full refit is information-matched but NOT compute-matched."
+  },
+  "metrics": [
+    "Numerical cross-OS parity <=1e-8 abs/rel for normalized objective, B0 old knowledge MSE each stage, held PUBLIC_DEV group-weighted RMSE and diagnostic counters; exclude wall and checkpoint hashes from cross-OS numerical parity.",
+    "Exact cold restoration with policy-scoped checkpoint envelope, negative cross-policy and corrupted-content restore, staged source SHA, zero new FIT replay, FIT/PUBLIC_DEV disjoint, readout stable after checkpoint.",
+    "Per-world all-arm FIT same-evidence identity; budgeted 3-arm selected address count K, 2* K coordinate solves every post-B0 stage; B0 history no-new-data readout.",
+    "Aggregate per world candidate improvement over strict, equal-write surprise/random, no_update and qualified full_refit; all limits below frozen pre-outcome."
+  ],
+  "classification": {
+    "INVALID": "Any comparator nonconvergence, NaN/nonfinite metric, failed policy write parity, numeric OS drift, inconsistent source, leak, cold restore failure, missing world/stage, failed CI/G29 or negative checks; no science conclusion.",
+    "GATE_ADVANTAGE": "In >=3/4 worlds: budgeted_consensus held RMSE <=0.90*strict_original, <=0.95*full_refit, <=0.95*min(budgeted_surprise,budgeted_random); B3 B0 MSE <=1.05*full_refit B0 MSE; coordinate solves < full_refit. This is only a bounded synthetic positive, never native intelligence.",
+    "LOW_ADMISSION_DIAGNOSTIC": "At least 8/12 B1-B3 stage diagnostics have original strict selected <=floor(K/2) with K>0, AND consensus beats strict held RMSE by >=10% in >=3 worlds, but GATE_ADVANTAGE false. Supports a bounded update-frequency bottleneck, not strong-control superiority.",
+    "UNDERSELECTION_OBSERVED": "At least 8/12 B1-B3 stages strict selected <=floor(K/2) with K>0 but neither GATE_ADVANTAGE nor LOW_ADMISSION_DIAGNOSTIC; count-only finding, not evidence of recovered learning.",
+    "NO_GAIN": "Valid primary but none of above classifications. Preserve negative and null outcomes.",
+    "cohort_consumption": "B protocol primary seed21411-21414 one use per OS only after new prereg/source-only tests, pinned G29 and mandatory root full regression; retire after valid/invalid read. A seeds21401-04 never run."
+  },
+  "controls": {
+    "engineering": "Root mandatory full test + WSP200 and WSP209 full + WSP210 smoke + WSP211 allowlist-only + WSP212 source-only + WSP213 source-only + WSP214 source-only on Windows/Linux Python3.12. G29 pinned source seal before any new primary.",
+    "training_authority": false,
+    "original_GFP_first_use": false,
+    "reserved": false,
+    "canonical_amalgam": false,
+    "merge": false,
+    "accepted_main_write": false,
+    "paid_apis": false,
+    "self_hosted_runner": false,
+    "deploy": false
+  },
+  "limits": "Synthetic pair-group transfer only (not new causal-law family); full-refit receives more compute; direct-weight gate mechanisms are mathematical design candidates, not native Yggdrasil trained cognition; preserve nulls and do not modify earlier frozen cohorts.",
+  "freeze": "New standalone source-only protocol frozen BEFORE any WSP214B generated targets/learning. The original WSP214 preregistration remains unchanged in prereg.json and Git history; failed preflight cohort 21401-21404 MUST NOT be consumed. No science results from A.",
+  "invalid_predecessor": {
+    "experiment_id": "WSP-214",
+    "prereg_commit": "905cbef5df7d1cace00231ea4bcd079c0780a1ef",
+    "pre_eval_source": "03630cd7561995bb1f888729b660a703348664e7",
+    "preflight_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44657499833",
+    "failure": "Frozen hub world 21403 had FIT counts B0=5, B1=9, B2=6, B3=0; missing B3. Root and predecessor tests passed; new static preflight failed before G29 first-use, and zero WSP214A primary outcomes were generated. Invalid cohort preserved, no tuning based on labels."
+  },
+  "preflight_only_routing_custody": {
+    "basis": "Only WSP200 canonical salted pair_group->FIT stage/PUBLIC_DEV bucket metadata, not any target, learner output, RMSE or checkpoint; no WSP214B target read before this freeze.",
+    "frozen_new_pair_group_counts": {
+      "21411": {
+        "B0": 6,
+        "B1": 2,
+        "B2": 6,
+        "B3": 5,
+        "PUBLIC_DEV": 6
+      },
+      "21412": {
+        "B0": 11,
+        "B1": 15,
+        "B2": 7,
+        "B3": 11,
+        "PUBLIC_DEV": 6
+      },
+      "21413": {
+        "B0": 5,
+        "B1": 5,
+        "B2": 10,
+        "B3": 3,
+        "PUBLIC_DEV": 6
+      },
+      "21414": {
+        "B0": 13,
+        "B1": 10,
+        "B2": 8,
+        "B3": 8,
+        "PUBLIC_DEV": 8
+      }
+    },
+    "rule": "Each world requires >=1 entire FIT pair-group at each B0..B3 plus >=1 PUBLIC_DEV whole pair group."
+  }
+}
