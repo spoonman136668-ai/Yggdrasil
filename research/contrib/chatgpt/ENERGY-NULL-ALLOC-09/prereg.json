@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "ENERGY-NULL-ALLOC-09",
+  "date": "2026-11-20",
+  "scope": "Pure analytic exact probability of false causal declarations with randomized unbalanced intervention arms; no synthetic world replay",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "exact_parent_sha": "c8c2b98b8bcd197564886baa6a7c4508aff39673",
+  "source": "ENERGY-DELAY-07 prereg/code (frozen), ENERGY-NULL-CERT-08 exact balanced benchmark",
+  "question": "With 24 independent Bernoulli(.5) randomized actions and null outcomes generated through shared Bernoulli nuisance U, how often does the original max-over-three-lags 0.30 Beta(0.5) contrast rule declare a false effect? Establish exact one-lag probability and rigorous 3-lag bounds without rerunning the original primary.",
+  "frozen_null": {
+    "episodes": 24,
+    "action_policy": "Each intervention action A is Bernoulli(1/2) independently of U. Number N0 of action0 episodes is Binomial(24,.5), not forced to 12.",
+    "outcome": "For NEW NULL, each lag outcome conditional on its episode U is Bernoulli(.8 if U=1 else .2), U iid Bernoulli(.5), independent of A; thus at any individual lag Y is iid Bernoulli(.5), independent of A, although outcomes across the three lags of a given episode share U and are not mutually independent.",
+    "public_proxy": "Noisy Z is irrelevant to the candidate's intervention-only effect contrast; it is not used in the algebraic null risk.",
+    "single_lag_prob": "P(N0=n, X0=x0,X1=x1) = C(24,n) C(n,x0) C(24-n,x1) / 2^48.",
+    "candidate_effect": "D=(x1+1/2)/(25-n) - (x0+1/2)/(n+1). Declare an effect at a lag iff abs(D)>=0.30. Overall candidate takes maximum absolute D across three lags.",
+    "exact_integer_comparison": "With n1=24-n0, 10*abs((2*x1+1)*(n0+1)-(2*x0+1)*(n1+1)) >= 6*(n1+1)*(n0+1).",
+    "fisher_two_sided": "Conditional on observed total S=x0+x1 and randomized arm sizes n0,n1, enumerate X1 tables with probability C(n1,k)C(n0,S-k)/C(24,S), sum probabilities <= observed; compare p<=1/60 (Bonferroni 0.05/3).",
+    "bounds": "Since three lag outcomes share U, do NOT apply independent-lag 1-(1-p)^3. Rigorous familywise bounds are p1 <= P(any lag false) <= min(1,3*p1) for identical one-lag nulls; Fisher/Bonferroni <=min(.05,3*pFisher). This bounds the prior generator, but does not identify its exact 3-lag dependence-sensitive FWER.",
+    "mass_conservation": "Enumerate all n0=0..24 and x0=0..n0,x1=0..24-n0; weighted total must equal 2^48.",
+    "controls": "Exact independent closed-form n0 split mass; Fisher conditional exact table sums <=1; probability of any false effect lower/upper bounds; no original seeds, no original raw reward labels or score tuning."
+  },
+  "pass": "Exact one-lag original-rule false alarm >0.05; calibrated Fisher/Bonferroni 3-lag union-bound false alarm <=0.05; all mass conservation checks pass.",
+  "failure": "Any source mismatch, invalid exact count, Fisher rate not family-wise bounded, or false claim that lag correlations are independent.",
+  "interpretation": "An analytic risk bound under the actual NEW NULL generator. Confirms/refutes the prior uncalibrated false effect mechanism; no new empirical causal learner, no first-use scientific claim.",
+  "execution": "Commit prereg then exact executable, verify GitHub source and run deterministic BigInt arithmetic once. Save result, provenance and negative decision to existing draft research PR #1346.",
+  "authority": {
+    "no_original_primary_replay": true,
+    "no_model_writes": true,
+    "no_runners": true,
+    "no_scheduler": true,
+    "no_native_integration": true,
+    "canonical_amalgam_owner": "PR #1278"
+  }
+}
