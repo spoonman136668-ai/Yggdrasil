@@ -315,6 +315,18 @@ jobs:
             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
             --output "$RUNNER_TEMP/know17-learned-intervention-policy-receipt.json"
           test -z "$(git status --porcelain)"
+      - name: KNOW18 raw four-feature intervention-utility transfer frozen DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/raw_intervention_utility_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know18-raw-feature-utility-receipt.json"
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -333,5 +345,6 @@ jobs:
             ${{ runner.temp }}/know15-factual-only-regime-leakage-receipt.json
             ${{ runner.temp }}/know16-source-identical-intervention-receipt.json
             ${{ runner.temp }}/know17-learned-intervention-policy-receipt.json
+            ${{ runner.temp }}/know18-raw-feature-utility-receipt.json
           retention-days: 30
           if-no-files-found: error
