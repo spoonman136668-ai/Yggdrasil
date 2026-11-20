@@ -231,4 +231,4 @@ def audit():
 
 
 if __name__ == "__main__":
-    print(json.dumps(audit(), sort_keys=True, indent=2))
+    print(json.dumps(audit(), sort_keys=True, indent=2, default=str))
