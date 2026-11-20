@@ -9,7 +9,7 @@
   "existing_draft_pr": 1346,
   "exact_parent_sha": "3475647e1f9c575629e7c9877c21a763d458152c",
   "independence": "Independent energy-inspired research contribution. Central Amalgam PR #1278 already tests staged retention, open-set templates, and action probes; this contribution isolates **causal delay versus immediate confounding** and uses no owner model, protected data or seed.",
-  "hypothesis": "A directed lag-aware intervention flux estimator with isolated context memory can identify causal effects delayed by one or two periods, distinguish spurious immediate association, preserve old conflicting effects, and outperform fully fitted conventional lagged causal controls in matched held intervention Brier and delayed action utility. This may be false; exact structural Bayes is an oracle bound rather than a practical competitor.",
+  "hypothesis": "A bounded lag-aware intervention-flux state with context isolation can distinguish delayed true effects from immediate proxy confounding and be superior in held Brier versus flexible fully fitted *non-oracle* causal estimators while preserving older opposing causal relationships. Correctly specified 7-hypothesis Bayes is a posterior reference bound and cannot be expected to be beaten on Brier.",
   "generator": {
     "states": "Two public episode contexts OLD and NEW; binary intervention action A; 3 outcome timestamps lag0,lag1,lag2; hidden nuisance U binary and observable proxy Z=U with 10% flip (not supplied as effect label).",
     "scenarios": [
@@ -25,14 +25,15 @@
   "models": {
     "candidate": "Bounded lag-aware intervention flux: from randomized episodes separately per context estimate Beta(0.5) posterior P(Y_l=1|do A=1)-P(Y_l=1|do A=0) at lags 0/1/2; pick largest |difference|, require >=0.30, else abstain from effect. At selected lag, predict causal action as P=.80/.20 by inferred direction, other lags use action-blind Beta(.5) nuisance estimates fitted from ALL public episodes, stratified by observed noisy proxy Z. When no effect is declared, all lags use these stratified action-blind nuisance estimates. Fixed 2-context x3-lag x2-action counters plus proxy-stratified nuisance counters; no model expansion.",
     "controls": [
-      "Fully fitted intervention-only per-lag per-action Beta(0.5) (all three timestamps)",
-      "Fully fitted action-blind per-lag Bernoulli Beta(.5)",
-      "Fully fitted stratified per-lag Beta(.5) conditioned on proxy Z, action and mode; score intervention mode only, mixture across proxy as observed",
-      "Conventional seven-hypothesis Bayesian temporal model over no effect plus six (lag,sign) hypotheses; equal prior and exact likelihood on randomized evidence, nuisance lags Bernoulli(.5); posterior predictive marginalizes hypotheses",
+      "Fully fitted intervention-only per-lag per-action Beta(0.5) (all three timestamps); non-oracle conventional accuracy comparator",
+      "Fully fitted action-blind per-lag Bernoulli Beta(.5) stratified by public proxy Z",
+      "Fully fitted intervention-only per-lag Beta(.5) stratified by public proxy Z, action and lag",
+      "Fully fitted all-public-data per-lag Beta(.5) stratified by public proxy Z, action and lag, with observational action-selection confounding",
+      "Conventional correctly specified seven-hypothesis Bayesian temporal model over no effect plus six (lag,sign) hypotheses; equal prior and source-family predictive probabilities. REFERENCE FLOOR only, not a target for expected Brier superiority",
       "Fixed immediate-only action Beta(.5) control",
-      "Correctly specified full structural oracle with true lag/sign and nuisance U, used only as theoretical floor and source-truth adjudicator"
+      "Privileged source-truth oracle with true lag/sign and nuisance U; theoretical lower bound only"
     ],
-    "matched_conditions": "Identical public episodes and observation/held actions; each model may condition on the public proxy and intervention flag, with no hidden U. The fully fitted conventional temporal Bayes is the main causal competitor, exact oracle not a superiority target.",
+    "matched_conditions": "Identical public episodes and observation/held actions; non-oracle controls may use observed proxy, assignment flag and fixed-lag supervised counts and are fully fitted. Correctly specified seven-hyp temporal Bayes uses source-family knowledge and is EXCLUDED from superiority threshold by the Bayes Brier identity; privileged truth oracle also excluded.",
     "tests": [
       "causal lag identification and correct sign in CONTRADICT/DELAY_SHIFT",
       "no effect declared in NULL NEW contexts; 0/12 false triggers to pass",
@@ -64,7 +65,7 @@
     "cost": "One primary cohort and one separate smoke; no paid model/API/GPU, no scheduler, no protected original science. Native double-platform acceptance and independent-process cold restoration remain UNVERIFIED."
   },
   "decision_rules": {
-    "scientific_supported_dev_only": "Candidate held intervention mean binary Brier at least 0.01 less than BEST fully fitted conventional baseline across all 36 worlds AND no false declared causal effect among 12 NULL NEW contexts AND at least 10/12 correct NEW lag+direction in each non-null family AND exact OLD readouts 36/36. Independent native replication still required for scientific PASS.",
+    "scientific_supported_dev_only": "Candidate held intervention mean binary Brier at least 0.01 less than BEST fully fitted non-oracle conventional lagged estimator (intervention Beta, proxy-stratified intervention Beta, all-data proxy-stratified Beta) across all 36 worlds AND no false declared effect among 12 NULL NEW contexts AND >=10/12 correct NEW lag+direction in each non-null family AND exact OLD readouts 36/36. Correctly specified 7-hyp source-family Bayesian and privileged truth oracle are not eligible for expected-Brier superiority. Independent native qualification required.",
     "mixed": "Positive candidate improvement against action-blind controls and >=8/12 causal detection per non-null family but worse than strongest fitted Bayesian or negative controls. Scientific NO-GO.",
     "negative": "No preregistered supervised success or mixed signal. Preserve original raw output and negatives.",
     "invalid": "Source not committed/readback before primary; observations overlap held; no strong temporal model or stratified control; hidden true lag/U leaked; parameter thresholds changed after scoring; seeds repeated; source/data custody mismatch.",
