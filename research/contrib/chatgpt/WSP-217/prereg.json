@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-217",
+  "date": "2026-11-20",
+  "owner": "Independent research contributor; only Unified Causal Intelligence Amalgam Work chat owns native learner continuation/integration",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "commit": "80b26f3b36ccdabc55648691874fc1958f842d42",
+    "pr": 1342,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Determine whether a bounded tokenless local accumulator can infer delayed action credit from UNMARKED individual action sequences and delayed scalar/vector consequences, without intervention-marker or paired branch labels supplied in FIT. Compare exact fully fitted conventional delayed regression and weak controls; source-free development only.",
+  "hypothesis": "A bounded incremental co-activation-statistics learner without stored raw observations can infer which of two action slots causally influences delayed outcomes in unseen contexts, match the fully trained exact conditional linear regression, exceed matched-information lag-blind and last-action negative controls and preserve original functional memory across four sequential stages.",
+  "worlds": {
+    "seeds": [
+      21701,
+      21702,
+      21703,
+      21704
+    ],
+    "forbidden": "All 210xx..216xx previous cohorts including 21601-21604; do not reuse or alter previous results.",
+    "source_name": "WSP217; SHA-256 of `WSP217\\0{seed}\\0{purpose}\\0{coordinate}` independent of platform RNG",
+    "hidden_law": "Each world has one active lag 0 or 1 (hash(seed,'active_lag')%2) and four signed per-output effects there; inactive lag coefficients exactly zero. Three output dimensions, action0 is no-op, actions1..4 causal. Context nuisance and branch measurement noise hashed independently. Hidden effects/lag accessible only generator and post-training oracle diagnostics; no model fit/prediction may access them.",
+    "observations": "No `changed_lag`, `changed_action`, paired reference/treatment observation, oracle or counterfactual labels in training. Each FIT episode reveals ordered (t0,t1), context id and single final outcome vector only. 2 lags x 5 actions (0..4) visible, lag labels 0/1 are *temporal order*, not intervention credit. Source labels only produce outcome via environment.",
+    "fit": "4 B0..B3 stages, 50 previously unseen FIT episodes per stage, each 25 ordered action pairs repeated twice and a fresh 0..7 context assignment; all arms see exact identical rows and temporal order. Staged history after B3 total 200.",
+    "held": "100 new HELD paired counterfactual comparisons, 25 ordered (a0,a1) combos x4, reference (0,0), with context ids 8..15 never seen in FIT and new deterministic phase noise. Held pairs and their labels are generated ONCE after all four FIT stages and cold restoration. They exist to score causal effect contrast; no fitted arm sees reference/treated pairs or held labels.",
+    "identifiability": "All 25 ordered action pairs appear twice each B stage; full 9-feature intercept+2x4 action-effects regression is full column rank; source-only rank preflight must establish rank before first labels. Known ordered actions provide statistically identifiable effects; observing time is not proof of learned causality under arbitrary confounding."
+  },
+  "arms": {
+    "candidate": "Bounded local sufficient-statistics memory, one event at a time adds 9x9 input coactivation entries and 9x3 input-outcome products, retains NO individual FIT observations; after each stage perform 24 deterministic Gauss-Seidel local coordinate sweeps on ridge-regularized normal equations, keeping previous weights as warm start. No oracle, no marker, no gradient, no raw replay; same hardcoded ridge 0.001 as conventional. Count coordinate solves, stats accumulation and resident scalar storage.",
+    "conventional": "Fully trained exact batch ridge least squares on ALL cumulative FIT rows. Same 9 temporal features, 3 outputs, same intercept and ridge 0.001, solved by deterministic pivoted Gauss-Jordan elimination to numerical completion at each stage (not truncated, no withheld data). Uses raw rows and gets the strongest matched-information model; negative if it does not qualify.",
+    "last_action": "Fully trained exact batch ridge least squares, intercept+four last-slot action columns only, same total staged FIT rows/outcomes; suppresses earlier slot.",
+    "pooled_action": "Fully trained exact batch ridge least squares with intercept+four pooled action counts across two slots, no lag identity, same rows.",
+    "shuffled_consequence": "Fully trained exact 9-feature ridge least squares but source paired with the next episode's outcome within each frozen 50-episode stage (cyclic shift 1); same information volume and output distribution, broken source correspondence, no oracle.",
+    "zero": "No fitted action effect, predictions of all held effect contrasts identically zero.",
+    "oracle": "Exact hidden action-effect contrast, evaluator-only after all FIT and held results have been generated; privileged lower-bound diagnostic not a trained competitor or claim of novel learning."
+  },
+  "metrics": [
+    "Same-source FIT SHA, per-stage cumulative row identities, correct 25-pair 2-repeat stage occupancy, no target generation for held before all stages",
+    "For candidate B0 functional RMSE across all stages and cold checkpoint exact bytes + restored function predictions on B0; corrupted/wrong-seed/wrong-arm restore negative",
+    "HELD unseen-context pair contrast RMSE per arm and per world after B3, exact fully trained conventional comparison, zero/shuffled/pooled/last-action negatives, oracle lower bound separately",
+    "Post-evaluation active lag discovered from fitted causal coefficient L2 magnitude; true active lag only inspected after full B3 fit and held scoring; negative controls use none of this metadata",
+    "Candidate memory scalar count, cumulative coactivations, writes and 24*sweeps each stage, conventional batch rows/normal-equation solver counts, wall clocks (non-parity)",
+    "Linux and Windows absolute/relative 1e-9 numerical metric parity, same FIT/held identities, same policy classification and full Git SHA qualification; full root + inherited safe regression; pinned G29 before any primary."
+  ],
+  "threshold": {
+    "INVALID": "Any failure in source or held custody, rank, baseline convergence, historical cold function, checkpoint corruption tests, nonfinite metrics, preflight, complete Linux+Windows and G29, numeric parity, source/evidence mismatch, or strong control fit; report INVALID not a science result.",
+    "UNMARKED_CREDIT_SUPPORTED": "At least 3/4 worlds: candidate held effect RMSE <= max(1.10*exact_full_regression_RMSE, exact_full_regression_RMSE+0.02), <=0.75*last_action_RMSE, <=0.75*pooled_action_RMSE, <=0.75*shuffled_consequence_RMSE, <=0.60*zero_RMSE; candidate active-lag magnitude >1.5x inactive-lag magnitude with correct post-B3 hidden lag; B3 B0 historical outcome RMSE <= max(1.2*B0-after-B0 RMSE, B0-after-B0+0.02); zero seed/stage reuse.",
+    "NO_GAIN": "Complete, qualified valid primary where UNMARKED_CREDIT_SUPPORTED not met; freeze negative outcomes and do not reclassify based on observed samples.",
+    "classification_limits": "Even UNMARKED_CREDIT_SUPPORTED proves only source-free synthetic, identifiable, weakly confounded delayed credit with full ordered actions. A tie with exact conventional regression is NOT greater scientific intelligence, nor native Yggdrasil training or unfamiliar causal law transfer."
+  },
+  "execution": {
+    "scope": "GitHub-hosted Ubuntu24.04 and Windows2022 Python3.12 no third-party dependencies; exact source ref, frozen prereg first, G29 atlas source seal required before outcome reads; one frozen first-use per OS; independent cross-OS job; no user-facing file artifacts",
+    "regressions": "Original root full suite; WSP200 & WSP209 full, WSP210 smoke-only, WSP211 exact allowlist, WSP212-216 source-only preflights (NEVER consumed primaries), WSP217 negative/preflight. Prevent inherited WSP216 source-free workflow replay on downstream PR by branch guard on downstream branch only.",
+    "bounds": "No production, original GFP/RESERVED first-use, owner runtime/runner, Amalgam checkpoint, canonical training, merge, accepted main edit, scheduled tasks, paid API or model calls."
+  },
+  "prereg_integrity": "Freeze this exact JSON before implementing/generating the new outcomes. No post-outcome changes to worlds, threshold, eligible metrics, model hyperparameters or controls; record failures with exact SHA and stop rather than replay a consumed cohort."
+}
