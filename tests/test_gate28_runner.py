@@ -32,7 +32,7 @@ class TestGate28Runner(unittest.TestCase):
         self.assertEqual(result["distinct_processes"], 3)
         self.assertFalse(result["primary_scored"])
         self.assertEqual(result["status"], "G28_DIAGNOSTIC_COLD_PROCESS_PASS")
-        self.assertEqual(result["science"], "NOT_RUN_NO_BAYESIAN_OR_CAUSAL_MEDIATOR_CONTROL")
+        self.assertEqual(result["science"], "NOT_RUN_NO_EXHAUSTIVE_BAYESIAN_OR_MATCHED_CAUSAL_CONTROL")
         self.assertLessEqual(result["max_rule_work"], 8192)
         self.assertLessEqual(result["max_checkpoint_bytes"], 16384)
         self.assertNotEqual(result["forced_B_exposure_hash"],

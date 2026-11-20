@@ -16,10 +16,35 @@ import tempfile
 from pathlib import Path
 
 import core
+import bayes
 import world
 
 SELF = Path(__file__).resolve()
 MODES = ("active", "forced")
+MODEL_ARMS = core.ARMS + bayes.ARMS
+# Public, branch-frozen policy seeds, NOT hidden-world generator seeds.
+CORE_POLICY_SEEDS = {arm: 28100 + i * 17 for i, arm in enumerate(core.ARMS)}
+
+
+def _new_model(arm: str) -> dict:
+    return bayes.new(arm) if arm in bayes.ARMS else core.new(CORE_POLICY_SEEDS[arm], arm)
+
+
+def _model(s: dict):
+    return bayes if s["arm"] in bayes.ARMS else core
+
+
+def _observe(s: dict, row, meter: core.Work) -> None:
+    if s["arm"] in bayes.ARMS:
+        bayes.observe(s, row.context, row.intermediates, row.action, row.consequence, meter)
+    else:
+        core.observe(s, row.context, row.action, row.consequence, meter)
+
+
+def _unpack(raw: bytes) -> dict:
+    doc = json.loads(raw)
+    return bayes.unpack(raw) if doc.get("payload", {}).get("schema") == bayes.SCHEMA else core.unpack(raw)
+
 DIAGNOSTIC_MIN = 900000
 DIAGNOSTIC_MAX = 909999
 
@@ -30,7 +55,7 @@ def require_diagnostic(seed: int) -> None:
 
 
 def file_for(root: Path, arm: str, mode: str) -> Path:
-    if arm not in core.ARMS or mode not in MODES:
+    if arm not in MODEL_ARMS or mode not in MODES:
         raise ValueError("INVALID_STATE_KEY")
     return root / (arm + "." + mode + ".json")
 
@@ -41,23 +66,23 @@ def source_readouts(s: dict) -> str:
     data = []
     for mask in (3, 19, 37, 51, 88, 171, 238):
         for action in range(core.N_ACTIONS):
-            data.append(round(core.source_predict(
+            data.append(round(_model(s).source_predict(
                 s, core.as_bits(mask), action, core.Work()), 9))
     return hashlib.sha256(core.canonical(data)).hexdigest()
 
 
 def _update_source(w: world.HiddenWorld, arm: str) -> tuple[dict, dict]:
-    s = core.new(w.seed, arm)
+    s = _new_model(arm)
     worst_work = 0
     for step in range(96):
         row = w.source(step)
         meter = core.Work()
-        core.observe(s, row.context, row.action, row.consequence, meter)
+        _observe(s, row, meter)
         worst_work = max(worst_work, meter.count)
-    core.seal_source(s)
+    _model(s).seal_source(s)
     return s, {"steps": 96, "source_digest": s["source"]["digest"],
                "functional_source": source_readouts(s),
-               "worst_work": worst_work, "state_bytes": len(core.pack(s))}
+               "worst_work": worst_work, "state_bytes": len(_model(s).pack(s))}
 
 
 def _update_shift(w: world.HiddenWorld, phase: str, mode: str,
@@ -73,10 +98,10 @@ def _update_shift(w: world.HiddenWorld, phase: str, mode: str,
         x = w.public_context(phase, step)
         meter = core.Work()
         if mode == "active":
-            action = core.choose(s, x, meter)
+            action = _model(s).choose(s, x, meter)
         else:
             action = w.forced_action(phase, step)
-        forecast = core.predict(s, x, action, meter)
+        forecast = _model(s).predict(s, x, action, meter)
         row = w.feedback(phase, step, action)
         if row.context != x:
             raise ValueError("PREACTION_CONTEXT_PARITY_FAILURE")
@@ -88,7 +113,7 @@ def _update_shift(w: world.HiddenWorld, phase: str, mode: str,
         total_brier += (forecast - row.consequence) ** 2
         exposures.append([list(x), list(row.intermediates),
                           action, row.consequence])
-        core.observe(s, row.context, row.action, row.consequence, meter)
+        _observe(s, row, meter)
         max_work = max(max_work, meter.count)
         total_work += meter.count
     preheld_step = s["step"]
@@ -97,8 +122,8 @@ def _update_shift(w: world.HiddenWorld, phase: str, mode: str,
     for query in range(32):
         x = w.held_context(phase, query)
         meter = core.Work()
-        a = core.choose(s, x, meter)
-        pred = core.predict(s, x, a, meter)
+        a = _model(s).choose(s, x, meter)
+        pred = _model(s).predict(s, x, a, meter)
         outcome = w.held_query(phase, query, a)
         if outcome.context != x:
             raise ValueError("HELD_CONTEXT_PARITY_FAILURE")
@@ -121,7 +146,7 @@ def _update_shift(w: world.HiddenWorld, phase: str, mode: str,
              "max_work": max_work, "total_work": total_work,
              "source_digest": s["source"]["digest"],
              "functional_source": source_readouts(s),
-             "state_bytes": len(core.pack(s)),
+             "state_bytes": len(_model(s).pack(s)),
              "model_step": s["step"],
              "edits": s["edits"], "attempts": s["attempts"]}
     return s, stats
@@ -133,18 +158,18 @@ def _child(root: Path, seed: int, phase: str) -> dict:
         raise ValueError("INVALID_STAGE_OR_ROOT")
     w = world.HiddenWorld(seed, diagnostic=True)
     metrics = {}
-    for arm in core.ARMS:
+    for arm in MODEL_ARMS:
         if phase == "A":
             s, source = _update_source(w, arm)
             for mode in MODES:
-                file_for(root, arm, mode).write_bytes(core.pack(s))
+                file_for(root, arm, mode).write_bytes(_model(s).pack(s))
                 metrics[arm + "." + mode] = source
             continue
         for mode in MODES:
             target = file_for(root, arm, mode)
             if not target.is_file():
                 raise ValueError("MISSING_COLD_CHECKPOINT")
-            s = core.unpack(target.read_bytes())
+            s = _unpack(target.read_bytes())
             expected_step = 96 if phase == "B" else 160
             if s["step"] != expected_step:
                 raise ValueError("COLD_STAGE_ORDER_OR_REPLAY")
@@ -154,7 +179,7 @@ def _child(root: Path, seed: int, phase: str) -> dict:
             if (old_source != s["source"]["digest"] or
                     old_function != source_readouts(s)):
                 raise ValueError("SOURCE_CAPABILITY_NOT_PRESERVED")
-            target.write_bytes(core.pack(s))
+            target.write_bytes(_model(s).pack(s))
             metrics[arm + "." + mode] = stats
     if phase in ("B", "R"):
         forced_digests = {metrics[arm + ".forced"]["exposure_sha256"]
@@ -183,7 +208,7 @@ def diagnostic(seed: int = 900007) -> dict:
         pids = [stage["pid"] for stage in stages]
         if len(set(pids)) != 3:
             raise ValueError("NOT_TRUE_PROCESS_EXIT_RESTORE")
-        for arm in core.ARMS:
+        for arm in MODEL_ARMS:
             for mode in MODES:
                 key = arm + "." + mode
                 source = stages[0]["metrics"][key]
@@ -195,23 +220,23 @@ def diagnostic(seed: int = 900007) -> dict:
                     if obs["max_work"] > core.MAX_RULE_EVALS or (
                             obs["state_bytes"] > core.MAX_STATE_BYTES):
                         raise ValueError("BOUNDED_RESOURCE_FAIL")
-                cold = core.unpack(file_for(root, arm, mode).read_bytes())
+                cold = _unpack(file_for(root, arm, mode).read_bytes())
                 if cold["step"] != 224:
                     raise ValueError("FINAL_STATE_INCOMPLETE")
         return {"status": "G28_DIAGNOSTIC_COLD_PROCESS_PASS",
                 "seed": seed, "primary_scored": False,
                 "stages": [s["phase"] for s in stages],
                 "distinct_processes": len(set(pids)),
-                "arms": list(core.ARMS), "modes": list(MODES),
+                "arms": list(MODEL_ARMS), "modes": list(MODES),
                 "forced_B_exposure_hash": stages[1]["metrics"]["fixed.forced"]["exposure_sha256"],
                 "forced_R_exposure_hash": stages[2]["metrics"]["fixed.forced"]["exposure_sha256"],
                 "max_rule_work": max(s["metrics"][a + "." + m].get(
                     "max_work", s["metrics"][a + "." + m].get("worst_work", 0))
-                    for s in stages for a in core.ARMS for m in MODES),
+                    for s in stages for a in MODEL_ARMS for m in MODES),
                 "max_checkpoint_bytes": max(
                     s["metrics"][a + "." + m]["state_bytes"]
-                    for s in stages for a in core.ARMS for m in MODES),
-                "science": "NOT_RUN_NO_BAYESIAN_OR_CAUSAL_MEDIATOR_CONTROL"}
+                    for s in stages for a in MODEL_ARMS for m in MODES),
+                "science": "NOT_RUN_NO_EXHAUSTIVE_BAYESIAN_OR_MATCHED_CAUSAL_CONTROL"}
 
 
 def main() -> None:
