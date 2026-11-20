@@ -1,0 +1,126 @@
+{
+  "schema": "yggdrasil.know38.buffer-before-write-regime-memory-prereg.v1",
+  "name": "KNOW38",
+  "date": "2026-11-20",
+  "scope": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1327,
+    "starting_head": "88b10a440a2f3c23e6e26f744c141588e8743ef5",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "canonical_learner_owner": "Amalgam PR #1278",
+    "source_owner_issue": 426,
+    "protected_new_original_world_first_use": false,
+    "native_model_changed": false,
+    "merge": false,
+    "runner_or_controller_changes": false,
+    "schedule": false,
+    "paid_api": false,
+    "deployment": "NONE"
+  },
+  "question": "Does a quarantine buffer that decides the causal regime BEFORE committing consequences to a separate persistent head outperform fully fitted online HMM on noisy recurring A/B laws, without corrupting B through A return?",
+  "mechanism": {
+    "style": "tokenless independent local two-bank change-point staging, fixed pairwise batches, no hidden phase labels",
+    "physical_cells": 8,
+    "adjacent_pair_groups": 4,
+    "banks_per_cell": 2,
+    "beta_prior": "Beta(1,1)",
+    "per_cell_bank_max_observations": 6,
+    "buffer": "Exactly 8 observations per adjacent pair, with local (x,y) tuples and no long-term head writes while the group buffer is uncommitted; each decision at the eighth witnessed event uses only that buffer.",
+    "initial_training": "Start active bank0; if bank0 any physical input in the pair has seen <6, commit buffered observations to bank0 directly, capped at 6 per x. Later only after buffer classification and never before; 64 A prefix exposes each x eight times so bank0 completed.",
+    "candidate_score": "For each buffered (x,y), add clamp(log[P(y|other bank,x)/P(y|active bank,x)],-3,+3), with other bank prior Beta(1,1) when untrained; use probabilities before replaying buffered samples.",
+    "candidate_switch": "Switch at decision boundary when at least 4 of 8 terms positive and sum >=3.0; otherwise retain active bank. Cannot switch more than once per group buffer. Clear buffer after decision, replay all 8 into selected bank only, capped 6 observations per bank,x.",
+    "memory_protection": "No long-term writes to either memory between decision boundaries; inactive bank never receives the current group's buffered observations; false confidence changes forecasts but cannot partially corrupt inactive bank before decision.",
+    "checkpoint": "canonical JSON, digest verified, <=4096 bytes, exact readout and buffer state cold return at t64,128,192,256",
+    "known_risk": "The 8-event fixed staging window can delay adaptation or miss minor subgroup changes. No phase-conditioned thresholds."
+  },
+  "controls": {
+    "hmm": "Exact prior KNOW36 conventional fitted online two-head global HMM as Comparator('hmm'), hazard FIT-selected from [1/128,1/32,1/8], no true phase labels.",
+    "random": "Identical staged local two-bank Beta memory and 8-event buffer slots, but on each 8-event boundary change bank only if SHA256('know38:random:v1:{group}:{events}') first 8 bytes mod 32 ==0; independent of consequence, law and seed; commit batch to selected bank.",
+    "no_quarantine": "Same model structure but a copy of the unchanged KNOW37 accumulated gate operates event-by-event with immediate memory writes rather than staging, same source.",
+    "no_switch": "Identical staged/bank state but never switches, 8-event buffer committed to active bank only.",
+    "rolling": "Unchanged KNOW36 last-8 causal memory per cell",
+    "fairness": "All methods see exactly same 256 public t,x,y treatment and sham events, same action/observation information; report bytes and operation times. HMM has global state and differing compute, so no equal-cost win without direct evidence."
+  },
+  "source": {
+    "type": "new synthetic noise only, not original CausalGym, no reuse of KNOW34/36/37 FIT/HELD",
+    "private_domain": "know38:synthetic:noise:v1:{seed}:{t}:{law}",
+    "laws": "same fixed A,B1,B2 private_law_bit logic as KNOW36/37, not modified after prereg",
+    "p_bit1": 0.85,
+    "p_bit0": 0.15,
+    "public": "c=t%8; a=(t//8)%2; x=c XOR (a<<1), repeated all 16 public action/context pairs in every 16 events and each physical x twice",
+    "phases": "A(64), B1 or B2(64), A(64), repeat B(64); additionally sham A(256) forks from same A(64) prefix",
+    "fit": {
+      "B1": [
+        27101,
+        27103,
+        27109,
+        27127,
+        27143,
+        27179
+      ],
+      "B2": [
+        27211,
+        27217,
+        27241,
+        27253,
+        27277,
+        27299
+      ]
+    },
+    "held": {
+      "B1": [
+        27307,
+        27313,
+        27329,
+        27331,
+        27361,
+        27367,
+        27397,
+        27409,
+        27427,
+        27449,
+        27457,
+        27479
+      ],
+      "B2": [
+        27509,
+        27527,
+        27539,
+        27541,
+        27551,
+        27581,
+        27611,
+        27617,
+        27631,
+        27647,
+        27653,
+        27673
+      ]
+    },
+    "fit_worlds": 12,
+    "held_worlds": 24,
+    "fit_source_events": 3072,
+    "held_unique_source_events": 9216,
+    "held_source_events_per_world": 384,
+    "model_occurrences_per_held_world_per_arm": 448,
+    "model_occurrences_per_arm_held_total": 10752,
+    "private_to_evaluator_only": "true law, q, private seed, future y and phase; models get exactly t,x,y only",
+    "first_use": "One source-only first-attempt CI run after both OS focused, sealed G29 atlas, mandatory full OS regressions, original-source read-only compatibility; never FIT/HELD sources in tests. A pre-source pin failure does not open data; all executed/uncertain opening counts consume trial; never replay."
+  },
+  "scoring": {
+    "method": "expected prequential Brier=q*(1-q)+(p-q)^2, q only scorer sees, pre-update prediction",
+    "primary": "second B phase t192:256 expected Brier per B1 and B2, mean over 12 held worlds each",
+    "secondary": "first B, return A, false sham switches, cold both bank retention, exact source counts and support, checkpoint bytes, methods' cost"
+  },
+  "frozen": {
+    "P0": "12 FIT +24 disjoint HELD, exact 3072 +9216 novel source requests, exact 10752 model event occurrences per arm, public 16 pair support, no data leaks, cold checks.",
+    "P1": "held A-prefix expected Brier <=0.23 separately B1/B2",
+    "H1": "candidate second B mean Brier at least 0.005 lower than FIT HMM in BOTH families, with at least 9/12 paired wins per family",
+    "H2": "candidate second B mean Brier at least 0.005 lower than random and no_switch and no_quarantine in BOTH families",
+    "H3": "candidate A-return Brier <= FIT HMM+0.005 in BOTH families",
+    "H4": "A bank t64 survives byte-identical through t192 and B bank t128 survives byte-identical through t192, all 24 HELD worlds; exact full-state cold restore at phase boundaries",
+    "H5": "A-only sham false switch in <=2/24 worlds, checkpoint <=4096 bytes for all 24",
+    "decision": "DEVELOPMENT_SUPPORTED only if P0,P1,H1,H2,H3,H4,H5 all pass; else DEVELOPMENT_MIXED_OR_NO_GO. SCIENTIFIC_PASS always false: synthetic source not independent native reproduction.",
+    "stop": "Reject on negative; never tune or rerun held, never use source #426, modify accepted weights, merge, create controller, or invoke live owner. Preserve negative and call-cost details."
+  }
+}
