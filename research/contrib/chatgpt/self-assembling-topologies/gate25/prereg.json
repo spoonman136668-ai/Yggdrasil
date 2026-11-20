@@ -1,0 +1,116 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "GATE25-DISJOINT-CAUSAL-INTERVENTION-TRANSFER-20261120",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "2a42430cecc25d4fea84034cf9a31d0bc1dc0715",
+  "question": "Does online local graph rewiring learn unfamiliar action-conditioned and delayed causal transitions and retain an earlier graph on return better than independently fitted static recency, Bayesian hazard, and source controls under equal observed interventions and bounded persistent state?",
+  "hypothesis": "A bounded local transition graph with immutable source graph and prequential source-vs-local blending provides faster unfamiliar-world intervention prediction and cold return than strong globally refit/Bayesian controls, while avoiding structure fitting in noise/stationary worlds.",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1340",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44793397558"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate25/*",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "new synthetic interactive transition worlds",
+      "source": "original deterministic code frozen in run.cjs before first outcome; four never-used seed cohorts",
+      "license": "original research implementation",
+      "sha256": "provenance to identify exact source blob after frozen commit"
+    }
+  ],
+  "frozen_design": {
+    "seed_cohorts": [
+      [
+        "immediate",
+        201000,
+        24
+      ],
+      [
+        "delayed",
+        202000,
+        24
+      ],
+      [
+        "stationary",
+        203000,
+        24
+      ],
+      [
+        "pure_noise",
+        204000,
+        24
+      ]
+    ],
+    "total_trials": 96,
+    "worlds": "Eight observable binary state sensors; actions 0..3; two next-state consequence sensors j=0,1; six other state sensors updated deterministically. Predictor sees 8 current state bits plus current action 2 bits and last action 2 bits, not hidden causal parents or next outcome. Two output bits depend on two hidden parent sensors and immediate or last action. Source A, changed B then return A; stationary and noise controls never have a true causal change.",
+    "episodes": "A64 source transition events; B48 and A-return48 sequential intervention events. Action policy is deterministic seeded balanced exploratory, independent of learner/true parents. No learner can see phase boundary. At each phase end 16 disjoint from fit held intervention probes generated with domain-separated seed/initial state, never observed by learners.",
+    "split": "Study predictions before the actual transition and score two output bits; observed transition only after each action is selected. B/R held probes never used in update. Full action vectors/sensor patterns can reappear, but held episode histories do not.",
+    "budget": "A64 + 96 B/R online transitions, 3 bytes each (12-bit input and two-bit outcome): 480 evidence bytes plus under 32 metadata <=512 persisted bytes per local arm. Same visible data/actions for all controls. Causal input universe has twelve binary features, 1-3 parent subsets.",
+    "compute": "At most one local 1-edge graph edit per outcome sensor at each eight transition window; independent exhaustive recent-global control and Bayesian hazard have same evidence but potentially greater compute. Report number of mask evaluations and do not claim compute, FLOPs or energy matched.",
+    "cold": "In-process serialize/recover at B48 and R72 and check identical bytes and every future prediction; process-exit durable checkpoint/owner-native retention separately UNVERIFIED.",
+    "initialization": "Select original A graph by penalized leave-one-out Brier on A64. Freeze source A64 counters/graph. Local active graph begins from A; recent32 B/R labeled transitions only for local graph fitting. Preserve source byte-for-byte.",
+    "predictor": "Per consequent bit, conditional Bernoulli Laplace counts on chosen parent mask, probability clipped to [.05,.95]. Local B/R prediction is soft blend of immutable A and recent32 local graph with 16-feedback prequential likelihood log odds. Source reliability abstention if A source LOO Brier >.20 (predict .5; no rewires). Graph local neighbor candidates add/delete/swap at most one edge per output every eight events; min leave-one-out improvement .006 plus 0.003*2^k complexity penalty.",
+    "controls": [
+      "source-only A fixed",
+      "independent globally refit recent32 graph every8",
+      "all-history globally fit graph every8",
+      "Bayesian source-versus-recent hazard mixture with hazard=1/64, using recent32 global predictor",
+      "0.5 null",
+      "local graph without source retention ablation"
+    ],
+    "negative_controls": [
+      "stationary world with no switch",
+      "independent action- and state-agnostic noise outcome world"
+    ],
+    "metric": "Related immediate+delayed 48-seed mean paired B and R prequential Brier and phase-held probes; normal 95% CIs, false edit rates on negatives, cold exact readout, source byte invariance, mask counts, compute."
+  },
+  "frozen_thresholds": {
+    "B_prequential_gain_vs_recent_global_min": 0.01,
+    "B_prequential_gain_vs_recent_global_ci_lower_positive": true,
+    "B_prequential_gain_vs_hazard_min": 0.005,
+    "B_prequential_gain_vs_hazard_ci_lower_positive": true,
+    "R_held_gain_vs_recent_global_min": 0.01,
+    "R_held_gain_vs_recent_global_ci_lower_positive": true,
+    "R_held_gain_vs_hazard_min": 0.005,
+    "R_held_gain_vs_hazard_ci_lower_positive": true,
+    "R_held_gain_vs_source_only_min": 0.005,
+    "stationary_unnecessary_edit_trial_fraction_max": 0.2,
+    "noise_unnecessary_edit_trial_fraction_max": 0.2,
+    "noise_held_Brier_regression_vs_null_max": 0.025,
+    "B_prequential_gain_vs_no_retention_ablation_min": 0.005,
+    "all_source_immutable": true,
+    "all_phase_held_outcomes_excluded": true,
+    "all_exact_512byte_cold_replays": true,
+    "all_action_policy_world_independent": true,
+    "all_comparator_work_counts_finite": true
+  },
+  "classification_rules": {
+    "supported": "All 18 primary thresholds PASS, independent process cold reuse and native transfer remain separately unverified; only limited synthetic development signal.",
+    "negative": "Any criterion fails => scientific NO-GO with all failed conditions preserved.",
+    "invalid": "Primary source not frozen before scoring, true phase/causal parents leaked, held outcome used in fit, unequal observed actions, post-result tuning, source/checkpoint custody failure."
+  },
+  "prohibited_after_primary_run": [
+    "seed or threshold changes",
+    "train on held probes",
+    "post-result model selection",
+    "promote native model",
+    "merge draft without independent authorization"
+  ],
+  "authority": {
+    "research_only": true,
+    "keep_existing_PR_draft": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "scheduler_or_queue_authority": false,
+    "native_first_use": false,
+    "promotion_authority": false
+  }
+}
