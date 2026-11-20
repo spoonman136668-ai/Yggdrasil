@@ -1,0 +1,118 @@
+{
+  "schema": "yggdrasil.know37.accumulated-local-evidence-hysteresis-prereg.v1",
+  "experiment": "KNOW37",
+  "preregistered": "2026-11-20",
+  "authority": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "pr": 1327,
+    "base_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "research_parent": "c7f0ec8e979853be7ba49ffe622070d4a2da76aa",
+    "canonical_owner": "Unified Causal Intelligence Amalgam PR #1278",
+    "protected_original_world_426": false,
+    "native_training": false,
+    "no_merge": true,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false
+  },
+  "hypothesis": "Accumulating contradictory local evidence over multiple witnessed consequences with hysteresis and inactive-bank preservation reduces noisy false switching while retaining causal B on recurrence. Must beat fit-selected fully online HMM, not just old KNOW36.",
+  "source": {
+    "type": "disjoint_new_synthetic_bernoulli_only",
+    "private_domain": "know37:synthetic:noise:v1:{seed}:{t}:{law}",
+    "law_bits": "reuse fixed KNOW36 A/B1/B2 Boolean laws",
+    "p_true": 0.85,
+    "p_false": 0.15,
+    "public_tape": "x=(t%8) XOR ((((t//8)%2))<<1); 16 (context,action) each block and x visits twice",
+    "phases": "A[0,64) B[64,128) A[128,192) B[192,256); A-only sham counterpart",
+    "fit": {
+      "B1": [
+        24803,
+        24809,
+        24821,
+        24827,
+        24833,
+        24847
+      ],
+      "B2": [
+        24901,
+        24907,
+        24917,
+        24929,
+        24943,
+        24953
+      ]
+    },
+    "held": {
+      "B1": [
+        25013,
+        25019,
+        25031,
+        25037,
+        25049,
+        25057,
+        25073,
+        25087,
+        25097,
+        25111,
+        25121,
+        25127
+      ],
+      "B2": [
+        25201,
+        25211,
+        25217,
+        25229,
+        25237,
+        25243,
+        25253,
+        25261,
+        25279,
+        25289,
+        25303,
+        25309
+      ]
+    },
+    "fit_worlds": 12,
+    "held_worlds": 24,
+    "fit_unique_events": 3072,
+    "held_unique_events": 9216,
+    "held_unique_per_world": 384,
+    "held_per_method_model_events": 10752,
+    "action_information_fairness": "all arms see only t,x,y; no law/phase/seed/score; equal observed trajectories and action counts",
+    "first_use": "One synthetic source-only held first use strictly AFTER focused dual-OS, atlas, full-final dual-OS, historical compatibility, exact Git blob checks; never local unit tests. No rerun if uncertain/consumed."
+  },
+  "mechanism": {
+    "cells": 8,
+    "groups": 4,
+    "adjacent_groups": "(0,1),(2,3),(4,5),(6,7)",
+    "banks": 2,
+    "bank_betas": "Beta(1,1) initialized, update ACTIVE bank only from actual consequences; max 6 updates/cell/bank; frozen after 6; inactive never receives writes",
+    "evidence": "per group six most recent observed log[p(y|OTHER cell's Beta)/p(y|ACTIVE cell's Beta)] terms, append after observed y; log ratios clamped to [-3,+3] per witness; other bank initially uninformed Beta(1,1)",
+    "switch": "when group has >=3 of last six log-ratio terms >0 and sum of six terms >=4.0, AND 6 observed group events since previous switch; require active bank has >=6 updates on observed x before evaluating evidence; after switch clear evidence and set cooldown to six observed pair events",
+    "readout": "current active bank per adjacent pair, no phase/global regime oracle",
+    "checkpoint": "canonical JSON checksum; <=4096 bytes; cold readout preservation at t64/128/192/256"
+  },
+  "controls": {
+    "hmm": "Unmodified KNOW36 Comparator('hmm'), 16 continuous Beta heads with global 2-state Markov posterior; hazard chosen once from {1/128,1/32,1/8} on separate FIT seeds using mean t64..255 expected prequential Brier",
+    "random": "same candidate two-bank slots and evidence-ring checkpoint budget; replace threshold gate with seed- and law-blind SHA256(t,x) mod 32 ==0 after active six x samples, with 6 pair-observation cooldown",
+    "no_switch": "same candidate state but never change active bank; contrasts added bank/storage versus actually retrieving it",
+    "legacy": "unchanged original KNOW35 TwoBankCells, no retune, plus conventional rolling last8",
+    "cost": "Report per-method checkpoint bytes, observation cost and historical-source compatibility; storage/compute not exactly equal across HMM; do not claim fair efficiency win without matched operations."
+  },
+  "metrics": {
+    "score": "Expected prequential Brier = q*(1-q)+(p-q)^2 for witnessed x, q scoring-only, pre-update; smaller better",
+    "primary": "B recurrence t192..255 cohort mean and per-world wins candidate versus FIT-selected HMM and matched random; B1/B2 independently",
+    "additional": "B first, A return, A-prefix, both bank bytes/readout retention, sham false switches, source events, cold rehydration, state bytes, observations costs"
+  },
+  "frozen_hypotheses": {
+    "P0": "Exact source/arm counts, FIT/HELD disjoint, all public 16 pairs and 8 x every 16, first-use and cold checks pass",
+    "P1": "A-prefix Brier <=0.23 for each held B1/B2 cohort (genuine learning)",
+    "H1": "Candidate B recurrence mean Brier <= FIT HMM -0.005 in BOTH B cohorts, and >=9/12 paired wins separately each",
+    "H2": "Candidate B recurrence mean Brier <= matched random -0.005 and <= no_switch -0.005 in BOTH cohorts",
+    "H3": "A-return mean Brier candidate <= FIT HMM+0.005 in BOTH cohorts",
+    "H4": "Old A bank at t64 byte-stable through t192 for all 24 worlds AND learned B bank at t128 byte-stable through t192 for all 24; functional cold restore at all boundaries",
+    "H5": "A-only sham has <=2/24 worlds with any false bank switches and all candidate checkpoints <=4096 bytes",
+    "decision": "DEVELOPMENT_SUPPORTED iff P0,P1,H1,H2,H3,H4,H5 all true, else DEVELOPMENT_MIXED_OR_NO_GO; SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE always; no accepted model promotion",
+    "stops": "Reject/restrain mechanism on frozen negative. No post-result threshold changes, no seed replacement, no outcome-peeking, no replay of consumed KNOW36/KNOW37. Protected original-world and native checkpoint unchanged."
+  }
+}
