@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.external-research-analytic-prereg.v1",
+  "experiment_id": "ENERGY-REMAP-GATE-12",
+  "date": "2026-11-20",
+  "focus": "Prove or refute that the existing ENERGY-REMAP-11 candidate's Bayesian hard-reset gate can ever fire under its frozen per-row sample quota.",
+  "exact_parent_pr_head": "01cb11ddca9be01daac4310e92c3b9c7dc2c153a",
+  "frozen_source_commit": "ab203a45bd1e42a11a043055e4541d26e1676ced",
+  "frozen_source_blob_sha1": "8a5fbfa908edad48bb23804517c06bb645b5fda8",
+  "frozen_result_commit": "43947609fc4ef7c8a7aff668d71704854a89d1b4",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "variables": {
+    "classes": 6,
+    "dirichlet_alpha": "1/2",
+    "old_row_observations": 6,
+    "new_row_observations": 2,
+    "prior_reset": "1/4",
+    "prior_stay": "3/4",
+    "hard_reset_threshold": "4/5"
+  },
+  "original_code_identity": "marginalMapRows computes stay=logDM(new_count, old_count+0.5), reset=logDM(new_count,0.5), resetProb = exp(log(.25)+reset - logsumexp(log(.75)+stay, log(.25)+reset)); candidate uses flag=resetProb>=.8.",
+  "hypothesis": "With six OLD categorical observations and two NEW categorical observations per row, the maximum possible Bayes factor in favor of a new-row reset versus a pooled-row prediction is 15/2=7.5, so the maximum posterior reset probability with prior reset=1/4 is 5/7<4/5; hence the proposed hard reset is mathematically impossible for every world and mapping, not only the 36 observed worlds.",
+  "method": "Use exact integer arithmetic and enumerative counts over all C(11,5)=462 nonnegative OLD count vectors summing to 6, each paired with all C(7,5)=21 two-observation NEW count vectors. Compute exact reset/stay likelihood ratio separately for repeated and distinct observed target categories. Independently verify closed-form inequality and posterior threshold. No RNG, original seed or experimental run.",
+  "exact_formula": {
+    "distinct_new_labels": "BF = (15/2)/[(2*c_i+1)*(2*c_j+1)]",
+    "repeated_new_label": "BF = (45/2)/[(2*c_i+1)*(2*c_i+3)]",
+    "posterior": "P(reset | observations)=BF/(BF+3)",
+    "trigger_condition": "P>=4/5 implies BF>=12",
+    "expected_maximum": "BF<=15/2; P<=5/7",
+    "tuples": "462*21 = 9702 exhaustive old/new row count possibilities"
+  },
+  "control": "Analytic bound must agree with exhaustive integer enumeration, old/new mass conservation counts, and the frozen earlier result candidate_changed==0 in all 36 worlds (audit file readback only, no original source execution).",
+  "acceptance": {
+    "pass": "Exact enumeration yields max Bayes factor 15/2 and max reset posterior 5/7; all 9702 cases have reset posterior<4/5; there is at least one attainable max case; original recorded worlds have candidate_changed==0; frozen source and result identities checked.",
+    "invalid": "Any prior/quota/source mismatch, algebra disagreement, frozen original result changed or original primary seeds replayed.",
+    "impact": "Falsifies scientific interpretation of a functioning adaptive local repair in ENERGY-REMAP-11. A baseline equivalent to MAP pooled is expected. No scientific gain by this proof itself."
+  },
+  "authority": {
+    "research_only": true,
+    "main_mutation": false,
+    "owner_amalgam_PR": 1278,
+    "model_training": false,
+    "original_seed_replay": false,
+    "runner_or_scheduler": false
+  },
+  "sequence": "Commit prereg first, then executable certificate source, byte-for-byte GitHub readback, one deterministic enumeration, result and read-only audit on same draft PR #1346. Do not mutate prior prereg/source/results."
+}
