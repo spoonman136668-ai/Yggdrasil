@@ -12,6 +12,8 @@ permissions:
 
 jobs:
   exact_source_os:
+    # Downstream source atlas changes must never replay consumed WSP216 science.
+    if: github.event.pull_request.head.ref == 'research/wsp216-interventional-credit-20261120'
     name: WSP216 Python3.12 / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
