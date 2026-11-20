@@ -1,0 +1,148 @@
+{
+  "schema": "yggdrasil.know22.posterior-memory-readout-isolation-frozen-dev.v1",
+  "date": "2026-11-20",
+  "experiment_id": "KNOW22",
+  "question": "Holding the original TGAP21 two-slot storage, surprise-admission and witnessed updates byte-identical, does a posterior mixture over both slots improve same-address A/B/A transferred-state prediction under new hidden switch schedules?",
+  "authority": "Independent contributor only, existing PR #1327, Amalgam #1278 sole owner; synthetic engineering_fixture_only; issue #426 first-use blocked; no checkpoint/accepted model/owner/runner/controller/merge/deploy changes.",
+  "prior": {
+    "parent_head": "b202a0a98705eb105b4c61a4f318226cbaf13062",
+    "reference_preregister": "9b4eefddad364bc416511bba2a783401f1413b55",
+    "reference_module": "research/contrib/chatgpt/YGG-KNOW01/tgap21_same_address_dev.py",
+    "reference_model": "TwoSlotMemory",
+    "reference_training": "fit_memory 72 witnesses, A(0-23),B(24-47),A(48-71) seed7501 role0, action step%2",
+    "reference_result": "TGAP21 FIT two-slot harm +0.01085743 Brier vs no-FIT and 2/2 old slot forecasts drifted; KNOW21 return memory lost to rolling."
+  },
+  "data": {
+    "source": "source-free synthetic Bernoulli using unchanged tgap21 witness function (p=.8 best, .2 wrong), independent SHA256 private noise, same action schedule step%2; hidden role/switches/noise never supplied to policy",
+    "fit": {
+      "seed": 7501,
+      "role": 0,
+      "switches": [
+        24,
+        48
+      ],
+      "steps": 72
+    },
+    "held": [
+      {
+        "seed": 8901,
+        "role": 0,
+        "switches": [
+          12,
+          36
+        ]
+      },
+      {
+        "seed": 8903,
+        "role": 1,
+        "switches": [
+          12,
+          36
+        ]
+      },
+      {
+        "seed": 8911,
+        "role": 0,
+        "switches": [
+          20,
+          44
+        ]
+      },
+      {
+        "seed": 8917,
+        "role": 1,
+        "switches": [
+          20,
+          44
+        ]
+      },
+      {
+        "seed": 8923,
+        "role": 0,
+        "switches": [
+          9,
+          33
+        ]
+      },
+      {
+        "seed": 8929,
+        "role": 1,
+        "switches": [
+          9,
+          33
+        ]
+      },
+      {
+        "seed": 8933,
+        "role": 0,
+        "switches": [
+          24,
+          48
+        ]
+      },
+      {
+        "seed": 8941,
+        "role": 1,
+        "switches": [
+          24,
+          48
+        ]
+      }
+    ],
+    "public_scene": "ONE same address for all FIT/HELD updates; address reveals no hidden role/schedule; no data source novelty or unfamiliar grammar",
+    "budget": {
+      "fit_witnesses": 72,
+      "held_worlds": 8,
+      "steps_per_world": 64,
+      "held_actions_per_policy": 512,
+      "return_only_actions_per_policy": 190
+    }
+  },
+  "candidate": {
+    "model": "posterior_readout_fit",
+    "storage": "Copy identical trained TGAP21 TwoSlotMemory per held world via new_public_world(), keep its original observe(), anomaly detector, slot counts and transitions IDENTICAL to baseline",
+    "selection": "At held-world start posterior prior P(slot1)=0.5. Before witness, form two frozen Beta slot predictions for current public action, and emit mixture q=(1-p)*q_slot0+p*q_slot1; baseline emits original active-slot Beta. After witness, update posterior with Bernoulli likelihood of witnessed reward under the TWO PRE-UPDATE slot probabilities, then apply symmetric hazard h=1/16 to posterior for next step. Keep posterior bounded and private evaluator truth inaccessible; no tuning or hidden regime hints.",
+    "slot_count": 2,
+    "hazard": "1/16 fixed before scoring, structurally informed assumption; disclose and compare prior-equivalent information",
+    "no_fit": "identical posterior selector and empty untrained TwoSlotMemory, separate arm; training effect shown even if harmful",
+    "cold": "original TGAP21 checkpoint hash-pinned cold restore identical; posterior state fixed 0.5 at public new-world reset; per step counters and immutable-source contracts enforced"
+  },
+  "controls": [
+    "surprise_gate_fit: original TwoSlotMemory predict/observe unchanged and fully FIT",
+    "posterior_readout_no_fit: selector with unfitted original memory",
+    "stationary_fit: TGAP21 StationaryBeta FIT 72 witnesses",
+    "rolling_8_fit: TGAP21 RollingBeta FIT 72 witnesses",
+    "gated_reset_fit: TGAP21 ResetBeta FIT 72 witnesses",
+    "bayesian_hmm_fit: TGAP21 model-informed HMM FIT 72, prior p=.8/.2 plus hazard 1/16 is extra structural information",
+    "source_only: 0.5 uninformed",
+    "oracle: evaluator-only optional, never count as matched control"
+  ],
+  "primary": "mean prequential held Brier over exactly 512 forecasts per policy, forecast before observing one common action/reward witness each time; lower better",
+  "secondary": [
+    "mean return Brier over exactly 190 forecasts",
+    "FIT versus no-FIT harmful or beneficial transfer",
+    "per-schedule and hidden-role outcomes",
+    "old A-slot pre-B and post-B readout drift, original gate and posterior mix have identical storage",
+    "immutable original TGAP21 checkpoint digests and 8 cold roundtrips",
+    "whole-process Python wall time and retained checkpoint bytes, clearly not cross-hardware speed claims"
+  ],
+  "hypotheses": {
+    "h1": "posterior_readout_fit must beat surprise_gate_fit by >=0.01000 Brier across all 512 held forecasts",
+    "h2": "posterior_readout_fit must beat surprise_gate_fit by >=0.01000 return-only Brier across 190 forecasts",
+    "h3": "posterior_readout_fit must be no worse than fully fitted rolling_8_fit on overall held Brier",
+    "classification": "READOUT_SUPPORTED_DEV only if H1,H2,H3 all true; MIXED if at least one true; READOUT_NO_GO if none; report each predicate independently; no population-significance claim for eight worlds"
+  },
+  "engineering": [
+    "same one witnessed action/result per step for every predictor",
+    "baseline and posterior candidate underlying TwoSlotMemory bytes identical after every update",
+    "private truth evaluator-only and fixed-paired seeds/schedules enforced",
+    "cold reproducibility, forbidden source-mode, replay/idempotence, duplicate JSON, malformed state negatives",
+    "existing six-job Linux/Windows focused+atlas+mandatory full final+archived-source compatibility must pass on exact candidate SHA"
+  ],
+  "science": "Regardless of synthetic result, SCIENTIFIC_NO_GO/UNVERIFIED. Canonical gain requires owner-qualified genuine native learner with independently admitted new sources, matched trained conventional strongest controls, cold retention, unfamiliar mechanisms and measured whole-process cost.",
+  "prohibitions": [
+    "No replay of KNOW20, KNOW21 or TGAP21 scored held worlds",
+    "No post-result seed/threshold/hazard/schedule/method changes",
+    "No model adoption, merge, promotion, owner runner/queue/scheduler, source first use, paid API, controller or deployment"
+  ]
+}
