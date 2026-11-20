@@ -1,0 +1,139 @@
+{
+  "schema": "yggdrasil.tgap23.nonprivileged-write-protection-factorial-frozen-dev.v1",
+  "date": "2026-11-20",
+  "scope": "Independent source-free contributor on existing Yggdrasil PR #1327; Amalgam PR #1278 alone owns canonical cumulative model and integration; original first-use issue #426 not authorized",
+  "predecessor": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "tgap22_frozen_commit": "0201c733501b8dfe20e6f1e07ea016542814928a",
+    "tgap22_qualified_run": 44727390856,
+    "know22_qualified_run": 44727887779,
+    "original_two_slot_source_blob": "3cd811e61242413d3951cd90caac00f4cfe35210"
+  },
+  "question": "Can a non-privileged confidence-locked write-admission rule protect earlier A slot readouts through changed B and improve prospective causal outcome forecasts; isolate write changes from a readout-only posterior mix with an exact 2×2 factorial.",
+  "world": {
+    "private_truth": "For each world, best arm = initial private role in A and return A, opposite role in B, Bernoulli 0.8 best and 0.2 otherwise; exogenous noise from existing TGAP21 SHA256 private domain. No hidden role, first/second switch, private coin or all-world teacher supplied to any candidate or matched ordinary control.",
+    "public": "ONE address, step index and fixed action t%2, one witnessed binary outcome per step. Per-world public episode reset allowed, no hidden-world-specific learned lookup.",
+    "fit": {
+      "seed": 9501,
+      "role": 0,
+      "first": 24,
+      "second": 48,
+      "steps": 72
+    },
+    "held": [
+      {
+        "seed": 9601,
+        "role": 0,
+        "first": 12,
+        "second": 36
+      },
+      {
+        "seed": 9607,
+        "role": 1,
+        "first": 12,
+        "second": 36
+      },
+      {
+        "seed": 9613,
+        "role": 0,
+        "first": 17,
+        "second": 41
+      },
+      {
+        "seed": 9623,
+        "role": 1,
+        "first": 17,
+        "second": 41
+      },
+      {
+        "seed": 9631,
+        "role": 0,
+        "first": 21,
+        "second": 45
+      },
+      {
+        "seed": 9643,
+        "role": 1,
+        "first": 21,
+        "second": 45
+      },
+      {
+        "seed": 9653,
+        "role": 0,
+        "first": 9,
+        "second": 33
+      },
+      {
+        "seed": 9661,
+        "role": 1,
+        "first": 9,
+        "second": 33
+      },
+      {
+        "seed": 9677,
+        "role": 0,
+        "first": 24,
+        "second": 48
+      },
+      {
+        "seed": 9689,
+        "role": 1,
+        "first": 24,
+        "second": 48
+      }
+    ],
+    "held_steps_each": 64,
+    "held_worlds": 10,
+    "held_actions_per_policy": 640,
+    "held_return_actions_per_policy": 234
+  },
+  "protected_writer": {
+    "name": "GuardedTwoSlot",
+    "base": "Cloned research-only TGAP21 TwoSlotMemory: exact same public predictions, anomaly detector and two fixed Beta count slots; original native GF(2) source never altered",
+    "seal_rule": "After every observed outcome, if slot0 not yet sealed AND slot0 total trials>=8 AND absolute Beta(1,1) posterior mean difference between binary actions >=0.2, snapshot slot0 counts and mark sealed. No phase/hidden truth/target label access.",
+    "write_rule": "For subsequent witnessed actions, call original TGAP21 stage exactly once, then if slot0 was sealed before that step overwrite only slot0 numerical counts with its original sealed snapshot; all other cursor and original anomaly state transitions remain. Track count of suppressed writes and original witnessed total; preserve exactly two slots and one immutable A snapshot. This deliberately tests irreversible protective admission, not an inference that a changed law has been detected.",
+    "replay": "Source type gate, exact ordered step; canonical JSON, SHA256 digest and sealed snapshot validate across independent restore. Accumulated factual action count equals sum of stored counts + suppressed writes.",
+    "no_fit": "Identical guarded writer without 72 FIT observations, cold cloned at start of each held world."
+  },
+  "reader": {
+    "gate": "Unmodified TGAP21 active-slot Beta prediction, no additional state",
+    "soft": "Extra scalar p(slot1) with prior .5, same fixed hazard 1/16 and pre-update Bayes likelihood mixing of two slot forecasts as KNOW22; update this scalar only from witnessed reward without affecting writer. No private phase/switch.",
+    "factorial": [
+      "original_gate_fit",
+      "original_soft_fit",
+      "guarded_gate_fit",
+      "guarded_soft_fit"
+    ],
+    "strict_separation": "At every held step, original_gate and original_soft must have byte-for-byte identical original writer checkpoints; guarded_gate and guarded_soft must have byte-for-byte identical guarded checkpoints. Original and guarded writers may differ only due to declared admission rule, not input/action tape."
+  },
+  "controls": [
+    "guarded_soft_no_fit",
+    "original_soft_no_fit",
+    "fully FIT-trained stationary Beta",
+    "fully FIT-trained rolling last8 Beta",
+    "fully FIT-trained reset Beta",
+    "model-informed FIT-trained HMM with known .8/.2 likelihood and hazard1/16 (extra structural prior, separately flagged)",
+    "source-only p=.5 negative"
+  ],
+  "metrics": {
+    "primary": "Held overall prequential Brier lower is better on exactly 640 common witnessed action outcomes per arm, each forecast made before result.",
+    "secondary": [
+      "Return-only Brier on exactly 234 witnessed outcomes per arm",
+      "FIT old A slot0 forecasts before B, after B and after A recurrence for both writers, exact changed counts",
+      "FIT versus no-FIT transfer and same-writer readout delta",
+      "Factorial decomposition: protected-gate minus original-gate, protected-soft minus original-soft, and readout delta with each writer",
+      "Per-role and per-switch family Brier",
+      "Byte-exact checkpoint/cold restore, source forgery and replay negatives, runtime and memory bytes; no whole-process cost gain claim"
+    ]
+  },
+  "hypotheses": {
+    "H1": "Guarded writer preserves two slot0 action forecasts exactly after FIT B (zero old A drift), original writer may drift",
+    "H2": "Guarded_gate_fit return Brier beats original_gate_fit by >=0.0100",
+    "H3": "Guarded_soft_fit return Brier beats original_soft_fit by >=0.0100",
+    "H4": "Guarded_soft_fit overall held Brier is <= fully FIT-trained rolling-8 Beta",
+    "decision": "Report each independently; write-recovery DEV_SUPPORTED only if H1,H2,H3,H4 ALL true. MIXED if any true; NO_GO otherwise. No tuning seeds, thresholds or switches based on outcome."
+  },
+  "engineering": "Predeclared exact tests, 72 FIT +640 per arm, public source/cold custody, writer identical across readout-only arms, Linux and Windows focused and mandatory full final, G29 atlas seal, previous real TRAIN image compatibility. Engineering tests may pass while hypothesis fails.",
+  "science": "Synthetic DEV ONLY; SCIENTIFIC_NO_GO without owner admission of genuinely unfamiliar original causal source, equal-prior Bayes/symbolic/conventional strongest-control benefit, independent reproduction, preservation of functional old→new→old at same address and whole-process efficiency.",
+  "prohibitions": "No replay prior TGAP21/TGAP22/KNOW22 held seeds; no protected first use issue426; no new PR/controller or scheduler; no model-owner runner dispatch; no paid API; no merge, no accepted main or original NativeContextAccumulator mutation."
+}
