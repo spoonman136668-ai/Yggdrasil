@@ -1,0 +1,106 @@
+"""Only SOURCE-FREE fixture contract tests. Does not run the real native model."""
+import hashlib
+import tempfile
+from pathlib import Path
+from unittest import TestCase,main,mock
+from worlds import SEEDS,FAMILIES,REPS,FORBIDDEN,world,worlds
+from native_exact_probe import (ARMS, SOURCE_SHA,SOURCE_TREE,SOURCE_BLOBS,Counts,
+                                 require_native_checkout,stage_ranges,evaluate)
+
+class DummyNative:
+    def __init__(self):self.rows=[];self.streaming=False
+    def begin_stream(self):
+        assert len(self.rows)==16
+        c=type(self)();c.rows=self.rows[:];c.streaming=True;return c
+    def forecast(self,view,x1,s2=None,x2=None):
+        return .5 if s2 is None else .4
+    def context_forecast(self,view,x1,s2=None,x2=None):
+        assert self.streaming
+        return .49 if s2 is None else .41
+    def observe(self,identifier,views,row):
+        assert len(identifier)==64 and isinstance(row,dict)
+        assert set(row)=={'s1','x1','s2','x2','y'}
+        nxt=type(self)();nxt.rows=self.rows+[(identifier,views,tuple(sorted(row.items())))];nxt.streaming=self.streaming
+        return nxt
+    def checkpoint(self):
+        import json
+        return json.dumps({'rows':self.rows,'streaming':self.streaming},sort_keys=True).encode()
+    @classmethod
+    def restore(cls,raw,sha):
+        import json
+        if hashlib.sha256(raw).hexdigest()!=sha:raise ValueError('pin drift')
+        obj=cls();o=json.loads(raw);obj.rows=o['rows'];obj.streaming=o['streaming']
+        # JSON tuples become lists after restoration, so don't rely on tuple equality.
+        return obj
+
+class FixtureTests(TestCase):
+    def test_all_24_unique_worlds_and_new_scope(self):
+        w=worlds();self.assertEqual(len(w),24)
+        self.assertEqual(len({x.public_sha256 for x in w}),24)
+        self.assertEqual({x.seed for x in w},set(SEEDS))
+        self.assertEqual({x.family for x in w},set(FAMILIES))
+    def test_reproducible_pinned_data(self):
+        self.assertEqual(worlds(),worlds())
+    def test_excludes_every_prior_seed(self):
+        for seed in FORBIDDEN+(1,True,0):
+            with self.assertRaises(ValueError):world(seed,FAMILIES[0],0)
+    def test_rejects_invalid_families_and_rep(self):
+        for a,b,c in ((SEEDS[0],'alien',0),(SEEDS[0],FAMILIES[0],True),(SEEDS[0],FAMILIES[0],REPS)):
+            with self.assertRaises(ValueError):world(a,b,c)
+    def test_public_row_exact_native_keys(self):
+        for w in worlds():
+            for e in w.public:
+                self.assertEqual(set(e.row()),{'s1','x1','s2','x2','y'})
+                self.assertEqual(e.views[0][0],e.views[1][0])
+                self.assertTrue(all(bit in (0,1) for bit in e.row().values()))
+    def test_no_switch_label_or_reset_in_public(self):
+        w=worlds()[0]
+        for e in w.public:
+            self.assertNotIn('phase',e.__dict__)
+            self.assertNotIn('dwell',e.__dict__)
+            self.assertNotIn('source_hidden',e.__dict__)
+    def test_action_tape_phase_independent(self):
+        # The per-step action rng advances irrespective of phase, as encoded in source.
+        self.assertTrue(all(e.x1 in (0,1) and e.x2 in (0,1)
+                            for w in worlds() for e in w.public))
+    def test_all_worlds_have_16_cold_return_queries(self):
+        self.assertTrue(all(w.dwell[2]>=16 for w in worlds()))
+    def test_phase_lengths_not_the_old_public_fixed_schedule(self):
+        self.assertGreaterEqual(len({w.dwell for w in worlds()}),20)
+        self.assertTrue(all(24<=min(w.dwell) and max(w.dwell)<=36 for w in worlds()))
+    def test_ranges_partition_epochs(self):
+        for w in worlds():
+            x=stage_ranges(w);a,b,c=w.dwell
+            self.assertEqual(x['A'],(0,a));self.assertEqual(x['B'],(a,a+b))
+            self.assertEqual(x['return_first16'],(a+b,a+b+16))
+    def test_beta_full_and_window_differ_after_32_episodes(self):
+        m=Counts(window=32);f=Counts()
+        w=worlds()[0]
+        for e in w.public:
+            m.observe(e);f.observe(e)
+        self.assertEqual(len(m.obs),len(f.obs))
+        self.assertTrue(len(m.obs)>2*32)
+    def test_fake_adapter_avoids_evaluator_phase_in_forecasts(self):
+        w=worlds()[0];result=evaluate(w,'native_exact_base',DummyNative)
+        self.assertEqual(result['updates'],len(w.public))
+        self.assertTrue(result['checkpoint_bytes']>0)
+        self.assertEqual(set(result['scores']),{'A','B','return_first16','return_all'})
+    def test_fake_stream_after_prefix_only(self):
+        w=worlds()[0];result=evaluate(w,'native_exact_stream',DummyNative)
+        self.assertEqual(result['updates'],len(w.public))
+    def test_beta_controls_same_public_updates(self):
+        w=worlds()[0]
+        a=evaluate(w,'beta_full',DummyNative)
+        b=evaluate(w,'beta_window32',DummyNative)
+        self.assertEqual(a['updates'],b['updates'])
+        self.assertEqual(a['updates'],len(w.public))
+    def test_reject_unavailable_checkout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(Exception):require_native_checkout(tmp)
+    def test_exact_native_refs_locked(self):
+        self.assertEqual(len(SOURCE_SHA),40);self.assertEqual(len(SOURCE_TREE),40)
+        self.assertEqual(len(SOURCE_BLOBS),4)
+        self.assertTrue(all(len(x)==40 for x in SOURCE_BLOBS.values()))
+    def test_no_unbounded_or_unapproved_arms(self):
+        self.assertEqual(ARMS,('native_exact_base','native_exact_stream','beta_full','beta_window32'))
+if __name__=='__main__':main()

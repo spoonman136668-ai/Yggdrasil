@@ -1,0 +1,87 @@
+"""LR-92AX: disjoint, source-free two-stage DEV data; evaluator law is private.
+
+This is NOT an original source pilot, a canonical model, or scientific first-use.
+The native learner receives only event.views, event.action/revealed consequences.
+"""
+from __future__ import annotations
+import hashlib
+import random
+from dataclasses import dataclass
+
+SEEDS=(89051001,89051002)
+FAMILIES=('stage_coupled','context_alias','new_parent')
+REPS=4
+NOISE=.10
+FORBIDDEN=(73004303,73004304,74009171,74009172,75011801,75011802,
+           76021921,76021922,77033101,77033102,88041001,88041002,
+           929209101,929209102,929209103)
+
+def private_rng(seed,family,rep,salt):
+    h=hashlib.sha256(f'LR92AX|{seed}|{family}|{rep}|{salt}'.encode()).digest()
+    return random.Random(int.from_bytes(h[:8],'big'))
+
+@dataclass(frozen=True)
+class Event:
+    identifier:str
+    views:tuple
+    s1:int
+    x1:int
+    s2:int
+    x2:int
+    y:int
+    def row(self):return {'s1':self.s1,'x1':self.x1,'s2':self.s2,'x2':self.x2,'y':self.y}
+
+@dataclass(frozen=True)
+class World:
+    seed:int
+    family:str
+    rep:int
+    dwell:tuple
+    public:tuple
+    # evaluator-only, NEVER passed to any model method or native update
+    phases:tuple
+    public_sha256:str
+
+
+def stage_law(family,phase,s1,v,x1,s2,x2,variant):
+    """Evaluator only. Unknown phase is not a learner input.
+    Contradict both conditional laws in B; A_return reuses old A.
+    """
+    a=phase!='B'
+    if family=='stage_coupled':
+        transition=(s1 ^ x1 ^ variant) ^ (not a)
+        terminal=(s2 ^ x2 ^ (s1 & x1)) ^ (not a)
+    elif family=='context_alias':
+        transition=(s1 & x1) ^ (not a)
+        terminal=((s1 ^ x1 ^ s2) & x2) ^ (not a)
+    else:
+        transition=(v ^ x1 ^ s1) ^ (not a)
+        terminal=(v ^ s2 ^ (x1 & x2)) ^ (not a)
+    return int(bool(transition)), int(bool(terminal))
+
+
+def world(seed,family,rep):
+    if(type(seed)is not int or seed not in SEEDS or type(family)is not str
+       or family not in FAMILIES or type(rep)is not int or not 0<=rep<REPS):
+        raise ValueError('LR92AX_DEV_SEED_SCOPE')
+    timing=private_rng(seed,family,rep,'timing')
+    dwell=tuple(timing.randint(24,36) for _ in range(3))
+    actions=private_rng(seed,family,rep,'public-actions')
+    noise=private_rng(seed,family,rep,'noise')
+    variant=rep%2
+    public=[];phases=[]
+    for i in range(sum(dwell)):
+        phase='A' if i<dwell[0] else 'B' if i<sum(dwell[:2]) else 'Areturn'
+        s1,v,x1,x2=(actions.randrange(2) for _ in range(4))
+        clean_s2=stage_law(family,phase,s1,v,x1,0,x2,variant)[0]
+        s2=clean_s2 ^ int(noise.random()<NOISE)
+        clean_y=stage_law(family,phase,s1,v,x1,s2,x2,variant)[1]
+        y=clean_y ^ int(noise.random()<NOISE)
+        identifier=hashlib.sha256(f'LR92AX|{seed}|{family}|{rep}|{i}'.encode()).hexdigest()
+        views=((s1,v),(s1,1-v))
+        public.append(Event(identifier,views,s1,x1,s2,x2,y))
+        phases.append(phase)
+    data=bytes(b for e in public for b in (e.s1,e.views[0][1],e.x1,e.s2,e.x2,e.y))
+    return World(seed,family,rep,dwell,tuple(public),tuple(phases),hashlib.sha256(data).hexdigest())
+
+def worlds():return tuple(world(s,f,r) for s in SEEDS for f in FAMILIES for r in range(REPS))
