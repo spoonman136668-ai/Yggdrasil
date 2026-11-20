@@ -106,6 +106,7 @@ class Tests(unittest.TestCase):
         for x in (True,-1,2):
             with self.assertRaises(ValueError):reward(0,0,x)
             with self.assertRaises(ValueError):obj(0,0,x)
+        for x in (True,-1,64):
             with self.assertRaises(ValueError):subject(0,0,x)
     def test_canonical_and_absent_activation(self):
         self.assertEqual(canonical({"b":2,"a":1}),b'{"a":1,"b":2}')
