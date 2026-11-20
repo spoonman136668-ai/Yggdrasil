@@ -5,7 +5,7 @@ from pathlib import Path
 import unittest
 
 from qualification import (WORLDS, FORBIDDEN, metadata, _component,
-                           BlockedFullRefit, RANK, RIDGE)
+                           BlockedFullRefit, Learner, RANK, RIDGE)
 from verify_parity import compare_metric, compare_receipts
 
 
@@ -35,7 +35,7 @@ class WSP212SourceFreePreflight(unittest.TestCase):
                 metadata(invalid)
 
     def test_only_integer_digest_components_and_existing_refit(self):
-        self.assertIs(BlockedFullRefit.__bases__[0].__name__, "Learner") if False else None
+        self.assertTrue(issubclass(BlockedFullRefit, Learner))
         self.assertEqual(4, RANK)
         self.assertEqual(0.2, RIDGE)
         # Component-only fixture; not a WSP212 FIT or held target.
