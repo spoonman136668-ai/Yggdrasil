@@ -188,7 +188,8 @@ class ExplicitPublicViewProjection:
         """
         proposal = self.query(subject, predicate, obj)
         if proposal["paired_public_views"] is None:
-            return {**proposal, "native_plan_called": False, "shadow_plan": None}
+            return {**proposal, "native_plan_called": False, "shadow_plan": None,
+                    "policy_activation": False, "causal_observation_admitted": False}
         public_view = tuple(proposal["paired_public_views"][0])
         if public_view in self._ambiguous_plan_views:
             self.checkpoint()
