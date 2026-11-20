@@ -63,6 +63,15 @@ class ReceiptTests(unittest.TestCase):
                          result={"nan": float("nan")})
         self.assertFalse(self.path.exists())
 
+    def test_missing_complete_rejected(self):
+        with self.assertRaisesRegex(ValueError, "only complete"):
+            commit_world(self.path, source_sha256=SHA, world_id="w", elapsed_ms=1, result={"score": 0.2})
+        self.assertFalse(self.path.exists())
+
+    def test_empty_preflight_rejected(self):
+        with self.assertRaisesRegex(ValueError, "invalid budget"):
+            budget_gate({}, 4, 100)
+
     def test_valid_budget(self):
         result = budget_gate({"A": [1, 2, 2], "B": [3, 4, 5]}, 4, 45)
         self.assertTrue(result["qualified"])
