@@ -72,7 +72,7 @@
     "qualifier": "Passing source-free DEV is not independent SCIENTIFIC_PASS; owner-certified disjoint original-world scientific protocol and separate first-use required."
   },
   "budgets": {
-    "max_total_source_free_actions_per_arm_per_seed": 3840,
+    "max_total_source_free_actions_per_arm_per_seed": 4608,
     "max_extra_candidate_compute_vs_strongest_symbolic": "at most equal CPU-time/operation budget, report any violation and classify efficiency INCOMPARABLE",
     "max_memory_bytes": 65536,
     "no_paid_apis": true,
@@ -87,7 +87,8 @@
       "hidden label leak",
       "unrepresentable source roles",
       "source-world indistinguishable without abstention"
-    ]
+    ],
+    "budget_derivation": "8 families × (64 OLD_FIT + 64 NEW_FIT + 32 VALID + 64 HELD_NEW + 64 RETURN_OLD) episodes/family × 2 actions/episode = 4,608 possible actions per arm per seed; only genuinely executed actions count, not evaluator-only forecasts"
   },
   "interfaces": {
     "research_only": "BoundedPublicRelationProposal(source_variable_ids,actuator_roles,observed_transition,outcome,witness_parent_sha) -> (candidate_identity_or_unknown, cold_readout, provenance)",
@@ -101,5 +102,10 @@
     "checkpoint_changed": false,
     "science_pass": false,
     "development_status": "NOT_RUN"
+  },
+  "provenance_amendment": {
+    "previous_design_commit": "697933bb73c97ac2a12ecd3fc7b9c40c3577a666",
+    "reason": "Pre-primary arithmetic correction: original 3,840-action cap was smaller than the entire frozen family/phase roster. Exact 4,608 cap now matches the existing roster; no protocol cohorts have been generated, scored or consumed.",
+    "status": "PRE_SOURCE_PRE_RESULT"
   }
 }
