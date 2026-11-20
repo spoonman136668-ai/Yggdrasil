@@ -111,4 +111,15 @@ jobs:
         run: |
           python -B research/contrib/chatgpt/GKD-05/admit.py --selftest
           python -B research/contrib/chatgpt/GKD-05/score.py --selftest
+      - name: GKD-05 exactly one historical public Sachs measurement DEV score (Linux only)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1348 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$(git log -1 --pretty=%s)" != "research(GKD-05): SINGLE_PUBLIC_DEV_SCORE" ]; then
+            echo "GKD05_PUBLIC_SCORE_NOT_TRIGGERED; source labels not read"
+            exit 0
+          fi
+          echo "GKD05_PUBLIC_SCORE_SINGLE_COMMIT_GATE_ACCEPTED"
+          python -B research/contrib/chatgpt/GKD-05/score.py --score-public
       - run: git diff --exit-code
