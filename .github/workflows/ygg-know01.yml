@@ -363,6 +363,16 @@ jobs:
           python -B research/contrib/chatgpt/YGG-KNOW01/know22_posterior_slot_dev.py \
             > "$RUNNER_TEMP/know22-posterior-slot-readout-receipt.json"
           python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know22-posterior-slot-readout-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know22.posterior-memory-readout-result.v1"; assert d["prereg_commit"]=="d3885412f6cc81a366f901b90d33169f399c32c3"; assert d["held_actions_per_policy"]==512 and d["return_actions_per_policy"]==190; assert d["same_original_memory_after_every_update"] is True; assert d["scientific_gate"]=="NO_GO_SYNTHETIC_NO_OWNER_FIRST_USE"'
+      - name: KNOW23 frozen write-quarantine old knowledge protection DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/tgap21_same_address_dev.py)" = 3cd811e61242413d3951cd90caac00f4cfe35210
+          python -B research/contrib/chatgpt/YGG-KNOW01/write_quarantine_memory_dev.py \
+            > "$RUNNER_TEMP/know23-write-quarantine-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know23-write-quarantine-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know23.write-quarantine-synthetic-result.v1"; assert d["prereg_commit"]=="5d2eb5d552d6fa5c202f422798d1b4e0f7dfcecf"; assert (d["fit_actions"],d["held_worlds"],d["held_actions_per_policy"],d["return_actions_per_policy"])==(72,8,512,192); assert d["scientific_gate"]=="NO_GO_SYNTHETIC_SOURCE_AND_STRONGEST_CONTROL" and d["protected_original_first_use"] is False'
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -386,5 +396,6 @@ jobs:
             ${{ runner.temp }}/know20-noisy-regime-memory-receipt.json
             ${{ runner.temp }}/know21-unfamiliar-schedule-receipt.json
             ${{ runner.temp }}/know22-posterior-slot-readout-receipt.json
+            ${{ runner.temp }}/know23-write-quarantine-receipt.json
           retention-days: 30
           if-no-files-found: error
