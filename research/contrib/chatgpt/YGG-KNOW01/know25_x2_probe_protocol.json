@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.know25.x2-intervention-identifiability-frozen-dev.v1",
+  "date": "2026-11-20",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "role": "Independent contributor existing PR #1327. Central Amalgam PR #1278 sole canonical learner owner.",
+  "question": "Does adding an x2-flip intervention overcome KNOW24's causal non-identifiability and provide a measurable high-x2 predictive benefit over matched evidence/structural baselines?",
+  "source_mode": "engineering_fixture_only",
+  "fit": [
+    {
+      "seed": 12021,
+      "operator": "x0",
+      "steps": 24
+    },
+    {
+      "seed": 12029,
+      "operator": "x1",
+      "steps": 24
+    },
+    {
+      "seed": 12047,
+      "operator": "xor01",
+      "steps": 24
+    }
+  ],
+  "held_pairs": [
+    {
+      "a": "x0",
+      "b": "x0_xor_x2",
+      "seeds": [
+        12111,
+        12117,
+        12121
+      ]
+    },
+    {
+      "a": "xor01",
+      "b": "xor01_xor_x2",
+      "seeds": [
+        12211,
+        12217,
+        12221
+      ]
+    },
+    {
+      "a": "and01",
+      "b": "and01_xor_x2",
+      "seeds": [
+        12311,
+        12319,
+        12327
+      ]
+    }
+  ],
+  "public": "c=t%4 (x2=0); allowed actions 0:no flip,1:flip x0,2:flip x1,3:flip x2. Effective context = c XOR [0,1,2,4][action]. Exactly one observed consequence for chosen action.",
+  "hidden": "Paired laws agree on x2=0 and have complementary x2=1 truth. Outcome Bernoulli(.85) if underlying Boolean function=1 else Bernoulli(.15). Common pair coin first64 SHA256('know25:private:witness:v1:{seed}:{t}') /2^64, independent of action; private law never supplied to learners.",
+  "fit_prior": "Fit three separate exact 256-hypothesis Bayes posteriors from 24 public action0 low-context witnesses each, starting ANF coefficient priors all .25. Learned coefficient prior j=clamp((.5+sum three posterior coefficient marginals)/5,.08,.92). No teacher and no private fit-law identifiers in the model. All 72 FIT observations are disjoint from KNOW24 worlds.",
+  "held": "18 worlds×48 sequential witnessed actions =864 observations per policy, no held seed/scored-world replay. Fixed x2 schedule: action=3 if t%3==0, =0 if t%3==1, =1 if t%3==2; 16 x2 interventions and 4 unique high-context probes per world. No-x2 comparator action=t%3. Active four-action comparator chooses maximum observable Bernoulli entropy q(1-q), tie lowest action. Random four-action comparator uses public pair-ID RNG only.",
+  "evaluation": "After 48 held witnesses, 12 evaluator-only high-x2 context/action questions per world (c=4..7, actions 0/1/2), 12 low context/action questions (c=0..3, actions 0/1/2); 216 high and 216 low expected Brier per policy, no evaluation observations used to train. Expected Brier=q*(1-q)+(p-q)^2; smaller better.",
+  "arms": [
+    "trained_anf_fixed_x2",
+    "trained_anf_no_x2",
+    "untrained_anf_fixed_x2",
+    "uniform_full_bayes_fixed_x2",
+    "trained_anf_active_x2",
+    "trained_anf_random_x2",
+    "context_beta_fixed_x2",
+    "known_family_bayes_fixed_x2",
+    "uninformed_p05"
+  ],
+  "controls": "Every arm uses exactly 72 FIT witnesses except explicitly untrained; fixed-action arms have exactly the same 48 held actions/outcomes. Uniform 256-Bayes is fully fitted from same FIT + held sources with independent ANF .5 prior; context Beta is fully fitted low-context counts then updated at high contexts; known-family Bayes knows six exact paired laws and .85/.15 emissions (EXTRA structural prior), not a capacity-matched claim. Variable-action arms have same action budgets but not necessarily identical information.",
+  "frozen_hypotheses": {
+    "H1": "The no-x2 trained Bayes has identical same-seed paired observed traces and high forecasts across all 9 pairs; paired high expected Brier >=.25-1e-8.",
+    "H2": "Trained fixed-x2 Bayes high expected Brier <=.23000 and >=.02000 improvement over trained no-x2 Bayes high expected Brier.",
+    "H3": "Trained fixed-x2 Bayes high expected Brier <= uniform full 256-Bayes fixed-x2 high expected Brier +.01000.",
+    "H4": "Trained fixed-x2 Bayes high expected Brier <= same sparse ANF no-FIT fixed-x2 high expected Brier - .00500.",
+    "H5": "Trained ANF entropy-active4 high expected Brier <= trained ANF fixed-x2 high expected Brier - .00500.",
+    "decision": "H1 is engineering information-bound check. Development SUPPORTED only if H1-H5 all pass; MIXED if H1 and any one H2-H5; otherwise NO_GO. Report raw metrics and every failed criterion. Never SCIENTIFIC_PASS from synthetic source."
+  },
+  "engineering": [
+    "Frozen exact seed/operator pairs; forbid off-cohort, wrong source_mode and replay",
+    "Same pair SHA256 exogenous noise across models; no future/private data to model",
+    "Exact one outcome/action and 864 held actions per policy; 216 high and 216 low evaluator-only queries",
+    "72 FIT sources, verify x2-containing ANF marginals unchanged before any x2 probe",
+    "Canonical cold checkpoint SHA256 replay/duplicate/forgery negative controls",
+    "Mandatory six-job Linux/Windows source- and atlas-locked full-final regression plus old consumed source compatibility, no CI-to-science inference"
+  ],
+  "prohibitions": "No modification of KNOW24/TGAP25 seeds, source, scores or thresholds. No protected first use #426, original-native checkpoint, accepted main, competing coordinator, new runner/scheduler, paid APIs, PR merge or deployment."
+}
