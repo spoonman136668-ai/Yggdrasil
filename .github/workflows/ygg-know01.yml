@@ -629,3 +629,58 @@ jobs:
           path: ${{ runner.temp }}/know31-paired-interference-first-use.json
           if-no-files-found: error
           retention-days: 30
+
+  know32-balanced-retention-study:
+    # One new strictly synthetic HELD cohort; no cron, owner runner or model.
+    # Re-run is prohibited after any uncertain first-use effect.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know32): one-shot balanced causal retention after exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable exact source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exactly one frozen balanced-access synthetic outcome study
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know32_balanced_access_protocol.json)" = 9f8664601b2161183b16d7b47ac53303e1b73d51
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know32_balanced_access_dev.py)" = 4e60e40a43a2b8d71ee013adc7530d851c432d00
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know32_balanced_access_dev.py)" = 58d0b9458083173dd50da8ef9d2039ab29354b47
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know32_balanced_access_support.py)" = 02a99ecc1770a409866bf3eb389216e1e7665eb7
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know32_balanced_access_dev.py \
+            > "$RUNNER_TEMP/know32-balanced-retention-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          f=pathlib.Path(os.environ["RUNNER_TEMP"])/"know32-balanced-retention-first-use.json"
+          d=json.loads(f.read_text())
+          assert d["schema"]=="yggdrasil.know32.balanced-access-causal-retention-result.dev.v1"
+          assert d["protocol_blob"]=="9f8664601b2161183b16d7b47ac53303e1b73d51"
+          assert d["prereg_commit"]=="97cb673450b469db16b70ceb68808cf2fe274cf3"
+          assert (d["held_world_pairs"],d["unique_source_witnesses"],d["model_level_per_arm_fork_actions"])==(24,1920,2304)
+          assert len(d["worlds"])==24 and len(d["support"])==6
+          assert set(d["family_metrics"])=={"known_H2","unfamiliar_H1"}
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["accepted_native_modified"] is False and d["original_first_use_426"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Store only bounded synthetic result without model/real data
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW32-balanced-source-retention-first-use
+          path: ${{ runner.temp }}/know32-balanced-retention-first-use.json
+          if-no-files-found: error
+          retention-days: 30
