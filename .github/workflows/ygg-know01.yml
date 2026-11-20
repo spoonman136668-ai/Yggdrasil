@@ -195,6 +195,46 @@ jobs:
           PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/historical_functional_retention.py --installed-session "$RUNNER_TEMP/know03-history-readonly" --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know08-retention-receipt.json"
           PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/historical_intervention_coverage.py --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know09-intervention-coverage-receipt.json"
           test -z "$(git status --porcelain)"
+      - name: Fetch source-pinned original parent artifacts for full four-head cold replay
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14470790752" > "$RUNNER_TEMP/know10-ckad-meta.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14482121653" > "$RUNNER_TEMP/know10-jepa-meta.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          root=pathlib.Path(os.environ["RUNNER_TEMP"])
+          a=json.loads((root/"know10-ckad-meta.json").read_bytes())
+          b=json.loads((root/"know10-jepa-meta.json").read_bytes())
+          assert (a["id"], a["expired"], a["name"], a["workflow_run"]["id"],
+                  a["workflow_run"]["head_sha"]) == (
+              14470790752, False, "CKAD26-refresh-primary", 44391641043,
+              "5178110111fc8e3880170006b397ccce372e9a24")
+          assert (b["id"], b["expired"], b["name"], b["workflow_run"]["id"],
+                  b["workflow_run"]["head_sha"]) == (
+              14482121653, False, "YGG-JEPA2-03-ubuntu-latest", 44420677720,
+              "0630f84387bc0f5dec5b996261fb12fe7c2b0a6d")
+          PY
+          mkdir -p "$RUNNER_TEMP/know10-ckad" "$RUNNER_TEMP/know10-jepa"
+          gh run download 44391641043 -R "$GITHUB_REPOSITORY" -n CKAD26-refresh-primary -D "$RUNNER_TEMP/know10-ckad"
+          gh run download 44420677720 -R "$GITHUB_REPOSITORY" -n YGG-JEPA2-03-ubuntu-latest -D "$RUNNER_TEMP/know10-jepa"
+          test "$(sha256sum "$RUNNER_TEMP/know10-ckad/seed-101-refresh-native.json" | cut -d' ' -f1)" = a00119c73a6431172c19b39ec67a1d94b470897a32c55c1c946071793f37dcc4
+          test "$(sha256sum "$RUNNER_TEMP/know10-jepa/seed-14071-state.json" | cut -d' ' -f1)" = 7e7507af589ae6b08a7599f1abafa9dd998895299fbb423cfc2995ecbcf741cd
+          test -z "$(git status --porcelain)"
+      - name: Cold restore all Amalgam specialists and compare separate factual shadow
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/full_amalgam_factual_shadow.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --native-parent "$RUNNER_TEMP/know10-ckad/seed-101-refresh-native.json" \
+            --donor-parent "$RUNNER_TEMP/know10-jepa/seed-14071-state.json" \
+            --output "$RUNNER_TEMP/know10-four-head-receipt.json"
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -205,5 +245,6 @@ jobs:
             ${{ runner.temp }}/know06-cold-shadow-receipt.json
             ${{ runner.temp }}/know08-retention-receipt.json
             ${{ runner.temp }}/know09-intervention-coverage-receipt.json
+            ${{ runner.temp }}/know10-four-head-receipt.json
           retention-days: 30
           if-no-files-found: error
