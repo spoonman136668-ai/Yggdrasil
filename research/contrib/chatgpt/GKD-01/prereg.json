@@ -1,0 +1,134 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GKD-01",
+  "contributor": "chatgpt_connector_caller_reported",
+  "contribution_class": "successor-proposal",
+  "question": "Can fixed assistant-response-derived causal rules be compiled into a <128-byte deterministic native numerical program, cold-restored, and applied to previously unscored parameter combinations without teacher inference at recipient time, while exposing no independent scientific gain?",
+  "hypothesis": "A finite frozen six-rule idealized resistive-circuit donor can be converted into a domain-neutral arithmetic bytecode; matched exact symbolic access will tie and thus this cannot establish intelligence or causal learning superiority.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "spoonman136668-ai/Yggdrasil PR #1347 DWSA06 80.75% vs supervised 99.25%, DWSA09 head-only no-go",
+    "spoonman136668-ai/Yggdrasil WSP89/WSP90 and CKAD/NKR factual-knowledge controls already exist; this is a *different* explicit response-to-causal-operator feasibility probe, not new novel-world science"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/GKD-01/**",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "source_class": "Author-generated GPT-6 response claims, not pretrained weights; generating donor response itself uses model inference; no teacher-model calls after freezing. These textbook ideal circuit relationships are authored and not independently source-admitted; every score is synthetic DEV only.",
+  "donor_claims": [
+    {
+      "code": "S",
+      "scope": "two ideal linear resistors in series",
+      "formula": "R_eff=R1+R2",
+      "conditions": "R1,R2>0"
+    },
+    {
+      "code": "P",
+      "scope": "two ideal linear resistors in parallel",
+      "formula": "R_eff=R1*R2/(R1+R2)",
+      "conditions": "R1,R2>0"
+    },
+    {
+      "code": "I",
+      "scope": "steady Ohm relation",
+      "formula": "I=V/R_eff",
+      "conditions": "V>=0,R_eff>0"
+    },
+    {
+      "code": "W",
+      "scope": "electrical power",
+      "formula": "P=V*I",
+      "conditions": "ideal steady DC, V>=0"
+    },
+    {
+      "code": "E",
+      "scope": "energy over constant duration",
+      "formula": "E=P*t",
+      "conditions": "t>=0,constant power"
+    },
+    {
+      "code": "T",
+      "scope": "adiabatic lumped heating",
+      "formula": "delta_T=E/(m*c)",
+      "conditions": "m,c>0,constant c,all supplied energy thermalized"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "self-contained ideal-circuit synthetic DEV",
+      "sha256": null,
+      "source": "Deterministic xorshift32 seeds 71,131,211; no external observations; donor rules explicitly listed above and immutable after prereg"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      71,
+      131,
+      211
+    ],
+    "split": "For each seed, 128 series and 128 parallel independent parameter sets; exactly 768 DEV cases total. Same ideal physics family, disjoint sampled parameter tuples only; no novel-law claims.",
+    "ordering": "seed ascending; topology series then parallel; 128 draws in each group; same rows to student, symbolic, and sham controls",
+    "rng": "xorshift32 with uint32 state, draw u=x/4294967296 after x ^= x<<13;x ^= x>>>17;x ^= x<<5",
+    "input_ranges": {
+      "V": "2+22*u",
+      "R1": "1+19*u",
+      "R2": "1+19*u",
+      "t": "1+9*u",
+      "m": "0.2+4.8*u",
+      "c": "100+900*u"
+    },
+    "data_budget": "768 synthetic DEV cases, zero real-world actions",
+    "compute_budget": "one source-only Node.js >=20 replay and one diagnostic output; no paid API, no teacher model inference after frozen donor",
+    "capacity": "fixed five-byte instructions: 9 ops x5, 8-byte header, 32-byte SHA-256 =85 bytes",
+    "instruction_format": "[opcode,destination,left,right,aux]; opcodes generic ADD=1 MUL=2 DIV=3 SELECT_IF_TOPOLOGY_1=4. Public input registers [V,R1,R2,t,m,c,topology] indices 0..6. Intermediate registers 7..15. No domain-specific physics opcode; compile exactly the six frozen formulas.",
+    "evaluator": "Independent direct symbolic formula implementation (not calling bytecode compiler) is the numerical reference; maximum per-case normalized absolute error max |student - symbolic|/max(1,|symbolic|) over [R_eff,I,P,E,delta_T] across all 768 cases",
+    "cold_restore": "Compile once; three fresh decode/evaluate cycles; recompile bytes equality; tamper and re-signed invalid program test",
+    "negative_controls": "(1) change the final temperature op from DIV to ADD with re-signed digest; (2) topology=2 must be rejected; (3) zero resistance, zero mass or nonfinite inputs must be rejected; (4) zero/digest-corrupt payload rejected",
+    "deterministic_expected": true,
+    "test_environment": "Node built-in crypto, no third-party packages"
+  },
+  "controls": [
+    "Exact symbolic same-donor formulas: strongest lawful exact rule control; expected 0 difference, not matched byte cost, therefore never claim superiority.",
+    "Re-signed sham with wrong last operator; must perform worse on temperature output on >=99% of DEV rows.",
+    "No-donor zero output is illustrative only, not an independently trained control."
+  ],
+  "metrics": [
+    "compiled_bytes",
+    "teacher_runtime_calls",
+    "max_relative_error",
+    "symbolic_tie_fraction",
+    "sham_temperature_error_fraction",
+    "cold_restore_identity",
+    "invalid_input_rejections",
+    "deterministic_replay",
+    "runtime_ms"
+  ],
+  "classification_rules": {
+    "supported": "ENGINEERING_DEV_PASS iff 85-byte stable checkpoint, 0 runtime teacher calls, max relative error <=1e-12 for all 768 cases, symbolic tie on all 768, sham temperature materially wrong on >=99%, 3 cold restores, and all invalid/tamper guards PASS. SCIENTIFIC_PASS always false for this test.",
+    "mixed": "ENG_MIXED iff only one engineering check fails without invalid evaluation custody; scientific gain remains UNVERIFIED.",
+    "negative": "ENG_NO_GO iff wrong numerical results, checkpoint corruption admitted, unknown-world prediction emitted, or sham not distinguishable. Scientific gain always not demonstrated.",
+    "invalid": "Changed frozen rules/splits/thresholds, retrospective score fitting, duplicated consumed first-use, source mismatch, teacher inference after donor freeze, or test/evaluator leakage."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "donor claim changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless separately preregistered",
+    "held-out/evaluator leakage",
+    "native checkpoint promotion",
+    "false SCIENTIFIC_PASS"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This prereg-only Git commit MUST precede implementation and any DEV score. This is a source- and implementation-feasibility probe, not independent causal transfer or training."
+}
