@@ -177,6 +177,12 @@ class HiddenWorld:
             y ^= 1
         return PublicExposure(x, tuple(cells[8:]), action, y)
 
+    def public_context(self, phase: str, step: int) -> tuple[int, ...]:
+        """Public pre-intervention context; no hidden graph, phase cue or outcome."""
+        if phase not in ("B", "R"):
+            raise ValueError("INVALID_PUBLIC_PREACTION_PHASE")
+        return self._context(phase, step, held=False)
+
     def source_action(self, step: int) -> int:
         if not 0 <= step < 96:
             raise ValueError("INVALID_A_STEP")
