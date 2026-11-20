@@ -55,7 +55,7 @@ def protocol():
             and [(x["a"],x["b"],tuple(x["seeds"]))
                  for x in d["held_pairs"]]==list(PAIRS)
             and d["frozen_hypotheses"]["H2"].startswith(
-                "Trained fixed-x2 Bayes high expected Brier <= .23000")
+                "Trained fixed-x2 Bayes high expected Brier <=.23000")
             and d["source_mode"]==MODE,
             "FROZEN_PROTOCOL")
     return d
