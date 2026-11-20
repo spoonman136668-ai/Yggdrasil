@@ -1,0 +1,134 @@
+{
+  "schema": "yggdrasil.know33.local-metaplastic-cell-memory-prereg.v1",
+  "experiment_id": "KNOW33",
+  "date": "2026-11-20",
+  "role": {
+    "scope": "independent source-only synthetic research contribution on existing PR #1327",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_branch_head": "cb0b6063d251c8c0e449121b475711a50fa15f23",
+    "canonical_learner_owner": "Amalgam PR #1278",
+    "new_original_world_first_use": false,
+    "accepted_checkpoint_change": false,
+    "merge": false,
+    "deployment": "NONE"
+  },
+  "question": "Can eight non-token local metaplastic cells and four adjacent-pair support cells improve sequential A→B→A causal retention against trained soft-switching Bayes, rolling and identical-no-neighbor ablation, without phase labels, task IDs, replay, growing cell population or a global hidden-state controller?",
+  "predecessor": "KNOW32 failed: archive lost to stronger approximate HMM and did not preserve live old-A state in 14/24 despite full physical support. New candidate is local context-specific Beta cells with neighbor-only support evidence, NOT the earlier global six-map×256-table archive. All KNOW32 HELD seeds/outcomes consumed; no reuse.",
+  "source": {
+    "mode": "engineering_fixture_only",
+    "seeds": [
+      18101,
+      18109,
+      18121,
+      18127,
+      18133,
+      18143,
+      18149,
+      18169,
+      18181,
+      18191,
+      18211,
+      18217,
+      18301,
+      18307,
+      18311,
+      18313,
+      18329,
+      18341,
+      18353,
+      18367,
+      18371,
+      18379,
+      18397,
+      18401
+    ],
+    "known_B_seeds": [
+      18101,
+      18109,
+      18121,
+      18127,
+      18133,
+      18143,
+      18149,
+      18169,
+      18181,
+      18191,
+      18211,
+      18217
+    ],
+    "unseen_FIT_B_seeds": [
+      18301,
+      18307,
+      18311,
+      18313,
+      18329,
+      18341,
+      18353,
+      18367,
+      18371,
+      18379,
+      18397,
+      18401
+    ],
+    "families": [
+      "B1",
+      "B2"
+    ],
+    "family_count": 12,
+    "training_prior": "Every arm starts identical Beta(1,1) for each of 8 public physical-input cells; absolutely no external labelled FIT. Public action affordance x=c XOR (a<<1) is identical, explicit to ALL models, and isolates continual-memory mechanism rather than unknown motor grounding.",
+    "law_A": "x0 XOR x1 XOR (x0 AND x2)",
+    "law_B1": "1 XOR x0 XOR (x1 AND x2)",
+    "law_B2": "x2 XOR (x0 AND x1)",
+    "true_probabilities": [
+      0.15,
+      0.85
+    ],
+    "action_tape": "t=0..191, c=t%8, a=(floor(t/8)%2), x=c XOR (a<<1). Each 16-step tape sees all 16 public (c,a) pairs and all 8 physical cell inputs twice; all policies receive identical actual witnessed actions and outcomes.",
+    "private_coin": "SHA256('know33:private:coin:v1:'+seed+':'+t), first unsigned 64 bits / 2**64; shared exogenous coin for both fork worlds, no oracle labels given to policy.",
+    "schedule": "A t0..63; deep-cold-fork at t64; control A continues t64..191; treatment B1 or B2 t64..127 then A t128..191. The fork and switches are evaluator-private; model receives only x, a, y in sequence, with no phase marker, elapsed horizon, oracle map, or future outcomes.",
+    "holdout": "24 new paired worlds, 12 B1 and 12 B2; no prior HELD seed identity reuse; one new synthetic first-use only after prereg+implementation+focused tests+atlas+mandatory full Linux and Windows+previous-source read-only compatibility."
+  },
+  "models": {
+    "candidate": "8 independent (slow-A,fast-B) Beta(1,1) cell pairs; 4 local adjacent two-cell support units. Each cell sees its own observed x,y. A support unit reads only its two member-cell predictions and a single local likelihood-ratio scalar updated using its observed member, clip to [-8,8], with exponential forgetting 0.8 and hysteresis. Local score starts 2; activating fast when score<-2, slow when score>+2, otherwise retain prior state. For first 6 observed samples PER CELL initialize slow Beta only and fast remains Beta(1,1). Afterward active slow cell updates only if its current single event was more likely under slow than fast; otherwise quarantine (do not modify A). Active fast cell updates only fast Beta. Every cell has exactly two Beta heads; no growing cells or replay.",
+    "hmm": "Same 8 physical cells, each two Beta heads, first six observations per cell train slow only and leave fast Beta(1,1). Thereafter independent cell-local hidden-state probability with hazard 1/32, soft-weight evidence update of both heads after each one observed event; cannot see evaluator phase. Two heads exactly same hypothesis family, no local support communication. Both methods may record equivalent public metadata; report actual state size/CPU.",
+    "rolling": "One Beta head per cell refit from its last eight actual observed binary consequences for that cell, with same initial Beta(1,1); smaller capacity, non-primary conventional control.",
+    "single": "One Beta head per cell trained on all actually observed outcomes, smaller capacity and no protected state.",
+    "no_neighbor": "Same candidate two Beta heads and thresholds, but eight independent support scalars without neighbor sharing; stricter locally informed ablation, not assumed byte-equal. All state bytes accounted.",
+    "capacity": "Hard 8 causal cells, at most 2 Beta heads/cell, support units 4 in candidate or 8 in no-neighbor ablation, scores bounded [-8,8], no dynamic cell spawning, no global/privileged phase selector. Every method sees the same public 192 actions and consequences per fork. Record actual bytes and CPU, do not assert equal resource cost if not measured."
+  },
+  "budgets": {
+    "world_pairs": 24,
+    "unique_source_witnesses_per_pair": 320,
+    "unique_source_witnesses": 7680,
+    "model_level_observations_per_method_across_forks": 9216,
+    "prefix": 64,
+    "interference": 64,
+    "return": 64,
+    "public_cell_inputs": 8,
+    "actions": 2,
+    "candidate_support_units": 4,
+    "candidate_max_cell_heads": 16,
+    "score_queries_per_readout": 16,
+    "training": "A prefix=8 witnessed consequences per physical cell, no historical FIT. Each B or A interval=8 witnessed consequences per physical cell."
+  },
+  "metrics": {
+    "primary": "Expected Brier on 16 public (c,a) counterfactual queries under TRUE A law after 16 and 32 genuinely witnessed return A outcomes. Lower is better. No evaluator label enters learner.",
+    "secondary": [
+      "A-law Brier just after 64 observed A events, just after B stage and after k8,16,32,64 returning A actual observations",
+      "B-stage prequential expected Brier before every B action, and end-of-B B-law expected Brier",
+      "A-only no-switch fork false support-fast activations, old-A slow-state digests immediately after A vs after B, cold replay byte and readout equality",
+      "Per-family 12 paired worlds, actual source calls, cell/state bytes, counts of local messages, wall CPU, total model comparisons"
+    ],
+    "limits": "This is a novel synthetic cellular memory benchmark only, not a native Yggdrasil developmental substrate, real-world causal transfer, language competence, or proof of general intelligence."
+  },
+  "frozen": {
+    "P0": "Every 16-step public action tape covers all eight physical input cells twice; source and other arms observe identical public witness tapes with disjoint frozen seeds and no hidden phase labels.",
+    "P1": "Mean A-law expected Brier after true 64-observation A prefix for candidate <=0.235 (substantive learned A) on both 12-world families.",
+    "H1": "Candidate after 16 and 32 witnessed A-return actions has at least 0.005 lower mean A-Brier than EACH of hmm, rolling and no_neighbor, separately in BOTH 12-world B families, and wins >=9/12 per family vs hmm at k32.",
+    "H2": "Candidate exact live slow-A Beta state survives B interval unchanged after first six observations per cell in >=20/24 paired worlds; frozen immutable copies alone do not count, and B-stage old-A checksum must be verified.",
+    "H3": "Candidate B-stage mean prequential B-Brier <= hmm +0.005 in EACH family; protection cannot simply stop B learning.",
+    "H4": "No-switch AAA false fast mode switches <=2/24 worlds; no privileged phase, duplicate/invalid event rejected, cold restore has equal bytes and 16 forecast outputs, all source/event budgets exact.",
+    "classification": "SOURCE_ONLY_DEV_SUPPORTED iff P0,P1,H1,H2,H3,H4 pass; otherwise SOURCE_ONLY_DEV_NO_GO_OR_MIXED. Always SCIENTIFIC_NO_GO_NOT_NATIVE and no model promotion. If source contract/score leakage/CI fails => INVALID_ENGINEERING. Preserve negative and do not replay or retune consumed cohort.",
+    "stop": "No post-first-use change to seeds, thresholds, model rules or horizons. No second HELD access. Original-world issue #426 stays blocked."
+  }
+}
