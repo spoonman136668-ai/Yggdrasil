@@ -1,0 +1,97 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "WSP-212",
+  "date": "2026-11-19",
+  "role": "Independent training-gaps research contributor; not the Amalgam integration owner.",
+  "parent": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "head": "0764c4ff4382df72e67bb2100caa3300b932616a",
+    "pr": 1336,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Freeze and qualify a genuinely converged, cross-platform-stable, fully trained conventional rank-4 ALS/full-refit comparator; WSP211 Adam plateau failure and OS disagreement are preserved as failed controls and not replayed.",
+  "hypothesis": "Exact rank4 coordinate normal-equation full-refit on fixed source-free low-rank data can reach the unchanged 3-check objective plateau at every B0–B3 stage without cross-platform metric divergence.",
+  "cohort": {
+    "status": "unopened at preregistration",
+    "generator": "Independent integer-valued SHA256 factor components from WSP212|seed|allele|position|dimension, component ((int(SHA256)[0] mod 7)-3)/3; synthetic target = dot of same-allele latent vectors; neither trained arm receives factors, generator features, test targets, or held labels as fit information.",
+    "worlds": [
+      {
+        "seed": 21201,
+        "topology": "hub",
+        "n": 24
+      },
+      {
+        "seed": 21202,
+        "topology": "complete",
+        "n": 12
+      },
+      {
+        "seed": 21203,
+        "topology": "hub",
+        "n": 24
+      },
+      {
+        "seed": 21204,
+        "topology": "complete",
+        "n": 12
+      }
+    ],
+    "split": "Existing WSP200 canonical whole pair groups; FIT B0-B3 only used for fits; PUBLIC_DEV generated only after all four stages converge; VALID and RESERVED never computed.",
+    "forbidden_seeds": [
+      21011,
+      21012,
+      21013,
+      21014,
+      21101,
+      21102
+    ],
+    "source_free": true,
+    "original_gfp_first_use": false
+  },
+  "algorithm": {
+    "rank": 4,
+    "ridge": 0.2,
+    "initialization": "Unmodified WSP200 hash-signed 0.01 rank4 initialization, identical across arms",
+    "refit": "Unmodified WSP200 rank4 exact coordinate normal-equation solve and full-fit cumulative evidence; 8 ordinary sweeps per check, 100 checks maximum per stage = 800 sweeps cap",
+    "convergence": "Three consecutive relative objective decreases in [0, 1e-6], with objective increases beyond 1e-9 hard fail. No tuning after cohort access.",
+    "controls": [
+      "Standardized zero-interaction predictor, without fitted parameters",
+      "Inherited WSP200 blocked full_refit conventional ALS; no Adam replay or WSP210/211 primary results"
+    ],
+    "data_access": "FIT stage samples are cumulative; B0 historical samples remain frozen for retention measurement. Negative control does not fit."
+  },
+  "metrics": [
+    "Per-stage stage/rows/unique sample and group receipts, exact elapsed wall ns, actual sweeps/solve count, objective and B0 retention MSE",
+    "Exact within-OS checkpoint bytes / SHA256 / all B0 prediction parity after cold restore",
+    "Held PUBLIC_DEV pair-group RMSE for trained comparator versus standardized zero control, only if all stages converged",
+    "Per-stage platform-neutral normalized MSE/objective and held RMSE; cross-OS automated numeric comparison at abs 1e-8, relative 1e-8, not bitwise checkpoint equality",
+    "No FIT/PUBLIC_DEV group overlap, no forbidden dataset access, no source first use, source receipt"
+  ],
+  "outcome_rules": {
+    "engineering_pass": "Both OS source-pinned mandatory root+WSP200+WSP209+WSP210 smoke+WSP211 regression+WSP212 regression plus G29 and clean checkout; independent cross-OS parity check passes.",
+    "control_qualified": "All four new worlds finish B0-B3, each stage passes plateau within 800 actual sweeps, per-OS cold restore byte-equivalent and prediction parity; finite metrics; platform-normalized metrics agree within frozen 1e-8 abs/relative bound. No use of withheld labels before fit completes.",
+    "control_unqualified": "Any failure of convergence, metric parity, source fence, cold restore, or stage integrity; reject results, preserve evidence without seed reuse/retuning.",
+    "learning_diagnostic": "Report zero-vs-full-refit held RMSE and B0 retention without enforcing a post hoc threshold; source-free control qualification is not evidence for direct-weight superiority or native intelligence.",
+    "next_on_pass": "Only subsequently freeze and evaluate a fully disjoint source-free direct-weight-vs-qualified-conventional comparison, with matched info/actions/compute and genuine held transfer; separately authorize protected original first use.",
+    "next_on_fail": "Preserve negative calibration; do not rerun/tune 21201-21204."
+  },
+  "platform": {
+    "python": "3.12 standard library",
+    "os": [
+      "ubuntu-24.04",
+      "windows-2022"
+    ],
+    "runner": "GitHub-hosted only",
+    "workflows": "Auto PR workflow for exact candidate, source-only, no new scheduler/owner controller."
+  },
+  "permissions": {
+    "native_yggdrasil_training": false,
+    "real_data_first_use": false,
+    "amalgam_model_or_checkpoints": false,
+    "canonical_promotion": false,
+    "merge": false,
+    "accepted_main_write": false,
+    "paid_api": false,
+    "deploy": false
+  }
+}
