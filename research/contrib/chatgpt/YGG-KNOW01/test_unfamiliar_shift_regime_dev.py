@@ -29,6 +29,16 @@ class Know21Tests(unittest.TestCase):
         self.assertFalse({6011, 6121, 6247, 6337}.intersection(private_seeds))
         self.assertEqual(protocol["budgets"]["per_policy_actions"], 1152)
 
+    def test_cross_family_private_seed_schedule_rejected(self):
+        from unfamiliar_shift_regime_dev import validate_world
+        own = FAMILIES[0]
+        foreign = FAMILIES[1]
+        validate_world(own[2][0], 0, own[1])
+        with self.assertRaisesRegex(ValueError, "FROZEN_SEED_SCHEDULE_PAIR"):
+            validate_world(own[2][0], 0, foreign[1])
+        with self.assertRaisesRegex(ValueError, "FROZEN_SEED_SCHEDULE_PAIR"):
+            evaluate_world("native", PUBLIC_SCENES[0], own[2][0], 0, foreign[1])
+
     def test_hidden_causal_regime_returns_on_even_switches(self):
         for name, shifts, seeds in FAMILIES:
             for role in (0, 1):

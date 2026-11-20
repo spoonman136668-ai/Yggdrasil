@@ -60,11 +60,12 @@ def ensure_protocol():
 
 
 def validate_world(seed, role, shifts):
-    require(type(seed) is int and any(seed in seeds for _, _, seeds in FAMILIES),
-            "PRIVATE_SEED")
+    require(type(seed) is int and
+            type(shifts) is tuple and any(
+                seed in seeds and shifts == frozen_shifts
+                for _, frozen_shifts, seeds in FAMILIES),
+            "FROZEN_SEED_SCHEDULE_PAIR")
     require(type(role) is int and role in (0, 1), "PRIVATE_ROLE")
-    require(type(shifts) is tuple and shifts in tuple(s for _, s, _ in FAMILIES),
-            "FROZEN_SCHEDULE")
 
 
 def optimal_action(role, t, shifts):
