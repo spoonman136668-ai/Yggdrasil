@@ -207,6 +207,7 @@ def held_world(seed,family,selected,witness=private_y):
         ms={k:cold(m) for k,m in base.items()}
         score={phase:{name:{"brier":[],"regret":[]} for name in ARMS}
                for phase in PHASES}
+        random_policy_regret={phase:[] for phase in PHASES}
         initial_admit=ms["candidate"].b_admissions
         A_retained=True
         B128=None;B192=None
@@ -217,6 +218,9 @@ def held_world(seed,family,selected,witness=private_y):
             x=x_for(t)
             q=q_for(graph,x)
             y=B[t] if graph==gb else A[t]
+            q0,q1=q_for(graph,x_for(t,0)),q_for(graph,x_for(t,1))
+            random_a=random_choice(t)
+            random_policy_regret[phase].append(max(q0,q1)-(q1 if random_a else q0))
             for name,m in ms.items():
                 score[phase][name]["brier"].append(brier(m.prob(x),q))
                 score[phase][name]["regret"].append(action_regret(m,t,graph))
@@ -237,6 +241,8 @@ def held_world(seed,family,selected,witness=private_y):
                             for name,metrics in arms.items()}
                     for phase,arms in score.items()},
           "B_admissions":ms["candidate"].b_admissions-initial_admit,
+          "random_policy_regret":{phase:sum(vals)/64 for phase,vals in random_policy_regret.items()},
+          "oracle_policy_regret":{phase:0.0 for phase in PHASES},
           "bytes":{name:len(m.checkpoint()) for name,m in ms.items()},
           "time_ns":t_ns,
         }
@@ -246,6 +252,8 @@ def held_world(seed,family,selected,witness=private_y):
       "A_retained":A_retained,
       "B_retained":B128==B192,
       "sham_false_B_admission":reports["sham"]["B_admissions"]>0,
+      "random_policy_regret":reports["treatment"]["random_policy_regret"],
+      "oracle_policy_regret":reports["treatment"]["oracle_policy_regret"],
       "bytes":reports["treatment"]["bytes"],
       "time_ns":reports["treatment"]["time_ns"],
       "source_calls":384,"model_events_per_arm":448,
@@ -279,7 +287,9 @@ def proof():
                 for control in ("hmm","symbolic")) for x in rows)
             for metric in ("brier","regret")}
         cohort[family]={"prefix_brier":sum(x["prefix_brier"] for x in rows)/12,
-                        "means":means,"wins_vs_best_strong":wins}
+                        "means":means,"wins_vs_best_strong":wins,
+                        "random_policy_regret":{phase:sum(x["random_policy_regret"][phase] for x in rows)/12 for phase in PHASES},
+                        "oracle_policy_regret":{phase:0.0 for phase in PHASES}}
     H={"P0":len(worlds)==24,
        "P1":all(cohort[f]["prefix_brier"]<=.23 for f in ("B1","B2"))}
     H["H1"]=all(

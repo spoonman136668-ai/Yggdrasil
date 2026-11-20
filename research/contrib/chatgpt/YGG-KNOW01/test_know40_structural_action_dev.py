@@ -52,6 +52,9 @@ class Know40MockOnly(unittest.TestCase):
         self.assertEqual(world["model_events_per_arm"],448)
         self.assertEqual(set(world["scores"]),{"B_first","A_return","B_second"})
         self.assertEqual(set(world["bytes"]),set(ARMS))
+        self.assertEqual(set(world["random_policy_regret"]),{"B_first","A_return","B_second"})
+        self.assertTrue(all(0<=v<=.7 for v in world["random_policy_regret"].values()))
+        self.assertTrue(all(v==0 for v in world["oracle_policy_regret"].values()))
         self.assertLess(world["bytes"]["candidate"],4096)
 
     def test_full_stream_cold_and_strict_types(self):
