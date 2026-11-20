@@ -189,10 +189,21 @@ def gauge_variant(donor: dict, seed: int, variant: int) -> dict:
 
 def shuffled_route_sham(donor: dict) -> dict:
     """Same tensors and capacity with output routes paired to wrong units."""
+    # Shuffle *normalized route coefficients*, then express them in each
+    # receiving hidden unit's own scale; otherwise a mismatched scale could
+    # make the sham an invalid donor artifact instead of a legitimate control.
+    scales = [next(abs(v) for v in row if v) / 2 for row in donor["hidden"]]
+    coefficients = [
+        [int(channel[j] * scales[j]) for j in range(len(scales))]
+        for channel in donor["readout"]
+    ]
+    displaced = [channel[1:] + channel[:1] for channel in coefficients]
     return {"hidden": [row[:] for row in donor["hidden"]],
             "bias": donor["bias"][:],
-            "readout": [channel[1:] + channel[:1]
-                        for channel in donor["readout"]]}
+            "readout": [
+                [channel[j] / scales[j] for j in range(len(scales))]
+                for channel in displaced
+            ]}
 
 
 def run_frozen_development() -> dict:
