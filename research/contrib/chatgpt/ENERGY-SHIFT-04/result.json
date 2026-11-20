@@ -1,0 +1,147 @@
+{
+  "schema": "yggdrasil.external-research-result.v1",
+  "experiment_id": "ENERGY-SHIFT-04",
+  "phase": "PRIMARY",
+  "classification": "MIXED_NO_GO",
+  "native_scientific_qualified": false,
+  "source_free_synthetic": true,
+  "source_commit": "60d67b2a8032eddaea5aaaf42dda7996e82b414c",
+  "source_blob_sha1": "e459c02183dc37bfae9dec46cdd9db10aafda392",
+  "source_sha256": "492b44b123ac9fe77b0c0bfc354b63d27087e2c809c2f9ee3a531631bdfdf339",
+  "preregistration_final_commit": "5a14433b6edc4a5692969704b010ebc81d10914f",
+  "data_spec_sha256": "71bc2c228e6ad5222153a75e060682f0f36676b292ef520ef2d988312f6180ee",
+  "worlds": 36,
+  "train_observations": 2520,
+  "held_transitions": 46080,
+  "seed_count": 12,
+  "primary_seeds": [
+    92501,
+    92517,
+    92519,
+    92533,
+    92549,
+    92557,
+    92569,
+    92581,
+    92593,
+    92603,
+    92611,
+    92627
+  ],
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "primary_raw": {
+    "sha256": "ee15577d91135e1aaa34bf0988dbb6c45d89f069c938d462d112c62c16a5c548",
+    "bytes": 173386,
+    "location": "local evaluation runtime only; NOT uploaded to GitHub"
+  },
+  "smoke_raw": {
+    "sha256": "969f838420c3b6703003a7159af65ed0c7e5b514de48829f92802e385313f33c",
+    "source_free_smoke_worlds": 3
+  },
+  "full_cohort_process_cpu_seconds": 0.710096556,
+  "aggregates": {
+    "local_repair": {
+      "brier": 0.3599358,
+      "action0_brier": 0.3264062,
+      "action1_brier": 0.3934655,
+      "all_in_cpu_seconds": 0.09368361,
+      "mean_snapshot_bytes": 2100.5
+    },
+    "global_change_bayes": {
+      "brier": 0.358495,
+      "action0_brier": 0.3264062,
+      "action1_brier": 0.3905838,
+      "all_in_cpu_seconds": 0.09381288,
+      "mean_snapshot_bytes": 2102
+    },
+    "change_point_bayes": {
+      "brier": 0.3632842,
+      "action0_brier": 0.3264062,
+      "action1_brier": 0.4001623,
+      "all_in_cpu_seconds": 0.09449436,
+      "mean_snapshot_bytes": 2104
+    },
+    "decay_dirichlet": {
+      "brier": 0.3960166,
+      "action0_brier": 0.3674916,
+      "action1_brier": 0.4245416,
+      "all_in_cpu_seconds": 0.09440185,
+      "mean_snapshot_bytes": 2090.3
+    },
+    "reset_dirichlet": {
+      "brier": 0.3688039,
+      "action0_brier": 0.3264062,
+      "action1_brier": 0.4112015,
+      "all_in_cpu_seconds": 0.09355523,
+      "mean_snapshot_bytes": 2102.2
+    },
+    "static_dirichlet": {
+      "brier": 0.4181517,
+      "action0_brier": 0.3264062,
+      "action1_brier": 0.5098973,
+      "all_in_cpu_seconds": 0.09384732,
+      "mean_snapshot_bytes": 2101.9
+    },
+    "oracle_structured_bayes": {
+      "brier": 0.2712073,
+      "action0_brier": 0.271875,
+      "action1_brier": 0.2705396,
+      "all_in_cpu_seconds": 0.22294411,
+      "mean_snapshot_bytes": 2042
+    }
+  },
+  "scenario_action1": {
+    "LOCAL_SWAP": {
+      "local_repair": 0.37988338035988184,
+      "static_dirichlet": 0.4859778970452447,
+      "change_point_bayes": 0.3882408712202654,
+      "global_change_bayes": 0.4301973003030796,
+      "oracle_structured_bayes": 0.26891119114745227,
+      "candidate_change_worlds": 12
+    },
+    "GLOBAL_REVERSE": {
+      "local_repair": 0.4645610839571743,
+      "static_dirichlet": 0.7077620036934441,
+      "change_point_bayes": 0.46709386620406895,
+      "global_change_bayes": 0.40537816323174103,
+      "oracle_structured_bayes": 0.2716634114599761,
+      "candidate_change_worlds": 12
+    },
+    "NULL": {
+      "local_repair": 0.3359519275161588,
+      "static_dirichlet": 0.3359519275161588,
+      "change_point_bayes": 0.34515213741570266,
+      "global_change_bayes": 0.3361758973518547,
+      "oracle_structured_bayes": 0.27104429278997577,
+      "candidate_change_worlds": 0
+    }
+  },
+  "frozen_rule_checks": {
+    "best_fitted_conventional": "global_change_bayes",
+    "best_control_minus_candidate_action1_brier": -0.0028816769821798927,
+    "gain_over_static_on_local_swap": 0.10609451668536285,
+    "no_null_change_false_positive": "PASS_0_OF_12_FALSE",
+    "serialized_historical_readouts": "PASS_36_OF_36_JSON_ROUNDTRIP_ONLY",
+    "protected_action0": "PASS",
+    "all_in_cpu_ratio_candidate_to_best_control": 0.998622065526845,
+    "accuracy_gain_ge_0_01_vs_best_fitted": "FAIL",
+    "efficiency_gain_ge_2x_with_noninferiority": "FAIL",
+    "old_knowledge_retention_across_independent_cold_process": "UNVERIFIED",
+    "native_scientific_gain": "NO_GO",
+    "source_first_use_and_dual_platform_acceptance": "NOT_PERFORMED"
+  },
+  "warnings": [
+    "Raw 173386-byte primary result exists only in local runtime, with SHA256 recorded; repository has summary and rounded per-world metrics only.",
+    "primary-metrics.csv retains 36 paired world records rounded to six decimals; do not treat as bit-exact raw receipt.",
+    "Do not rerun consumed primary seeds or retune thresholds on outcomes.",
+    "An in-process JSON roundtrip verifies preservation of saved readouts, NOT a genuine independent-process cold restoration.",
+    "All-in CPU counts shared generation once per arm plus fit, serialization, restore and held scoring; no full native hardware or long-duration optimization claim.",
+    "Exact structured Bayesian oracle knows the true candidate source family but not hidden cycle/mode/shift: correct-specification scoring floor, not target to outperform."
+  ],
+  "deployment": "NONE",
+  "accepted_main_changed": false,
+  "owner_training_changed": false
+}
