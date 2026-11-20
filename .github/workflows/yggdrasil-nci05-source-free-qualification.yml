@@ -19,6 +19,7 @@ jobs:
           python-version: "3.12"
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-05 -p "test_*.py" -v
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-06 -p "test_*.py" -v
+      - run: python -m unittest discover -s tests -p "test_*.py" -v
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: git diff --exit-code
   windows:
@@ -36,5 +37,6 @@ jobs:
           python-version: "3.12"
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-05 -p "test_*.py" -v
       - run: python -m unittest discover -s research/contrib/chatgpt/NCI-NOVEL-06 -p "test_*.py" -v
+      - run: python -m unittest discover -s tests -p "test_*.py" -v
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: git diff --exit-code
