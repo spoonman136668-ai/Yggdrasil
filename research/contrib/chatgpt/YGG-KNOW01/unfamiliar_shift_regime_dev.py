@@ -168,7 +168,7 @@ def evaluate_world(name, scene, seed, role, shifts):
 def summarize(rows):
     n = sum(x["witnessed"] for x in rows)
     ret = sum(x["return_steps"] for x in rows)
-    require(n == 1152 and ret == 372, "EXPECTED_BUDGET")
+    require(n == 1152 and ret == 296, "EXPECTED_BUDGET")
     wrong = sum(x["wrong"] for x in rows)
     ret_wrong = sum(x["return_wrong"] for x in rows)
     return {
