@@ -81,6 +81,44 @@ read-only cold-restore check. Independent owner restoration/lease and genuine
 mastered-regime source custody remain unverified. Exact-source Linux/Windows
 full regression is required.
 
+## Original archived P0 cold-policy replay (non-owner engineering qualification)
+
+The existing Quine scoped CI now reuses the already-produced **original
+research-only** CKAD26 parent, JEPA2-03 parent, and 1,025-witness Amalgam P0
+joint archive. These are downloaded from existing GitHub runs
+`44391641043`, `44420677720`, and `44499793023`, respectively, using
+`actions: read` credentials. The joint archive has independent exact file
+pins: native `5720151e18b52f7219763027c2ad9c7c37476e099b4334e42417615adb7f959d`,
+native ledger `55697acbbe953b5cf6878cecfd3286b068f665fc3c6f78334d241466c4beb274`
+and complete Linux-produced joint
+`576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8`.
+The independent original Windows joint archive has a **different** valid
+SHA-256 and is not silently substituted.
+
+`archive_p0_cold_replay.py` performs **two separate real
+`NativeCausalAmalgam.restore` operations** with these exact unchanged
+source parents. It checks all 1,025 witnessed episodes, 8 observed paired
+public views, byte equality of the saved joint and native states, and the
+existing `verify_selector_replay` result on restored model predictions.
+It exercises the full two-stage policy through each of the actual P0
+native, direct JEPA and temporal JEPA **trained forecasters**. Since this
+historical P0 does **not** itself have an authenticated trained selector,
+the route-selection evidence is an **explicit artificial engineering fixture**,
+using all 20 supported addresses to select each branch deterministically.
+This is never reported as learned routing, new trained weights or scientific
+improvement. It makes no source calls, charged interventions or updates.
+Independent source-only tests verify all addresses, fixture labeling, and
+pin-failure behavior without downloading archives.
+
+**Boundary:** This validates source-pinned *archived experimental* recovery
+and effective action-readout parity across fresh reconstructions on the two
+CI platforms. It cannot certify the actual live owner-host cold restore,
+an accepted trained selector, mastered causal regimes, fresh A→B→A source
+first-use, protection of unseen reward laws, or deployment. The existing
+owner remains responsible for persistent receipt storage and authorization.
+Exact Linux and Windows qualification must PASS before claiming this
+engineering gate complete.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
