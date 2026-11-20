@@ -91,3 +91,57 @@ training job, scheduler, new runner, controller, merge or deployment changed.
 LINEAGE01 owner-host continuity remains CONTINUITY_UNVERIFIED.
 Original source first-use blocked by issue #426; 288 protected LR-92AP worlds
 untouched. Independent contributor PR #1323 remains draft and unmerged.
+
+INDEPENDENT ARCHIVED-RESULT AUDIT — COMPLETED AFTER THE NATIVE RUN
+------------------------------------------------------------------
+Read back the existing GitHub Actions result artifact ID 14590101611,
+not a new experiment. All 24 per-world records and 2,158 episodes per
+arm independently matched their frozen world public-SHA and original
+conventional-control CSV. Both native arms had nonempty, SHA-pinned
+cold restore checkpoints; exact committed world-generator, harness and
+protocol Git blob identities were verified locally. Recomputed all four
+macro Brier means directly from per-world terminal scores and verified
+all per-seed summaries; decision remained DEVELOPMENT_NO_GO. This audit
+does not re-run the native learner or constitute cross-platform parity.
+Full JSON result (63,011 bytes) SHA-256:
+  720e94913d421bfb97537d9f78d1898bb945b9118d1563b38b37eda9314b9241
+GitHub Actions JSON audit receipt (237 bytes) SHA-256:
+  08bfe57ec29cc345d42afd08dbe759b1937045c2cc3d2e0a391a570ba71ed00b
+Original GitHub Actions artifact ZIP SHA-256:
+  70422e875038f0ac714a16c7248101a36f93ca58e14be626e83a591399656138
+
+24-world unweighted macro observed terminal Brier (lower is better):
+  native_exact_base    B 0.2220565842, early A-return 0.1937855309
+  native_exact_stream  B 0.2146895916, early A-return 0.2040039099
+  beta_full            B 0.2391555183, early A-return 0.2099171915
+  beta_window32        B 0.2296413119, early A-return 0.2590312028
+
+IMPORTANT PRE-SPECIFIED ABLATION / POST-RESULT SELECTION BOUNDARY
+----------------------------------------------------------------
+The native_exact_base non-stream arm was included prospectively as an
+ablation; retrospectively applying the stream's continuation threshold
+to THIS OTHER ARM yields:
+  seed 89051001 base B 0.228247093105, return16 0.172225260085;
+  seed 89051002 base B 0.215866075303, return16 0.215345801707.
+The base arm outperforms both conventional controls on B and passes the
+0.01 return improvement comparison for each seed (approx 0.02179 and
+0.01047). This is **EXPLORATORY ONLY** because the frozen primary gate
+explicitly selects native_exact_stream, not post-hoc best native arm,
+and the two tabular Beta controls do not exhaust the conventional-model
+baseline space. The original DEVELOPMENT_NO_GO decision is unchanged.
+
+Interpretation: native source has an interesting adaptation/retention
+tradeoff, and context-stream activation may degrade retained competence
+relative to native base on one seed. A NEW disjoint, preregistered study,
+not further tuning or promotion on these now-exposed 24 worlds, is needed
+to test whether the simpler native base actually has a reproducible
+advantage over fully trained conventional and exact symbolic controls.
+
+ENGINEERING REGRESSION RECHECK AFTER WORKFLOW RESTORATION
+-------------------------------------------------------
+G29 exact-head CI run #44650180646 completed SUCCESS on the restored
+research head 1f062f2d58d45e9fad05458c661bee5ef0df4d84:
+Linux PASS, Windows PASS (source-index checks only). The prior run's
+Linux/Windows G29 workflow-blob failure was infrastructure/index drift
+and is now closed. This does NOT provide full final native regression,
+Windows native-run parity, or acceptance authority.
