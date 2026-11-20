@@ -1,0 +1,119 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE24-LOCAL-SOFT-CAUSAL-BRIDGE-20261120",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "eb825ad1fb3b0722da398e9b92794c4ea0f28d7d",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/commit/447bf9d7853a96d3d219614d55b99718e18fd46e",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44790314154"
+  ],
+  "question": "Can locally rewired causal graph predictions be blended prequentially with a trusted preserved source graph to eliminate Gate23 online B adaptation regret and outperform matched soft/global and strong Bayesian-hazard controls on old-world return?",
+  "hypothesis": "A local-neighbor graph with source-reliability abstention and 16-observation prequential soft evidence will detect causal changes quickly while restoring trusted source memory on return. Unique structural gain requires outperforming the same soft bridge fitted globally with identical observations, and strong Bayes.",
+  "frozen_design": {
+    "seeds": [
+      [
+        "pair_xor",
+        161000,
+        32
+      ],
+      [
+        "mux3",
+        162000,
+        32
+      ],
+      [
+        "essential3",
+        163000,
+        32
+      ],
+      [
+        "unary",
+        164000,
+        32
+      ],
+      [
+        "stationary3",
+        165000,
+        32
+      ],
+      [
+        "noise_fair",
+        166000,
+        32
+      ]
+    ],
+    "trials": 192,
+    "worlds": "Reuse Gate23 deterministic generator, with *new* disjoint seeds, six bit interventions and hidden remapped parents; A64 training labels; B48 then R48 feedback; 16 unseen within each phase held labels at each phase end.",
+    "source_reference": "Exact Gate23 source Git blob f465640a50ce513b0af810f91715ab1090c7edfb, commit 53f65d218c2692fabbd78ec7332eb2425a93ebb5; no historical test result reused.",
+    "data_budget": "Each arm sees A64 + the identical 96 chronologically visible feedback events; held B and R labels never participate in fitting or switch decisions.",
+    "compute_budget": "Exactly one local neighbor-set score evaluation every eight events for local graph. Global bridge scans all <=3-parent masks every eight events. Both use same 16-event evidence buffer and source state; record candidate evaluations. Bayesian hazard and all-history fixed use their own greater operations (no equal-FLOP/energy claim).",
+    "persistent_budget": "Each bridge serialized to exactly 384 bytes: 128 for source, 192 for feedback, 12 metadata + 32 hard-evidence bytes + 1 local-graph mask + 2 local-work bytes + 1 soft evidence count + 16 signed quantized evidence bytes; beyond 384 unsupported.",
+    "phase_guard": "True A-B-R/stationary/noise labels never enter predictors or structural edits, only final evaluator scoring.",
+    "source_reliability": "Original Gate23 source A64 LOO Brier <=0.20 otherwise 0.5 null with no structural mutation. Original hard detector remains a frozen baseline scored on exactly the new seeds.",
+    "model_universe": "6 binary physical sensors, all 1..3 parent masks, Laplace-smoothed clipped conditional probabilities; A memory immutable."
+  },
+  "mechanism": {
+    "initialization": "Copy Gate23 source selector, reliability gate and source evidence; initialize localMask to original source mask, local evidence FIFO empty, local-work counter zero. Legacy hard detector predictions are also recorded as a baseline.",
+    "local_rewire": "At every 8 received B/R events, if A source is reliable and at least 8 stream labels are available, evaluate all one-edge add/delete/swap neighbors of current localMask on recent up-to-32 labeled feedback rows, use penalized leave-one-out Brier (0.003*2^k). At most one edit per checkpoint, if better neighbor improves objective >=0.006; otherwise hold mask.",
+    "global_bridge_ablation": "Same soft mixing rule, same source, same data and cadence, but globally reselect the mask by a separately coded exhaustive <=3-parent subset selector every 8 feedback events. No local structural edits.",
+    "soft_prequential": "At each feedback observation, before incorporating its label, compare immutable source prediction with last-up-to-32 feedback local/global graph prediction using clipped Bernoulli likelihood. Write signed byte round(32*ln(Palt(y)/Psrc(y))) clipped to [-127,127] into latest-16 FIFO. Mixing probability before the next prediction is 1/(1+exp(-sumFIFO/32)), fixed prior logit 0; when fewer than 8 feedback rows, return source probability. Soft predictor is weighted average of source A and recent-32 model probabilities. Source-unreliable means p=0.5 and no local edits.",
+    "hard_comparator": "Gate23 original hard mode-source detector, unmodified policy, scored on new seeds; still records 384-byte exact in-process restoration and source-state retention.",
+    "other_controls": "Rolling global MAP 32, growing static, source frozen, Bayesian hazard source+rolling posterior (hazard 1/64), p=.5 null; all originally in Gate23 and read the same chronological data.",
+    "cold_restore": "At step B48 and R72, reinstantiate local and global 384-byte states into separate in-process learners, continue and check exact bytes/predictions; not cross-process/native long retention."
+  },
+  "metrics": {
+    "primary": "B48 and R48 prequential Brier computed prediction-before-label, related pooled 128 paired seed worlds; B and R held-out Brier separately with 95% normal paired CI.",
+    "secondary": "False structural rewires and hard mode switches in noise/stationary, source-return confidence, local vs global candidate evaluation counts, byte continuity, immutable source forecasts.",
+    "falsification": "A soft bridge that cannot beat the same global soft rule (or Bayesian hazard) is not a unique self-assembling topology success."
+  },
+  "frozen_thresholds": {
+    "related_B_prequential_gain_vs_G23_hard_min": 0.02,
+    "related_B_prequential_gain_vs_G23_hard_CI_lower_positive": true,
+    "related_B_prequential_regression_vs_rolling_max": 0.015,
+    "related_B_prequential_regression_vs_Bayes_max": 0.015,
+    "related_R_held_gain_vs_rolling_min": 0.01,
+    "related_R_held_gain_vs_rolling_CI_lower_positive": true,
+    "related_R_held_gain_vs_Bayes_min": 0.005,
+    "related_R_held_gain_vs_Bayes_CI_lower_positive": true,
+    "related_R_held_gain_vs_global_soft_min": 0.005,
+    "related_R_held_gain_vs_global_soft_CI_lower_positive": true,
+    "related_B_prequential_regression_vs_global_soft_max": 0.01,
+    "noise_false_local_graph_edit_trials_max_fraction": 0.2,
+    "stationary_false_local_graph_edit_trials_max_fraction": 0.2,
+    "noise_B_or_R_held_regression_vs_null_max": 0.025,
+    "source_retained_immutable_all": true,
+    "phase_held_disjoint_all": true,
+    "cold_both_384byte_replays_exact_all": true,
+    "comparator_work_counts_finite_all": true
+  },
+  "classification_rules": {
+    "supported": "All 18 frozen thresholds PASS; then synthetic development signal only, independent reproduction/native model qualification separate.",
+    "mixed": "Any threshold fails, preserve negative and any bounded positive as a component result but overall scientific NO-GO.",
+    "invalid": "No pre-result source freeze; contamination/held leakage; outcome-driven thresholds; source branch drift; unreported comparator advantage."
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate24/**",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "prohibited_after_primary_run": [
+    "seed/threshold changes",
+    "algorithm changes",
+    "phase labels to learners",
+    "reuse consumed seeds as new trials",
+    "native original first-use without owner custody"
+  ],
+  "authority": {
+    "research_only": true,
+    "keep_draft": true,
+    "accepted_ref_mutation": false,
+    "production_authority": false,
+    "controller_or_queue_authority": false,
+    "native_first_use": false,
+    "scientific_promotion": false
+  }
+}
