@@ -1,0 +1,164 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GKD-04",
+  "contributor": "chatgpt_connector_caller_reported",
+  "contribution_class": "controlled-compiler-feasibility",
+  "exact_parent_sha": "f6adb8eec0c78ad3e51b438aad4c035399359d4d",
+  "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "question": "Can structured GPT-authored causal claims be compiled by one generic arithmetic AST and SI-unit-checking compiler into standalone tokenless numeric state without manually encoding each formula?",
+  "hypothesis": "Four domain-distinct structured assistant claims compile to byte-stable bounded state and match independent textbook exact symbolic controls on 1024 synthetic inputs. The same compiler accepts dimensionally correct but false formulas, showing that empirical evidence is necessary.",
+  "novelty": "GKD-01..03 manually translate donor rules and test numeric correction; this tests general response-as-structured-data compilation only. Other real physical intervention experiments in WSP-183/184/189/190 already exist, so do not duplicate them.",
+  "source": "The assistant's own structured donor.json authored after preregistration, frozen before any score. Producing source used GPT inference. No donor weights or unstructured-language extraction.",
+  "claims": [
+    {
+      "id": "ohmic_heat",
+      "inputs": [
+        "V",
+        "R",
+        "t",
+        "m",
+        "c"
+      ],
+      "expression": "V*V*t/(R*m*c)",
+      "target": "K",
+      "assumptions": "ideal steady DC; all Joule energy thermalized, no thermal loss",
+      "ranges": [
+        [
+          1,
+          24
+        ],
+        [
+          0.5,
+          50
+        ],
+        [
+          0.1,
+          20
+        ],
+        [
+          0.05,
+          10
+        ],
+        [
+          100,
+          5000
+        ]
+      ]
+    },
+    {
+      "id": "hydrostatic",
+      "inputs": [
+        "rho",
+        "g",
+        "h"
+      ],
+      "expression": "rho*g*h",
+      "target": "Pa",
+      "assumptions": "static incompressible fluid",
+      "ranges": [
+        [
+          800,
+          1200
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          0,
+          50
+        ]
+      ]
+    },
+    {
+      "id": "hooke",
+      "inputs": [
+        "k",
+        "x"
+      ],
+      "expression": "k*x",
+      "target": "N",
+      "assumptions": "linear spring restoring force magnitude",
+      "ranges": [
+        [
+          0.1,
+          300
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    },
+    {
+      "id": "kinetic",
+      "inputs": [
+        "m",
+        "v"
+      ],
+      "expression": "0.5*m*v*v",
+      "target": "J",
+      "assumptions": "classical nonrelativistic kinetic energy",
+      "ranges": [
+        [
+          0.1,
+          50
+        ],
+        [
+          0,
+          30
+        ]
+      ]
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      1441,
+      2442,
+      3443,
+      4444
+    ],
+    "cases_per_claim": 256,
+    "total_cases": 1024,
+    "synthetic_rng": "xorshift32 state=seed, u=(state>>>0)/4294967296; input=min+(max-min)*u; per-claim one seed from ordered list; zero heldout real observations.",
+    "unit_dimensions": "5 SI base-exponent axes kg,m,s,A,K; every donor input/output declares vector. Compiler does dimension algebra; this is not independent verification of donor units.",
+    "grammar": "JSON AST nodes {input:string}, {const:number}, {op:add|sub|mul|div,args:[expr,expr]}; depth<=12, <=32 ops, <=8 inputs; no arbitrary code/eval, no tokenizer or inference in recipient.",
+    "binary": "16B header GD04+version+counts+outputReg+five signed SI exponents+reserved;32B SHA256 source claim digest; per-input 16B min/max; each instruction 12B opcode/dest/a/b/float64; final32B SHA256 integrity digest. Runtime uses numbers only and enforces bounds.",
+    "controls": [
+      "Independent formula-specific exact symbolic reference: expected tie",
+      "Unconditional no-donor abstention, not a trained control",
+      "Same-unit wrong formula hooke F=2*k*x accepted syntactically but fails 256/256 physical-law labels",
+      "Invalid dimension, input, operator, depth, constant, bounds and corrupted checkpoint fail closed"
+    ],
+    "metrics": [
+      "1024/1024 parity <=1e-12 normalized error",
+      "3 cold byte-identical restores per claim (12 total)",
+      "4 compiled donor source hashes",
+      "0 teacher model calls at recipient runtime",
+      "the same-unit wrong formula is detected by external symbolic evidence, not by unit checker",
+      "10 or more malformed/invalid checks",
+      "exact-final Linux and Windows full 54-root/G29/GKD01..04 source tests"
+    ],
+    "decision": {
+      "engineering_pass": "All 1024 exact symbolic ties, 12 cold restores, 256/256 wrong-same-dimension witness errors, 10 negative guards and both OS CI PASS",
+      "engineering_fail": "Any failed numerical parity, guard, hash, invalid unit acceptance or regression",
+      "scientific": "No SCIENTIFIC_PASS for this experiment: structured AST supplied by GPT, synthetic known physics only, symbolic tie, no language extraction, unknown law or genuine source experience."
+    }
+  },
+  "budget": "4 donor claims, 1024 synthetic DEV queries, no paid API, external physical intervention, protected first-use, owner runner or scheduler.",
+  "authority": {
+    "research_only": true,
+    "merges": false,
+    "native_accepted_changes": false,
+    "model_training": false,
+    "source_first_use": false
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/GKD-04/**",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ]
+}
