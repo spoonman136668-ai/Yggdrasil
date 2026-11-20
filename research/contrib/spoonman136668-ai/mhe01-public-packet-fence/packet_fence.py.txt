@@ -1,0 +1,177 @@
+"""EXT-MHE01: source-free, read-only, source-blind public packet projection.
+
+Research contributor shadow only. Not an executable source actor or a
+NativeCausalAmalgam adapter. A content digest is not owner authentication.
+No MetaHighwayEnv imports or simulator/world first use.
+"""
+from __future__ import annotations
+
+from hashlib import sha256
+import json
+import math
+
+SCHEMA = "mhe01.public_projection.v1"
+UPSTREAM_SHA = "a194c73b3261a137d84521e1520dfa4f4c690faa"
+_ALLOWED_CONFIG = frozenset((
+    "upstream_sha", "env_type", "include_task_id", "enable_causal_logging"
+))
+_PHYSICAL_MID = frozenset(("driver_aggressiveness", "speed_limit"))
+_EPISODE_SCENE = frozenset(("vehicles_count", "vehicles_density", "lanes_count"))
+_SCORING = frozenset((
+    "collision_reward", "high_speed_reward", "right_lane_reward",
+    "lane_change_reward", "reward_speed_range"
+))
+_TIME = frozenset(("duration",))
+_MID = _PHYSICAL_MID | _SCORING | _TIME
+_ALL = _MID | _EPISODE_SCENE
+
+
+def validate_declared_source_config(config: dict) -> bool:
+    """Check a proposed config, NEVER attest what a real source actually ran."""
+    if type(config) is not dict or frozenset(config) != _ALLOWED_CONFIG:
+        raise ValueError("MHE01_SOURCE_CONFIG_MISSING_OR_EXTRA")
+    if config["upstream_sha"] != UPSTREAM_SHA:
+        raise ValueError("MHE01_SOURCE_PIN_MISMATCH")
+    if config["env_type"] != "highway":
+        raise ValueError("MHE01_ONLY_HIGHWAY_CORE_SCOPED")
+    if config["include_task_id"] is not False:
+        raise ValueError("MHE01_TASK_ID_OBSERVATION_LEAK")
+    if config["enable_causal_logging"] is not False:
+        raise ValueError("MHE01_CAUSAL_INFO_LEAK_FLAG")
+    return True
+
+
+def _shape(observation_shape):
+    if (type(observation_shape) is not tuple or len(observation_shape) != 2
+            or any(type(n) is not int or n <= 0 or n > 64
+                   for n in observation_shape)
+            or observation_shape[0] * observation_shape[1] > 4096):
+        raise ValueError("MHE01_EXACT_PUBLIC_OBSERVATION_SHAPE_REQUIRED")
+    return observation_shape
+
+
+def _public_observation(observation, observation_shape):
+    """Require predeclared 2D numeric shape; reject appended task identity.
+
+    The source owner must separately prove that this actual shape contains
+    only public kinematics. No ndarray coercion or guessed reshaping.
+    """
+    rows, columns = _shape(observation_shape)
+    if type(observation) not in (tuple, list) or len(observation) != rows:
+        raise ValueError("MHE01_OBSERVATION_SHAPE_MISMATCH")
+    data = []
+    for row in observation:
+        if type(row) not in (tuple, list) or len(row) != columns:
+            raise ValueError("MHE01_OBSERVATION_SHAPE_MISMATCH")
+        values = []
+        for value in row:
+            if (type(value) not in (float, int)
+                    or not math.isfinite(value)
+                    or abs(value) > 1e12):
+                raise ValueError("MHE01_OBSERVATION_NONFINITE_OR_PRIVATE_TYPE")
+            values.append(float(value))
+        data.append(values)
+    return data
+
+
+def _canonical_packet(kind: str, data: dict) -> dict:
+    packet = {
+        "schema": SCHEMA,
+        "kind": kind,
+        "source_sha": UPSTREAM_SHA,
+        "source_owner_authenticated": False,
+        "native_admission": False,
+        "scientific_pass": False,
+        **data,
+    }
+    raw = json.dumps(packet, sort_keys=True, separators=(",", ":"),
+                     ensure_ascii=True, allow_nan=False).encode("ascii")
+    # Digest measures only this local projected packet; not a signature.
+    packet["local_content_sha256"] = sha256(raw).hexdigest()
+    return packet
+
+
+def project_public_reset(raw_reset, declared_config, observation_shape):
+    """Reduce a two-value Gymnasium reset. ALL raw info is dropped."""
+    validate_declared_source_config(declared_config)
+    if (type(raw_reset) not in (tuple, list) or len(raw_reset) != 2
+            or type(raw_reset[1]) is not dict):
+        raise ValueError("MHE01_RESET_TUPLE_OR_INFO_INVALID")
+    observation = _public_observation(raw_reset[0], observation_shape)
+    return _canonical_packet("reset", {"observation": observation})
+
+
+def project_public_step(chosen_action, raw_step, declared_config,
+                        observation_shape):
+    """Reduce a five-value Gymnasium step without forwarding ANY raw info.
+
+    The caller separately authenticates source ownership, action rights and
+    a true Gymnasium step before these bytes can ever be used by a trainer.
+    """
+    validate_declared_source_config(declared_config)
+    if (type(chosen_action) is not int or not 0 <= chosen_action <= 4):
+        raise ValueError("MHE01_PUBLIC_DRIVING_ACTION_INVALID")
+    if (type(raw_step) not in (tuple, list) or len(raw_step) != 5
+            or type(raw_step[4]) is not dict):
+        raise ValueError("MHE01_STEP_TUPLE_OR_INFO_INVALID")
+    observation, reward, terminated, truncated, _ignored_info = raw_step
+    values = _public_observation(observation, observation_shape)
+    if (type(reward) not in (int, float)
+            or not math.isfinite(reward) or abs(reward) > 1e12):
+        raise ValueError("MHE01_NONFINITE_OR_INVALID_PUBLIC_REWARD")
+    if type(terminated) is not bool or type(truncated) is not bool:
+        raise ValueError("MHE01_TERMINAL_FLAGS_MUST_BE_BOOL")
+    return _canonical_packet("step", {
+        "observation": values,
+        "action": chosen_action,
+        "reward": float(reward),
+        "terminated": terminated,
+        "truncated": truncated,
+    })
+
+
+def inspect_intervention_metadata(metadata):
+    """Inspect source API metadata, but NEVER certify an observed effect.
+
+    This does not call the environment, trigger a reset, or modify a model.
+    It is a non-learner-facing, non-authoritative static classification.
+    """
+    keys = frozenset((
+        "variable", "value", "previous_value",
+        "granularity", "requires_reset", "applied"
+    ))
+    if type(metadata) is not dict or frozenset(metadata) != keys:
+        raise ValueError("MHE01_INTERVENTION_METADATA_INVALID")
+    variable = metadata["variable"]
+    if type(variable) is not str or variable not in _ALL:
+        raise ValueError("MHE01_UNKNOWN_INTERVENTION")
+    expected_mid = variable in _MID
+    granularity = "mid_episode" if expected_mid else "episode_level"
+    if (metadata["granularity"] != granularity
+            or type(metadata["requires_reset"]) is not bool
+            or type(metadata["applied"]) is not bool
+            or metadata["requires_reset"] is not (not expected_mid)
+            or metadata["applied"] is not expected_mid):
+        raise ValueError("MHE01_APPLIED_RESET_GRANULARITY_CONTRADICTION")
+    if variable in _SCORING:
+        category = "reward_definition_change"
+    elif variable in _TIME:
+        category = "episode_budget_change"
+    elif variable in _PHYSICAL_MID:
+        category = "physical_mechanism_request"
+    else:
+        category = "scene_configuration_request"
+    return {
+        "schema": "mhe01.intervention_static_inspection.v1",
+        "variable": variable,
+        "category": category,
+        "source_owner_authenticated": False,
+        "learner_visible": False,
+        "native_admission": False,
+        "observed_do_effect": False,
+        "requires_reset_before_effect": not expected_mid,
+        "next_required_evidence": (
+            "AUTHENTICATED_RESET_AND_PUBLIC_EFFECT"
+            if not expected_mid else "AUTHENTICATED_PUBLIC_EFFECT"),
+        "causal_reward_comparison_permitted": False,
+    }
