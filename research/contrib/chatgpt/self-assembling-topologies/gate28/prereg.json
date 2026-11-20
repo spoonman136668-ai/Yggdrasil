@@ -1,0 +1,114 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE28-ACTIVE-CAUSAL-STRUCTURE-VALUE-20261120",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "disjoint-transfer-falsification",
+  "exact_parent_sha": "8af75df0a3ef5aeab361176096b21e301e440c05",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1340",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44821358373"
+  ],
+  "research_boundary": "Isolated contributor experiment only; leaves native PublicCausalCells, Amalgam checkpoint, accepted main, controller and owner runner unchanged.",
+  "question": "Does bounded local spawn/prune/rewire of causal relationships improve intervention choice, out-of-family causal transfer and cold functional reuse compared with equally informed, trained, compute-budgeted fixed-topology and Bayesian causal models?",
+  "hypothesis": "On previously unfamiliar interventions that discriminate competing causal rules, self-assembly should improve post-intervention net consequence reward after an A-B-A shift while keeping old functional readouts through process exit; retained bytes or a Bayesian tie alone are insufficient.",
+  "departure_from_gate27": "Gate27 only compared predictions on externally selected actions from an in-family 56-XOR hypothesis universe; its archive had zero reward advantage over conventional controls. Gate28 makes the learner choose interventions and includes causal operators outside that universe; no Gate27 primary seeds will be reused as a new scientific trial.",
+  "world_plan": {
+    "seeds": {
+      "shifted": [
+        501000,
+        501047
+      ],
+      "stationary": [
+        502000,
+        502023
+      ],
+      "independent_noise": [
+        503000,
+        503023
+      ]
+    },
+    "total_worlds": 96,
+    "observation": "8 binary exogenous features, six candidate causal intermediate variables, one binary consequence with 10% label flips for non-noise cohorts",
+    "interventions": "12 do(variable,value) choices, plus no-intervention/passive action. Chosen intervention, resulting observable state and binary consequence are public; true graph, family, phase, counterfactual outcomes and test labels remain hidden.",
+    "regimes": "A: 96 public randomized interventions for source grounding; B: 64 unannounced new causal rules and learner-selected interventions; R: 64 unannounced return-to-A learner-selected interventions. Stationary and independent-noise negative cohorts use identical counts.",
+    "unknown_rule_family": "A sources use pairwise XOR, AND, OR and negated gates; B shifted worlds include three-parent majority and two-stage mediated composition, potentially with one-step lag. All arms are given the same primitive operator dictionary; no hidden B label or hard-coded transition cue.",
+    "held_queries": "32 never-exposed intervention-context queries at B endpoint and 32 at R endpoint per seed, scored in a separate read-only evaluator. Held queries/outcomes are never fed back.",
+    "cold": "Three fully exited Python subprocesses per seed, between source A, B, and R. Checkpoint must preserve a source capability and native decision function, not just byte hashes.",
+    "randomness": "Deterministic domain-separated seed streams for world graphs, action-feedback noise, fixed exposure, and held scoring. Reuse potential-outcome noise per seed/time across active policies where feasible; separate model policy RNG streams. No rerunning consumed primary seeds as fresh first-use."
+  },
+  "arms": [
+    "bounded local structural learner with at most 64 mutable edges and 16 cells; explicit spawn/prune/rewire events with auditable causes",
+    "same-capacity fixed-topology learner trained on the same interventions",
+    "same-capacity randomized rewiring with equal attempted edits",
+    "same-capacity surprise-gated rewiring without discriminating intervention value",
+    "fully trained causal Bayesian ensemble with the same declared primitive dictionary and measured inference budget",
+    "Bayesian expected-information-gain intervention planner with same dictionary and action budget",
+    "source-only frozen model",
+    "recent-only fitted model",
+    "uniform random intervention policy",
+    "no-memory ablation"
+  ],
+  "fairness": {
+    "active_policy": "Compare independently chosen actions under equal per-world intervention counts and identical hidden worlds; because actions differ, do NOT claim matched information for active-policy reward.",
+    "forced_action": "Additional externally selected equal-action/equal-observation replay of every arm isolates learned-model quality from exploration differences; report separately, never blend with active-policy results.",
+    "compute": "Limit each arm to 8192 primitive rule evaluations per intervention and <=16384 serialized state bytes; account for all source fit, update, selection and held scoring. Publish actual work/time/memory and strongest unconstrained Bayesian reference as a secondary upper bound. If a strong control cannot be meaningfully trained within the declared budget, science remains UNVERIFIED; do not cherry-pick weak controls.",
+    "calibration": "All thresholds, hyperparameters, grammar, causal world generator, evaluator, identities, and model selection must be frozen by a separate committed code/config revision before the first primary run; no scoring permitted from this preregistration alone.",
+    "overhead": "No paid models, production secrets, operator runner, scheduler or uncontrolled external tools."
+  },
+  "metrics": {
+    "primary": "For 48 shifted paired seeds: R-phase mean net action-consequence reward and B+R cumulative intervention regret versus the strongest matched conventional trained control. 95% paired confidence intervals computed across seeds, not across repeated held queries.",
+    "secondary": "Held B/R intervention-conditioned probability Brier, unfamiliar mediated/majority causal edge/intervention-choice accuracy, A functional source readout after interference and cold restart, spurious rewires on stationary worlds, calibration and excess certainty on independent noise, rule evaluation and CPU cost.",
+    "negative_controls": "Stationary non-shift and causally independent outcome noise; remove source archive and intervention-value selection; random rewiring and fixed-structure mechanism ablations.",
+    "action_cost": "All 13 actions have equal charged cost 1; no claim of energy efficiency based solely on abstract rule-evaluation count."
+  },
+  "preregistered_thresholds": {
+    "shifted_R_net_reward_gain_vs_strongest_matched_control_min": 0.05,
+    "shifted_R_gain_paired_CI_lower_strictly_positive": true,
+    "shifted_BplusR_regret_lower_than_strongest_matched_control": true,
+    "shifted_R_causal_intervention_accuracy_min": 0.7,
+    "shifted_R_accuracy_gain_vs_strongest_matched_control_min": 0.05,
+    "source_A_functional_retention_after_cold_restart_min": 0.95,
+    "source_A_retention_drop_vs_preinterference_max": 0.02,
+    "cold_function_and_integrity_parity_all_seeds": true,
+    "stationary_spurious_rewire_fraction_max": 0.1,
+    "independent_noise_held_Brier_excess_over_chance_max": 0.02,
+    "equal_action_count_and_forced_replay_exposure_all": true,
+    "per_arm_capacity_and_rule_work_budget_enforced_all": true
+  },
+  "evidence_order": [
+    "1. This preregistration receives its own immutable commit before any primary scoring.",
+    "2. Implement source, world generator, complete trained controls, per-action accounting and evaluator. Freeze all at a different exact commit before ANY primary outcome.",
+    "3. Run ONE new primary first-use on committed code, with source SHA and workflow run/job IDs; never classify later replay as new science.",
+    "4. Seal result.json and provenance.json in a later commit; run independent numerical audit.",
+    "5. Complete source-atlas update and complete exact-head Linux and Windows repository regression; do not confuse engineering failures with scientific negatives.",
+    "6. Preserve negative/consumed trials; keep draft/unmerged; native owner must separately qualify any integration."
+  ],
+  "classification_rules": {
+    "engineering": "Source-pinned full Linux+Windows unittest, code atlas, complete prior Gates10-27 frozen replay and new Gate28 audit pass on final candidate.",
+    "supported": "All predeclared scientific thresholds pass on original first-use, with all matched arms implemented and actually trained; still an isolated synthetic contributor result requiring independent native owner reproduction.",
+    "mixed": "Retention/structural adaptation passes but any causal value, transfer, calibration or negative control fails; no promotion.",
+    "negative": "No positive significant action-consequence gain over the strongest conventional matched control, or negative safety/calibration control fails.",
+    "invalid": "Primary result before fully frozen generator+source+evaluator; untrained/underbudgeted strongest control; insufficient matched evidence/compute; hidden labels or counterfactual leak; after-result parameter selection; ambiguous provenance."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "promotion on engineering PASS"
+  ],
+  "authority": {
+    "research_only": true,
+    "keep_draft": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "native_checkpoint_promotion": false,
+    "owner_runner_use": false,
+    "scheduler_or_queue_authority": false
+  },
+  "status": "PREREGISTERED DESIGN ONLY; model source, generator, code identity, first-use and scientific result NOT YET QUALIFIED."
+}
