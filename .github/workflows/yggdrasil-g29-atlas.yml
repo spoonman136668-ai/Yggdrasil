@@ -45,6 +45,10 @@ jobs:
         run: node research/contrib/chatgpt/self-assembling-topologies/gate16/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate16/result.json
       - name: Gate16 independent Walsh basis and negative-result audit (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate16/audit.cjs
+      - name: Gate17 unknown nonlinear Boolean exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate17/result.json
+      - name: Gate17 independent Boolean model and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/audit.cjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -103,4 +107,8 @@ jobs:
         run: node research/contrib/chatgpt/self-assembling-topologies/gate16/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate16/result.json
       - name: Gate16 independent Walsh basis and negative-result audit (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate16/audit.cjs
+      - name: Gate17 unknown nonlinear Boolean exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate17/result.json
+      - name: Gate17 independent Boolean model and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/audit.cjs
       - run: git diff --exit-code
