@@ -33,7 +33,7 @@ class ProducerTests(unittest.TestCase):
         self.assertEqual(rows[0]['entry_sha256'], digest)
         self.assertTrue(rows[0]['result']['complete'])
         self.assertEqual(rows[0]['result']['mode'], 'ENGINEERING_ONLY')
-        self.assertTrue((self.path.parent / (self.path.name+'.engineering:917201:fourfold.attempt')).exists())
+        self.assertTrue((self.path.parent / (self.path.name+'.engineering-917201-fourfold.attempt')).exists())
 
     def test_consumed_science_seeds_denied_without_calling(self):
         for seed in p.CONSUMED:

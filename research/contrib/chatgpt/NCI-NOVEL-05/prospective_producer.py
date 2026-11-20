@@ -123,7 +123,7 @@ def run_engineering_world(*, ledger: Path, archive: Path, seed: int, family: str
     if any(e["world_id"] == world_id for e in existing):
         raise ValueError("world already committed: no replay")
     ledger.parent.mkdir(parents=True, exist_ok=True)
-    claim = ledger.with_name(f"{ledger.name}.{world_id}.attempt")
+    claim = ledger.with_name(f"{ledger.name}.engineering-{seed}-{family}.attempt")
     # The durable claim is written BEFORE generating a consequence. An orphan
     # is an exposed seed requiring owner review, never a retry ticket.
     fd = os.open(claim, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
