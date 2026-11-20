@@ -299,6 +299,56 @@ class QuineRetentionTests(unittest.TestCase):
         self.assertEqual(original.calls, expected_queries)
         self.assertEqual(restored.calls, expected_queries)
 
+    def test_retained_brier_does_not_imply_unchosen_action_retention(self):
+        """Admissible old scores can coexist with changed counterfactual plans."""
+        from yggdrasil.native_cumulative_learner import _two_stage_plan
+
+        class PlannedSelector(FakeSelector):
+            def plan(self, views):
+                return _two_stage_plan(
+                    lambda first: self.forecast(views, first),
+                    lambda first, state, second:
+                        self.forecast(views, first, state, second))
+
+        original = PlannedSelector(self.anchor)
+        changed = PlannedSelector(
+            self.proposal(),
+            {(0, 0, 1, 1): ((Fraction(1, 10), Fraction(0)),)})
+        manifest = QUINE.select_quines(original, self.windows)
+        pin = digest(canonical(manifest))
+        admitted, report = QUINE.assess_update(
+            original, original, changed, manifest, pin)
+        self.assertIs(admitted, changed)
+        self.assertEqual(report["status"], "ADMIT_RESEARCH_CANDIDATE")
+        self.assertEqual(report["full_anchor_transition_drift"], 0.0)
+        self.assertEqual(report["full_anchor_reward_drift"], 0.0)
+        diagnostics = QUINE.diagnose_historical_action_divergence(
+            original, changed)
+        self.assertEqual(diagnostics["first_action_flip_views"], 0)
+        self.assertGreater(diagnostics["contingent_second_action_flip_cells"], 0)
+        self.assertEqual(diagnostics["source_actions"], 0)
+        self.assertFalse(diagnostics["true_action_utility_verified"])
+        self.assertFalse(diagnostics["scientific_pass"])
+
+    def test_action_diagnostic_rejects_altered_prefix_and_mutation(self):
+        """Audits only exact old witness lineage, not unrelated policy states."""
+        from yggdrasil.native_cumulative_learner import _two_stage_plan
+
+        class PlannedSelector(FakeSelector):
+            def plan(self, views):
+                return _two_stage_plan(
+                    lambda first: self.forecast(views, first),
+                    lambda first, state, second:
+                        self.forecast(views, first, state, second))
+
+        original = PlannedSelector(self.anchor)
+        same = PlannedSelector(FakeSystem(self.anchor.events))
+        report = QUINE.diagnose_historical_action_divergence(original, same)
+        self.assertEqual(report["changed_view_count"], 0)
+        corrupted = PlannedSelector(FakeSystem(self.anchor.events[1:]))
+        with self.assertRaisesRegex(ValueError, "historic prefix"):
+            QUINE.diagnose_historical_action_divergence(original, corrupted)
+
     def test_selector_restore_detects_unobserved_first_action_drift(self):
         """The old action-only loss check cannot see a changed unchosen action."""
         class ChangedFirstAction(FakeSelector):
