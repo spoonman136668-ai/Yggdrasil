@@ -1,0 +1,108 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "GATE12-HIERARCHICAL-0-1-2-CAUSAL-ORDER-20261120",
+  "contributor": "chatgpt-independent-research",
+  "project": "Yggdrasil",
+  "contribution_class": "falsification",
+  "parent_candidate_sha": "f867f50e85a722a8cab2f747ddfe7e3d828fb62a",
+  "predecessor_pr": 1340,
+  "question": "Can a fixed 260-byte online learner preserve useful unary predictions when rejecting an unsupported two-parent relationship, while retaining true two-parent learning and rejecting unrelated/random causal claims?",
+  "hypothesis": "Hierarchical 0/1/2-parent selection, with fit-only candidate selection and independent within-training validation, improves macro out-of-family held Brier at least 0.045 against Gate11's pair-only calibrated learner while maintaining true two-parent Brier degradation <=0.015, recovering >=90% true parent pairs and >=90% unary links, rejecting >=90% each of unrepresentable parity3, random and biased-independent worlds. Equal-state fit-end hierarchical fixed is decisive structural control; a tie forbids structural self-assembly advantage.",
+  "data": {
+    "origin": "original deterministic synthetic source, no external data",
+    "seed_families": {
+      "pair": [
+        16000,
+        16063
+      ],
+      "unary": [
+        19000,
+        19031
+      ],
+      "parity3": [
+        18000,
+        18031
+      ],
+      "random": [
+        17000,
+        17031
+      ],
+      "biased_independent": [
+        20000,
+        20031
+      ]
+    },
+    "per_seed_worlds": 2,
+    "contexts": [
+      "A",
+      "B"
+    ],
+    "bits": 6,
+    "train_interventions_per_world": 128,
+    "held_interventions_per_world": 32,
+    "intervention_policy": "six independent uniform bits from xorshift32(seed), shared across learners and controls; 128 fit then immutable 32 held per context; no held updates",
+    "label_noise": 0.05,
+    "worlds": "Pair worlds choose two distinct parents and one 2-bit truth table depending on both parents; unary uses one input or its negation; parity3 uses 3 distinct input XOR; random has independent fair bits; biased-independent returns Bernoulli(0.8) independent of input. Independent 5% noise on all except random and biased-independent. Hidden source parents and operator are visible only to evaluator, never to learner."
+  },
+  "methods": {
+    "local_state": "Per context, 64 latest training (intervention uint8, label uint8) observations plus 1 route byte and 1 accepted/order flag =130 bytes; 2 contexts =260 serialized bytes. Route 0=null, 1..6 unary, 7..21 unordered pair. Route is selected from only training examples. Scratch computations excluded and reported separately.",
+    "fit_partition": "For each selection scan, use oldest 48 of last 64 observations as candidate-fit data, newest 16 as independent within-training validation. At 32 observations use 16 fit + 16 validation. Fit fixed parameter-free Laplace conditional Bernoulli p=(positives+1)/(count+2), clipped [0.05,0.95].",
+    "selection": "Search best of 1 marginal null, 6 one-parent candidates, 15 two-parent candidates using fit-only Brier plus absolute complexity penalties order0=0, order1=0.015, order2=0.045, tie by order 0 then index. Validation must improve over marginal null by >=0.05 for unary or >=0.08 for pair, otherwise choose order0. Two-parent additionally requires an empirical absolute conditional-probability contrast >=0.40 for each parent in at least one stratum, both corresponding bins >=3 samples. All proposal selection independent of 16 validation labels. Marginal null always predicts Laplace context frequency, not fixed 0.5.",
+    "hierarchical_dynamic": "Rescan at 32,64,96,128 training observations in each context, final scan determines route; rewire count and work recorded.",
+    "hierarchical_fixed": "Identical selection, same 260-byte serialized state, same observations; only one scan at 128. This is the decisive equal-final-evidence fixed comparator, and final held predictions are expected to tie dynamic. No scientific superiority of dynamics can be claimed on a tie.",
+    "gate11_pair_calibrated": "Original Gate11 pair-only fitted selector reimplemented verbatim: choose among 15 pair candidates by first48 empirical fitted Brier, validate last16 improvement over null >=0.08 and each-parent contrast >=0.45; return last64 pair table if accepted else Laplace marginal. Same 260-byte allocation. Used as calibrated predecessor baseline on entirely NEW seeds.",
+    "marginal_null": "Predict Laplace context marginal frequency from last64 labels, ignore interventions, no structural claim.",
+    "bayesian_0_1_2_plus_null": "Fitted posterior over 3 order-zero hypotheses [fair coin, constant-zero noise .05, constant-one noise .05], 12 unary bit/complement hypotheses and 150 non-unary binary truth tables across 15 parent pairs; prior 1/3 per order, uniform within order, 5% known flip noise. 165 log posterior float64 entries per context (2640 nominal bytes), unmatched, posterior mean held Brier. 0.8 biased independent not exactly represented, a declared misspecification."
+  },
+  "controls": [
+    "equal-final-evidence hierarchical fixed, equal 260-byte state",
+    "Gate11 calibrated pair-only on fresh identical data",
+    "Laplace marginal null",
+    "larger 165-hypothesis Bayesian model",
+    "fair random and biased-independent negative worlds",
+    "3-way parity negative",
+    "strict cold prediction parity"
+  ],
+  "metrics": [
+    "held Brier by five methods, each family",
+    "pair-accepted exactly-correct /128",
+    "unary-accepted exactly-correct /64",
+    "zero-order abstention for parity3/random/biased independent /64 each",
+    "per-seed paired 95% normal CI of macro OOD Brier gain and in-family loss",
+    "matched hierarchical fixed identical held outputs",
+    "cold prediction bitwise equality after 260-byte pack/reconstitute",
+    "candidate evaluation counts, wall-time diagnostics separately",
+    "all seed and range receipts"
+  ],
+  "predetermined_success": {
+    "two_parent_route_exact_min": 116,
+    "unary_route_exact_min": 58,
+    "out_of_family_zero_order_min_each": 58,
+    "macro_ood_brier_gain_vs_gate11_pair_min": 0.045,
+    "in_family_brier_degradation_vs_gate11_pair_max": 0.015,
+    "cold_replay_require_all": true,
+    "serialized_max_bytes": 260,
+    "for_structural_superiority": "requires >=0.02 held Brier gain vs equal 260-byte hierarchical fixed and 95% paired CI excludes zero; tie or regression is NO_GO on structural advantage",
+    "interpretation": "Passing these requirements only demonstrates synthetic model-order selection and calibration; NEVER native intelligence, autonomy, general causal discovery or accepted Yggdrasil improvement."
+  },
+  "negative_or_mixed": "Report ALL thresholds without tuning. If any calibration requirement fails, SCIENTIFIC_NEGATIVE_DEV or MIXED. If hierarchical dynamic ties fixed, mark structural superiority FAIL even if calibration gates pass. If a protocol or source bug is discovered, document before/after timing; no changing seeds/thresholds/model after viewing primary outcomes.",
+  "deterministic": true,
+  "budget": {
+    "seed_trials": 192,
+    "fit_actions_per_trial": 256,
+    "held_actions_per_trial": 64,
+    "external_model_calls": 0,
+    "paid_API_calls": 0,
+    "first_use_native_runs": 0
+  },
+  "constraints": {
+    "no_merges": true,
+    "no_main_changes": true,
+    "no_checkpoint_updates": true,
+    "no_training_on_eval": true,
+    "no_new_controllers_schedulers_or_runners": true,
+    "no_new_workflow": true,
+    "existing_two_os_CI_for_replay": true
+  },
+  "source_identity_fence": "Commit this prereg before source execution; commit source before any primary results, then preserve source/result SHA and exact GitHub CI receipts."
+}
