@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.self-assembling.gate07.blind-mediator.dev.v1",
+  "status": "PREREGISTERED_BEFORE_NEW_GATE07_EXECUTION",
+  "purpose": "Test whether an isolated fixed-slot local graph can recover intervention-defined causal parents while intermediate channel is hidden; compare fully specified known-grammar controls. No native first use.",
+  "source_base": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_pr": 1340,
+  "predecessor_head": "427f905b01573506a1e53f30ac341b9c3cbf8b80",
+  "dataset": {
+    "fit_seeds": {
+      "start": 2000,
+      "end_inclusive": 2063
+    },
+    "negative_seeds": {
+      "start": 3000,
+      "end_inclusive": 3031
+    },
+    "inputs": 4,
+    "context_labels": [
+      "A",
+      "B"
+    ],
+    "fit_actions_per_context": 64,
+    "held_actions_per_context": 32,
+    "action": "one imposed 4-bit vector each step; cover all 16 vectors four times per fit context, with seed-specific shuffled cycles; held covers all 16 twice; shared source outcomes across learners",
+    "noise_probability": 0.05,
+    "hidden_mediator": "h=AND(x_i,x_j) for unknown i<j, never observed",
+    "observed_outcome": "y=h XOR x_k, k distinct from parents, then independent Bernoulli(0.05) flip; learner sees only intervention vector, context cue A/B, and revealed y; private i/j/k never passed into learner",
+    "world_count_per_seed": 2,
+    "candidate_family": "All twelve ordered (unordered parent pair, distinct third channel) AND-XOR circuits, predeclared grammar; does not test novel operator invention.",
+    "negative_families": [
+      "unknown XOR-XOR nested pair, intrinsically grouping-nonidentifiable from output only",
+      "independent random labels"
+    ]
+  },
+  "models": {
+    "rewiring_local": "2 fixed local context slots (one for A, one for B), 12 uint8 mismatch scores per slot, seen uint8, selected-route uint8, context uint8, version uint8; 31 serialized bytes total. Candidate scores updated after every revealed outcome; selection may change every 16 observations with integer tie-break; require >=16 seen and best observed mismatch <=floor(.20*seen) for 0.95/0.05 readout, else forecast 0.5. No source-private labels or intermediate observation.",
+    "fixed_first_window": "same 31-byte buffer and context cues, candidate scores only through first 16 observations, then frozen selected route; identical 0.20 rejection rule evaluated at 16, no later rewiring",
+    "fully_fitted_fixed_map": "best of 12 fixed hypotheses chosen after all 64 visible fit interventions; same 31-byte storage as local and permitted fit evidence, uses hindsight over *fit only*, frozen on held; strongest static architecture with this grammar.",
+    "exact_bayesian": "per-context posterior over all 12 hypotheses with uniform prior and fully specified .05 sensor-noise likelihood, predicts posterior weighted mean, uses 192 nominal persistent float64 bytes for two 12-vectors, unmatched to 31-byte local serialized state",
+    "uninformed": "constant 0.5"
+  },
+  "predeclared_metrics": [
+    "held context A/B prequential Brier",
+    "exact structural-route recovery on A/B (pair order canonical)",
+    "return after B: held A accuracy and Brier without updating",
+    "unknown-grammar abstention rate at held time",
+    "cold restore byte-exact and prediction parity",
+    "candidate comparisons, float-score operations",
+    "total checkpoint bytes, CPU wall time and process RSS separately"
+  ],
+  "development_criteria": {
+    "local_route_recovery_fraction_min": 0.9,
+    "held_brier_improvement_vs_first_window_min": 0.03,
+    "negative_family_confidence_abstain_fraction_min": 0.9,
+    "max_packed_checkpoint_bytes": 64,
+    "cold_replays_identical": true,
+    "reject_superiority_if_tied_or_worse_than_fully_fitted_fixed_or_bayesian": true
+  },
+  "fences": {
+    "no_original_native_first_use": true,
+    "no_model_promotion": true,
+    "no_checkpoint_modification": true,
+    "no_new_schedulers_runners_or_workflows": true,
+    "no_merge": true,
+    "do_not_edit_gate06": true,
+    "external_claim": "source-controlled synthetic development only; a supplied grammar and context labels do not establish autonomous general intelligence"
+  }
+}
