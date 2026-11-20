@@ -122,3 +122,54 @@ def audit_old_heads(anchor, descendant, restored):
         "scientific_pass": False,
         "deployment": "NONE",
     }
+
+
+def assess_one_witness_head_update(anchor, current, proposed):
+    """Source-free opt-in Quine check of FOUR dormant heads on frozen old rows.
+
+    Return advice ONLY; the existing Quine guard owns its atomic veto and
+    charged-receipt protocol. No model is updated or promoted here.
+    """
+    a_heads, old, a_pin = _inspect(anchor)
+    _, prior, current_pin = _inspect(current)
+    p_heads, candidate, candidate_pin = _inspect(proposed)
+    if not 0 < len(old) <= MAX_OLD_WITNESSES:
+        raise ValueError("HEAD4_OLD_WITNESS_LIMIT")
+    if prior[:len(old)] != old or candidate[:len(prior)] != prior:
+        raise ValueError("HEAD4_HISTORICAL_PREFIX")
+    if len(candidate) != len(prior) + 1:
+        raise ValueError("HEAD4_EXACTLY_ONE_NEW_WITNESS")
+    by_head = {}
+    for position, name in enumerate(HEAD_NAMES):
+        original_loss = proposed_loss = 0.0
+        for index, event in enumerate(old):
+            past = old[max(0, index - 8):index]
+            label = event[3] if position in (0, 2) else event[5]
+            before = _head_probability(a_heads[position], position, event, past)
+            after = _head_probability(p_heads[position], position, event, past)
+            original_loss += (before - label) ** 2
+            proposed_loss += (after - label) ** 2
+        drift = (proposed_loss - original_loss) / len(old)
+        by_head[name] = {
+            "old_brier": original_loss / len(old),
+            "proposed_brier": proposed_loss / len(old),
+            "old_brier_drift": drift,
+            "within_existing_quine_comparison": drift <= MAX_COMPARISON_DRIFT,
+        }
+    if (_inspect(anchor)[2] != a_pin or _inspect(current)[2] != current_pin
+            or _inspect(proposed)[2] != candidate_pin):
+        raise ValueError("HEAD4_MUTATED_DURING_READOUT")
+    return {
+        "schema": "yggdrasil.amalgam.four-head-one-witness-advice.v1",
+        "passed": all(v["within_existing_quine_comparison"] for v in by_head.values()),
+        "anchor_checkpoint_sha256": a_pin,
+        "current_checkpoint_sha256": current_pin,
+        "candidate_checkpoint_sha256": candidate_pin,
+        "old_ledger_sha256": digest(canonical(old)),
+        "old_witness_count": len(old),
+        "heads": by_head,
+        "comparison_drift_limit": MAX_COMPARISON_DRIFT,
+        "advisory_not_owner_acceptance": True,
+        "scientific_pass": False,
+        "new_source_actions": 0,
+    }

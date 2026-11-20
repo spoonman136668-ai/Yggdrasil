@@ -323,13 +323,15 @@ def _verify_frozen_inputs(anchor, current, quines, quine_sha256, max_brier_drift
 
 
 def assess_update(anchor, current, proposed, quines, quine_sha256, *,
-                  max_brier_drift=TOLERANCE):
+                  max_brier_drift=TOLERANCE, protect_dormant_heads=False):
     """Veto an overwrite if any Quine OR any familiar regime drifts > 0.02.
 
     The unchanged current state is returned on veto, NOT the original anchor:
     previously admitted continuation remains cumulative. A rejected candidate
     hash is advisory fork provenance only; no rival specialist is activated.
     """
+    if type(protect_dormant_heads) is not bool:
+        raise ValueError("HEAD4_GUARD_FLAG")
     _require_policy_modes(anchor, current, proposed)
     old, prior = _verify_frozen_inputs(anchor, current, quines,
                                        quine_sha256, max_brier_drift)
@@ -405,8 +407,35 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
                for before, new in zip(baseline, candidate, strict=True)]
     passed = all(group["pass"] for group in groups.values())
     passed &= all(value <= max_brier_drift for value in overall)
+    head_advice = None
+    if protect_dormant_heads:
+        # Opt-in research safeguard uses the existing Quine atomic/receipt
+        # owner. Do not reinterpret a shadow-head diagnostic as owner acceptance.
+        from importlib.util import module_from_spec, spec_from_file_location
+        from pathlib import Path
+        source = Path(__file__).with_name("four_head_retention.py")
+        spec = spec_from_file_location("quine_dormant_four_heads", source)
+        if spec is None or spec.loader is None:
+            raise ValueError("HEAD4_GUARD_NOT_AVAILABLE")
+        guard = module_from_spec(spec)
+        spec.loader.exec_module(guard)
+        before_pins = tuple(digest(_checkpoint(value))
+                            for value in (anchor, current, proposed))
+        head_advice = guard.assess_one_witness_head_update(
+            _system(anchor), _system(current), _system(proposed))
+        if tuple(digest(_checkpoint(value))
+                 for value in (anchor, current, proposed)) != before_pins:
+            raise ValueError("HEAD4_GUARD_MUTATED_STATE")
+        if (type(head_advice) is not dict
+                or head_advice.get("schema") != "yggdrasil.amalgam.four-head-one-witness-advice.v1"
+                or type(head_advice.get("passed")) is not bool
+                or head_advice.get("old_ledger_sha256") != digest(canonical(old))
+                or head_advice.get("anchor_checkpoint_sha256") != digest(_system(anchor).checkpoint())
+                or head_advice.get("candidate_checkpoint_sha256") != digest(_system(proposed).checkpoint())):
+            raise ValueError("HEAD4_GUARD_UNQUALIFIED")
+        passed &= head_advice["passed"]
     candidate_pin = digest(_checkpoint(proposed))
-    return (proposed if passed else current), {
+    result = {
         "status": "ADMIT_RESEARCH_CANDIDATE" if passed else "VETO_SHARED_STATE_OVERWRITE",
         "scientific_pass": False,
         "quines_checked": items,
@@ -419,17 +448,22 @@ def assess_update(anchor, current, proposed, quines, quine_sha256, *,
         "rejected_shadow_checkpoint_sha256": None if passed else candidate_pin,
         "speciation": "proposal_only_not_activated" if not passed else "not_needed",
     }
+    if head_advice is not None:
+        result["dormant_head_retention"] = head_advice
+    return (proposed if passed else current), result
 
 
 def guarded_observe(anchor, current, quines, quine_sha256, identifier, views, row, *,
                     source_sha256, packet_sha256, max_brier_drift=TOLERANCE,
-                    on_veto=None):
+                    on_veto=None, protect_dormant_heads=False):
     """Guard one charged update, requiring external custody for a rejected witness.
 
     The active model excludes a vetoed witness. The existing owner must store
     and acknowledge this canonical receipt before the caller can continue.
     Acknowledgement alone is NOT proof of durability; that is the owner's duty.
     """
+    if type(protect_dormant_heads) is not bool:
+        raise ValueError("HEAD4_GUARD_FLAG")
     _verify_frozen_inputs(anchor, current, quines, quine_sha256,
                           max_brier_drift)
     before = digest(_checkpoint(current))
@@ -443,8 +477,10 @@ def guarded_observe(anchor, current, quines, quine_sha256, identifier, views, ro
     if proposed is current:
         return current, {"status": "IDEMPOTENT_WITNESS", "scientific_pass": False,
                          "active_checkpoint_sha256": before}
-    selected, report = assess_update(anchor, current, proposed, quines, quine_sha256,
-                                     max_brier_drift=max_brier_drift)
+    selected, report = assess_update(
+        anchor, current, proposed, quines, quine_sha256,
+        max_brier_drift=max_brier_drift,
+        protect_dormant_heads=protect_dormant_heads)
     if report["status"] == "VETO_SHARED_STATE_OVERWRITE":
         receipt = canonical({
             "schema": "yggdrasil.amalgam.charged-veto-receipt.v1",
