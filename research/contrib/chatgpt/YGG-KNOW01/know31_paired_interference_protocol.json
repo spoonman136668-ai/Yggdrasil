@@ -28,8 +28,8 @@
       2
     ],
     "n_world_pairs": 24,
-    "steps": 60,
-    "source_rule": "t0..23 common hidden H0 A; deep-clone every model into paired control-A and treatment-B at t24. Control A remains H0 through t59; treatment hidden H2 B t24..47, then unannounced H0 A t48..59. Public model receives only t,c=t%4,a=t%4,one genuinely witnessed Bernoulli y; no phase/switch/fork/mapping/law/coin in learner.",
+    "steps": 48,
+    "source_rule": "t0..15 common hidden H0 A; deep-cold-clone each model into paired control-A and treatment-B at t16. Control A remains H0 through t47; treatment hidden H2 B t16..31, then unannounced H0 A t32..47. Only public t,c=t%4,a=t%4,witnessed y enter any model, no fork or regime labels.",
     "noise": "SHA256('know31:private:coin:v1:'+mid+':'+seed+':'+t), first64/2^64, identical exogenous coin both forks, actual action-conditioned outcome differs when laws differ.",
     "reward": "Bernoulli .85 if TRUE_MAPS[mid][action] XOR public c produces active Boolean 1, else .15; same already frozen H0/H2 causal law evaluators.",
     "fit": "Reuse previously CONSUMED KNOW26 108 mapping FIT witnesses and KNOW30 128 labelled A/B FIT witnesses per map/group as historical training. Count 236 extra FIT observations/map; no new FIT or original source first-use.",
@@ -44,11 +44,13 @@
   ],
   "budgets": {
     "world_pairs": 24,
-    "actions_per_fork_per_method": 1440,
-    "actions_both_forks_per_method": 2880,
-    "fork_prefix": 24,
-    "interference": 24,
-    "return": 12,
+    "actions_per_fork_per_method": 1152,
+    "actions_both_forks_per_method": 2304,
+    "unique_simulator_witnesses_per_world": 80,
+    "unique_simulator_witnesses_all_worlds": 1920,
+    "fork_prefix": 16,
+    "interference": 16,
+    "return": 16,
     "methods": 4,
     "return_checks_after_witnesses": [
       0,
@@ -56,27 +58,29 @@
       2,
       4,
       8
-    ]
+    ],
+    "shared_prefix_counted_twice_in_arm_action_budgets": true
   },
   "metrics": {
     "old_A_loss": "Expected Brier q*(1-q)+(p-q)^2, four evaluator-only high c4..7 no-op contexts, old A true law H0; keep private evaluation out of learner.",
-    "primary": "D_B = old-A Brier(t48 before return witness, B-treatment fork) minus old-A Brier(t48, A-continuation fork) for each model and world. Paired common-prefix and noise isolates effect of changed law vs ordinary A continuation, but differing observed consequences are part of the intervention and not identical information.",
-    "secondary": "Pre-fork fitted A-slot Brier and hash, each fork t48 old A-slot raw hash/output drift vs t24, live Brier drift vs t24, phase-belief trajectories, both forks prequential return losses after 0/1/2/4/8 witnessed actual A returns, old-A reference frozen and cold restored, count received vs assimilated events, bytes, elapsed CPU; report paired world metrics and cost."
+    "primary": "D_B = old-A Brier at t32 before first return witness on the B-treatment fork minus old-A Brier at t32 on A-continuation fork; two causal worlds are identical up to t16. Same exogenous coins and actions, but observed outcomes can differ as the actual intervention. Paired difference does not isolate learning from changed information.",
+    "secondary": "Pre-fork fitted A-slot Brier and digest at t16; per-fork t32 A-slot raw digest/output vs t16, live Brier drift vs t16, phase-belief trajectories, both forks after k=0/1/2/4/8 witnessed return outcomes, frozen old-A readout reference, received/assigned event counts, bytes, elapsed CPU. Explicitly separate protected memory from underlearning."
   },
   "frozen_hypotheses": {
     "P0": "Mean fitted A-slot old A high Brier at t24 <=0.235, else UNDERTRAINED_BASELINE and no meaningful retention claims.",
-    "H1": "Archive mean B-specific t48 drift at least .005 lower than HMM (D_archive<=D_HMM-.005) AND archive D<HMM in >=18/24 world pairs.",
+    "H1": "Archive mean D_B at t32 <= HMM mean D_B minus .005 and archive D_B lower in >=18 of 24 paired worlds.",
     "H2": "Treatment fork archive return-A high Brier after k4 and k8 witnesses each at least .005 lower than HMM AND archive beats HMM at k8 >=18/24 world pairs.",
-    "H3": "Read-only frozen t24 old-A reference hash and 4 forecasts identical across both forks at t48 and cold readback. Reference immutability is NOT functional live retention.",
-    "H4": "All four arms cold-clone from same t24 public-prefix bytes, per-fork 60 one-witness sequential public actions, typed/duplicate/out-of-order/source denial, no private fields in model, final full Ubuntu/Windows regression and original historical source compatibility.",
+    "H3": "Frozen t16 old-A reference digest and four high forecasts remain identical across both forks after middle period and exact cold replay; immutable reference alone is NOT live retention.",
+    "H4": "Each policy exact cold cloned at t16; 48 sequential one-witness events in both forks per world (16 common prefix duplicated by arm accounting), source-denial and duplicate/order errors, 2304 budget per method across forks, 1920 unique evaluator witness events across 24 worlds, full Ubuntu/Windows regression plus prior real source compatibility.",
     "classification": "Synthetic DEVELOPMENT_SUPPORTED only if P0 and H1 and H2 and H3 and H4; otherwise MIXED/NO_GO. Original SCIENTIFIC_PASS always false; no model promotion."
   },
-  "first_use": "Prereg before code/test and new held evidence. Focused tests use constructed toys only. One existing GitHub Actions pipeline after Ubuntu+Windows focused, atlas, mandatory full-final on both and original read-only compatibility; one guarded run_attempt=1, exact source blob, novel held seeds. No repeat or retuning after outcome. Do not open new PR, owner runner, schedule, paid API, real-world source, accepted checkpoint, merge or deployment.",
+  "first_use": "Original prospective prereg commit 22a197a61060a97a9aa45aecec78e85c71122600 retained; this is a pre-first-use compatibility revision. No model source, tests, held world generation or scores exist yet. Source+toy tests must qualify before exactly one held first-use through current repository workflow on same PR, github.run_attempt==1. No replay, no protected original-world source.",
   "constraints": {
     "original_first_use_issue": 426,
     "canonical_owner_pr": 1278,
     "contributor_pr": 1327,
     "merge": false,
     "deployment": "NONE"
-  }
+  },
+  "pre_first_use_revision": "Compatibility correction before any implementation or held witness: inherited immutable KNOW30 Pair.observe has a 48-step cap. Use 16 common A +16 middle B-or-A +16 returning A instead of proposed 24+24+12/60; all sources, seeds, thresholds and fit information remain prospective. Preserve both protocol commits."
 }
