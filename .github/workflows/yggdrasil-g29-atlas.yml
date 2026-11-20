@@ -21,6 +21,10 @@ jobs:
         run: python -B -m unittest discover -s tests -p 'test_*.py' -v
       - name: Gate10 frozen synthetic result reproducibility (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate10/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate10/result.json
+      - name: Gate11 frozen calibrated causal result reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate11/result.json
+      - name: Gate11 independent structural logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/audit.cjs
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -55,4 +59,8 @@ jobs:
           PY
       - name: Gate10 frozen synthetic result reproducibility (research only)
         run: node research/contrib/chatgpt/self-assembling-topologies/gate10/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate10/result.json
+      - name: Gate11 frozen calibrated causal result reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate11/result.json
+      - name: Gate11 independent structural logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/audit.cjs
       - run: git diff --exit-code
