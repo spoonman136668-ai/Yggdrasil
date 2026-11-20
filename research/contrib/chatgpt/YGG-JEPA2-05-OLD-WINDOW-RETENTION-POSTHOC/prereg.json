@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC",
+  "contributor": "ChatGPT independent JEPA research contributor",
+  "classification": "UNPREREGISTERED_POSTHOC, not new scientific first-use, seeds and source previously consumed",
+  "goal": "Determine whether 32-example historical Brier deterioration is concentrated in recent archived training events or broadly present in chronologically distributed older learned events; decompose immediate context reset across the same windows",
+  "source_parent_sha": "3f03c05ea35d1270003c5fce7878d1fc0b216850",
+  "original_jepa2_ref": "7b0d9fd8c16b8e0433a632666cec88d8d008c19f",
+  "original_retention_exp": "YGG-JEPA2-05 consumed DEV_NO_GO",
+  "frozen_window_indices": "For each original native ledger of length n, five disjoint blocks of 32 starting at floor(k*(n-32)/4), k=0,1,2,3,4; ledger order pinned in original archived training, last block matches published old probe",
+  "seeds": [
+    {
+      "old": 14071,
+      "continuation": 99231,
+      "expected_reset_ordinal": 11,
+      "expected_old_rows": 1006
+    },
+    {
+      "old": 14072,
+      "continuation": 99247,
+      "expected_reset_ordinal": 5,
+      "expected_old_rows": 981
+    }
+  ],
+  "sources": {
+    "original_archives": [
+      "research/contrib/chatgpt/YGG-RET01/seed-14071-state.json",
+      "research/contrib/chatgpt/YGG-RET01/seed-14072-state.json"
+    ],
+    "continued_archives": "research/contrib/chatgpt/YGG-JEPA2-05/original/{linux,windows}/seed-{14071,14072}-state.json",
+    "data_pin": "Git blob pin map already in YGG-JEPA2-05-RESET-POSTHOC/diagnose.py"
+  },
+  "arms": [
+    "original trained native checkpoint",
+    "unmodified native immediately before context-reset witness",
+    "same-witness conventional native _append + _update_context with _load_context reset suppressed, disposable clone",
+    "unmodified native immediately after actual context reset",
+    "archived original exact final native checkpoint after 16 continuation events"
+  ],
+  "metrics": [
+    "native one-step historical 32-example Brier using original campaign native_old() on each of the five windows",
+    "original→final change per window; fraction of windows violating historical +0.03 Brier tolerance",
+    "same-update reset-only effect on same five windows",
+    "source/ledger prefix, exact original/final checkpoint hashes, published last32 Brier before/after reproduction to 1e-10",
+    "Ubuntu/Windows parity tolerance 1e-10 for all numeric historical scores",
+    "runtime CPU process seconds and zero fresh source actions"
+  ],
+  "controls": [
+    "original last32 published Brier exactly reproduced",
+    "identical sequential 16-event witness tape, original four-head model exact checkpoint at final",
+    "shadow clone makes same observed update but skips exactly the context reset; same episode receipt",
+    "all five blocks disjoint, fixed before scores",
+    "no new source, no model API, no source or run authority, no training phase labels to learner",
+    "no statistical inference from five non-independent windows; source families heterogeneous"
+  ],
+  "precommitted_labels": {
+    "BROAD_DIAGNOSTIC": "At least 4 of 5 chronological old-probe blocks on BOTH seeds show original→final Brier increase >0.03; posthoc only, not SCIENTIFIC_PASS",
+    "LOCALIZED_OR_HETEROGENEOUS": "BROAD_DIAGNOSTIC false, with all exact original/final reproduction controls passing; report exact spread, signs, sample-size caveats",
+    "REPRODUCTION_FAIL": "Any incorrect frozen archived original/final checkpoint, original published last32 score mismatch >1e-10, mismatched archived episodes or reset ordinal, altered original source, or numeric Linux/Windows mismatch"
+  },
+  "safety": {
+    "scientific_pass": false,
+    "accepted_model_changes": false,
+    "owner": "Unified Causal Intelligence Amalgam Work chat",
+    "canonical_ref_updates": false,
+    "owner_runtime": false,
+    "first_use": false,
+    "merge": false,
+    "scheduled_tasks": false,
+    "source_actions": 0
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/prereg.json",
+    "research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/window_map.py",
+    "research/contrib/chatgpt/YGG-JEPA2-05-OLD-WINDOW-RETENTION-POSTHOC/README.md",
+    ".github/workflows/ygg-jepa2-05-old-window-posthoc.yml",
+    ".ice/code-atlas.* (automatically sealed separately)"
+  ]
+}
