@@ -84,12 +84,15 @@ jobs:
           git diff --exit-code 594c553d2d6033598d37859d81b9ee25481ec4c6 HEAD -- research/contrib/chatgpt/YGG-JEPA2-05-RESET-POSTHOC research/contrib/chatgpt/YGG-JEPA2-05-RESET-TRADEOFF-POSTHOC
           test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/prereg.json)" = "$(git rev-parse 4e6768cca5b5c9d998e9ef0ccda316a66827933b:research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/prereg.json)"
           python -B -c "import ast,pathlib; ast.parse(pathlib.Path('research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/gate.py').read_text('utf-8'))"
+          python -B -c "import ast,pathlib; ast.parse(pathlib.Path('research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/paired_view_reset.py').read_text('utf-8'))"
       - name: Already consumed source only, prequential gate and matched controls
         shell: bash
         run: |
           set -euo pipefail
           python -B research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/gate.py --platform ${{ matrix.platform }} --output "$RUNNER_TEMP/jepa2-gate/result.json"
           test -s "$RUNNER_TEMP/jepa2-gate/result.json"
+          python -B research/contrib/chatgpt/YGG-JEPA2-05-EVIDENCE-REENTRY-POSTHOC/paired_view_reset.py --platform ${{ matrix.platform }} --output "$RUNNER_TEMP/jepa2-gate/paired-view-reset.json"
+          test -s "$RUNNER_TEMP/jepa2-gate/paired-view-reset.json"
       - name: Mandatory full native cross-platform regression and G29
         shell: bash
         run: |
