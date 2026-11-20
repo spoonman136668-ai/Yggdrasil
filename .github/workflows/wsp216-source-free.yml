@@ -76,7 +76,7 @@ jobs:
       - name: Mandatory pinned G29 atlas seal BEFORE WSP216 first evaluation
         run: python scripts/build_code_atlas.py --check
       - name: ONE frozen source-free WSP216 primary evaluation per OS
-        run: python research/contrib/chatgpt/WSP-216/experiment.py --output "${{ runner.temp }}/wsp216.json"
+        run: python research/contrib/chatgpt/WSP-216/study.py --output "${{ runner.temp }}/wsp216.json"
       - name: Upload bounded synthetic metrics (never model bytes)
         if: always()
         uses: actions/upload-artifact@v4
