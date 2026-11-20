@@ -684,3 +684,55 @@ jobs:
           path: ${{ runner.temp }}/know32-balanced-retention-first-use.json
           if-no-files-found: error
           retention-days: 30
+
+  know33-cellular-local-memory-study:
+    # Exactly one research-only synthetic HELD. No schedule, paid API or owner model.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know33): one-shot cellular local memory after full exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Single prospective source-only 24-world cell-memory study
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know33_local_metaplastic_protocol.json)" = ce158248954a137c6540ab5b8c505dc392ea7483
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know33_local_metaplastic_dev.py)" = d2e7e54cfbb2d763c38ff9cec5f1a12db3aa7ba4
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know33_local_metaplastic_dev.py)" = a1462eb10d1d3fc3226dfcca12b9bba2f73817d1
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know33_local_metaplastic_dev.py \
+            > "$RUNNER_TEMP/know33-cellular-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know33-cellular-first-use.json").read_text())
+          assert d["schema"]=="yggdrasil.know33.local-metaplastic-cells-result.dev.v1"
+          assert d["prereg_commit"]=="a2faced60dfcd7b13de5e3ae41f4c16623ea4127"
+          assert d["protocol_blob"]=="ce158248954a137c6540ab5b8c505dc392ea7483"
+          assert (d["held_world_pairs"],d["unique_source_events"],d["per_arm_observations_across_forks"])==(24,7680,9216)
+          assert len(d["worlds"])==24 and set(d["family_metrics"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==6
+          assert d["scientific"]=="SCIENTIFIC_NO_GO_NOT_NATIVE"
+          assert d["original_first_use_426"] is False and d["accepted_native_modified"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Store bounded synthetic cell-memory receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW33-cellular-memory-first-use
+          path: ${{ runner.temp }}/know33-cellular-first-use.json
+          if-no-files-found: error
+          retention-days: 30
