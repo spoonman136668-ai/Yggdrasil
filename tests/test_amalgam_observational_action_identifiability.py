@@ -61,10 +61,13 @@ class ObservationalActionIdentifiabilityTests(unittest.TestCase):
         self.assertEqual(observed["source_actions"], 0)
         self.assertFalse(observed["scientific_pass"])
 
-    def test_no_exact_query_masquerades_as_zero_propensity(self):
-        with self.assertRaisesRegex(ValueError, "zero propensity"):
+    def test_deterministic_logger_conditions_on_hidden_state(self):
+        # Every public state has positive probability under either hidden
+        # state; a deterministic logger thus still has positive support.
+        self.assertEqual(
             LAW.conditional_transition(0, 1, logged=True,
-                                       logger_match=Fraction(1))
+                                       logger_match=Fraction(1)),
+            Fraction(3, 4))
         with self.assertRaisesRegex(ValueError, "exact binary"):
             LAW.conditional_transition(0, True, logged=False)
         with self.assertRaisesRegex(ValueError, "exact binary"):
