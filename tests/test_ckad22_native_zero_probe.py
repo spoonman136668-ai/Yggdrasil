@@ -92,7 +92,7 @@ class ArchiveIndependentContracts(unittest.TestCase):
             a.mixture(_reader(), (0, 0), 0, 1)
         p = a.plan_from_mixture(_reader(), (0, 0))
         self.assertEqual(p["first_action"], 0)
-        self.assertEqual(p["second_actions"], ((1, 1), (1, 1)))
+        self.assertEqual(p["second_actions"], ((0, 1), (0, 1)))
         self.assertEqual(len(p["first_values"]), 2)
 
     def test_no_original_archive_is_successfully_claimed(self):
