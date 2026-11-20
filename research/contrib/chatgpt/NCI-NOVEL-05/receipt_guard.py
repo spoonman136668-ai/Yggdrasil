@@ -69,6 +69,8 @@ def commit_world(path: str | Path, *, source_sha256: str, world_id: str,
         raise ValueError("world ID required")
     if type(elapsed_ms) is not int or elapsed_ms < 0 or not isinstance(result, dict):
         raise ValueError("complete world result and nonnegative duration required")
+    if result.get("complete") is not True:
+        raise ValueError("only complete worlds can be committed")
     _canon(result)  # Refuse NaN, infinity and unserializable receipts before filesystem writes.
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -112,7 +114,7 @@ def budget_gate(per_family_seconds: dict[str, list[float]],
 
     Not a scheduler and not an authorization to consume any scientific cohort.
     """
-    if target_worlds_per_family < 1 or budget_seconds <= 0 or safety_factor < 1.0:
+    if type(target_worlds_per_family) is not int or target_worlds_per_family < 1 or budget_seconds <= 0 or safety_factor < 1.0 or not per_family_seconds:
         raise ValueError("invalid budget")
     estimated = 0.0
     for family, samples in per_family_seconds.items():
