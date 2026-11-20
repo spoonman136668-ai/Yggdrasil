@@ -383,6 +383,19 @@ jobs:
             > "$RUNNER_TEMP/know24-anf-causal-identifiability-receipt.json"
           python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know24-anf-causal-identifiability-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know24.gf2-structural-identifiability-result.v1"; assert d["prereg_commit"]=="1454d7b58875f5a50429e33979b0edfa5a1c7e88"; assert (d["fit_witnesses"],d["held_worlds"],d["held_witnesses_per_policy"],d["high_expected_queries_per_policy"])==(72,18,288,216); assert d["frozen_predicates"]["H1_pairs_identical"] and d["frozen_predicates"]["H2_paired_lower_bound"]; assert d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_EXACT_CAUSAL_NONIDENTIFIABILITY" and not d["protected_original_first_use"]'
           test -z "$(git status --porcelain)"
+      - name: KNOW25 independently frozen x2 interventions, paired causal outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know25_protocol.json)" = 7ffdf1b490d496621bae52aeba5b777a06500fef
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know25_x2_probe_protocol.json)" = 2a960a6e4840c1fe89d32c50fd9c47bd7a7c27e8
+          python -B research/contrib/chatgpt/YGG-KNOW01/x2_intervention_identifiability_dev.py \
+            > "$RUNNER_TEMP/know25-x2-24-action-receipt.json"
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B -c 'import json; from know25_x2_probe_dev import proof; print(json.dumps(proof(),indent=2,sort_keys=True))' \
+            > "$RUNNER_TEMP/know25-x2-48-action-receipt.json"
+          python -B -c 'import json,os,pathlib; root=pathlib.Path(os.environ["RUNNER_TEMP"]); a=json.loads((root/"know25-x2-24-action-receipt.json").read_text()); b=json.loads((root/"know25-x2-48-action-receipt.json").read_text()); assert a["schema"]=="yggdrasil.know25.x2-intervention-result.v1" and a["prereg_commit"]=="9155e5d62d6d5a0eb4f79fef22953e9e5e4f25da"; assert (a["fit_witnesses"],a["held_worlds"],a["held_witnesses_per_policy"],a["high_expected_queries_per_policy"])==(72,18,432,216); assert a["frozen_hypotheses"]["H1_no_x2_pair_identity"] and a["frozen_hypotheses"]["H2_no_x2_pair_bound"] and not a["protected_original_first_use"]; assert b["schema"]=="yggdrasil.know25.x2-probe-science-boundary.dev.v1" and b["prereg_commit"]=="219e59cdff6c26383fa4fb5277cad459f9caf0cf"; assert (b["fit_witnesses"],b["held_worlds"],b["held_witnesses_per_policy"],b["high_eval_queries_per_policy"])==(72,18,864,216); assert b["frozen_hypotheses"]["H1_no_x2_pairs_identical_and_floor"] and not b["first_use_426"]; assert a["engineering_gate"]==b["engineering_gate"]=="PASS"'
+          test -z "$(git status --porcelain)"
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -408,5 +421,7 @@ jobs:
             ${{ runner.temp }}/know22-posterior-slot-readout-receipt.json
             ${{ runner.temp }}/know23-write-quarantine-receipt.json
             ${{ runner.temp }}/know24-anf-causal-identifiability-receipt.json
+            ${{ runner.temp }}/know25-x2-24-action-receipt.json
+            ${{ runner.temp }}/know25-x2-48-action-receipt.json
           retention-days: 30
           if-no-files-found: error
