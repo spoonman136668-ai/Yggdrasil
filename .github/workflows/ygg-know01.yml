@@ -736,3 +736,58 @@ jobs:
           path: ${{ runner.temp }}/know33-cellular-first-use.json
           if-no-files-found: error
           retention-days: 30
+
+  know34-cellular-contradiction-study:
+    # Exactly ONE frozen source-only held outcome, after source+atlas+dual-OS
+    # mandatory full regression and read-only historical source compatibility.
+    # No scheduler, paid API, owner model, native checkpoint or protected #426.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know34): one-shot local contradiction gates after exact final regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Exact qualified source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One synthetic prospective source-only A/B/A cellular first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know34_local_contradiction_protocol.json)" = 79c1c9376567de777f2cb0aad9874a8547fbb961
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know34_local_contradiction_dev.py)" = 6b23c4d1a7dd9eede8a9649abadf3abe841f3a4d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know34_local_contradiction_dev.py)" = 29b61375475646019800e8cfaca732a2aa57a6cb
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know34_local_contradiction_dev.py \
+            > "$RUNNER_TEMP/know34-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know34-first-use.json").read_text())
+          assert d["schema"]=="yggdrasil.know34.local-contradiction-memory-result.dev.v1"
+          assert d["prereg_commit"]=="aa46a0482da74213089506e51d3a2c40615e7656"
+          assert d["prereg_blob"]=="79c1c9376567de777f2cb0aad9874a8547fbb961"
+          assert (d["held_world_pairs"],d["unique_source_events"],d["model_event_occurrences_per_arm"])==(24,7680,9216)
+          assert len(d["worlds"])==24 and set(d["families"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==6
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["accepted_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve only bounded synthetic cell-memory scientific receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW34-contradiction-cell-first-use
+          path: ${{ runner.temp }}/know34-first-use.json
+          if-no-files-found: error
+          retention-days: 30
