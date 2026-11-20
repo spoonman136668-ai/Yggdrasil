@@ -388,9 +388,24 @@ def replay_consumed_selector(start, source_directory):
                     raw_trace, index + 1, **original_parents)
                 if advanced.checkpoint() != cold_advanced.checkpoint():
                     raise ValueError("G28_COLD_CONTINUATION_MISMATCH")
+                # A learned witness may legitimately change the native plan.
+                # Compare against the SAME source-fitted native continuation,
+                # never the PRE-update planner (first CI's harness mistake).
+                following = records[index + 1]
+                following_views = tuple(tuple(v) for v in following["views"])
+                following_packet = digest(canonical([
+                    following["id"], following_views, following["row"]]))
+                reference_next = gate.system.observe_experience(
+                    following["id"], following_views, following["row"],
+                    source_sha256=EXPERIENCE_SOURCE,
+                    packet_sha256=following_packet)
+                if (reference_next is gate.system
+                        or reference_next.native.checkpoint()
+                           != advanced.native.checkpoint()):
+                    raise ValueError("G28_NATIVE_SOURCE_CONTINUATION_DRIFT")
                 for public in seen_views:
                     if (advanced.plan(public[0]) != cold_advanced.plan(public[0])
-                            or advanced.plan(public[0]) != gate.system.plan(public[0])):
+                            or advanced.plan(public[0]) != reference_next.plan(public[0])):
                         raise ValueError("G28_NATIVE_PLAN_DRIFT")
                     for first in (0, 1):
                         if (advanced.specialist_forecasts(public, first)
