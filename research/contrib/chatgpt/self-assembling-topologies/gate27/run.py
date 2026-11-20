@@ -122,9 +122,9 @@ def child(seed, family, phase, infile=None, outfile=None):
 
 
 def pair_diff(rows, arm_a, arm_b, section, metric):
-    values = [row[section][metric][arm_a] - row[section][metric][arm_b]
+    values = [(row["prequential"][arm_a] - row["prequential"][arm_b])
               if section == "prequential" else
-              row[section][arm_a][metric] - row[section][arm_b][metric]
+              (row["held"][arm_a][metric] - row["held"][arm_b][metric])
               for row in rows]
     n = len(values)
     mean = sum(values) / n
