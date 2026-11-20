@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "GATE18-STRICT-UNSEEN-INTERVENTIONS-20261120",
+  "project": "Yggdrasil",
+  "role": "independent research contributor; central Amalgam controls native integration",
+  "pr": 1340,
+  "parent_sha": "a0cd5ef90cf3a7b931a3414cda831674ec148c91",
+  "question": "Can a generic 1/2/3-parent Boolean learner generalize to full 5-bit action combinations withheld from ALL training and selection, and outperform a direct flat action table without claiming generalization to unseen true-parent bit configurations?",
+  "precedent": "Gate17 fit and held rounds each used all 32 intervention vectors. That establishes new noisy outcomes on familiar actions, not truly withheld-action transfer. Gate17 also tied an equal-state fixed learner.",
+  "predeclared_worlds": {
+    "seeds": {
+      "majority3": [
+        71000,
+        71047
+      ],
+      "mux3": [
+        72000,
+        72047
+      ],
+      "random_essential3": [
+        73000,
+        73047
+      ],
+      "parity3": [
+        74000,
+        74047
+      ],
+      "pair": [
+        75000,
+        75047
+      ],
+      "unary": [
+        76000,
+        76047
+      ],
+      "independent": [
+        77000,
+        77047
+      ]
+    },
+    "worlds_per_seed": 2,
+    "total_seeds": 336,
+    "worlds": 672,
+    "inputs": 5,
+    "actions_total": 32,
+    "intervention_split": "For each seed/context, generate one deterministic uniformly shuffled permutation of all 32 action IDs, independent of true parent mask/table/labels. First 24 are the ONLY allowed training actions. Final 8 are strictly held, absent from any fit/validation stage. Check exact disjoint sets and 24+8 coverage on every world.",
+    "training": "96 intervention-response events per world from four independently shuffled 24-action rounds, each allowed action observed four times with independent visit-indexed output noise; first64 selected for candidate fitting and final32 for training-only validation. No held labels or actions used for fitting.",
+    "held": "One outcome for each of the 8 unseen actions from disjoint held noise domain. Separate per-parent-bin coverage analysis uses the hidden true parent mask FOR EVALUATION ONLY.",
+    "source_family": "Reuse the exact Gate17 generator for majority-of-three, 3-bit MUX, essential random 3-parent truth table, parity3, pair XOR, unary copy and fair-independent labels with fixed 5% sensor flips for all nonrandom sources.",
+    "negative_identifiability": "If a 3-parent input pattern is absent from ALL fit actions, the corresponding arbitrary Boolean truth-table cell is not identified by observations. Report such cases separately and prove an exact indistinguishable paired truth-table counterexample. Never claim identification of unobserved parent patterns."
+  },
+  "arms": {
+    "adaptive": "Gate17 generic Boolean conditional table on selected 1/2/3-input parent subsets; same LOO+parameter penalty + training-only validation and triggered 3-way subset expansion. 96 training x/y records; no operator labels/parents exposed.",
+    "fixed_full": "Same 388-byte compact saved evidence and same selection/forecast as adaptive, always evaluates all 3-way masks and retains comparable route. Decisive negative/control for unique self-assembly.",
+    "truncated": "Gate17 <=2 parent subsets, exact same 96 observed fit rows.",
+    "flat": "Laplace smoothed 32-action lookup table. Each held full action is NEW, so predicts 0.5 for it. This is a strong non-generalizing memorization negative control.",
+    "parity_only": "Gate16's specialized signed Walsh parity estimator from 96 allowed action samples.",
+    "bayes": "Gate17 full 0/1/2/3-parent Bayesian subset averaging with Beta(1,1) integrated counts; same 388-byte persistent raw records but extra posterior scratch/candidate scans, no practical equal-cost claim.",
+    "null": "Pure fair-coin p=0.5 expected held Brier .25, explicit standard baseline."
+  },
+  "budget": {
+    "small_saved_bytes": 388,
+    "all_arms_identical_training_observations": true,
+    "actions_train_per_world": 96,
+    "unique_training_actions": 24,
+    "held_actions_per_world": 8,
+    "unique_held_actions": 8,
+    "runtime": "Count gate17 feature-fit comparisons and source elapsed time where available; per-call computation, temporary Bayesian state, and process overhead not equalized, no energy or whole-model cost claims.",
+    "cold": "Each 388-byte compact model stored/restored twice and predicts exactly for all 8 held action vectors. No native or cross-process long-term checkpoint claim."
+  },
+  "scoring": {
+    "primary": "Mean held Brier averaged across 2 contexts x8 withheld actions per seed, then over 48 seeds per family. Per-seed paired normal 95% CI.",
+    "subgroups": "For each three-parent cohort, report count and held Brier for source true-parent pattern observed vs never observed in fit actions; subgroup labels diagnostic only, not used by any learner.",
+    "parent_recovery": "Exact inferred 3-parent mask counts out of 96 worlds per 3-parent family. No parent ID leakage allowed.",
+    "paired_comparisons": "Compare adaptive vs flat memorization baseline, 2-parent truncated, fixed-full, and Bayesian. Preserve negatives and note parity-only specialized advantage when present."
+  },
+  "frozen_targets": {
+    "majority_held_brier_max": 0.14,
+    "mux_held_brier_max": 0.14,
+    "random3_held_brier_max": 0.17,
+    "parity3_held_brier_max": 0.14,
+    "majority_gain_vs_flat_min": 0.08,
+    "mux_gain_vs_flat_min": 0.08,
+    "random3_gain_vs_flat_min": 0.06,
+    "parity3_gain_vs_flat_min": 0.08,
+    "flat_gain_CI_lower_positive_all_4": true,
+    "majority_parent_recovery_min": 78,
+    "mux_parent_recovery_min": 78,
+    "random3_parent_recovery_min": 60,
+    "parity3_parent_recovery_min": 78,
+    "pair_regression_vs_truncated_max": 0.015,
+    "unary_regression_vs_truncated_max": 0.015,
+    "independent_held_brier_max": 0.27,
+    "independent_spurious_triple_max": 8,
+    "worst_three_parent_deficit_to_bayes_max": 0.02,
+    "structural_gain_vs_fixed_min": 0.015,
+    "structural_gain_fixed_CI_lower_positive": true,
+    "compact_cold_restore_all": true,
+    "disjoint_action_sets_all": true,
+    "small_state_exact_bytes": 388
+  },
+  "interpretation": "If unseen-action gain vs flat passes but fixed full ties, it is only finite 5-bit action-combination generalization under parent-bit coverage, not causal intelligence or structural self-assembly. If any true parent-pattern is missing from fit, no arbitrary Boolean function can uniquely predict its unknown bit without an additional inductive prior. Native acceptance and model continuation remain separately owner-controlled.",
+  "fences": {
+    "no_main_change": true,
+    "no_merge": true,
+    "no_native_checkpoint_or_scientific_first_use": true,
+    "no_new_workflow_runner_scheduler_controller": true,
+    "no_paid_API": true,
+    "source_protocol_before_results": true,
+    "research_only_in_existing_draft_PR": true
+  }
+}
