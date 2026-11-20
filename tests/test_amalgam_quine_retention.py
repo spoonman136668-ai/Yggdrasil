@@ -257,6 +257,42 @@ class QuineRetentionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "requires active selectors"):
             QUINE.verify_selector_replay(self.anchor, FakeSystem(self.anchor.events))
 
+    def test_selector_restore_detects_unobserved_first_action_drift(self):
+        """The old action-only loss check cannot see a changed unchosen action."""
+        class ChangedFirstAction(FakeSelector):
+            def forecast(self, views, first, *terminal):
+                if first == 1:
+                    return Fraction(99, 100)
+                return super().forecast(views, first, *terminal)
+
+        expected = FakeSelector(self.anchor)
+        restored = ChangedFirstAction(FakeSystem(self.anchor.events))
+        self.assertEqual(QUINE._checkpoint(expected),
+                         QUINE._checkpoint(restored))
+        for event in self.anchor.events:
+            self.assertEqual(QUINE._loss(expected, event),
+                             QUINE._loss(restored, event))
+        with self.assertRaisesRegex(ValueError, "alternative-action"):
+            QUINE.verify_selector_replay(expected, restored)
+
+    def test_selector_restore_detects_unobserved_terminal_action_drift(self):
+        """Public second-stage alternatives must replay even if not witnessed."""
+        class ChangedSecondAction(FakeSelector):
+            def forecast(self, views, first, *terminal):
+                if terminal and terminal[1] == 1:
+                    return Fraction(1, 100)
+                return super().forecast(views, first, *terminal)
+
+        expected = FakeSelector(self.anchor)
+        restored = ChangedSecondAction(FakeSystem(self.anchor.events))
+        self.assertEqual(QUINE._checkpoint(expected),
+                         QUINE._checkpoint(restored))
+        for event in self.anchor.events:
+            self.assertEqual(QUINE._loss(expected, event),
+                             QUINE._loss(restored, event))
+        with self.assertRaisesRegex(ValueError, "alternative-action"):
+            QUINE.verify_selector_replay(expected, restored)
+
     def test_selector_guarded_observe_stays_single_shared_state(self):
         anchor = FakeSelector(self.anchor)
         manifest = QUINE.select_quines(anchor, self.windows)
