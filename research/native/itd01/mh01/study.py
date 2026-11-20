@@ -209,6 +209,9 @@ def chosen_fitness(rows):
 def run():
     start = time.process_time()
     fit = [data(s) for s in FIT]
+    baseline_start = time.process_time()
+    fixed_fit = [assess(Colony(), d) for d in fit]
+    fixed_reference_cpu = max(time.process_time() - baseline_start, 1e-9)
     search = []
     for genome in genomes():
         rows = evaluate_genome(genome, fit)
@@ -216,7 +219,9 @@ def run():
     # lexicographic ordering in genomes() wins exact ties
     winner_index = max(range(len(search)), key=lambda i: search[i]["fitness"])
     winner = genomes()[winner_index]
-    outer_cpu = time.process_time() - start
+    outer_cpu = time.process_time() - start - fixed_reference_cpu
+    cost_ratio = outer_cpu / fixed_reference_cpu
+    cost_penalty = cost_ratio > 20.0
     validation = evaluate_genome(winner, [data(s) for s in VALID])
     held_data = [data(s) for s in HELD]
     models = {
@@ -243,16 +248,27 @@ def run():
         raw = m.checkpoint()
         cold = MetaColony.restore(raw)
         probes = d[3][:16] + d[4][:16]
+        local_exact = all(m.predict(c, x) == cold.predict(c, x)
+                          for c, x, _ in probes)
+        request = {"snapshot": raw.decode("utf-8"),
+                   "probes": [[c, list(x)] for c, x, _ in probes]}
+        spawned = subprocess.run([sys.executable, "-B", __file__, "--cold-probe"],
+                                 input=json.dumps(request), text=True,
+                                 capture_output=True, timeout=20, check=True)
+        independent = json.loads(spawned.stdout)
+        cold_exact = independent == [m.predict(c, x) for c, x, _ in probes]
         restore_checks.append({"bytes": len(raw), "byte_exact": raw == cold.checkpoint(),
-                               "predictions_exact": all(m.predict(c, x) == cold.predict(c, x)
-                                                        for c, x, _ in probes)})
+                               "predictions_exact": local_exact,
+                               "independent_process_predictions_exact": cold_exact})
     retention = [z["a_before_b"] - z["a_after_b"] for z in evidence["evolved"]]
     success = (all(z["recovery_by_96"] is not None and
                    min(z["damage_accuracy"][96]) >= .75 for z in evidence["evolved"])
                and evolved >= baseline + .05
                and all(v <= .02 for v in retention)
                and all(z["byte_exact"] and z["predictions_exact"]
-                       and z["bytes"] <= 32768 for z in restore_checks))
+                       and z["independent_process_predictions_exact"]
+                       and z["bytes"] <= 32768 for z in restore_checks)
+               and not cost_penalty)
     report = {
         "schema": "ygg.mh01.source_free_dev.v1",
         "source_parent_sha": "f3cdabdb3420bb8604e41dda9903ae65eba008e7",
@@ -265,11 +281,14 @@ def run():
         "evolved_advantage": evolved - baseline, "a_retention_drops": retention,
         "restore_checks": restore_checks,
         "cpu_outer_search_seconds": round(outer_cpu, 6),
+        "cpu_fixed_reference_fit_seconds": round(fixed_reference_cpu, 6),
         "cpu_all_stages_seconds": round(time.process_time() - start, 6),
         "peak_whole_process_rss": "UNVERIFIED",
-        "cost_ratio_to_one_fixed_rule_run": "UNVERIFIED",
-        "development_mechanism": "DEV_MECHANISM_GO_PENDING_COST" if success
-                                 else "SCIENTIFIC_DEV_NO_GO",
+        "cost_ratio_to_one_fixed_rule_run": round(cost_ratio, 3),
+        "cost_penalty": cost_penalty,
+        "development_mechanism": "DEV_MECHANISM_GO" if success
+                                 else ("SCIENTIFIC_DEV_NO_GO_COST" if cost_penalty
+                                       else "SCIENTIFIC_DEV_NO_GO"),
         "unfamiliar_family_transfer": "NOT_TESTED",
         "reward_free_lifetime_hebbian": False,
     }
@@ -277,4 +296,12 @@ def run():
 
 
 if __name__ == "__main__":
-    print(json.dumps(run(), sort_keys=True, indent=2))
+    if sys.argv[1:] == ["--cold-probe"]:
+        payload = json.loads(sys.stdin.read())
+        colony = MetaColony.restore(payload["snapshot"].encode("utf-8"))
+        probes = payload["probes"]
+        print(json.dumps([colony.predict(ctx, tuple(bits)) for ctx, bits in probes]))
+    elif len(sys.argv) == 1:
+        print(json.dumps(run(), sort_keys=True, indent=2))
+    else:
+        raise SystemExit("MH01_UNKNOWN_ARGUMENTS")
