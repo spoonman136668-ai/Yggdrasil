@@ -1,0 +1,77 @@
+{
+  "schema": "yggdrasil.external-research-frozen-protocol.v1",
+  "id": "ENERGY-POSTERIOR-19",
+  "date_utc": "2026-11-20",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "draft_pr": 1346,
+  "previous_head": "a01a3824a2290030b9561f81da47528cad023137",
+  "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "owner": "independent energy contributor; Amalgam PR #1278 exclusively owns cumulative Yggdrasil native integration",
+  "previous_falsification": "ENERGY-CALIBRATE-18: local calibrated 75.83% familiar change sensitivity vs fully marginalized Bayes 91.67% with 5% vs 3.33% NULL false-alarm on distinct held worlds; primary consumed; its raw calibration scores missing.",
+  "question": "Can retaining up to eight plausible OLD causal hypotheses (rather than just the MAP) recover changed-mechanism sensitivity under fixed interventions, without losing the NULL false-alarm bound and counted computation advantage over complete OLD-hypothesis marginalization?",
+  "data": {
+    "hypotheses": 62,
+    "states": "five binary inputs and one binary outcome",
+    "old_observations": 24,
+    "new_observations": 16,
+    "new_first_distinct_contexts": 12,
+    "flip_noise_probability": 0.15,
+    "known_same_likelihood_for_every_arm": true,
+    "change_prior": 0.25,
+    "transition_kernel": "P(NEW = h | OLD = g, change) proportional to exp[-Hamming(mask(g),mask(h))-I(bias differs)] over all h != g.",
+    "source_family": [
+      "NULL",
+      "SINGLE_EDGE",
+      "DOUBLE_EDGE",
+      "NONLINEAR_AND"
+    ],
+    "nonlinear": "NEW XOR law from old plus two-input AND gate outside the fitted 62 XOR hypotheses.",
+    "smoke_seed": 100901,
+    "calibration_seeds": {
+      "start": 101003,
+      "step": 17,
+      "count": 160,
+      "families": [
+        "NULL"
+      ]
+    },
+    "primary_seeds": {
+      "start": 107011,
+      "step": 19,
+      "count": 80,
+      "families": [
+        "NULL",
+        "SINGLE_EDGE",
+        "DOUBLE_EDGE",
+        "NONLINEAR_AND"
+      ]
+    },
+    "forbidden_seed_overlap": "No primary seed shared with ENERGY-SELECT-14, HYPOTHESIS-15, COVERAGE-16, TRANSFER-17 or CALIBRATE-18; calibration and smoke also disjoint.",
+    "common_data": "All detectors see exact identical OLD events and fixed NEW input/outcome trace per world. Source truth withheld."
+  },
+  "controls": {
+    "candidate": "Top posterior OLD hypotheses in descending OLD probability, smallest prefix of <=8 with cumulative OLD posterior mass >=0.95 if possible; normalize retained OLD weights; each OLD anchor has local alternate NEW XOR hypotheses mask Hamming distance <=2, with bias flip allowed; P(change)=0.25, P(no-change)=0.75, internal change alternative transition kernel normalized per OLD anchor; multiply OLD-mixture evidence and NEW likelihoods.",
+    "local_MAP": "Identical local marginalization but OLD top-k=1, mask radius<=2.",
+    "local_top4": "Same local model with top-k <=4, posterior mass cutoff 0.95.",
+    "local_top8_full_radius": "OLD top-k<=8 mass cutoff 0.95, all 61 NEW alternatives per anchor; ablation isolates NEW local mask search.",
+    "exact_full": "All 62 OLD posterior hypotheses, all 61 alternative NEW hypotheses per OLD anchor, exact same transition prior and likelihood family.",
+    "global_MAP": "Only most probable OLD hypothesis, all 61 alternatives, exact change prior.",
+    "never_change": "Declares no change; trivial safety comparator."
+  },
+  "calibration": {
+    "policy": "For each probabilistic detector use only 160 independent NULL calibration-world posterior scores, set sorted order-statistic one-based rank ceil(0.97*(160+1)) = 157, declare changed iff posterior > that model-specific rank-157 value. Each model calibrated separately; no held outcomes used.",
+    "original_scores": "Commit all 160 per-model raw NULL calibration posterior values (and explicit chosen threshold/rank) so a separate auditor can reconstruct thresholds exactly without rerunning simulator."
+  },
+  "acceptance": {
+    "null_false_alarm": "Candidate <=5% NULL false-change rate across 80 held NULL worlds.",
+    "shifted_detection": "Candidate >=0.75 sensitivity on 160 held SINGLE+DOUBLE worlds AND candidate no more than 0.10 below exact_full calibrated sensitivity.",
+    "improvement_over_map": "Candidate sensitivity >= local_MAP sensitivity +0.05 while candidate NULL false-change rate <= local_MAP NULL false-change rate +0.025.",
+    "proper_brier": "Candidate continuous event-posterior Brier on 240 held familiar NULL+SINGLE+DOUBLE worlds <= exact_full +0.020 and no worse than local_MAP +0.005.",
+    "compute_proxy": "exact_full mean counted likelihood and transition operations / candidate >=1.5, all arms include OLD 24-observation fit and 32-input OLD readout.",
+    "trace_and_retention": "Every arm exactly same 24 OLD and 16 NEW observations, first 12 NEW inputs distinct; old posterior & 32 input predictions unchanged through JSON serialize/parse (same process, NOT native cold restart).",
+    "nonlinear": "Report nonlinear out-of-family detection and failure conservatively, not a post-hoc threshold rescue; must be at least local_MAP nonlinear sensitivity minus .05 for DEV_SIGNAL.",
+    "decision": "All criteria must pass for DEV_SIGNAL_UNQUALIFIED; any miss = SCIENTIFIC_NO_GO. No scientific PASS, runtime gain, native learned memory or deployment claims without new independent owner qualifier and full final regression."
+  },
+  "process": "Protocol commit first. Commit frozen executable second, verify exact source Git blob readback before separate smoke, then one 160-NULL calibration and one 80-seed by four-family 320-world primary (no rerun/postresult tuning). Source-free synthetic; save calibration values and all per-world primary posterior/prediction metrics, action traces and provenance. Independent separate arithmetic audit only; preserve negative. No new background tasks/runners/controllers/paid APIs.",
+  "isolation": "Existing draft PR #1346, additive new research files only. Do not touch main, accepted learner, Amalgam owner, model checkpoints, original-source first-use, external evidence, workflows, runners, merge or deployment."
+}
