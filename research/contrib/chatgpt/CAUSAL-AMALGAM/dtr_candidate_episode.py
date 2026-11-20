@@ -132,7 +132,7 @@ def candidate_from_public_episode(rows, *, identifier):
     if first_reward != 0 or first_done or first_trunc:
         raise ValueError("DTR_CANDIDATE_STAGE0_NONTERMINAL_ZERO_REWARD")
     if second_before != s2:
-        raise ValueError("DTR_CANDIDATE_STAGE_HISTORY_MISMATCH")
+        raise ValueError("DTR_CANDIDATE_HISTORY_MISMATCH")
     if not final_done or final_trunc:
         raise ValueError("DTR_CANDIDATE_STAGE1_TERMINAL_REQUIRED")
     if final_after != 0:
