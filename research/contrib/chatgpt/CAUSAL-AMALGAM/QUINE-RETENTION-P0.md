@@ -52,6 +52,35 @@ cold-replay divergence, and single shared-witness admission. Exact changed-
 candidate dual-platform full regression is still required; no real mastered
 regime, owner cold restore, or protected new source use is claimed.
 
+## Cold-policy alternative-action readback (research-only integrity)
+
+The active-selector replay check previously compared **only actually witnessed
+actions** from the archived evidence. This cannot detect a behavior change
+that leaves the saved checkpoint/routing evidence and old chosen-action
+forecasts identical but alters **untaken first or second actions**. Source-free
+negative fixtures now demonstrate this counterexample with identical saved
+policy custody, identical historical charged Brier, but divergent alternative
+action forecasts.
+
+The read-only `verify_selector_replay(expected, restored)` now enumerates
+every `first in {0,1}` and each `(first, observed_second_state,
+second_action) in {0,1}³` on each **historically observed paired public
+view**, comparing the quantized output at the existing 1e-6 forecast scale.
+It makes **10 queries per distinct observed paired view per policy**, in
+addition to its original charged-action readback. Non-finite/out-of-range
+forecasts fail closed. This detects cold-replay implementation/routing
+divergence on alternative public actions **without inventing unobserved
+rewards or source outcomes**.
+
+The change does **not** declare an unseen action's forecast correct, prove
+counterfactual causal value, prevent a scientifically valid change of policy
+between genuinely different trained checkpoints, or certify behavior on
+entirely unobserved public inputs. It does **not** change the Quine admission
+or veto decision; it strengthens only the existing *same-checkpoint*
+read-only cold-restore check. Independent owner restoration/lease and genuine
+mastered-regime source custody remain unverified. Exact-source Linux/Windows
+full regression is required.
+
 ## Charged-veto receipt contract (engineering only)
 
 A vetoed witness is absent from the admitted active checkpoint. The optional
