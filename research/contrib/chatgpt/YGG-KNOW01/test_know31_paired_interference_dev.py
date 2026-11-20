@@ -88,5 +88,19 @@ class TestKNOW31(unittest.TestCase):
             m.observe(0,0,0,1)
 
 
+    def test_common_prefix_uses_one_source_witness_not_two(self):
+        """Mock one common-prefix public outcome per t; never open frozen HELD."""
+        from unittest.mock import patch
+        import know31_paired_interference_dev as mod
+
+        toy_fitted = (None, self.a, self.b, self.a, None)
+        with patch.object(mod, "private_witness", side_effect=lambda mid, seed, t, a, branch: t % 2) as mock:
+            result = mod.methods_after_public_prefix(0, 16001, toy_fitted)
+        self.assertEqual(mock.call_count, 16)
+        self.assertTrue(all(call.args[4] == "control_A" for call in mock.call_args_list))
+        self.assertEqual(result["archive"].received, 16)
+        self.assertEqual(len(result["single"].rows), 16)
+
+
 if __name__ == "__main__":
     unittest.main()

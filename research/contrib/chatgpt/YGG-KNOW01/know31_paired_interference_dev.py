@@ -140,9 +140,9 @@ def methods_after_public_prefix(mid, seed, fitted):
     methods = new_arms(fitted)
     for t in range(PREFIX):
         c, a = t % 4, t % 4
+        # Both future forks share this public H0 prefix by the frozen law.
+        # Admit its single witness ONCE; later forks cold-clone the history.
         y = private_witness(mid, seed, t, a, "control_A")
-        require(y == private_witness(mid, seed, t, a, "treatment_B"),
-                "PREFIX_MUST_SHARE_PHYSICAL_Y")
         for m in methods.values():
             m.observe(t, c, a, y)
     for m in methods.values():
