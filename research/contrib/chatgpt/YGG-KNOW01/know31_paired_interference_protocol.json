@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.know31.paired-causal-interference-prereg.v1",
+  "date": "2026-11-20",
+  "question": "Can source-blind A/B archives prevent causal B-specific corruption versus the same model exposed only to continuing A, once ordinary additional A learning is controlled by an identical checkpoint fork?",
+  "role": "Independent source-only Yggdrasil PR #1327 contributor, canonical integration owner Amalgam PR #1278.",
+  "parents": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "contributor_head_before_prereg": "8187c2438df23b873b228566e0a961aa5614b836",
+    "prior_know30_source_blob": "9671ffcef8cd5be62eb62643529eca9cf4bb3471",
+    "prior_know30_protocol_blob": "ae7e5987cb4d5910325bb2e2275d5e3e6d26210b",
+    "prior_know30_held": "CONSUMED; never replayed"
+  },
+  "source_mode": "engineering_fixture_only",
+  "source": {
+    "seeds": [
+      16001,
+      16007,
+      16033,
+      16061,
+      16067,
+      16069,
+      16073,
+      16087
+    ],
+    "mapping_ids": [
+      0,
+      1,
+      2
+    ],
+    "n_world_pairs": 24,
+    "steps": 60,
+    "source_rule": "t0..23 common hidden H0 A; deep-clone every model into paired control-A and treatment-B at t24. Control A remains H0 through t59; treatment hidden H2 B t24..47, then unannounced H0 A t48..59. Public model receives only t,c=t%4,a=t%4,one genuinely witnessed Bernoulli y; no phase/switch/fork/mapping/law/coin in learner.",
+    "noise": "SHA256('know31:private:coin:v1:'+mid+':'+seed+':'+t), first64/2^64, identical exogenous coin both forks, actual action-conditioned outcome differs when laws differ.",
+    "reward": "Bernoulli .85 if TRUE_MAPS[mid][action] XOR public c produces active Boolean 1, else .15; same already frozen H0/H2 causal law evaluators.",
+    "fit": "Reuse previously CONSUMED KNOW26 108 mapping FIT witnesses and KNOW30 128 labelled A/B FIT witnesses per map/group as historical training. Count 236 extra FIT observations/map; no new FIT or original source first-use.",
+    "protected_original_first_use": false,
+    "accepted_native_modified": false
+  },
+  "arms": [
+    "KNOW30 archive: same full 6x256 posterior pair with posterior-threshold quarantine, completely unchanged source",
+    "KNOW30 switching_bayes: two full 6x256 posterior slots with fractional responsibility updates, approximate HMM not exact",
+    "KNOW30 single: one continuously learned full 6x256 posterior",
+    "KNOW30 rolling8: refitted posterior from last8 public witnesses; smaller effective capacity, explicitly not primary strongest matched control"
+  ],
+  "budgets": {
+    "world_pairs": 24,
+    "actions_per_fork_per_method": 1440,
+    "actions_both_forks_per_method": 2880,
+    "fork_prefix": 24,
+    "interference": 24,
+    "return": 12,
+    "methods": 4,
+    "return_checks_after_witnesses": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "metrics": {
+    "old_A_loss": "Expected Brier q*(1-q)+(p-q)^2, four evaluator-only high c4..7 no-op contexts, old A true law H0; keep private evaluation out of learner.",
+    "primary": "D_B = old-A Brier(t48 before return witness, B-treatment fork) minus old-A Brier(t48, A-continuation fork) for each model and world. Paired common-prefix and noise isolates effect of changed law vs ordinary A continuation, but differing observed consequences are part of the intervention and not identical information.",
+    "secondary": "Pre-fork fitted A-slot Brier and hash, each fork t48 old A-slot raw hash/output drift vs t24, live Brier drift vs t24, phase-belief trajectories, both forks prequential return losses after 0/1/2/4/8 witnessed actual A returns, old-A reference frozen and cold restored, count received vs assimilated events, bytes, elapsed CPU; report paired world metrics and cost."
+  },
+  "frozen_hypotheses": {
+    "P0": "Mean fitted A-slot old A high Brier at t24 <=0.235, else UNDERTRAINED_BASELINE and no meaningful retention claims.",
+    "H1": "Archive mean B-specific t48 drift at least .005 lower than HMM (D_archive<=D_HMM-.005) AND archive D<HMM in >=18/24 world pairs.",
+    "H2": "Treatment fork archive return-A high Brier after k4 and k8 witnesses each at least .005 lower than HMM AND archive beats HMM at k8 >=18/24 world pairs.",
+    "H3": "Read-only frozen t24 old-A reference hash and 4 forecasts identical across both forks at t48 and cold readback. Reference immutability is NOT functional live retention.",
+    "H4": "All four arms cold-clone from same t24 public-prefix bytes, per-fork 60 one-witness sequential public actions, typed/duplicate/out-of-order/source denial, no private fields in model, final full Ubuntu/Windows regression and original historical source compatibility.",
+    "classification": "Synthetic DEVELOPMENT_SUPPORTED only if P0 and H1 and H2 and H3 and H4; otherwise MIXED/NO_GO. Original SCIENTIFIC_PASS always false; no model promotion."
+  },
+  "first_use": "Prereg before code/test and new held evidence. Focused tests use constructed toys only. One existing GitHub Actions pipeline after Ubuntu+Windows focused, atlas, mandatory full-final on both and original read-only compatibility; one guarded run_attempt=1, exact source blob, novel held seeds. No repeat or retuning after outcome. Do not open new PR, owner runner, schedule, paid API, real-world source, accepted checkpoint, merge or deployment.",
+  "constraints": {
+    "original_first_use_issue": 426,
+    "canonical_owner_pr": 1278,
+    "contributor_pr": 1327,
+    "merge": false,
+    "deployment": "NONE"
+  }
+}
