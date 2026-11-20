@@ -450,7 +450,7 @@ jobs:
           if-no-files-found: error
 
   know29-study:
-    if: github.event.head_commit.message == 'research(know29): qualify one-shot prospective calibration'
+    if: "github.event.head_commit.message == 'research(know29): qualify one-shot prospective calibration'"
     needs: [atlas, full-final, real-source-compatibility]
     runs-on: ubuntu-latest
     timeout-minutes: 25
