@@ -11,9 +11,9 @@ from verify_parity import metric,compare_receipts
 
 class GateAdmissionPreflight(unittest.TestCase):
     def test_frozen_source_boundary_and_whole_group_disjointness(self):
-        p=json.loads((Path(__file__).parent/"prereg.json").read_text("utf-8"))
-        self.assertEqual(p["experiment_id"],"WSP-214")
-        self.assertEqual(PREREG,"905cbef5df7d1cace00231ea4bcd079c0780a1ef")
+        p=json.loads((Path(__file__).parent/"prereg_b.json").read_text("utf-8"))
+        self.assertEqual(p["experiment_id"],"WSP-214B")
+        self.assertEqual(PREREG,"2f4bd72cf7b3adf9a4fbaa704a7d571d01fdde98")
         self.assertEqual([w["seed"] for w in p["design"]["worlds"]],
                          [x[0] for x in WORLDS])
         self.assertTrue(FORBIDDEN.isdisjoint({x[0] for x in WORLDS}))
@@ -25,7 +25,7 @@ class GateAdmissionPreflight(unittest.TestCase):
         self.assertEqual(len(MODELS),7)
         for w in WORLDS:
             gene,groups=metadata(w)
-            self.assertTrue(gene.startswith("FABRICATED_WSP214_"))
+            self.assertTrue(gene.startswith("FABRICATED_WSP214B_"))
             fit={g for stage in range(4)
                  for _,_,g in groups[("FIT",stage)]}
             held={g for _,_,g in groups[("PUBLIC_DEV",None)]}
@@ -35,7 +35,7 @@ class GateAdmissionPreflight(unittest.TestCase):
             self.assertTrue(all(groups[("FIT",stage)] for stage in range(4)))
         for old in ((21011,"hub",64),(21101,"hub",24),
                     (21201,"hub",24),(21301,"hub",24),
-                    (21499,"hub",24)):
+                    (21403,"hub",24),(21499,"hub",24)):
             with self.assertRaises(ValueError):
                 metadata(old)
 
@@ -59,9 +59,9 @@ class GateAdmissionPreflight(unittest.TestCase):
             with self.assertRaises(ValueError):
                 _factor(old,"C",1,0)
         with self.assertRaises(ValueError):
-            _factor(21401,"F",1,0)
+            _factor(21411,"F",1,0)
         with self.assertRaises(ValueError):
-            _factor(21401,"C",-1,0)
+            _factor(21411,"C",-1,0)
 
     def test_no_cohort_gate_diagnostic_and_numeric_negatives(self):
         # A standalone in-memory fabricated negative fixture, not a WSP214

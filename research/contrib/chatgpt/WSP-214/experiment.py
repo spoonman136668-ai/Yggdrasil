@@ -1,8 +1,8 @@
-"""WSP-214: preregistered gate-admission diagnostic and fixed-budget controls.
+"""WSP-214B: preregistered gate-admission diagnostic and fixed-budget controls.
 
 SYNTHETIC SOURCE-FREE ONLY. This code has no original GFP loader, no native
 checkpoint, no owner, and no use of the retired WSP210--WSP213 cohorts.
-Pre-result preregistration SHA 905cbef5df7d1cace00231ea4bcd079c0780a1ef.
+Pre-result B preregistration SHA 2f4bd72cf7b3adf9a4fbaa704a7d571d01fdde98; original A split-invalid (no primary).
 """
 from __future__ import annotations
 
@@ -39,13 +39,14 @@ _digest = _previous._digest
 ridge_scope = _previous.ridge_scope
 BlockedFullRefit = _previous.BlockedFullRefit
 
-SCHEMA = "wsp214.gate-admission.source-free.v1"
-PREREG = "905cbef5df7d1cace00231ea4bcd079c0780a1ef"
-WORLDS = ((21401, "hub", 24), (21402, "complete", 12),
-          (21403, "hub", 24), (21404, "complete", 12))
+SCHEMA = "wsp214b.gate-admission.source-free.v1"
+PREREG = "2f4bd72cf7b3adf9a4fbaa704a7d571d01fdde98"
+WORLDS = ((21411, "hub", 24), (21412, "complete", 12),
+          (21413, "hub", 24), (21414, "complete", 12))
 FORBIDDEN = frozenset((21011, 21012, 21013, 21014, 21101, 21102,
                        21201, 21202, 21203, 21204,
-                       21301, 21302, 21303, 21304))
+                       21301, 21302, 21303, 21304,
+                       21401, 21402, 21403, 21404))
 POLICY_SCHEMA = "wsp214.policy-bound-gate.v1"
 MODELS = ("full_refit", "strict_original", "budgeted_consensus",
           "budgeted_surprise", "budgeted_random", "always", "no_update")
@@ -57,7 +58,7 @@ def metadata(world):
     if world not in WORLDS or world[0] in FORBIDDEN:
         raise ValueError("world is not frozen WSP214 new synthetic primary")
     seed, topology, n = world
-    gene = f"FABRICATED_WSP214_{seed}"
+    gene = f"FABRICATED_WSP214B_{seed}"
     groups = defaultdict(list)
     for i, j in _pairs(topology, n):
         group = pair_group(gene, i, j)
@@ -76,7 +77,7 @@ def metadata(world):
 def _factor(seed, alt, pos, k):
     if seed not in {x[0] for x in WORLDS} or alt not in ("C", "D") or pos < 1 or k not in range(RANK):
         raise ValueError("source-free factor source not allowlisted")
-    key = f"WSP214\0{seed}\0{alt}\0{pos}\0{k}".encode("utf-8")
+    key = f"WSP214B\0{seed}\0{alt}\0{pos}\0{k}".encode("utf-8")
     return hashlib.sha256(key).digest()[0] % 7 - 3
 
 

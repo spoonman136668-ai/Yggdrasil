@@ -7,10 +7,10 @@ import math
 from pathlib import Path
 import sys
 
-SCHEMA = "wsp214.gate-admission.source-free.v1"
-PREREG = "905cbef5df7d1cace00231ea4bcd079c0780a1ef"
-WORLDS = ((21401,"hub",24),(21402,"complete",12),
-          (21403,"hub",24),(21404,"complete",12))
+SCHEMA = "wsp214b.gate-admission.source-free.v1"
+PREREG = "2f4bd72cf7b3adf9a4fbaa704a7d571d01fdde98"
+WORLDS = ((21411,"hub",24),(21412,"complete",12),
+          (21413,"hub",24),(21414,"complete",12))
 MODELS = ("full_refit","strict_original","budgeted_consensus",
           "budgeted_surprise","budgeted_random","always","no_update")
 RESULTS = ("GATE_ADVANTAGE", "LOW_ADMISSION_DIAGNOSTIC",
