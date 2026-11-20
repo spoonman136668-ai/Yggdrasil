@@ -357,6 +357,12 @@ jobs:
             > "$RUNNER_TEMP/know21-unfamiliar-schedule-receipt.json"
           python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know21-unfamiliar-schedule-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know21.unfamiliar-regime-schedules-result.v1"; assert d["prereg_commit"]=="371727480dc70686b25340a3653ebf6b826a1961"; assert d["held_worlds"]==24 and d["per_policy_actions"]==1152; assert d["scientific_gate"]=="DEV_ONLY_STRONGEST_CONTROL_AND_REAL_FIRST_USE_NOT_QUALIFIED" and d["protected_original_first_use"] is False'
           test -z "$(git status --porcelain)"
+      - name: KNOW22 frozen posterior-slot readout against unchanged TGAP21 storage
+        shell: bash
+        run: |
+          python -B research/contrib/chatgpt/YGG-KNOW01/know22_posterior_slot_dev.py \
+            > "$RUNNER_TEMP/know22-posterior-slot-readout-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know22-posterior-slot-readout-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know22.posterior-memory-readout-result.v1"; assert d["prereg_commit"]=="d3885412f6cc81a366f901b90d33169f399c32c3"; assert d["held_actions_per_policy"]==512 and d["return_actions_per_policy"]==190; assert d["same_original_memory_after_every_update"] is True; assert d["scientific_gate"]=="NO_GO_SYNTHETIC_NO_OWNER_FIRST_USE"'
       - name: Preserve only bounded readout receipts (not original image or checkpoints)
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -379,5 +385,6 @@ jobs:
             ${{ runner.temp }}/know19-posterior-probe-utility-receipt.json
             ${{ runner.temp }}/know20-noisy-regime-memory-receipt.json
             ${{ runner.temp }}/know21-unfamiliar-schedule-receipt.json
+            ${{ runner.temp }}/know22-posterior-slot-readout-receipt.json
           retention-days: 30
           if-no-files-found: error
