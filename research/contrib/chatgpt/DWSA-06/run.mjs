@@ -39,7 +39,7 @@ export function analyze(model,source){
          ones_by_class:proto.map(row=>row.reduce((a,b)=>a+b,0)),
          source_model_forward_calls:0,source_original_actions:0};
 }
-function gitBlobSha(raw){const prefix=Buffer.from("blob "+raw.length+"\\0","utf8");return createHash("sha1").update(prefix).update(raw).digest("hex")}
+function gitBlobSha(raw){const prefix=Buffer.from("blob "+raw.length+"\0","utf8");return createHash("sha1").update(prefix).update(raw).digest("hex")}
 function insist(ok,s){if(!ok)throw new Error("DWSA06_"+s)}
 const modelRaw=readFileSync(process.argv[2]);
 const sourceRaw=readFileSync(process.argv[3]);
