@@ -1008,3 +1008,75 @@ jobs:
           path: ${{ runner.temp }}/know38-buffer-before-write-held.json
           if-no-files-found: error
           retention-days: 30
+
+  know39-soft-deferred-study:
+    # Single fresh synthetic FIT/HELD after exact frozen source and full regression.
+    # No original #426, native checkpoint, owner runner or accepted ref change.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know39): one-shot soft deferred held after full final regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source fence then ONE prospective synthetic source use
+        shell: bash
+        env:
+          YGG_KNOW39_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know39_soft_deferred_protocol.json")" = 5eb63f3fbb1edc87665e9a23525386eb90765a48
+          test "$(git rev-parse "HEAD:$base/know39_soft_deferred_dev.py")" = 4b61ecf922626e55a80e8390e5a28a34a8ed474e
+          test "$(git rev-parse "HEAD:$base/test_know39_soft_deferred_dev.py")" = e4705ebc711f4ecc6e0723e4c3962341a74e4762
+          echo YGG_KNOW39_ALL_FROZEN_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know39_soft_deferred_dev.py" > "$RUNNER_TEMP/know39-soft-deferred-held.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know39-soft-deferred-held.json").read_text())
+          assert d["schema"]=="yggdrasil.know39.soft-deferred-result.dev.v1"
+          assert d["prereg_commit"]=="f38313a69d029595b7d382ea2e7e1bab2b80030b"
+          assert d["prereg_blob"]=="5eb63f3fbb1edc87665e9a23525386eb90765a48"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],
+                  d["held_unique_source_events"],d["arm_events_total"])==(12,24,3072,9216,10752)
+          assert len(d["worlds"])==24 and set(d["families"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==7
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Print bounded aggregate source result
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know39-soft-deferred-held.json").read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_events","arm_events_total",
+                "fit_hazard","fit_hmm_briers","families","frozen_hypotheses",
+                "sham_false_B_admission_worlds","A_retained_worlds","B_retained_worlds",
+                "development_verdict","scientific","protected_original_world_first_use",
+                "native_model_changed","deployment")
+          print("YGG_KNOW39_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic first-use receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW39-soft-deferred-first-use
+          path: ${{ runner.temp }}/know39-soft-deferred-held.json
+          if-no-files-found: error
+          retention-days: 30
