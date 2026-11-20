@@ -90,7 +90,11 @@ class MH01Tests(unittest.TestCase):
         self.assertFalse(r["scientific_first_use"])
         self.assertFalse(r["reward_free_lifetime_hebbian"])
         self.assertIn(r["development_mechanism"],
-                      ("DEV_MECHANISM_GO_PENDING_COST", "SCIENTIFIC_DEV_NO_GO"))
+                      ("DEV_MECHANISM_GO", "SCIENTIFIC_DEV_NO_GO",
+                       "SCIENTIFIC_DEV_NO_GO_COST"))
+        self.assertTrue(all(z["independent_process_predictions_exact"]
+                            for z in r["restore_checks"]))
+        self.assertNotEqual(r["cost_ratio_to_one_fixed_rule_run"], "UNVERIFIED")
         self.assertEqual([a["feedback_updates"] for a in r["held"]["evolved"]],
                          [672] * 3)
         self.assertEqual(run()["winner"], r["winner"])
