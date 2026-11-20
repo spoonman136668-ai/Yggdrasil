@@ -1,0 +1,7 @@
+# KNOW37 — corrected one-time first use after **pre-source** pin guard
+
+The original [run #44828946952](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44828946952) intentionally failed closed at its **third** exact blob test before Python or source generation. The frozen protocol and source blobs were correct; the workflow test-file blob had become stale after a mock-only operation-cost assertion. No novel FIT/HELD outcome was generated or consumed, and the failed run/attempt will NOT be rerun.
+
+Fix-only workflow commit 23ec9c8b6c2c2a34e7a5173132caa8030b65dd76 points to exact test blob e63c087488c69b86e2072c292340e09195430e73; the evaluator remains 96a1ed5b7d05b19b7187aca6a5aa3a0ae4d00eaf and prereg protocol stays 5fdb34aafca11cfd41277dab655b7cbf3667371a. The corrected workflow now echoes YGG_KNOW37_ALL_SOURCE_PINS_OK_BEFORE_FIRST_USE only after all exact source tests pass, and still gates the strictly one-shot source invocation behind focused Linux+Windows, sealed atlas, mandatory full final regression both OS, and historical read-only compatibility.
+
+This new commit requests a single synthetic held first-use **only if all gates pass**. Freeze 12 distinct FIT and 24 HELD worlds, 3,072+9,216 events, P0/P1/H1-H5; preserve every negative, never retry uncertain/consumed trials. No protected #426, accepted Amalgam checkpoint change, merge, new runner/controller, schedule, paid API or deployment.
