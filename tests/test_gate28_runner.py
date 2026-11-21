@@ -81,6 +81,21 @@ class TestGate28Runner(unittest.TestCase):
         self.assertFalse(independent["scientific_gain_verified"])
         self.assertEqual(independent["matched_control_adequacy"], "UNVERIFIED")
 
+    def test_forced_exposure_parity_includes_every_model_control(self):
+        baseline = {arm + ".forced": {"exposure_sha256": "a" * 64}
+                    for arm in runner.MODEL_ARMS}
+        self.assertEqual(runner.require_forced_parity(baseline), "a" * 64)
+        for arm in runner.MODEL_ARMS:
+            forged = {k: dict(v) for k, v in baseline.items()}
+            forged[arm + ".forced"]["exposure_sha256"] = "b" * 64
+            with self.subTest(arm=arm):
+                with self.assertRaisesRegex(ValueError,
+                                            "EQUAL_EXPOSURE_PARITY_FAIL"):
+                    runner.require_forced_parity(forged)
+        with self.assertRaisesRegex(ValueError,
+                                    "EQUAL_EXPOSURE_PARITY_FAIL"):
+            runner.require_forced_parity({})
+
     def test_true_cold_and_identical_forced_exposure(self):
         result = runner.diagnostic(900011)
         self.assertEqual(result["stages"], ["A", "B", "R"])
