@@ -1,0 +1,33 @@
+{
+  "schema": "yggdrasil.g41.r13.shadow-selector-prereg-v1",
+  "source": "R12 original trained 1025 prefix plus existing 1023 all-zero synthetic continuation",
+  "source_joint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "parent_candidate_sha": "469d3f94e48270a06e65a37129e0be63627f7abd",
+  "r12_terminal_run": 44944949527,
+  "original_prefix_count": 1025,
+  "initial_matching_context_count": 1035,
+  "final_count": 2048,
+  "same_topology": {"context_start": 1035, "experts": 34, "historical": 33, "novel": 1},
+  "frozen_original_history_windows": {"earliest": [0, 32], "midpoint": [496, 528], "latest_pre_fixture": [992, 1024]},
+  "recent_synthetic_negative_window": [2016, 2048],
+  "primary_target": "reward",
+  "secondary_target": "transition",
+  "primary_candidate": {
+    "kind": "shadow_evidence_coverage_cap",
+    "novel_expert_max_weight": "1/2",
+    "min_original_exact_public_query_support": 8,
+    "requires_original_ledger_prefix": true,
+    "conditional_reward_renormalization": "per-arm own expert transition predictions"
+  },
+  "controls": ["unchanged_native_context_weights", "static_novel_cap_1/2", "coverage_cap_3/4", "original_1035_weights_with_2048_experts_diagnostic", "fully_fitted_exact_key_beta11_full_2048", "fully_fitted_exact_key_beta11_last_128"],
+  "source_timing": "retrospective readout only; all outcomes are already observed, not held",
+  "scoring": "Fraction predictions rounded using retention_guard.SCALE=1000000 before squared loss",
+  "old_reward_max_deterioration_from_1035": "0.02",
+  "old_reward_min_improvement_over_unchanged_native": "0.01",
+  "min_advantage_over_best_equal_information_beta": "0.005",
+  "recent_synthetic_max_extra_loss_vs_native": "0.02",
+  "required_all_three_original_windows": true,
+  "stop": "Single pre-frozen read-only experiment; FAIL on any old retention, old improvement, strong control, or recent adaptation condition. Do not tune cap, gate, windows, or protocol based on results. No model-source patch, world-first-use, production gate, next experiment, merge or acceptance without separate qualification.",
+  "scientific_pass": false,
+  "owner_accepted": false
+}
