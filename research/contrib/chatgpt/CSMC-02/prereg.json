@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CSMC-02",
+  "project": "Yggdrasil",
+  "type": "research-only engineering successor, not scientific first-use",
+  "parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "baseline": "original NativeEpisodeExperience on 50 previously consumed FIT episodes",
+  "original_sources": {
+    "archive": "research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json",
+    "archive_sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+    "archive_git_blob": "9db0d3742fc8bd009c61d0864e4aba739a19e4e1",
+    "native_module_blob": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+    "causal_cell_blob": "de8722f38d987ef7bcb4b7a0c23466b8e6f25712",
+    "FIT": "source rows 0..49 only; previously consumed; no 50..95 evaluation"
+  },
+  "hypothesis": "Exact two-stage causal sufficient statistics and online loss selectors, accompanied by an eight-witness provenance cache and immutable archive read-through, reproduce the original full-FIT native stage-1 and stage-2 probabilities and proposed actions exactly at cold restore, while retaining bounded identity evidence. It does not necessarily beat an exact compact-only control.",
+  "mechanism": {
+    "layer1": "binary causal outcome counters for all native transition and terminal slots, adaptive exact rational prequential losses, projection decision, recorded-count metadata; keep original causal snapshot unchanged",
+    "layer2": "eight original projection witnesses (chronological indices 0..7), their original unique IDs/public observations, original immutable archive SHA; source archive read-through used to authenticate noncached replay identities; no new-world actions",
+    "cold_restore": "exact deterministic versioned canonical byte encoding, SHA256 checkpoint integrity, original archive pin, strict validators; no reconstructed full native provenance claimed",
+    "full_native_modes": "base episode without context/stream/refresh/repair only; refuse qualified promotion if other modes or repairs are active"
+  },
+  "controls": [
+    "full original native 50-FIT learner",
+    "compact-only exact two-stage summary with same projection/loss/counters",
+    "CSMC-01 20-reference FIT selection",
+    "PCER-02 10-reference selection",
+    "eight-cached-only unaugmented replay negative control",
+    "corrupt checkpoint/changed archive/conflicting replay negative controls"
+  ],
+  "metrics": [
+    "all 4 native transition probabilities",
+    "all 16 native terminal probabilities",
+    "all 10 proposed actions",
+    "snapshot bytes compact-only versus two-tier versus original full native",
+    "cold restore readout",
+    "witness-cache duplicate/conflict",
+    "read-through exact archive availability and integrity"
+  ],
+  "engineering_thresholds": {
+    "max_stage1_abs_gap": "0",
+    "max_stage2_abs_gap": "0",
+    "max_action_mismatches": 0,
+    "cache_witness_count": 8,
+    "can_authenticate_uncached_witness_only_with_verified_archive": true,
+    "checkpoint_smaller_than_native": true,
+    "checkpoint_bytes_less_than_compact_only": false,
+    "no_first_use": true
+  },
+  "scientific_threshold": "NOT_RUN; no fresh protected source first-use or claims of retention, transfer, intelligence or equal-feature gain; successor needs matched full controls and authorized original source",
+  "budget": {
+    "cohorts": 1,
+    "fit_episodes": 50,
+    "seed": "deterministic original chronology",
+    "native_runtime_trials": 1,
+    "backend": "offline Python3.13 Linux",
+    "external_paid_calls": 0,
+    "runner_dispatch": 0
+  },
+  "classification": {
+    "ENGINEERING_PASS": "all readouts/decisions match original native and auth/cold restore/tamper tests pass, checkpoint smaller than full native",
+    "ENGINEERING_NEGATIVE": "any readout mismatch, failing cold restore or identity checks, no size benefit",
+    "SCIENTIFIC_PASS": "PROHIBITED for this trial",
+    "no_promotion": true
+  },
+  "registration": "Git prereg commit must precede implementation and local primary run; original source FIT was previously studied, so results remain development-only regardless",
+  "authority": {
+    "no_merge": true,
+    "no_main_ref_mutation": true,
+    "no_controller_mutation": true,
+    "no_owner_runner": true,
+    "no_original_source_first_use": true,
+    "no_deploy": true
+  }
+}
