@@ -26,3 +26,26 @@ No claimed capacity beyond two contexts, multi-regime continuous growth,
 generalization, or scientific benefit. No held, reserved, consumed or original
 source world accessed. Future prospective science requires real source-specific
 admission under #426, matched tuned controls and budgets, lineage under #1278.
+
+## MH11 integrity correction — narrow checkpoint repair
+
+Source ancestor cc33425c78100341673f41eb808ca78638eb57a5 qualified
+run 44885990399 (Linux/Windows 39 focused +54 exact root PASS).
+Prepatch `MemoryFormation.restore` checked candidate kind, noise, recorded
+training-row count, canonical bytes and validation flags but did not establish
+that the alleged candidate was actually fitted from its alleged 32 training
+rows. During the validation phase, no held validation evidence exists yet, so
+a different well-formed bank of the same kind and noise can satisfy the
+original checks. That allows a syntactically valid but unsupported cold restore.
+This is an engineering-integrity defect, not demonstrated real-world forgery.
+
+The bounded correction reconstructs the provisional bank deterministically
+from exactly the 32 recorded public training rows and frozen old model and
+compares the raw learned bytes. A bank swap or edited contradictory training
+receipt is rejected. Both MH09 and Bayesian branches are checked; original
+sealed/failed/partial cold paths and the 54 inherited root tests remain.
+It preserves 32-row bounded memory and adds restore CPU only when a candidate
+exists. It does NOT attest original-world source identity, caller authorization,
+cryptographic owner signature, initial trusted old checkpoint or scientific gain.
+No protected original-world events have been generated or replayed. This patch
+does not admit integration with central Amalgam #1278 or first use under #426.

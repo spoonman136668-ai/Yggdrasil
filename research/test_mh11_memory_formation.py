@@ -110,6 +110,31 @@ class MH11Tests(unittest.TestCase):
         with self.assertRaises(ValueError): m.begin(m.clock,X)
         self.assertEqual(len(m.start_recall().banks),2)
 
+    def test_candidate_is_bound_to_exact_recorded_training_rows(self):
+        for kind in ("mh09","bayes"):
+            m=MemoryFormation(banks(kind)[0])
+            advance(m,NEG,3+TRAIN)
+            self.assertEqual(m.phase,"validate")
+            raw=m.checkpoint()
+            self.assertEqual(MemoryFormation.restore(raw).checkpoint(),raw)
+
+            # An otherwise well-formed bank of the *same* kind and
+            # precision is not proof it was trained on these rows.
+            swap=json.loads(raw)
+            swap["candidate"]=m.old.record()
+            with self.assertRaisesRegex(ValueError,"candidate/training receipt"):
+                MemoryFormation.restore(canonical(swap))
+
+            # A modified but still decidedly contradictory public
+            # consequence must not silently retain the old frozen bank.
+            edited=json.loads(raw)
+            edited["rows"][0][2][0]=-0.75
+            with self.assertRaisesRegex(ValueError,"candidate/training receipt"):
+                MemoryFormation.restore(canonical(edited))
+
+            # No negative attempt may mutate the original candidate.
+            self.assertEqual(MemoryFormation.restore(raw).candidate.raw,m.candidate.raw)
+
     def test_bad_receipt_and_checkpoint_identity_rejected(self):
         m=MemoryFormation(banks("bayes")[0]); advance(m,NEG,39)
         d=json.loads(m.checkpoint()); d["validation"][0][3]=False

@@ -182,6 +182,13 @@ class MemoryFormation:
                 m._candidate=FrozenBank.restore(d["candidate"])
                 if m.candidate.kind!=m.old.kind or m.candidate.noise!=m.old.noise or len(m.rows)!=TRAIN:
                     raise ValueError("provisional bank shape")
+                # Canonical syntax and valid predictive receipts are not sufficient
+                # to bind a provisional bank to its purported training witnesses.
+                # Refit only the bounded, explicitly supplied 32-row mechanical
+                # archive and compare its *exact* immutable bank bytes. This
+                # does not authenticate where those witnesses came from.
+                if fit_new(m.old,m.rows).raw != m.candidate.raw:
+                    raise ValueError("candidate/training receipt mismatch")
             if (len(m.rows)==TRAIN)!=(m.candidate is not None):
                 raise ValueError("candidate/training mismatch")
             if m.validation:
