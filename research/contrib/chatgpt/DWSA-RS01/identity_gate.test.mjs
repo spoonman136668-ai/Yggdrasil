@@ -38,5 +38,15 @@ rejects(()=>predict({key:"NEW",raw:.8,donor:.2},{...good.capsules,donorKeys:[9]}
 rejects(()=>predict({key:"NEW",raw:.8,donor:.2},{...good.capsules,donorKeys:Array.from({length:17},(_,i)=>"key"+i)},good.gamma),"BAD_DONOR_SCOPE");
 rejects(()=>gateDonor({fit,oldValid:Array.from({length:16},(_,i)=>row("u"+i,"VALID_OLD","OLD"+i,.9,.9,1)),novelValid}),"DONOR_CONTEXT_BUDGET");
 assert(denied.capsules.donorKeys.length===0,"rejected_donor_scope_cleared");
+// Minority old-world context cannot be drowned out by aggregate validation averages.
+const commonOld=Array.from({length:99},(_,i)=>row("common"+i,"VALID_OLD","COMMON",.9,.9,1));
+commonOld.push(row("rare","VALID_OLD","RARE",.95,.05,1));
+const rareDenied=gateDonor({fit,oldValid:commonOld,novelValid});
+assert(rareDenied.candidates[0].oldDrift<0.02,"mean_drift_would_miss_rare_error");
+assert(Math.abs(rareDenied.candidates[0].maxOldContextDrift-0.9)<1e-12,"worst_context_detected");
+assert(rareDenied.status==="VALIDATION_REJECTED"&&rareDenied.gamma===0,"minority_old_context_veto");
+assert(predict({key:"RARE",raw:.95,donor:.05},rareDenied.capsules,rareDenied.gamma)===.95,"minority_old_context_preserved");
+assert(Object.keys(rareDenied.capsules.cells).length===0&&rareDenied.capsules.donorKeys.length===0,"rare_denial_atomic_rollback");
+
 assert(Object.prototype.hasOwnProperty.call(fitCapsules([row("x","FIT","__proto__",.2,.5,1)]).cells,"__proto__"),"safe_context_storage");
 console.log("DWSA_RS01_FOCUSED_TESTS=PASS; no original-world actions");
