@@ -167,9 +167,9 @@ class ActiveBayesian:
     """
     kind = "KNOW41_ACTIVE_BAYES_CONTROL_V1"
 
-    def __init__(self, hazard=1.0/32.0, bonus=0.2):
+    def __init__(self, hazard=1.0/32.0, bonus=1.0):
         need(type(hazard) is float and hazard in HAZARDS and
-             type(bonus) is float and bonus in (0.0, 0.1, 0.2, 0.4),
+             type(bonus) is float and bonus in (0.0, 0.5, 1.0, 2.0),
              "BAYES_HYPER")
         self.hazard = hazard
         self.bonus = bonus
@@ -224,7 +224,7 @@ class ActiveBayesian:
         d = _json(raw, {"kind", "hazard", "bonus", "weights", "received", "pending"})
         need(d["kind"] == cls.kind and type(d["hazard"]) is float and
              d["hazard"] in HAZARDS and type(d["bonus"]) is float and
-             d["bonus"] in (0.0, .1, .2, .4) and
+             d["bonus"] in (0.0, .5, 1.0, 2.0) and
              type(d["weights"]) is list and len(d["weights"]) == 4 and
              all(type(w) is float and math.isfinite(w) and 0 <= w <= 1
                  for w in d["weights"]) and

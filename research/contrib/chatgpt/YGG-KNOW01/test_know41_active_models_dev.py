@@ -81,6 +81,14 @@ class Know41ActiveModelsMock(unittest.TestCase):
             m.observe(t, c, a, t % 2)
         self.assertEqual(m.weights, first)
 
+    def test_bayesian_action_selection_information_value(self):
+        # If this strong baseline never probes, comparison would be a straw man.
+        m = ActiveBayesian()
+        self.assertGreater(m._information(0, 1), m._information(0, 0))
+        self.assertEqual(m.choose(0, 0), 1)
+        m.observe(0, 0, 1, 1)
+        self.assertEqual(m.received, 1)
+
     def test_strict_custody_rejects_corruption(self):
         for factory in (ContradictionMemory, ActiveBayesian):
             m = factory()
