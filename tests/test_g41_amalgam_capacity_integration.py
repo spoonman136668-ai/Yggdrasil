@@ -653,6 +653,7 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                           "novel_weight_2048": float(later_weights[-1]),
                           "windows": report,
                           "frozen_before_result": True,
+                          "historical_not_held": True,
                           "retrospective_not_held": True,
                           "readout_only_no_model_edit": True,
                           "scientific_pass": False,
@@ -787,6 +788,17 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                             "joint_fixed_development_gate_pass":
                                 historical_pass and new_dev_pass,
                         }
+                    diagnostic_pass = any(
+                        disposition["joint_fixed_development_gate_pass"]
+                        for disposition in cap_dispositions.values()
+                    )
+                    self.assertEqual(diagnostic_pass, any(
+                        all(all_scores["old_" + window_name]["reward"][
+                            cap_name + "_old_retention_pass"] for window_name in windows)
+                        and all(all_scores[window_name]["reward"][
+                            cap_name + "_new_development_pass"] for window_name in new_windows)
+                        for cap_name in ("cap_1_4", "cap_1_8")
+                    ))
                     self.assertEqual(original.checkpoint(), joint)
                     self.assertEqual(learner.checkpoint(), snapshot)
                     self.assertEqual(cold.checkpoint(), snapshot)
@@ -806,6 +818,7 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                               "new_windows": new_windows,
                               "historical_and_new_scores": all_scores,
                               "cap_dispositions": cap_dispositions,
+                              "diagnostic_pass": diagnostic_pass,
                               "frozen_before_result": True,
                               "training_or_model_edit": False,
                               "held_out": False,
