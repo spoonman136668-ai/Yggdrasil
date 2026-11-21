@@ -52,7 +52,7 @@ jobs:
           test "$(git rev-parse "$prior:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/primary.admit")" = "$(git rev-parse HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/primary.admit)"
           test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
           git diff --name-only "$prior" "$GITHUB_SHA" |
-            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/"; expected={p+x for x in ("prereg.json","bayesian_filter.py","test_bayesian_filter.py")} | {".github/workflows/num06-bayesian-control.yml"}; assert a==expected,(a,expected)'
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/"; expected={p+x for x in ("prereg.json","bayesian_filter.py","test_bayesian_filter.py","bocpd.py","test_bocpd.py","BOCPD.md")} | {".github/workflows/num06-bayesian-control.yml",".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==expected,(a,expected)'
           python -B - <<'PY'
           import json,pathlib
           p=pathlib.Path('research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/prereg.json')
@@ -113,7 +113,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          (cd research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06 && PYTHONPATH=../NUM05 python -B -m unittest -v test_bayesian_filter)
+          (cd research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06 && PYTHONPATH=../NUM05 python -B -m unittest -v test_bayesian_filter test_bocpd)
           (cd research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05 && python -B -m unittest -v test_num05 && python -B num05_dev.py --fixture)
           echo NUM06_FIXTURE_ONLY_SOURCE_FIRST_PASS
       - name: Exact inherited dependency set
