@@ -17,7 +17,7 @@ from pathlib import Path
 from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_episode_experience import NativeEpisodeExperience
 
-TRACE = (Path(__file__).resolve().parents[3] /
+TRACE = (Path(__file__).resolve().parents[4] /
          "research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json")
 TRACE_PIN = "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114"
 COHORT = "amalgam-selection-transition-local-dev-v1"
@@ -285,8 +285,8 @@ def verify_native(rows, indices):
     if (originals, terminals, choices) != (a, b, decisions):
         raise ValueError("CSMC01_NATIVE_COMPACT_MISMATCH")
     checkpoint = state.checkpoint()
-    raw, pin = checkpoint
-    restored = NativeEpisodeExperience.restore(raw, pin)
+    raw = checkpoint
+    restored = NativeEpisodeExperience.restore(raw, digest(raw))
     if restored.checkpoint() != checkpoint:
         raise ValueError("CSMC01_NATIVE_COLD_RESTORE")
     if restored.consolidate().checkpoint() != checkpoint:
@@ -314,8 +314,8 @@ def evaluate():
         "stage1_max_gap": [smax.numerator, smax.denominator],
         "stage2_max_gap": [tmax.numerator, tmax.denominator],
         "mean_gap": [mean.numerator, mean.denominator],
-        "native_full_checkpoint_bytes": len(native50.checkpoint()[0]),
-        "native_reduced_checkpoint_bytes": len(native20.checkpoint()[0]),
+        "native_full_checkpoint_bytes": len(native50.checkpoint()),
+        "native_reduced_checkpoint_bytes": len(native20.checkpoint()),
         "engineering_gate_pass": passed,
         "science": "UNVERIFIED", "deployment": "NONE",
         "held_evaluated": False, "new_original_actions": 0,
