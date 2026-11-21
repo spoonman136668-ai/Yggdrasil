@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "JEPA-G25-bounded-headwise-consolidation-dev",
+  "contributor": "chatgpt-connected-contributor",
+  "contribution_class": "falsification",
+  "question": "Can a bounded four-head anchor-to-proposal weight interpolation preserve old-public-history Brier while retaining nonzero new-event fitting on a previously consumed development trace, without hard-vetoing the entire shared update?",
+  "hypothesis": "A per-head five-point interpolation will allow a positive (>0) specialist update fraction for at least three of five fixed historical samples while respecting a +0.02 original-head old-Brier ceiling; after-event observed one-witness transition Brier improves versus all-frozen-anchor heads at at least two of five samples. These are only source-consumed in-sample diagnostics, not held scientific claims.",
+  "exact_parent_sha": "2fdd99b4fada47f5bc0044c9b6c4f1ed0fc44242",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1329#issuecomment-7051196097",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44820184393"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/JEPA-G25-prereg.json",
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/headwise_consolidation.py",
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/archive_p0_cold_replay.py",
+    "tests/test_amalgam_headwise_consolidation.py",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "original-consumed-P0-joint-checkpoint",
+      "sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+      "source": "original existing P0 Actions archive; P0 parent source already seen"
+    },
+    {
+      "name": "original-P0-public-ledger",
+      "sha256": "55697acbbe953b5cf6878cecfd3286b068f665fc3c6f78334d241466c4beb274",
+      "source": "original 1025 prior witnessed source actions; previously consumed"
+    },
+    {
+      "name": "original-existing-A-B-A-suffix-96",
+      "sha256": null,
+      "source": "already consumed existing selection-dev-01 trace; exact SHA validated by original pinned producer.json at repository source"
+    }
+  ],
+  "frozen_design": {
+    "sample_ordinals": [
+      1,
+      32,
+      33,
+      64,
+      96
+    ],
+    "phases": [
+      "A1",
+      "A32",
+      "B1",
+      "B32",
+      "A32-return"
+    ],
+    "alphas_descending": [
+      1,
+      0.75,
+      0.5,
+      0.25,
+      0
+    ],
+    "old_witness_budget": 1025,
+    "already_consumed_suffix_budget": 96,
+    "head_count": 4,
+    "max_old_head_brier_drift": 0.02,
+    "split": "retrospective old 1025 public witnessed rows for constraint and previously consumed individual post-update row for observed fit; no new held-out split or first-use; no prospective scientific inference",
+    "ordering": "only exact sampled ordinals; one original unmodified 96-event replay, no guard enforcement",
+    "data_budget": "0 new world actions, 0 new hidden data, only source-pinned archived original consumed rows",
+    "compute_budget": "at most 5 alpha values × 4 heads × 1025 old-row Brier predictions per sampled ordinal, plus 3 × 4 new-row diagnostic predictions; no optimization search outside these values",
+    "capacity": "same four native JEPA head matrix dimensions and existing retained anchor weights; zero extra active specialists; research sidecar only; no canonical checkpoint restoration/promotion",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "alpha=0 anchor-only per-head specialist memory freeze",
+    "alpha=1 unguarded proposed four-head one-step update",
+    "original existing G23 hard veto of all state when any head exceeds 0.02",
+    "negative controls wrong head identity, forged ledger prefix, >1 new witness, modified checkpoint, bad head output or mutation, no new source action"
+  ],
+  "metrics": [
+    "per selected ordinal/head chosen alpha, old Brier delta relative to P0 old head and observed post-fit new witness Brier",
+    "number of samples with any positive transition alpha",
+    "number of samples in which repaired transition mean Brier on just-consumed witness improves over all-frozen old-head prediction",
+    "number of heads within original +0.02 bound and whole-update hard-veto comparison",
+    "original model and proposed checkpoint SHA unchanged, source action count 0, no cold owner restore"
+  ],
+  "classification_rules": {
+    "supported": "DEV_MECHANISM_PROMISING only if all 4 selected adjusted heads stay <= +0.02 original old-task Brier, at least 3/5 samples have positive alpha on at least one transition specialist, and >=2/5 sampled after-fit observed transition loss improves vs all-frozen P0 heads. Never a SCIENTIFIC_PASS.",
+    "mixed": "All constraints hold but fewer than all prereg positive-progress criteria; emit DEV_MIXED_NO_GO, no retuning.",
+    "negative": "Any source-valid sample violates an old-head bound, or all progress metrics fail; emit DEV_NO_GO while preserving genuine negative.",
+    "invalid": "Any source/trace pin mismatch, altered historical prefix, changed original source state, invalid head weights/shape, missing checkpoint custody, test or full regression failure; infrastructure/test failures separate from science."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "sample ordinal changes",
+    "fraction-grid changes",
+    "post-result policy selection",
+    "original-world source actions",
+    "capacity growth",
+    "extra data/compute/model calls",
+    "protected first-use replay",
+    "promoting headwise sidecar to canonical model",
+    "unverified checkpoint restore"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Preregistration committed BEFORE scoring this newly proposed mechanism. Prior G24 outcomes on the same consumed sample are already visible: this is exploratory DEV-only test; cannot claim independent prospective science. Model weight blending is not source-equivalent to official NativeCausalAmalgam.restore; requires separate future owner-qualified checkpoint contract."
+}
