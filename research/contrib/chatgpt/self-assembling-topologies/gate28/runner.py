@@ -286,7 +286,7 @@ def compare_controls(seed: int = 900071,
                           diagnostic_cohort=diagnostic_cohort)
     selected = ("adaptive", "fixed", "causal_bayes_reward",
                 "sparse_causal_reward", "dense_causal_reward",
-                "full_reference_reward")
+                "dense_causal_nullmix", "full_reference_reward")
     modules = {arm: (full_reference if arm in full_reference.ARMS else
                      dense_reference if arm in dense_reference.ARMS else
                      sparse_bayes if arm in sparse_bayes.ARMS else
