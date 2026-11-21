@@ -11,8 +11,14 @@ assert(good.schema===RS01_SCHEMA&&good.status==="VALIDATION_ADMITTED"&&good.gamm
 assert(good.scientificGainVerified===false&&good.protectedSourceActions===0,"no_scientific_claim");
 const denied=gateDonor({fit,oldValid:[row("o2","VALID_OLD","OLD",.9,0,1)],novelValid});
 assert(denied.status==="VALIDATION_REJECTED"&&denied.gamma===0,"old_retention_gate");
-assert(JSON.stringify(good.capsules)===JSON.stringify(denied.capsules),"validation_not_used_to_fit");
+assert(JSON.stringify(good.proposedCapsules)===JSON.stringify(denied.proposedCapsules),"validation_not_used_to_fit");
 assert(predict({key:"unseen",raw:.27,donor:.91},good.capsules,0)===.27,"identity_fallback");
+assert(Object.keys(denied.capsules.cells).length===0,"rejected_donor_has_no_active_repairs");
+const correctedFit=[row("f3","FIT","REPAIR",.1,.9,1)];
+const refused=gateDonor({fit:correctedFit,oldValid:[row("o3","VALID_OLD","OLD",.9,0,1)],novelValid});
+assert(refused.status==="VALIDATION_REJECTED","repair_candidate_refused");
+assert(refused.proposedCapsules.cells.REPAIR>0,"positive_proposed_repair");
+assert(predict({key:"REPAIR",raw:.33,donor:.99},refused.capsules,refused.gamma)===.33,"rejected_repair_rollback");
 const twenty=Array.from({length:20},(_,i)=>row("i"+i,"FIT","cell"+i,.1,.2,1));
 assert(Object.keys(fitCapsules(twenty).cells).length===16,"bounded_capacity");
 rejects(()=>fitCapsules([row("x","HELD","A",.2,.3,1)]),"SPLIT_VIOLATION");
