@@ -26,6 +26,9 @@ def cases():
                 "checkpoint_bytes": 24000 if full else 2300,
                 "peak_rule_work": 11424 if full else 2400,
                 "delta_brier_vs_full": round(full_brier - held, 9)}
+            if arm in ("adaptive", "fixed"):
+                scores[arm]["post_source_edits"] = 2 if arm == "adaptive" else 0
+                scores[arm]["post_source_attempts"] = 10 if arm == "adaptive" else 0
         out.append({
             "status": "G28_EQUAL_EXPOSURE_CONTROL_DIAGNOSTIC_ONLY",
             "scientific_primary_scored": False, "original_world_first_use": False,
@@ -54,8 +57,9 @@ class TestGate28IndependentAudit(unittest.TestCase):
         self.assertEqual(len(got["diagnostic_noise_threshold_exceeders"]), 7)
         self.assertEqual(got["classification"],
                          "NO_SCIENTIFIC_FIRST_USE_OR_PROMOTION")
-        self.assertEqual(got["stationary_spurious_rewire_fraction"],
-                         "NOT_REPORTED_BY_RUNNER")
+        self.assertEqual(got["stationary_spurious_rewire_fraction"], 0.2)
+        self.assertEqual(got["stationary_rewire_screen"],
+                         "WARNING_EXCEEDS_0_10")
         self.assertFalse(got["scientific_gain_verified"])
 
     def test_primary_seed_and_flags_fail_closed(self):
@@ -85,6 +89,10 @@ class TestGate28IndependentAudit(unittest.TestCase):
                 checkpoint_bytes=8000),
             lambda x: x["R"]["scores"]["fixed"].update(
                 delta_brier_vs_full=0.9),
+            lambda x: x["R"]["scores"]["adaptive"].update(
+                post_source_edits=11),
+            lambda x: x["B"]["scores"]["adaptive"].update(
+                post_source_attempts=11),
         ]
         for mutation in modifications:
             rows = cases()

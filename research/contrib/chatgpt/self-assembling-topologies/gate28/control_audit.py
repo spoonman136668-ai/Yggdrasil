@@ -92,12 +92,23 @@ def _receipt(record: dict) -> None:
                                "DELTA_SIGN", -1, 1) -
                          (full_brier - held)) <= 2.1e-9,
                      "DELTA_BRIER_ARITHMETIC")
+            if arm in ("adaptive", "fixed"):
+                edits, tries = (item.get("post_source_edits"),
+                                item.get("post_source_attempts"))
+                _require(type(edits) is int and type(tries) is int and
+                         0 <= edits <= tries <= 128, "POST_SOURCE_REWIRE_COUNTS")
             if arm == REFERENCE:
                 _require(bytes_ > CHECKPOINT_CAP and
                          work > RULE_CAP, "UNCONSTRAINED_REFERENCE_FALSE")
             else:
                 _require(bytes_ <= CHECKPOINT_CAP and
                          work <= RULE_CAP, "MATCHED_BUDGET_VIOLATION")
+
+    for arm in ("adaptive", "fixed"):
+        for metric in ("post_source_edits", "post_source_attempts"):
+            _require(p["R"]["scores"][arm][metric] >=
+                     p["B"]["scores"][arm][metric],
+                     "POST_SOURCE_REWIRE_NONMONOTONIC")
 
 
 def audit(records: list[dict]) -> dict:
@@ -127,6 +138,10 @@ def audit(records: list[dict]) -> dict:
     excess = {arm: round(noise[arm]["equal_action_held_brier"] -
                          NOISE_CHANCE_BRIER, 9) for arm in ARMS}
     alerts = [arm for arm in ARMS if excess[arm] > NOISE_EXCESS_THRESHOLD]
+    stationary = by_cohort["stationary"]["phases"]["R"]["scores"]["adaptive"]
+    edits = stationary["post_source_edits"]
+    tries = stationary["post_source_attempts"]
+    rewiring_fraction = round(edits / tries, 9) if tries else None
     return {
         "schema": SCHEMA,
         "status": "G28_DIAGNOSTIC_AUDIT_COMPLETE_SCIENCE_UNVERIFIED",
@@ -136,7 +151,12 @@ def audit(records: list[dict]) -> dict:
         "strongest_control_qualification": "NOT_ESTABLISHED",
         "source_cold_function_for_all_arms": "NOT_PROVEN_BY_THIS_AUDIT",
         "per_arm_forced_exposure_hash_parity": "NOT_PROVEN_BY_THIS_AUDIT",
-        "stationary_spurious_rewire_fraction": "NOT_REPORTED_BY_RUNNER",
+        "stationary_spurious_rewire_fraction": rewiring_fraction,
+        "stationary_rewire_fraction_basis": "adaptive post-A edits / attempts; one diagnostic world",
+        "stationary_rewire_screen": (
+            "NO_ATTEMPTS_UNVERIFIED" if rewiring_fraction is None else
+            "WARNING_EXCEEDS_0_10" if rewiring_fraction > 0.1 else
+            "ONE_WORLD_DIAGNOSTIC_ONLY"),
         "paired_confidence_interval": "NOT_ESTIMABLE_FROM_ONE_SHIFTED_WORLD",
         "shifted_descriptive": differences,
         "noise_R_held_brier_excess_over_chance": excess,

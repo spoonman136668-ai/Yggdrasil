@@ -337,6 +337,8 @@ def compare_controls(seed: int = 900071,
             for arm in selected:
                 modules[arm].seal_source(states[arm])
                 measured[arm]["source_digest"] = states[arm]["source"]["digest"]
+                measured[arm]["source_edits"] = states[arm].get("edits", 0)
+                measured[arm]["source_attempts"] = states[arm].get("attempts", 0)
         else:
             phase_results = {}
             for arm in selected:
@@ -386,6 +388,11 @@ def compare_controls(seed: int = 900071,
                     "peak_rule_work": measured[arm]["peak_rule_work"],
                     "cpu_ms_accumulated": round(
                         measured[arm]["cpu_ns"] / 1000000, 3)}
+                if arm in core.ARMS:
+                    phase_results[arm]["post_source_edits"] = (
+                        state["edits"] - measured[arm]["source_edits"])
+                    phase_results[arm]["post_source_attempts"] = (
+                        state["attempts"] - measured[arm]["source_attempts"])
             phases[phase]["scores"] = phase_results
     for phase in ("B", "R"):
         full = phases[phase]["scores"][reference]["equal_action_held_brier"]
