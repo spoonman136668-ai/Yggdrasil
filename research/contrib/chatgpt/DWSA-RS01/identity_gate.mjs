@@ -29,15 +29,20 @@ export function predict(row,capsules,gamma=0){
  if(!capsules||capsules.schema!==RS01_SCHEMA||!capsules.cells||typeof capsules.cells!=="object")fail("BAD_CAPSULE");
  p01(row.raw);p01(row.donor);
  if(![0,0.25,0.5,1].includes(gamma))fail("BAD_GAMMA");
+ const donorKeys=capsules.donorKeys??[];
+ if(!Array.isArray(donorKeys)||donorKeys.length>16||donorKeys.some(k=>typeof k!=="string"||!/^[A-Za-z0-9_.:-]{1,64}$/.test(k))||new Set(donorKeys).size!==donorKeys.length)fail("BAD_DONOR_SCOPE");
  const v=Object.prototype.hasOwnProperty.call(capsules.cells,row.key)?capsules.cells[row.key]:0;
  if(typeof v!=="number"||!Number.isFinite(v)||Math.abs(v)>0.1)fail("BAD_CAPSULE_SHIFT");
- return clip(row.raw+v+gamma*(row.donor-row.raw));
+ return clip(row.raw+v+(donorKeys.includes(row.key)?gamma*(row.donor-row.raw):0));
 }
 function brier(rows,fn){return rows.reduce((s,r)=>{const e=fn(r)-r.y;return s+e*e;},0)/rows.length;}
 export function gateDonor({fit,oldValid,novelValid}){
  const ids=new Set();
  partition(fit,"FIT",ids);partition(oldValid,"VALID_OLD",ids);partition(novelValid,"VALID_NOVEL",ids);
- const capsules=fitCapsules(fit),oldRawBrier=brier(oldValid,r=>r.raw),novelRawBrier=brier(novelValid,r=>r.raw);
+ const rawCapsules=fitCapsules(fit),oldRawBrier=brier(oldValid,r=>r.raw),novelRawBrier=brier(novelValid,r=>r.raw);
+ const donorKeys=Array.from(new Set([...oldValid,...novelValid].map(r=>r.key))).sort();
+ if(donorKeys.length>16)fail("DONOR_CONTEXT_BUDGET");
+ const capsules={...rawCapsules,donorKeys};
  const novelRepairBrier=brier(novelValid,r=>predict(r,capsules,0));
  const candidates=[1,0.5,0.25].map(gamma=>{
   const oldBrier=brier(oldValid,r=>predict(r,capsules,gamma));
@@ -47,7 +52,7 @@ export function gateDonor({fit,oldValid,novelValid}){
    accepted:oldDrift<=0.02+1e-12&&rawGain>=0.005-1e-12&&donorIncrement>=0.002-1e-12};
  });
  const good=candidates.filter(c=>c.accepted).sort((a,b)=>a.novelBrier-b.novelBrier||a.gamma-b.gamma);
- const activeCapsules=good.length?capsules:{...capsules,cells:Object.create(null)};
+ const activeCapsules=good.length?capsules:{...capsules,cells:Object.create(null),donorKeys:[]};
  return {schema:RS01_SCHEMA,status:good.length?"VALIDATION_ADMITTED":"VALIDATION_REJECTED",
   gamma:good.length?good[0].gamma:0,capsules:activeCapsules,proposedCapsules:capsules,oldRawBrier,novelRawBrier,novelRepairBrier,candidates,
   scientificGainVerified:false,protectedSourceActions:0};
