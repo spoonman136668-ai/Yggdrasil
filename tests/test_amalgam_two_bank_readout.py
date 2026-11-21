@@ -92,5 +92,75 @@ class TwoBankTests(unittest.TestCase):
             G33.audit_admitted_prefix(None, None, anchor_sha256="", descendant_sha256="")
 
 
+    def test_switching_is_opt_in_and_preserves_all_original_arms(self):
+        import copy
+        old = G33._replay(self.heads, PREFIX, SUFFIX)
+        new = G33._replay(self.heads, PREFIX, SUFFIX, switching=True)
+        self.assertEqual(G33._replay(self.heads, PREFIX, SUFFIX, switching=False), old)
+        projected = copy.deepcopy(new)
+        self.assertEqual(projected.pop("switching_hazard"), 1 / 32)
+        self.assertEqual(projected.pop("additional_router_updates"), len(SUFFIX))
+        self.assertEqual(projected.pop("additional_mixture_scalar_predictions"), 4 * len(SUFFIX))
+        for row in projected["trace"]:
+            self.assertTrue(0 < row.pop("switching_adaptive_weight_before") < 1)
+            row.pop("switching")
+            row.pop("switching_log_odds_after")
+            row["brier"].pop("switching")
+        self.assertEqual(projected, old)
+        self.assertEqual(new, G33._replay(self.heads, PREFIX, SUFFIX, switching=True))
+        with self.assertRaisesRegex(ValueError, "G33_SWITCH_FLAG"):
+            G33._replay(self.heads, PREFIX, SUFFIX, switching=1)
+
+    def test_switching_uses_only_prior_evidence(self):
+        changed = SUFFIX[:1] + (("new2", VIEWS, 1, 0, 0, 0),) + SUFFIX[2:]
+        ref = G33._replay(self.heads, PREFIX, SUFFIX, switching=True)["trace"]
+        alt = G33._replay(self.heads, PREFIX, changed, switching=True)["trace"]
+        self.assertEqual(ref[0], alt[0])
+        self.assertEqual(ref[0]["switching_adaptive_weight_before"], .5)
+        self.assertEqual(ref[1]["switching_adaptive_weight_before"],
+                         alt[1]["switching_adaptive_weight_before"])
+        for i in (0, 2):
+            self.assertEqual(ref[1]["switching"][i], alt[1]["switching"][i])
+        self.assertEqual(ref[2]["switching_adaptive_weight_before"],
+                         G33._switch_prior(ref[1]["switching_log_odds_after"]))
+        for row in ref:
+            self.assertEqual(row["switching"],
+                             G33._mix(row["anchor"], row["adaptive"],
+                                      row["switching_adaptive_weight_before"]))
+
+    def test_frozen_router_return_and_stable_cost(self):
+        from math import exp, log
+        def run(a, b, initial, labels, switching):
+            odds = initial
+            weights, losses = [], []
+            for y in labels:
+                p = G33._switch_prior(odds) if switching else 1 / (1 + exp(-odds))
+                weights.append(p)
+                losses.append((G33._mix((a,)*4, (b,)*4, p)[0] - y)**2)
+                z = log(p/(1-p)) if switching else odds
+                odds = G33._advance_router(z, (a,)*4, (b,)*4, (y,)*4)
+            weights.append(G33._switch_prior(odds) if switching else 1 / (1 + exp(-odds)))
+            return weights, losses
+        c, lc = run(.6, .4, 8., [1]*32, False)
+        s, ls = run(.6, .4, 8., [1]*32, True)
+        self.assertEqual(next(i for i, p in enumerate(c) if p <= .5), 20)
+        self.assertEqual(next(i for i, p in enumerate(s) if p <= .5), 7)
+        self.assertLess(sum(ls), sum(lc))
+        _, lc = run(.6, .4, 0., [0]*64+[1]+[0]*31, False)
+        s, ls = run(.6, .4, 0., [0]*64+[1]+[0]*31, True)
+        self.assertLessEqual((sum(ls[:64])-sum(lc[:64]))/64, .02)
+        self.assertGreater(s[65], .5)
+        w, losses = run(.5, .5, 0., [0,1]*32, True)
+        self.assertEqual(w, [.5]*65)
+        self.assertEqual(losses, [.25]*64)
+        _, lc = run(.6, .4, 8., [0]*32, False)
+        _, ls = run(.6, .4, 8., [0]*32, True)
+        self.assertLessEqual((sum(ls)-sum(lc))/32, .02)
+        for bad in (True, None, float("nan"), float("inf"), 8.1, -8.1):
+            with self.subTest(bad=bad):
+                with self.assertRaisesRegex(ValueError, "G33_SWITCH_ODDS"):
+                    G33._switch_prior(bad)
+
+
 if __name__ == "__main__":
     unittest.main()
