@@ -18,6 +18,7 @@ from pathlib import Path
 import core
 import bayes
 import sparse_bayes
+import full_reference
 import world
 
 SELF = Path(__file__).resolve()
@@ -246,6 +247,141 @@ def diagnostic(seed: int = 900007) -> dict:
                     s["metrics"][a + "." + m]["state_bytes"]
                     for s in stages for a in MODEL_ARMS for m in MODES),
                 "science": "NOT_RUN_NO_INDEPENDENTLY_QUALIFIED_STRONG_MATCHED_CONTROL"}
+
+
+
+def compare_controls(seed: int = 900071,
+                     diagnostic_cohort: str = "diagnostic_shifted") -> dict:
+    """Diagnostic equal-action comparison, NEVER primary science.
+
+    All arms fit the identical A/B/R public exposures. For held rows an
+    evaluator scores identical forced actions and, separately, each arm's
+    action preference. None of those held outcomes is observed by a model.
+    The full-grammar reference is deliberately unconstrained/secondary.
+    """
+    import time
+
+    require_diagnostic(seed)
+    w = world.HiddenWorld(seed, diagnostic=True,
+                          diagnostic_cohort=diagnostic_cohort)
+    selected = ("adaptive", "fixed", "causal_bayes_reward",
+                "sparse_causal_reward", "full_reference_reward")
+    modules = {arm: (full_reference if arm in full_reference.ARMS else
+                     sparse_bayes if arm in sparse_bayes.ARMS else
+                     bayes if arm in bayes.ARMS else core)
+               for arm in selected}
+    states = {arm: (core.new(CORE_POLICY_SEEDS[arm], arm)
+                    if arm in core.ARMS else modules[arm].new(arm))
+              for arm in selected}
+    reference = "full_reference_reward"
+    measured = {arm: {"cpu_ns": 0, "peak_rule_work": 0,
+                      "total_rule_work": 0, "prequential_loss": {},
+                      "source_digest": None}
+                for arm in selected}
+    phases = {}
+    for phase in world.PHASES:
+        public_rows = []
+        for step in range(96 if phase == "A" else 64):
+            row = (w.source(step) if phase == "A" else
+                   w.feedback(phase, step, w.forced_action(phase, step)))
+            public_rows.append([list(row.context), list(row.intermediates),
+                                row.action, row.consequence])
+            for arm in selected:
+                module = modules[arm]
+                state = states[arm]
+                meter = (full_reference.Meter() if arm == reference
+                         else core.Work())
+                start = time.process_time_ns()
+                if phase != "A":
+                    prediction = module.predict(state, row.context,
+                                                row.action, meter)
+                    measured[arm]["prequential_loss"].setdefault(
+                        phase, []).append((prediction - row.consequence) ** 2)
+                if arm in core.ARMS:
+                    module.observe(state, row.context, row.action,
+                                   row.consequence, meter)
+                else:
+                    module.observe(state, row.context, row.intermediates,
+                                   row.action, row.consequence, meter)
+                measured[arm]["cpu_ns"] += time.process_time_ns() - start
+                work = (meter.evaluations if arm == reference else meter.count)
+                measured[arm]["peak_rule_work"] = max(
+                    measured[arm]["peak_rule_work"], work)
+                measured[arm]["total_rule_work"] += work
+        phases[phase] = {"public_exposure_sha256": hashlib.sha256(
+            core.canonical(public_rows)).hexdigest(),
+            "public_exposures": len(public_rows)}
+        if phase == "A":
+            for arm in selected:
+                modules[arm].seal_source(states[arm])
+                measured[arm]["source_digest"] = states[arm]["source"]["digest"]
+        else:
+            phase_results = {}
+            for arm in selected:
+                module, state = modules[arm], states[arm]
+                total_brier = 0.0
+                selected_reward = 0
+                for query in range(32):
+                    context = w.held_context(phase, query)
+                    equal_action = w.forced_action(phase, query)
+                    meter = (full_reference.Meter() if arm == reference
+                             else core.Work())
+                    start = time.process_time_ns()
+                    forecast = module.predict(state, context,
+                                              equal_action, meter)
+                    chosen = module.choose(state, context, meter)
+                    measured[arm]["cpu_ns"] += time.process_time_ns() - start
+                    forced_row = w.held_query(phase, query, equal_action)
+                    selected_row = w.held_query(phase, query, chosen)
+                    if (forced_row.context != context or
+                            selected_row.context != context):
+                        raise ValueError("HELD_CONTEXT_PARITY")
+                    total_brier += (forecast - forced_row.consequence) ** 2
+                    selected_reward += selected_row.consequence
+                    work = (meter.evaluations if arm == reference else meter.count)
+                    measured[arm]["peak_rule_work"] = max(
+                        measured[arm]["peak_rule_work"], work)
+                    measured[arm]["total_rule_work"] += work
+                if state["step"] != (160 if phase == "B" else 224):
+                    raise ValueError("INVALID_TRAINING_EXPOSURE_COUNT")
+                if (state["source"]["digest"] !=
+                        measured[arm]["source_digest"]):
+                    raise ValueError("SOURCE_CHANGED_UNDER_INTERFERENCE")
+                packed = module.pack(state)
+                if module.pack(module.unpack(packed)) != packed:
+                    raise ValueError("CHECKPOINT_COLD_FUNCTION_MISMATCH")
+                if arm != reference and (
+                        len(packed) > core.MAX_STATE_BYTES or
+                        measured[arm]["peak_rule_work"] > core.MAX_RULE_EVALS):
+                    raise ValueError("MATCHED_RESOURCE_BUDGET")
+                states[arm] = module.unpack(packed)
+                phase_results[arm] = {
+                    "equal_action_held_brier": round(total_brier / 32, 9),
+                    "selected_held_reward": selected_reward,
+                    "prequential_brier": round(sum(
+                        measured[arm]["prequential_loss"][phase]) / 64, 9),
+                    "checkpoint_bytes": len(packed),
+                    "peak_rule_work": measured[arm]["peak_rule_work"],
+                    "cpu_ms_accumulated": round(
+                        measured[arm]["cpu_ns"] / 1000000, 3)}
+            phases[phase]["scores"] = phase_results
+    for phase in ("B", "R"):
+        full = phases[phase]["scores"][reference]["equal_action_held_brier"]
+        for arm in selected:
+            phases[phase]["scores"][arm]["delta_brier_vs_full"] = round(
+                full - phases[phase]["scores"][arm]["equal_action_held_brier"],
+                9)
+    return {
+        "status": "G28_EQUAL_EXPOSURE_CONTROL_DIAGNOSTIC_ONLY",
+        "seed": seed, "cohort": diagnostic_cohort,
+        "models": list(selected),
+        "full_reference_is_unconstrained": True,
+        "strongest_matched_control_adequacy": "UNVERIFIED",
+        "scientific_primary_scored": False,
+        "original_world_first_use": False,
+        "independent_reproduction": False,
+        "phases": phases}
+
 
 
 def main() -> None:
