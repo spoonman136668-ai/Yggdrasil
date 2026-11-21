@@ -658,6 +658,160 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                           "scientific_pass": False,
                           "owner_accepted": False,
                       }, sort_keys=True))
+                if os.environ.get("YGG_G41_R13_FIXED_CAP") == "1":
+                    # Frozen pre-result: PR #1329 issuecomment-7069344517.
+                    self.assertEqual(len(later_weights), 34)
+                    self.assertEqual(len(later_models), 34)
+                    self.assertEqual(earlier_models[:-1], later_models[:-1])
+                    self.assertEqual(learner.checkpoint(), snapshot)
+                    self.assertEqual(original.checkpoint(), joint)
+                    self.assertEqual(cold.checkpoint(), snapshot)
+
+                    def capped_novel_weight(weights, cap):
+                        self.assertIsInstance(cap, Fraction)
+                        self.assertGreaterEqual(cap, Fraction(0))
+                        self.assertLessEqual(cap, Fraction(1))
+                        self.assertEqual(len(weights), 34)
+                        self.assertEqual(sum(weights), Fraction(1))
+                        old_mass = 1 - weights[-1]
+                        self.assertGreater(old_mass, 0)
+                        new_novel_weight = min(weights[-1], cap)
+                        updated = tuple(weight * (1 - new_novel_weight) / old_mass
+                                        for weight in weights[:-1])
+                        updated += (new_novel_weight,)
+                        self.assertEqual(sum(updated), Fraction(1))
+                        self.assertEqual(updated[-1], new_novel_weight)
+                        for old_weight, new_weight in zip(weights[:-1],
+                                                          updated[:-1], strict=True):
+                            self.assertEqual(new_weight * old_mass,
+                                             old_weight * (1 - new_novel_weight))
+                        return updated
+
+                    for invalid in (Fraction(-1, 8), Fraction(9, 8)):
+                        with self.assertRaises(AssertionError):
+                            capped_novel_weight(later_weights, invalid)
+                    with self.assertRaises(AssertionError):
+                        capped_novel_weight(later_weights[:-1], Fraction(1, 8))
+                    with self.assertRaises(AssertionError):
+                        capped_novel_weight(tuple([Fraction(0)] * 33
+                                                  + [Fraction(1)]), Fraction(1, 4))
+                    self.assertEqual(capped_novel_weight(later_weights, Fraction(1)),
+                                     later_weights)
+                    fixed_caps = {
+                        "uncapped": later_weights,
+                        "cap_1_4": capped_novel_weight(later_weights, Fraction(1, 4)),
+                        "cap_1_8": capped_novel_weight(later_weights, Fraction(1, 8)),
+                    }
+                    self.assertEqual(fixed_caps["cap_1_4"][-1], Fraction(1, 4))
+                    self.assertEqual(fixed_caps["cap_1_8"][-1], Fraction(1, 8))
+                    self.assertNotEqual(fixed_caps["cap_1_4"], fixed_caps["uncapped"])
+                    self.assertNotEqual(fixed_caps["cap_1_8"], fixed_caps["uncapped"])
+                    source_prefix = tuple(source_ledger)
+                    new_windows = {
+                        "new_early": (1035, 1067),
+                        "new_mid": (1520, 1552),
+                        "new_late": (2016, 2048),
+                    }
+                    self.assertEqual(len(learner.native._episode_reader()._ledger), 2048)
+                    final_ledger = learner.native._episode_reader()._ledger
+                    self.assertEqual(final_ledger[:1025], source_prefix)
+                    all_windows = {("old_" + name): (start, stop)
+                                   for name, (start, stop) in windows.items()}
+                    all_windows.update(new_windows)
+                    all_scores = {}
+                    for label, (start, stop) in all_windows.items():
+                        observations = final_ledger[start:stop]
+                        self.assertEqual(len(observations), 32)
+                        if label.startswith("new_"):
+                            for event in observations:
+                                self.assertEqual(event[1], views)
+                                self.assertEqual(event[2:], (0, 0, 0, 0))
+                        else:
+                            self.assertEqual(observations, source_prefix[start:stop])
+                        baseline = native_module.readout_losses(learner, observations)
+                        anchored = (native_module.readout_losses(original, observations)
+                                    if label.startswith("old_") else None)
+                        targets = {}
+                        for kind, index in (("transition", 0), ("reward", 1)):
+                            squared = {name: 0 for name in fixed_caps}
+                            for _, row_views, first, state, second, reward in observations:
+                                view = row_views[0]
+                                actual = state if index == 0 else reward
+                                tail = ((None, None) if index == 0 else (state, second))
+                                for arm_name, weights in fixed_caps.items():
+                                    guess = counterfactual(weights, later_models, view,
+                                                           first, *tail)
+                                    if arm_name == "uncapped":
+                                        self.assertEqual(
+                                            guess, after.context_forecast(view, first, *tail))
+                                    squared[arm_name] += (round(scale * guess)
+                                                          - scale * actual) ** 2
+                            scores = {arm_name: Fraction(score, 32 * scale**2)
+                                      for arm_name, score in squared.items()}
+                            self.assertEqual(scores["uncapped"], baseline[index])
+                            original_anchor = anchored[index] if anchored is not None else None
+                            results = {
+                                "uncapped_final_brier": float(scores["uncapped"]),
+                                "cap_1_4_brier": float(scores["cap_1_4"]),
+                                "cap_1_8_brier": float(scores["cap_1_8"]),
+                                "original_1025_brier": (float(original_anchor)
+                                                       if original_anchor is not None else None),
+                            }
+                            if label.startswith("old_"):
+                                for cap_name in ("cap_1_4", "cap_1_8"):
+                                    diff = scores[cap_name] - original_anchor
+                                    results[cap_name + "_drift_vs_1025"] = float(diff)
+                                    results[cap_name + "_old_retention_pass"] = (
+                                        diff <= Fraction(1, 50))
+                            else:
+                                for cap_name in ("cap_1_4", "cap_1_8"):
+                                    diff = scores[cap_name] - scores["uncapped"]
+                                    results[cap_name + "_penalty_vs_uncapped"] = float(diff)
+                                    results[cap_name + "_new_development_pass"] = (
+                                        diff <= Fraction(1, 50))
+                            targets[kind] = results
+                        all_scores[label] = targets
+                    cap_dispositions = {}
+                    for cap_name in ("cap_1_4", "cap_1_8"):
+                        historical_pass = all(
+                            all_scores["old_" + window_name]["reward"][
+                                cap_name + "_old_retention_pass"]
+                            for window_name in windows)
+                        new_dev_pass = all(
+                            all_scores[window_name]["reward"][
+                                cap_name + "_new_development_pass"]
+                            for window_name in new_windows)
+                        cap_dispositions[cap_name] = {
+                            "old_reward_all_3_within_plus_0p02": historical_pass,
+                            "new_reward_all_3_within_plus_0p02": new_dev_pass,
+                            "joint_fixed_development_gate_pass":
+                                historical_pass and new_dev_pass,
+                        }
+                    self.assertEqual(original.checkpoint(), joint)
+                    self.assertEqual(learner.checkpoint(), snapshot)
+                    self.assertEqual(cold.checkpoint(), snapshot)
+                    self.assertEqual(final_ledger[:1025], source_prefix)
+                    print("G41_R13_FIXED_NOVEL_WEIGHT_CAP_PROBE="
+                          + json.dumps({
+                              "schema": "yggdrasil.g41.r13.fixed-novel-cap-dev-v1",
+                              "old_joint_sha256": joint_pin,
+                              "descendant_checkpoint_sha256": expected,
+                              "source_prefix_sha256": old_ledger_digest,
+                              "weights_final_uncapped_novel": float(later_weights[-1]),
+                              "novel_caps_frozen": ["1/4", "1/8"],
+                              "redistribution": "relative_ratio_preserved_across_33_historic",
+                              "arms": {name: float(weights[-1])
+                                       for name, weights in fixed_caps.items()},
+                              "old_windows": windows,
+                              "new_windows": new_windows,
+                              "historical_and_new_scores": all_scores,
+                              "cap_dispositions": cap_dispositions,
+                              "frozen_before_result": True,
+                              "training_or_model_edit": False,
+                              "held_out": False,
+                              "scientific_pass": False,
+                              "owner_accepted": False,
+                          }, sort_keys=True))
             if os.environ.get("YGG_G41_ATTRIBUTION_2048") == "1":
                 # Frozen R10: PR #1329 issuecomment-7066576697, no training or mutation.
                 earlier = original.native._episode_reader()
