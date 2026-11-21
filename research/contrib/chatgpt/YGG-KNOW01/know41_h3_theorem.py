@@ -7,6 +7,61 @@ from fractions import Fraction
 
 from know41_active_identifiability_dev import expected_milli, need
 
+import hashlib
+from pathlib import Path
+
+CANDIDATE_V1_BLOB = "034e3e9c7b34bc9a6d419c359a8cd6431200de96"
+CANDIDATE_V1_FILE = (Path(__file__).resolve().parent /
+                     "know41_active_models_dev.py")
+
+
+def candidate_forced_exploration_no_go():
+    """Analytically reject candidate V1 before ANY frozen FIT/HELD first use.
+
+    The candidate source blob is pinned so this proof may never be applied
+    to a different policy. Source-free public SCM, no sampled consequence.
+    """
+    source = CANDIDATE_V1_FILE.read_bytes()
+    blob = hashlib.sha1(b"blob " + str(len(source)).encode() +
+                        b"\0" + source).hexdigest()
+    need(blob == CANDIDATE_V1_BLOB and
+         b'a = 1 if (t // 8) % 4 == 0 else int(p1 - .05 > p0)' in source,
+         "CANDIDATE_POLICY_DRIFT")
+    forced = tuple(t for t in range(192, 256) if (t // 8) % 4 == 0)
+    need(forced == tuple(range(192, 200)) + tuple(range(224, 232)),
+         "FORCED_TIMELINE")
+    static = certificate()
+    cohorts = {}
+    for theta in (0, 1):
+        floor = sum((regret_for_context(theta, t % 8, 1)
+                     for t in forced), Fraction(0)) / 64
+        no_memory = static[str(theta)]["no_memory_regret"]
+        maximum_advantage = no_memory - floor
+        cohorts[str(theta)] = {
+            "forced_actions": len(forced),
+            "forced_regret_floor": floor,
+            "no_memory_regret": no_memory,
+            "maximum_candidate_advantage_over_no_memory": maximum_advantage,
+            "h3_margin": NEW_H3,
+            "h3_feasible_under_current_policy": maximum_advantage >= NEW_H3,
+        }
+    need(cohorts["0"]["forced_regret_floor"] == Fraction(7, 320) and
+         cohorts["1"]["forced_regret_floor"] == Fraction(7, 320) and
+         cohorts["1"]["maximum_candidate_advantage_over_no_memory"] ==
+         Fraction(1, 320) and
+         cohorts["1"]["maximum_candidate_advantage_over_no_memory"] < NEW_H3,
+         "CANDIDATE_NO_GO_PROOF")
+    return {
+        "candidate_blob": CANDIDATE_V1_BLOB,
+        "candidate_status": "ANALYTIC_NO_GO_UNDER_FROZEN_KNOW41_V3_H3",
+        "scientific_gain_verified": False,
+        "held_first_use_consumed": False,
+        "cohorts": cohorts,
+    }
+
+
+
+
 OLD_H3 = Fraction(1, 20)  # .05
 NEW_H3 = Fraction(1, 100)  # .01, prospectively frozen in v3
 

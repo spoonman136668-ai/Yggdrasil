@@ -3,7 +3,10 @@ import unittest
 from fractions import Fraction
 
 from know41_active_evaluator_dev import create_tape, v3
-from know41_h3_theorem import certificate, mean_regret, OLD_H3, NEW_H3
+from know41_h3_theorem import (
+    candidate_forced_exploration_no_go, certificate, mean_regret,
+    OLD_H3, NEW_H3,
+)
 from know41_active_identifiability_dev import expected_milli
 
 
@@ -31,6 +34,34 @@ class Know41PreprimaryImpossibility(unittest.TestCase):
                 r = mean_regret(theta, lambda c, mask=mask: (mask >> c) & 1)
                 self.assertGreaterEqual(r, Fraction(0))
         self.assertEqual(expected_milli("FORK", 0, 0, 0), 350)
+
+    def test_candidate_hardcoded_exploration_cannot_meet_h3_v3(self):
+        # Uses exact pinned source bytes and public SCM; no held data sampled.
+        proof = candidate_forced_exploration_no_go()
+        self.assertEqual(proof["candidate_status"],
+                         "ANALYTIC_NO_GO_UNDER_FROZEN_KNOW41_V3_H3")
+        self.assertFalse(proof["held_first_use_consumed"])
+        for theta in ("0", "1"):
+            row = proof["cohorts"][theta]
+            self.assertEqual(row["forced_actions"], 16)
+            self.assertEqual(row["forced_regret_floor"], Fraction(7, 320))
+        theta1 = proof["cohorts"]["1"]
+        self.assertEqual(theta1["no_memory_regret"], Fraction(1, 40))
+        self.assertEqual(theta1["maximum_candidate_advantage_over_no_memory"],
+                         Fraction(1, 320))
+        self.assertLess(theta1["maximum_candidate_advantage_over_no_memory"],
+                        NEW_H3)
+        self.assertFalse(theta1["h3_feasible_under_current_policy"])
+
+    def test_candidate_policy_proof_is_pinned_to_exact_source(self):
+        from unittest.mock import patch
+        from know41_h3_theorem import CANDIDATE_V1_FILE
+        source = CANDIDATE_V1_FILE.read_bytes()
+        changed = source.replace(b"(t // 8) % 4 == 0", b"(t // 8) % 8 == 0")
+        self.assertNotEqual(changed, source)
+        with patch("pathlib.Path.read_bytes", return_value=changed):
+            with self.assertRaisesRegex(ValueError, "CANDIDATE_POLICY_DRIFT"):
+                candidate_forced_exploration_no_go()
 
     def test_frozen_first_use_blocked_even_with_injected_provider(self):
         p = v3()
