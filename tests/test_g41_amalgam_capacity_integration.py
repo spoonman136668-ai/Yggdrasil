@@ -386,6 +386,7 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                 old_ledger_digest = digest(canonical(old_ledger))
                 self.assertEqual(len(old_ledger), 1025)
                 reads = {}
+                exact_losses = {}
                 snapshots = {}
                 for count in (1025, 1034, 1035, 2048):
                     system = timeline[count]
@@ -407,6 +408,13 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                                            for name, span in windows.items()},
                         max_brier_drift=Fraction(1, 50))
                     reads[count] = windows_read["windows"]
+                    exact_losses[count] = {}
+                    for name, (start, stop) in windows.items():
+                        exact_losses[count][name] = native_module.readout_losses(
+                            system, old_ledger[start:stop])
+                        self.assertEqual(
+                            [float(x) for x in exact_losses[count][name]],
+                            windows_read["windows"][name]["candidate_brier"])
                     snapshots[str(count)] = {
                         "episode_count": count,
                         "context_start": reader._context_start,
@@ -430,22 +438,23 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                 for name in windows:
                     per_target = {}
                     for target_index, target in enumerate(("transition", "reward")):
-                        brier = {count: Fraction(*float(reads[count][name][
-                            "candidate_brier"][target_index]).as_integer_ratio())
+                        brier = {count: exact_losses[count][name][target_index]
                                  for count in (1025, 1034, 1035, 2048)}
-                        # The reports contain floats; actual scoring here only
-                        # displays their exact IEEE difference, not a new metric.
-                        delta = lambda later, earlier: float(brier[later] - brier[earlier])
-                        steps = {
-                            "1025_to_1034": delta(1034, 1025),
-                            "1034_to_1035": delta(1035, 1034),
-                            "1035_to_2048": delta(2048, 1035),
-                            "1025_to_2048": delta(2048, 1025),
+                        # Exact source scorer returns Fractions from SCALE=1000000
+                        # rounded predictions; split deltas only AFTER exact math.
+                        exact_steps = {
+                            "1025_to_1034": brier[1034] - brier[1025],
+                            "1034_to_1035": brier[1035] - brier[1034],
+                            "1035_to_2048": brier[2048] - brier[1035],
+                            "1025_to_2048": brier[2048] - brier[1025],
                         }
-                        self.assertAlmostEqual(sum((steps["1025_to_1034"],
-                                                    steps["1034_to_1035"],
-                                                    steps["1035_to_2048"])),
-                                               steps["1025_to_2048"], places=12)
+                        self.assertEqual(
+                            sum((exact_steps["1025_to_1034"],
+                                 exact_steps["1034_to_1035"],
+                                 exact_steps["1035_to_2048"]), Fraction(0)),
+                            exact_steps["1025_to_2048"])
+                        steps = {period: float(value)
+                                 for period, value in exact_steps.items()}
                         self.assertAlmostEqual(steps["1025_to_2048"],
                                                native_report["windows"][name][
                                                    "delta_brier"][target_index], places=12)
