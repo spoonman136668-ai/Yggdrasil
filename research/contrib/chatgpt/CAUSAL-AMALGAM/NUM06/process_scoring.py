@@ -59,7 +59,15 @@ def _restore(name,params,raw,expected_hash):
     return model
 
 
+def _cpu_status(ns):
+    """Zero delta is unresolved, not evidence of zero computational cost."""
+    if type(ns) is not int or ns < 0:
+        raise ValueError("NUM06_CPU_COUNTER_INVALID")
+    return "BELOW_TIMER_DETECTION" if ns == 0 else "OBSERVED_NONZERO"
+
+
 def _worker(request):
+    start_wall=time.perf_counter_ns()
     start_cpu=time.process_time_ns()
     seed=request["seed"]
     if type(seed) is not int or seed not in FIXTURES:
@@ -107,7 +115,10 @@ def _worker(request):
             "first_forecast":pre_forecast,"next_forecast":next_forecast,
             "prediction_sha256":digest(canonical(preds)),"losses":losses,
             "predict_cpu_ns":predict_ns,"observe_cpu_ns":observe_ns,"restore_cpu_ns":restore_ns,
-            "worker_cpu_ns":time.process_time_ns()-start_cpu,"peak_rss_bytes":_peak_rss()}
+            "worker_cpu_ns":time.process_time_ns()-start_cpu,
+            "worker_wall_ns":time.perf_counter_ns()-start_wall,
+            "cpu_reported_resolution_ns":max(1,round(time.get_clock_info("process_time").resolution*1e9)),
+            "peak_rss_bytes":_peak_rss()}
 
 
 def _launch(request):
@@ -123,6 +134,7 @@ def score_process_fixture(seed,name,params=(.02,.04,.5)):
         raise ValueError("NUM06_PROCESS_ARM")
     rows,meta=fixture_world(seed)
     request={"seed":seed,"arm":name,"params":list(params),"segment":0}
+    start_wall=time.perf_counter_ns()
     first=_launch(request)
     # subprocess.run has returned; the original learner process has exited.
     second=_launch(dict(request,segment=1,state=first["state"],state_sha256=first["state_sha256"]))
@@ -136,6 +148,11 @@ def score_process_fixture(seed,name,params=(.02,.04,.5)):
             second["restored_sha256"]==first["state_sha256"] and
             first["next_forecast"]==second["first_forecast"]):
         raise ValueError("NUM06_PROCESS_COLD_PARITY")
+    elapsed_wall=time.perf_counter_ns()-start_wall
+    cpu=sum(q["worker_cpu_ns"] for q in (first,second))
+    components={k:sum(q[k] for q in (first,second)) for k in
+                ("predict_cpu_ns","observe_cpu_ns","restore_cpu_ns")}
+    component_status={k:_cpu_status(v) for k,v in components.items()}
     losses=first["losses"]+second["losses"]
     if len(losses)!=len(rows):
         raise ValueError("NUM06_PROCESS_WITNESS_COUNT")
@@ -149,10 +166,11 @@ def score_process_fixture(seed,name,params=(.02,.04,.5)):
             "final_state_sha256":second["state_sha256"],
             "cold_state_bytes":len(first["state"].encode("ascii")),
             "final_state_bytes":len(second["state"].encode("ascii")),
-            "predict_cpu_ns":sum(q["predict_cpu_ns"] for q in (first,second)),
-            "observe_cpu_ns":sum(q["observe_cpu_ns"] for q in (first,second)),
-            "restore_cpu_ns":second["restore_cpu_ns"],
-            "worker_cpu_ns":sum(q["worker_cpu_ns"] for q in (first,second)),
+            **components,"cpu_component_status":component_status,
+            "worker_cpu_ns":cpu,"worker_cpu_status":_cpu_status(cpu),
+            "cpu_reported_resolution_ns":max(q["cpu_reported_resolution_ns"] for q in (first,second)),
+            "worker_wall_ns":sum(q["worker_wall_ns"] for q in (first,second)),
+            "elapsed_wall_ns":elapsed_wall,
             "peak_rss_bytes":max(first["peak_rss_bytes"],second["peak_rss_bytes"]),
             "rss_scope":"max isolated worker process peak, includes interpreter/source/evaluator",
             "registered_cohorts_consumed":0,"resource_qualification":False,
