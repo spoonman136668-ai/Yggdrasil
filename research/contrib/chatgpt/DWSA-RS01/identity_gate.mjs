@@ -47,7 +47,8 @@ export function gateDonor({fit,oldValid,novelValid}){
    accepted:oldDrift<=0.02+1e-12&&rawGain>=0.005-1e-12&&donorIncrement>=0.002-1e-12};
  });
  const good=candidates.filter(c=>c.accepted).sort((a,b)=>a.novelBrier-b.novelBrier||a.gamma-b.gamma);
+ const activeCapsules=good.length?capsules:{...capsules,cells:Object.create(null)};
  return {schema:RS01_SCHEMA,status:good.length?"VALIDATION_ADMITTED":"VALIDATION_REJECTED",
-  gamma:good.length?good[0].gamma:0,capsules,oldRawBrier,novelRawBrier,novelRepairBrier,candidates,
+  gamma:good.length?good[0].gamma:0,capsules:activeCapsules,proposedCapsules:capsules,oldRawBrier,novelRawBrier,novelRepairBrier,candidates,
   scientificGainVerified:false,protectedSourceActions:0};
 }
