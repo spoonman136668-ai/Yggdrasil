@@ -120,7 +120,7 @@ jobs:
           assert row["pass"] is True and row["fixture_rows"]==80
           assert len(row["fixture_sha256"])==64 and len(row["archive_sha256"])==64
           (root/"num05-fixture.json").write_text(
-              json.dumps(row,sort_keys=True,separators=(",",":"))+"\\n",encoding="ascii")
+              json.dumps(row,sort_keys=True,separators=(",",":")),encoding="ascii")
           print("NUM05_FIXTURE_SOURCE_AND_ARCHIVE_RECEIPT_SEALED")
           PY
           echo NUM05_FOCUSED_FIXTURES_PASS
@@ -144,8 +144,8 @@ jobs:
           path: ${{ runner.temp }}/num05-fixture.json
           if-no-files-found: error
   parity:
-    needs: [atlas, engineering, parity]
-    if: ${{ needs.engineering.result == 'success' && needs.parity.result == 'success' && github.run_attempt == 1 }}
+    needs: [atlas, engineering]
+    if: ${{ needs.engineering.result == 'success' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -176,8 +176,8 @@ jobs:
           print("NUM05_DQ01_CHECKPOINT_SHA256="+row["archive_sha256"])
           PY
   primary:
-    needs: [atlas, engineering]
-    if: ${{ needs.engineering.result == 'success' && github.run_attempt == 1 }}
+    needs: [atlas, engineering, parity]
+    if: ${{ needs.engineering.result == 'success' && needs.parity.result == 'success' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
