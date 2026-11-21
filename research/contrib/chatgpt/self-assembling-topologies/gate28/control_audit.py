@@ -14,9 +14,11 @@ import re
 SCHEMA = "yggdrasil.gate28.diagnostic-score-audit.v1"
 COHORTS = ("diagnostic_shifted", "stationary", "independent_noise")
 ARMS = ("adaptive", "fixed", "causal_bayes_reward",
-        "sparse_causal_reward", "dense_causal_reward", "full_reference_reward")
+        "sparse_causal_reward", "dense_causal_reward", "dense_causal_nullmix",
+        "full_reference_reward")
 MATCHED_CONTROLS = ("fixed", "causal_bayes_reward",
-                    "sparse_causal_reward", "dense_causal_reward")
+                    "sparse_causal_reward", "dense_causal_reward",
+                    "dense_causal_nullmix")
 REFERENCE = "full_reference_reward"
 RULE_CAP = 8192
 CHECKPOINT_CAP = 16384
@@ -141,5 +143,99 @@ def audit(records: list[dict]) -> dict:
         "diagnostic_noise_threshold_exceeders": alerts,
         "noise_diagnostic_flag": ("WARNING_EXCEEDS_0_02" if alerts else
                                   "NO_EXCESS_OBSERVED_IN_THIS_SMALL_SAMPLE"),
+        "classification": "NO_SCIENTIFIC_FIRST_USE_OR_PROMOTION",
+    }
+
+
+# Frozen by source commit cc73f5686228d2bd97a12a0bc3cbe5007e69a97c.
+# This score audit is descriptive, not a primary scientific qualification.
+NULL_FRESH_SEEDS = {
+    "diagnostic_shifted": (900111, 900112, 900113),
+    "stationary": (900121, 900122, 900123),
+    "independent_noise": (900131, 900132, 900133),
+}
+NULL_BASE = "dense_causal_reward"
+NULL_CANDIDATE = "dense_causal_nullmix"
+
+
+def audit_null_calibration(records: list[dict]) -> dict:
+    """Independent, fail-closed, preregistered *diagnostic* comparison.
+
+    Nine never-before-scored diagnostic seed identities were committed ahead
+    of this source. Do NOT elevate thresholds or selected cohorts after seeing
+    results. A negative threshold verdict is a valid ENGINEERING PASS.
+    """
+    _require(type(records) is list and len(records) == 9, "NULL_NINE_WORLDS")
+    for record in records:
+        _receipt(record)
+    observed = {}
+    for record in records:
+        cohort = record["cohort"]
+        seed = record["seed"]
+        _require(seed in NULL_FRESH_SEEDS[cohort], "NULL_UNFROZEN_SEED")
+        _require((cohort, seed) not in observed, "NULL_DUPLICATE_WORLD")
+        observed[(cohort, seed)] = record
+    _require(set(observed) == {
+        (cohort, seed)
+        for cohort, seeds in NULL_FRESH_SEEDS.items() for seed in seeds
+    }, "NULL_MISSING_WORLD")
+
+    rewards_equal = True
+    summaries = {}
+    for cohort, seeds in NULL_FRESH_SEEDS.items():
+        rows = [observed[(cohort, seed)] for seed in seeds]
+        details = {}
+        for phase in ("B", "R"):
+            parts = [r["phases"][phase]["scores"] for r in rows]
+            base_brier = sum(x[NULL_BASE]["equal_action_held_brier"]
+                             for x in parts) / len(parts)
+            null_brier = sum(x[NULL_CANDIDATE]["equal_action_held_brier"]
+                             for x in parts) / len(parts)
+            rewards_equal &= all(
+                x[NULL_BASE]["selected_held_reward"] ==
+                x[NULL_CANDIDATE]["selected_held_reward"] for x in parts)
+            details[phase] = {
+                "base_mean_brier": round(base_brier, 9),
+                "null_mean_brier": round(null_brier, 9),
+                "null_minus_base_brier": round(null_brier - base_brier, 9),
+                "per_seed": [{
+                    "seed": seed,
+                    "base_brier": part[NULL_BASE]["equal_action_held_brier"],
+                    "null_brier": part[NULL_CANDIDATE]["equal_action_held_brier"],
+                    "base_held_reward": part[NULL_BASE]["selected_held_reward"],
+                    "null_held_reward": part[NULL_CANDIDATE]["selected_held_reward"],
+                    "null_checkpoint_bytes": part[NULL_CANDIDATE]["checkpoint_bytes"],
+                    "null_peak_rule_work": part[NULL_CANDIDATE]["peak_rule_work"]
+                } for seed, part in zip(seeds, parts)],
+            }
+        summaries[cohort] = details
+    noise = summaries["independent_noise"]["R"]
+    noise_pass = noise["null_mean_brier"] <= 0.270 and (
+        noise["null_mean_brier"] < noise["base_mean_brier"])
+    losses = {}
+    for cohort in ("diagnostic_shifted", "stationary"):
+        values = [summaries[cohort][phase]["null_minus_base_brier"]
+                  for phase in ("B", "R")]
+        losses[cohort] = round(sum(values) / len(values), 9)
+    transfer_pass = all(loss <= 0.015 for loss in losses.values())
+    outcome_pass = noise_pass and transfer_pass and rewards_equal
+    return {
+        "schema": "yggdrasil.gate28.null-mixture-diagnostic-score.v1",
+        "status": ("G28_NULL_DIAGNOSTIC_TARGETS_MET_NOT_SCIENCE"
+                   if outcome_pass else "G28_NULL_DIAGNOSTIC_NO_GO"),
+        "prereg_commit": "cc73f5686228d2bd97a12a0bc3cbe5007e69a97c",
+        "source_primary_consumed": False,
+        "scientific_gain_verified": False,
+        "matched_control_adequacy": "UNVERIFIED",
+        "independent_reproduction": False,
+        "seed_count": 9,
+        "per_arm_forced_exposure_hash_parity": "NOT_PROVEN_BY_SCORE_AUDIT",
+        "source_function_cold_parity": "NOT_PROVEN_BY_SCORE_AUDIT",
+        "noise_R_target_met": noise_pass,
+        "structured_preservation_met": transfer_pass,
+        "action_reward_exact_parity": rewards_equal,
+        "all_preregistered_diagnostic_targets_met": outcome_pass,
+        "cohort_summary": summaries,
+        "structured_mean_B_R_degradation": losses,
         "classification": "NO_SCIENTIFIC_FIRST_USE_OR_PROMOTION",
     }
