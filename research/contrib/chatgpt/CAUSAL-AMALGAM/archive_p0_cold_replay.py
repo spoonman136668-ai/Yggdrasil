@@ -22,6 +22,9 @@ from four_head_retention import (HEAD_NAMES, audit_old_heads,
 from headwise_consolidation import assess_bounded_blend
 from headwise_capsule import seal_capsule, restore_capsule
 from headwise_shadow_readout import materialize_research_readout
+from post_witness_projection import (
+    assess_one_more_witness, summarize_four_frozen_samples,
+)
 from headwise_source_continuation import (
     SAMPLE_ORDINALS, seal_consumed_continuation,
     recover_consumed_continuation, historical_retention,
@@ -268,6 +271,7 @@ def replay_consumed_selector(start, source_directory):
     shadow = []
     consolidation = []
     g28_retention = []
+    g29_projection_samples = []
     g28_native_by_next = {}
     original_native_parent = checked(source_directory, protocol["native_name"],
                                      protocol["native_sha256"])
@@ -422,6 +426,64 @@ def replay_consumed_selector(start, source_directory):
                 g28_retention.append({
                     **g28_receipt, "old_historical_retention": old_report,
                     "historically_seen_public_forecast_addresses": 80})
+                # G29: same archived historical witness, pure research-only
+                # plasticity comparison of FULL vs NO HEAD UPDATE vs bounded.
+                # Construct the G25 pre-witness selected state only; no actor.
+                before_selected = NativeCausalAmalgam(
+                    readout._source.native,
+                    tuple(h.clone() for h in readout._heads),
+                    readout._source._native_parent,
+                    readout._source._specialist_parent)
+                frozen_before = before_selected.checkpoint()
+                chosen, analysis = assess_one_more_witness(
+                    start, before_selected, advanced)
+                cold_chosen, cold_analysis = assess_one_more_witness(
+                    start, before_selected, cold_advanced)
+                from headwise_capsule import _saved as g29_head_bytes
+                from yggdrasil.native_context_basis import canonical as g29_canonical
+                if (analysis != cold_analysis
+                        or g29_canonical([g29_head_bytes(h) for h in chosen])
+                        != g29_canonical([g29_head_bytes(h) for h in cold_chosen])
+                        or before_selected.checkpoint() != frozen_before):
+                    raise ValueError("G29_COLD_PROJECTED_HEADS_DRIFT")
+                projected = NativeCausalAmalgam(
+                    advanced.native, chosen,
+                    advanced._native_parent, advanced._specialist_parent)
+                cold_projected = NativeCausalAmalgam(
+                    cold_advanced.native, cold_chosen,
+                    cold_advanced._native_parent, cold_advanced._specialist_parent)
+                if (projected.native.checkpoint() != advanced.native.checkpoint()
+                        or projected.checkpoint() != cold_projected.checkpoint()):
+                    raise ValueError("G29_NATIVE_OR_COLD_DRIFT")
+                post_project_queries = 0
+                for public in seen_views:
+                    if projected.plan(public[0]) != reference_next.plan(public[0]):
+                        raise ValueError("G29_NATIVE_PLAN_CHANGED")
+                    for first in (0, 1):
+                        if (projected.specialist_forecasts(public, first)
+                                != cold_projected.specialist_forecasts(public, first)):
+                            raise ValueError("G29_FIRST_FORECAST_MISMATCH")
+                        post_project_queries += 1
+                        for state, second in product((0, 1), repeat=2):
+                            if (projected.specialist_forecasts(
+                                    public, first, state, second)
+                                    != cold_projected.specialist_forecasts(
+                                    public, first, state, second)):
+                                raise ValueError("G29_SECOND_FORECAST_MISMATCH")
+                            post_project_queries += 1
+                if post_project_queries != 80:
+                    raise ValueError("G29_FORECAST_COVERAGE")
+                g29_projection_samples.append({
+                    "ordinal": index + 1,
+                    "analysis": analysis,
+                    "cold_forecast_queries": post_project_queries,
+                    "source_checks": {
+                        "parent_capsule_sha256": capsule_pin,
+                        "native_next_sha256": g28_receipt["after_native_sha256"],
+                        "source_exact_v1_native_replay": True,
+                        "new_world_actions": 0,
+                    },
+                })
                 g28_native_by_next[index + 2] = g28_receipt["after_native_sha256"]
             consolidation.append({
                 "ordinal": index + 1,
@@ -436,6 +498,7 @@ def replay_consumed_selector(start, source_directory):
 
     if len(g28_retention) != len(SAMPLE_ORDINALS) or g28_native_by_next:
         raise ValueError("G28_FROZEN_SAMPLES_NOT_COMPLETED")
+    g29_report = summarize_four_frozen_samples(g29_projection_samples)
     shadow_report = summarize_shadow(shadow)
     consolidation_report = summarize_bounded_consolidation(consolidation)
     checkpoint = gate.system.checkpoint()
@@ -495,6 +558,7 @@ def replay_consumed_selector(start, source_directory):
         "four_head_retention": four_head_retention,
         "shadow_guard_sensitivity": shadow_report,
         "bounded_headwise_consolidation": consolidation_report,
+        "g29_post_witness_projection": g29_report,
         "g28_consumed_source_continuation": {
             "gate": "G28_RESEARCH_ONLY_ONE_WITNESS_COLD_CONTINUATION",
             "frozen_sample_ordinals": list(SAMPLE_ORDINALS),
