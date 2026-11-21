@@ -118,11 +118,22 @@ def _as_context(value: int) -> tuple[int, ...]:
 class HiddenWorld:
     """Evaluator-owned world; never give the instance to learner callbacks."""
 
-    def __init__(self, seed: int, *, diagnostic: bool = False):
+    def __init__(self, seed: int, *, diagnostic: bool = False,
+                 diagnostic_cohort: str = "diagnostic_shifted"):
         if not isinstance(seed, int) or isinstance(seed, bool):
             raise ValueError("INVALID_SEED")
+        if diagnostic:
+            if not 900000 <= seed <= 909999:
+                raise ValueError("PRIMARY_SEEDS_RESERVED")
+            if diagnostic_cohort not in (
+                    "diagnostic_shifted", "stationary", "independent_noise"):
+                raise ValueError("INVALID_DIAGNOSTIC_COHORT")
+            self.cohort = diagnostic_cohort
+        else:
+            if diagnostic_cohort != "diagnostic_shifted":
+                raise ValueError("DIAGNOSTIC_COHORT_REQUIRES_DIAGNOSTIC")
+            self.cohort = cohort_for(seed)
         self.seed = seed
-        self.cohort = "diagnostic_shifted" if diagnostic else cohort_for(seed)
         self._training, self._held = _context_partition(seed)
         self._rules = {layer: tuple(_rule(seed, layer, i)
                                     for i in range(MEDIATORS))
@@ -154,6 +165,14 @@ class HiddenWorld:
             # unavailable to every policy at prediction time.
             return self._context(phase, PHASE_LENGTHS[phase] - 1, held=False)
         if step == 0:
+            # B and R start after a PUBLIC prior phase. The learner's
+            # persisted last_context is A95 or B63, respectively.
+            if phase in ("B", "R"):
+                preceding = "A" if phase == "B" else "B"
+                return self._context(preceding,
+                                     PHASE_LENGTHS[preceding] - 1,
+                                     held=False)
+            # A has no lagged rules; keep deterministic initial context.
             return _as_context(self._training[_pick(
                 self.seed, "train-previous", 128, phase)])
         return self._context(phase, step - 1, held=False)
