@@ -1,0 +1,158 @@
+{
+  "schema": "yggdrasil.amalgam.r15.two-expert-oracle-ceiling-source-audit.v1",
+  "analysis_kind": "mathematical_nonimplementable_label_oracle_necessary_condition",
+  "scope": "Previously consumed 3x72 existing Amalgam prequential forecasts, NOT a new scientific trial or a candidate model",
+  "source_commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "source_traces": [
+    {
+      "seed": 818621,
+      "git_blob": "7b3f2ff0b120d6557d4630de3461276d892b503f"
+    },
+    {
+      "seed": 818653,
+      "git_blob": "bac19fb71d2a9918bd4ede1d3f2e6bae7b81dc48"
+    },
+    {
+      "seed": 818687,
+      "git_blob": "449a186109b0b30ec98352b5b4565e2e96435b14"
+    }
+  ],
+  "r15_frozen_protocol_blob": "55ca0440062bbe6348612657756a489c75750773",
+  "r15_frozen_protocol_commit": "ec48f08cbbd0b65239d8faf5c4cee2595afe71cd",
+  "r15_corrected_development_result_blob": "43db62cd7cb9e323ea7fadbbd84a29cdf7dfd75a",
+  "r15_corrected_development_result_commit": "96d859690aeb113384e63745033200204e30b918",
+  "existing_frozen_criterion": "For each seed and each of its three 24-event phases, mean of transition and reward Brier must beat strongest recorded equal-information control by >=1/200 = .005, plus R15 return noninferiority.",
+  "oracle": "In each recorded event, reveal current state+reward before choosing arbitrary mixture q∈[0,1] of pinned and unguarded forecasts; this is deliberately prohibited label leakage, used only to bound what any legitimate two-expert selector could achieve.",
+  "mathematical_certificate": {
+    "probabilities": "Use exact rational original 1e6-quantized expert forecasts and observed state/reward. Let a,b be expert probabilities of observed state and c,d their joint probabilities of observed state AND observed reward. n(q)=b+(a-b)q; m(q)=d+(c-d)q; f(q)=[(1-n(q))^2+(1-m(q)/n(q))^2]/2",
+    "derivative_numerator": "With A=a-b, B=b, C=c-d, D=d, E=B-D, F=A-C, K=F*B-A*E: sign(f'(q))=sign(-A*(1-B-Aq)*(B+Aq)^3+(E+Fq)*K) since denominator n(q)^3>0.",
+    "certification": "For each of 216 events, polynomial derivative numerator degree<=4 has exact rational Bernstein coefficients of one strict sign on q∈[0,1]. Therefore f(q) is monotone and its global minimum is attained by q=0 or q=1.",
+    "exact_rational_certified_positive_derivative_events": 95,
+    "exact_rational_certified_negative_derivative_events": 121,
+    "ambiguous_or_mixed_sign_events": 0,
+    "nonpositive_end_state_likelihood_events": 0,
+    "samples": 216
+  },
+  "scoring": "Every endpoint p already 1e6 quantized. Sum over 24 events and 2 targets of (predicted_int - binary_label*1000000)^2, divide by 48*1e12. For strongest control, minimum of identical sums across source-trace pinned, unguarded, guarded, fit_full, fit_trailing, fit_change_point.",
+  "frozen_min_gain_numerator_for_24_rows_2_targets": "240000000000",
+  "stage_scores": [
+    {
+      "seed": 818621,
+      "phase": 1,
+      "best_recorded_control": "fit_trailing",
+      "oracle_label_leaking_best_two_expert_sumsq": "7489586286075",
+      "best_recorded_control_sumsq": "8350780406799",
+      "oracle_gain_sumsq": "861194120724",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.01794154418175,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818621,
+      "phase": 2,
+      "best_recorded_control": "guarded",
+      "oracle_label_leaking_best_two_expert_sumsq": "9047823859537",
+      "best_recorded_control_sumsq": "10370703021245",
+      "oracle_gain_sumsq": "1322879161708",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.027559982535583335,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818621,
+      "phase": 3,
+      "best_recorded_control": "fit_trailing",
+      "oracle_label_leaking_best_two_expert_sumsq": "5304612151479",
+      "best_recorded_control_sumsq": "5676770292933",
+      "oracle_gain_sumsq": "372158141454",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.007753294613625,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818653,
+      "phase": 1,
+      "best_recorded_control": "fit_trailing",
+      "oracle_label_leaking_best_two_expert_sumsq": "6438975108285",
+      "best_recorded_control_sumsq": "7491276720849",
+      "oracle_gain_sumsq": "1052301612564",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.02192295026175,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818653,
+      "phase": 2,
+      "best_recorded_control": "guarded",
+      "oracle_label_leaking_best_two_expert_sumsq": "5202900969509",
+      "best_recorded_control_sumsq": "5944626302189",
+      "oracle_gain_sumsq": "741725332680",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.0154526110975,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818653,
+      "phase": 3,
+      "best_recorded_control": "fit_trailing",
+      "oracle_label_leaking_best_two_expert_sumsq": "6356489664334",
+      "best_recorded_control_sumsq": "6762167722686",
+      "oracle_gain_sumsq": "405678058352",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.008451626215666667,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818687,
+      "phase": 1,
+      "best_recorded_control": "unguarded",
+      "oracle_label_leaking_best_two_expert_sumsq": "7278037812679",
+      "best_recorded_control_sumsq": "7663581594609",
+      "oracle_gain_sumsq": "385543781930",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.008032162123541667,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818687,
+      "phase": 2,
+      "best_recorded_control": "guarded",
+      "oracle_label_leaking_best_two_expert_sumsq": "6011465536515",
+      "best_recorded_control_sumsq": "8080181710853",
+      "oracle_gain_sumsq": "2068716174338",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.043098253632041665,
+      "criterion_possible_even_with_oracle": true
+    },
+    {
+      "seed": 818687,
+      "phase": 3,
+      "best_recorded_control": "fit_trailing",
+      "oracle_label_leaking_best_two_expert_sumsq": "5021142347232",
+      "best_recorded_control_sumsq": "5256201016533",
+      "oracle_gain_sumsq": "235058669301",
+      "required_gain_sumsq": "240000000000",
+      "oracle_gain_brier": 0.0048970556104375,
+      "criterion_possible_even_with_oracle": false
+    }
+  ],
+  "decisive_impossibility": {
+    "seed": 818687,
+    "phase": 3,
+    "label": "A_return",
+    "oracle_gain_brier": 0.0048970556104375,
+    "frozen_required_gain_brier": 0.005,
+    "unachievable_margin_brier": 0.0001029443895625,
+    "gain_raw_sumsq": "235058669301",
+    "required_raw_sumsq": "240000000000",
+    "deficit_raw_sumsq": "4941330699",
+    "maximum_raw_sumsq_improvement_from_1e6_rounding_bound": "48000012",
+    "logic": "Even an illegally target-informed per-event best possible convex two-expert mixture cannot reach +.005 over the fitted trailing control on this frozen phase. Forecast re-rounding cannot bridge the gap."
+  },
+  "interpretation": "R15's ALL-NINE +0.005 criterion is impossible for ANY selector restricted to the two ORIGINAL existing pinned/live forecasts on this original recorded cohort, even allowing forbidden oracle outcomes. This DOES NOT rule out new experts, learned representations, other native mechanisms, different cohorts or scientifically fresh transfer. Do not retune the frozen threshold or claim a valid fitted model.",
+  "development_classification": "R15_NO_GO_WITH_ORACLE_CEILING",
+  "scientific_gain_verified": false,
+  "owner_accepted": false,
+  "production_change": false,
+  "runner_dispatched": false
+}
