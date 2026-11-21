@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "PCER-01",
+  "contributor": "chatgpt",
+  "contribution_class": "ablation",
+  "question": "Can a 70/20/10 error/coverage/uniform active replay index retain useful information in 20% of the active slots without degrading predeclared historical synthetic-development scores?",
+  "hypothesis": "Using 10 of 50 source-pinned FIT witness references, PCER will preserve Brier within +0.02 versus full 50-row replay on the historical return-to-old-regime held slice, and be no worse than the strongest equally sized replay control. This is exploratory, not a native-science claim.",
+  "exact_parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1278",
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1329",
+    "https://github.com/spoonman136668-ai/Yggdrasil/issues/426"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/PCER-01/",
+    "tests/test_pcer01.py"
+  ],
+  "inputs": [
+    {
+      "name": "Amalgam archived synthetic selection-dev-01 trace.json; no new source actions",
+      "source": "research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json@86264b41a08d49f558418c0fba367f3a2636befa",
+      "sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+      "source_blob_sha1": "9db0d3742fc8bd009c61d0864e4aba739a19e4e1",
+      "episodes": 96
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      24011,
+      24029,
+      24041
+    ],
+    "split": "Original archive order: FIT indices [0,50), VALID [50,64), RETURN_HELD [64,96). Do not shuffle or inspect labels for fitting. Held is historical familiar regime return, NOT unfamiliar world/family transfer.",
+    "ordering": "Read original canonical trace without modification. Select only FIT; evaluate exactly once on untouched ordered VALID/RETURN_HELD. No hyperparameter selection.",
+    "data_budget": "Existing 96 already-consumed synthetic episodes; 0 new source actions; FIT 50, VALID 14, RETURN_HELD 32",
+    "compute_budget": "Four beta-Bernoulli cell estimators each fit at most 50 rows; 2 scored slices totaling 46 rows each; at most 2000 paired bootstrap resamples per seed; no gradient model training, no GPU, no protected actions",
+    "capacity": "PCER 10 references: 7 error priority, 2 rare coverage, 1 deterministic uniform. Uniform and pure error each 10 references; full-history control 50. Original full source remains immutable outside active index. 80% active-slot reduction is not checkpoint/total-bytes reduction.",
+    "evaluator": "For each chosen row, context=(views[0][0],row.x1); transition target=row.s2; fully fit beta-Bernoulli posterior p=(ones+1)/(n+2) with prior Beta(1,1); mean (p-y)^2 Brier on 14 VALID and 32 RETURN_HELD. Surrogate diagnostic only, no native learner update.",
+    "deterministic_expected": true
+  },
+  "selection": "For every FIT row compute prequential surprise (prediction.native / 1e6 - row.s2)^2; sort descending surprise, break ties ascending identifier. Error arm top 7. From remaining choose coverage arm 2 by rarest (context, first action) frequency in FIT, ties by identifier ascending. From remaining choose 1 uniform deterministically by sha256('PCER-01|24011|'+id) ascending. Pure error top 10. Uniform top 10 by same digest. IDs unique. Fail closed on bad source hash, malformed records, duplicate identifier, nonfinite scores, leakage or budget mismatch.",
+  "controls": [
+    "Full-history all 50 FIT records, same estimator, upper-memory reference",
+    "Uniform bounded 10 records, same estimator and FIT visibility",
+    "Pure error priority 10 records, same estimator and FIT visibility"
+  ],
+  "metrics": [
+    "active replay count and percentage",
+    "per-slice Brier, delta vs full-history",
+    "worst matched bounded-control Brier",
+    "original evidence SHA-256 unchanged",
+    "cold selection manifest reproduces exact IDs",
+    "paired bootstrap seed-wise delta distributions"
+  ],
+  "classification_rules": {
+    "supported": "Exploratory surrogate support only if active 10/50 (80%) and both VALID and RETURN_HELD PCER Brier <= full-history Brier +0.02 and PCER <= min(uniform10,error10) -0.005; still SCIENTIFIC_UNVERIFIED for native learner. Native SCIENTIFIC_PASS additionally requires prospective untouched source-native cohorts, >=3 independent seeds, same-cohort fully trained controls matched in information/actions/compute, cold native restoration, interference/novel transfer gains and independent qualification.",
+    "mixed": "One Brier guard fails or bounded control tie without source integrity fault => exploratory NO_GO, preserve all outcomes.",
+    "negative": "Any >+0.02 per-slice Brier regression or failure to beat bounded controls by 0.005 => exploratory NO_GO; classify scientific native gain UNVERIFIED.",
+    "invalid": "Source SHA mismatch, different dataset/split, leakage, mismatch in capacity, insufficient or duplicated records, missing negative controls, prior outcome inspected before this prereg commit, or hidden evaluator changes."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_first_use": false,
+    "read_only_on_native_checkpoint": true
+  },
+  "preregistration_note": "Freeze to a new research-only branch before reading/scoring the archived trace outcomes. Entire held test is retrospective exploratory development; never claim new native improvement or scientific promotion."
+}
