@@ -49,6 +49,32 @@ class PublicCausalCells:
         old = self._counts[cell][arm][result]
         self._counts[cell][arm][result] = min(65535, old + 1)
 
+    def observe_error_repair(self, address: int, action: int,
+                             public_outcome: int, *,
+                             retained: bool = False) -> None:
+        """Experimental, opt-in bounded repair after public disagreement.
+
+        Keep an action's counters local to its original address and bank.
+        After at least four observed outcomes, if the opposite outcome
+        exceeds the newly observed outcome by two or more counts, shift
+        one old majority count to the new public result. Otherwise apply
+        the ordinary saturating observation. There is no hidden reward,
+        extra learned state, automatically changed policy or free replay.
+
+        This can overreact to noise. Reversal adaptation, noise harm,
+        cold retention and equal-information recency controls must be
+        checked before any scientific or deployment assertion.
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        outcome = self._bit(public_outcome, "PUBLIC_OUTCOME")
+        counts = self._counts[cell][arm]
+        other = 1 - outcome
+        if (counts[0] + counts[1] >= 4
+                and counts[other] >= counts[outcome] + 2):
+            counts[other] -= 1
+        counts[outcome] = min(65535, counts[outcome] + 1)
+
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
