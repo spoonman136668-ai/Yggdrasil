@@ -89,9 +89,7 @@ def census():
                 expected[key] += (prediction == truth)
         phases[name] = {"n": end - start, "correct": subtotal}
     if expected != {"clock16": 80, "current_action_only": 35,
-                    "clock4": clock4_total(actions, clock4),
-                    "clock16_shifted": sum(actions[t % 16] == actions[t - 1]
-                                           for t in range(16, 96))}:
+                    "clock4": 35, "clock16_shifted": 5}:
         raise ValueError("CAP04_CLOCK_FIXED_NUMERIC_DRIFT")
     if expected["clock4"] >= 80 or expected["clock16_shifted"] >= 80:
         raise ValueError("CAP04_CLOCK_NEGATIVE_CONTROL_COLLAPSE")
@@ -126,10 +124,6 @@ def action_majority_by_clock(actions, remainder, period, *, stop):
     if not counts:
         raise ValueError("CAP04_CLOCK_EMPTY_CLOCK_CONTROL")
     return sorted(counts, key=lambda a: (-counts[a], a))[0]
-
-
-def clock4_total(actions, lookup):
-    return sum(lookup[t % 4] == actions[t - 1] for t in range(16, 96))
 
 
 def main():
