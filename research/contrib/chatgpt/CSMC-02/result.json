@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.csmc02.fit-development-result.v1",
+  "experiment_id": "CSMC-02",
+  "parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "pre_registered_git_commit": "b15de1c87ec1c7a1213909f45294838095ceff0c",
+  "classification": "ENGINEERING_SCOPED_PASS_SCIENCE_UNVERIFIED",
+  "dataset": {
+    "source": "previously consumed synthetic FIT, rows 0..49",
+    "original_archive_sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+    "raw_archive_loaded_locally": false,
+    "raw_archive_hash_checked_via_original_GitHub": false,
+    "public_bits_original_GitHub_crosschecked": true,
+    "held_or_valid_rows_scored": false
+  },
+  "runtime": {
+    "python": "3.13.5",
+    "platform": "Linux x86_64",
+    "test_command": "PYTHONPATH=. python -B -m unittest discover -s research/contrib/chatgpt/CSMC-02 -p 'test_*.py' -v",
+    "scoped_passed": 8,
+    "scoped_failed": 0,
+    "source_git_blobs_verified": true,
+    "full_repo_checkout": false
+  },
+  "native": {
+    "source_sha": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+    "cells_sha": "de8722f38d987ef7bcb4b7a0c23466b8e6f25712",
+    "fit_experiences": 50,
+    "projection": 0,
+    "repairs": 0,
+    "stage1_comparisons": 4,
+    "stage1_max_probability_gap": "0",
+    "stage2_comparisons": 16,
+    "stage2_max_probability_gap": "0",
+    "action_comparisons": 10,
+    "action_disagreements": 0,
+    "cold_restore_matches": true
+  },
+  "checkpoint_bytes": {
+    "native_uncompressed": 4715,
+    "native_same_zlib9_codec": 2290,
+    "two_tier_zlib9": 702,
+    "compact_only_same_zlib9": 351,
+    "byte_saved_against_same_codec_native": 1588,
+    "relative_reduction_vs_same_codec_native": 0.6934497816593888,
+    "cache_overhead_vs_compact_control": 351,
+    "archive_not_included": true,
+    "entire_learner_memory_unmeasured": true
+  },
+  "witness": {
+    "cache_records": 8,
+    "cached_original_duplicate_check": "PASS",
+    "cached_conflicting_replay_rejection": "PASS",
+    "uncached_missing_archive_rejection": "PASS",
+    "corrupted_archive_rejection": "PASS",
+    "uncached_valid_archive_readthrough": "NOT_EXECUTED_LOCALLY_RAW_ARCHIVE_ABSENT",
+    "archive_retention_required": true
+  },
+  "negative_controls": {
+    "checkpoint_bit_flip_rejected": true,
+    "checkpoint_hash_invalid_rejected": true,
+    "zlib_bomb_output_bounded": true,
+    "empty_native_snapshot_rejected": true,
+    "plain_compact_has_equal_native_readout": true
+  },
+  "limitations": [
+    "Pure readout snapshot, not an incremental learner or native accepted checkpoint",
+    "No original native ledger for full context/stream/refresh/repair, no future training/transfer",
+    "Original source archive must remain available for noncached evidence; no storage of full archive included in reported bytes",
+    "Original archive bytes absent from local isolated test, so uncached valid readthrough not exercised",
+    "Original native checkpoint is JSON whereas study snapshot is zlib; same-zlib comparison provided",
+    "Compact-only conventional exact statistics match native readouts in this FIT cohort; no superior predictive performance",
+    "No full inherited Linux+Windows regression, no new source-owner original-world actions or held scoring"
+  ],
+  "scientific_gain_verified": false,
+  "main_mutated": false,
+  "controller_or_runner_dispatched": false,
+  "source_first_use": false,
+  "merge": false,
+  "deployment": "NONE"
+}

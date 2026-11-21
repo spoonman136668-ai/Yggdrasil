@@ -132,8 +132,11 @@ class TwoTier:
         if type(raw) is not bytes or len(raw) > MAX_CHECKPOINT or not raw.startswith(PREFIX) or digest(raw) != expected_sha256:
             raise ValueError("CSMC02_CHECKPOINT_INTEGRITY")
         try:
-            raw_json = zlib.decompress(raw[len(PREFIX):], bufsize=4096)
-            if len(raw_json) > 16384: raise ValueError("CSMC02_OVERSIZE")
+            decoder = zlib.decompressobj()
+            raw_json = decoder.decompress(raw[len(PREFIX):], max_length=16385)
+            if (len(raw_json) > 16384 or not decoder.eof or
+                    decoder.unconsumed_tail or decoder.unused_data):
+                raise ValueError("CSMC02_ZLIB_BOUNDS")
             p = json.loads(raw_json)
         except (ValueError, zlib.error) as ex:
             raise ValueError("CSMC02_CHECKPOINT_FORMAT") from ex

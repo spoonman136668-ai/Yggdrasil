@@ -3,6 +3,7 @@ from hashlib import sha1, sha256
 import json
 from pathlib import Path
 import unittest
+import zlib
 
 from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_episode_experience import NativeEpisodeExperience
@@ -107,14 +108,36 @@ class CSMC02Native(unittest.TestCase):
         with self.assertRaises(ValueError):
             TwoTier.from_native(NativeEpisodeExperience())
         self.assertEqual(self.payload,self.cold.checkpoint())
+        oversized = b"CSM2" + zlib.compress(b"x" * 1000000, 9)
+        with self.assertRaises(ValueError):
+            TwoTier.restore(oversized, digest(oversized))
 
     def test_checkpoint_sizes_vs_matched_compact(self):
         baseline=len(self.two.compact_only_checkpoint())
         dual=len(self.payload)
         native=len(self.native.checkpoint())
-        self.assertLess(dual,native)
+        native_matched_codec=len(zlib.compress(self.native.checkpoint(),9))
+        self.assertLess(dual,native_matched_codec)
         self.assertGreater(dual,baseline)
-        print("CHECKPOINT_BYTES",{"original_native":native,"two_tier":dual,"compact_only":baseline})
+        print("CHECKPOINT_BYTES",{"original_native":native,
+                                  "original_native_zlib9":native_matched_codec,
+                                  "two_tier":dual,"compact_only":baseline})
+
+    def test_equal_feature_compact_only_readout_is_identical(self):
+        # Same native counters, projection and loss state but *zero* cache entries.
+        # The positive mechanism is provenance, not a novel predictive gain.
+        baseline = TwoTier({**self.two._p, "cache": []})
+        for ctx in (0, 1):
+            view = (ctx, 0)
+            self.assertEqual(baseline.propose(view), self.native.propose(view))
+            for first in (0, 1):
+                self.assertEqual(baseline.forecast(view, first), self.native.forecast(view, first))
+                for state in (0, 1):
+                    self.assertEqual(baseline.propose(view, first, state),
+                                     self.native.propose(view, first, state))
+                    for action in (0, 1):
+                        self.assertEqual(baseline.forecast(view, first, state, action),
+                                         self.native.forecast(view, first, state, action))
 
     def test_native_loss_projection_counter_exact(self):
         shadow=self.cold._readout_native()
