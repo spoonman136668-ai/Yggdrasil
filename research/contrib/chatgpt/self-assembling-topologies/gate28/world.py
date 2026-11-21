@@ -148,7 +148,11 @@ class HiddenWorld:
     def _previous_context(self, phase: str, step: int,
                           *, held: bool) -> tuple[int, ...]:
         if held:
-            return _as_context(self._held[64 + step % 32])
+            # The held evaluator runs after the 64 public B/R updates. A
+            # lagged rule must use that last PUBLIC context, which the
+            # learner has stored, rather than a private held partition value
+            # unavailable to every policy at prediction time.
+            return self._context(phase, PHASE_LENGTHS[phase] - 1, held=False)
         if step == 0:
             return _as_context(self._training[_pick(
                 self.seed, "train-previous", 128, phase)])
