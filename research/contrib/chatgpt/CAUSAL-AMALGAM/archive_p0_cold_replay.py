@@ -22,6 +22,9 @@ from four_head_retention import (HEAD_NAMES, audit_old_heads,
 from headwise_consolidation import assess_bounded_blend
 from headwise_capsule import seal_capsule, restore_capsule
 from headwise_shadow_readout import materialize_research_readout
+from fine_step_plasticity import (
+    evaluate_fine_steps, summarize_fine_samples,
+)
 from post_witness_projection import (
     assess_one_more_witness, summarize_four_frozen_samples,
 )
@@ -272,6 +275,7 @@ def replay_consumed_selector(start, source_directory):
     consolidation = []
     g28_retention = []
     g29_projection_samples = []
+    g30_fine_samples = []
     g28_native_by_next = {}
     original_native_parent = checked(source_directory, protocol["native_name"],
                                      protocol["native_sha256"])
@@ -484,6 +488,53 @@ def replay_consumed_selector(start, source_directory):
                         "new_world_actions": 0,
                     },
                 })
+                # G30 opt-in: same original source-cold G28 successor,
+                # finer fixed alpha grid; selection sees ONLY old witnesses.
+                fine_heads, fine_analysis = evaluate_fine_steps(
+                    start, before_selected, advanced)
+                fine_cold, fine_cold_analysis = evaluate_fine_steps(
+                    start, before_selected, cold_advanced)
+                if (fine_analysis != fine_cold_analysis
+                        or g29_canonical([g29_head_bytes(h) for h in fine_heads])
+                        != g29_canonical([g29_head_bytes(h) for h in fine_cold])):
+                    raise ValueError("G30_SOURCE_COLD_STEP_DRIFT")
+                fine = NativeCausalAmalgam(
+                    advanced.native, fine_heads,
+                    advanced._native_parent, advanced._specialist_parent)
+                fine_reopen = NativeCausalAmalgam(
+                    cold_advanced.native, fine_cold,
+                    cold_advanced._native_parent, cold_advanced._specialist_parent)
+                if (fine.native.checkpoint() != advanced.native.checkpoint()
+                        or fine.checkpoint() != fine_reopen.checkpoint()):
+                    raise ValueError("G30_NATIVE_OR_COLD_DRIFT")
+                seen = 0
+                for public in seen_views:
+                    if fine.plan(public[0]) != reference_next.plan(public[0]):
+                        raise ValueError("G30_NATIVE_PLAN_CHANGED")
+                    for first in (0, 1):
+                        if (fine.specialist_forecasts(public, first)
+                                != fine_reopen.specialist_forecasts(public, first)):
+                            raise ValueError("G30_TRANSITION_FORECAST_COLD")
+                        seen += 1
+                        for state, second in product((0, 1), repeat=2):
+                            if (fine.specialist_forecasts(
+                                    public, first, state, second)
+                                    != fine_reopen.specialist_forecasts(
+                                    public, first, state, second)):
+                                raise ValueError("G30_REWARD_FORECAST_COLD")
+                            seen += 1
+                if seen != 80:
+                    raise ValueError("G30_FROZEN_PUBLIC_COVERAGE")
+                g30_fine_samples.append({
+                    "ordinal": index + 1,
+                    "analysis": fine_analysis,
+                    "cold_forecast_queries": seen,
+                    "source_checks": {
+                        "native_next_sha256": g28_receipt["after_native_sha256"],
+                        "capsule_sha256": capsule_pin,
+                        "new_world_actions": 0,
+                    },
+                })
                 g28_native_by_next[index + 2] = g28_receipt["after_native_sha256"]
             consolidation.append({
                 "ordinal": index + 1,
@@ -499,6 +550,7 @@ def replay_consumed_selector(start, source_directory):
     if len(g28_retention) != len(SAMPLE_ORDINALS) or g28_native_by_next:
         raise ValueError("G28_FROZEN_SAMPLES_NOT_COMPLETED")
     g29_report = summarize_four_frozen_samples(g29_projection_samples)
+    g30_report = summarize_fine_samples(g30_fine_samples)
     shadow_report = summarize_shadow(shadow)
     consolidation_report = summarize_bounded_consolidation(consolidation)
     checkpoint = gate.system.checkpoint()
@@ -559,6 +611,7 @@ def replay_consumed_selector(start, source_directory):
         "shadow_guard_sensitivity": shadow_report,
         "bounded_headwise_consolidation": consolidation_report,
         "g29_post_witness_projection": g29_report,
+        "g30_fine_step_plasticity": g30_report,
         "g28_consumed_source_continuation": {
             "gate": "G28_RESEARCH_ONLY_ONE_WITNESS_COLD_CONTINUATION",
             "frozen_sample_ordinals": list(SAMPLE_ORDINALS),
