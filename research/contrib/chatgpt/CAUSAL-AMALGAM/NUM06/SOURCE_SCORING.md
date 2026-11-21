@@ -29,3 +29,21 @@ owner admission, single-use sealed evaluation and matched budget
 qualification are still missing. The fixed fixture parameters are not fitted
 registered settings. No candidate, comparator or threshold is tuned from
 fixture score values. No reserved source generation or owner action occurs.
+
+## Additional source-only per-head diagnostics (not a protocol amendment)
+
+Both the in-process and independent cold-process fixture scorers also report
+`full_head_mse`, `late_head_mse`, `return_head_mse`, and
+`pooled_head_mse` for the public consequence heads `delta_x`, `delta_y`,
+and `reward`. The original three-head aggregate and frozen thresholds in
+`prereg.json` are unchanged. The pooled per-head report gives equal weight
+to the late and return windows. Per-event aggregate/per-head accounting is
+checked; process-separated scores must match exactly within float precision.
+
+This addition exposes reward-regression masking and does **not** introduce
+a post-result reward threshold or qualify source admission, original-world
+first-use, resource parity or scientific gain. `head_diagnostics_only` is
+advisory, and its `per_head_acceptance_authorized` flag is always false.
+Any future reward-head acceptance rule requires a separately owner-approved,
+prospectively frozen protocol version before new unconsumed cohorts are used.
+No already-consumed results are rescored for promotion.

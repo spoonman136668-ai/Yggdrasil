@@ -2,7 +2,8 @@
 import unittest
 from num05 import canonical, digest, region
 from numerical_source import EPISODES, FIXTURES, REGISTERED, RESERVED, fixture_world
-from numerical_scoring import ARM_NAMES, score_arm_fixture, score_fixture_suite
+from numerical_scoring import (ARM_NAMES, score_arm_fixture, score_fixture_suite,
+                               head_squared_errors, mean_head_errors, head_window_report)
 
 
 class SourceHarnessTests(unittest.TestCase):
@@ -44,10 +45,17 @@ class SourceHarnessTests(unittest.TestCase):
             self.assertEqual(a["late_count"],80)
             self.assertEqual(a["return_count"],111)
             self.assertAlmostEqual(a["pooled_mse"],(a["late_mse"]+a["return_mse"])/2)
+            for scalar,head in (("full_mse","full_head_mse"),
+                                ("late_mse","late_head_mse"),
+                                ("return_mse","return_head_mse"),
+                                ("pooled_mse","pooled_head_mse")):
+                self.assertEqual(set(a[head]),{"delta_x","delta_y","reward"})
+                self.assertAlmostEqual(a[scalar],sum(a[head].values())/3,places=12)
             self.assertIsNone(a["peak_rss_bytes"])
             self.assertFalse(a["resource_qualification"])
             self.assertFalse(a["scientific_gain_verified"])
         self.assertEqual(out["registered_cohorts_consumed"],0)
+        self.assertFalse(out["head_diagnostics_only"]["per_head_acceptance_authorized"])
         self.assertFalse(out["scientific_gain_verified"])
         self.assertFalse(out["source_owner_authenticated"])
 
@@ -58,6 +66,31 @@ class SourceHarnessTests(unittest.TestCase):
         self.assertEqual(a["witness_count"],448)
         self.assertTrue(a["cold_exact"])
         self.assertFalse(a["scientific_gain_verified"])
+
+
+    def test_three_head_masking_counterexample_diagnostic_only(self):
+        baseline=mean_head_errors([[.20,.20,.10]])
+        candidate=mean_head_errors([[.08,.08,.25]])
+        base=sum(baseline.values())/3
+        new=sum(candidate.values())/3
+        self.assertGreaterEqual(base-new,.005)
+        self.assertGreaterEqual((base-new)/base,.10)
+        self.assertGreater(candidate["reward"],baseline["reward"])
+        self.assertAlmostEqual(base-new,.03)
+        self.assertFalse(candidate["reward"]<=baseline["reward"])
+        # No acceptance decision is derived from aggregate gain alone.
+
+    def test_head_errors_reject_incomplete_or_forged_data(self):
+        for prediction,actual in (([0,1],[0,1,2]),
+                                  ([0,0,float("nan")],[0,0,0]),
+                                  ([False,0,0],[0,0,0])):
+            with self.assertRaisesRegex(ValueError,"NUM06_HEAD_"):
+                head_squared_errors(prediction,actual)
+        for rows in ([],[[0,.1,float("inf")]],[[0,-.1,0]],[[0,0]]):
+            with self.assertRaisesRegex(ValueError,"NUM06_HEAD_ERRORS_INVALID"):
+                mean_head_errors(rows)
+        with self.assertRaisesRegex(ValueError,"NUM06_HEAD_WINDOWS"):
+            head_window_report([[0,0,0]]*447,145,305)
 
     def test_bad_parameter_and_unknown_arm(self):
         with self.assertRaises(ValueError):

@@ -2,6 +2,7 @@
 from __future__ import annotations
 import ctypes
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -10,7 +11,8 @@ import time
 
 from num05 import canonical, digest, error, target
 from numerical_source import FIXTURES, fixture_world
-from numerical_scoring import ARM_NAMES, _new, _predict
+from numerical_scoring import (ARM_NAMES, _new, _predict, head_squared_errors,
+                               head_window_report)
 
 
 def _peak_rss():
@@ -66,6 +68,18 @@ def _cpu_status(ns):
     return "BELOW_TIMER_DETECTION" if ns == 0 else "OBSERVED_NONZERO"
 
 
+def _check_head_accounting(losses,heads):
+    if len(losses)!=len(heads) or not losses:
+        raise ValueError("NUM06_HEAD_ACCOUNTING")
+    for loss,head in zip(losses,heads,strict=True):
+        if (type(loss) not in (int,float) or not math.isfinite(loss) or
+                type(head) not in (list,tuple) or len(head)!=3 or
+                any(type(v) not in (int,float) or not math.isfinite(v) or v<0
+                    for v in head) or
+                abs(loss-sum(head)/3)>1e-12):
+            raise ValueError("NUM06_HEAD_ACCOUNTING")
+
+
 def _worker(request):
     start_wall=time.perf_counter_ns()
     start_cpu=time.process_time_ns()
@@ -96,6 +110,7 @@ def _worker(request):
     pre_forecast=_predict(model,rows[start])
     preds=[]
     losses=[]
+    head_losses=[]
     predict_ns=observe_ns=0
     for i in range(start,stop):
         row=rows[i]
@@ -103,7 +118,9 @@ def _worker(request):
         prediction=_predict(model,row)
         predict_ns+=time.process_time_ns()-tick
         preds.append(prediction)
-        losses.append(error(prediction,target(row)))
+        actual=target(row)
+        losses.append(error(prediction,actual))
+        head_losses.append(head_squared_errors(prediction,actual))
         tick=time.process_time_ns()
         model.observe(row)
         observe_ns+=time.process_time_ns()-tick
@@ -114,6 +131,7 @@ def _worker(request):
             "restored_sha256":restored,"state":raw.decode("ascii"),"state_sha256":digest(raw),
             "first_forecast":pre_forecast,"next_forecast":next_forecast,
             "prediction_sha256":digest(canonical(preds)),"losses":losses,
+            "head_losses":head_losses,
             "predict_cpu_ns":predict_ns,"observe_cpu_ns":observe_ns,"restore_cpu_ns":restore_ns,
             "worker_cpu_ns":time.process_time_ns()-start_cpu,
             "worker_wall_ns":time.perf_counter_ns()-start_wall,
@@ -154,6 +172,8 @@ def score_process_fixture(seed,name,params=(.02,.04,.5)):
                 ("predict_cpu_ns","observe_cpu_ns","restore_cpu_ns")}
     component_status={k:_cpu_status(v) for k,v in components.items()}
     losses=first["losses"]+second["losses"]
+    heads=first["head_losses"]+second["head_losses"]
+    _check_head_accounting(losses,heads)
     if len(losses)!=len(rows):
         raise ValueError("NUM06_PROCESS_WITNESS_COUNT")
     avg=lambda seq:sum(seq)/len(seq)
@@ -161,6 +181,7 @@ def score_process_fixture(seed,name,params=(.02,.04,.5)):
     return {"arm":name,"classification":"FIXTURE_ONLY","source_sha256":source,
             "witness_count":len(losses),"full_mse":avg(losses),"late_mse":late,
             "return_mse":back,"pooled_mse":(late+back)/2,
+            **head_window_report(heads,t1,t2),
             "cold_exact":True,"cold_process_ids":[first["pid"],second["pid"]],
             "cold_state_sha256":first["state_sha256"],
             "final_state_sha256":second["state_sha256"],

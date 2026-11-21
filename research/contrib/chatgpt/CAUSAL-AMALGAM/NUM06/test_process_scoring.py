@@ -2,7 +2,8 @@
 import unittest
 from numerical_source import RESERVED
 from numerical_scoring import ARM_NAMES, score_arm_fixture
-from process_scoring import score_process_fixture, _worker, _restore, _cpu_status
+from process_scoring import (score_process_fixture, _worker, _restore,
+                             _cpu_status, _check_head_accounting)
 
 
 class ProcessScoringTests(unittest.TestCase):
@@ -16,6 +17,9 @@ class ProcessScoringTests(unittest.TestCase):
                 for key in ("source_sha256","witness_count","full_mse","late_mse",
                             "return_mse","pooled_mse","final_state_bytes","cold_state_bytes"):
                     self.assertEqual(a[key] if key!="cold_state_bytes" else a["cold_bytes"],b[key],key)
+                for key in ("full_head_mse","late_head_mse","return_head_mse","pooled_head_mse"):
+                    for head in ("delta_x","delta_y","reward"):
+                        self.assertAlmostEqual(a[key][head],b[key][head],places=12)
                 self.assertGreater(b["peak_rss_bytes"],0)
                 self.assertGreaterEqual(b["worker_cpu_ns"],0)
                 self.assertEqual(b["worker_cpu_status"],_cpu_status(b["worker_cpu_ns"]))
@@ -34,6 +38,16 @@ class ProcessScoringTests(unittest.TestCase):
         for bad in (-1,False,0.5,None):
             with self.assertRaisesRegex(ValueError,"CPU_COUNTER_INVALID"):
                 _cpu_status(bad)
+
+
+    def test_head_accounting_tampering_denied(self):
+        _check_head_accounting([.1],[[.1,.1,.1]])
+        for aggregate,heads in (([.1],[[.1,.1,.5]]),
+                                ([.1],[[.1,.1]]),
+                                ([.1],[[.1,.1,float("nan")]]),
+                                ([],[]),([.1,.2],[[.1,.1,.1]])):
+            with self.assertRaisesRegex(ValueError,"NUM06_HEAD_ACCOUNTING"):
+                _check_head_accounting(aggregate,heads)
 
     def test_reserved_seed_denied_before_worker(self):
         for seed in RESERVED:
