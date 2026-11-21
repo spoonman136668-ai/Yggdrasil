@@ -1,0 +1,599 @@
+"""EXT-MHE01 static public packet safety tests. No upstream simulator runs."""
+from __future__ import annotations
+
+from copy import deepcopy
+from hashlib import sha256
+import json
+import math
+from pathlib import Path
+import unittest
+
+from packet_fence import (
+    UPSTREAM_SHA, SCHEMA, validate_declared_source_config,
+    project_public_reset, project_public_step, inspect_intervention_metadata,
+    TaskIdentityFence, inspect_native_abi, require_native_abi
+)
+
+
+def config():
+    return {"upstream_sha": UPSTREAM_SHA, "env_type": "highway",
+            "include_task_id": False, "enable_causal_logging": False}
+
+
+def obs():
+    return [[1.0, 0, 4], [2.5, -3, 6.0]]
+
+
+def step(info=None):
+    return (obs(), 0.42, False, False, info if info is not None else {})
+
+
+def intervention(variable, *, applied=True, reset=False, granularity="mid_episode"):
+    return {"variable": variable, "value": 0.4, "previous_value": 0.2,
+            "granularity": granularity, "applied": applied,
+            "requires_reset": reset}
+
+
+class PublicSourcePacketFenceTests(unittest.TestCase):
+    def test_01_original_source_static_prereg_and_owner_hold(self):
+        p = json.loads(Path(__file__).with_name("prereg.json.txt").read_text())
+        self.assertEqual(p["schema"], "mhe01.sourcefree-public-packet-fence.prereg.v1")
+        self.assertEqual(p["upstream"]["commit"], UPSTREAM_SHA)
+        self.assertEqual(p["upstream"]["license_blob"],
+                         "1993f2e1a1e4993cbff028f6d4140a7ffe3290ae")
+        self.assertEqual(p["original_source_status"], "NO_OWNER_FIRST_USE_LEASE")
+        self.assertFalse(p["no_owner_actions"]["trainer"])
+        self.assertFalse(p["no_owner_actions"]["source_step"])
+        self.assertFalse(p["no_owner_actions"]["canonical_checkpoint"])
+
+    def test_02_only_pinned_and_known_source_config_accepted(self):
+        self.assertTrue(validate_declared_source_config(config()))
+        for key, value in (
+            ("upstream_sha", "0"*40),
+            ("upstream_sha", None),
+            ("env_type", "intersection"),
+            ("env_type", "highway-fast"),
+            ("include_task_id", True),
+            ("include_task_id", None),
+            ("include_task_id", 0),
+            ("enable_causal_logging", True),
+            ("enable_causal_logging", 0),
+            ("enable_causal_logging", None)):
+            c=config()
+            c[key]=value
+            with self.assertRaises(ValueError):
+                validate_declared_source_config(c)
+
+    def test_03_unknown_or_missing_configuration_fail_closed(self):
+        for bad in (None, {}, [], "config", {"env_type":"highway"}):
+            with self.assertRaises(ValueError):
+                validate_declared_source_config(bad)
+        c=config()
+        c["source_owner_authenticated"]=True
+        with self.assertRaises(ValueError):
+            validate_declared_source_config(c)
+
+    def test_04_reset_public_projection_has_no_leakage(self):
+        a=project_public_reset((obs(),{}),config(),(2,3))
+        secret={"task":{"task_id":33,"difficulty":0.98,
+                        "confounder":{"weather":0.98}},
+                "description":"causal_fresh_weather=0.98",
+                "source_private":{"graph":{"latent":True}}}
+        b=project_public_reset((obs(),secret),config(),(2,3))
+        self.assertEqual(a,b)
+        self.assertEqual(a["kind"],"reset")
+        self.assertEqual(a["observation"],[[1.0,0.0,4.0],[2.5,-3.0,6.0]])
+        serialized=json.dumps(a,sort_keys=True)
+        for forbidden in ("task_id","difficulty","weather","confounder",
+                          "description","graph","source_private"):
+            self.assertNotIn(forbidden,serialized)
+        self.assertFalse(a["source_owner_authenticated"])
+        self.assertFalse(a["native_admission"])
+
+    def test_05_raw_step_info_leaks_are_discarded_including_base_env_info(self):
+        first=project_public_step(3,step({}),config(),(2,3))
+        injected={"task":{"difficulty":0.717,"confounder":{"weather":0.717}},
+                  "reward_components":{"high_speed_reward":0.5},
+                  "driver_aggressiveness":0.717,"task_id":18,
+                  "true_scm":{"private_edge":"X->Y"},
+                  "counterfactual":{"reward":123456789}}
+        second=project_public_step(3,step(injected),config(),(2,3))
+        self.assertEqual(first,second)
+        serialized=json.dumps(second,sort_keys=True)
+        for bad in ("difficulty","weather","confounder","reward_components",
+                    "driver_aggressiveness","task_id","private_edge",
+                    "counterfactual"):
+            self.assertNotIn(bad,serialized)
+        self.assertEqual(first["action"],3)
+        self.assertEqual(first["reward"],0.42)
+        self.assertFalse(first["scientific_pass"])
+
+    def test_06_all_five_honest_public_driving_actions_are_in_range(self):
+        for action in range(5):
+            packet=project_public_step(action,step(),config(),(2,3))
+            self.assertEqual(packet["action"],action)
+            self.assertEqual(packet["kind"],"step")
+            self.assertEqual(len(packet["local_content_sha256"]),64)
+
+    def test_07_invalid_public_actions_and_bool_are_denied(self):
+        for action in (-1,5,True,False,5.0,"1",None,[],{}):
+            with self.assertRaises(ValueError):
+                project_public_step(action,step(),config(),(2,3))
+
+    def test_08_explicit_shape_excludes_appended_task_identifier(self):
+        o=obs()
+        for new_obs in (o+[[-1,2,3]], [r+[987] for r in o],
+                        [o[0]], [[1,2,3], [0,0]], [[1,2,3],{"bad":1}],
+                        [[1,2,3], [1,2,3,4]]):
+            with self.assertRaises(ValueError):
+                project_public_reset((new_obs,{}),config(),(2,3))
+        # A correct shape is necessary but NOT sufficient to prove public
+        # provenance: no source actor was used in this test.
+        self.assertFalse(project_public_reset((o,{}),config(),(2,3))[
+            "source_owner_authenticated"])
+
+    def test_09_invalid_shapes_and_missing_public_shape_denied(self):
+        for shape in (None,(2,),[2,3],(0,3),(2,0),(-1,3),(2,65),
+                      (64,64,1),(True,3),(1.0,3),(1,999999)):
+            with self.assertRaises(ValueError):
+                project_public_reset((obs(),{}),config(),shape)
+
+    def test_10_nonfinite_bool_nested_private_observations_denied(self):
+        for bad in (float("nan"),float("inf"),-float("inf"),
+                    1e40, True, None, "0", {}, [1], complex(1,2)):
+            x=obs()
+            x[0][0]=bad
+            with self.assertRaises(ValueError):
+                project_public_step(1,(x,0.1,False,False,{}),
+                                    config(),(2,3))
+
+    def test_11_nonfinite_or_non_scalar_rewards_denied(self):
+        for bad in (float("nan"),float("inf"),-float("inf"),
+                    1e50,True,False,"1",None,{"private":9},[1]):
+            with self.assertRaises(ValueError):
+                project_public_step(1,(obs(),bad,False,False,{}),
+                                    config(),(2,3))
+        out=project_public_step(1,(obs(),-0.125,False,False,{}),
+                                config(),(2,3))
+        self.assertEqual(out["reward"],-0.125)
+
+    def test_12_true_terminal_flags_required(self):
+        for index in (2,3):
+            for invalid in (0,1,"False",None):
+                fields=list(step())
+                fields[index]=invalid
+                with self.assertRaises(ValueError):
+                    project_public_step(1,fields,config(),(2,3))
+        for end,timeout in ((False,False),(True,False),(False,True),(True,True)):
+            p=project_public_step(4,(obs(),0.0,end,timeout,{}),
+                                  config(),(2,3))
+            self.assertIs(p["terminated"],end)
+            self.assertIs(p["truncated"],timeout)
+
+    def test_13_source_step_and_reset_tuple_and_info_shape(self):
+        for invalid in (None,{},[],[obs()],(obs(),None),
+                        (obs(),[]),(obs(),{},{})):
+            with self.assertRaises(ValueError):
+                project_public_reset(invalid,config(),(2,3))
+        for invalid in (None,{},[],[obs(),0.1],
+                        (obs(),0.1,False,False,None),
+                        (obs(),0.1,False,False,[]),
+                        (obs(),0.1,False,False,{},{})):
+            with self.assertRaises(ValueError):
+                project_public_step(2,invalid,config(),(2,3))
+
+    def test_14_local_digest_is_stable_but_never_source_owner_signature(self):
+        p=project_public_step(2,step(),config(),(2,3))
+        q=project_public_step(2,step({"any":"irrelevant"}),config(),(2,3))
+        self.assertEqual(p,q)
+        digest=p["local_content_sha256"]
+        raw={k:v for k,v in p.items() if k!="local_content_sha256"}
+        encoded=json.dumps(raw,sort_keys=True,separators=(",",":"),
+                           ensure_ascii=True,allow_nan=False).encode("ascii")
+        self.assertEqual(digest,sha256(encoded).hexdigest())
+        other=project_public_step(3,step(),config(),(2,3))
+        self.assertNotEqual(digest,other["local_content_sha256"])
+        self.assertFalse(p["source_owner_authenticated"])
+        self.assertFalse(p["native_admission"])
+        self.assertFalse(p["scientific_pass"])
+
+    def test_15_mid_episode_physical_request_is_not_witnessed_effect(self):
+        for variable in ("driver_aggressiveness","speed_limit"):
+            p=inspect_intervention_metadata(intervention(variable))
+            self.assertEqual(p["category"],"physical_mechanism_request")
+            self.assertFalse(p["observed_do_effect"])
+            self.assertFalse(p["learner_visible"])
+            self.assertFalse(p["requires_reset_before_effect"])
+            self.assertEqual(p["next_required_evidence"],
+                             "AUTHENTICATED_PUBLIC_EFFECT")
+
+    def test_16_episode_level_config_change_requires_reset_and_actual_effect(self):
+        for variable in ("vehicles_count","vehicles_density","lanes_count"):
+            p=inspect_intervention_metadata(intervention(
+                    variable,applied=False,reset=True,granularity="episode_level"))
+            self.assertTrue(p["requires_reset_before_effect"])
+            self.assertFalse(p["observed_do_effect"])
+            self.assertEqual(p["category"],"scene_configuration_request")
+            self.assertEqual(p["next_required_evidence"],
+                             "AUTHENTICATED_RESET_AND_PUBLIC_EFFECT")
+
+    def test_17_reward_weights_never_qualify_as_physical_learning_gain(self):
+        for variable in ("collision_reward","high_speed_reward",
+                         "right_lane_reward","lane_change_reward",
+                         "reward_speed_range"):
+            p=inspect_intervention_metadata(intervention(variable))
+            self.assertEqual(p["category"],"reward_definition_change")
+            self.assertFalse(p["causal_reward_comparison_permitted"])
+            self.assertFalse(p["observed_do_effect"])
+        duration=inspect_intervention_metadata(intervention("duration"))
+        self.assertEqual(duration["category"],"episode_budget_change")
+        self.assertFalse(duration["causal_reward_comparison_permitted"])
+
+    def test_18_intervention_granularity_conflicts_are_rejected(self):
+        for bad in (
+            intervention("speed_limit",applied=False),
+            intervention("speed_limit",reset=True),
+            intervention("speed_limit",granularity="episode_level"),
+            intervention("vehicles_count",applied=True,reset=True,
+                         granularity="episode_level"),
+            intervention("vehicles_count",applied=False,reset=False,
+                         granularity="episode_level"),
+            intervention("vehicles_count",applied=False,reset=True,
+                         granularity="mid_episode"),
+        ):
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(bad)
+
+    def test_19_bad_intervention_metadata_and_unknown_variables_fail_closed(self):
+        for x in (None,[],{},{"variable":"speed_limit"}, "speed_limit"):
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(x)
+        for bad in ("confounder_weather","task_id","hidden_scm",
+                    "reward_components","unknown",None,True):
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(intervention(bad))
+        meta=intervention("speed_limit")
+        meta["source_owner_authenticated"]=True
+        with self.assertRaises(ValueError):
+            inspect_intervention_metadata(meta)
+        for flag,val in (("applied",1),("applied","true"),
+                         ("requires_reset",0),("requires_reset",None)):
+            meta=intervention("speed_limit")
+            meta[flag]=val
+            with self.assertRaises(ValueError):
+                inspect_intervention_metadata(meta)
+
+    def test_20_private_prior_value_is_never_forwarded_or_used_as_label(self):
+        meta=intervention("speed_limit")
+        out=inspect_intervention_metadata(meta)
+        secret=deepcopy(meta)
+        secret["previous_value"]={"latent_weather":0.9987,"task_id":123}
+        self.assertEqual(out,inspect_intervention_metadata(secret))
+        self.assertNotIn("latent_weather",json.dumps(out))
+        self.assertNotIn("previous_value",out)
+        self.assertNotIn("value",out)
+
+    def test_21_native_api_and_owner_unsafe_access_absent(self):
+        source=Path(__file__).with_name("packet_fence.py").read_text()
+        for forbidden in ("import yggdrasil","from yggdrasil","import gymnasium",
+                          "import highway_env","subprocess","requests",
+                          "source_first_use=True","checkpoint_restore("):
+            self.assertNotIn(forbidden,source)
+        self.assertEqual(SCHEMA,"mhe01.public_projection.v1")
+        self.assertEqual(UPSTREAM_SHA,"a194c73b3261a137d84521e1520dfa4f4c690faa")
+
+
+
+class ShadowTaskIdentityCustodyTests(unittest.TestCase):
+    """All values hand-asserted: no source worlds, actions, tasks or outcomes."""
+
+    def fence(self, sampler="uniform"):
+        return TaskIdentityFence(registered_task_count=4, sampler=sampler,
+                                 context_length=3)
+
+    def test_22_frozen_custody_contract_precedes_source(self):
+        path=Path(__file__).with_name("task_identity_contract.md.txt")
+        contract=path.read_text()
+        self.assertIn("protocol FIRST",contract)
+        self.assertIn("sample_fresh_task(task_id=None)",contract)
+        self.assertIn("source_owner_authenticated=false",contract)
+        self.assertIn("do not run reset/step/sample_fresh_task",contract.lower())
+
+    def test_23_registered_and_unique_uniform_fresh_are_only_declared(self):
+        g=self.fence()
+        a=g.declare_task(0,"a"*64,"TRAIN",fresh=False)
+        b=g.declare_task(4,"b"*64,"HELD",fresh=True)
+        self.assertEqual(a,b)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],2)
+        self.assertTrue(g.inspect()["has_declared_active_task"])
+        self.assertFalse(a["source_owner_authenticated"])
+        self.assertFalse(a["source_reset_verified"])
+        self.assertFalse(a["native_admission"])
+        self.assertFalse(a["learner_visible"])
+        self.assertFalse(a["cohort_disjointness_authenticated"])
+        self.assertEqual(a["source_actions_executed"],0)
+        self.assertFalse(a["scientific_pass"])
+        # Same declared source instance may be referenced again, but is NOT
+        # authentication or repermission for a consumed episode.
+        self.assertEqual(g.declare_task(4,"b"*64,"HELD",fresh=True),a)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],2)
+
+    def test_24_source_default_minus_one_and_malformed_ids_fail(self):
+        g=self.fence()
+        for bad in (-1,True,False,4.0,"4",None,[],{},-100):
+            with self.assertRaises(ValueError):
+                g.declare_task(bad,"a"*64,"TRAIN",fresh=False)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],0)
+
+    def test_25_original_adaptive_array_cannot_alias_fresh_unregistered(self):
+        g=self.fence("adaptive")
+        g.declare_task(3,"a"*64,"TRAIN",fresh=False)
+        for bad in (4,13,1000000):
+            with self.assertRaisesRegex(ValueError,
+                                        "MHE01C_UNREGISTERED_ADAPTIVE_INDEX"):
+                g.declare_task(bad,"b"*64,"TRANSFER",fresh=True)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],1)
+        with self.assertRaises(ValueError):
+            g.declare_task(4,"b"*64,"TRAIN",fresh=False)
+        with self.assertRaises(ValueError):
+            self.fence(sampler="unknown")
+
+    def test_26_registered_slot_and_fresh_collision_rejected(self):
+        g=self.fence()
+        with self.assertRaisesRegex(ValueError,
+                                    "MHE01C_FRESH_ID_ALIASES_REGISTERED_SLOT"):
+            g.declare_task(1,"a"*64,"TRAIN",fresh=True)
+        with self.assertRaisesRegex(ValueError,"MHE01C_UNREGISTERED_TASK_ID"):
+            g.declare_task(4,"a"*64,"TRAIN",fresh=False)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],0)
+
+    def test_27_same_id_cannot_change_hidden_instance_or_split(self):
+        g=self.fence()
+        g.declare_task(4,"a"*64,"TRAIN",fresh=True)
+        for fingerprint,split in (("b"*64,"TRAIN"),
+                                  ("a"*64,"HELD"),
+                                  ("a"*64,"TRANSFER")):
+            with self.assertRaisesRegex(ValueError,"MHE01C_TASK_IDENTITY_COLLISION"):
+                g.declare_task(4,fingerprint,split,fresh=True)
+        # Recycled identical original identity cannot enter another split.
+        for task_id,split in ((5,"TRAIN"),(5,"HELD")):
+            with self.assertRaisesRegex(ValueError,"MHE01C_COHORT_DUPLICATE"):
+                g.declare_task(task_id,"a"*64,split,fresh=True)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],1)
+
+    def test_28_invalid_hash_split_fresh_and_constructor_fail_atomically(self):
+        for args in ((0,"uniform",3), (True,"uniform",3),
+                     (4,"adaptive",0),(4,"adaptive",False),
+                     (4,"bogus",3),(4,0,3)):
+            with self.assertRaises(ValueError):
+                TaskIdentityFence(registered_task_count=args[0],
+                                  sampler=args[1],context_length=args[2])
+        g=self.fence()
+        invalid=[
+            (0,"A"*64,"TRAIN",False),(0,"x"*64,"TRAIN",False),
+            (0,"a"*63,"TRAIN",False),(0,True,"TRAIN",False),
+            (0,None,"TRAIN",False),(0,"a"*64,"training",False),
+            (0,"a"*64,"TRAIN",0),(0,"a"*64,None,False),
+        ]
+        for task_id,fp,split,fresh in invalid:
+            with self.assertRaises(ValueError):
+                g.declare_task(task_id,fp,split,fresh=fresh)
+            self.assertEqual(g.inspect()["distinct_declared_instances"],0)
+        self.assertFalse(g.inspect()["has_declared_active_task"])
+
+    def test_29_source_reset_boundary_requires_external_owner_readback(self):
+        g=self.fence()
+        with self.assertRaisesRegex(ValueError,"MHE01C_NO_DECLARED_TASK"):
+            g.before_reset(0,is_meta_testing=False)
+        g.declare_task(4,"b"*64,"HELD",fresh=True)
+        for count in (0,1,2):
+            receipt=g.before_reset(count,is_meta_testing=False)
+            self.assertFalse(receipt["source_reset_verified"])
+        for count in (3,4,100):
+            with self.assertRaisesRegex(ValueError,"MHE01C_RESET_MAY_SILENTLY_RESAMPLE"):
+                g.before_reset(count,is_meta_testing=False)
+        # Original source condition is gated by is_meta_testing.
+        self.assertFalse(g.before_reset(3,is_meta_testing=True)[
+            "source_owner_authenticated"])
+
+    def test_30_reset_counter_input_and_hidden_provenance_not_leaked(self):
+        g=self.fence()
+        g.declare_task(7,"f"*64,"TRANSFER",fresh=True)
+        for count in (True,False,-1,0.0,None,"2"):
+            with self.assertRaises(ValueError):
+                g.before_reset(count,is_meta_testing=False)
+        for flag in (0,1,None,"true"):
+            with self.assertRaises(ValueError):
+                g.before_reset(0,is_meta_testing=flag)
+        safe=g.before_reset(1,is_meta_testing=False)
+        as_text=json.dumps((safe,g.inspect()),sort_keys=True)
+        for forbidden in ("TRANSFER","f"*64,'"task_id"',"weather",
+                          "difficulty","confounder","source_owner_authenticated\": true"):
+            self.assertNotIn(forbidden,as_text)
+        self.assertNotIn("7",as_text)
+        self.assertEqual(g.inspect()["distinct_declared_instances"],1)
+
+    def test_31_private_task_identity_cannot_affect_public_packets(self):
+        g=self.fence()
+        before=project_public_step(2,step({"task_id":-1,"difficulty":.77}),
+                                   config(),(2,3))
+        g.declare_task(6,"c"*64,"TRAIN",fresh=True)
+        g.before_reset(0,is_meta_testing=False)
+        after=project_public_step(2,step({"task_id":6,"difficulty":.99,
+                                         "confounder":{"weather":.99}}),
+                                  config(),(2,3))
+        self.assertEqual(before,after)
+        self.assertFalse(after["source_owner_authenticated"])
+        self.assertNotIn("c"*64,json.dumps(after))
+
+
+class NativeABIIncompatibilityTests(unittest.TestCase):
+    """Original numerical driving step is NOT a two-stage CKAD binary witness."""
+
+    @staticmethod
+    def step_packet(action=2, observation=None, reward=.42, info=None):
+        if observation is None:
+            observation=obs()
+        return project_public_step(
+            action,(observation,reward,False,False,
+                    info if info is not None else {}),config(),(2,3))
+
+    @staticmethod
+    def rehash(packet):
+        body={k:v for k,v in packet.items() if k!="local_content_sha256"}
+        raw=json.dumps(body,sort_keys=True,separators=(",",":"),
+                       ensure_ascii=True,allow_nan=False).encode("ascii")
+        packet["local_content_sha256"]=sha256(raw).hexdigest()
+        return packet
+
+    def test_32_frozen_negative_contract_and_exact_original_source_identity(self):
+        frozen=Path(__file__).with_name("native_abi_contract.md.txt").read_text()
+        for value in ("protocol", "9214cb52bd26bf8ac594d22525e93a98b23b866e",
+                      "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+                      "1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4",
+                      "287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952",
+                      "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef"):
+            self.assertIn(value,frozen)
+        self.assertIn("No injective fixed two-bit mapping",frozen)
+
+    def test_33_all_five_source_actions_distinct_but_none_direct_admitted(self):
+        hashes=[]
+        for action in range(5):
+            packet=self.step_packet(action)
+            hashes.append(packet["local_content_sha256"])
+            report=inspect_native_abi(packet)
+            self.assertIs(report["direct_native_admission"],False)
+            self.assertFalse(report["owner_native_interface_extension_required"] is False)
+            with self.assertRaisesRegex(ValueError,"MHE01D_UNSUPPORTED_NATIVE_ABI"):
+                require_native_abi(packet)
+        self.assertEqual(len(set(hashes)),5)
+
+    def test_34_binary_looking_observation_reward_action_still_unqualified(self):
+        for action in (0,1):
+            packet=self.step_packet(action,[[0,1,0],[1,0,1]],1.0)
+            self.assertFalse(inspect_native_abi(packet)["direct_native_admission"])
+            with self.assertRaisesRegex(ValueError,"MHE01D_UNSUPPORTED_NATIVE_ABI"):
+                require_native_abi(packet)
+        binary_outcome=self.step_packet(0,[[1,0,1],[0,1,0]],0.0)
+        with self.assertRaisesRegex(ValueError,"MHE01D_UNSUPPORTED_NATIVE_ABI"):
+            require_native_abi(binary_outcome)
+
+    def test_35_original_action_cardinality_pigeonhole_no_fabricated_pairs(self):
+        report=inspect_native_abi(self.step_packet())
+        self.assertGreater(report["source_action_cardinality"],
+                           report["native_fixed_binary_action_pair_cardinality"])
+        self.assertEqual(report["source_action_cardinality"],5)
+        self.assertEqual(report["native_first_action_cardinality"],2)
+        self.assertEqual(report["native_fixed_binary_action_pair_cardinality"],4)
+        self.assertEqual(len(report["reason_codes"]),5)
+        self.assertIn("DRIVING_STEP_NOT_NATIVE_TWO_STAGE_CAUSAL_INTERVENTION",
+                      report["reason_codes"])
+        self.assertIn("UNMATCHED_SOURCE_ADMISSION",report["reason_codes"])
+
+    def test_36_privileged_info_never_changes_abi_report(self):
+        public=self.step_packet(3)
+        hidden=self.step_packet(
+            3,info={"task":{"task_id":-1,"difficulty":.913,
+                           "confounder":{"weather":.913}},
+                    "reward_components":{"collision_reward":5},
+                    "true_scm":{"private":"A->B"}})
+        self.assertEqual(public,hidden)
+        a=inspect_native_abi(public)
+        self.assertEqual(a,inspect_native_abi(hidden))
+        encoded=json.dumps(a,sort_keys=True)
+        for forbidden in ("task_id","weather","difficulty","confounder",
+                          "reward_components","true_scm","A->B"):
+            self.assertNotIn(forbidden,encoded)
+
+    def test_37_original_sha_packet_integrity_tampering_fails_closed(self):
+        original=self.step_packet()
+        for key,value in (("action",4),("reward",.88),
+                          ("observation",[[9.,0.,4.],[2.5,-3.,6.]]),
+                          ("local_content_sha256","f"*64)):
+            altered=deepcopy(original)
+            altered[key]=value
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(altered)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                require_native_abi(altered)
+        self.assertFalse(inspect_native_abi(original)["direct_native_admission"])
+
+    def test_38_forged_owner_acceptance_bits_never_cure_abi(self):
+        original=self.step_packet()
+        for name in ("source_owner_authenticated","native_admission","scientific_pass"):
+            altered=deepcopy(original)
+            altered[name]=True
+            altered=self.rehash(altered)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(altered)
+        self.assertFalse(inspect_native_abi(original)["source_owner_authenticated"])
+
+    def test_39_private_extra_fields_and_synthetic_native_row_rejected(self):
+        original=self.step_packet()
+        for extra,value in (("task_id",2),("source_owner_lease","signed"),
+                            ("views",[[0,1],[0,1]]),
+                            ("row",{"s1":0,"x1":0,"s2":1,"x2":1,"y":1}),
+                            ("native_source_sha","20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef")):
+            altered=deepcopy(original)
+            altered[extra]=value
+            self.rehash(altered)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(altered)
+
+    def test_40_reset_wrong_schema_or_new_source_not_native_admissible(self):
+        packet=self.step_packet()
+        altered=deepcopy(packet)
+        for key,value in (("kind","reset"),("schema","other"),
+                          ("source_sha","20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef")):
+            x=deepcopy(altered)
+            x[key]=value
+            self.rehash(x)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(x)
+        reset=project_public_reset((obs(),{}),config(),(2,3))
+        with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+            inspect_native_abi(reset)
+
+    def test_41_rehashed_malformed_payload_still_rejected(self):
+        origin=self.step_packet()
+        for key,value in (
+            ("action",True),("action",5),("reward",True),("reward","0.42"),
+            ("reward",float("inf")),("terminated",1),("truncated",0),
+            ("observation",[[0,1],[0,1]]),
+            ("observation",[[1,2,3],[4,5,6]]),
+            ("observation",[[1.,2.,3.],[4.,5.]]),
+        ):
+            x=deepcopy(origin)
+            x[key]=value
+            # Avoid attempting to serialize infinite rewards as JSON.
+            if key=="reward" and value==float("inf"):
+                with self.assertRaises(ValueError):
+                    self.rehash(x)
+                continue
+            self.rehash(x)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(x)
+
+    def test_42_inspector_is_read_only_no_environment_or_native_caller(self):
+        packet=self.step_packet(4)
+        prior=deepcopy(packet)
+        first=inspect_native_abi(packet)
+        second=inspect_native_abi(packet)
+        self.assertEqual(first,second)
+        self.assertEqual(packet,prior)
+        self.assertFalse(first["learner_visible"])
+        self.assertFalse(first["native_checkpoint_updated"])
+        self.assertFalse(first["source_owner_authenticated"])
+        self.assertFalse(first["source_owner_lease_present"])
+        self.assertFalse(first["scientific_pass"])
+        self.assertEqual(first["source_actions_executed"],0)
+        source=Path(__file__).with_name("packet_fence.py").read_text()
+        for forbidden in ("import gymnasium","import highway_env",
+                          "from yggdrasil","import yggdrasil",
+                          "import subprocess","native.observe_experience(",
+                          "self.native.observe_experience(",
+                          "source_first_use=True"):
+            self.assertNotIn(forbidden,source)
+
+if __name__=="__main__":
+    unittest.main()
