@@ -373,6 +373,125 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                                 "held_evaluation": False,
                                 "scientific_pass": False,
                                 "owner_accepted": False}, sort_keys=True))
+            if os.environ.get("YGG_G41_ATTRIBUTION_2048") == "1":
+                # Frozen R10: PR #1329 issuecomment-7066576697, no training or mutation.
+                earlier = original.native._episode_reader()
+                later = learner.native._episode_reader()
+                self.assertIsNotNone(earlier._context_start)
+                self.assertEqual(earlier._context_start, later._context_start)
+                old_weights = tuple(earlier._context_weights)
+                new_weights = tuple(later._context_weights)
+                old_models = tuple(earlier._context_models)
+                new_models = tuple(later._context_models)
+                self.assertTrue(old_weights)
+                self.assertEqual(len(old_weights), len(new_weights))
+                self.assertEqual(len(old_weights), len(old_models))
+                self.assertEqual(len(old_weights), len(new_models))
+                self.assertEqual(sum(old_weights), Fraction(1))
+                self.assertEqual(sum(new_weights), Fraction(1))
+                for index, (old, new) in enumerate(zip(old_models, new_models, strict=True)):
+                    self.assertEqual(old[0], new[0])
+                    if index != len(old_models) - 1:
+                        self.assertEqual(old[1:3], new[1:3])
+
+                def readonly_mix(weights, blocks, view, first, state=None, second=None):
+                    self.assertEqual(len(weights), len(blocks))
+                    self.assertEqual(sum(weights), Fraction(1))
+                    predictions = tuple(block[-1].forecast(view, first, state, second)
+                                        for block in blocks)
+                    if state is not None:
+                        transitions = tuple(block[-1].forecast(view, first)
+                                            for block in blocks)
+                        supports = tuple(weight * (prob if state else 1-prob)
+                                         for weight, prob in zip(weights, transitions, strict=True))
+                        total = sum(supports)
+                        self.assertGreater(total, 0)
+                        weights = tuple(weight / total for weight in supports)
+                    return sum((weight * prob for weight, prob
+                                in zip(weights, predictions, strict=True)), Fraction(0))
+
+                old_row = source_ledger[0]
+                with self.assertRaises(AssertionError):
+                    readonly_mix(tuple(2 * w for w in old_weights), old_models,
+                                 old_row[1][0], old_row[2])
+                with self.assertRaises(AssertionError):
+                    readonly_mix(old_weights + (Fraction(0),), old_models,
+                                 old_row[1][0], old_row[2])
+
+                scale = 1_000_000
+                diagnostics = {}
+                for window_name, (start, stop) in windows.items():
+                    per_target = {}
+                    for kind in ("transition", "reward"):
+                        squared = [0, 0, 0, 0]
+                        for _, row_views, first, state, second, reward in source_ledger[start:stop]:
+                            view = row_views[0]
+                            label = state if kind == "transition" else reward
+                            tail = (None, None) if kind == "transition" else (state, second)
+                            arms = (
+                                readonly_mix(old_weights, old_models, view, first, *tail),
+                                readonly_mix(new_weights, old_models, view, first, *tail),
+                                readonly_mix(old_weights, new_models, view, first, *tail),
+                                readonly_mix(new_weights, new_models, view, first, *tail),
+                            )
+                            self.assertEqual(arms[0], earlier.context_forecast(view, first, *tail))
+                            self.assertEqual(arms[3], later.context_forecast(view, first, *tail))
+                            self.assertEqual(arms[0], readonly_mix(
+                                tuple(old_weights), tuple(old_models), view, first, *tail))
+                            for i, arm in enumerate(arms):
+                                squared[i] += (round(scale * arm) - scale * label) ** 2
+                        n = stop - start
+                        losses = tuple(Fraction(value, n * scale**2) for value in squared)
+                        A, B, C, D = losses
+                        weights_effect = (B - A + D - C) / 2
+                        experts_effect = (C - A + D - B) / 2
+                        interaction = D - B - C + A
+                        self.assertEqual(weights_effect + experts_effect, D - A)
+                        prior = native_report["windows"][window_name]
+                        position = 0 if kind == "transition" else 1
+                        self.assertEqual(float(A), prior["anchor_brier"][position])
+                        self.assertEqual(float(D), prior["candidate_brier"][position])
+                        self.assertEqual(float(D - A), prior["delta_brier"][position])
+                        per_target[kind] = {
+                            "brier_old_weights_old_experts": float(A),
+                            "brier_new_weights_old_experts": float(B),
+                            "brier_old_weights_new_experts": float(C),
+                            "brier_new_weights_new_experts": float(D),
+                            "old_task_drift": float(D - A),
+                            "weight_effect": float(weights_effect),
+                            "expert_effect": float(experts_effect),
+                            "interaction": float(interaction),
+                            "predeclared_native_retention_within_0p02": float(D - A) <= .02,
+                        }
+                    diagnostics[window_name] = per_target
+                changed_models = sum(a[-1].checkpoint() != b[-1].checkpoint()
+                                     for a, b in zip(old_models, new_models, strict=True))
+                tv = sum((abs(a - b) for a, b in zip(old_weights, new_weights,
+                                                  strict=True)), Fraction(0)) / 2
+                self.assertGreaterEqual(tv, 0)
+                self.assertLessEqual(tv, 1)
+                self.assertEqual(original.checkpoint(), joint)
+                self.assertEqual(learner.checkpoint(), snapshot)
+                self.assertEqual(cold.checkpoint(), snapshot)
+                print("G41_R10_WEIGHT_VS_EXPERT_ATTRIBUTION="
+                      + json.dumps({
+                          "schema": "yggdrasil.g41.r10.retrospective-weight-expert-v1",
+                          "anchor_checkpoint_sha256": joint_pin,
+                          "descendant_checkpoint_sha256": expected,
+                          "old_witness_count": 1025,
+                          "synthetic_new_witness_count": 1023,
+                          "expert_count": len(old_models),
+                          "expert_checkpoint_change_count": changed_models,
+                          "mixture_weight_total_variation": float(tv),
+                          "old_newest_expert_weight": float(old_weights[-1]),
+                          "new_newest_expert_weight": float(new_weights[-1]),
+                          "windows": diagnostics,
+                          "frozen_before_readout": True,
+                          "counterfactual_is_read_only": True,
+                          "historical_not_held": True,
+                          "scientific_gain_verified": False,
+                          "owner_accepted": False,
+                      }, sort_keys=True))
 
 if __name__ == "__main__":
     unittest.main()
