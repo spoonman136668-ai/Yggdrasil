@@ -271,3 +271,91 @@ class TaskIdentityFence:
             "distinct_declared_instances": len(self._identity_by_id),
             "has_declared_active_task": self._active is not None,
         }
+
+
+# MHE01-D: detect ABI mismatch; never translate a Highway driving step
+# into a fabricated native two-intervention causal episode.
+_NATIVE_ABI_BLOCKERS = (
+    "UNMATCHED_SOURCE_ADMISSION",
+    "FIVE_ACTIONS_NOT_INJECTIVE_TO_NATIVE_BINARY_CLOCK",
+    "DRIVING_STEP_NOT_NATIVE_TWO_STAGE_CAUSAL_INTERVENTION",
+    "NUMERICAL_OBSERVATION_NOT_PAIRED_BINARY_CAUSAL_VIEWS",
+    "SCALAR_NUMERIC_REWARD_NOT_WITNESSED_BINARY_TERMINAL",
+)
+
+
+def _validate_native_shadow_packet(packet):
+    """Validate local packet integrity; it is NOT source authentication."""
+    keys = frozenset((
+        "schema", "kind", "source_sha", "source_owner_authenticated",
+        "native_admission", "scientific_pass", "observation", "action",
+        "reward", "terminated", "truncated", "local_content_sha256",
+    ))
+    if type(packet) is not dict or frozenset(packet) != keys:
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+    if (packet["schema"] != SCHEMA or packet["kind"] != "step"
+            or packet["source_sha"] != UPSTREAM_SHA
+            or packet["source_owner_authenticated"] is not False
+            or packet["native_admission"] is not False
+            or packet["scientific_pass"] is not False):
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+    if type(packet["action"]) is not int or packet["action"] not in range(5):
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+    if (type(packet["reward"]) is not float
+            or not math.isfinite(packet["reward"])
+            or abs(packet["reward"]) > 1e12
+            or type(packet["terminated"]) is not bool
+            or type(packet["truncated"]) is not bool):
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+    obs = packet["observation"]
+    if (type(obs) is not list or not obs or type(obs[0]) is not list
+            or not obs[0]):
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+    try:
+        normalized = _public_observation(obs, (len(obs), len(obs[0])))
+        if (any(type(value) is not float for row in obs for value in row)
+                or normalized != obs):
+            raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+        raw = {key: value for key, value in packet.items()
+               if key != "local_content_sha256"}
+        canonical_bytes = json.dumps(
+            raw, sort_keys=True, separators=(",", ":"),
+            ensure_ascii=True, allow_nan=False,
+        ).encode("ascii")
+    except (TypeError, ValueError, OverflowError, UnicodeError, RecursionError) as exc:
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET") from exc
+    checksum = sha256(canonical_bytes).hexdigest()
+    if (type(packet["local_content_sha256"]) is not str
+            or packet["local_content_sha256"] != checksum):
+        raise ValueError("MHE01D_NONCANONICAL_SHADOW_PACKET")
+
+
+def inspect_native_abi(packet):
+    """Provably negative *direct* compatibility audit; never call a model.
+
+    This report describes the static ABI, not new observations or a run.
+    The underlying upstream task identity and semantics remain unverified.
+    """
+    _validate_native_shadow_packet(packet)
+    return {
+        "schema": "mhe01.native_abi_negative_gate.v1",
+        "direct_native_admission": False,
+        "reason_codes": list(_NATIVE_ABI_BLOCKERS),
+        "source_action_cardinality": 5,
+        "native_first_action_cardinality": 2,
+        "native_fixed_binary_action_pair_cardinality": 4,
+        "source_actions_executed": 0,
+        "source_owner_authenticated": False,
+        "source_owner_lease_present": False,
+        "native_checkpoint_updated": False,
+        "learner_visible": False,
+        "scientific_pass": False,
+        "owner_native_interface_extension_required": True,
+        "source_owner_admission_required": True,
+    }
+
+
+def require_native_abi(packet):
+    """Reject all current valid shadow step packets, even if binary-looking."""
+    inspect_native_abi(packet)
+    raise ValueError("MHE01D_UNSUPPORTED_NATIVE_ABI")
