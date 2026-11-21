@@ -1,0 +1,112 @@
+{
+  "classification": "DIAGNOSTIC_ACTION_ADVANTAGE_NOT_IDENTIFIABLE_ON_FCR03_FIXTURE",
+  "failure_mechanism": "FCR03 reward/return failure cannot be attributed to insufficient diagnostically different x1/x2 actions in this fixture; investigate detector/recall and phase-change inference rather than rerun equivalent action policies.",
+  "fcr03_parent": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "information_conclusion": "A versus B transition/reward laws are identical at c=0 and fully separated at c=1 for EVERY allowed x1/x2 action; because c is exogenous in this fixture, policy action selection cannot change mechanism identifiability at matched public c and witness counts.",
+  "new_experiment_consumed": false,
+  "original_result": "DEV_NO_GO",
+  "phase_coverage": {
+    "A_familiar": {
+      "informative_c1": 324,
+      "per_seed": {
+        "317101": 45,
+        "317102": 46,
+        "317103": 34,
+        "317104": 43,
+        "317105": 43,
+        "317106": 40,
+        "317107": 40,
+        "317108": 33
+      },
+      "total": 640
+    },
+    "A_return": {
+      "informative_c1": 338,
+      "per_seed": {
+        "317101": 41,
+        "317102": 44,
+        "317103": 48,
+        "317104": 45,
+        "317105": 37,
+        "317106": 36,
+        "317107": 49,
+        "317108": 38
+      },
+      "total": 640
+    },
+    "B_changed": {
+      "informative_c1": 312,
+      "per_seed": {
+        "317101": 37,
+        "317102": 41,
+        "317103": 39,
+        "317104": 36,
+        "317105": 39,
+        "317106": 45,
+        "317107": 39,
+        "317108": 36
+      },
+      "total": 640
+    },
+    "C_recombination": {
+      "informative_c1": 310,
+      "per_seed": {
+        "317101": 45,
+        "317102": 35,
+        "317103": 45,
+        "317104": 39,
+        "317105": 37,
+        "317106": 36,
+        "317107": 30,
+        "317108": 43
+      },
+      "total": 640
+    },
+    "D_nonlinear_unknown": {
+      "informative_c1": 183,
+      "per_seed": {
+        "317101": 17,
+        "317102": 25,
+        "317103": 22,
+        "317104": 28,
+        "317105": 21,
+        "317106": 29,
+        "317107": 22,
+        "317108": 19
+      },
+      "total": 384
+    }
+  },
+  "raw_trial_git_blob": "f9ca478fe6ff6d3fd7b694d70ec279c22bebfe34",
+  "raw_trial_sha256": "a81297f6a0f0bf7c982f7c8656af85be92c432e321b5e49dfbea9b5beee92cee",
+  "recombined_reward_Brier_delta_vs_strongest_control": 0.046764037175,
+  "return_transition_Brier_delta_vs_strongest_control": 0.034831530953,
+  "safety": {
+    "deployment": false,
+    "native_model_modified": false,
+    "original_world_first_use": false,
+    "scientific_gain_verified": false
+  },
+  "schema": "yggdrasil.fcr03.retrospective-action-identifiability.v1",
+  "scope": "read_only_retrospective_exact_enumeration; not new trial",
+  "separation_by_context": {
+    "0": {
+      "bits_if_equal_priors_before_witness": 0,
+      "information_gain_dependent_on_x1_or_x2": false,
+      "public_outcome_combinations_checked": 10,
+      "reward_model_separation_given_public_s2": 0,
+      "transition_model_separation": 0
+    },
+    "1": {
+      "bits_if_equal_priors_before_witness": 1,
+      "information_gain_dependent_on_x1_or_x2": false,
+      "public_outcome_combinations_checked": 10,
+      "reward_model_separation_given_public_s2": 1,
+      "transition_model_separation": 1
+    }
+  },
+  "source_blobs": {
+    "dev_trial.py": "ae4cbf1f7193291f26dfafcede535a0493825f57",
+    "mechanism_recall.py": "ad23ec009e81f3c86405ad309289464a8827ccff"
+  }
+}
