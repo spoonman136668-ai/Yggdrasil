@@ -57,7 +57,7 @@ def qualify(linux_json, windows_json):
                 [sys.executable, "-B", str(Path(G39.__file__).resolve()),
                  "--child", str(root)], timeout=180)
             children.append(json.loads(raw))
-        G39.require(parent == children[0] == children[1], "COLD_PROCESS_PARITY")
+        G39.require_cold_parity(parent, children)
     return {
         "status": "G39_ORIGINAL_NATIVE_COLD_PARITY_PASS",
         "original_artifact_run": 44499793023,

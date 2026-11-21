@@ -39,6 +39,20 @@ def require(ok, code):
         raise ValueError('G39_' + code)
 
 
+def require_cold_parity(parent, children):
+    """Compare exact JSON wire values, not tuple/list container types.
+
+    Native plans use tuples; fresh Python processes return JSON-decoded lists.
+    Canonical comparison still fails closed on any genuine forecast drift.
+    """
+    require(type(children) in (list, tuple) and len(children) == 2,
+            'COLD_CHILD_COUNT')
+    baseline = CODEC.canonical(parent)
+    for child in children:
+        require(type(child) is dict and CODEC.canonical(child) == baseline,
+                'COLD_PROCESS_PARITY')
+
+
 def sha(raw):
     return sha256(raw).hexdigest()
 
@@ -135,7 +149,7 @@ def qualify(linux, windows):
             raw = subprocess.check_output([sys.executable, '-B', str(Path(__file__)),
                                            '--child', str(folder)], timeout=180)
             results.append(json.loads(raw))
-        require(parent == results[0] == results[1], 'COLD_PROCESS_PARITY')
+        require_cold_parity(parent, results)
     # Never misrepresent old/familiar Brier or novel transfer without independent outcomes.
     return {'status': 'G39_ORIGINAL_CLASS_COLD_PARITY_PASS',
             'original_repo_abi': SOURCE_BLOBS,

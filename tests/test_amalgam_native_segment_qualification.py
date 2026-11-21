@@ -55,5 +55,26 @@ class G39NativeClassQualificationTests(unittest.TestCase):
         # This calls the codec, not original NativeEpisodeExperience.restore.
 
 
+    def test_json_transport_parity_and_real_forecast_drift(self):
+        import json
+        original = {
+            'native_sha256': 'a' * 64, 'episode_count': 1025,
+            'plans': {'(0, 0)': {
+                'first_action': 0,
+                'first_values': ((1, 3), (2, 5)),
+                'second_actions': ((0, 1), (1, 0)),
+            }},
+        }
+        child = json.loads(json.dumps(original))
+        self.assertNotEqual(original, child)  # Tuples become lists over JSON.
+        G39.require_cold_parity(original, (child, child))
+        drift = json.loads(json.dumps(child))
+        drift['plans']['(0, 0)']['second_actions'][1][0] = 0
+        with self.assertRaisesRegex(ValueError, 'G39_COLD_PROCESS_PARITY'):
+            G39.require_cold_parity(original, (child, drift))
+        with self.assertRaisesRegex(ValueError, 'G39_COLD_CHILD_COUNT'):
+            G39.require_cold_parity(original, (child,))
+
+
 if __name__ == '__main__':
     unittest.main()
