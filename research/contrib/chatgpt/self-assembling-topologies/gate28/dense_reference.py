@@ -20,7 +20,9 @@ import core
 import full_reference
 
 SCHEMA = "yggdrasil.gate28.dense-fitted-causal.v1"
-ARMS = ("dense_causal_reward", "dense_causal_eig")
+NULL_ARM = "dense_causal_nullmix"
+ARMS = ("dense_causal_reward", "dense_causal_eig", NULL_ARM)
+NULL_WINDOW = 32
 MAX_PER_NODE = 768
 BANK_INDICES = tuple(
     tuple(i * len(bank) // min(MAX_PER_NODE, len(bank))
@@ -62,6 +64,8 @@ def new(arm: str) -> dict:
              "scores": [[0] * n for n in SIZES],
              "last_context": None, "source": None, "edits": 0,
              "attempts": 0}
+    if arm == NULL_ARM:
+        state["null_evidence"] = []
     _validate(state)
     return state
 
@@ -82,9 +86,19 @@ def _estimate(s: dict, context: tuple[int, ...], action: int,
     return full_reference._estimate(s, context, action, prepared, work)
 
 
+def _null_weight(evidence: list[float]) -> float:
+    """Bounded rolling public-only prequential likelihood-mixture weight."""
+    logit = sum(evidence) - math.log(2.0)
+    logit = max(-40.0, min(40.0, logit))
+    return 1.0 / (1.0 + math.exp(-logit))
+
+
 def predict(s: dict, context: tuple[int, ...], action: int,
             work: core.Work) -> float:
-    return _estimate(s, context, action, _prepared(s), work)[0]
+    forecast = _estimate(s, context, action, _prepared(s), work)[0]
+    if s["arm"] == NULL_ARM:
+        return 0.5 + _null_weight(s["null_evidence"]) * (forecast - 0.5)
+    return forecast
 
 
 def choose(s: dict, context: tuple[int, ...], work: core.Work) -> int:
@@ -114,6 +128,13 @@ def observe(s: dict, context: tuple[int, ...],
         raise ValueError("DENSE_CONSEQUENCE")
     if s["step"] >= 224:
         raise ValueError("DENSE_EXPOSURE_CAP")
+    if s["arm"] == NULL_ARM:
+        # Prequential forecast is computed before learning THIS consequence,
+        # using only past public data. Held queries never enter observe.
+        raw = _estimate(s, context, action, _prepared(s), work)[0]
+        ratio = math.log(2.0 * (raw if consequence else 1.0 - raw))
+        s["null_evidence"].append(round(ratio, 9))
+        s["null_evidence"] = s["null_evidence"][-NULL_WINDOW:]
     cells = list(context) + list(intermediates)
     previous = (None if s["last_context"] is None else
                 tuple(s["last_context"]))
@@ -136,6 +157,8 @@ def seal_source(s: dict) -> None:
         raise ValueError("DENSE_SOURCE_REQUIRES_96_ROWS")
     snapshot = {"prepared": _prepared(s),
                 "last_context": s["last_context"]}
+    if s["arm"] == NULL_ARM:
+        snapshot["null_evidence"] = list(s["null_evidence"])
     s["source"] = {"snapshot": snapshot,
                    "digest": hashlib.sha256(core.canonical(snapshot)).hexdigest()}
     _validate(s)
@@ -146,8 +169,10 @@ def source_predict(s: dict, context: tuple[int, ...], action: int,
     if s["source"] is None:
         raise ValueError("DENSE_SOURCE_UNFROZEN")
     snap = s["source"]["snapshot"]
-    return _estimate({"last_context": snap["last_context"]},
-                     context, action, snap["prepared"], work)[0]
+    raw = _estimate({"last_context": snap["last_context"]},
+                    context, action, snap["prepared"], work)[0]
+    return (0.5 + _null_weight(snap["null_evidence"]) * (raw - 0.5)
+            if s["arm"] == NULL_ARM else raw)
 
 
 def _validate(s: dict) -> None:
@@ -168,6 +193,15 @@ def _validate(s: dict) -> None:
         core.as_mask(tuple(prev))
     if s.get("edits") != 0 or s.get("attempts") != 0:
         raise ValueError("DENSE_FIXED_STRUCTURE")
+    evidence = s.get("null_evidence")
+    if s["arm"] == NULL_ARM:
+        if (type(evidence) is not list or
+                len(evidence) > NULL_WINDOW or len(evidence) > s["step"] or
+                any(type(x) not in (float, int) or not math.isfinite(x)
+                    or not -1.7 <= x <= 0.7 for x in evidence)):
+            raise ValueError("DENSE_NULL_PUBLIC_EVIDENCE")
+    elif "null_evidence" in s:
+        raise ValueError("DENSE_UNEXPECTED_NULL_EVIDENCE")
     item = s.get("source")
     if item is not None:
         snap = item["snapshot"]
@@ -190,6 +224,14 @@ def _validate(s: dict) -> None:
                 raise ValueError("DENSE_SOURCE_NORMALIZATION")
         if snap["last_context"] is not None:
             core.as_mask(tuple(snap["last_context"]))
+        if s["arm"] == NULL_ARM:
+            frozen = snap.get("null_evidence")
+            if (type(frozen) is not list or len(frozen) > NULL_WINDOW or
+                    any(type(x) not in (int, float) or not math.isfinite(x)
+                        or not -1.7 <= x <= 0.7 for x in frozen)):
+                raise ValueError("DENSE_FROZEN_NULL_EVIDENCE")
+        elif "null_evidence" in snap:
+            raise ValueError("DENSE_FROZEN_NULL_UNEXPECTED")
         if hashlib.sha256(core.canonical(snap)).hexdigest() != item["digest"]:
             raise ValueError("DENSE_SOURCE_TAMPER")
 
@@ -229,6 +271,7 @@ def capacity_receipt(s: dict) -> dict:
             "fully_fitted_selected_rules": True,
             "complete_grammar_covered": False,
             "exact_bayesian_posterior": False,
+            "public_null_mixture_enabled": s["arm"] == NULL_ARM,
             "checkpoint_bytes": len(pack(s)),
             "primary_science": False,
             "scientific_gain": "UNVERIFIED"}
