@@ -22,6 +22,61 @@ jobs:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
       - run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: DWSA-27 original pinned learned-predictor identity readback (no donor inference)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $Donor='612b2afa28bc1e05c95ec078f7a4f30fb5fad303'
+          $Root=Join-Path $env:RUNNER_TEMP 'dwsa27-original-predictor-donor'
+          if(Test-Path -LiteralPath $Root){throw 'DWSA27_TEMP_SOURCE_ALREADY_EXISTS'}
+          git init -q $Root
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_GIT_INIT_FAILED'}
+          git -C $Root remote add origin https://github.com/OpenSourceRulesz/tiny-jepa.git
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_REMOTE_ADD_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf fetch --quiet --depth=1 origin $Donor
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_SOURCE_FETCH_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf checkout --quiet --force --detach FETCH_HEAD
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_SOURCE_CHECKOUT_FAILED'}
+          $Actual=(git -C $Root rev-parse HEAD | Out-String).Trim()
+          if($Actual -cne $Donor){throw 'DWSA27_PINNED_COMMIT_DRIFT'}
+          $Roster=@(
+            @{Name='maze_v1.npz'; Sha='88def290b67b29087aaed60c79189472c7b472d3'},
+            @{Name='maze_temporal.npz'; Sha='2031e8ae2eabf944fada94fe1f1d7738e23cb9d2'},
+            @{Name='maze_sigreg.npz'; Sha='08d26d3bb18dcb4e1ea0bb5975917ccf219fe5d9'}
+          )
+          $Pins=@()
+          $Paths=@()
+          foreach($Source in $Roster){
+            $File=Join-Path $Root ('tiny_jepa/checkpoints/'+$Source.Name)
+            if(-not (Test-Path -LiteralPath $File)){throw 'DWSA27_SOURCE_FILE_MISSING'}
+            $Blob=(git -C $Root hash-object --no-filters -- $File | Out-String).Trim()
+            if($LASTEXITCODE -ne 0 -or $Blob -cne $Source.Sha){throw 'DWSA27_PINNED_BLOB_DRIFT'}
+            $Pins+=@('--expected-blob', "$File=$($Source.Sha)")
+            $Paths+=$File
+          }
+          $Guard='research/contrib/chatgpt/DWSA-27/predictor_identity.py'
+          $Json=(& python $Guard @Pins @Paths | Out-String).Trim()
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_ORIGINAL_PREDICTOR_PARSE_FAILED'}
+          $Report=ConvertFrom-Json -InputObject $Json
+          if($Report.schema -cne 'yggdrasil.dwsa27.predictor-identity.v1' -or
+             $Report.status -cne 'DUPLICATE_PREDICTOR_FOUND' -or
+             $Report.source_count -ne 3 -or $Report.unique_predictor_count -ne 2 -or
+             @($Report.duplicates).Count -ne 1){throw 'DWSA27_ORIGINAL_DUPLICATION_NOT_REPRODUCED'}
+          $Pair=@($Report.duplicates[0] | ForEach-Object {[IO.Path]::GetFileName($_)} | Sort-Object)
+          if(($Pair -join ',') -cne 'maze_temporal.npz,maze_v1.npz'){
+            throw 'DWSA27_UNEXPECTED_DUPLICATE_PAIR'
+          }
+          $ByName=@{}
+          foreach($Item in $Report.sources){
+            $ByName[[IO.Path]::GetFileName($Item.path)]=$Item.predictor_sha256
+          }
+          if($ByName.Count -ne 3 -or
+             $ByName['maze_v1.npz'] -cne $ByName['maze_temporal.npz'] -or
+             $ByName['maze_v1.npz'] -ceq $ByName['maze_sigreg.npz']){
+            throw 'DWSA27_PREDICTOR_FINGERPRINT_PARITY_FAILED'
+          }
+          Write-Output "DWSA27_PINNED_REAL_SOURCE=PASS source=$Donor unique=2/3 duplicate=maze_v1.npz,maze_temporal.npz"
       - name: DWSA-06 exact Node version on hosted PR runner (no model or external APIs)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -92,6 +147,61 @@ jobs:
               print("YGG_G29_BUNDLE_SHA256=" + digest)
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
+      - name: DWSA-27 original pinned learned-predictor identity readback (no donor inference)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $Donor='612b2afa28bc1e05c95ec078f7a4f30fb5fad303'
+          $Root=Join-Path $env:RUNNER_TEMP 'dwsa27-original-predictor-donor'
+          if(Test-Path -LiteralPath $Root){throw 'DWSA27_TEMP_SOURCE_ALREADY_EXISTS'}
+          git init -q $Root
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_GIT_INIT_FAILED'}
+          git -C $Root remote add origin https://github.com/OpenSourceRulesz/tiny-jepa.git
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_REMOTE_ADD_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf fetch --quiet --depth=1 origin $Donor
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_SOURCE_FETCH_FAILED'}
+          git -C $Root -c core.autocrlf=false -c core.eol=lf checkout --quiet --force --detach FETCH_HEAD
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_SOURCE_CHECKOUT_FAILED'}
+          $Actual=(git -C $Root rev-parse HEAD | Out-String).Trim()
+          if($Actual -cne $Donor){throw 'DWSA27_PINNED_COMMIT_DRIFT'}
+          $Roster=@(
+            @{Name='maze_v1.npz'; Sha='88def290b67b29087aaed60c79189472c7b472d3'},
+            @{Name='maze_temporal.npz'; Sha='2031e8ae2eabf944fada94fe1f1d7738e23cb9d2'},
+            @{Name='maze_sigreg.npz'; Sha='08d26d3bb18dcb4e1ea0bb5975917ccf219fe5d9'}
+          )
+          $Pins=@()
+          $Paths=@()
+          foreach($Source in $Roster){
+            $File=Join-Path $Root ('tiny_jepa/checkpoints/'+$Source.Name)
+            if(-not (Test-Path -LiteralPath $File)){throw 'DWSA27_SOURCE_FILE_MISSING'}
+            $Blob=(git -C $Root hash-object --no-filters -- $File | Out-String).Trim()
+            if($LASTEXITCODE -ne 0 -or $Blob -cne $Source.Sha){throw 'DWSA27_PINNED_BLOB_DRIFT'}
+            $Pins+=@('--expected-blob', "$File=$($Source.Sha)")
+            $Paths+=$File
+          }
+          $Guard='research/contrib/chatgpt/DWSA-27/predictor_identity.py'
+          $Json=(& python $Guard @Pins @Paths | Out-String).Trim()
+          if($LASTEXITCODE -ne 0){throw 'DWSA27_ORIGINAL_PREDICTOR_PARSE_FAILED'}
+          $Report=ConvertFrom-Json -InputObject $Json
+          if($Report.schema -cne 'yggdrasil.dwsa27.predictor-identity.v1' -or
+             $Report.status -cne 'DUPLICATE_PREDICTOR_FOUND' -or
+             $Report.source_count -ne 3 -or $Report.unique_predictor_count -ne 2 -or
+             @($Report.duplicates).Count -ne 1){throw 'DWSA27_ORIGINAL_DUPLICATION_NOT_REPRODUCED'}
+          $Pair=@($Report.duplicates[0] | ForEach-Object {[IO.Path]::GetFileName($_)} | Sort-Object)
+          if(($Pair -join ',') -cne 'maze_temporal.npz,maze_v1.npz'){
+            throw 'DWSA27_UNEXPECTED_DUPLICATE_PAIR'
+          }
+          $ByName=@{}
+          foreach($Item in $Report.sources){
+            $ByName[[IO.Path]::GetFileName($Item.path)]=$Item.predictor_sha256
+          }
+          if($ByName.Count -ne 3 -or
+             $ByName['maze_v1.npz'] -cne $ByName['maze_temporal.npz'] -or
+             $ByName['maze_v1.npz'] -ceq $ByName['maze_sigreg.npz']){
+            throw 'DWSA27_PREDICTOR_FINGERPRINT_PARITY_FAILED'
+          }
+          Write-Output "DWSA27_PINNED_REAL_SOURCE=PASS source=$Donor unique=2/3 duplicate=maze_v1.npz,maze_temporal.npz"
       - name: DWSA-06 exact Node version on hosted PR runner (no model or external APIs)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
