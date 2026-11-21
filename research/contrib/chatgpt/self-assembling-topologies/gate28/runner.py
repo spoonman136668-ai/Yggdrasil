@@ -17,25 +17,32 @@ from pathlib import Path
 
 import core
 import bayes
+import sparse_bayes
 import world
 
 SELF = Path(__file__).resolve()
 MODES = ("active", "forced")
-MODEL_ARMS = core.ARMS + bayes.ARMS
+MODEL_ARMS = core.ARMS + bayes.ARMS + sparse_bayes.ARMS
 # Public, branch-frozen policy seeds, NOT hidden-world generator seeds.
 CORE_POLICY_SEEDS = {arm: 28100 + i * 17 for i, arm in enumerate(core.ARMS)}
 
 
 def _new_model(arm: str) -> dict:
-    return bayes.new(arm) if arm in bayes.ARMS else core.new(CORE_POLICY_SEEDS[arm], arm)
+    return (sparse_bayes.new(arm) if arm in sparse_bayes.ARMS else
+            bayes.new(arm) if arm in bayes.ARMS else
+            core.new(CORE_POLICY_SEEDS[arm], arm))
 
 
 def _model(s: dict):
-    return bayes if s["arm"] in bayes.ARMS else core
+    return (sparse_bayes if s["arm"] in sparse_bayes.ARMS else
+            bayes if s["arm"] in bayes.ARMS else core)
 
 
 def _observe(s: dict, row, meter: core.Work) -> None:
-    if s["arm"] in bayes.ARMS:
+    if s["arm"] in sparse_bayes.ARMS:
+        sparse_bayes.observe(s, row.context, row.intermediates,
+                             row.action, row.consequence, meter)
+    elif s["arm"] in bayes.ARMS:
         bayes.observe(s, row.context, row.intermediates, row.action, row.consequence, meter)
     else:
         core.observe(s, row.context, row.action, row.consequence, meter)
@@ -43,7 +50,9 @@ def _observe(s: dict, row, meter: core.Work) -> None:
 
 def _unpack(raw: bytes) -> dict:
     doc = json.loads(raw)
-    return bayes.unpack(raw) if doc.get("payload", {}).get("schema") == bayes.SCHEMA else core.unpack(raw)
+    return (sparse_bayes.unpack(raw) if doc.get("payload", {}).get("schema") == sparse_bayes.SCHEMA else
+            bayes.unpack(raw) if doc.get("payload", {}).get("schema") == bayes.SCHEMA else
+            core.unpack(raw))
 
 DIAGNOSTIC_MIN = 900000
 DIAGNOSTIC_MAX = 909999
@@ -236,7 +245,7 @@ def diagnostic(seed: int = 900007) -> dict:
                 "max_checkpoint_bytes": max(
                     s["metrics"][a + "." + m]["state_bytes"]
                     for s in stages for a in MODEL_ARMS for m in MODES),
-                "science": "NOT_RUN_NO_EXHAUSTIVE_BAYESIAN_OR_MATCHED_CAUSAL_CONTROL"}
+                "science": "NOT_RUN_NO_INDEPENDENTLY_QUALIFIED_STRONG_MATCHED_CONTROL"}
 
 
 def main() -> None:
