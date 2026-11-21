@@ -250,5 +250,77 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                                for index, head in enumerate(original._heads)), old_heads)
         self.assertEqual(original.checkpoint(), joint)
 
+    @unittest.skipUnless(os.environ.get("YGG_G41_TRAINED_2048") == "1",
+                         "full original-trained 2048 growth requires exact archive and bounded CI")
+    def test_original_trained_root_four_heads_2048_cold_replay_and_2049_veto(self):
+        """Continue authentic 1025 trained native + all four heads through the hard 2048 cap."""
+        archive = Path(os.environ["YGG_G41_ORIGINAL_DIR"])
+        joint = (archive / "g41-original" / "amalgam-joint-state.json").read_bytes()
+        native_parent = (archive / "g41-original-native-parent"
+                         / "seed-101-refresh-native.json").read_bytes()
+        donor_package = json.loads((archive / "g41-original-donor-parent"
+                                    / "seed-14071-state.json").read_bytes())
+        donor_parent = donor_package["state_ascii"].encode("ascii")
+        native_pin = "a00119c73a6431172c19b39ec67a1d94b470897a32c55c1c946071793f37dcc4"
+        donor_pin = "ae83529696b566a12765f16749c258d9ed6addf111da41ef76dc1027938910da"
+        joint_pin = "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8"
+        self.assertEqual(digest(native_parent), native_pin)
+        self.assertEqual(digest(donor_parent), donor_pin)
+        self.assertEqual(donor_package["state_sha256"], donor_pin)
+        self.assertEqual(digest(joint), joint_pin)
+        parents = dict(native_parent=native_parent, native_pin=native_pin,
+                       donor_parent=donor_parent, donor_pin=donor_pin)
+        original = NativeCausalAmalgam.restore(joint, joint_pin, **parents)
+        self.assertEqual(original.checkpoint(), joint)
+        source_ledger = original.native._episode_reader()._ledger
+        self.assertEqual(len(source_ledger), 1025)
+        self.assertEqual(tuple(h.steps for h in original._heads), (2109,) * 4)
+
+        views = ((0, 0), (0, 0))
+        row = {"s1": 0, "x1": 0, "s2": 0, "x2": 0, "y": 0}
+        def accept(system, i):
+            identifier = sha256(("g41-original-source-free-%06d" % i).encode()).hexdigest()
+            return system.observe_experience(
+                identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
+                packet_sha256=digest(canonical([identifier, views, row])))
+
+        learner = original
+        for i in range(1025, 1152):
+            learner = accept(learner, i)
+        self.assertEqual(tuple(h.steps for h in learner._heads), (2490,) * 4)
+        pre_growth = learner.checkpoint()
+        learner = learner.extend_capacity()
+        self.assertEqual(learner.native._episode_reader()._episode_limit, 2048)
+        self.assertEqual(tuple(h.steps for h in learner._heads), (2490,) * 4)
+        self.assertEqual(len(learner.native._episode_reader()._ledger), 1152)
+        self.assertEqual(digest(pre_growth), digest(
+            NativeCausalAmalgam.restore(pre_growth, digest(pre_growth),
+                                         **parents).checkpoint()))
+
+        for i in range(1152, 2048):
+            prior_steps = tuple(h.steps for h in learner._heads)
+            learner = accept(learner, i)
+            self.assertEqual(tuple(h.steps for h in learner._heads),
+                             tuple(n + 3 for n in prior_steps))
+        self.assertEqual(tuple(h.steps for h in learner._heads), (5178,) * 4)
+        self.assertEqual(len(learner.native._episode_reader()._ledger), 2048)
+        self.assertEqual(learner.native._episode_reader()._episode_limit, 2048)
+        self.assertEqual(learner.native._episode_reader()._ledger[:1025], source_ledger)
+        snapshot = learner.checkpoint()
+        expected = digest(snapshot)
+        self.assertEqual(learner.native.consolidate_experience().checkpoint(), learner.native.checkpoint())
+        with self.assertRaisesRegex(ValueError, "EPISODE_CAPACITY"):
+            accept(learner, 2048)
+        self.assertEqual(learner.checkpoint(), snapshot)
+        cold = NativeCausalAmalgam.restore(snapshot, expected, **parents)
+        self.assertEqual(cold.checkpoint(), snapshot)
+        self.assertEqual(tuple(h.steps for h in cold._heads), (5178,) * 4)
+        self.assertEqual(cold.plan(views[0]), learner.plan(views[0]))
+        self.assertEqual(cold.specialist_forecasts(views, 0),
+                         learner.specialist_forecasts(views, 0))
+        self.assertEqual(cold.specialist_forecasts(views, 0, 0, 0),
+                         learner.specialist_forecasts(views, 0, 0, 0))
+        self.assertEqual(original.checkpoint(), joint)
+
 if __name__ == "__main__":
     unittest.main()
