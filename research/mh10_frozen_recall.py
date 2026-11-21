@@ -179,7 +179,7 @@ class EvidenceRecall:
         return self._banks
 
     def posterior(self):
-        scores=[sum(v[i] for v in self.evidence.values()) for i in range(3)]
+        scores=[sum(self.evidence[k][i] for k in sorted(self.evidence)) for i in range(3)]
         hi=max(scores); exp=[math.exp(v-hi) for v in scores]; total=sum(exp)
         return tuple(v/total for v in exp)
 

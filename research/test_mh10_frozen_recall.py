@@ -9,16 +9,16 @@ POS=(1,1,1)
 NEG=(-1,-1,-1)
 ZERO=(0,0,0)
 
-def packets(y):
-    return tuple(p for k in range(4) for p in (("action",k,X),("feedback",k,y)))
+def packets(y, count=4):
+    return tuple(p for k in range(count) for p in (("action",k,X),("feedback",k,y)))
 
-def banks(kind="mh09"):
+def banks(kind="mh09", count=32):
     if kind=="bayes":
-        return tuple(fit_bayes_fixture(packets(y)) for y in (POS,NEG))
+        return tuple(fit_bayes_fixture(packets(y,count)) for y in (POS,NEG))
     result=[]
     for y in (POS,NEG):
         m=DelayedCredit(mode="fixed",utility=False)
-        for op,k,v in packets(y):
+        for op,k,v in packets(y,count):
             if op=="action": m.begin(k,v)
             else: m.feedback(k,v)
         result.append(FrozenBank.from_mh09(m.checkpoint()))
@@ -35,6 +35,22 @@ class MH10Tests(unittest.TestCase):
     def test_prior_uncertainty_for_unseen_feature(self):
         b=fit_bayes_fixture(packets(POS))
         self.assertEqual(b.predict((0,1,0,0)),((0.,0.,0.),1.0625))
+
+    def test_underfit_bank_abstains_instead_of_forced_retrieval(self):
+        m=EvidenceRecall(banks("mh09",count=4))
+        for k in range(8): m.begin(k,X); m.feedback(k,POS)
+        self.assertIsNone(m.choice())
+        self.assertGreater(m.posterior()[2],.95)
+
+    def test_receipt_order_and_cold_restore_stable(self):
+        source=banks("bayes")
+        a=EvidenceRecall(source); b=EvidenceRecall(source)
+        for k in range(3): a.begin(k,X); b.begin(k,X)
+        for k in (2,0,1): a.feedback(k,(POS,NEG,POS)[k])
+        for k in (0,1,2): b.feedback(k,(POS,NEG,POS)[k])
+        self.assertEqual(a.posterior(),b.posterior())
+        self.assertEqual(a.checkpoint(),b.checkpoint())
+        self.assertEqual(a.posterior(),EvidenceRecall.restore(a.checkpoint()).posterior())
 
     def test_no_retrieval_before_feedback(self):
         for kind in ("mh09","bayes"):
