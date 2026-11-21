@@ -11,11 +11,15 @@ import re
 import zlib
 
 SCHEMA = "yggdrasil.ckad.external-episode-segments.dev.v1"
+EXTENDED_SCHEMA = "yggdrasil.ckad.external-episode-segments.dev.v2"
+EXTENDED_NATIVE_SCHEMA = "yggdrasil.ckad.native-episode-experience.v7"
 NATIVE_SCHEMAS = frozenset(
-    f"yggdrasil.ckad.native-episode-experience.v{v}" for v in range(1, 7)
+    f"yggdrasil.ckad.native-episode-experience.v{v}" for v in range(1, 8)
 )
 MAX_CHECKPOINT_BYTES = 160 * 1024
+EXTENDED_MAX_CHECKPOINT_BYTES = 320 * 1024
 MAX_EPISODES = 1152
+EXTENDED_MAX_EPISODES = 2048
 SEGMENT_LENGTH = 32
 MAX_RAW_SEGMENT_BYTES = 16 * 1024
 MAX_COMPRESSED_SEGMENT_BYTES = MAX_RAW_SEGMENT_BYTES + 64
@@ -47,14 +51,21 @@ def _load(raw, error):
     return doc
 
 
+def _bounds_for(schema):
+    return ((EXTENDED_MAX_CHECKPOINT_BYTES, EXTENDED_MAX_EPISODES)
+            if schema == EXTENDED_NATIVE_SCHEMA else (MAX_CHECKPOINT_BYTES, MAX_EPISODES))
+
+
 def _validate_checkpoint(raw):
-    _require(type(raw) is bytes and 0 < len(raw) <= MAX_CHECKPOINT_BYTES,
+    _require(type(raw) is bytes and 0 < len(raw) <= EXTENDED_MAX_CHECKPOINT_BYTES,
              "G38_RAW_BOUNDS")
     doc = _load(raw, "G38_NATIVE_CANONICAL")
     _require(type(doc) is dict and doc.get("schema") in NATIVE_SCHEMAS,
              "G38_NATIVE_SCHEMA")
+    max_bytes, max_episodes = _bounds_for(doc["schema"])
+    _require(len(raw) <= max_bytes, "G38_RAW_BOUNDS")
     rows = doc.get("episodes")
-    _require(type(rows) is list and 0 <= len(rows) <= MAX_EPISODES,
+    _require(type(rows) is list and 0 <= len(rows) <= max_episodes,
              "G38_EPISODES_BOUNDS")
     ids = set()
     for row in rows:
@@ -96,7 +107,7 @@ def seal(native_raw):
                         "compressed_bytes": len(compressed)})
         chunks.append(compressed)
     manifest = {
-        "schema": SCHEMA,
+        "schema": EXTENDED_SCHEMA if doc["schema"] == EXTENDED_NATIVE_SCHEMA else SCHEMA,
         "native_checkpoint_sha256": _digest(native_raw),
         "native_checkpoint_bytes": len(native_raw),
         "native_metadata": metadata,
@@ -120,10 +131,10 @@ def restore(manifest_raw, chunks):
                                    "native_checkpoint_bytes", "native_metadata",
                                    "native_metadata_sha256", "episode_count",
                                    "segment_length", "segments"}
-             and manifest["schema"] == SCHEMA, "G38_MANIFEST_SCHEMA")
+             and manifest["schema"] in (SCHEMA, EXTENDED_SCHEMA), "G38_MANIFEST_SCHEMA")
     count = manifest["episode_count"]
     entries = manifest["segments"]
-    _require(type(count) is int and 0 <= count <= MAX_EPISODES
+    _require(type(count) is int and 0 <= count <= EXTENDED_MAX_EPISODES
              and type(entries) is list
              and len(entries) == (count + SEGMENT_LENGTH - 1) // SEGMENT_LENGTH
              and type(manifest["segment_length"]) is int
@@ -135,6 +146,11 @@ def restore(manifest_raw, chunks):
              and metadata.get("schema") in NATIVE_SCHEMAS
              and _digest(canonical(metadata)) == manifest["native_metadata_sha256"],
              "G38_METADATA")
+    max_bytes, max_episodes = _bounds_for(metadata["schema"])
+    expected_schema = (EXTENDED_SCHEMA if metadata["schema"] == EXTENDED_NATIVE_SCHEMA
+                       else SCHEMA)
+    _require(manifest["schema"] == expected_schema and count <= max_episodes,
+             "G38_NATIVE_ENVELOPE_VERSION")
     records = []
     for i, (entry, blob) in enumerate(zip(entries, chunks, strict=True)):
         expected = i * SEGMENT_LENGTH
@@ -168,7 +184,7 @@ def restore(manifest_raw, chunks):
     native_raw = canonical({**metadata, "episodes": records})
     _require(type(manifest["native_checkpoint_bytes"]) is int
              and len(native_raw) == manifest["native_checkpoint_bytes"]
-             and len(native_raw) <= MAX_CHECKPOINT_BYTES
+             and len(native_raw) <= max_bytes
              and _digest(native_raw) == manifest["native_checkpoint_sha256"],
              "G38_ROOT_PIN")
     _validate_checkpoint(native_raw)

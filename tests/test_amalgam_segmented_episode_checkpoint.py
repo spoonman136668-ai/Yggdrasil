@@ -79,6 +79,31 @@ class CodecTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'G38_EPISODES_BOUNDS'):
             SEG.seal(fixture(1153))
 
+
+    def test_g41_v7_extended_codec_and_v6_veto(self):
+        """Shape-only DEV input; NOT a native state or verified scientific trial."""
+        doc=json.loads(fixture(2048))
+        doc['schema']='yggdrasil.ckad.native-episode-experience.v7'
+        doc['episode_limit']=2048
+        v7=SEG.canonical(doc)
+        self.assertGreater(len(v7),SEG.MAX_CHECKPOINT_BYTES)
+        manifest,chunks=SEG.seal(v7)
+        self.assertEqual(json.loads(manifest)['schema'],SEG.EXTENDED_SCHEMA)
+        self.assertEqual(len(chunks),64)
+        self.assertEqual(SEG.restore(manifest,chunks),v7)
+        wrong=json.loads(manifest);wrong['schema']=SEG.SCHEMA
+        with self.assertRaisesRegex(ValueError,'G38_NATIVE_ENVELOPE_VERSION'):
+            SEG.restore(SEG.canonical(wrong),chunks)
+        doc['schema']='yggdrasil.ckad.native-episode-experience.v6'
+        doc['episode_limit']=1152
+        with self.assertRaisesRegex(ValueError,'G38_RAW_BOUNDS'):
+            SEG.seal(SEG.canonical(doc))
+        doc['schema']='yggdrasil.ckad.native-episode-experience.v7'
+        doc['episode_limit']=2048
+        doc['episodes'].append([f'{4097:064x}',[[0,1],[1,0]],0,0,1,1])
+        with self.assertRaisesRegex(ValueError,'G38_EPISODES_BOUNDS'):
+            SEG.seal(SEG.canonical(doc))
+
     def test_original_both_archived_instances_and_fresh_process(self):
         original_raw=[]
         for path,expected_zip in zip(ARCHIVE_PATHS,EXPECTED_ZIPS,strict=True):
