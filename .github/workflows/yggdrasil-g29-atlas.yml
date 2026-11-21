@@ -77,6 +77,40 @@ jobs:
             throw 'DWSA27_PREDICTOR_FINGERPRINT_PARITY_FAILED'
           }
           Write-Output "DWSA27_PINNED_REAL_SOURCE=PASS source=$Donor unique=2/3 duplicate=maze_v1.npz,maze_temporal.npz"
+      - name: DWSA-31 original pretrained TD-MPC2 checkpoint byte-custody (no pickle execution)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        shell: pwsh
+        env:
+          DWSA31_URL: https://huggingface.co/nicklashansen/tdmpc2/resolve/0d1dfdda7e529f6d3f942787ce2825eccad38935/multitask/mt30-1M.pt
+        run: |
+          $ErrorActionPreference='Stop'
+          $Path=Join-Path $env:RUNNER_TEMP 'dwsa31-original-untrusted-mt30-1M.pt'
+          if(Test-Path -LiteralPath $Path){throw 'DWSA31_REUSED_SOURCE_TEMP_PATH'}
+          $env:DWSA31_PATH=$Path
+          @'
+          import os
+          import urllib.request
+          from pathlib import Path
+          url = os.environ["DWSA31_URL"]
+          path = Path(os.environ["DWSA31_PATH"])
+          req = urllib.request.Request(url, headers={"User-Agent":"dwsa31-public-readonly-audit/1.0"})
+          with urllib.request.urlopen(req, timeout=60) as response, path.open("xb") as f:
+              written = 0
+              while True:
+                  chunk = response.read(1024 * 1024)
+                  if not chunk:
+                      break
+                  written += len(chunk)
+                  if written > 16 * 1024 * 1024:
+                      raise RuntimeError("DWSA31_NETWORK_BYTE_CAP")
+                  f.write(chunk)
+          if not 0 < path.stat().st_size <= 16 * 1024 * 1024:
+              raise RuntimeError("DWSA31_EMPTY_OR_OVERSIZE")
+          '@ | python -
+          if($LASTEXITCODE -ne 0){throw 'DWSA31_ORIGINAL_NETWORK_FETCH_FAILED'}
+          python research/contrib/chatgpt/DWSA-31/checkpoint_scan.py $Path
+          if($LASTEXITCODE -ne 0){throw 'DWSA31_STATIC_SOURCE_AUDIT_FAILED'}
+          Write-Output 'DWSA31_ORIGINAL_PINNED_STATIC_SCAN=PASS'
       - name: DWSA-06 exact Node version on hosted PR runner (no model or external APIs)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -202,6 +236,40 @@ jobs:
             throw 'DWSA27_PREDICTOR_FINGERPRINT_PARITY_FAILED'
           }
           Write-Output "DWSA27_PINNED_REAL_SOURCE=PASS source=$Donor unique=2/3 duplicate=maze_v1.npz,maze_temporal.npz"
+      - name: DWSA-31 original pretrained TD-MPC2 checkpoint byte-custody (no pickle execution)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
+        shell: pwsh
+        env:
+          DWSA31_URL: https://huggingface.co/nicklashansen/tdmpc2/resolve/0d1dfdda7e529f6d3f942787ce2825eccad38935/multitask/mt30-1M.pt
+        run: |
+          $ErrorActionPreference='Stop'
+          $Path=Join-Path $env:RUNNER_TEMP 'dwsa31-original-untrusted-mt30-1M.pt'
+          if(Test-Path -LiteralPath $Path){throw 'DWSA31_REUSED_SOURCE_TEMP_PATH'}
+          $env:DWSA31_PATH=$Path
+          @'
+          import os
+          import urllib.request
+          from pathlib import Path
+          url = os.environ["DWSA31_URL"]
+          path = Path(os.environ["DWSA31_PATH"])
+          req = urllib.request.Request(url, headers={"User-Agent":"dwsa31-public-readonly-audit/1.0"})
+          with urllib.request.urlopen(req, timeout=60) as response, path.open("xb") as f:
+              written = 0
+              while True:
+                  chunk = response.read(1024 * 1024)
+                  if not chunk:
+                      break
+                  written += len(chunk)
+                  if written > 16 * 1024 * 1024:
+                      raise RuntimeError("DWSA31_NETWORK_BYTE_CAP")
+                  f.write(chunk)
+          if not 0 < path.stat().st_size <= 16 * 1024 * 1024:
+              raise RuntimeError("DWSA31_EMPTY_OR_OVERSIZE")
+          '@ | python -
+          if($LASTEXITCODE -ne 0){throw 'DWSA31_ORIGINAL_NETWORK_FETCH_FAILED'}
+          python research/contrib/chatgpt/DWSA-31/checkpoint_scan.py $Path
+          if($LASTEXITCODE -ne 0){throw 'DWSA31_STATIC_SOURCE_AUDIT_FAILED'}
+          Write-Output 'DWSA31_ORIGINAL_PINNED_STATIC_SCAN=PASS'
       - name: DWSA-06 exact Node version on hosted PR runner (no model or external APIs)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 1347 }}
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
