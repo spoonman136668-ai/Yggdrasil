@@ -181,6 +181,7 @@ def one_study(seed, *, null=False):
     n_scored = {key: 0 for key in STAGES}
     bank_before = None
     bank_after = None
+    old_return_predictions = 0
     t0 = time.perf_counter()
     cpu0 = time.process_time()
     for index, row in enumerate(source_rows(seed, null=null)):
@@ -188,6 +189,8 @@ def one_study(seed, *, null=False):
             bank_before = arms["num05_dual"].info()["old_bank_sha256"]
         if index == 320:
             bank_after = arms["num05_dual"].info()["old_bank_sha256"]
+        if 368 <= index < 416 and arms["num05_dual"].active == 0:
+            old_return_predictions += 1
         source_digest.update(canonical(row))
         z = target(row)
         pre = {name: model.predict(row["observation"], row["action"])
@@ -218,6 +221,7 @@ def one_study(seed, *, null=False):
         "old_bank_sha_at_160": bank_before,
         "old_bank_sha_at_320": bank_after,
         "old_bank_retained": bank_before == bank_after,
+        "return_last48_old_bank_fraction": old_return_predictions / 48,
         "learner_info": arms["num05_dual"].info(),
         "ablation_info": arms["ablation_single_bank"].info(),
         "candidate_checkpoint_sha256": digest(arms["num05_dual"].checkpoint()),
@@ -248,7 +252,7 @@ def classify(dev, null):
                              min(r["scores"]["familiar_return"][k] for k in CONVENTIONAL) + .01),
             "retained": r["old_bank_retained"],
             "two_banks": r["learner_info"]["bank_count"] == 2,
-            "returned_to_old_bank": r["learner_info"]["active"] == 0,
+            "returned_to_old_bank": r["return_last48_old_bank_fraction"] >= .80,
         })
     no_null_false_alarm = null["learner_info"]["bank_count"] == 1
     go = (all(all(v for k,v in ch.items()
