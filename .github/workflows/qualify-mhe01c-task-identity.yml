@@ -46,7 +46,7 @@ jobs:
           git merge-base --is-ancestor 0fc1a3bc2e2ca18c54e280511beff895ced7bebb "$GITHUB_SHA"
           test "$(git rev-parse HEAD:research/contrib/spoonman136668-ai/mhe01-public-packet-fence/prereg.json.txt)" = 12b941082da273555d1718296107e1be0857e74e
           git diff --name-only 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 HEAD |
-            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/spoonman136668-ai/mhe01-public-packet-fence/"; e={p+x for x in ("README.md.txt","packet_fence.py.txt","prereg.json.txt","test_packet_fence.py.txt","task_identity_contract.md.txt","native_abi_contract.md.txt")} | {".github/workflows/qualify-mhe01c-task-identity.yml"}; assert a==e,(a,e)'
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/spoonman136668-ai/mhe01-public-packet-fence/"; e={p+x for x in ("README.md.txt","packet_fence.py.txt","prereg.json.txt","test_packet_fence.py.txt","task_identity_contract.md.txt","native_abi_contract.md.txt")} | {".github/workflows/qualify-mhe01c-task-identity.yml"}; d={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert e<=a and a-e<=d,(a,e,d)'
           test -z "$(git status --porcelain --untracked-files=all)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
