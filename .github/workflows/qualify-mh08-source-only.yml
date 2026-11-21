@@ -1,4 +1,4 @@
-name: MH08-MH10 source-only mechanical qualification
+name: MH08-MH11 source-only mechanical qualification
 on:
   push:
     branches: [research/mh08-meta-hebbian-matched-comparison-20261120]
@@ -39,7 +39,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 "$GITHUB_SHA"
           git diff --name-only 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 "$GITHUB_SHA" |
-            python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); expected={"research/mh08_meta_hebbian_comparison_design.md","research/mh08_meta_hebbian.py","research/test_mh08_meta_hebbian.py","research/mh09_delayed_credit.py","research/test_mh09_delayed_credit.py","research/mh09_engineering_scope.md","research/mh10_frozen_recall.py","research/test_mh10_frozen_recall.py","research/mh10_engineering_scope.md",".github/workflows/qualify-mh08-source-only.yml"}; allowed=expected|{".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert expected<=got<=allowed,(got,expected,allowed)'
+            python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); expected={"research/mh08_meta_hebbian_comparison_design.md","research/mh08_meta_hebbian.py","research/test_mh08_meta_hebbian.py","research/mh09_delayed_credit.py","research/test_mh09_delayed_credit.py","research/mh09_engineering_scope.md","research/mh10_frozen_recall.py","research/test_mh10_frozen_recall.py","research/mh10_engineering_scope.md","research/mh11_memory_formation.py","research/test_mh11_memory_formation.py","research/mh11_engineering_scope.md",".github/workflows/qualify-mh08-source-only.yml"}; allowed=expected|{".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert expected<=got<=allowed,(got,expected,allowed)'
           test -z "$(git status --porcelain --untracked-files=all)"
           python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
           git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
@@ -101,8 +101,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -B -m unittest research.test_mh08_meta_hebbian research.test_mh09_delayed_credit research.test_mh10_frozen_recall -v
-          echo MH08_MH10_FOCUSED_TESTS_PASS
+          PYTHONPATH=. python -B -m unittest research.test_mh08_meta_hebbian research.test_mh09_delayed_credit research.test_mh10_frozen_recall research.test_mh11_memory_formation -v
+          echo MH08_MH11_FOCUSED_TESTS_PASS
       - name: Mandatory complete inherited root regression
         shell: bash
         run: |
