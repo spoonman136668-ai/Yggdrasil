@@ -1,0 +1,84 @@
+{
+  "schema": "yggdrasil.amalgam.r15.two-expert-evidence-switch-dev-replay-v1",
+  "experiment_id": "R15-PREFIX-BAYES-EXPERT-01",
+  "status_at_freeze": "PREREGISTERED_BEFORE_R15_FILTER_SCORE",
+  "source_commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "source_tree": "ac2a2596555b490fc3ebdf16c1b5039ebb13d8b5",
+  "source_run": "existing completed staged-retention-dev01; not new actions or model training",
+  "source_protocol_blob": "1bbc1672ccd80f248c86c5ec7482f6ade8a0d76a",
+  "traces": [
+    {
+      "seed": 818621,
+      "git_blob": "7b3f2ff0b120d6557d4630de3461276d892b503f"
+    },
+    {
+      "seed": 818653,
+      "git_blob": "bac19fb71d2a9918bd4ede1d3f2e6bae7b81dc48"
+    },
+    {
+      "seed": 818687,
+      "git_blob": "449a186109b0b30ec98352b5b4565e2e96435b14"
+    }
+  ],
+  "n_events_per_seed": 72,
+  "stages": [
+    {
+      "index": 1,
+      "name": "novel_causal_switch",
+      "observations": 24
+    },
+    {
+      "index": 2,
+      "name": "swapped_terminal",
+      "observations": 24
+    },
+    {
+      "index": 3,
+      "name": "A_return",
+      "observations": 24
+    }
+  ],
+  "forecast_scale": 1000000,
+  "candidate": {
+    "name": "two_expert_fixed_hazard_bayesian_switch",
+    "members": [
+      "pinned",
+      "unguarded"
+    ],
+    "prior_probability_pinned": "1/2",
+    "hazard": "1/32",
+    "before_prediction_prior": "q=(1-h)*posterior_pinned + h/2",
+    "transition_prediction": "p= q*pinned_T + (1-q)*live_T",
+    "reward_prediction": "q_cond=q*Pr(state|pinned_T)/(q*Pr(state|pinned_T)+(1-q)*Pr(state|live_T)); p=q_cond*pinned_R+(1-q_cond)*live_R",
+    "update_after_scoring": "likelihood_per_member=Pr(observed_state|member_T)*Pr(observed_reward|member_R); posterior_pinned=q*L_pinned/(q*L_pinned+(1-q)*L_live)",
+    "no_future_evidence": true,
+    "reset_between_seeds": true,
+    "no_reset_between_stages": true,
+    "no_learner_training_or_checkpoint_edit": true
+  },
+  "controls": [
+    "pinned",
+    "unguarded",
+    "guarded",
+    "fit_full",
+    "fit_trailing",
+    "fit_change_point"
+  ],
+  "metric": "mean of prequential transition and reward Brier using original 1e6-quantized member predictions; rounded candidate blended predictions to 1e6 before squared loss",
+  "gates": {
+    "all_three_seeds_and_all_three_stages": true,
+    "advantage_over_strongest_control_at_least": "0.005",
+    "A_return_noninferiority_vs_pinned_at_most": "0.02",
+    "checkpoint_custody": "source trace blob equals frozen git SHA and no new worlds/actions",
+    "outcome_if_any_gate_fails": "DEV_NO_GO"
+  },
+  "negative_controls": [
+    "posterior must stay [0,1]",
+    "same member forecasts means identity mixture",
+    "before-outcome prediction only",
+    "all 72 ordered evidence rows scored once per seed",
+    "no read of scoring window labels to choose weights"
+  ],
+  "time_budget": "one existing development-trace replay per seed; no external workflow; no new model fitting",
+  "classification": "offline prior-consumed evidence mechanism screen ONLY; no prospective fresh held science, no independent Windows qualification, no authorizer acceptance, no deployment, no admission; stop on NO_GO"
+}
