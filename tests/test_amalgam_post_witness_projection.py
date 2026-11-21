@@ -32,7 +32,11 @@ class ProjectionTests(unittest.TestCase):
             self.anchor, self.before, self.after)
         self.assertEqual(len(heads), 4)
         self.assertTrue(report["all_old_heads_within_comparison"])
-        self.assertTrue(report["both_transition_heads_nonzero"])
+        # This fixture advances head steps but makes NO trainable-weight
+        # change. Alpha=1 is allowable, but it is not *learning*.
+        self.assertFalse(report["both_transition_heads_nonzero"])
+        self.assertFalse(
+            report["heads"]["direct_transition"]["changed_trainable_parameters"])
         self.assertEqual([v["alpha"] for v in report["heads"].values()],
                          [1.0] * 4)
         self.assertFalse(report["next_event_label_used_to_select_alpha"])
