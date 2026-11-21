@@ -6,7 +6,7 @@ from math import isfinite
 from types import MappingProxyType
 
 from yggdrasil.native_context_basis import canonical, digest
-from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE, _two_stage_plan
+from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE
 from yggdrasil.native_jepa2_multilearner import _views
 
 
@@ -80,10 +80,13 @@ class SpecialistSelection:
         return self._forecasts(views, (first, *terminal))[selected]
 
     def plan(self, views):
-        return _two_stage_plan(
-            lambda first: self.forecast(views, first),
-            lambda first, state, second: self.forecast(views, first, state, second),
-        )
+        """Shadow-only selector: retained native learner always owns actions.
+
+        Held performance and source/runner authority are not yet qualified.
+        This opt-in development helper may rank forecasts, never choose actions.
+        """
+        self._coordinate(views)
+        return self.system.native.experience_context_plan(views[0])
 
     def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256):
         """Add matched losses only when the shared witness transaction succeeds."""

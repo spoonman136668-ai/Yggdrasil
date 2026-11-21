@@ -26,6 +26,9 @@ class FakeNative:
     def experience_context_forecast(self, view, *actions):
         return Fraction(1, 2)
 
+    def experience_context_plan(self, view):
+        return ("retained_native_only", view)
+
 
 class FakeSystem:
     def __init__(self, ledger=(), mode=None):
@@ -96,6 +99,20 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(old.selection(VIEWS, 0), 0)
         self.assertEqual(state.selection(VIEWS, 0), 1)
         self.assertEqual(state.forecast(VIEWS, 0), Fraction(9, 10))
+
+    def test_selector_never_controls_plan(self):
+        state = new()
+        for i in range(3):
+            state = admit(state, i)
+        self.assertEqual(state.selection(VIEWS, 0), 1)
+        self.assertEqual(state.forecast(VIEWS, 0), Fraction(9, 10))
+        self.assertEqual(state.plan(VIEWS), ("retained_native_only", VIEWS[0]))
+        self.assertEqual(state.system.native.experience_context_plan(VIEWS[0]),
+                         state.plan(VIEWS))
+
+    def test_shadow_plan_rejects_bad_coordinate(self):
+        with self.assertRaises(ValueError):
+            new().plan(((0, 0), (1, 0)))
 
     def test_loss_is_prequential(self):
         state = admit(new(), 0)
