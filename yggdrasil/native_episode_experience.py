@@ -669,7 +669,7 @@ class NativeEpisodeExperience:
                     candidate = candidate.enable_context_refresh()
                 if growth and index == MAX_EPISODES:
                     candidate = candidate.extend_witness_capacity()
-                if extended and index == GROWN_MAX_EPISODES:
+                if extended and not novel_extension and index == GROWN_MAX_EPISODES:
                     candidate = candidate.extend_witness_capacity()
                 if stream and index >= start:
                     candidate._accept((identifier, pair, *bits))
@@ -682,7 +682,7 @@ class NativeEpisodeExperience:
                     candidate = candidate.enable_context_refresh()
                 if growth and len(episodes) == MAX_EPISODES:
                     candidate = candidate.extend_witness_capacity()
-                if extended and len(episodes) == GROWN_MAX_EPISODES:
+                if extended and not novel_extension and len(episodes) == GROWN_MAX_EPISODES:
                     candidate = candidate.extend_witness_capacity()
                 require(candidate._context_start == data["context_start"],
                         "EPISODE_STREAM_REPLAY_CONTEXT")

@@ -51,6 +51,19 @@ class G41CapacityIntegrationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "AMALGAM_GROWTH_PARENT"):
             extended.extend_capacity()
 
+    def test_v8_detached_1153_row_cold_restore_boundary(self):
+        """Source-free v8 must NOT invoke stream/refresh growth at outer 1152."""
+        bank = NativeEpisodeExperience()._extend_novel_capacity()
+        for i in range(1153):
+            bank._append(event(i))
+        raw = bank.checkpoint()
+        self.assertEqual(json.loads(raw)["schema"],
+                         "yggdrasil.ckad.native-episode-experience.v8")
+        self.assertEqual(NativeEpisodeExperience.restore(raw, digest(raw)).checkpoint(), raw)
+        self.assertEqual(bank.consolidate().checkpoint(), raw)
+        with self.assertRaisesRegex(ValueError, "EPISODE_NOVEL_GROWTH_PARENT"):
+            bank._extend_novel_capacity()
+
     def test_original_context_891_nested_migrates_without_weight_reset(self):
         parent = NativeEpisodeExperience()
         for i in range(891):
