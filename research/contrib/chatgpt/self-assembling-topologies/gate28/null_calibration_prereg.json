@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.gate28.null-mixture-diagnostic-prereg.v1",
+  "title": "Gate28-NC1: frozen prequential null-mixture calibration falsification",
+  "parent_source_sha": "2383853729a5a6d4cadc08874f913156b6d1bec8",
+  "preceding_exact_head": "1a14517452a4cbbca8aaf5d28786185f8480b74e",
+  "scope": "Contributor synthetic diagnostics only. No primary first-use, no native promotion, no accepted main/controller/owner runner mutation.",
+  "research_question": "Can a public-only rolling prequential likelihood ratio to the fixed 0.5 consequence null suppress unwarranted causal confidence in independent noise without damaging structured-world held predictions, under identical observations and computation/memory ceilings?",
+  "hypotheses": {
+    "H1_noise": "On 900131-900133 noise, R held forced-action Brier of null-mixture <= .270 and improves mean R Brier vs fully fitted dense causal reward.",
+    "H2_structured": "On fresh shifted 900111-900113 and stationary 900121-900123, average forced-action B/R held Brier of null-mixture no more than +.015 above dense conventional on each cohort.",
+    "H3_action": "At identical forced exposure, chosen held actions and consequent held reward equal original dense reward, since calibration mixture action ranking is monotone in the uncalibrated prediction.",
+    "H4_resources": "All per-intervention action/update work <= 8192 primitive rules, checkpoint <= 16384 bytes; source function cold snapshot and model checksum intact."
+  },
+  "preregistered_fresh_diagnostic_seeds": {
+    "shifted": [
+      900111,
+      900112,
+      900113
+    ],
+    "stationary": [
+      900121,
+      900122,
+      900123
+    ],
+    "independent_noise": [
+      900131,
+      900132,
+      900133
+    ]
+  },
+  "prior_consumed_diagnostic_seeds": [
+    900071,
+    900072,
+    900073,
+    900081
+  ],
+  "reserved_primary_seeds": "501000-501047;502000-502023;503000-503023 (never access)",
+  "frozen_candidate_design": {
+    "base_model": "dense_causal_reward: 4888 uniformly stratified, fully fitted selected hypotheses (not complete grammar/exact Bayes)",
+    "arm": "dense_causal_nullmix",
+    "update": "For each eligible public consequence BEFORE observing that row: q=unmixed dense forecast from pre-update model; ell=ln(2*q) when y=1 else ln(2*(1-q)); append rounded 9-decimal ell to rolling last 32 observed public outcomes; never use held/query outcomes",
+    "gate": "w = sigmoid(sum(last up to 32 ell) - ln(2)), with w=1/(1+exp(-clipped_logit)) for stable arithmetic. Original model fixed; no hidden phase labels.",
+    "predictive": "p = 0.5 + w*(q-0.5). No phase oracle, no held-out fitting, no null labels",
+    "action_policy": "Preserve original dense_causal_reward argmax q among 13 interventions; null gate cannot alter action ranking",
+    "source_retention": "Seal frozen A96 snapshot of original full source predictive subset + null log ratios. Require checkpoint integrity, true cross-process cold restore, no held feedback",
+    "updates": "A96 B64 R64 public actions; exact same 13 actions and observations as existing constrained controls under forced path",
+    "benchmark": "R/B forced held Brier and chosen held reward; independent baseline full grammar remains over budget secondary only",
+    "evaluator": "9 fresh synthetic diagnostic worlds, 32 held queries per phase, no primary or external first-use"
+  },
+  "thresholds": {
+    "noise_R_mean_brier_absolute_max": 0.27,
+    "noise_R_mean_brier_improvement_vs_dense_strictly_positive": true,
+    "shifted_mean_B_and_R_brier_degradation_vs_dense_max": 0.015,
+    "stationary_mean_B_and_R_brier_degradation_vs_dense_max": 0.015,
+    "chosen_held_reward_exact_parity_each_seed_phase": true,
+    "max_per_action_rule_evaluations": 8192,
+    "max_serialized_checkpoint_bytes": 16384,
+    "cold_source_readout_exact_parity": true,
+    "full_repository_Linux_Windows_final_CI": true
+  },
+  "classification": "Diagnostics only. Even all thresholds passing is ENGINEERING+DIAGNOSTIC_CANDIDATE, not SCIENTIFIC_PASS, no first-use or promotion. Report all cohort/seed negatives without tuning or hiding failures. Strongest trained full-grammar matched comparator still unqualified.",
+  "forbidden": "Do not score reserved primary seeds; do not tune hyperparameters after seeing this cohort's scores; do not treat 9 diagnostic seeds as sufficient for independent scientific reproduction."
+}
