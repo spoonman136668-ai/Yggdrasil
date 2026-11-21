@@ -68,7 +68,7 @@ class Know41EvaluatorMockOnly(unittest.TestCase):
         self.assertEqual(expected_milli("CHAIN", 0, 0, 0), 350)
         self.assertEqual(expected_milli("CHAIN", 1, 1, 0), 550)
         self.assertEqual(expected_milli("FORK", 1, 1, 0), 350)
-        with self.assertRaisesRegex(ValueError, "TAPE_LENGTH"):
+        with self.assertRaisesRegex(ValueError, "TAPE_TYPE"):
             create_tape(990312, lambda seed,t,c: "bad" if t==128 else mock_u(seed,t,c))
 
     def test_malformed_scientific_held_count_fails_closed(self):
