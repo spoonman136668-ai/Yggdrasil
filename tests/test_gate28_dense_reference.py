@@ -130,6 +130,7 @@ class TestGate28DenseReference(unittest.TestCase):
         self.assertIn(a, range(13))
         self.assertTrue(0.1 <= p <= 0.9)
         self.assertLessEqual(meter.count, core.MAX_RULE_EVALS)
-        s["source"]["snapshot"]["prepared"][6][0][1] *= 0.5
+        first = s["source"]["snapshot"]["prepared"][6][0]
+        s["source"]["snapshot"]["prepared"][6][0] = (first[0], first[1] * 0.5)
         with self.assertRaises(ValueError):
             dense.pack(s)
