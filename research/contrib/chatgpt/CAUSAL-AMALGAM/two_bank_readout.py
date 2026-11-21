@@ -16,6 +16,7 @@ MAX_PREFIX = 4096
 MAX_SUFFIX = 96
 LOG_ODDS_BOUND = 8.0
 PROB_FLOOR = 1e-9
+SWITCH_HAZARD = 1 / 32  # G33-R1 frozen, never fitted to evaluated outcomes.
 
 
 def _check_heads(heads):
@@ -91,8 +92,20 @@ def _mix(anchor, adaptive, weight):
                  for a, b in zip(anchor, adaptive, strict=True))
 
 
-def _replay(heads, prefix, suffix):
+def _switch_prior(posterior_odds):
+    """Symmetric hazard transition, before observing the next witness."""
+    if (type(posterior_odds) not in (int, float)
+            or not isfinite(posterior_odds)
+            or abs(posterior_odds) > LOG_ODDS_BOUND):
+        raise ValueError("G33_SWITCH_ODDS")
+    p = 1 / (1 + exp(-posterior_odds))
+    return SWITCH_HAZARD + (1 - 2 * SWITCH_HAZARD) * p
+
+
+def _replay(heads, prefix, suffix, *, switching=False):
     """Pure development seam; fixtures cannot establish source authenticity."""
+    if type(switching) is not bool:
+        raise ValueError("G33_SWITCH_FLAG")
     _check_heads(heads)
     if (type(prefix) is not tuple or not 0 < len(prefix) <= MAX_PREFIX
             or type(suffix) is not tuple or not 0 < len(suffix) <= MAX_SUFFIX
@@ -104,6 +117,7 @@ def _replay(heads, prefix, suffix):
     adaptive = tuple(h.clone() for h in heads)
     history = prefix[-8:]
     odds = 0.0
+    switch_odds = 0.0
     trace = []
     for ordinal, event in enumerate(suffix, len(prefix) + 1):
         _, views, first, state, second, reward = event
@@ -124,6 +138,14 @@ def _replay(heads, prefix, suffix):
                   for name,pred in (("anchor", a), ("adaptive", b),
                                     ("routed", mixed), ("equal", equal))}
         next_odds = _advance_router(odds, a, b, labels)
+        if switching:
+            # Both routers see the identical already-emitted bank forecasts.
+            # The hazard prior depends solely on earlier evidence.
+            q = _switch_prior(switch_odds)
+            switched = _mix(a, b, q)
+            losses["switching"] = tuple(
+                (p-y)**2 for p,y in zip(switched, labels, strict=True))
+            switch_odds = _advance_router(log(q / (1 - q)), a, b, labels)
         adaptive[0].observe(views, (first,), state)
         adaptive[1].observe(views, (first, state, second), reward)
         adaptive[2].observe(views, (first,), history, state)
@@ -132,13 +154,17 @@ def _replay(heads, prefix, suffix):
                       "anchor": a, "adaptive": b, "routed": mixed,
                       "equal": equal, "brier": losses,
                       "log_odds_after": next_odds})
+        if switching:
+            trace[-1].update(switching=switched,
+                             switching_adaptive_weight_before=q,
+                             switching_log_odds_after=switch_odds)
         odds = next_odds
         history = (history + (event,))[-8:]
     frozen_bytes = _bank_bytes(frozen)
     adaptive_bytes = _bank_bytes(adaptive)
     if frozen_bytes != initial or _bank_bytes(heads) != initial:
         raise ValueError("G33_ANCHOR_MUTATION")
-    return {
+    report = {
         "schema": "yggdrasil.amalgam.dev-two-bank-readout.v1",
         "head_order": HEAD_NAMES, "initial_head_sha256": digest(initial),
         "anchor_head_sha256": digest(frozen_bytes),
@@ -151,9 +177,15 @@ def _replay(heads, prefix, suffix):
         "official_checkpoint_restore_supported": False,
         "scientific_pass": False,
     }
+    if switching:
+        report.update(switching_hazard=SWITCH_HAZARD,
+                      additional_router_updates=len(suffix),
+                      additional_mixture_scalar_predictions=4 * len(suffix))
+    return report
 
 
-def audit_admitted_prefix(anchor, descendant, *, anchor_sha256, descendant_sha256):
+def audit_admitted_prefix(anchor, descendant, *, anchor_sha256, descendant_sha256,
+                          switching=False):
     """Read-only shadow replay from independently pinned original model objects.
 
     This checks identity and prefix consistency, not source-owner authenticity.
@@ -170,7 +202,7 @@ def audit_admitted_prefix(anchor, descendant, *, anchor_sha256, descendant_sha25
             or anchor._native_parent != descendant._native_parent
             or anchor._specialist_parent != descendant._specialist_parent):
         raise ValueError("G33_NATIVE_PREFIX")
-    result = _replay(heads, prefix, ledger[len(prefix):])
+    result = _replay(heads, prefix, ledger[len(prefix):], switching=switching)
     if (_inspect(anchor)[2], _inspect(descendant)[2]) != (a_pin, d_pin):
         raise ValueError("G33_SOURCE_MUTATION")
     result.update(anchor_checkpoint_sha256=a_pin, descendant_checkpoint_sha256=d_pin,
