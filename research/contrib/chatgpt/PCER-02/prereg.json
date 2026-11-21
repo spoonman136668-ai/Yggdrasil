@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "PCER-02",
+  "contributor": "chatgpt",
+  "contribution_class": "outcome-stratified-replay-dev-engineering-only",
+  "hypothesis": "A new deterministic 10-of-50 FIT-only outcome-stratified selector can retain all four original public (context,action) cells and preserve each FIT full-history Beta(1,1) conditional forecast within absolute 0.10. No claim about held predictive accuracy or native learner.",
+  "exact_parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "lineage": {
+    "coordinator": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1278",
+    "negative_predecessor": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1360",
+    "separate_quine": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1329",
+    "original_source_owner": "https://github.com/spoonman136668-ai/Yggdrasil/issues/426"
+  },
+  "source": {
+    "path": "research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json",
+    "commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+    "sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+    "already_consumed_episodes": 96,
+    "fit_indices": "0..49",
+    "excluded_indices": "50..95",
+    "source_actions": 0,
+    "protected_original_first_use": false
+  },
+  "frozen_design": {
+    "capacity": 10,
+    "full_fit_capacity": 50,
+    "active_reference_reduction_fraction": 0.8,
+    "cell": "(views[0][0],row.x1)",
+    "outcome": "row.s2",
+    "forecast": "prediction.native integer in [0,1000000]",
+    "full_laplace": "(full positive count+1)/(full cell count+2)",
+    "selected_laplace": "(selected positive count+1)/(selected cell count+2)",
+    "enumerator": "For each observed cell, enumerate every pair of selected positive and selected negative counts within FIT available counts, with at least one selected per cell; retain global allocations summing exactly 10. Choose allocation by lexicographically smallest tuple: max per-cell absolute posterior discrepancy; sum of original cell counts multiplied by squared discrepancy; NEGATIVE total squared native prequential prediction residual of witnesses chosen under the allocation; ordered source witness IDs. Break exact ties by this tuple and no other metric. Fail closed if >10000000 allocations.",
+    "witnesses": "For each allocated cell/outcome quota, choose individual FIT witnesses in descending squared archived native prequential residual, tie ascending ID. Return original chronological order.",
+    "no_held": "Neither selection nor engineering FIT evaluation can consume outcomes from indices >=50. Previously consumed 14 VALID and 32 RETURN from PCER-01 must not be re-scored as new science.",
+    "controls": [
+      "full 50 FIT Beta(1,1)",
+      "uniform 10 FIT same source",
+      "pure native-error 10 FIT same source",
+      "unchanged frozen PCER-01 selector",
+      "exact four-cell sufficient-statistics 8 integer counts reproducing full 50 FIT Beta(1,1); report representation bytes separately and do not equate counts with original native witness history"
+    ],
+    "engineering_gate": "10 unique losslessly referenced FIT witnesses; full original trace bytes remain identical; all 4 cells represented; maximum cell forecast deviation <=0.10; deterministic cold replay, no hidden label access, identity and tamper negatives. ENGINEERING ONLY.",
+    "science_gate": "NO_RUN pending authenticated original-source owner authorization, fresh independently unfamiliar source families with disjoint TRAIN/VALID/HELD/TRANSFER, untouched native checkpoints, >=3 seeds, matched prior info/actions/compute/actual bytes, fully trained conventional and exact sufficient-statistics controls, independent qualification. Predeclared future native held Brier <= full history +0.02 and at least 0.005 lower than best equal-budget control; cold old-law retention, interference, unfamiliar transfer, intervention utility and cost must be measured. Never claim superiority on existing FIT or consumed PCER-01 held archive.",
+    "budgets": "No new original/source actions, no model training or native checkpoint writes; pure-Python standard-library deterministic selector with <=10000000 candidate allocations, bounded 50-row FIT input.",
+    "seed_identity": "Use deterministic witness ID tie-break; uniform control hash sha256('PCER-01|24011|'+witness_id), matching predecessor, to avoid introducing adaptive seed.",
+    "decision": "FIT failure => engineering NO_GO. FIT PASS => engineering-only readiness, native science still UNVERIFIED, deployment NONE. No retuning after FIT result."
+  },
+  "controls_and_stops": [
+    "Source hash mismatch",
+    "duplicate or malformed evidence ID",
+    "invalid phase, prediction or public context",
+    "source mutation, index mismatch or output overwrite",
+    "selector depends on excluded 50..95 outcomes",
+    "inadequate per-cell FIT fidelity, cost or provenance"
+  ],
+  "authority": {
+    "research_only": true,
+    "accepted_ref_edit": false,
+    "source_actor": false,
+    "owner_runner_dispatch": false,
+    "source_first_use": false,
+    "merge": false,
+    "scientific_promotion": false,
+    "deploy": false
+  }
+}
