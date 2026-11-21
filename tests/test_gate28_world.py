@@ -49,6 +49,25 @@ class TestGate28World(unittest.TestCase):
         self.assertEqual([w._layer(p) for p in ("A", "B", "R")],
                          ["A", "B", "A"])
 
+    def test_held_lag_uses_public_last_context(self):
+        # The hidden phase's lag parent must be an observation the policy
+        # already received, not a private withheld context unknown to it.
+        w = world.HiddenWorld(900009, diagnostic=True)
+        for phase in ("B", "R"):
+            last_public = w.public_context(phase, 63)
+            for step in (0, 13, 31):
+                self.assertEqual(w._previous_context(phase, step, held=True),
+                                 last_public)
+                self.assertEqual(w.held_query(phase, step, 12).context,
+                                 w.held_context(phase, step))
+        rule = w._rules["B"][2]
+        self.assertEqual(rule.kind, "lag_xor")
+        row = w.held_query("B", 0, 12)
+        cells = row.context + row.intermediates
+        expected = (w.public_context("B", 63)[rule.parents[0] % 8] ^
+                    cells[rule.parents[1]] ^ rule.invert)
+        self.assertEqual(row.intermediates[2], expected)
+
     def test_invalid_input_rejected(self):
         w = world.HiddenWorld(900005, diagnostic=True)
         for action in (-1, 13, 300):
