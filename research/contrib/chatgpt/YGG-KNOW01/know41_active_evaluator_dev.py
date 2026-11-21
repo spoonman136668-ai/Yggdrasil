@@ -18,6 +18,9 @@ from know41_active_models_dev import (
     ActiveBayesian, ContradictionMemory, HAZARDS, canonical,
 )
 
+V3_BLOB = "e05caf3b46209c597c3e14ce0fb259aca2d46d80"
+V3_FILE = (Path(__file__).resolve().parents[3] / "roadmap" /
+           "YGG_KNOW41_PREPRIMARY_H3_IMPOSSIBILITY_CORRECTION_V3_2026-11-20.json")
 V2_BLOB = "8594bc3a32d7826ce8ce0b491b1f1906741bce74"
 V2_FILE = (Path(__file__).resolve().parents[3] / "roadmap" /
            "YGG_KNOW41_SOURCE_BUDGET_CORRECTION_V2_2026-11-20.json")
@@ -39,6 +42,22 @@ def v2():
          and d["source_gate"]["original_causalgym_issue_426"] == "NOT_AUTHORIZED",
          "V2_POLICY")
     return d
+
+
+def v3():
+    v2()
+    raw = V3_FILE.read_bytes()
+    blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+    need(blob == V3_BLOB, "V3_DRIFT")
+    p = json.loads(raw)
+    need(p["schema"] == "yggdrasil.know41.preprimary-impossibility-correction.v3"
+         and p["status"] == "PROSPECTIVE_H3_CORRECTION_BEFORE_ANY_PRIMARY_FIRST_USE"
+         and p["no_held_source_first_use"] is True
+         and p["prospective_change"]["new_H3_margin"] == .01
+         and p["governance"]["synthetic_first_use"] == "NOT_AUTHORIZED_BY_THIS_DOCUMENT"
+         and p["governance"]["original_world_issue_426"] == "NOT_AUTHORIZED",
+         "V3_POLICY")
+    return p
 
 
 def hidden_world_uniform(*args, **kwargs):
@@ -139,6 +158,11 @@ def create_tape(seed, injected_uniform):
     Unit tests use only ephemeral non-frozen mock seeds.
     """
     need(callable(injected_uniform) and type(seed) is int, "WITNESS")
+    p = v2()
+    blocked = (p["fit_worlds"]["seeds"] +
+               p["held_worlds"]["theta0_seeds"] +
+               p["held_worlds"]["theta1_seeds"])
+    need(seed not in blocked, "FROZEN_FIRST_USE_DENIED")
     tape = [injected_uniform(seed, t, t % 8) for t in range(256)]
     validate_uniforms(tape)
     return tape
@@ -281,6 +305,7 @@ def fit_selection(seeds, injected_uniform):
 def compute_verdict(worlds):
     """Preserves v1 margins; reject spoofed/duplicate world receipts first."""
     need(type(worlds) is list and len(worlds) == 24, "HELD_WORLD_COUNT")
+    v3_contract = v3()  # H3 v1 was algebraically impossible; no primary first use
     frozen = v2()["held_worlds"]
     theta0, theta1 = frozen["theta0_seeds"], frozen["theta1_seeds"]
     expected = {s: 0 for s in theta0}
@@ -355,9 +380,12 @@ def compute_verdict(worlds):
     H["H3"] = all(
         out[str(z)]["means"]["B_second"]["candidate"] <=
         min(out[str(z)]["means"]["B_second"][a]
-            for a in ("passive","random","no_memory")) - .05 for z in (0, 1))
+            for a in ("passive","random","no_memory")) -
+        v3_contract["prospective_change"]["new_H3_margin"] for z in (0, 1))
     H["H4"] = all(x["max_checkpoint_bytes"]["candidate"] < 4096 for x in worlds)
     return {"cohorts": out, "hypotheses": H,
+            "protocol_version": "KNOW41_H3_V3_PREPRIMARY",
+            "v1_h3_invalid_by_algebra": True,
             "classification": "DEVELOPMENT_SUPPORTED" if all(H.values())
             else "DEVELOPMENT_NO_GO",
             "scientific_gain_verified": False, "deployment": "NONE"}

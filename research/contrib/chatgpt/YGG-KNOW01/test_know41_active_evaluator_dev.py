@@ -6,7 +6,7 @@ import unittest
 from know41_active_evaluator_dev import (
     ARMS, PHASES, GreedyLookup, StatelessPolicy, compute_verdict,
     create_tape, expected_net_regret, fit_selection, hidden_world_uniform,
-    run_world, v2,
+    run_world, v2, v3,
 )
 from know41_active_identifiability_dev import expected_milli
 
@@ -22,6 +22,7 @@ class Know41EvaluatorMockOnly(unittest.TestCase):
         self.assertEqual(p["replacement_exogenous_source"]
                          ["max_total_new_source_uniforms"], 9216)
         self.assertEqual(p["source_gate"]["private_sampler_default"], "DENY")
+        self.assertEqual(v3()["prospective_change"]["new_H3_margin"], .01)
         with self.assertRaisesRegex(ValueError, "SOURCE_FIRST_USE_NOT_AUTHORIZED"):
             hidden_world_uniform(41101, 0, 0)
         self.assertEqual(set(ARMS), {"candidate", "bayesian", "bandit", "lookup",
