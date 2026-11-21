@@ -18,29 +18,35 @@ from pathlib import Path
 import core
 import bayes
 import sparse_bayes
+import dense_reference
 import full_reference
 import world
 
 SELF = Path(__file__).resolve()
 MODES = ("active", "forced")
-MODEL_ARMS = core.ARMS + bayes.ARMS + sparse_bayes.ARMS
+MODEL_ARMS = core.ARMS + bayes.ARMS + sparse_bayes.ARMS + dense_reference.ARMS
 # Public, branch-frozen policy seeds, NOT hidden-world generator seeds.
 CORE_POLICY_SEEDS = {arm: 28100 + i * 17 for i, arm in enumerate(core.ARMS)}
 
 
 def _new_model(arm: str) -> dict:
-    return (sparse_bayes.new(arm) if arm in sparse_bayes.ARMS else
+    return (dense_reference.new(arm) if arm in dense_reference.ARMS else
+            sparse_bayes.new(arm) if arm in sparse_bayes.ARMS else
             bayes.new(arm) if arm in bayes.ARMS else
             core.new(CORE_POLICY_SEEDS[arm], arm))
 
 
 def _model(s: dict):
-    return (sparse_bayes if s["arm"] in sparse_bayes.ARMS else
+    return (dense_reference if s["arm"] in dense_reference.ARMS else
+            sparse_bayes if s["arm"] in sparse_bayes.ARMS else
             bayes if s["arm"] in bayes.ARMS else core)
 
 
 def _observe(s: dict, row, meter: core.Work) -> None:
-    if s["arm"] in sparse_bayes.ARMS:
+    if s["arm"] in dense_reference.ARMS:
+        dense_reference.observe(s, row.context, row.intermediates,
+                                row.action, row.consequence, meter)
+    elif s["arm"] in sparse_bayes.ARMS:
         sparse_bayes.observe(s, row.context, row.intermediates,
                              row.action, row.consequence, meter)
     elif s["arm"] in bayes.ARMS:
@@ -51,7 +57,8 @@ def _observe(s: dict, row, meter: core.Work) -> None:
 
 def _unpack(raw: bytes) -> dict:
     doc = json.loads(raw)
-    return (sparse_bayes.unpack(raw) if doc.get("payload", {}).get("schema") == sparse_bayes.SCHEMA else
+    return (dense_reference.unpack(raw) if doc.get("payload", {}).get("schema") == dense_reference.SCHEMA else
+            sparse_bayes.unpack(raw) if doc.get("payload", {}).get("schema") == sparse_bayes.SCHEMA else
             bayes.unpack(raw) if doc.get("payload", {}).get("schema") == bayes.SCHEMA else
             core.unpack(raw))
 
@@ -278,8 +285,10 @@ def compare_controls(seed: int = 900071,
     w = world.HiddenWorld(seed, diagnostic=True,
                           diagnostic_cohort=diagnostic_cohort)
     selected = ("adaptive", "fixed", "causal_bayes_reward",
-                "sparse_causal_reward", "full_reference_reward")
+                "sparse_causal_reward", "dense_causal_reward",
+                "full_reference_reward")
     modules = {arm: (full_reference if arm in full_reference.ARMS else
+                     dense_reference if arm in dense_reference.ARMS else
                      sparse_bayes if arm in sparse_bayes.ARMS else
                      bayes if arm in bayes.ARMS else core)
                for arm in selected}
