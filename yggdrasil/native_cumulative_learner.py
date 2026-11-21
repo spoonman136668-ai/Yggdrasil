@@ -574,6 +574,77 @@ class NativeCumulativeLearner:
         selected = sorted(candidates,key=lambda k: (-scores[k], k))[:count]
         return [candidates[x] for x in selected]
 
+
+    def propose_shared_source_change_witnesses(
+            self, relation_slot, historical_evidence_slots,
+            public_candidates, *, count=2):
+        """Opt-in learned shared-hotspot proposal from authentic native history.
+
+        A conventional finite posterior is fitted on the three already
+        source-pinned native world-history slots. No hidden world identity,
+        oracle hot-site, or true generator hazard is read. Strictly read-only:
+        existing source memories and their checkpoint format are unchanged.
+        Applicable ONLY to deterministic one-fault, four-address public
+        experiments; all unsupported cases fail closed.
+        """
+        from yggdrasil.native_shared_fault_risk import NativeSharedFaultRisk
+
+        require(self._schema == RELATION_SCHEMA
+                and type(relation_slot) is int
+                and 1 <= relation_slot <= 9
+                and self._compiled[relation_slot] is not None
+                and self._compiled[relation_slot].model_count == 1
+                and not self._quarantined[relation_slot]
+                and self._history is None and self._experience is None
+                and self._dtr is None and not self._repairs,
+                'INTEGRATED_CAUSAL_SHARED_RISK_SCOPE')
+        require(type(historical_evidence_slots) in (tuple, list)
+                and list(historical_evidence_slots) == [12, 13, 14],
+                'INTEGRATED_CAUSAL_SHARED_RISK_HISTORY')
+        require(type(public_candidates) is list
+                and len(public_candidates) == 4
+                and type(count) is int and count == 2,
+                'INTEGRATED_CAUSAL_SHARED_RISK_BUDGET')
+        public = {}
+        known = self._source._seen[relation_slot]
+        for row in public_candidates:
+            require(type(row) is list and len(row) == 2,
+                    'INTEGRATED_CAUSAL_SHARED_RISK_CANDIDATE')
+            c, a = row
+            self._source._model._context(c)
+            PublicCausalCells._bit(a, 'ACTION')
+            mask = c | (a << self._source._model.context_bits)
+            require(mask not in public and not known & (1 << mask),
+                    'INTEGRATED_CAUSAL_SHARED_RISK_SOURCE_LEAK')
+            public[mask] = [c, a]
+        histories = []
+        for slot in historical_evidence_slots:
+            require(self._source._seen[slot].bit_count() == 2
+                    and not self._quarantined[slot]
+                    and self._compiled[slot] is None
+                    and len([e for e in self._events
+                             if e['slot'] == slot
+                             and e['status'] == 'ACQUIRED']) == 1,
+                    'INTEGRATED_CAUSAL_SHARED_RISK_HISTORY_CUSTODY')
+            witness_world = []
+            for c, a, observed in self._rows(slot):
+                self._source._model._context(c)
+                PublicCausalCells._bit(a, 'ACTION')
+                PublicCausalCells._bit(observed, 'PUBLIC_OUTCOME')
+                mask = c | (a << self._source._model.context_bits)
+                require(mask in public,
+                        'INTEGRATED_CAUSAL_SHARED_RISK_PUBLIC_ONLY')
+                ratio = self.causal_relation_probability(relation_slot, c, a)
+                require(ratio is not None and type(ratio[0]) is int
+                        and type(ratio[1]) is int and ratio[1] > 0
+                        and ratio[0] in (0, ratio[1]),
+                        'INTEGRATED_CAUSAL_SHARED_RISK_DETERMINISTIC_SOURCE')
+                expected = int(ratio[0] == ratio[1])
+                witness_world.append((mask, int(expected != observed)))
+            histories.append(witness_world)
+        fitted = NativeSharedFaultRisk(list(public), histories)
+        return [public[mask] for mask in fitted.select()]
+
     def observe_cached_history(self,raw,expected_sha256,stop):
         """Accumulate authenticated past public rows, never hypothetical do data."""
         require(self._schema != RELATION_SCHEMA, 'INTEGRATED_RELATION_HISTORY_SCOPE')
