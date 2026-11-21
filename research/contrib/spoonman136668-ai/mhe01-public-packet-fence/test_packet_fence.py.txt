@@ -11,7 +11,7 @@ import unittest
 from packet_fence import (
     UPSTREAM_SHA, SCHEMA, validate_declared_source_config,
     project_public_reset, project_public_step, inspect_intervention_metadata,
-    TaskIdentityFence
+    TaskIdentityFence, inspect_native_abi, require_native_abi
 )
 
 
@@ -425,6 +425,175 @@ class ShadowTaskIdentityCustodyTests(unittest.TestCase):
         self.assertEqual(before,after)
         self.assertFalse(after["source_owner_authenticated"])
         self.assertNotIn("c"*64,json.dumps(after))
+
+
+class NativeABIIncompatibilityTests(unittest.TestCase):
+    """Original numerical driving step is NOT a two-stage CKAD binary witness."""
+
+    @staticmethod
+    def step_packet(action=2, observation=None, reward=.42, info=None):
+        if observation is None:
+            observation=obs()
+        return project_public_step(
+            action,(observation,reward,False,False,
+                    info if info is not None else {}),config(),(2,3))
+
+    @staticmethod
+    def rehash(packet):
+        body={k:v for k,v in packet.items() if k!="local_content_sha256"}
+        raw=json.dumps(body,sort_keys=True,separators=(",",":"),
+                       ensure_ascii=True,allow_nan=False).encode("ascii")
+        packet["local_content_sha256"]=sha256(raw).hexdigest()
+        return packet
+
+    def test_32_frozen_negative_contract_and_exact_original_source_identity(self):
+        frozen=Path(__file__).with_name("native_abi_contract.md.txt").read_text()
+        for value in ("protocol", "9214cb52bd26bf8ac594d22525e93a98b23b866e",
+                      "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+                      "1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4",
+                      "287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952",
+                      "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef"):
+            self.assertIn(value,frozen)
+        self.assertIn("No injective fixed two-bit mapping",frozen)
+
+    def test_33_all_five_source_actions_distinct_but_none_direct_admitted(self):
+        hashes=[]
+        for action in range(5):
+            packet=self.step_packet(action)
+            hashes.append(packet["local_content_sha256"])
+            report=inspect_native_abi(packet)
+            self.assertIs(report["direct_native_admission"],False)
+            self.assertFalse(report["owner_native_interface_extension_required"] is False)
+            with self.assertRaisesRegex(ValueError,"MHE01D_UNSUPPORTED_NATIVE_ABI"):
+                require_native_abi(packet)
+        self.assertEqual(len(set(hashes)),5)
+
+    def test_34_binary_looking_observation_reward_action_still_unqualified(self):
+        for action in (0,1):
+            packet=self.step_packet(action,[[0,1,0],[1,0,1]],1.0)
+            self.assertFalse(inspect_native_abi(packet)["direct_native_admission"])
+            with self.assertRaisesRegex(ValueError,"MHE01D_UNSUPPORTED_NATIVE_ABI"):
+                require_native_abi(packet)
+        binary_outcome=self.step_packet(0,[[1,0,1],[0,1,0]],0.0)
+        with self.assertRaisesRegex(ValueError,"MHE01D_UNSUPPORTED_NATIVE_ABI"):
+            require_native_abi(binary_outcome)
+
+    def test_35_original_action_cardinality_pigeonhole_no_fabricated_pairs(self):
+        report=inspect_native_abi(self.step_packet())
+        self.assertGreater(report["source_action_cardinality"],
+                           report["native_fixed_binary_action_pair_cardinality"])
+        self.assertEqual(report["source_action_cardinality"],5)
+        self.assertEqual(report["native_first_action_cardinality"],2)
+        self.assertEqual(report["native_fixed_binary_action_pair_cardinality"],4)
+        self.assertEqual(len(report["reason_codes"]),5)
+        self.assertIn("DRIVING_STEP_NOT_NATIVE_TWO_STAGE_CAUSAL_INTERVENTION",
+                      report["reason_codes"])
+        self.assertIn("UNMATCHED_SOURCE_ADMISSION",report["reason_codes"])
+
+    def test_36_privileged_info_never_changes_abi_report(self):
+        public=self.step_packet(3)
+        hidden=self.step_packet(
+            3,info={"task":{"task_id":-1,"difficulty":.913,
+                           "confounder":{"weather":.913}},
+                    "reward_components":{"collision_reward":5},
+                    "true_scm":{"private":"A->B"}})
+        self.assertEqual(public,hidden)
+        a=inspect_native_abi(public)
+        self.assertEqual(a,inspect_native_abi(hidden))
+        encoded=json.dumps(a,sort_keys=True)
+        for forbidden in ("task_id","weather","difficulty","confounder",
+                          "reward_components","true_scm","A->B"):
+            self.assertNotIn(forbidden,encoded)
+
+    def test_37_original_sha_packet_integrity_tampering_fails_closed(self):
+        original=self.step_packet()
+        for key,value in (("action",4),("reward",.88),
+                          ("observation",[[9.,0.,4.],[2.5,-3.,6.]]),
+                          ("local_content_sha256","f"*64)):
+            altered=deepcopy(original)
+            altered[key]=value
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(altered)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                require_native_abi(altered)
+        self.assertFalse(inspect_native_abi(original)["direct_native_admission"])
+
+    def test_38_forged_owner_acceptance_bits_never_cure_abi(self):
+        original=self.step_packet()
+        for name in ("source_owner_authenticated","native_admission","scientific_pass"):
+            altered=deepcopy(original)
+            altered[name]=True
+            altered=self.rehash(altered)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(altered)
+        self.assertFalse(inspect_native_abi(original)["source_owner_authenticated"])
+
+    def test_39_private_extra_fields_and_synthetic_native_row_rejected(self):
+        original=self.step_packet()
+        for extra,value in (("task_id",2),("source_owner_lease","signed"),
+                            ("views",[[0,1],[0,1]]),
+                            ("row",{"s1":0,"x1":0,"s2":1,"x2":1,"y":1}),
+                            ("native_source_sha","20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef")):
+            altered=deepcopy(original)
+            altered[extra]=value
+            self.rehash(altered)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(altered)
+
+    def test_40_reset_wrong_schema_or_new_source_not_native_admissible(self):
+        packet=self.step_packet()
+        altered=deepcopy(packet)
+        for key,value in (("kind","reset"),("schema","other"),
+                          ("source_sha","20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef")):
+            x=deepcopy(altered)
+            x[key]=value
+            self.rehash(x)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(x)
+        reset=project_public_reset((obs(),{}),config(),(2,3))
+        with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+            inspect_native_abi(reset)
+
+    def test_41_rehashed_malformed_payload_still_rejected(self):
+        origin=self.step_packet()
+        for key,value in (
+            ("action",True),("action",5),("reward",True),("reward","0.42"),
+            ("reward",float("inf")),("terminated",1),("truncated",0),
+            ("observation",[[0,1],[0,1]]),
+            ("observation",[[1,2,3],[4,5,6]]),
+            ("observation",[[1.,2.,3.],[4.,5.]]),
+        ):
+            x=deepcopy(origin)
+            x[key]=value
+            # Avoid attempting to serialize infinite rewards as JSON.
+            if key=="reward" and value==float("inf"):
+                with self.assertRaises(ValueError):
+                    self.rehash(x)
+                continue
+            self.rehash(x)
+            with self.assertRaisesRegex(ValueError,"MHE01D_NONCANONICAL"):
+                inspect_native_abi(x)
+
+    def test_42_inspector_is_read_only_no_environment_or_native_caller(self):
+        packet=self.step_packet(4)
+        prior=deepcopy(packet)
+        first=inspect_native_abi(packet)
+        second=inspect_native_abi(packet)
+        self.assertEqual(first,second)
+        self.assertEqual(packet,prior)
+        self.assertFalse(first["learner_visible"])
+        self.assertFalse(first["native_checkpoint_updated"])
+        self.assertFalse(first["source_owner_authenticated"])
+        self.assertFalse(first["source_owner_lease_present"])
+        self.assertFalse(first["scientific_pass"])
+        self.assertEqual(first["source_actions_executed"],0)
+        source=Path(__file__).with_name("packet_fence.py").read_text()
+        for forbidden in ("import gymnasium","import highway_env",
+                          "from yggdrasil","import yggdrasil",
+                          "import subprocess","native.observe_experience(",
+                          "self.native.observe_experience(",
+                          "source_first_use=True"):
+            self.assertNotIn(forbidden,source)
 
 if __name__=="__main__":
     unittest.main()
