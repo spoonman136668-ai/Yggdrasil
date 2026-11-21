@@ -19,6 +19,10 @@ COHORT = "amalgam-selection-transition-local-dev-v1"
 PREFIX = b"CSM2"
 MAX_CHECKPOINT = 8192
 CACHE_SIZE = 8
+# First eight public FIT observations, verified from the immutable archived
+# source blob 9db0d3742fc8bd009c61d0864e4aba739a19e4e1.
+# This is a fixed-cohort DEVELOPMENT anchor, not a generic source witness proof.
+PINNED_CACHE_PUBLIC = bytes.fromhex("44e50907bd0e110c")
 
 
 def pack_public(views, row):
@@ -113,6 +117,8 @@ class TwoTier:
             if type(item) is not list or len(item) != 3 or type(item[0]) is not int or item[0] != i or type(item[1]) is not str or item[1] != digest(canonical([COHORT, (764013, 764029)[i // 32], i % 32])):
                 raise ValueError("CSMC02_CACHE_IDENTITY")
             unpack_public(item[2])
+            if item[2] != PINNED_CACHE_PUBLIC[i]:
+                raise ValueError("CSMC02_CACHE_SOURCE_PIN")
 
     def _encode(self, *, cache=True):
         p = self._p if cache else {"schema": SCHEMA, "archive_sha256": ARCHIVE_SHA256,
@@ -176,8 +182,11 @@ class TwoTier:
         if type(identifier) is not str or len(identifier) != 64:
             raise ValueError("CSMC02_WITNESS_ID_INVALID")
         observed = pack_public(views, row)
-        for _, cached_id, cached_byte in self._p["cache"]:
+        for slot, cached_id, cached_byte in self._p["cache"]:
             if identifier == cached_id:
+                if (type(slot) is not int or slot not in range(CACHE_SIZE) or
+                        cached_byte != PINNED_CACHE_PUBLIC[slot]):
+                    raise ValueError("CSMC02_CACHE_SOURCE_PIN")
                 if cached_byte != observed: raise ValueError("CSMC02_CONFLICTING_REPLAY")
                 return "CACHE_EXACT_MATCH"
         if archived_raw is None:
