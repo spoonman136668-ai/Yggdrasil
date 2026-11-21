@@ -1,0 +1,54 @@
+{
+  "schema": "yggdrasil.research.fcr02.engineering-prereg.v1",
+  "experiment": "FCR02-DEV-20261121",
+  "status": "PREIMPLEMENTATION_FREEZE",
+  "classification_scope": "SOURCE_FREE_DEV_ONLY_NOT_SCIENCE",
+  "parent_commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "main_anchor": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prior_negatives": [
+    "DG1-SL14 PR996 final 96a9e8af09cbc758d796005a32ea6bc85e4d229f: false full-bank retrieval; cost >2x",
+    "FCR01-S source subset 07b0e0322afba132befa9ed9eed4b763613b98bb: 5.462452x native CPU"
+  ],
+  "hypothesis": "Prequential prediction-risk-selected *distinct observable input masks* for binary transition and terminal reward can represent stable/recombined subsets of familiar public mechanisms without scanning archived context experts at each read.",
+  "architecture": "Two intervention-stage banks of fixedpoint integer Jeffreys-Beta sufficient-statistics: transition mandatory x1 + optional observed context; reward mandatory x2 + any subset of observed context/x1/s2 (2 and 8 masks). Prequential squared-loss Q1000000; select minimal cumulative loss per stage with smaller-mask tie break. Evidence updates only after public outcomes. No phase labels, oracle access, novel expert, source actions, or canonical learned state.",
+  "comparison": [
+    "full-history all-conditioned Jeffreys-Beta",
+    "pooled per-stage Jeffreys-Beta",
+    "trailing-32 all-conditioned Jeffreys-Beta",
+    "native old full-vs-pooled loss selector if executable on pinned native class"
+  ],
+  "frozen_fixtures": {
+    "seeds": [
+      215001,
+      215002,
+      215003,
+      215004
+    ],
+    "phases": [
+      "A_train",
+      "B_train",
+      "C_recombined_test"
+    ],
+    "episodes_per_phase": 64,
+    "actions": "sha256(seed,absolute_episode,field)-selected public x1 and x2 and context",
+    "outcomes": "source-free binary worlds: A transition=x1 xor context, reward=s2 xor x2; B transition=x1, reward=s2 xor x2 xor context; C transition=x1 xor context, reward=s2 xor x2 xor context",
+    "zero_hidden_phase_feature": true,
+    "scoring": "prequential transition/reward squared error, stage before corresponding outcome",
+    "scored_phase": "C_recombined_test",
+    "total_budget_events": 768
+  },
+  "preset_gates": {
+    "engineering_contract": "checkpoint/restore exact; duplicate/conflict evidence fail-closed; pre-outcome forecasts; bounded integer memory/counters; negative correlated/no-identifiability counterexample",
+    "resource": "<=2x native CPU for same actions, outputs and 96 updates on exact checked source, if available; otherwise UNVERIFIED",
+    "dev_accuracy": "C Brier both heads no worse than strongest matched fitted control AND familiarity guard drift <= +0.020; fail/no-go otherwise; no scientific proof from DEV fixtures"
+  },
+  "reproducibility": {
+    "source_mode": "engineering_fixture_only",
+    "no_original_world_first_use": true,
+    "no_protected_holdouts": true,
+    "separate_result_commit_after_prereg": true,
+    "full_final_cross_platform_required_before_acceptance": true,
+    "owner_acceptance_authority": false,
+    "scientific_gain_verified": false
+  }
+}
