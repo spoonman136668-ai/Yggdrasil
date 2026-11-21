@@ -1,0 +1,163 @@
+{
+  "schema": "yggdrasil.csmc01.fit-dev-result.v1",
+  "experiment_id": "CSMC-01",
+  "result_class": "UNPREREGISTERED_EXPLORATORY_ENGINEERING_MIXED",
+  "parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "source": {
+    "kind": "previously_consumed_synthetic_development",
+    "original_trace_path": "research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json",
+    "original_trace_sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+    "original_trace_blob": "9db0d3742fc8bd009c61d0864e4aba739a19e4e1",
+    "local_data": "first_50_pinned_public_FIT_records_from_source",
+    "fit_count": 50,
+    "excluded_valid_held_indices": "50..95",
+    "raw_archive_hash_checked_inside_local_python": false,
+    "raw_archive_hash_checked_using_original_GitHub_source": true
+  },
+  "registration": {
+    "local_prereg_sha256": "49c9c00d4b6752d28ff9ce934b6405c9b16b9fdc1bce70375579a57a6dcc4612",
+    "local_sha_frozen_before_local_primary_development_run": true,
+    "Git_prereg_commit": "0fd8b33924c5df41419366f81a7a873af6267232",
+    "Git_prereg_commit_preceded_primary_local_result": false,
+    "confirmatory": false
+  },
+  "method": {
+    "name": "causal-structure-aware replay selection",
+    "active_refs": 20,
+    "full_refs": 50,
+    "reduction_fraction": 0.6,
+    "stages": [
+      "transition_s2",
+      "terminal_y"
+    ],
+    "coverage": "terminal (public context,x1,s2,x2) cell",
+    "preserve_first_8_for_native_projection": true,
+    "greedy_and_bounded_swap": "as recorded in prereg.json",
+    "selected_FIT_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14,
+      16,
+      17,
+      25,
+      26,
+      30,
+      33
+    ],
+    "search_evaluations": 583,
+    "max_evaluations": 2500
+  },
+  "observed": {
+    "terminal_cells_total": 15,
+    "terminal_cells_preserved": 15,
+    "transition_public_cells_preserved": 4,
+    "action_configurations": 10,
+    "action_mismatches": 0,
+    "stage1_max_abs_probability_gap": {
+      "num": 2,
+      "den": 13,
+      "decimal": 0.15384615384615385,
+      "predeclared_max": 0.1,
+      "pass": false
+    },
+    "stage2_max_abs_probability_gap": {
+      "num": 4,
+      "den": 21,
+      "decimal": 0.19047619047619047,
+      "predeclared_max": 0.15,
+      "pass": false
+    },
+    "mean_abs_probability_gap": {
+      "num": 60961,
+      "den": 600600,
+      "decimal": 0.1015001665001665
+    },
+    "references_gate": true,
+    "engineering_gate_pass": false
+  },
+  "controls": {
+    "PCER02_10": {
+      "n": 10,
+      "action_mismatches": 4,
+      "terminal_cells_covered": 8,
+      "stage1_max_gap": "23/91",
+      "stage2_max_gap": "5/14"
+    },
+    "uniform20_SHA256_seed_64001": {
+      "n": 20,
+      "action_mismatches": 3,
+      "terminal_cells_covered": 13,
+      "stage1_max_gap": "3/26",
+      "stage2_max_gap": "4/21",
+      "selected_indices": [
+        0,
+        4,
+        7,
+        10,
+        14,
+        15,
+        16,
+        23,
+        24,
+        27,
+        28,
+        30,
+        33,
+        35,
+        38,
+        39,
+        40,
+        41,
+        42,
+        48
+      ]
+    },
+    "earliest20": {
+      "n": 20,
+      "action_mismatches": 3,
+      "terminal_cells_covered": 14,
+      "stage1_max_gap": "11/52",
+      "stage2_max_gap": "8/21"
+    },
+    "stage_coverage_earliest20": {
+      "n": 20,
+      "action_mismatches": 2,
+      "terminal_cells_covered": 15,
+      "stage1_max_gap": "1/4",
+      "stage2_max_gap": "8/21"
+    },
+    "full_two_stage_compact_sufficient_stats": {
+      "n": 50,
+      "equal_feature_witness_identity": false,
+      "final_FIT_action_mismatches": 0,
+      "final_FIT_forecast_gaps": 0,
+      "checkpoint_bytes_unmeasured": true,
+      "complex_native_features_not_retained": true
+    }
+  },
+  "qualification": {
+    "local_python": "3.13",
+    "local_source": "local independent exact-Fraction compact surrogate csmc01.py",
+    "local_unit_tests": "7/7_PASS",
+    "reported_local_selector_source_sha256": "4c9e53a6e9d2ae625bf1ee65a00f512eafc62fae7685a3caf7ec47f307ad8086",
+    "committed_selector_runtime": "NOT_EXECUTED",
+    "tracked_exact_native_test_runtime": "NOT_EXECUTED",
+    "whole_repo_Windows_Linux_regression": "NOT_EXECUTED",
+    "scientific_gain": "UNVERIFIED",
+    "deployment": "NONE",
+    "first_use": "NOT_PERFORMED"
+  },
+  "interpretation": "The 20-witness FIT-only causal-stage selector preserves all 10 observed native-equivalent action choices and 15 terminal cells, but breaches both prospectively written forecast fidelity thresholds. Do not promote, retune this frozen trial, or claim whole-Yggdrasil learning or memory gain.",
+  "next": "Run tracked exact-native tests on owner-authorized exact-SHA Windows+Linux executor before any engineering claim beyond local surrogate; a genuinely new science study needs separately approved original-source first use, matched control training/compute/actions, transfer and retention."
+}
