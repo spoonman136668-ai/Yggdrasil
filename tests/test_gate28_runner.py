@@ -29,12 +29,14 @@ class TestGate28Runner(unittest.TestCase):
     def test_forced_equal_exposure_control_audit_diagnostic_only(self):
         # Three disjoint diagnostic worlds. Primary 501xxx/502xxx/503xxx
         # seed ranges must never enter this audit.
+        records = []
         for seed, cohort in (
                 (900071, "diagnostic_shifted"),
                 (900072, "stationary"),
                 (900073, "independent_noise")):
             with self.subTest(cohort=cohort):
                 record = runner.compare_controls(seed, cohort)
+                records.append(record)
                 self.assertEqual(record["status"],
                                  "G28_EQUAL_EXPOSURE_CONTROL_DIAGNOSTIC_ONLY")
                 self.assertEqual(record["cohort"], cohort)
@@ -72,6 +74,12 @@ class TestGate28Runner(unittest.TestCase):
                               for arm, row in record["phases"]["R"]["scores"].items()},
                           "science": "UNVERIFIED"},
                           sort_keys=True))
+
+        import control_audit
+        independent = control_audit.audit(records)
+        self.assertEqual(independent["seed_count"], 3)
+        self.assertFalse(independent["scientific_gain_verified"])
+        self.assertEqual(independent["matched_control_adequacy"], "UNVERIFIED")
 
     def test_true_cold_and_identical_forced_exposure(self):
         result = runner.diagnostic(900011)
