@@ -20,6 +20,12 @@ Strong same-data baselines: fully refitted full-history per-action state-quadran
 
 The frozen two-phase score uses actual prequential three-output MSE, averaging last 80 unfamiliar and last 64 familiar-return episodes. To pass development **both seeds** must beat the strongest conventional control by at least 0.005 pooled, preserve the old bank byte-exact across B, retain separate stage guards, and return to the old bank for at least 80% of the last 48 familiar episodes. Null source must never create B. All other outcomes are **DEV_NO_GO**; no post-score tuning or same-seed rerun is permitted. Even DEV feasibility is not SCIENTIFIC_PASS and grants no native integration.
 
+## Preprimary DQ01 source custody correction
+
+The initial exact-source [run #44844284586](https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44844284586) completed Linux/Windows root regressions, but its 80-row **engineering fixture differed by SHA across hosts** despite all unit tests passing. The difference was in the source-free numeric fixture, not evidence of a scientific result. No registered DEV seed was executed; the original primary job explicitly held.
+
+The immutable source-first prereg remains at commit `182b7a01687d3bfbaa31472148d1f62ae8034bac`. Separate [preprimary DQ01 amendment](source_determinism_amendment.md) was committed at `0774ea5f9424aa26c94182a45a0041fd217809a6` **before** changing the source generator. The patch preserves the exact source seed, action/observation schedule, Gaussian noise draws, causal response laws, source budgets and frozen science thresholds, but rounds public initial state, noisy consequence delta/reward and next-state coordinates to six decimal places. This is a disclosed change in public numeric serialization precision **before any primary outcomes were consumed**. The qualifying workflow must now compare byte-identical 80-row source and archive receipts from both OS independently; any difference blocks the single-use DEV marker. Historical cross-OS source parity was FAIL until this qualified correction.
+
 ## Test/qualification route
 
 1. `python -B -m unittest -v test_num05` — 15 deterministic fixture tests, including actual numerical actions/updates, state-dependent scalar reward, exact cold checkpoint replay, false source/duplicate/forged-state rejection, archive preservation, and return selection. Fixtures use only nonreserved manual and seed 520009 cases.
