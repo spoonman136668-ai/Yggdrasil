@@ -1,0 +1,156 @@
+{
+  "schema": "dwsa-rs01.native-alignment-retro.v1",
+  "kind": "ALREADY_CONSUMED_RETROSPECTIVE_DIAGNOSTIC_NOT_NEW_SCIENCE",
+  "source_pr_head": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "source_trace_blob_sha1": "9db0d3742fc8bd009c61d0864e4aba739a19e4e1",
+  "source_trace_sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+  "gate_blob_sha1": "c73225ad322206dc6b308823d9f3a7a95a476d10",
+  "source_actions": 0,
+  "partitions": {
+    "fit": [
+      0,
+      16
+    ],
+    "valid_old": [
+      16,
+      32
+    ],
+    "valid_novel": [
+      32,
+      48
+    ],
+    "held_novel": [
+      48,
+      64
+    ],
+    "held_old": [
+      64,
+      96
+    ]
+  },
+  "predictions_frozen": false,
+  "protected_first_use_authorized": false,
+  "scientific_gain_verified": false,
+  "outcomes": [
+    {
+      "donor": "direct",
+      "fit": 16,
+      "valid_old": 16,
+      "valid_novel": 16,
+      "held_novel": 16,
+      "held_old": 32,
+      "decision": "VALIDATION_REJECTED",
+      "gamma": 0,
+      "proposed_capsules": 4,
+      "active_capsules": 0,
+      "active_donor_keys": [],
+      "validation_candidates": [
+        {
+          "gamma": 1,
+          "oldBrier": 0.18826879392518797,
+          "novelBrier": 0.39672483824536936,
+          "oldDrift": 0.04455924068112546,
+          "maxOldContextDrift": 0.1330494258689156,
+          "rawGain": -0.19302000944574435,
+          "donorIncrement": -0.1879949225006474,
+          "accepted": false
+        },
+        {
+          "gamma": 0.5,
+          "oldBrier": 0.157928054616844,
+          "novelBrier": 0.28393789033677325,
+          "oldDrift": 0.014218501372781495,
+          "maxOldContextDrift": 0.06367536920961311,
+          "rawGain": -0.08023306153714824,
+          "donorIncrement": -0.07520797459205128,
+          "accepted": false
+        },
+        {
+          "gamma": 0.25,
+          "oldBrier": 0.1527839461727072,
+          "novelBrier": 0.24155634842659923,
+          "oldDrift": 0.009074392928644703,
+          "maxOldContextDrift": 0.046820048841164974,
+          "rawGain": -0.03785151962697422,
+          "donorIncrement": -0.032826432681877266,
+          "accepted": false
+        }
+      ],
+      "brier": {
+        "held_novel": {
+          "raw": 0.1882528613301875,
+          "donor": 0.4176937550331875,
+          "candidate": 0.1882528613301875
+        },
+        "held_old": {
+          "raw": 0.13868511744343745,
+          "donor": 0.12318979144937497,
+          "candidate": 0.13868511744343745
+        }
+      }
+    },
+    {
+      "donor": "temporal",
+      "fit": 16,
+      "valid_old": 16,
+      "valid_novel": 16,
+      "held_novel": 16,
+      "held_old": 32,
+      "decision": "VALIDATION_REJECTED",
+      "gamma": 0,
+      "proposed_capsules": 4,
+      "active_capsules": 0,
+      "active_donor_keys": [],
+      "validation_candidates": [
+        {
+          "gamma": 1,
+          "oldBrier": 0.3481159364883229,
+          "novelBrier": 0.31479331973891367,
+          "oldDrift": 0.2044063832442604,
+          "maxOldContextDrift": 0.5157614423534992,
+          "rawGain": -0.11108849093928866,
+          "donorIncrement": -0.1060634039941917,
+          "accepted": false
+        },
+        {
+          "gamma": 0.5,
+          "oldBrier": 0.2236244853655517,
+          "novelBrier": 0.2439342945417771,
+          "oldDrift": 0.0799149321214892,
+          "maxOldContextDrift": 0.23071404993640315,
+          "rawGain": -0.04022946574215208,
+          "donorIncrement": -0.035204378797055125,
+          "accepted": false
+        },
+        {
+          "gamma": 0.25,
+          "oldBrier": 0.18111808302345558,
+          "novelBrier": 0.2218709102389683,
+          "oldDrift": 0.037408529779393074,
+          "maxOldContextDrift": 0.12043088376412248,
+          "rawGain": -0.018166081439343285,
+          "donorIncrement": -0.013140994494246327,
+          "accepted": false
+        }
+      ],
+      "brier": {
+        "held_novel": {
+          "raw": 0.1882528613301875,
+          "donor": 0.28112169347775,
+          "candidate": 0.1882528613301875
+        },
+        "held_old": {
+          "raw": 0.13868511744343745,
+          "donor": 0.22589323869712505,
+          "candidate": 0.13868511744343745
+        }
+      }
+    }
+  ],
+  "verified_using": "V8 function-level replay of committed script; Node CLI and SHA256 check NOT independently executed",
+  "notes": [
+    "Consumed historical synthetic development; NOT scientific PASS/FAIL on fresh cohorts",
+    "Frozen predictor precondition not met: recorded forecasts are prequential changing models",
+    "Source HEAD is read-only reference; never modify the coordinator's learner"
+  ]
+}
