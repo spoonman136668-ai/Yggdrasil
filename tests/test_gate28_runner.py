@@ -26,6 +26,53 @@ class TestGate28Runner(unittest.TestCase):
                 runner.require_diagnostic(seed)
         runner.require_diagnostic(900011)
 
+    def test_forced_equal_exposure_control_audit_diagnostic_only(self):
+        # Three disjoint diagnostic worlds. Primary 501xxx/502xxx/503xxx
+        # seed ranges must never enter this audit.
+        for seed, cohort in (
+                (900071, "diagnostic_shifted"),
+                (900072, "stationary"),
+                (900073, "independent_noise")):
+            with self.subTest(cohort=cohort):
+                record = runner.compare_controls(seed, cohort)
+                self.assertEqual(record["status"],
+                                 "G28_EQUAL_EXPOSURE_CONTROL_DIAGNOSTIC_ONLY")
+                self.assertEqual(record["cohort"], cohort)
+                self.assertFalse(record["scientific_primary_scored"])
+                self.assertFalse(record["original_world_first_use"])
+                self.assertEqual(record["strongest_matched_control_adequacy"],
+                                 "UNVERIFIED")
+                self.assertEqual(record["phases"]["A"]["public_exposures"], 96)
+                for phase in ("B", "R"):
+                    summary = record["phases"][phase]
+                    self.assertEqual(summary["public_exposures"], 64)
+                    scores = summary["scores"]
+                    self.assertEqual(set(scores), set(record["models"]))
+                    self.assertGreater(
+                        scores["full_reference_reward"]["checkpoint_bytes"],
+                        16384)
+                    self.assertGreater(
+                        scores["full_reference_reward"]["peak_rule_work"],
+                        8192)
+                    for arm in record["models"]:
+                        row = scores[arm]
+                        self.assertTrue(0 <= row["equal_action_held_brier"] <= 1)
+                        self.assertTrue(0 <= row["selected_held_reward"] <= 32)
+                        if arm != "full_reference_reward":
+                            self.assertLessEqual(row["checkpoint_bytes"], 16384)
+                            self.assertLessEqual(row["peak_rule_work"], 8192)
+                print("G28_DIAGNOSTIC_CONTROL_AUDIT",
+                      __import__("json").dumps({
+                          "cohort": cohort, "seed": seed,
+                          "R": {arm: {
+                              "brier": row["equal_action_held_brier"],
+                              "reward": row["selected_held_reward"],
+                              "bytes": row["checkpoint_bytes"],
+                              "work": row["peak_rule_work"]}
+                              for arm, row in record["phases"]["R"]["scores"].items()},
+                          "science": "UNVERIFIED"},
+                          sort_keys=True))
+
     def test_true_cold_and_identical_forced_exposure(self):
         result = runner.diagnostic(900011)
         self.assertEqual(result["stages"], ["A", "B", "R"])
