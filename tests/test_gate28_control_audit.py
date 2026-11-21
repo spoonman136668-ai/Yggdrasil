@@ -51,7 +51,7 @@ class TestGate28IndependentAudit(unittest.TestCase):
         self.assertEqual(got["seed_count"], 3)
         self.assertEqual(got["noise_diagnostic_flag"],
                          "WARNING_EXCEEDS_0_02")
-        self.assertEqual(len(got["diagnostic_noise_threshold_exceeders"]), 5)
+        self.assertEqual(len(got["diagnostic_noise_threshold_exceeders"]), 6)
         self.assertEqual(got["classification"],
                          "NO_SCIENTIFIC_FIRST_USE_OR_PROMOTION")
         self.assertEqual(got["stationary_spurious_rewire_fraction"],
