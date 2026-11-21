@@ -175,3 +175,99 @@ def inspect_intervention_metadata(metadata):
             if not expected_mid else "AUTHENTICATED_PUBLIC_EFFECT"),
         "causal_reward_comparison_permitted": False,
     }
+
+
+# MHE01-C: provenance-only shadow preflight. No Gym or original source imports.
+_SPLITS = frozenset(("TRAIN", "VALID", "HELD", "TRANSFER"))
+_HEX = frozenset("0123456789abcdef")
+
+
+class TaskIdentityFence:
+    """Reject known ambiguous original task identities before source first-use.
+
+    All fields here are SOURCE-ASSERTED, not authenticated. The caller MUST
+    obtain independent original owner attestations before even creating
+    an environment. Never send the registry or its fingerprints to a learner.
+    """
+
+    def __init__(self, *, registered_task_count, sampler, context_length):
+        if (type(registered_task_count) is not int or registered_task_count <= 0
+                or registered_task_count > 1000000):
+            raise ValueError("MHE01C_REGISTERED_TASK_COUNT_INVALID")
+        if sampler not in ("uniform", "adaptive") or type(sampler) is not str:
+            raise ValueError("MHE01C_UNKNOWN_SAMPLER")
+        if (type(context_length) is not int
+                or not 1 <= context_length <= 1000000):
+            raise ValueError("MHE01C_CONTEXT_LENGTH_INVALID")
+        self._registered_count = registered_task_count
+        self._sampler = sampler
+        self._context_length = context_length
+        self._identity_by_id = {}
+        self._id_by_identity = {}
+        self._active = None
+
+    @staticmethod
+    def _static_disposition():
+        return {
+            "schema": "mhe01.task_identity_shadow.v1",
+            "task_identity_declared": True,
+            "source_owner_authenticated": False,
+            "source_reset_verified": False,
+            "source_actions_executed": 0,
+            "cohort_disjointness_authenticated": False,
+            "learner_visible": False,
+            "native_admission": False,
+            "scientific_pass": False,
+        }
+
+    def declare_task(self, task_id, instance_fingerprint, split, *, fresh):
+        """Check only claimed metadata; preserve all state on rejection."""
+        if type(task_id) is not int or task_id < 0:
+            raise ValueError("MHE01C_NEGATIVE_OR_INVALID_TASK_ID")
+        if (type(instance_fingerprint) is not str
+                or len(instance_fingerprint) != 64
+                or not set(instance_fingerprint) <= _HEX):
+            raise ValueError("MHE01C_INSTANCE_FINGERPRINT_INVALID")
+        if type(split) is not str or split not in _SPLITS:
+            raise ValueError("MHE01C_COHORT_SPLIT_INVALID")
+        if type(fresh) is not bool:
+            raise ValueError("MHE01C_FRESH_FLAG_INVALID")
+        if fresh:
+            if task_id < self._registered_count:
+                raise ValueError("MHE01C_FRESH_ID_ALIASES_REGISTERED_SLOT")
+            if self._sampler == "adaptive":
+                raise ValueError("MHE01C_UNREGISTERED_ADAPTIVE_INDEX")
+        elif task_id >= self._registered_count:
+            raise ValueError("MHE01C_UNREGISTERED_TASK_ID")
+        identity = (instance_fingerprint, split, fresh)
+        if task_id in self._identity_by_id and self._identity_by_id[task_id] != identity:
+            raise ValueError("MHE01C_TASK_IDENTITY_COLLISION")
+        if (instance_fingerprint in self._id_by_identity
+                and self._id_by_identity[instance_fingerprint] != task_id):
+            raise ValueError("MHE01C_COHORT_DUPLICATE_OR_INSTANCE_ALIAS")
+        # Atomic: only write after every source-declared fence has passed.
+        self._identity_by_id[task_id] = identity
+        self._id_by_identity[instance_fingerprint] = task_id
+        self._active = (task_id, identity)
+        return self._static_disposition()
+
+    def before_reset(self, previous_episode_count, *, is_meta_testing):
+        """Source may replace the requested task beyond its context quota."""
+        if self._active is None:
+            raise ValueError("MHE01C_NO_DECLARED_TASK")
+        if type(previous_episode_count) is not int or previous_episode_count < 0:
+            raise ValueError("MHE01C_EPISODE_COUNTER_INVALID")
+        if type(is_meta_testing) is not bool:
+            raise ValueError("MHE01C_TEST_MODE_INVALID")
+        if not is_meta_testing and previous_episode_count >= self._context_length:
+            raise ValueError("MHE01C_RESET_MAY_SILENTLY_RESAMPLE_TASK")
+        # This is a shadow inspector, NOT an observed reset/effect receipt.
+        return self._static_disposition()
+
+    def inspect(self):
+        """Only generic counts; never expose split, private task IDs or hashes."""
+        return {
+            **self._static_disposition(),
+            "distinct_declared_instances": len(self._identity_by_id),
+            "has_declared_active_task": self._active is not None,
+        }
