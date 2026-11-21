@@ -21,7 +21,9 @@ class TestGate28NullCalibration(unittest.TestCase):
         self.assertEqual(prereg["schema"],
                          "yggdrasil.gate28.null-mixture-diagnostic-prereg.v1")
         seeds = prereg["preregistered_fresh_diagnostic_seeds"]
-        self.assertEqual({k: tuple(v) for k, v in seeds.items()},
+        cohort_aliases = {"shifted": "diagnostic_shifted"}
+        self.assertEqual({cohort_aliases.get(k, k): tuple(v)
+                          for k, v in seeds.items()},
                          control_audit.NULL_FRESH_SEEDS)
         self.assertEqual(prereg["thresholds"]["noise_R_mean_brier_absolute_max"],
                          0.270)
