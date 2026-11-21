@@ -68,6 +68,37 @@ class TestGate28World(unittest.TestCase):
                     cells[rule.parents[1]] ^ rule.invert)
         self.assertEqual(row.intermediates[2], expected)
 
+    def test_public_regime_boundary_lag_and_diagnostic_cohorts(self):
+        w = world.HiddenWorld(900073, diagnostic=True)
+        self.assertEqual(w._previous_context("B", 0, held=False),
+                         w._context("A", 95, held=False))
+        self.assertEqual(w._previous_context("R", 0, held=False),
+                         w._context("B", 63, held=False))
+        for phase in ("B", "R"):
+            self.assertEqual(w._previous_context(phase, 0, held=True),
+                             w.public_context(phase, 63))
+        rule = w._rules["B"][2]
+        self.assertEqual(rule.kind, "lag_xor")
+        row = w.feedback("B", 0, 12)
+        expected = (w._context("A", 95, held=False)[rule.parents[0] % 8] ^
+                    (row.context + row.intermediates)[rule.parents[1]] ^
+                    rule.invert)
+        self.assertEqual(row.intermediates[2], expected)
+        for cohort in ("stationary", "independent_noise"):
+            diagnostic = world.HiddenWorld(
+                900074, diagnostic=True, diagnostic_cohort=cohort)
+            self.assertEqual(diagnostic.cohort, cohort)
+            self.assertEqual(diagnostic._layer("B"), "A")
+            self.assertEqual(diagnostic._layer("R"), "A")
+        with self.assertRaisesRegex(ValueError, "PRIMARY_SEEDS_RESERVED"):
+            world.HiddenWorld(501000, diagnostic=True)
+        with self.assertRaisesRegex(ValueError, "INVALID_DIAGNOSTIC_COHORT"):
+            world.HiddenWorld(900074, diagnostic=True,
+                              diagnostic_cohort="invented")
+        with self.assertRaisesRegex(ValueError,
+                                    "DIAGNOSTIC_COHORT_REQUIRES_DIAGNOSTIC"):
+            world.HiddenWorld(502000, diagnostic_cohort="stationary")
+
     def test_invalid_input_rejected(self):
         w = world.HiddenWorld(900005, diagnostic=True)
         for action in (-1, 13, 300):
