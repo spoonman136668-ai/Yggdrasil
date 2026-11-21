@@ -493,6 +493,171 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                           "scientific_pass": False,
                           "owner_accepted": False,
                       }, sort_keys=True))
+            if os.environ.get("YGG_G41_R12_WITHIN_BANK") == "1":
+                # Frozen before result: PR #1329 issuecomment-7068555357.
+                self.assertTrue(r11_active)
+                self.assertEqual(set(timeline), {1025, 1034, 1035, 2048})
+                before = timeline[1035].native._episode_reader()
+                after = timeline[2048].native._episode_reader()
+                self.assertEqual(before._context_start, 1035)
+                self.assertEqual(after._context_start, 1035)
+                self.assertEqual(before._context_start, after._context_start)
+                earlier_models = tuple(before._context_models)
+                later_models = tuple(after._context_models)
+                earlier_weights = tuple(before._context_weights)
+                later_weights = tuple(after._context_weights)
+                self.assertEqual(len(earlier_models), 34)
+                self.assertEqual(len(later_models), 34)
+                for weight_set in (earlier_weights, later_weights):
+                    self.assertEqual(len(weight_set), 34)
+                    self.assertEqual(sum(weight_set), Fraction(1))
+                    self.assertTrue(all(weight >= 0 for weight in weight_set))
+                self.assertTrue(before._context_novel)
+                self.assertTrue(after._context_novel)
+                self.assertEqual(len(before._stream_detections),
+                                 len(after._stream_detections))
+                self.assertEqual(before._stream_detections, after._stream_detections)
+                for historical_old, historical_new in zip(earlier_models[:-1],
+                                                          later_models[:-1], strict=True):
+                    self.assertEqual(historical_old[:3], historical_new[:3])
+                    self.assertEqual(historical_old[-1].checkpoint(),
+                                     historical_new[-1].checkpoint())
+                self.assertEqual(earlier_models[-1][0], 1035)
+                self.assertEqual(later_models[-1][0], 1035)
+                self.assertEqual(len(earlier_models[-1][-1]._ledger), 0)
+                self.assertEqual(len(later_models[-1][-1]._ledger), 1013)
+                self.assertEqual(before._ledger[:1025], source_ledger)
+                self.assertEqual(after._ledger[:1025], source_ledger)
+
+                def counterfactual(weights, models, view, first, state=None,
+                                   second=None):
+                    self.assertEqual(len(weights), len(models))
+                    self.assertEqual(len(weights), 34)
+                    self.assertEqual(sum(weights), Fraction(1))
+                    self.assertTrue(all(weight >= 0 for weight in weights))
+                    predictions = tuple(
+                        model[-1].forecast(view, first, state, second)
+                        for model in models)
+                    if state is not None:
+                        evidence = tuple(
+                            model[-1].forecast(view, first) for model in models)
+                        supports = tuple(
+                            weight * (forecast if state else 1 - forecast)
+                            for weight, forecast
+                            in zip(weights, evidence, strict=True))
+                        normalizer = sum(supports, Fraction(0))
+                        self.assertGreater(normalizer, 0)
+                        weights = tuple(x / normalizer for x in supports)
+                    return sum((weight * forecast
+                                for weight, forecast
+                                in zip(weights, predictions, strict=True)), Fraction(0))
+
+                first_old = source_ledger[0]
+                with self.assertRaises(AssertionError):
+                    counterfactual(tuple(2 * w for w in earlier_weights),
+                                   earlier_models, first_old[1][0], first_old[2])
+                with self.assertRaises(AssertionError):
+                    counterfactual(earlier_weights + (Fraction(0),),
+                                   earlier_models, first_old[1][0], first_old[2])
+                changed_experts = sum(
+                    a[-1].checkpoint() != b[-1].checkpoint()
+                    for a, b in zip(earlier_models, later_models, strict=True))
+                self.assertEqual(changed_experts, 1)
+                total_variation = sum(
+                    (abs(x - y) for x, y
+                     in zip(earlier_weights, later_weights, strict=True)),
+                    Fraction(0)) / 2
+                self.assertGreaterEqual(total_variation, 0)
+                self.assertLessEqual(total_variation, 1)
+                scale = native_module.SCALE
+                self.assertEqual(scale, 1_000_000)
+                report = {}
+                for name, (start, stop) in windows.items():
+                    histories = source_ledger[start:stop]
+                    reference_old = native_module.readout_losses(
+                        timeline[1035], histories)
+                    reference_new = native_module.readout_losses(
+                        timeline[2048], histories)
+                    target_report = {}
+                    for kind, index in (("transition", 0), ("reward", 1)):
+                        squared = [0, 0, 0, 0]
+                        for _, row_views, first, state, second, reward in histories:
+                            view = row_views[0]
+                            label = state if index == 0 else reward
+                            tail = (None, None) if index == 0 else (state, second)
+                            predictions = (
+                                counterfactual(earlier_weights, earlier_models,
+                                               view, first, *tail),
+                                counterfactual(later_weights, earlier_models,
+                                               view, first, *tail),
+                                counterfactual(earlier_weights, later_models,
+                                               view, first, *tail),
+                                counterfactual(later_weights, later_models,
+                                               view, first, *tail),
+                            )
+                            self.assertEqual(predictions[0],
+                                             before.context_forecast(view, first, *tail))
+                            self.assertEqual(predictions[3],
+                                             after.context_forecast(view, first, *tail))
+                            self.assertEqual(predictions[0], counterfactual(
+                                earlier_weights, earlier_models,
+                                view, first, *tail))
+                            self.assertEqual(predictions[3], counterfactual(
+                                later_weights, later_models,
+                                view, first, *tail))
+                            for arm, probability in enumerate(predictions):
+                                squared[arm] += (
+                                    round(scale * probability) - scale * label) ** 2
+                        losses = tuple(Fraction(value, len(histories) * scale**2)
+                                       for value in squared)
+                        A, B, C, D = losses
+                        self.assertEqual(A, reference_old[index])
+                        self.assertEqual(D, reference_new[index])
+                        weight_effect = (B - A + D - C) / 2
+                        expert_effect = (C - A + D - B) / 2
+                        interaction = D - B - C + A
+                        self.assertEqual(weight_effect + expert_effect, D - A)
+                        self.assertEqual(float(D - A),
+                                         changes[name][kind]["deltas"]["1035_to_2048"])
+                        target_report[kind] = {
+                            "brier_old_weights_old_experts": float(A),
+                            "brier_new_weights_old_experts": float(B),
+                            "brier_old_weights_new_experts": float(C),
+                            "brier_new_weights_new_experts": float(D),
+                            "old_task_drift": float(D - A),
+                            "weight_effect": float(weight_effect),
+                            "expert_effect": float(expert_effect),
+                            "interaction": float(interaction),
+                            "sum_main_effects_equals_drift": True,
+                            "within_existing_plus_0p02_comparison":
+                                D - A <= Fraction(1, 50),
+                        }
+                    report[name] = target_report
+                self.assertEqual(original.checkpoint(), joint)
+                self.assertEqual(learner.checkpoint(), snapshot)
+                self.assertEqual(cold.checkpoint(), snapshot)
+                self.assertEqual(timeline[1035].native._episode_reader()._ledger[:1025],
+                                 source_ledger)
+                print("G41_R12_WITHIN_BANK_WEIGHT_EXPERT_ATTRIBUTION="
+                      + json.dumps({
+                          "schema": "yggdrasil.g41.r12.within-bank-attribution-v1",
+                          "old_joint_sha256": joint_pin,
+                          "descendant_checkpoint_sha256": expected,
+                          "source_prefix_sha256": old_ledger_digest,
+                          "matched_context_start": 1035,
+                          "matched_expert_count": 34,
+                          "unchanged_historical_expert_count": 33,
+                          "changed_expert_count": changed_experts,
+                          "mixture_weight_total_variation": float(total_variation),
+                          "novel_weight_1035": float(earlier_weights[-1]),
+                          "novel_weight_2048": float(later_weights[-1]),
+                          "windows": report,
+                          "frozen_before_result": True,
+                          "retrospective_not_held": True,
+                          "readout_only_no_model_edit": True,
+                          "scientific_pass": False,
+                          "owner_accepted": False,
+                      }, sort_keys=True))
             if os.environ.get("YGG_G41_ATTRIBUTION_2048") == "1":
                 # Frozen R10: PR #1329 issuecomment-7066576697, no training or mutation.
                 earlier = original.native._episode_reader()
