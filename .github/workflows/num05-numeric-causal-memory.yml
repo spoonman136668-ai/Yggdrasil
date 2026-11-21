@@ -47,7 +47,7 @@ jobs:
           git merge-base --is-ancestor 86264b41a08d49f558418c0fba367f3a2636befa "$GITHUB_SHA"
           git merge-base --is-ancestor 182b7a01687d3bfbaa31472148d1f62ae8034bac "$GITHUB_SHA"
           git diff --name-only 86264b41a08d49f558418c0fba367f3a2636befa "$GITHUB_SHA" |
-            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/"; e={p+x for x in ("prereg.json","num05.py","num05_dev.py","test_num05.py","README.md")} | {".github/workflows/num05-numeric-causal-memory.yml"}; extras={p+"primary.admit",p+"result.json",".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert e<=a and a-e<=extras,(a,e,extras)'
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/"; e={p+x for x in ("prereg.json","num05.py","num05_dev.py","test_num05.py","README.md","source_determinism_amendment.md")} | {".github/workflows/num05-numeric-causal-memory.yml"}; extras={p+"primary.admit",p+"result.json",".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert e<=a and a-e<=extras,(a,e,extras)'
           test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
           test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
           test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = 1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4
@@ -108,7 +108,21 @@ jobs:
         run: |
           set -euo pipefail
           workdir="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05"
-          (cd "$workdir" && python -B -m unittest -v test_num05 && python -B num05_dev.py --fixture)
+          (cd "$workdir" && python -B -m unittest -v test_num05 && python -B num05_dev.py --fixture) | tee "$RUNNER_TEMP/num05-engineering-fixture.log"
+          python -B - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path(os.environ["RUNNER_TEMP"])
+          log=(root/"num05-engineering-fixture.log").read_text()
+          candidates=[line.split("=",1)[1] for line in log.splitlines()
+                      if line.startswith("NUM05_ENGINEERING_FIXTURE=")]
+          assert len(candidates)==1,candidates
+          row=json.loads(candidates[0])
+          assert row["pass"] is True and row["fixture_rows"]==80
+          assert len(row["fixture_sha256"])==64 and len(row["archive_sha256"])==64
+          (root/"num05-fixture.json").write_text(
+              json.dumps(row,sort_keys=True,separators=(",",":"))+"\\n",encoding="ascii")
+          print("NUM05_FIXTURE_SOURCE_AND_ARCHIVE_RECEIPT_SEALED")
+          PY
           echo NUM05_FOCUSED_FIXTURES_PASS
       - name: Original mandatory model dependency environment
         run: >-
@@ -124,6 +138,43 @@ jobs:
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain --untracked-files=all)"
           echo NUM05_FULL_ORIGINAL_FINAL_REGRESSION_PASS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: num05-80row-qualification-${{ matrix.os }}
+          path: ${{ runner.temp }}/num05-fixture.json
+          if-no-files-found: error
+  parity:
+    needs: [atlas, engineering, parity]
+    if: ${{ needs.engineering.result == 'success' && needs.parity.result == 'success' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: num05-80row-qualification-*
+          path: ${{ runner.temp }}/num05-parity
+      - name: Independent byte-exact source/archived-state fixture parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path(os.environ["RUNNER_TEMP"])/"num05-parity"
+          files=sorted(root.rglob("num05-fixture.json"))
+          assert len(files)==2,[str(f) for f in files]
+          a,b=(p.read_bytes() for p in files)
+          assert a==b,"NUM05_DQ01_CROSS_OS_PUBLIC_SOURCE_DRIFT"
+          row=json.loads(a)
+          assert row["pass"] is True and row["fixture_rows"]==80
+          assert len(row["fixture_sha256"])==64
+          assert len(row["archive_sha256"])==64
+          print("NUM05_DQ01_EXACT_DUAL_OS_SOURCE_ARCHIVE_PARITY_PASS")
+          print("NUM05_DQ01_SOURCE_SHA256="+row["fixture_sha256"])
+          print("NUM05_DQ01_CHECKPOINT_SHA256="+row["archive_sha256"])
+          PY
   primary:
     needs: [atlas, engineering]
     if: ${{ needs.engineering.result == 'success' && github.run_attempt == 1 }}
