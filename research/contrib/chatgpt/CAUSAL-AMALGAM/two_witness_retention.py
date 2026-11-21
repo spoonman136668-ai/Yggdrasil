@@ -6,7 +6,7 @@ development stress test, not new scientific first-use or a native checkpoint.
 """
 from math import isfinite
 
-from four_head_retention import HEAD_NAMES, _inspect
+from four_head_retention import HEAD_NAMES, HEAD_TYPES, KINDS, _inspect
 from headwise_consolidation import _new_brier, _old_brier, MAX_DRIFT
 from post_witness_projection import assess_one_more_witness
 from fine_step_plasticity import evaluate_fine_steps, _weight_delta_norm
@@ -61,6 +61,13 @@ def _as_model(updated, heads):
 
 
 def _score_new(heads, event, before):
+    # Reject malformed/untrusted head ordering deterministically rather than
+    # allowing an internal wrong-signature TypeError to escape during scoring.
+    if (type(heads) is not tuple or len(heads) != 4
+            or any(type(h) is not expected or h.kind != kind
+                   for h, expected, kind in zip(
+                       heads, HEAD_TYPES, KINDS, strict=True))):
+        raise ValueError("G31_HEAD_ORDER")
     result = {}
     for position, name in enumerate(HEAD_NAMES):
         val = _new_brier(heads[position], position, event, before)

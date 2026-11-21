@@ -38,7 +38,7 @@ class TwoWitnessControlTests(unittest.TestCase):
         event=BASE._history()[-1]
         heads=anchor._heads[::-1]
         # The wrapper caller must verify identity BEFORE attempting scoring.
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "G31_HEAD_ORDER"):
             G31._score_new(heads,event,BASE._history()[:-1])
 
     def test_no_claim_of_gain_from_fake_steps_or_no_updates(self):
