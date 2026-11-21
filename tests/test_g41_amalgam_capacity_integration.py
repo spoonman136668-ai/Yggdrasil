@@ -1,5 +1,7 @@
 """Source-free G41 native capacity contract; not protected-world learning."""
+from fractions import Fraction
 from hashlib import sha256
+from importlib.util import module_from_spec, spec_from_file_location
 import json
 import os
 from pathlib import Path
@@ -321,6 +323,56 @@ class G41CapacityIntegrationTests(unittest.TestCase):
         self.assertEqual(cold.specialist_forecasts(views, 0, 0, 0),
                          learner.specialist_forecasts(views, 0, 0, 0))
         self.assertEqual(original.checkpoint(), joint)
+        if os.environ.get("YGG_G41_RETENTION_2048") == "1":
+            # Frozen before result in PR #1329 issuecomment-7065308241:
+            # existing retrospective audit, original 1025 old rows, unchanged +.02 bound.
+            research = (Path(__file__).resolve().parents[1]
+                        / "research/contrib/chatgpt/CAUSAL-AMALGAM")
+            frozen = json.loads((research / "retention_probe.json").read_bytes())
+            windows = {"earliest": [0, 32], "midpoint": [496, 528],
+                       "latest_pre_fixture": [992, 1024]}
+            self.assertEqual(frozen["anchor_sha256"], joint_pin)
+            self.assertEqual(frozen["windows"], windows)
+            self.assertEqual(frozen["max_brier_drift"], "1/50")
+            def import_readonly(name):
+                path = research / (name + ".py")
+                specification = spec_from_file_location("g41_r9_" + name, path)
+                self.assertIsNotNone(specification)
+                module = module_from_spec(specification)
+                specification.loader.exec_module(module)
+                return module
+            head_module = import_readonly("four_head_retention")
+            native_module = import_readonly("retention_guard")
+            head_report = head_module.audit_old_heads(original, learner, cold)
+            native_report = native_module.evaluate(
+                original, learner, {name: tuple(indices)
+                                    for name, indices in windows.items()},
+                max_brier_drift=Fraction(1, 50))
+            self.assertEqual(head_report["old_witness_count"], 1025)
+            self.assertEqual(head_report["continuation_witness_count"], 1023)
+            self.assertEqual(head_report["anchor_checkpoint_sha256"], joint_pin)
+            self.assertEqual(head_report["descendant_checkpoint_sha256"], expected)
+            self.assertEqual(head_report["restored_checkpoint_sha256"], expected)
+            self.assertEqual(tuple(head_report["heads"]), head_module.HEAD_NAMES)
+            self.assertEqual(native_report["anchor_count"], 1025)
+            self.assertEqual(native_report["candidate_count"], 2048)
+            self.assertEqual(tuple(native_report["windows"]), tuple(windows))
+            self.assertFalse(head_report["scientific_pass"])
+            self.assertEqual(original.checkpoint(), joint)
+            self.assertEqual(learner.checkpoint(), snapshot)
+            self.assertEqual(cold.checkpoint(), snapshot)
+            print("G41_R9_ORIGINAL_TRAINED_RETENTION_DIAGNOSTIC="
+                  + json.dumps({"schema": "yggdrasil.g41.retrospective-2048.v1",
+                                "old_joint_sha256": joint_pin,
+                                "continued_joint_sha256": expected,
+                                "old_public_witnesses": 1025,
+                                "synthetic_continuation_witnesses": 1023,
+                                "four_heads": head_report,
+                                "native_windows": native_report,
+                                "historical_only": True,
+                                "held_evaluation": False,
+                                "scientific_pass": False,
+                                "owner_accepted": False}, sort_keys=True))
 
 if __name__ == "__main__":
     unittest.main()
