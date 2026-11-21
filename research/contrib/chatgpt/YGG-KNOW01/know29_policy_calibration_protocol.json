@@ -1,0 +1,105 @@
+{
+  "schema": "yggdrasil.know29.policy-prior-calibration-prospective-dev.v1",
+  "date": "2026-11-20",
+  "purpose": "Separate one-step myopic EVI correctness and model-prior calibration from long-horizon terminal high-context loss, after KNOW27 FIT entropy outperformed FIT EVI. This is a distinct synthetic new cohort, NOT another phase-memory or x2-affordance study.",
+  "role": "Independent source-only contribution; existing PR #1327, sole canonical learner/integration owner Amalgam PR #1278. No protected original world #426 actions, no native checkpoint, accepted main, owner runner, deployment, scheduler, new PR or paid APIs.",
+  "parent": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "contributor_head": "e3082e68d8b787aad9d5d88103154f977ab40e30",
+    "contributor_tree": "6c7ad4b7796df4045c301b819e3f9e6ee2ac1581",
+    "know27_protocol_blob": "e82b78050e5c42cfa3dea2732a8ce944b83e8884",
+    "know27_source_blob": "3904e9f6cfc21eb944c99b7cba96cb292784154e",
+    "know26_source_blob": "598e45063a04e4e3f4244ae9c16d478038feec81",
+    "know27_consumed_run": 44757431991
+  },
+  "hypothesis": "Is frozen myopic EVI internally a correct one-step Bayesian high-context Brier reduction yet inferior to entropy on long-horizon structured-law sources because the EVI objective and learned prior are misaligned? Compare EVI vs entropy on model-prior-matched and structured-distribution cohorts under same historical FIT and 32 public action budgets.",
+  "model": "Exact frozen KNOW26 six anonymous mapping hypotheses × 256 binary truth tables, uniform fresh-law prior and source-trained 108 FIT actions per historical mapping group. Same model capacity/checkpoint/updates in EVI/entropy/cyclic/random; NOFIT entropy uses uniform map prior; privileged true-map entropy 256-laws is an explicitly not-fair reference. No new native training or teacher.",
+  "worlds": {
+    "public": "At each t=0..31 public context c=t%4, action labels a in 0..3; action0 no-op, other physical effects hidden; one Bernoulli(.85 if hidden table bit at c xor hidden map[a] else .15) witnessed for action actually chosen. No counterfactual reward, hidden law or map in policy.",
+    "fit": "Re-read the exact already-consumed KNOW26 108 FIT witnessed source events per true-map group solely as historical training, creating one frozen learned posterior map prior per group. Do not re-score KNOW26 HELD or KNOW27 HELD.",
+    "mid_groups": [
+      0,
+      1,
+      2
+    ],
+    "cohorts": {
+      "model_prior_matched": {
+        "seeds": [
+          15011,
+          15017,
+          15023,
+          15029,
+          15031,
+          15037,
+          15041,
+          15047
+        ],
+        "world_count": 24,
+        "map_prior": "For each map training group, evaluator samples private mapping from FIT learned categorical posterior by SHA256('know29:private:map:v1:'+group+':'+seed_index) first64 normalized; learner never receives selected mapping.",
+        "law": "For each group and seed, evaluator samples a uniform truth table integer 0..255 from SHA256('know29:private:law:v1:'+group+':'+seed) first8 bytes modulo 256. Fits the candidate family/prior exactly conditional on historical FIT."
+      },
+      "structured_shift": {
+        "seeds": [
+          15101,
+          15107,
+          15113,
+          15121,
+          15127,
+          15131,
+          15139,
+          15149
+        ],
+        "world_count": 24,
+        "map_prior": "Same private mapping sampling mechanism as prior-matched, disjoint source SHA domain.",
+        "law": "Four predeclared Boolean formulas, assigned round-robin among 8 seeds: x0 XOR (x1 OR x2); x2 XOR (x0 AND x1); ((NOT x0) AND x1) XOR x2; (x0 OR x1) AND x2. All representable in 256-table model but population distribution differs strongly from uniform."
+      }
+    },
+    "noise": "Private SHA256('know29:private:coin:v1:'+cohort+':'+group+':'+seed+':'+t) first64/2**64, shared exogenous coin per step across policies and independent of selected action, no hidden readback to policy.",
+    "actions_per_world": 32,
+    "worlds_per_cohort": 24,
+    "actions_per_policy_per_cohort": 768,
+    "score_queries_per_policy_per_cohort": 96,
+    "no_old_held_replay": true
+  },
+  "policies": [
+    "fit_evi",
+    "fit_entropy",
+    "nofit_entropy",
+    "fit_cyclic",
+    "fit_random",
+    "privileged_known_map_entropy",
+    "passive_p05"
+  ],
+  "selection": {
+    "fit_evi": "Existing KNOW27 exact high-context expected Bernoulli Brier reduction minus 0.002 action cost, myopic; policy sees only current joint posterior and public c.",
+    "fit_entropy": "Existing KNOW27 predictive outcome Bernoulli variance q(1-q) minus same 0.002 cost; strongest fair conventional policy, not a new learned model.",
+    "nofit_entropy": "Same joint Bayes hypothesis count, entropy and held evidence budget but no 108 historical FIT actions. Count extra FIT as data/compute, not parity.",
+    "fit_cyclic": "Public t mod 4 actions; same FIT model and 32 held observations.",
+    "fit_random": "Public RNG seeded by predeclared world ordinal independent of private map/law/noise; same FIT model and 32 held observations.",
+    "privileged_known_map_entropy": "Correct private physical map in model, 256 Boolean law hypotheses; extra-private-information ceiling, NOT a matched fair control.",
+    "passive_p05": "Uninformed .5 prediction no training, 32 no-op witnessed actions, an unprivileged floor.",
+    "equivalence": "Policies receive 32 chosen-action observations each, same source coin per time but different observed y as intended adaptive difference. Model capacity same for EVI/entropy/cyclic/random only. Extra historical FIT cost separately reported."
+  },
+  "math_control": "On at least the empty prior and one non-private toy witness state, independently recompute expected reduction in four high-context posterior Brier forecast uncertainty by enumerating both possible next y and cold-cloned one-witness updates; match KNOW27 closed-form EVI score including .002 cost within 1e-10. This is a deterministic mathematical identity, not a held result.",
+  "metrics": "For each cohort/arm: mean terminal analytic expected Brier on 4 high c=4..7 public no-op contexts, mean net Brier=high Brier+.002*nonzero_action_count/768, per historical map-group losses, action count, checkpoint bytes, CPU/wall, one witnessed event per action, cold exact replay, no source/private leakage. Report EVI-minus-entropy cohort differences, 24-world descriptive distribution, no population significance claim.",
+  "frozen_decisions": {
+    "H1": "Exact one-step EVI high-posterior-Brier utility identity against independent two-outcome enumeration, max absolute error <=1e-10 for at least two posterior states and all four actions.",
+    "H2": "In model-prior-matched 24-world cohort, FIT EVI has net terminal high Brier <= FIT entropy minus 0.005 absolute.",
+    "H3": "In structured-shift 24-world cohort, FIT entropy has net terminal high Brier <= FIT EVI minus 0.005 absolute.",
+    "H4": "FIT EVI vs no-FIT entropy cannot be miscalled data-matched: 108 historical FIT actions per map group counted as extra cost and source, and privileged arm flagged extra map info.",
+    "gate": "Engineering requires frozen source, single-witness typing/cold replay, original protected source denial, two-OS full source regression and deterministic source-only report. Scientific interpretation of source-only trial may be MECHANISM_CALIBRATION_SUPPORTED_DEV only if H1,H2,H3 hold; otherwise MIXED/NO_GO. Never SCIENTIFIC_PASS or canonical promotion.",
+    "limits": "Small correlated, hand-chosen 24-world cohorts, models conventional exact Bayes, no native Yggdrasil learning, no unfamiliar original natural world, no clinical/real-world inference or intelligence claim."
+  },
+  "first_use": "Only new synthetic HELD cohorts become consumed on first scheduled existing GitHub Actions study step after focused tests, source atlas, Linux/Windows final regression and historical-source compatibility pass. Unit tests never generate new HELD witness streams. No replay/new scores after outcomes to retune; fix engineering before held first-use or stop if uncertainty.",
+  "authority": {
+    "source_mode": "engineering_fixture_only",
+    "original_first_use": false,
+    "accepted_native_modified": false,
+    "scientific_gain_verified": false,
+    "merge": false,
+    "deployment": "NONE",
+    "canonical_owner_pr": 1278,
+    "contributor_pr": 1327
+  }
+}

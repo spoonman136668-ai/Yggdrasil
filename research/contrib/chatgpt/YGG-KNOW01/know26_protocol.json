@@ -1,0 +1,115 @@
+{
+  "schema": "yggdrasil.know26.unknown-action-affordance-transfer-frozen-dev.v1",
+  "date": "2026-11-20",
+  "authority": "Independent Yggdrasil contributor existing PR #1327 only. Unified Causal Intelligence Amalgam Work PR #1278 sole canonical learner/checkpoint/integration owner. No original-world first-use (#426), owner-runner, accepted model mutation, merge, deployment, new controller, scheduler or paid APIs.",
+  "motivation": "KNOW25 shown x2 probe helps when correct physical action supplied; FIT prior did not improve. Test whether numerical action IDs can acquire a stable intervention mapping from witnessed consequences and whether that learned mapping transfers to unseen causal formulas.",
+  "causal_law": "One global fixed but private bijection from anonymous action IDs 1,2,3 to physical flips x0/x1/x2; action ID 0 is publicly known no-op. Learner sees context c=t%4 (x2=0) and chosen ID, not the mapping or causal formula. Outcome y~Bernoulli(.85 if unknown Boolean law at c xor physical flip is 1 else .15). Independent exogenous coin SHA256('know26:private:witness:v1:'+seed+':'+step+':'+mapping_id), first 64 bits, common across all policies and independent of action.",
+  "mapping_cases": [
+    {
+      "id": "m1",
+      "flip": [
+        0,
+        4,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "m2",
+      "flip": [
+        0,
+        1,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "m3",
+      "flip": [
+        0,
+        2,
+        1,
+        4
+      ]
+    }
+  ],
+  "fit": {
+    "per_mapping_worlds": [
+      {
+        "seed": 13011,
+        "law": "xor02",
+        "steps": 36
+      },
+      {
+        "seed": 13027,
+        "law": "xor12",
+        "steps": 36
+      },
+      {
+        "seed": 13049,
+        "law": "and02",
+        "steps": 36
+      }
+    ],
+    "total_per_mapping": 108,
+    "action_schedule": "Public step modulo four, every anonymous ID chosen nine times per FIT world. Each FIT world gets separate unobserved Boolean law, which is NEVER supplied as learner feature.",
+    "model": "Exact joint finite Bayes over six possible anonymous action permutations ×256 possible 3-bit Boolean truth tables, initially uniform mapping prior 1/6 and uniform truth table. For each FIT world, update joint likelihood using 36 single-witness events; marginalize private rule and carry ONLY mapping posterior to next world, resetting rule prior to uniform. Store cold mapping posterior and one source-checkpoint per FIT world."
+  },
+  "held": {
+    "laws": [
+      "parity3",
+      "majority3",
+      "xor01_and2",
+      "xnor01_xor2"
+    ],
+    "seeds": [
+      13331,
+      13347
+    ],
+    "worlds": 24,
+    "steps": 32,
+    "worlds_per_mapping": 8,
+    "action_schedule": "Exactly one witnessed outcome for public action=step mod 4, same common evidence for all non-privileged policies; no active decision selection in this gate. Action affordance *learning* only, do not mislabel a fixed schedule as learned action planning.",
+    "held_witnesses_per_policy": 768,
+    "high_evaluator_queries_per_policy": 96,
+    "low_evaluator_queries_per_policy": 96,
+    "eval": "After 32 held witnesses score 4 withheld x2=1 no-op contexts and 4 x2=0 no-op contexts per world analytically with exact Bernoulli q; no evaluator result fed back."
+  },
+  "policies": {
+    "fit_joint_bayes": "Exact conventional Bayesian six mapping×256 truth-table ensemble. At held start uses posterior over mapping learned from FIT, fresh uniform truth table; updates on 32 held outcomes.",
+    "no_fit_joint_bayes": "Same exact model/capacity/held actions/update budget with uniform mapping prior, and NO FIT 108 observations. Quantifies incremental learned affordance benefit and extra FIT cost.",
+    "fit_MAP_256": "Lower-memory readout: choose most probable mapping after FIT, then run 256-law Bayesian over held outcomes under that mapping; same FIT/held public action/witnesses. Report wrong MAP and loss.",
+    "no_fit_MAP_256": "Same MAP 256-law model with uniform mapping prior and frozen tie choice first lexicographic permutation. Negative control, no mapping FIT.",
+    "fit_sham_no_x2": "Same exact Bayesian with FIT but source FIT training actions restricted to IDs 0,2,3? This is NOT guaranteed x2 blind across mapping cases, therefore only compare as a diagnostic if explicitly mathematically verified; do not include ungrounded control.",
+    "known_mapping_256": "Evaluator-privileged correct physical mapping, 256-rule Bayesian on same 32 held outcomes; ceiling and NOT fair.",
+    "known_held_law_family": "Extra-privileged evaluator-aware family prior over four HELD laws with correct mapping; upper bound, NOT matched.",
+    "context_action_beta": "Conventional independent public context×anonymous action Beta(1,1), same 32 held outcomes, no structural knowledge of high c; high x2 contexts forecast .5 (expected Brier .25).",
+    "uninformed_p05": "Constant .5 (expected Brier .25)."
+  },
+  "frozen_variants": {
+    "mapping_candidates": "All six permutations of physical flips (1,2,4) for anonymous IDs 1,2,3; uniformly initialized and not ranked by hidden true mapping.",
+    "hypotheses": "256 complete 3-bit Boolean truth tables, uniform prior in each new world and no direct target rule labels.",
+    "fit_witness_rule": "Use exactly one environment outcome per public step, no counterfactual oracle inference or teacher forward pass; FIT only passes posterior P(mapping), not hidden law identity or posterior for old law.",
+    "cold_state": "Each FIT source world joint posterior receipt and a source-only serialized mapping posterior, hash-checked after restore. Evaluate held worlds by cloning, never write back into FIT posterior. Verify FIT->HELD->FIT old readouts do not change, but acknowledge this is protected archive storage rather than active interference repair."
+  },
+  "fixed_tests": {
+    "E1": "All six candidate mappings retained in both FIT and HELD posterior state; private mapping is never a model input, only evaluator/test fixture.",
+    "E2": "Every matched arm has exactly 768 HELD witnessed outcomes; source seeds and mapping identifiers are disjoint from prior studies; evaluator queries are not observations.",
+    "E3": "All exact-Bayes FIT checkpoint roundtrips and cold retained original-world predictions identical; wrong seed, duplicate JSON, extra action/event and source-mode mutations rejected.",
+    "H1": "FIT mapping posterior assigns >.50 to the correct hidden mapping in at least two of three private mapping groups.",
+    "H2": "FIT joint Bayes high expected Brier <= NO-FIT joint Bayes high expected Brier -0.01000 across 96 held high queries.",
+    "H3": "FIT MAP high Brier <= FIT full joint Bayes high Brier +0.01500; report if hard decisions hurt.",
+    "H4": "FIT MAP correct at all three mapping groups, separated from H1 posterior confidence; do not claim if wrong.",
+    "H5": "FIT joint Bayesian high expected Brier <= fully informed known-mapping Bayes +0.02000; privileged upper bound for context, not scientific superiority.",
+    "gate": "ENGINEERING PASS only if E1/E2/E3, deterministic cold provenance, and dual OS exact-source mandatory full regression. DEVELOPMENT_AFFORDANCE_TRANSFER_SUPPORTED if H1 and H2, otherwise MIXED if either, else NO_GO; H3–H5 reported separately. Synthetic experiment may NEVER SCIENTIFIC_PASS or canonical promotion."
+  },
+  "metrics": [
+    "Per mapping posterior probability and rank, entropy, MAP, FIT source witness and checkpoint bytes",
+    "Per world high and low analytic expected Brier, mean across equal mapping/law/seed cells",
+    "FIT vs no-FIT delta using same anonymous action/outcome tape, comparator known mapping and no-structure",
+    "Episode-wise cold exact original FIT model readout integrity and no held-to-FIT mutation",
+    "Total per-policy held actions, FIT source-only action counts, exact source hash and one frozen science run",
+    "Wall time and model encoded byte footprint, no speedup claim"
+  ],
+  "stop_rules": "No after-observation retuning of schedules, seeds, decision predicates, mapping or cohorts. Preserve negative effects and source-integrity failures. No new owner controls, queues, first-use, merges, paid APIs, deployment or native checkpoint edits. This is NOT an unknown natural action space; four anonymous actions and three possible physical effects are hypothesized a priori. Strong Bayesian full model already has that hypothesis family."
+}

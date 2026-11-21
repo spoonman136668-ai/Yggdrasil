@@ -1,0 +1,110 @@
+{
+  "schema": "yggdrasil.tgap26.unlock-hidden-variable-through-learned-probe-value.frozen-dev.v1",
+  "date": "2026-11-20",
+  "kind": "source-only independent causal research; existing PR #1327, Amalgam #1278 sole canonical owner; no first-use issue #426",
+  "predecessor": {
+    "know24_prereg": "1454d7b58875f5a50429e33979b0edfa5a1c7e88",
+    "know24_qualified_run": 44738949026,
+    "tgap25_prereg": "f9cd943662740eccc0e8017b1d1198c3e5d18d77",
+    "tgap25_qualified_run": 44739112860,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "question": "Can a source-blinded posterior learner choose x2-enabling interventions from its own predicted value of information to disambiguate causal laws that are exactly indistinguishable under earlier action set? Is transferred sparse ANF prior helpful beyond a no-FIT candidate and full-capacity Bayes?",
+  "public_source": {
+    "context": "Three binary inputs x0,x1,x2. Per step initial c=t%4 so x2=0. Interventions actions a∈{0,1,2,3}, effective context c XOR (0,1,2,4)[a]. a3 flips x2. Earlier KNOW24 restricted to 0,1,2.",
+    "outcome": "Exactly one witnessed y~Bernoulli(.85) when private f(effective)=1, else Bernoulli(.15). Private SHA256(seed,t) coin independent of chosen action. Private f/coin not a learner input.",
+    "fit": "Three independent low-only FIT worlds under private x0, x1, xor01, 24 passive action0 witnessed observations each; learn an eight-coefficient ANF sparse prior through expected coefficient posteriors, same as KNOW24 on fresh FIT seeds.",
+    "fit_worlds": [
+      {
+        "seed": 12001,
+        "law": "x0"
+      },
+      {
+        "seed": 12007,
+        "law": "x1"
+      },
+      {
+        "seed": 12013,
+        "law": "xor01"
+      }
+    ],
+    "held_pairs": [
+      {
+        "low_law": "x0",
+        "high_law": "x0_xor_x2",
+        "seeds": [
+          12311,
+          12317,
+          12323,
+          12329
+        ]
+      },
+      {
+        "low_law": "xor01",
+        "high_law": "xor01_xor_x2",
+        "seeds": [
+          12411,
+          12421,
+          12433,
+          12437
+        ]
+      },
+      {
+        "low_law": "and01",
+        "high_law": "and01_xor_x2",
+        "seeds": [
+          12503,
+          12511,
+          12517,
+          12527
+        ]
+      }
+    ],
+    "held_worlds": 24,
+    "fit_actions": 72,
+    "held_per_policy": 576,
+    "early_low_only_steps": 12,
+    "allowed_extra_steps": 12,
+    "per_world_events": 24,
+    "high_forecasts_per_world": 4,
+    "held_high_evaluator_queries_per_policy": 96
+  },
+  "candidate": {
+    "hypotheses": "All 256 Boolean three-input truth functions represented as 8 GF(2) ANF coefficients; sparse coefficient Bernoulli prior learned from 72 actual low-x2 FIT action outcomes, NOT supplied private FIT law labels.",
+    "choice": "For each step t>=12 choose among public actions {0,1,2,3} the action maximizing expected reduction in posterior uncertainty of the 4 high-context causal bits (x2=1), averaged over the two possible future witnessed outcomes using existing posterior and known 0.85/0.15 observation noise; ties choose smallest action. No hidden truth, future witness, evaluator score or x2 oracle.",
+    "update": "Bayesian log likelihood for each hypothesis from exactly the chosen current action's single reward; no all-actions/counterfactual pseudo labels.",
+    "cold": "Cold checkpoint includes 256 posterior hypothesis probabilities/log weights, witnessed transcript, learned FIT prior, exact deterministic hash, typed source-only and replay negative controls. Prior FIT submodels never trained on HELD world outcomes."
+  },
+  "controls": [
+    "Same trained sparse ANF posterior with x2 action forbidden 0..2 (KNOW24 identifiability negative, same first 12 low observations)",
+    "Same trained sparse ANF with fixed action3 for last12 (exogenous x2 intervention; not a learned choice)",
+    "Same sparse ANF prior p_j=.25, no FIT, same active value-of-information action choice",
+    "Uniform exact Bayesian over 256 truth tables p_j=.5 with same active value-of-information policy (equal hypothesis count, different prior)",
+    "Known six paired operator hypothesis family Bayes, active VOI, EXTRA true law family structural prior (not equal capacity)",
+    "Fully fitted independent eight-context Beta(1,1) with same policy-level info-gain and 4 actions, updates only witnessed cells",
+    "Seeded deterministic public random choice among 4 actions, same trained sparse ANF predictor",
+    "Source-only p=.5 with fixed x2-blind actions, no training"
+  ],
+  "eval": {
+    "primary": "Mean analytic EXPECTED Brier of four held high-context (c=4..7, action0) predictions per 24 worlds =96 queries, evaluated after 24 witnessed outcomes; evaluator private truth used only for scoring.",
+    "secondary": [
+      "Exactly 12 same-seed paired low-law/high-law transcripts and predictions must match for a3-barred model; original paired high Brier>=.25",
+      "Rate of model-chosen x2-flipping actions among 288 allowed active interventions after step12",
+      "High forecast divergence across paired-world twins when a3 is allowed (no guarantee due to Bernoulli noise)",
+      "Held per-pair expected Brier and compare no-FIT/uniform/known-family/forced-x2/random/beta",
+      "Original FIT ANF coefficient posteriors unchanged after 24 HELD world updates and exact cold restoration",
+      "Equal per-policy 72 FIT actions, 576 HELD actions (though chosen actions and observed evidence differ as adaptive consequence), scorer-only high 96 expected Brier queries",
+      "Execution time, checkpoint bytes, and observation/hypothesis-update counts, no whole-process speed benefit claim"
+    ]
+  },
+  "frozen_decisions": {
+    "H1": "All 12 x2-barred same-seed paired worlds have byte-identical witnessed action/outcome traces and high-context predictions (non-identifiability negative)",
+    "H2": "Trained candidate selects x2 intervention on at least 144/288 post-warmup allowed action opportunities, without a private rule label",
+    "H3": "Trained candidate high expected Brier improves vs same trained x2-barred model by >=.020000 absolute across 96 high-context queries",
+    "H4": "Trained candidate beats equal-hypothesis uniform full Bayes active high Brier by >=.010000",
+    "H5": "Trained sparse ANF prior beats same architecture NO FIT x2-enabled by >=.010000 high Brier",
+    "H6": "At least 8 of 12 paired-world high forecasts diverge L1 mean >=.05 when trained candidate has permitted x2 probes; not statistically population significant",
+    "verdict": "All 6 criteria: DEV_MECHANISM_DISCOVERY_SUPPORTED. Any positive: DEV_MIXED_X2_DISCOVERY. Zero: DEV_NO_GO. Scientific outcome ALWAYS SCIENTIFIC_NO_GO_SYNTHETIC. Report H1 engineering safeguard separately."
+  },
+  "requirements": "No hidden operator label or action mask beyond declared affordances. Never silently give x2 access to barred arm. All active learners have 256 hypotheses except clearly separate contextual Beta and true-family-informed stronger prior; fair comparisons require interpreted differences in observed action information, prior/capacity and inference CPU. Freeze seeds, threshold, source, action budget and scoring before results. Synthetic only. Existing 6-job Linux/Windows focused, G29 seal, mandatory final regression and already-consumed original TRAIN image compatibility. No new scheduler, runner, controller, owner first-use/merge, paid API, model integration or checkpoint promotion."
+}

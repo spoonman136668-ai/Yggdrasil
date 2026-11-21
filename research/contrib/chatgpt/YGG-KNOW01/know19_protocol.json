@@ -1,0 +1,82 @@
+{
+  "schema": "yggdrasil.know19.single-witness-posterior-aware-probe-frozen-dev.v1",
+  "date": "2026-11-20",
+  "purpose": "Test whether original tokenless NativeContextAccumulator can cumulatively learn whether a proposed binary intervention reduces an UPDATED publicly represented candidate set, including 1-vs-3 probes, from ONE witnessed outcome per training query rather than KNOW18 four-world counterfactual labels.",
+  "owner_boundary": "Independent Yggdrasil knowledge contributor on existing PR1327 only; Unified Causal Intelligence Amalgam Work PR1278 remains sole canonical learner and integration coordinator.",
+  "predecessor": {
+    "research_pr": 1327,
+    "exact_head_before_prereg": "4cf52dcf9da7123cb22129028570beef60f6abf8",
+    "know18_science": "NO_GO",
+    "know18_identification": "8/12 native and fitted symbolic/tree; 12/12 analytic posterior-aware oracle",
+    "archived_amalgam_sha": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+    "historical_image_sha": "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1"
+  },
+  "source": {
+    "kind": "synthetic binary public source features only",
+    "source_mode": "engineering_fixture_only",
+    "data_first_use": "NO original-world use; issue #426 remains protected",
+    "probe_patterns": "All 16 four-role public binary patterns, shuffled independently per seed by random.Random(seed*109+31)",
+    "synthetic_fact_ids": "role-independent salted opaque identifiers; no hidden-role bit in public Q/P/Q source",
+    "role_unobservability": "All hidden roles within a source seed have identical public graph and probe options."
+  },
+  "seeds": {
+    "train_A": 3119,
+    "train_B": 3251,
+    "held": [
+      3371,
+      3463,
+      3593
+    ],
+    "prior_not_reused": [
+      1301,
+      1403,
+      1601,
+      1709,
+      1801,
+      2111,
+      2221,
+      2333,
+      2441,
+      2551
+    ]
+  },
+  "native": {
+    "class": "original yggdrasil.native_context_accumulator.NativeContextAccumulator",
+    "context_bits": 8,
+    "degree": 9,
+    "address": 0,
+    "context": "candidate_set_four_bit_mask<<4 | four_bit_probe_pattern",
+    "action": "0 or 1",
+    "train_A_candidate_masks": "Four 3-role subsets plus 4-role full set; 5*16*2=160 witnessed actions",
+    "train_B_candidate_masks": "Six 2-role subsets; 6*16*2=192 witnessed actions",
+    "private_role_selection": "One hidden role deterministically selected for EACH row by SHA256('know19:v1:'+seed+':'+mask+':'+pattern+':'+action), reduced modulo size of candidate set, never provided as native input.",
+    "single_witness_feedback": "After executing one action in the selected synthetic world, compute remaining candidate count by matching observed binary consequence for each publicly listed candidate. Utility label=1 iff remaining candidate count is STRICTLY SMALLER than previous count, else 0. Never query the other three hidden worlds for that row.",
+    "fixed_training_budget": "Exactly 352 separate synthetic action observations, split into A 160 and B 192 disjoint (context,action) pairs, no cross-world oracle aggregation",
+    "known_limitation": "Analytic hypothesis enumeration and consistency filtering are supplied; labels express only feasibility of information reduction, not expected information gain or experiment optimality."
+  },
+  "held": {
+    "worlds": "3 novel source graphs x 4 hidden roles = 12",
+    "budget": "At most two actions per policy per world",
+    "policy": "Score each unused public probe for each action via cold-restored native .predict on CURRENT candidate mask and that probe's source bits; choose largest positive score, tie by unsigned opaque probe ID then action 0 before 1. After real synthetic outcome, update candidate set with identical public consistency logic for all policies.",
+    "source_distinctness": "Held source IDs, seed graphs and identities differ from training; underlying 4-bit mask/pattern grammar is fully represented during FIT; no claim of unseen grammar.",
+    "singletons": "Evaluate a role-isolated probe family with only 1-vs-3 patterns; after each witnessed action, posterior gets updated. This is a diagnostic, not the original KNOW18 12-world cohort."
+  },
+  "controls": [
+    "Fully trained exact symbolic (mask,pattern,action) lookup on same 352 one-action labels",
+    "Fully trained depth-9 conventional binary decision tree or exact 9-input leaf classifier on same 352 labels",
+    "Original NativeContextBasis full refit A+B on same labels",
+    "Analytic posterior-aware best balanced split oracle with same two-action budget; not counted as learned",
+    "Frozen random, passive action0 and source-only no-action negatives with same source and action caps",
+    "Old KNOW18 posterior-blind raw-feature policy evaluated as historical reference only; no scored reuse of its held cohort"
+  ],
+  "measurement": [
+    "Held unique-role identification /12, conditional probe abstention, witnessed action count, posterior sizes and entropy, 1-vs-3 fallback",
+    "A predictions for all 160 (context,action) combinations before and after B and after independent checkpoint restore: zero drift required",
+    "No source/private role leakage, no oracle cross-world label construction, source-typed negative controls",
+    "Full-process CPU wall time, training observations, model bytes, original-model untouched proof and exact-source final Linux/Windows/atlas/source checks"
+  ],
+  "engineering_gate": "Native supports every previously observed A input and B input, zero old A prediction drift, cold checkpoint bytes reproduce, positive 1-vs-3 probes never falsely abstain, held role identification at least 10/12; report FAIL otherwise, without retuning.",
+  "scientific_gate": "NO scientific PASS from this synthetic complete small-grammar protocol. Any claimed gain requires new owner-approved original-world prospective first-use with matched fully trained controls, disjoint unseen operator transfer, retention and whole-process compute. Native-control tie or lower is NO_GO.",
+  "stop_rules": "One frozen seed/protocol study, no post-result thresholds, seeds or cohort changes, no extra actions, no selecting winning tie rules after scoring. Infrastructure test defects may be corrected transparently without changing scientific hypothesis.",
+  "allowed": "Research-only code, tests, evidence and existing contributor PR #1327; no new PR, branch owner, canonical learner, checkpoint promotion, source first-use, runner dispatch, scheduler, paid API, merge or deployment."
+}

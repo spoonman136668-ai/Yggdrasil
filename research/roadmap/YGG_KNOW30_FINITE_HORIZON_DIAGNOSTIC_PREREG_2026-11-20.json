@@ -1,0 +1,108 @@
+{
+  "schema": "yggdrasil.know30.finite-horizon-action-information-analytic-prereg.v1",
+  "date": "2026-11-20",
+  "question": "Can strict one-step expected target-Brier improvement rank an action above another, yet a two-action policy starting with the other action be strictly better, with identical public action meanings, prior, target, observation count, and no oracle state?",
+  "role": "Independent analytical research contributor on existing Yggdrasil PR #1327; canonical native learner, training and checkpoint ownership remains in Amalgam PR #1278.",
+  "baseline": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "contributor_head_before_prereg": "74f8fa4c866e0ea91e0bc013f59c7fa72574ae24",
+    "previous_know29_prereg": "a0b3c666cb9573aa62cbf32a66e960f7ad342d5c",
+    "previous_know29_science": "MIXED_CALIBRATION_DEV, EVI loses to entropy on both new cohorts",
+    "previous_source_know29": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1327#issuecomment-7044191379"
+  },
+  "toy_worlds": {
+    "count": 6,
+    "world_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "prior": "uniform 1/6 per hidden world",
+    "target_bits_by_world": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "actions": [
+      {
+        "id": "a",
+        "observed_bits_by_world": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "b",
+        "observed_bits_by_world": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "c",
+        "observed_bits_by_world": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "observations": "Each selected action reveals only its deterministic public binary diagnostic result for the hidden world. No world ID or target label revealed. All diagnostic action meanings/public partitions are known to both algorithms. No duplicate action needed.",
+    "target_query": "After observations predict binary target. Expected Bernoulli Brier under posterior = p(1-p); average over the uniform hidden-world prior."
+  },
+  "policies": {
+    "greedy": "At each step choose action with minimum expected Brier after one observation, ties resolved a,b,c; stop after exactly 1 or 2 observations. Never use hidden world ID or target label.",
+    "two_step": "Enumerate possible public first observations for each available action, select a second action minimizing posterior expected Brier conditional on the observation; choose the first action minimizing total expected Brier after exactly two observations. All branching depends on observable diagnostic bits only.",
+    "oracle": "Privileged target/world-index oracle is not an admissible control and must never be used."
+  },
+  "frozen_expectations": {
+    "baseline_risk": "2/9",
+    "one_step_risks": {
+      "a": "2/15",
+      "b": "2/15",
+      "c": "1/9"
+    },
+    "greedy_first": "c",
+    "greedy_two_step_risk": "1/12",
+    "two_step_optimal_first": "a",
+    "two_step_optimal_second_conditional": "after a=0 query b; after a=1 arbitrary remaining action",
+    "two_step_optimal_risk": "0",
+    "two_step_advantage": "1/12"
+  },
+  "frozen_tests": {
+    "P1": "Independently enumerate all 6 hidden worlds; one-step expected Brier a=b=2/15, c=1/9, so greedy strictly chooses c.",
+    "P2": "With a selected first, b second conditional on a=0, risk is exactly zero; with c selected first, best second risk is 1/12.",
+    "P3": "No algorithm receives hidden world identity or target bits as real-time inputs; action choices depend only on known public table and observed diagnostic outcomes.",
+    "P4": "Both nonprivileged strategies receive identical two-action budget, same six-world uniform prior and public action table, no action cost and no teacher/model inference.",
+    "P5": "The model is a strict counterexample to universal greedy two-step optimality, not evidence that horizon mismatch caused KNOW29's actual result. No empirical/native gain inferred."
+  },
+  "execution": {
+    "mode": "EXACT_RATIONAL_ANALYTIC_NO_HELD_TRIALS",
+    "unit_tests": "Independent brute enumeration + dynamic program in Python standard library; test tie and negative cases with rational Fraction; no source or checkpoint artifacts.",
+    "source_first_use": false,
+    "protected_original_426": false,
+    "runner_dispatch": false,
+    "native_weights_changed": false,
+    "merge": false,
+    "deployment": "NONE",
+    "scientific_gain_verified": false
+  },
+  "next_decision": "If all exact statements pass, treat finite horizon as a PLAUSIBLE, UNCONFIRMED explanation of KNOW29; a distinct future prospective matched study would be required to test that explanation in the original synthetic family, and native/source-owner authority is required for actual Yggdrasil gains."
+}

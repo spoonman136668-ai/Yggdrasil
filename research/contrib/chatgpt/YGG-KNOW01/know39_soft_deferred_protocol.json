@@ -1,0 +1,120 @@
+{
+  "schema": "yggdrasil.know39.fast-posterior-deferred-memory-prereg.v1",
+  "experiment": "KNOW39",
+  "date": "2026-11-20",
+  "authority": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "branch": "docs/ygg-independent-review-assessment-20261119",
+    "pr": 1327,
+    "research_parent": "c5e5844551e41e3fd888cbd972c2e78f001ff879",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "canonical_owner": "Amalgam PR #1278",
+    "original_source_426": "NO_NEW_FIRST_USE",
+    "native_weights_changed": false,
+    "no_merge": true,
+    "runner_dispatch": false,
+    "no_controller": true,
+    "no_schedule": true,
+    "no_paid_api": true,
+    "deployment": "NONE"
+  },
+  "claim": "Unlike KNOW38's stale bank-only forecasts, immediate global soft Bayesian filtering of observed consequences may give fast predictive adaptation while deferred capped A/B long-term writes preserve old regime memory. Must beat FIT-selected strong temporal HMM, not only weak ablations.",
+  "novelty": "Global soft regime belief affects readout after each witnessed action-consequence; eight-event global buffer isolates provisional observations before permanent updates; persistent banks are separately capped and cold-restorable. No tokenization or transformer.",
+  "algorithm": {
+    "state": "Two Beta(1,1) banks of 8 physical inputs, cap six writes per input/bank; global p_A posterior initialized .95; one shared eight-event pending (x,y) queue; 0-256 received events, switches count as number of sealed batches committed to B",
+    "initial_bootstrap": "When bank zero is not fully populated to six per physical x, every sealed batch commits to bank zero, up to per-cell cap. This initial training uses only witnessed counts, no true phase labels.",
+    "prior": "For every pre-update prob or post-observation Bayesian update, predicted weight p_A_prior = p_A*(1-h)+(1-p_A)*h, where h is the same FIT-selected hazard as HMM.",
+    "readout": "candidate forecast = p_A_prior*P_A(y=1|x)+(1-p_A_prior)*P_B(y=1|x). No long-term write is necessary for each forecast.",
+    "posterior": "Upon observed y, using pre-commit Beta bank readouts, p_A <- [prior*L_A(y|x)]/[prior*L_A+(1-prior)*L_B]. Only the true witnessed y updates the fast posterior. The candidate does not access private law, seed, phase or future y.",
+    "commit": "At exactly each eighth global observed consequence, after fast posterior update, if bootstrap needed commit pending 8 to A; else if current p_A>=.9 commit to A; else if p_A<=.1 commit to B; else discard pending as ambiguous. Commit all 8 to selected persistent bank capped at six writes per cell. Always clear pending. A-only or ambiguous observations never write the unselected bank.",
+    "fallback": "A or B bank that is fully capped remains immutable. Prior and posterior remain fast and ephemeral; checkpoint includes p_A, hazard, pending, both bank states, caps, and received count.",
+    "cold": "Canonical JSON SHA256 readback at 64/128/192/256 and prefix forks, <=4096 checkpoint bytes; reject duplicate keys, bad types/nonfinite values, forged witness counts."
+  },
+  "controls": {
+    "HMM": "Exact prior KNOW36 fully online two-bank global HMM Comparator('hmm'), FIT-selected h in [1/128,1/32,1/8] by mean FIT t>=64 expected Brier, not refitted to HELD.",
+    "hard_readout": "Same candidate's hazard, posterior, delayed writes, budgets, but forecast from whichever bank has global posterior weight>=0.5; isolates soft forecast benefit.",
+    "no_buffer": "Same posterior and capped persistent A/B banks, but decides each observed y immediately via p_A>=.9 or <=.1, otherwise no write; isolates effect of delayed write admission.",
+    "no_switch": "Same candidate but p_A permanently fixed at .95, slow A-only capped memory, cannot infer B; weak negative.",
+    "know38": "Unmodified KNOW38 candidate staged-local hard switch, frozen before this work.",
+    "rolling": "Unmodified conventional rolling-last8 input memory. Same actions/events, byte/CPU not exactly matched.",
+    "cost_note": "Report each method exact checkpoint bytes and Python per-observe cost; strong HMM has 16 Beta heads, candidate same number plus pending. No efficiency claim without matched CPU and reference."
+  },
+  "source": {
+    "type": "novel_synthetic_Bernoulli_no_original_sources",
+    "private_domain": "know39:synthetic:coin:v1:{seed}:{t}:{law}",
+    "public_tape": "x=(t%8) XOR (((t//8)%2)<<1), 16 public context/actions per 16 events, no phase tags",
+    "laws": "unchanged original KNOW36 q_for A/B1/B2, P(y=1)=.85 or .15",
+    "phases": "A64→B64→A64→B64, plus A-only sham branch sharing A64 prefix",
+    "fit": {
+      "B1": [
+        29101,
+        29107,
+        29117,
+        29123,
+        29137,
+        29153
+      ],
+      "B2": [
+        29201,
+        29209,
+        29221,
+        29231,
+        29243,
+        29251
+      ]
+    },
+    "held": {
+      "B1": [
+        29303,
+        29311,
+        29327,
+        29333,
+        29339,
+        29347,
+        29363,
+        29383,
+        29387,
+        29399,
+        29411,
+        29417
+      ],
+      "B2": [
+        29501,
+        29513,
+        29527,
+        29531,
+        29537,
+        29549,
+        29567,
+        29573,
+        29581,
+        29599,
+        29611,
+        29629
+      ]
+    },
+    "fit_worlds": 12,
+    "held_worlds": 24,
+    "fit_unique_events": 3072,
+    "held_unique_events": 9216,
+    "held_unique_per_world": 384,
+    "arm_events_per_held_world": 448,
+    "arm_events_total": 10752,
+    "first_use": "prospective source-only one-shot exactly after full focused Linux/Windows, atlas, complete dual-OS final regression, real-source read-only compatibility, and pre-source exact blobs. No tests call private_y/proof; no unknown or consumed trial replay."
+  },
+  "score": {
+    "primary": "second B t192..255 expected prequential Brier on each held family, true q only evaluator, before model observe; paired wins vs HMM",
+    "secondary": "B first t64..127, returning A t128..191, A-prefix, cold stability, sham false B commits, posterior bank hashes, total novel source calls, checkpoint/CPU.",
+    "hypotheses": {
+      "P0": "source 12 FIT and 24 disjoint HELD, exact 3072 FIT +9216 HELD uniquely opened, 10752 model occurrences/arm, 16 public action/context support, no private fields given to learner, exact cold restore",
+      "P1": "candidate A-prefix expected Brier <=0.23 both B1 and B2",
+      "H1": "candidate second-B mean expected Brier <= FIT-selected HMM minus .005 in BOTH families and >=9/12 paired wins in each",
+      "H2": "candidate second-B mean expected Brier <= hard_readout minus .005 AND no_buffer minus .005 AND know38 minus .005 in BOTH families",
+      "H3": "candidate returning A mean Brier <= FIT-selected HMM +.005 both families",
+      "H4": "A original bank at t64 is exactly byte-identical at t128/t192 in all 24; B bank at t128 byte-identical at t192 in all 24; cold restored state and readout identical at every phase boundary",
+      "H5": "A-only control suffers <=2/24 false B admissions after t64, every candidate checkpoint<4096 bytes"
+    },
+    "decision": "DEVELOPMENT_SUPPORTED iff P0,P1,H1,H2,H3,H4,H5 all true; any failure -> DEVELOPMENT_MIXED_OR_NO_GO. Native SCIENTIFIC_PASS=false regardless of synthetic output. No merge/deployment.",
+    "stops": "NO post-result tuning, no reusing KNOW34/36/37/38 FIT/HELD, no retries after uncertain/consumed first use; preserve negatives and immutable provenance. One source-only first attempt after exact final regression."
+  }
+}

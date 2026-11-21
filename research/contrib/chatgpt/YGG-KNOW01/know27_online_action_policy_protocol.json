@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.know27.online-opaque-action-selection-prereg.v1",
+  "date": "2026-11-20",
+  "role": "Independent synthetic contributor existing PR1327, sole canonical owner Amalgam PR1278. No original-world first use #426, merges, native model, runner, scheduling, paid APIs or deployment.",
+  "baseline_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "baseline_know26_source_blob": "598e45063a04e4e3f4244ae9c16d478038feec81",
+  "baseline_contributor_head": "e94f20b4d548097907c443f39cc5fe827ce22766",
+  "question": "Can a source-blind exact 6 anonymous action permutations ×256 truth-table posterior CHOOSE informative actions online with better costed high-context prediction than same-capacity fixed/random/no-FIT controls, and preserve old A during B without reset?",
+  "source_mode": "engineering_fixture_only",
+  "private_maps": "Re-use original KNOW26 TRUE_MAPS three evaluator-only action-to-physical-bit permutations. The policy receives neither mapping nor law nor private future outcomes.",
+  "fit": "Reuse original KNOW26 exact 108 witnessed actions per mapping from three distinct FIT laws, fit_source(mid); fit mapping posterior carried to HELD, new unknown law prior uniform among 256. Consumed FIT re-read as historical training only. No original-world first-use.",
+  "novel_rules": {
+    "H0": "x0 XOR (x1 AND x2)",
+    "H1": "x1 XOR (x0 AND x2)",
+    "H2": "NOT (x0 AND x2)",
+    "H3": "x0 XOR x1 (x2-irrelevant negative)"
+  },
+  "held_stationary": {
+    "mapping_groups": 3,
+    "rules": 4,
+    "seeds": [
+      14011,
+      14017
+    ],
+    "worlds": 24,
+    "steps": 32,
+    "action_witnesses_per_policy": 768,
+    "high_evaluator_queries_per_policy": 96,
+    "low_evaluator_queries_per_policy": 96,
+    "public_context": "c=t%4 with x2=0; action IDs 0..3, action0 known no-op, IDs1..3 opaque. One Bernoulli reward p=.85 when hidden rule(c XOR private_map[a]) true, else p=.15, only from action actually taken.",
+    "private_noise": "SHA256('know27:private:outcome:v1:{mapping_group}:{seed}:{t}:stationary') first unsigned64 / 2**64, same exogenous coin per step across all policies and law instances; never passed to learner.",
+    "primary_score": "After step31, evaluator-only high contexts c=4..7 no-op and low c=0..3 no-op: analytic expected Brier q*(1-q)+(forecast-q)^2. No evaluator-only reward admitted."
+  },
+  "held_ABA": {
+    "mapping_groups": 3,
+    "seeds": [
+      14111,
+      14117
+    ],
+    "worlds": 6,
+    "steps": 32,
+    "action_witnesses_per_policy": 192,
+    "hidden_law_phases": "t0..7 law H0=A; t8..23 law H2=B; t24..31 H0=A returns. Learner is NOT provided phase labels. Single continuous posterior (NO A-archive rescue/reset). Private coin same formula with 'ABA' last segment.",
+    "old_A_readouts": "After first 8 A outcomes, expected Brier on A high c4..7; after 16 B outcomes and BEFORE any return-A outcome score old A again; compare; cold-reload checkpoint and assert same prediction bytes; prequential return-A 8 witnessed forecasts and rewards. No target labels feed learning."
+  },
+  "policy": {
+    "cost": "Brier-equivalent intervention cost 0.002 for any nonzero opaque action, zero for no-op, charged per chosen action.",
+    "EVI": "For each candidate action a and public current c, compute mean over hidden high c4..7 of Cov(P(Y_high),Y_a)^2/[P(Y_a)(1-P(Y_a))] under current 6×256 joint posterior, MINUS 0.002 for a>0. Select argmax, ties lowest action. This is the expected squared-prediction Brier reduction for one witnessed consequence. No private map/law/coin allowed in policy.",
+    "entropy": "Choose argmax q(c,a)*(1-q(c,a)) - cost, ties lowest.",
+    "cyclic": "a=t%4; no learning of action selection.",
+    "random": "public Random(271828+101*public_world_index), no hidden law/mapping/seed used.",
+    "MAP_x2": "Choose opaque label implied to flip physical x2 under pretrained MAP mapping posterior (candidate receives no true map).",
+    "NOFIT": "Exact same six-map×256 model EVI with uniform mapping prior rather than 108 FIT actions.",
+    "privileged": "Correct-map exact256 EVI; plus known-map and true 4-law family EVI as prior-rich upper controls, distinguish from fair matched policies.",
+    "passive": "p=.5, choose no-op, same action budget without learned representation."
+  },
+  "frozen_controls": [
+    "fit_evi",
+    "nofit_evi",
+    "fit_cyclic",
+    "fit_random",
+    "fit_entropy",
+    "fit_map_x2",
+    "known_map_evi",
+    "known_family_evi",
+    "passive_p05"
+  ],
+  "metrics": "High/low expected Brier and net Brier=high Brier+(0.002 * number of nonzero actions /768); paired per-law and map; action counts, CPU runtime and checkpoint bytes; A-B-A old-A Brier before B vs pre-return, cold exact restoration and return prequential Brier. FIT 108 training/actions per group counted separately.",
+  "hypotheses": {
+    "H1": "fit_evi stationary net high Brier improves fit_cyclic net by at least 0.01000.",
+    "H2": "fit_evi stationary net high Brier improves nofit_evi net by at least 0.01000.",
+    "H3": "fit_evi stationary net high Brier improves fit_random net by at least 0.01000.",
+    "H4": "fit_evi uses at least two distinct active anonymous actions among first16 decisions in at least 18 of 24 stationary worlds.",
+    "H5": "fit_evi A-B-A old A expected Brier pre-return no worse than before B +0.01500 across six worlds, continuous model, NO archive reset.",
+    "H6": "fit_evi x2-irrelevant H3 high Brier no worse than fit_cyclic on H3 +0.01000.",
+    "classification": "ENGINEERING_PASS requires source, custody, budgets and cold negatives plus full 6-job exact-platform CI. DEV_SUPPORTED only all H1-H6 true; MIXED if at least one H1-H4 true and engineering checks pass; otherwise NO_GO. SCIENCE_ALWAYS_NO_GO_SYNTHETIC_NOT_NATIVE regardless of test pass."
+  },
+  "stops": "Freeze before code/evaluation; no after-score seeds/law/cost/metric/threshold updates. No holdout replay or owner first-use. Exact original FIT family unchanged; new held seeds not previously consumed. Preserve all failures and strong conventional controls.",
+  "regression": "Existing YGG-KNOW01 six-job Linux+Windows focused, G29 atlas, mandatory full-final both OS, historical already-consumed source compatibility; exact source SHA and atlas-only successor. No original image in chat."
+}

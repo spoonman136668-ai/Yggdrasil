@@ -1,0 +1,10 @@
+# KNOW40 — novel structural causal intervention one-shot source-first-use request
+
+Protocol froze **before implementation and all novel source use**: commit `e8344c2c3d797fcd304c8c866ac1f1fe7e058e52`, protocol blob `366f96e13a566520d399a78d54e838bf62a551b6`.
+This is a separate synthetic-only world family and not the protected issue #426 original source. New unseen held templates H1 and H2 are nonlinear interactions, distinct from calibrated linear F1/F2 graphs, with a genuine causal action effect in four of eight contexts.
+
+Exact candidate is unchanged KNOW39 `4b61ecf922626e55a80e8390e5a28a34a8ed474e`. Frozen KNOW40 evaluator `81a165c9019045b3b2193aa417b90d549ebc242f`, mock-only safety tests `fbd9e48aeee25cad92cbc45777259865d272f402`. Baselines include FIT-selected HMM, FIT-selected full 256-rule symbolic posterior, simple online lookup, unchanged KNOW38, seeded random-policy negative and oracle upper bound. Only public (t,x,y) observed by models, same forced actions and outcomes for every arm, with pre-update counterfactual action-regret from hidden graph expected values computed solely by evaluator. This assesses shadow **intervention choice**, not genuine chosen-action adaptation or real-world transfer.
+
+New exact novel source budget: 12 FIT worlds /3072 unique outcomes and 24 disjoint HELD worlds /9216 unique outcomes, 10752 model events/arm with shared-prefix and sham forks. Frozen P0/P1/H1–H6; no post-HELD changes. A one-shot run is eligible **only after its own** focused Linux/Windows PASS, atlas seal, complete full-final Linux/Windows PASS, and read-only original-source compatibility PASS. Exact Git blob and attempt==1 gate MUST pass before any synthetic source opens. No source-owner #426 first use, native learner/weights checkpoint, merge, controller, scheduler, owner runner, paid API or deployment.
+
+A negative is a scientific DEVELOPMENT NO-GO, not a failed engineering qualification. An apparently positive synthetic result still cannot constitute native SCIENTIFIC_PASS, independently reproduced transfer or autonomous causal action learning. Preserve all first-use evidence unchanged.

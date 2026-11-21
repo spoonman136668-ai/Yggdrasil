@@ -1,0 +1,113 @@
+{
+  "schema": "yggdrasil.tgap20.sequential-single-world-probability-prereg.v1",
+  "date": "2026-11-20",
+  "research_role": "Independent synthetic research contributor on existing PR #1327; Amalgam PR #1278 sole canonical learner/integration owner",
+  "source_boundary": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "know19_final_source": "4bf16405f8adcd2c2ff7cff74ce728cff64c477d",
+    "know19_qualified_run": 44719607492,
+    "protected_first_use_issue": 426,
+    "mode": "synthetic_source_free_only",
+    "original_native_accumulator_unchanged": true
+  },
+  "objective": "Falsify KNOW19 source-computable utility labels with a persistent within-world hidden mechanism whose stochastic action consequences cannot be calculated from public x/action without actually observing outcomes.",
+  "hypotheses": {
+    "positive_engineering": "An outcome-count learner trained only on one-world witnessed actions reduces Brier loss >=0.02 relative to p=0.5 and retains earlier world A readouts after learning changed world B",
+    "negative_science": "Fully trained identical-information Bayesian and conventional controls may tie or beat the learner; without independent original-world first use and strongest-control gain the science verdict is DEV_NO_GO",
+    "null": "No significant calibrated prediction improvement vs source-only p=0.5 or failures in cold functional retention"
+  },
+  "world": {
+    "public_features": "two binary observations x0,x1; proposed binary action a",
+    "hidden_mechanism_family": {
+      "0": "x0 XOR a",
+      "1": "x1 XOR a",
+      "2": "x0 XOR x1 XOR a",
+      "3": "(x0 AND x1) XOR a"
+    },
+    "outcome_noise": "binary output equals hidden deterministic mechanism bit with probability 7/8, flipped with probability 1/8; stochastic draws witnessed separately, never included as model inputs",
+    "mechanism_visibility": "hidden mechanism index and stochastic coin are simulator-only; not supplied to fitted learners",
+    "sequentiality": "one fixed hidden mechanism per persistent world, all training and evaluation events within that world; no hidden-role resampling per query",
+    "public_action_schedule": "fully balanced deterministic sequence of the eight x0/x1/a combinations; candidate and all controls observe same action stream in the same chronological order",
+    "source_only": "x0,x1,a,world public opaque ID; no role, outcomes or counterfactual utilities encoded in source",
+    "world_knowledge": "known function family is available only to independently fitted exact Bayesian generative comparator; candidate count learner and conventional comparator have no supplied function class"
+  },
+  "seeds": {
+    "old_A": 4101,
+    "new_B": 4201,
+    "held": [
+      4301,
+      4311,
+      4321,
+      4331,
+      4341,
+      4351,
+      4361,
+      4371
+    ],
+    "old_A_mechanism": 0,
+    "new_B_mechanism": 1,
+    "held_mechanisms": [
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3
+    ],
+    "previous_know19_seeds": [
+      3119,
+      3251,
+      3371,
+      3463,
+      3593
+    ]
+  },
+  "budgets": {
+    "old_A_witnessed_actions": 64,
+    "new_B_witnessed_actions": 64,
+    "held_train_witnessed_actions_per_world": 24,
+    "held_eval_queries_per_world": 64,
+    "held_worlds": 8,
+    "held_total_fit_witnesses": 192,
+    "held_total_evaluation_outcomes": 512,
+    "action_budget_per_active_arm": "same fixed evidence stream; no adaptive action choice in this gate"
+  },
+  "candidate": {
+    "representation": "bounded tokenless numeric append-only world-keyed 8-context Bernoulli sufficient statistics n0/n1",
+    "update": "after one action outcome increment exactly one count for that world, x0,x1,a; no hidden-operator labels",
+    "forecast": "Beta(1,1) posterior predictive p(y=1)=(n1+1)/(n0+n1+2)",
+    "cold_restore": "canonical sorted JSON counts bytes and SHA256, reject altered or duplicate event IDs; after B read original 8 A forecasts and cold restore all unchanged",
+    "unseen_context": "forecast p=0.5, not an observed consequence"
+  },
+  "controls": [
+    "p=0.5 source-only uninformed baseline (no witnessed outcome)",
+    "same-data fully fitted exact categorical symbolic Beta(1,1) table (expected candidate tie)",
+    "same-data fully fitted conventional depth-3 binary partition tree with Beta leaf smoothing",
+    "same-data fully trained exact Bayesian distribution over all four possible hidden operators with 1/8 known flip probability and uniform mechanism prior (strong, broader inductive class)",
+    "oracle knows hidden operator and noise rate; not a fair learned baseline, report ceiling"
+  ],
+  "evaluation": {
+    "primary": "Mean Brier score on 512 separately witnessed prospective evaluation outcomes after fit, computed over 8 held worlds; no evaluation outcomes enter training",
+    "secondary": [
+      "mean calibration error by predicted probability bins",
+      "per-operator Brier including previously untrained mechanisms 2/3",
+      "exact old-A-before/after-B/cold functional retention",
+      "whole synthetic execution wall time, model bytes, train/eval action counts, source-only negative",
+      "original native GF2 remains unmodified; no claim of native accumulator itself probabilistically upgraded"
+    ],
+    "engineering_threshold": "Candidate held Brier <=0.23 (vs exact p0.5 Brier 0.25), all A forecasts unchanged after B and independent cold restore, deterministic repeated fixture result; report FAIL if unmet",
+    "science_threshold": "No synthetic fixture result can establish SCIENTIFIC_PASS. Must beat strongest fully trained equal-information control by a separately preregistered >=0.01 Brier difference on owner-admitted genuinely unfamiliar original-world first-use, plus cold changed-rule retention and matched whole-process cost; no qualification without owner",
+    "no_post_hoc": "Never change seeds, thresholds, mechanism family, evaluation selection, noise or scoring after first scored run"
+  },
+  "negative_controls": [
+    "source-only p=0.5 independent of hidden world",
+    "outcomes with same public x/a may contradict across stochastic draws and different latent worlds; original deterministic GF2 would reject contradictions",
+    "shuffled or forged outcome events rejected by typed unique event-ID/source checks",
+    "no within-world training from evaluation outcomes",
+    "retaining A across disjoint world keys not proof of task-interference resistance",
+    "new world identities alone not unfamiliar mechanism transfer; novel operators 2/3 are declared but Bayesian comparator is told full family"
+  ],
+  "governance": "Existing PR research source/tests only; no new PR/controller/scheduler, no protected source first use, no accepted main/owner checkpoint changes, no paid API, no model merge/promotion, no claiming deployed learning"
+}

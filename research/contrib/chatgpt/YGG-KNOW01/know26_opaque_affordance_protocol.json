@@ -1,0 +1,133 @@
+{
+  "schema": "yggdrasil.know26.opaque-action-affordance-transfer-prereg.v1",
+  "date": "2026-11-20",
+  "parent_sha": "9fdff5ed5fe85a806b604568af0fded25cb12d8c",
+  "authority": "Independent synthetic contributor to existing Yggdrasil PR #1327. Amalgam PR #1278 sole canonical owner. No protected first-use #426, native checkpoint changes or deployment.",
+  "question": "Can opaque intervention-label consequences teach which action probes an inaccessible causal bit, and does retained FIT affordance knowledge help across unfamiliar Boolean causal laws versus no-FIT and conventional Beta controls?",
+  "source_mode": "engineering_fixture_only",
+  "public": "c=t%4 contains x0,x1 only. Opaque action labels 0,1,2,3: label0 is public unchanged baseline, 1..3 effects UNKNOWN to learner. Six separate source-free FIT worlds and 24 held worlds. Private action mapping and Boolean law NEVER passed into any policy.",
+  "simulator": {
+    "private_maps": {
+      "G0": [
+        0,
+        2,
+        4,
+        1
+      ],
+      "G1": [
+        0,
+        4,
+        1,
+        2
+      ],
+      "G2": [
+        0,
+        1,
+        2,
+        4
+      ]
+    },
+    "effective_context": "c XOR private_maps[group][action] (private simulator/scorer only)",
+    "fit_operators": {
+      "FIT_A": "x2",
+      "FIT_B": "x2 XOR x0"
+    },
+    "held_operators": [
+      "x2 XOR x1",
+      "x2 XOR (x0 AND x1)",
+      "NOT x2",
+      "x0 XOR x1"
+    ],
+    "reward": "Bernoulli .85 if the private Boolean law evaluated at effective context is1, else .15. Exactly one observed chosen-action consequence. Private SHA256 coin: 'know26:private:reward:v1:{group}:{seed}:{phase}:{t}' first 64 bits/2**64, same potential-outcome tape across arms. Never give private coin to learner."
+  },
+  "fit": {
+    "worlds": [
+      [
+        "G0",
+        13101,
+        "FIT_A"
+      ],
+      [
+        "G0",
+        13107,
+        "FIT_B"
+      ],
+      [
+        "G1",
+        13201,
+        "FIT_A"
+      ],
+      [
+        "G1",
+        13209,
+        "FIT_B"
+      ],
+      [
+        "G2",
+        13301,
+        "FIT_A"
+      ],
+      [
+        "G2",
+        13311,
+        "FIT_B"
+      ]
+    ],
+    "steps_per_world": 64,
+    "total_actions": 384,
+    "public_schedule": "t=0..63: c=t%4, a=(t//4)%4. Four independent consequences per (c,a) per public FIT episode, same 384 FIT actions to all arms.",
+    "group_and_episode_id_public": true,
+    "private_law_labels_hidden": true
+  },
+  "held": {
+    "seeds": {
+      "G0": [
+        13401,
+        13407
+      ],
+      "G1": [
+        13501,
+        13513
+      ],
+      "G2": [
+        13601,
+        13609
+      ]
+    },
+    "worlds": 24,
+    "steps_per_world": 48,
+    "held_actions_per_arm": 1152,
+    "positive_worlds": 18,
+    "negative_worlds": 6,
+    "public_schedule": "t=0..47: c=t%4,a=(t//4)%4. Three observed rewards per (c,a) per world, identical selected actions and observed outcomes for ALL arms. No adaptive action differences in primary benchmark.",
+    "evaluation": "After 48 witnessed actions, each policy chooses an opaque probe label a∈{1,2,3}, then forecasts true hypothetical x2=1 reward at each public c=0..3 using held Beta(1,1) mean of observed rewards for that c and selected a. Private scorer knows q=.85/.15 at effective c XOR 4, uses expected Brier q*(1-q)+(p-q)^2; no scored labels/outcomes feed back.",
+    "queries_per_arm": 96,
+    "positive_queries_per_arm": 72,
+    "negative_queries_per_arm": 24
+  },
+  "candidate": "episode_effect_fit: for each group/fit episode/public context/action compute Beta(1,1) mean. For each opaque label1..3 sum over 2 FIT episodes and 4 contexts |P(y=1|c,a,episode)-P(y=1|c,a0,episode)|. Choose largest effect, tie smallest label, BEFORE HELD. Restore exact SHA256 pinned FIT sufficient stats before each held world; do NOT update FIT with held. Score using selected label's HELD Beta readout only.",
+  "controls": {
+    "matched_conventional": "Independent conventional per-episode Beta effect estimator from EXACT same FIT source and same formula; expected tied action labels and predictions. Conventional equality is an engineering control, not novel science.",
+    "pooled_fit": "Conventional Beta counts pool FIT A/B before computing action-vs-baseline absolute differences; same FIT+held source budget.",
+    "no_fit": "Choose label by absolute effect using 48 HELD records only, no FIT knowledge; same held tape, but less training history than candidate.",
+    "rolling": "Use only most recent 2 FIT outcomes per episode/context/action for effect ranking, lower retained source capacity.",
+    "fixed": "Always use opaque label1, never learn.",
+    "random": "Deterministic public seed from group/rule/seed index, choose opaque label1..3 uniformly; no hidden inputs.",
+    "oracle": "Scorer PRIVILEGED true action mapping to flip x2, serves as an unfair reference ceiling, not a matched learner.",
+    "uninformed": "Always forecast .5 from no learning, one score per held high query."
+  },
+  "predicates": {
+    "H1": "FIT candidate selects true flip-x2 action label in all 3 mapping groups.",
+    "H2": "Candidate positive expected-Brier advantage over no-FIT held Beta >=0.01500.",
+    "H3": "Candidate positive expected-Brier advantage over pooled FIT Beta >=0.01000.",
+    "H4": "Candidate negative-law high Brier <= no-FIT held Beta negative Brier +0.01500.",
+    "H5": "FIT cold bytes, chosen opaque probe label and all 6×4×4 FIT Beta functional predictions remain unchanged after HELD episodes and independent cold restoration. Report paired oracle-reference difference as descriptive ONLY: true-map oracle fitted from 3 noisy HELD outcomes per cell is not guaranteed to attain smallest empirical Brier in a finite sample.",
+    "H6": "Matched conventional per-episode Beta has exact same probe labels, all 96 predictions and metrics as candidate; parity guard, not scientific superiority.",
+    "classification": "ENGINEERING_PASS only if H5+H6 and source/negative controls; DEV_SUPPORTED if H1-H5 true and H6 true, DEV_MIXED if H5/H6 true and at least one H1-H4 true, otherwise DEV_NO_GO. SCIENTIFIC_NO_GO_SYNTHETIC always."
+  },
+  "source_integrity": "Reject seed/phase/group off-cohort, bool-as-int, replay, forged original/owner source_mode, tampered/duplicate/corrupted cold checkpoint. Never show simulator private group-map/law/coin to any learner. Require exact FIT=384, HELD=1152, evaluator-only=96 per arm and identical held action/reward tape for all arms; no threshold changes after scored run.",
+  "qualification": "Use existing YGG-KNOW01 6-job Linux/Windows focused, G29 source atlas seal, mandatory full-final regressions both, historical consumed original-source compatibility. No scientific claim from test PASS.",
+  "limitations": "Simple four-action, three-group stochastic toy environment with private but fixed affordance mapping per group; no raw new ontology, native learner, multi-step causal planning, original-world first-use or proof of general intelligence. Candidate mathematically equals a conventional Beta effect rule, so superior scientific performance vs matched conventional cannot be inferred. No tuning or first-use replay.",
+  "forbidden": "No merge/accepted main mutation, native checkpoint/owner runner or queue, protected first-use issue #426, scheduler, paid API or new coordinator/PR.",
+  "prereg_correction": "Before any source implementation, test execution or held outcome inspection: initial H5 erroneously treated the privileged true-map oracle's noisy Beta estimate as necessarily minimum Brier. Corrected H5 to a custody invariant plus descriptive oracle comparison. Original protocol commit 7704c23d1de5d2159aabcb746fd27114ff0d2125 retained, correction precedes first implementation."
+}

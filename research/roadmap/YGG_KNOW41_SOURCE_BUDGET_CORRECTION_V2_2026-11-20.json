@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.know41.active-causal-synthetic-budget-correction.v2",
+  "experiment": "KNOW41",
+  "status": "PROSPECTIVE_SUPERSESSION_OF_UNCONSUMED_V1_SOURCE_PLAN",
+  "v1_protocol_sha": "40b54a9fff183a54243c530cff0f7be34785faca",
+  "v1_commit": "59d3de3be473da22471ffa66796fac6e8a1b6108",
+  "prechange_qualified_head": "9cf84ec853e3f1fb135db2b7ec522be9a3f824e2",
+  "original_source_first_use": "NONE",
+  "reason": "Original v1 source domain included action a, while allowing different chosen actions per arm but limiting all held source actions to 6144. Different arms can require distinct action-indexed Bernoulli samples at the same timestep; <=6144 unique held samples is therefore not guaranteed and may require up to 12288. Resolve prospectively without consuming protected or synthetic held outcomes.",
+  "replacement_exogenous_source": {
+    "domain": "know41:shared-exogenous:v2:{seed}:{t}:{c}",
+    "u": "int.from_bytes(sha256(utf8(domain)).digest()[:8],'big')/2**64",
+    "observed_y": "int(u < q(graph,c,chosen_action,theta))",
+    "source_unit": "one shared exogenous uniform per (seed,t,c) independently of action, graph and theta; record once per world/timestep, common to candidate and every control, no alternate-action sampled y evaluated",
+    "causal_intervention": "each arm selects a before observation; evaluator computes y only for that arm's selected a from the common exogenous u; sampled unchosen y is neither computed nor leaked",
+    "held_coin_count": "24 worlds *256 =6144 unique exogenous draws, reused across all arms and A-only sham; observations=6144 per arm",
+    "fit_coin_count": "12 worlds *256 =3072 unique exogenous draws, reused across FIT-selection arms",
+    "max_total_new_source_uniforms": 9216,
+    "note": "Shared exogenous noise yields paired outcomes and correlated arm evidence. Score expected regret on the fixed q and report realized utility separately. Do not mistake action/arm observation count for unique source first uses."
+  },
+  "fit_worlds": {
+    "seeds": [
+      41003,
+      41011,
+      41017,
+      41023,
+      41029,
+      41041,
+      41047,
+      41057,
+      41063,
+      41071,
+      41077,
+      41081
+    ],
+    "graph": "CHAIN",
+    "A": "theta0 for t 0..63 and 128..191",
+    "B": "theta1 for t 64..127 and 192..255",
+    "candidate_hazard_grid": [
+      0.0078125,
+      0.03125,
+      0.125
+    ],
+    "bayesian_hazard_grid": [
+      0.0078125,
+      0.03125,
+      0.125
+    ],
+    "bayesian_info_bonus_grid": [
+      0,
+      0.5,
+      1,
+      2
+    ],
+    "selection_metric": "mean expected net utility regret on second B t192..255 aggregated across 12 FIT worlds, no held information; deterministic tie break ascending hazard then ascending bonus",
+    "controls": "Context-bandit 16-cell with frozen 1/4 exploration, greedy 16-cell lookup, always-a0 passive, source-independent deterministic random, no-memory fixed policy. Oracle is evaluator-only, never an observational arm."
+  },
+  "held_worlds": {
+    "theta0_seeds": [
+      41101,
+      41107,
+      41113,
+      41117,
+      41123,
+      41131,
+      41137,
+      41141,
+      41143,
+      41149,
+      41153,
+      41159
+    ],
+    "theta1_seeds": [
+      41201,
+      41207,
+      41213,
+      41221,
+      41227,
+      41231,
+      41233,
+      41239,
+      41243,
+      41249,
+      41257,
+      41263
+    ],
+    "A": "CHAIN theta0 for t 0..63, 128..191",
+    "B": "FORK theta0 or theta1 according to frozen cohort for t 64..127,192..255",
+    "sham": "A-only chain theta0 for t 0..255, with the same per-world exogenous uniforms and separate model state",
+    "primary_metric": "expected net utility regret on B_second t192..255, before actual consequence; exact retained thresholds H1-H4 and P0-P1 of v1"
+  },
+  "source_gate": {
+    "private_sampler_default": "DENY",
+    "mock_only_tests": "witness injection permitted; must never compute u for any specified FIT or HELD seed",
+    "preprimary": "freeze this v2 source design and implementation, verify code+protocol SHA, test on mocked witness only; complete focused, dual OS full-final and archived real-source compatibility; separately authorized one-shot original synthetic FIT+HELD use only after that",
+    "original_causalgym_issue_426": "NOT_AUTHORIZED",
+    "native_weights": "UNCHANGED",
+    "merge": false,
+    "controller_or_owner_runner_mutation": false,
+    "scientific_pass_from_synthetic": false
+  }
+}

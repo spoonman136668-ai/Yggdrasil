@@ -1,0 +1,144 @@
+{
+  "schema": "yggdrasil.know23.quarantined-write-custody-frozen-dev.v1",
+  "date": "2026-11-20",
+  "scope": "Synthetic independent contributor in existing Yggdrasil PR1327; Amalgam PR1278 sole canonical learner owner. No merge, accepted state, first-use #426, owner runner, new controller, scheduler or deployment.",
+  "question": "Does buffering surprising witnessed outcomes before assigning to active memory protect earlier slot A and improve same-address A-B-A return predictions against original immediate writes and strongest controls?",
+  "predecessor": {
+    "know22_qualified_head": "c507a0ae02c43f1ee93753d7d3f43d6bb4d8399a",
+    "tgap21_module_git_blob": "3cd811e61242413d3951cd90caac00f4cfe35210",
+    "know22_original_retention": "2/2 old A slot readouts drifted after B",
+    "know22_posterior_overall_brier": 0.22532834,
+    "know22_fitted_hmm_brier": 0.2085781
+  },
+  "source": {
+    "mode": "engineering_fixture_only",
+    "witness": "unchanged TGAP21 witness(seed,role,step,action,first,second): Bernoulli .8 if chosen action matches private binary regime else .2; private source seed/role/switches/coin inaccessible to predictor",
+    "public": "one unchanged address, public step and action t%2; no entity knowledge leakage",
+    "transfer": "fresh synthetic seeds and switch schedules, same two-action grammar not novel causal-law operator",
+    "prior_source_first_use": "protected"
+  },
+  "fit": {
+    "seed": 9151,
+    "role": 0,
+    "shifts": [
+      22,
+      47
+    ],
+    "steps": 72,
+    "action": "t%2",
+    "snapshots": "After t=21 record slot0 A forecasts; after t=46 record slot0 B-phase forecasts and count drift. No private stage boundary supplied to learner."
+  },
+  "held": [
+    {
+      "seed": 9173,
+      "role": 0,
+      "shifts": [
+        13,
+        38
+      ]
+    },
+    {
+      "seed": 9199,
+      "role": 1,
+      "shifts": [
+        13,
+        38
+      ]
+    },
+    {
+      "seed": 9221,
+      "role": 0,
+      "shifts": [
+        19,
+        41
+      ]
+    },
+    {
+      "seed": 9241,
+      "role": 1,
+      "shifts": [
+        19,
+        41
+      ]
+    },
+    {
+      "seed": 9263,
+      "role": 0,
+      "shifts": [
+        9,
+        32
+      ]
+    },
+    {
+      "seed": 9281,
+      "role": 1,
+      "shifts": [
+        9,
+        32
+      ]
+    },
+    {
+      "seed": 9311,
+      "role": 0,
+      "shifts": [
+        25,
+        49
+      ]
+    },
+    {
+      "seed": 9337,
+      "role": 1,
+      "shifts": [
+        25,
+        49
+      ]
+    }
+  ],
+  "budget": {
+    "fit_witnesses": 72,
+    "held_worlds": 8,
+    "steps_per_world": 64,
+    "held_events_per_policy": 512,
+    "return_events_per_policy": 192,
+    "one_witness_per_action": true,
+    "buffer_replay": "Internal reuse of already witnessed event counts as extra compute but not new environment observation; report total replay operations."
+  },
+  "algorithm": {
+    "name": "QuarantineWriteMemory, experimental numeric two-slot beta(1,1) not native Yggdrasil",
+    "state": "Two slots x two binary actions each (success,count), active index, six private-free (action,outcome) pending events, six anomaly bits, since-switch, event counters, canonical hash-pinned checkpoint.",
+    "mature": "Both actions in current slot have at least four assigned observations; until then immediately assign witnessed events to active slot",
+    "anomaly": "At pre-action p>=0.65, reward0; or p<=0.35, reward1. Keep sliding last six anomaly bits.",
+    "quarantine": "When slot mature, buffer event instead of immediately writing to slot. If >=3 anomalies in six and >=8 events since prior switch, toggle active slot, assign all buffered already-observed events to newly active slot and clear buffer/anomaly ring. Else when pending length reaches six assign only oldest pending event to original active slot.",
+    "flush": "At end of each public episode assign remaining pending events to active slot, without new witness. On new public episode reset action cursor/anomaly ring but retain all previously trained slots.",
+    "readout": "Use identical PRE-witness two-slot posterior mixture with hazard 1/16 in candidate and original immediate-write TwoSlotMemory, posterior starts at 0.5 for each held episode and updates from the same witnessed reward and preupdate slot likelihoods.",
+    "control_capacity": "Report candidate bytes/pending buffers versus original; equality of memory capacity not assumed.",
+    "source_type": "Never provide learner private regime phase, role, switches or unseen future exogenous noise."
+  },
+  "controls": [
+    "Identical original TGAP21 TwoSlotMemory with matched hazard1/16 posterior readout and full FIT",
+    "QuarantineWriteMemory with no FIT",
+    "Original memory with no FIT",
+    "Fully FIT rolling-last8 Beta",
+    "Fully FIT stationary Beta",
+    "Fully FIT reset Beta",
+    "Fully FIT model-informed Bayesian HMM with known .8/.2 and 1/16 hazard",
+    "source only forecast .5"
+  ],
+  "metrics": [
+    "Prequential Brier overall 512 held steps and return-only 192 steps",
+    "Candidate and original slot0 A forecast drift after intervening B on same public address",
+    "FIT vs no-FIT transfer effects",
+    "Strongest conventional overall/return performance, per-role/per-schedule metrics",
+    "Cold checkpoint integrity, replay/forged-source negatives, max buffer size, total local replayed events",
+    "Elapsed isolated CPU proof time, checkpoint bytes, exact source CI and honest synthetic-only claim"
+  ],
+  "frozen_predicates": {
+    "H1": "candidate overall Brier <= original gate overall Brier - 0.01000",
+    "H2": "candidate return Brier <= original gate return Brier - 0.01000",
+    "H3": "candidate old-A slot0 drift after B < original old-A slot0 drift after B",
+    "H4": "candidate overall Brier <= fully FIT rolling-last8 overall Brier",
+    "verdict": "PROTECTION_SUPPORTED_DEV only if all 4 pass, MIXED_PROTECTION if 1..3 pass, PROTECTION_NO_GO if 0; never scientific PASS from synthetic fixtures."
+  },
+  "stop_rules": "ONE frozen study. Do not edit seed, timing, threshold, metric, cohort or comparator after scoring. Fix implementation bugs only transparently; preserve all negatives. No live/canonical training, owner acceptance, protected first-use, paid API, new workflow dispatch, extra PR/merge or deployment.",
+  "science": "Real scientific gain needs independently approved original-world new causal laws, fully trained strongest baselines matched info/actions/capacity/compute, cold same-address retention and independent replication. This DEV result cannot assert that."
+}

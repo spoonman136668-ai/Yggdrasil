@@ -1,0 +1,122 @@
+{
+  "schema": "yggdrasil.know36.noisy-two-regime-retention-prereg.v1",
+  "experiment_id": "KNOW36",
+  "date": "2026-11-20",
+  "role": "independent_contributor_not_Amalgam_owner",
+  "authority": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "pr": 1327,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "canonical_owner": "Amalgam PR #1278",
+    "frozen_candidate_parent": "2cf09af8b43ef09ba5174f365227a7cd4d6287ff",
+    "candidate_blob": "8aa74ada276748faa7b32f834d406a9293ef40e0",
+    "protected_original_world_first_use": false,
+    "native_model_changed": false,
+    "merge": false,
+    "scheduler": false,
+    "paid_api": false,
+    "deployment": "NONE"
+  },
+  "question": "Does the unchanged two-bank KNOW35 local memory outperform a FIT-selected online HMM and structurally matched random gate on noisy reoccurring causal laws, while preserving A after B and B after A?",
+  "source": {
+    "mode": "fresh_synthetic_Bernoulli_no_original_model_or_world",
+    "coin_domain": "know36:synthetic:noise:v1:{seed}:{t}",
+    "public_tape": "c=t%8; a=(t//8)%2; x=c XOR (a<<1); all 16 (c,a) with each x twice per 16 events",
+    "laws": {
+      "A": "x0 XOR (x1 AND x2)",
+      "B1": "x0 XOR x2 XOR (x1 AND x2)",
+      "B2": "(x0 AND x1) XOR (1-x2)"
+    },
+    "probabilities": {
+      "bit1": 0.85,
+      "bit0": 0.15
+    },
+    "treatment": "A[0..63], B[64..127], A[128..191], B[192..255]",
+    "control": "A[0..255]",
+    "fit_seeds": {
+      "B1": [
+        23011,
+        23017,
+        23021,
+        23027,
+        23029,
+        23039
+      ],
+      "B2": [
+        23101,
+        23107,
+        23111,
+        23117,
+        23119,
+        23131
+      ]
+    },
+    "held_seeds": {
+      "B1": [
+        23201,
+        23203,
+        23209,
+        23227,
+        23237,
+        23251,
+        23269,
+        23279,
+        23291,
+        23311,
+        23321,
+        23327
+      ],
+      "B2": [
+        23401,
+        23417,
+        23431,
+        23447,
+        23459,
+        23473,
+        23489,
+        23501,
+        23509,
+        23531,
+        23539,
+        23549
+      ]
+    },
+    "fit_unique_events": 3072,
+    "held_unique_events": 9216,
+    "held_unique_events_per_world": 384,
+    "model_observations_per_held_world": 448,
+    "model_observations_per_arm_held_total": 10752,
+    "policy_observable_only": "(t,x,y) after source; never seed, law, branch, phase, q or future y",
+    "first_use": "One exact-key source-only HELD job after exact dual-OS full regression, atlas and historical compatibility, no rerun after uncertain/consumed trial. FIT and HELD sources never called by unit tests."
+  },
+  "methods": {
+    "candidate": "Existing KNOW35 two-bank code unchanged; two capped six-witness Beta heads/cell; four adjacent-pair gates; likelihood switch ratio 2",
+    "hmm": "16 online Beta(1,1) heads and one global 2-state Markov posterior, p(A) initially .95; initial six per-cell observations fit A, then fully online probability-weighted updates; hazard chosen on FIT only by mean Brier on treatment t64..255",
+    "hmm_hazards": [
+      0.0078125,
+      0.03125,
+      0.125
+    ],
+    "hmm_tie_break": "choose lower hazard",
+    "random_gate": "Exactly same bank architecture and size as candidate but after active bank has six x witnesses switches if SHA256('know36:random-gate:v1:{t}:{x}') modulo 32 == 0, independent of seed, phase or y",
+    "rolling": "one last-8 window per physical input, Beta smoothed",
+    "single": "one online Beta per physical input",
+    "fairness": "Each arm sees identical public events; HMM and candidate each have 16 Beta heads but unequal computational cost, report bytes/CPU; random-gate structural capacity is matched."
+  },
+  "metrics": {
+    "scoring": "Expected Brier q*(1-q)+(p-q)^2 before every update, q computed only in scorer",
+    "primary": "Per-family mean prequential Brier on second B t192..255, candidate vs FIT-selected HMM and random gate; paired win counts",
+    "secondary": "First B t64..127; returning A t128..191; cold exact bank retention checkpoints at t64,128,192,256; sham false switches; FIT choice; bytes; full public support; exact event counts"
+  },
+  "frozen_hypotheses": {
+    "P0": "FIT 12 held 24 worlds source-disjoint, exact source/model counts and no private input, 16 pair support and 8 physical cells per block; checksummed cold",
+    "P1": "A-prefix expected Brier <= .23 for each B family, after 64 events",
+    "H1": "Candidate reappearing B mean expected Brier <= fitted HMM minus .005 in both families, with >=9 of 12 paired wins over HMM each",
+    "H2": "Candidate reappearing B mean expected Brier <= capacity-matched random gate minus .005 in each family",
+    "H3": "Candidate returning A mean expected Brier <= fitted HMM +.005 in each family",
+    "H4": "In all 24 worlds old A bank state at t64 equals t128,t192 and old B state t128 equals t192; independent cold restore at every phase boundary",
+    "H5": "At most 2/24 control A-only worlds have any false switch after t64; candidate checkpoint <4096 bytes",
+    "decision": "DEVELOPMENT_SUPPORTED only if all P0,P1,H1,H2,H3,H4,H5 true; else DEVELOPMENT_MIXED_OR_NO_GO. SCIENTIFIC_PASS=false (synthetic only).",
+    "stops": "No post-result threshold/seed/hazard/method changes, no HELD replay, no original #426 first use, no accepted-model integration or deployment."
+  }
+}

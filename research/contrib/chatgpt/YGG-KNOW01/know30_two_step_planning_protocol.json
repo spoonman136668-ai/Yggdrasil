@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.know30.receding-two-step-vs-entropy-frozen-dev.v1",
+  "date": "2026-11-20",
+  "scope": "Yggdrasil YGG-KNOW01 source-only independent research on existing PR #1327; canonical model/lineage owner remains Amalgam PR #1278; no original-world #426 first use, merge, native model changes, model deployment, new controller/scheduler/paid APIs.",
+  "preexperiment_base": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "contributor_sha": "74f8fa4c866e0ea91e0bc013f59c7fa72574ae24",
+    "contributor_tree": "3e2c4c96bb955032997bc72ba4b02eee2d180fda",
+    "know29_protocol_blob": "4dc40db53b7f2e8a4db38fd58912b7df7c47000d",
+    "know29_completed_run": 44767977849,
+    "know29_source_sha": "48a64d4f58e60bb681af72227dc794339c782484"
+  },
+  "question": "Does an exact source-blind, two-step receding Bayesian intervention policy improve TERMINAL high-context expected Brier against strongest conventional entropy action selection with identical 6-map x 256-table posterior, witnessed-action budgets and deliberation-compute counted, where previous myopic EVI failed?",
+  "mechanism": {
+    "base": "Frozen KNOW26 JointHypothesis with all six anonymous action mappings and 256 truth tables, unchanged conventional Bayes update; each mapping group prior from previously consumed KNOW26 3x36 FIT. Held world law posterior uniform over 256; no hidden true law or map enters planner.",
+    "two_step": "At each t=0..30, select a maximizing g1(m,c,a)+sum_{y=0,1}Pr(y|m,c,a)*max_b g1(m after hypothetical one-observation update,t+1,b), with g1=exact reduction in mean high-context Bernoulli predictive Brier over c4..7 minus cost 0.002 for nonzero action; t31 select one-step g1. All hypothetical updates on disposable clones; only observed chosen real y updates persistent learner once.",
+    "observational_source": "Public c=t mod 4, action labels 0..3; action0 known no-op, action1..3 opaque to policy. Bernoulli p=.85 for private hidden law bit at c xor private mapping[a], else .15. Per-step private deterministic SHA256 coin independent of policy/action; no teacher inference, oracle labels or counterfactual outcomes enter learner.",
+    "no_new_weights": "Two-step planner only selects witnessed actions from same learned Bayes posterior, no new parameter/head/canonical learner; not new intelligence by itself.",
+    "private_world_sampling": "Each historical map-group's learned FIT mapping posterior samples one of six private action mappings with independent SHA256 domain; source-only assessor selects either a uniform 256-bit truth table or one of four specified three-input Boolean causal rules. The policy never receives the selected map, rule or private coin."
+  },
+  "held": {
+    "mode": "engineering_fixture_only",
+    "prior_matched": {
+      "seeds": [
+        16011,
+        16017,
+        16019,
+        16021,
+        16027,
+        16033
+      ],
+      "map_groups": 3,
+      "worlds": 18,
+      "law": "SHA256('know30:private:law:v1:'+group+':'+seed) first 8 bytes modulo 256"
+    },
+    "structured_shift": {
+      "seeds": [
+        16111,
+        16117,
+        16121,
+        16127,
+        16139,
+        16141
+      ],
+      "map_groups": 3,
+      "worlds": 18,
+      "law": "Round-robin seed-ordinal 4 rules: x0 XOR (x1 OR x2); x2 XOR (x0 AND x1); ((NOT x0) AND x1) XOR x2; (x0 OR x1) AND x2"
+    },
+    "action_steps": 32,
+    "actions_per_arm_per_cohort": 576,
+    "high_scorer_queries_per_arm_per_cohort": 72,
+    "matched_private_coins": "SHA256('know30:private:coin:v1:'+cohort+':'+group+':'+seed+':'+t), first unsigned64 / 2^64; same counterfactual exogenous noise per t across arms but no unchosen-action reward delivered.",
+    "disjoint": "New 160xx and 161xx seeds only, no 140xx KNOW27 or 150xx KNOW29 held re-use.",
+    "cost_per_nonzero_action": 0.002,
+    "fit_history_per_mapping_group": 108,
+    "source_actions_per_arm": 1152
+  },
+  "arms": [
+    "fit_lookahead2",
+    "fit_entropy_compute_matched",
+    "fit_entropy_fast",
+    "fit_myopic_evi",
+    "fit_cyclic",
+    "fit_random",
+    "nofit_entropy",
+    "privileged_correct_map_entropy"
+  ],
+  "fairness": {
+    "matched": "fit_lookahead2 vs fit_entropy_compute_matched use SAME priors, learned 6x256 capacity, 32 observed actions/world, same public context sequence, price per nonzero intervention, and exactly 31 calls per world to two-step hypothetical branching; entropy compute-matched deliberately discards computed plan and selects entropy action to isolate the policy rule. Every hypothetical branch is disposable; only the actually chosen witnessed action is admitted.",
+    "extra_controls": "fit_entropy_fast is strongest conventional operational baseline with less compute; fit_myopic_evi uses same prior but cheaper one-step EVI; nofit_entropy lacks the historical 108 per map-group FIT observations; privileged_correct_map_entropy gets true map and is ineligible as fair comparator.",
+    "costs": "Measure wall_seconds for each arm separately, hypothetical_calls and source outcomes. Compute-match is equal algorithmic calls, not measured exact FLOPs/clock equality; report any runtime discrepancies and no speedup claims.",
+    "success_primary": "Lower mean terminal analytic expected Brier (including intervention charge) is better; scores 4 high x2 contexts c=4..7 after 32 actual witnessed actions, evaluator only; no scorer reward in training."
+  },
+  "predeclared_gates": {
+    "H1": "Two-step Bellman objective matches independent full two-reward posterior enumeration on an UNHELD synthetic prior, tolerance <=1e-10; no future reward leak, no private law/map in action API.",
+    "H2": "Lookahead2 reduces prior-matched 18-world mean cost-adjusted final high Brier by >=0.005 vs fit_entropy_compute_matched.",
+    "H3": "Lookahead2 reduces structured-shift 18-world mean net high Brier by >=0.005 vs fit_entropy_compute_matched.",
+    "H4": "Lookahead2 reduces BOTH cohort net high Brier by >=0.003 vs FIT myopic EVI; no nonregression on either.",
+    "H5": "Exactly 576 observed actions per arm/cohort, 72 evaluator-only high queries, 31 planner calls per world for each compute-matched arm, FIT historical actions reported separately, cold exact checkpoint and no replay/duplicate/hidden input.",
+    "classifications": "Engineering pass requires frozen protocol, source-only controls, original Linux+Windows focused and complete final regression, native history compatibility, pinned exact-source atlas and a single new isolated one-shot prospective synthetic study. DEV_SUPPORTED only all H1..H5; DEV_MIXED if some of H2/H3/H4 hold; otherwise DEV_NO_GO. SCIENTIFIC_PASS forbidden for synthetic-only results."
+  },
+  "first_use": "No newly reserved cohorts generated or scored by source commit/test discovery. Existing repo workflow job may run source-only held experiment ONCE after focus, atlas, mandatory full final both OS and original history compatibility PASS. Never replay consumed held to improve science; preserve negative result and report if scientific run cannot qualify.",
+  "stop_conditions": "Deny source_mode != engineering_fixture_only and any protected original-world calls; no post-result modification of seeds, source, threshold, scoring, action cost, model family, or policy to produce claimed win. No new controller, scheduler, owner runner or model promotion.",
+  "provenance": {
+    "original_owner_pr": 1278,
+    "contributor_pr": 1327,
+    "original_first_use_426": false,
+    "scientific_gain_verified": false,
+    "accepted_native_modified": false,
+    "deployment": "NONE"
+  }
+}

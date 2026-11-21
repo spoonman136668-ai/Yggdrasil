@@ -1,0 +1,1158 @@
+name: YGG-KNOW01 source-only capacity inventory qualification
+'on':
+  push:
+    branches:
+      - docs/ygg-independent-review-assessment-20261119
+    paths:
+      - '.github/workflows/ygg-know01.yml'
+      - 'research/contrib/chatgpt/YGG-KNOW01/**'
+permissions:
+  contents: read
+env:
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  focused:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Stable Git source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen no-model negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-KNOW01 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+  atlas:
+    needs: focused
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    steps:
+      - name: Stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Regenerate exact candidate G29 source atlas
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(know01): seal G29 atlas on pinned knowledge-inventory source"
+          fi
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/docs/ygg-independent-review-assessment-20261119
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  full-final:
+    needs: atlas
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Mandatory complete source regression and G29 seal
+        shell: bash
+        env:
+          EXACT_CANDIDATE: ${{ needs.atlas.outputs.candidate }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_CANDIDATE"
+          git rev-parse HEAD 'HEAD^{tree}'
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B -m unittest discover -s research/contrib/chatgpt/YGG-KNOW01 -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
+          test -z "$(git status --porcelain)"
+
+  real-source-compatibility:
+    needs: [atlas, full-final]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Stable source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Isolate NKR08 original source exactly; do not merge or execute model owner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          NKR=e0ed615e2f65ba3a2b20cc700398675d58f5e73b
+          git fetch --no-tags origin "$NKR"
+          mkdir -p "$RUNNER_TEMP/know03-source/yggdrasil"
+          touch "$RUNNER_TEMP/know03-source/yggdrasil/__init__.py"
+          for spec in             "native_cumulative_facts.py:37d8d88198292b165eee0570049d4d3286dd900b"             "native_knowledge_activation.py:76f543b639810b786e5c604795f1997972e9ac6a"             "native_factual_weights.py:65aea0cafbe7534f8c473d78f2e852a4752836e0"; do
+            f="${spec%%:*}"; blob="${spec#*:}"
+            test "$(git rev-parse "$NKR:yggdrasil/$f")" = "$blob"
+            git show "$NKR:yggdrasil/$f" > "$RUNNER_TEMP/know03-source/yggdrasil/$f"
+          done
+          test -z "$(git status --porcelain)"
+      - name: Read existing already-consumed source artifact identities
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14220169461" > "$RUNNER_TEMP/nkr05-meta.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14517860401" > "$RUNNER_TEMP/amalgam-meta.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          r=pathlib.Path(os.environ["RUNNER_TEMP"])
+          a=json.loads((r/"nkr05-meta.json").read_bytes())
+          b=json.loads((r/"amalgam-meta.json").read_bytes())
+          assert (a["id"], a["expired"],a["name"],a["workflow_run"]["id"],
+                  a["workflow_run"]["head_sha"]) == (
+             14220169461,False,"NKR05-21M-full-historical-TRAIN-native-factual-weights",
+             43856374741,"c4b4e97726f6541197913ad405a47d4c4019a3cf")
+          assert (b["id"], b["expired"],b["name"],b["workflow_run"]["id"],
+                  b["workflow_run"]["head_sha"]) == (
+             14517860401,False,"Amalgam-shared-consequence-ubuntu-latest",
+             44499793023,"e9aa921c57dca836c06c7125e52229cce728620a")
+          PY
+      - name: Reuse actual historical TRAIN image and recovered Amalgam joint bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/know03-nkr05" "$RUNNER_TEMP/know03-amalgam"
+          gh run download 43856374741 -R "$GITHUB_REPOSITORY" -n NKR05-21M-full-historical-TRAIN-native-factual-weights -D "$RUNNER_TEMP/know03-nkr05"
+          gh run download 44499793023 -R "$GITHUB_REPOSITORY" -n Amalgam-shared-consequence-ubuntu-latest -D "$RUNNER_TEMP/know03-amalgam"
+          test "$(stat -c %s "$RUNNER_TEMP/know03-nkr05/facts.uint32le")" = 256124172
+          test "$(stat -c %s "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json")" = 2921047
+          test "$(sha256sum "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" | cut -d' ' -f1)" = 576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8
+          PYTHONPATH="$RUNNER_TEMP/know03-source" python -B -m yggdrasil.native_knowledge_activation             --source "$RUNNER_TEMP/know03-nkr05" --destination-parent "$RUNNER_TEMP" --name know03-history-readonly             > "$RUNNER_TEMP/know03-install.json"
+          PYTHONPATH="$RUNNER_TEMP/know03-source" python -B research/contrib/chatgpt/YGG-KNOW01/real_image_pairing.py             --installed-session "$RUNNER_TEMP/know03-history-readonly"             --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json"             --output "$RUNNER_TEMP/know03-pairing-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: Cold restore original native sublearner and shadow read historical facts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          AMALGAM=86264b41a08d49f558418c0fba367f3a2636befa
+          git fetch --no-tags origin "$AMALGAM"
+          test "$(git rev-parse "$AMALGAM:yggdrasil/native_cumulative_learner.py")" = 1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4
+          test "$(git rev-parse "$AMALGAM:yggdrasil/native_cumulative_facts.py")" = 37d8d88198292b165eee0570049d4d3286dd900b
+          mkdir "$RUNNER_TEMP/know06-amalgam-source"
+          git archive "$AMALGAM" yggdrasil | tar -xf - -C "$RUNNER_TEMP/know06-amalgam-source"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/native_cold_shadow.py --installed-session "$RUNNER_TEMP/know03-history-readonly" --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know06-cold-shadow-receipt.json"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/historical_functional_retention.py --installed-session "$RUNNER_TEMP/know03-history-readonly" --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know08-retention-receipt.json"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/historical_intervention_coverage.py --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" --output "$RUNNER_TEMP/know09-intervention-coverage-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: Fetch source-pinned original parent artifacts for full four-head cold replay
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14470790752" > "$RUNNER_TEMP/know10-ckad-meta.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14482121653" > "$RUNNER_TEMP/know10-jepa-meta.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          root=pathlib.Path(os.environ["RUNNER_TEMP"])
+          a=json.loads((root/"know10-ckad-meta.json").read_bytes())
+          b=json.loads((root/"know10-jepa-meta.json").read_bytes())
+          assert (a["id"], a["expired"], a["name"], a["workflow_run"]["id"],
+                  a["workflow_run"]["head_sha"]) == (
+              14470790752, False, "CKAD26-refresh-primary", 44391641043,
+              "5178110111fc8e3880170006b397ccce372e9a24")
+          assert (b["id"], b["expired"], b["name"], b["workflow_run"]["id"],
+                  b["workflow_run"]["head_sha"]) == (
+              14482121653, False, "YGG-JEPA2-03-ubuntu-latest", 44420677720,
+              "0630f84387bc0f5dec5b996261fb12fe7c2b0a6d")
+          PY
+          mkdir -p "$RUNNER_TEMP/know10-ckad" "$RUNNER_TEMP/know10-jepa"
+          gh run download 44391641043 -R "$GITHUB_REPOSITORY" -n CKAD26-refresh-primary -D "$RUNNER_TEMP/know10-ckad"
+          gh run download 44420677720 -R "$GITHUB_REPOSITORY" -n YGG-JEPA2-03-ubuntu-latest -D "$RUNNER_TEMP/know10-jepa"
+          test "$(sha256sum "$RUNNER_TEMP/know10-ckad/seed-101-refresh-native.json" | cut -d' ' -f1)" = a00119c73a6431172c19b39ec67a1d94b470897a32c55c1c946071793f37dcc4
+          test "$(sha256sum "$RUNNER_TEMP/know10-jepa/seed-14071-state.json" | cut -d' ' -f1)" = 7e7507af589ae6b08a7599f1abafa9dd998895299fbb423cfc2995ecbcf741cd
+          test -z "$(git status --porcelain)"
+      - name: Cold restore all Amalgam specialists and compare separate factual shadow
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/full_amalgam_factual_shadow.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --native-parent "$RUNNER_TEMP/know10-ckad/seed-101-refresh-native.json" \
+            --donor-parent "$RUNNER_TEMP/know10-jepa/seed-14071-state.json" \
+            --output "$RUNNER_TEMP/know10-four-head-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW11 frozen synthetic factual to witnessed-causal development trial
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/factual_causal_grounding_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know11-grounded-causal-dev-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW12 frozen source-blind factual-role identification development trial
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/blind_fact_role_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know12-blind-role-dev-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW13 same-address cumulative causal learning frozen DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/same_address_cumulative_facts_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know13-same-address-dev-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW14 frozen blind-source regime cue identification DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/same_slot_blind_regime_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know14-blind-regime-dev-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW15 frozen factual-only regime cue leakage falsification
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/source_only_regime_leakage.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --know14-receipt "$RUNNER_TEMP/know14-blind-regime-dev-receipt.json" \
+            --output "$RUNNER_TEMP/know15-factual-only-regime-leakage-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW16 frozen source-identical counterfactual intervention DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/same_source_active_intervention_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know16-source-identical-intervention-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW17 learned intervention-utility transfer frozen DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/learned_intervention_policy_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know17-learned-intervention-policy-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW18 raw four-feature intervention-utility transfer frozen DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/raw_intervention_utility_dev.py \
+            --installed-session "$RUNNER_TEMP/know03-history-readonly" \
+            --joint-checkpoint "$RUNNER_TEMP/know03-amalgam/amalgam-joint-state.json" \
+            --output "$RUNNER_TEMP/know18-raw-feature-utility-receipt.json"
+          test -z "$(git status --porcelain)"
+      - name: KNOW19 frozen one-witness candidate-posterior adaptive utility DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_accumulator.py)" = 3d18267ee96b3419f2afe246a9110a6bf36f8932
+          test "$(git rev-parse 86264b41a08d49f558418c0fba367f3a2636befa:yggdrasil/native_context_basis.py)" = d5159e9b7ba196ee283ae7140faa031d4b7c4291
+          PYTHONPATH="$RUNNER_TEMP/know06-amalgam-source:research/contrib/chatgpt/YGG-KNOW01" python -B research/contrib/chatgpt/YGG-KNOW01/posterior_probe_utility_dev.py \
+            > "$RUNNER_TEMP/know19-posterior-probe-utility-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know19-posterior-probe-utility-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know19.synthetic-dev-result.v1"; assert d["training_witnessed_actions"]==352; assert d["scientific_gate"]=="DEV_NO_GO_SYNTHETIC_AND_STRONGEST_CONTROL"'
+          test -z "$(git status --porcelain)"
+      - name: KNOW20 frozen noisy action-consequence and recurrent memory trial
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          python -B research/contrib/chatgpt/YGG-KNOW01/noisy_regime_memory_dev.py \
+            > "$RUNNER_TEMP/know20-noisy-regime-memory-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know20-noisy-regime-memory-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know20.noisy-action-dev-result.v1"; assert d["fit_witnessed_actions"]==192; assert d["held_actions_per_policy"]==576; assert d["old_A_prediction_drift"]==0; assert d["scientific_gate"]=="NOT_QUALIFIED_SYNTHETIC_DEVELOPMENT_ONLY"'
+          test -z "$(git status --porcelain)"
+      - name: KNOW21 frozen unseen causal switch timing and same-scene recurrence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/noisy_regime_memory_dev.py)" = 1dc871b4f8e1c9b5d517b7950271aae7a2c6205b
+          python -B research/contrib/chatgpt/YGG-KNOW01/unfamiliar_shift_regime_dev.py \
+            > "$RUNNER_TEMP/know21-unfamiliar-schedule-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know21-unfamiliar-schedule-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know21.unfamiliar-regime-schedules-result.v1"; assert d["prereg_commit"]=="371727480dc70686b25340a3653ebf6b826a1961"; assert d["held_worlds"]==24 and d["per_policy_actions"]==1152; assert d["scientific_gate"]=="DEV_ONLY_STRONGEST_CONTROL_AND_REAL_FIRST_USE_NOT_QUALIFIED" and d["protected_original_first_use"] is False'
+          test -z "$(git status --porcelain)"
+      - name: KNOW22 frozen posterior-slot readout against unchanged TGAP21 storage
+        shell: bash
+        run: |
+          python -B research/contrib/chatgpt/YGG-KNOW01/know22_posterior_slot_dev.py \
+            > "$RUNNER_TEMP/know22-posterior-slot-readout-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know22-posterior-slot-readout-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know22.posterior-memory-readout-result.v1"; assert d["prereg_commit"]=="d3885412f6cc81a366f901b90d33169f399c32c3"; assert d["held_actions_per_policy"]==512 and d["return_actions_per_policy"]==190; assert d["same_original_memory_after_every_update"] is True; assert d["scientific_gate"]=="NO_GO_SYNTHETIC_NO_OWNER_FIRST_USE"'
+      - name: KNOW23 frozen write-quarantine old knowledge protection DEV
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/tgap21_same_address_dev.py)" = 3cd811e61242413d3951cd90caac00f4cfe35210
+          python -B research/contrib/chatgpt/YGG-KNOW01/write_quarantine_memory_dev.py \
+            > "$RUNNER_TEMP/know23-write-quarantine-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know23-write-quarantine-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know23.write-quarantine-synthetic-result.v1"; assert d["prereg_commit"]=="5d2eb5d552d6fa5c202f422798d1b4e0f7dfcecf"; assert (d["fit_actions"],d["held_worlds"],d["held_actions_per_policy"],d["return_actions_per_policy"])==(72,8,512,192); assert d["scientific_gate"]=="NO_GO_SYNTHETIC_SOURCE_AND_STRONGEST_CONTROL" and d["protected_original_first_use"] is False'
+          test -z "$(git status --porcelain)"
+      - name: KNOW24 frozen three-bit causal structure and non-identifiability
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know24_protocol.json)" = 7c14116935d1f046f6c4c2829fd42bbf9a9ba15b
+          python -B research/contrib/chatgpt/YGG-KNOW01/anf_causal_identifiability_dev.py \
+            > "$RUNNER_TEMP/know24-anf-causal-identifiability-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know24-anf-causal-identifiability-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know24.gf2-structural-identifiability-result.v1"; assert d["prereg_commit"]=="1454d7b58875f5a50429e33979b0edfa5a1c7e88"; assert (d["fit_witnesses"],d["held_worlds"],d["held_witnesses_per_policy"],d["high_expected_queries_per_policy"])==(72,18,288,216); assert d["frozen_predicates"]["H1_pairs_identical"] and d["frozen_predicates"]["H2_paired_lower_bound"]; assert d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_EXACT_CAUSAL_NONIDENTIFIABILITY" and not d["protected_original_first_use"]'
+          test -z "$(git status --porcelain)"
+      - name: KNOW25 independently frozen x2 interventions, paired causal outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know25_protocol.json)" = 7ffdf1b490d496621bae52aeba5b777a06500fef
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know25_x2_probe_protocol.json)" = 2a960a6e4840c1fe89d32c50fd9c47bd7a7c27e8
+          python -B research/contrib/chatgpt/YGG-KNOW01/x2_intervention_identifiability_dev.py \
+            > "$RUNNER_TEMP/know25-x2-24-action-receipt.json"
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B -c 'import json; from know25_x2_probe_dev import proof; print(json.dumps(proof(),indent=2,sort_keys=True))' \
+            > "$RUNNER_TEMP/know25-x2-48-action-receipt.json"
+          python -B -c 'import json,os,pathlib; root=pathlib.Path(os.environ["RUNNER_TEMP"]); a=json.loads((root/"know25-x2-24-action-receipt.json").read_text()); b=json.loads((root/"know25-x2-48-action-receipt.json").read_text()); assert a["schema"]=="yggdrasil.know25.x2-intervention-result.v1" and a["prereg_commit"]=="9155e5d62d6d5a0eb4f79fef22953e9e5e4f25da"; assert (a["fit_witnesses"],a["held_worlds"],a["held_witnesses_per_policy"],a["high_expected_queries_per_policy"])==(72,18,432,216); assert a["frozen_hypotheses"]["H1_no_x2_pair_identity"] and a["frozen_hypotheses"]["H2_no_x2_pair_bound"] and not a["protected_original_first_use"]; assert b["schema"]=="yggdrasil.know25.x2-probe-science-boundary.dev.v1" and b["prereg_commit"]=="219e59cdff6c26383fa4fb5277cad459f9caf0cf"; assert (b["fit_witnesses"],b["held_worlds"],b["held_witnesses_per_policy"],b["high_eval_queries_per_policy"])==(72,18,864,216); assert b["frozen_hypotheses"]["H1_no_x2_pairs_identical_and_floor"] and not b["first_use_426"]; assert a["engineering_gate"]==b["engineering_gate"]=="PASS"'
+          test -z "$(git status --porcelain)"
+      - name: KNOW26 frozen unknown action mapping and cold cross-world transfer
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know26_protocol.json)" = 4044d67208e993339a75ab18bd0436261ca547f4
+          python -B research/contrib/chatgpt/YGG-KNOW01/unknown_action_affordance_dev.py \
+            > "$RUNNER_TEMP/know26-action-affordance-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know26-action-affordance-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know26.action-affordance-transfer-result.v1" and d["prereg_commit"]=="ba8d9a071a251f3061ac907c4cf5c611726d2221"; assert (d["fit_mapping_groups"],d["fit_witnesses_per_mapping"],d["held_worlds"],d["held_witnesses_per_policy"],d["high_eval_queries_per_policy"])==(3,108,24,768,96); assert d["engineering_gate"]=="PASS" and d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE" and d["protected_original_first_use"] is False and d["native_model_changed"] is False; assert all(z["fit_old_readouts_cold_exact"] for z in d["mapping_fit_evidence"].values())'
+          test -z "$(git status --porcelain)"
+      - name: KNOW27 frozen source-blind online action selection and continuous A-B-A
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know27_online_action_policy_protocol.json)" = e82b78050e5c42cfa3dea2732a8ce944b83e8884
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know27_online_action_policy_dev.py)" = 3904e9f6cfc21eb944c99b7cba96cb292784154e
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B -c 'import json; from know27_online_action_policy_dev import proof; print(json.dumps(proof(),sort_keys=True))' \
+            > "$RUNNER_TEMP/know27-online-action-policy-receipt.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know27-online-action-policy-receipt.json"; d=json.loads(p.read_text()); assert d["schema"]=="yggdrasil.know27.opaque-policy-source-result.v1" and d["prereg_commit"]=="e48bcdffadec0be864ae6192ce6429a2906a98cf"; assert (d["fit_witnesses_per_mapping"],d["held_stationary_worlds"],d["held_ABA_worlds"],d["held_stationary_actions_per_policy"],d["held_ABA_actions_per_policy"],d["high_eval_queries_per_policy"])==(108,24,6,768,192,96); assert len(d["hypotheses"])==6 and d["engineering_gate"]=="PASS" and d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"; assert d["accepted_native_modified"] is False and d["protected_original_first_use"] is False and d["deployment"]=="NONE"'
+          test -z "$(git status --porcelain)"
+      - name: Preserve only bounded readout receipts (not original image or checkpoints)
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW03-real-image-archived-amalgam-compatibility
+          path: |
+            ${{ runner.temp }}/know03-pairing-receipt.json
+            ${{ runner.temp }}/know06-cold-shadow-receipt.json
+            ${{ runner.temp }}/know08-retention-receipt.json
+            ${{ runner.temp }}/know09-intervention-coverage-receipt.json
+            ${{ runner.temp }}/know10-four-head-receipt.json
+            ${{ runner.temp }}/know11-grounded-causal-dev-receipt.json
+            ${{ runner.temp }}/know12-blind-role-dev-receipt.json
+            ${{ runner.temp }}/know13-same-address-dev-receipt.json
+            ${{ runner.temp }}/know14-blind-regime-dev-receipt.json
+            ${{ runner.temp }}/know15-factual-only-regime-leakage-receipt.json
+            ${{ runner.temp }}/know16-source-identical-intervention-receipt.json
+            ${{ runner.temp }}/know17-learned-intervention-policy-receipt.json
+            ${{ runner.temp }}/know18-raw-feature-utility-receipt.json
+            ${{ runner.temp }}/know19-posterior-probe-utility-receipt.json
+            ${{ runner.temp }}/know20-noisy-regime-memory-receipt.json
+            ${{ runner.temp }}/know21-unfamiliar-schedule-receipt.json
+            ${{ runner.temp }}/know22-posterior-slot-readout-receipt.json
+            ${{ runner.temp }}/know23-write-quarantine-receipt.json
+            ${{ runner.temp }}/know24-anf-causal-identifiability-receipt.json
+            ${{ runner.temp }}/know25-x2-24-action-receipt.json
+            ${{ runner.temp }}/know25-x2-48-action-receipt.json
+            ${{ runner.temp }}/know26-action-affordance-receipt.json
+            ${{ runner.temp }}/know27-online-action-policy-receipt.json
+          retention-days: 30
+          if-no-files-found: error
+
+  know29-study:
+    if: "github.event.head_commit.message == 'research(know29): qualify one-shot prospective calibration'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable exact candidate source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Run frozen KNOW29 synthetic source-only study only after final regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know29_policy_calibration_protocol.json)" = 4dc40db53b7f2e8a4db38fd58912b7df7c47000d
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know29_policy_calibration_dev.py \
+            > "$RUNNER_TEMP/know29-policy-calibration-receipt.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know29-policy-calibration-receipt.json").read_text()); assert d["schema"]=="yggdrasil.know29.policy-prior-calibration-result.dev.v1" and d["prereg_commit"]=="a0b3c666cb9573aa62cbf32a66e960f7ad342d5c" and d["prereg_blob"]=="4dc40db53b7f2e8a4db38fd58912b7df7c47000d"; assert (d["fit_actions_per_map_group"],d["synthetic_worlds_per_cohort"],d["actions_per_policy_per_cohort"],d["high_eval_queries_per_policy_per_cohort"])==(108,24,768,96); assert d["frozen_hypotheses"]["H1_myopic_utility_identity"] and d["frozen_hypotheses"]["H4_fairness_cost_custody"]; assert d["scientific_gate"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE" and not d["accepted_native_modified"] and not d["original_first_use_426"] and d["deployment"]=="NONE"'
+          test -z "$(git status --porcelain)"
+      - name: Preserve bounded new prospective synthetic comparison receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW29-prospective-policy-prior-calibration
+          path: ${{ runner.temp }}/know29-policy-calibration-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+  know30-study:
+    if: "github.event.head_commit.message == 'research(know30): qualify one-shot two-step-vs-entropy'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Exact source and atlas-only successor checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One prospective source-only held first-use, AFTER mandatory regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know30_two_step_planning_protocol.json)" = bd804e6a94debb4b314d9d6a86af179bb44de1a2
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know30_two_step_planning_dev.py \
+            | tee "$RUNNER_TEMP/know30-two-step-policy-receipt.log"
+          python -B -c 'import json,os,pathlib; f=pathlib.Path(os.environ["RUNNER_TEMP"])/"know30-two-step-policy-receipt.log"; line=f.read_text().strip(); assert line.startswith("YGG_KNOW30_RECEIPT="); d=json.loads(line.split("=",1)[1]); assert d["schema"]=="yggdrasil.know30.two-step-policy-result.dev.v1" and d["prereg_commit"]=="effc0078a561fcc7c5a2584c95f75a97388a1ae5" and d["prereg_blob"]=="bd804e6a94debb4b314d9d6a86af179bb44de1a2"; assert d["worlds_per_cohort"]==18 and d["witnesses_per_arm_per_cohort"]==576 and d["score_queries_per_arm_per_cohort"]==72 and d["historical_FIT_witnesses_per_mapping_group"]==108; assert d["hypotheses"]["H1_two_reward_bellman_identity"] and d["hypotheses"]["H5_budgets_cold_and_deliberation"]; assert d["scientific_gate"]=="SCIENTIFIC_NO_GO_SYNTHETIC_NOT_NATIVE" and not d["accepted_native_modified"] and not d["original_first_use_426"] and d["deployment"]=="NONE"'
+          test -z "$(git status --porcelain)"
+      - name: Preserve small, source-only scientific result receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW30-receding-two-step-prospective-dev
+          path: ${{ runner.temp }}/know30-two-step-policy-receipt.log
+          if-no-files-found: error
+          retention-days: 30
+
+  know30-blind-archive-reactivation-study:
+    # A distinct source-only retention trial, NOT the KNOW30 two-step action study.
+    # Runs exactly once on the frozen one-shot source change, never on atlas bumps.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know30-archive): one-shot blinded recovery held after full regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable exact candidate source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Run one synthetic prospective source-only A/B/A reactivation first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know30_blind_archive_reactivation_protocol.json)" = ae7e5987cb4d5910325bb2e2275d5e3e6d26210b
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know30_blind_archive_reactivation_dev.py)" = 9671ffcef8cd5be62eb62643529eca9cf4bb3471
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know30_blind_archive_reactivation_dev.py \
+            > "$RUNNER_TEMP/know30-blind-archive-reactivation-receipt.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          f=pathlib.Path(os.environ["RUNNER_TEMP"])/"know30-blind-archive-reactivation-receipt.json"
+          d=json.loads(f.read_text())
+          assert d["schema"]=="yggdrasil.know30.blind-archive-reactivation-result.v1"
+          assert d["prereg_first_commit"]=="13c0f0ad2622acc6ce16605f34ce8a4c59c16985"
+          assert (d["held_worlds"],d["witnesses_per_policy"],d["fit_labeled_A_and_B_per_map"],d["fit_historical_mapping_per_map"])==(24,1152,128,108)
+          assert len(d["worlds"])==24 and len(d["results"])==5
+          assert d["scientific"]=="SCIENCE_NO_GO_NOT_NATIVE" and d["protected_original_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve only the bounded synthetic result, no native checkpoint
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW30-blind-archive-reactivation-first-use
+          path: ${{ runner.temp }}/know30-blind-archive-reactivation-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  # KNOW31_POST_FIRST_USE_ATTEMPT_NO_REPLAY: prior first-use was SKIPPED
+  # after atlas push contention; corrected source/test blobs were frozen
+  # BEFORE any held result, and this exact commit alone requests one trial.
+  know31-paired-interference-study:
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know31): one-shot A-vs-B interference after full exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Pin exact G29-sealed candidate
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Single prospective source-only two-fork causal attribution held first-use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_protocol.json)" = 38196b88ddedad232569212713203c39a5f1f557
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py)" = 9c54256485d639593d6f2b616728918ae0d2f011
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know31_paired_interference_dev.py)" = 1c7d56a0820551395fe162be5dac8ed700be8550
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know31_paired_interference_dev.py \
+             > "$RUNNER_TEMP/know31-paired-interference-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know31-paired-interference-first-use.json"
+          d=json.loads(p.read_text())
+          assert d["schema"]=="yggdrasil.know31.paired-interference-result.v1"
+          assert d["prereg_original_commit"]=="22a197a61060a97a9aa45aecec78e85c71122600"
+          assert d["prereg_compat_revision"]=="4b392dad590bea0f6b236c4399039c1d9c369a36"
+          assert d["protocol_git_blob"]=="38196b88ddedad232569212713203c39a5f1f557"
+          assert (d["held_world_pairs"],d["per_method_fork_action_occurrences"],d["unique_private_events_across_worlds"])==(24,2304,1920)
+          assert len(d["paired_worlds"])==24 and len(d["per_method"])==4 and len(d["frozen_hypotheses"])==5
+          assert d["protected_original_first_use"] is False and d["accepted_native_modified"] is False and d["deployment"]=="NONE"
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve synthetic outcome only, not native data or model state
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW31-paired-interference-attribution-first-use
+          path: ${{ runner.temp }}/know31-paired-interference-first-use.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know32-balanced-retention-study:
+    # One new strictly synthetic HELD cohort; no cron, owner runner or model.
+    # Re-run is prohibited after any uncertain first-use effect.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know32): one-shot balanced causal retention after exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable exact source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exactly one frozen balanced-access synthetic outcome study
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know32_balanced_access_protocol.json)" = 9f8664601b2161183b16d7b47ac53303e1b73d51
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know32_balanced_access_dev.py)" = 4e60e40a43a2b8d71ee013adc7530d851c432d00
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know32_balanced_access_dev.py)" = 58d0b9458083173dd50da8ef9d2039ab29354b47
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know32_balanced_access_support.py)" = 02a99ecc1770a409866bf3eb389216e1e7665eb7
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know32_balanced_access_dev.py \
+            > "$RUNNER_TEMP/know32-balanced-retention-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          f=pathlib.Path(os.environ["RUNNER_TEMP"])/"know32-balanced-retention-first-use.json"
+          d=json.loads(f.read_text())
+          assert d["schema"]=="yggdrasil.know32.balanced-access-causal-retention-result.dev.v1"
+          assert d["protocol_blob"]=="9f8664601b2161183b16d7b47ac53303e1b73d51"
+          assert d["prereg_commit"]=="97cb673450b469db16b70ceb68808cf2fe274cf3"
+          assert (d["held_world_pairs"],d["unique_source_witnesses"],d["model_level_per_arm_fork_actions"])==(24,1920,2304)
+          assert len(d["worlds"])==24 and len(d["support"])==6
+          assert set(d["family_metrics"])=={"known_H2","unfamiliar_H1"}
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["accepted_native_modified"] is False and d["original_first_use_426"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Store only bounded synthetic result without model/real data
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW32-balanced-source-retention-first-use
+          path: ${{ runner.temp }}/know32-balanced-retention-first-use.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know33-cellular-local-memory-study:
+    # Exactly one research-only synthetic HELD. No schedule, paid API or owner model.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know33): one-shot cellular local memory after full exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Single prospective source-only 24-world cell-memory study
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know33_local_metaplastic_protocol.json)" = ce158248954a137c6540ab5b8c505dc392ea7483
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know33_local_metaplastic_dev.py)" = d2e7e54cfbb2d763c38ff9cec5f1a12db3aa7ba4
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know33_local_metaplastic_dev.py)" = a1462eb10d1d3fc3226dfcca12b9bba2f73817d1
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know33_local_metaplastic_dev.py \
+            > "$RUNNER_TEMP/know33-cellular-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know33-cellular-first-use.json").read_text())
+          assert d["schema"]=="yggdrasil.know33.local-metaplastic-cells-result.dev.v1"
+          assert d["prereg_commit"]=="a2faced60dfcd7b13de5e3ae41f4c16623ea4127"
+          assert d["protocol_blob"]=="ce158248954a137c6540ab5b8c505dc392ea7483"
+          assert (d["held_world_pairs"],d["unique_source_events"],d["per_arm_observations_across_forks"])==(24,7680,9216)
+          assert len(d["worlds"])==24 and set(d["family_metrics"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==6
+          assert d["scientific"]=="SCIENTIFIC_NO_GO_NOT_NATIVE"
+          assert d["original_first_use_426"] is False and d["accepted_native_modified"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Store bounded synthetic cell-memory receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW33-cellular-memory-first-use
+          path: ${{ runner.temp }}/know33-cellular-first-use.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know34-cellular-contradiction-study:
+    # Exactly ONE frozen source-only held outcome, after source+atlas+dual-OS
+    # mandatory full regression and read-only historical source compatibility.
+    # No scheduler, paid API, owner model, native checkpoint or protected #426.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know34): one-shot local contradiction gates after exact final regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Exact qualified source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One synthetic prospective source-only A/B/A cellular first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know34_local_contradiction_protocol.json)" = 79c1c9376567de777f2cb0aad9874a8547fbb961
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/know34_local_contradiction_dev.py)" = 6b23c4d1a7dd9eede8a9649abadf3abe841f3a4d
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/YGG-KNOW01/test_know34_local_contradiction_dev.py)" = 29b61375475646019800e8cfaca732a2aa57a6cb
+          PYTHONPATH=research/contrib/chatgpt/YGG-KNOW01 python -B research/contrib/chatgpt/YGG-KNOW01/know34_local_contradiction_dev.py \
+            > "$RUNNER_TEMP/know34-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know34-first-use.json").read_text())
+          assert d["schema"]=="yggdrasil.know34.local-contradiction-memory-result.dev.v1"
+          assert d["prereg_commit"]=="aa46a0482da74213089506e51d3a2c40615e7656"
+          assert d["prereg_blob"]=="79c1c9376567de777f2cb0aad9874a8547fbb961"
+          assert (d["held_world_pairs"],d["unique_source_events"],d["model_event_occurrences_per_arm"])==(24,7680,9216)
+          assert len(d["worlds"])==24 and set(d["families"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==6
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["accepted_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Preserve only bounded synthetic cell-memory scientific receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW34-contradiction-cell-first-use
+          path: ${{ runner.temp }}/know34-first-use.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know36-noisy-two-regime-study:
+    # ONE fresh synthetic HELD after source-only final dual-OS acceptance.
+    # Commit-message exact key, first attempt only. No schedule or owner model.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know36): one-shot noisy double-return held after exact regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Git checkout with stable line endings
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One disjoint, frozen, synthetic 24-world first use only
+        shell: bash
+        env:
+          YGG_KNOW36_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know36_noisy_retention_protocol.json")" = af1769f93a78b89f3f76577033787643f1185efe
+          test "$(git rev-parse "HEAD:$base/know35_two_regime_bank_dev.py")" = 8aa74ada276748faa7b32f834d406a9293ef40e0
+          test "$(git rev-parse "HEAD:$base/know36_noisy_retention_dev.py")" = 79484ead408dc1144b01897b7133a0e4c416ba55
+          test "$(git rev-parse "HEAD:$base/test_know36_noisy_retention_dev.py")" = 75c62d55a7349f34838b1bbb089ae876578c5fb1
+          PYTHONPATH=$base python -B "$base/know36_noisy_retention_dev.py" > "$RUNNER_TEMP/know36-noisy-two-bank-held.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know36-noisy-two-bank-held.json").read_text())
+          assert d["schema"] == "yggdrasil.know36.noisy-two-regime-result.dev.v1"
+          assert d["prereg_commit"] == "01e9ca76e7b358ea3d414fd22450b90910d6f2d4"
+          assert d["prereg_blob"] == "af1769f93a78b89f3f76577033787643f1185efe"
+          assert d["fit_worlds"] == 12 and d["held_worlds"] == 24
+          assert d["fit_source_calls"] == 3072 and d["held_unique_source_events"] == 9216
+          assert d["model_events_per_arm"] == 10752
+          assert set(d["family_metrics"]) == {"B1", "B2"}
+          assert len(d["worlds"]) == 24 and len(d["frozen_hypotheses"]) == 7
+          assert d["scientific"] == "SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["original_first_use_426"] is False and d["native_changed"] is False
+          assert d["deployment"] == "NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit bounded aggregate metric summary for independent audit
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json, os, pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know36-noisy-two-bank-held.json"
+          d=json.loads(p.read_text())
+          brief={k:d[k] for k in ("prereg_commit","prereg_blob","fit_worlds",
+                 "held_worlds","fit_source_calls","held_unique_source_events",
+                 "model_events_per_arm","selected_hmm_hazard","fit_hmm_briers",
+                 "family_metrics","frozen_hypotheses","sham_false_switch_worlds",
+                 "live_A_retained_worlds","B_retained_worlds","development_verdict",
+                 "scientific","original_first_use_426","native_changed","deployment")}
+          print("YGG_KNOW36_SUMMARY="+json.dumps(brief,sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic result only, no real source/checkpoint
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW36-noisy-two-bank-first-use
+          path: ${{ runner.temp }}/know36-noisy-two-bank-held.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know37-local-hysteresis-study:
+    # One strictly synthetic held first use; exact source and first attempt only.
+    # Does not authorize protected original #426, native model or runner.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know37): one-shot accumulated local evidence after full final regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One frozen synthetic FIT and HELD, only after mandatory acceptance
+        shell: bash
+        env:
+          YGG_KNOW37_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_protocol.json")" = 5fdb34aafca11cfd41277dab655b7cbf3667371a
+          test "$(git rev-parse "HEAD:$base/know37_local_hysteresis_dev.py")" = 96a1ed5b7d05b19b7187aca6a5aa3a0ae4d00eaf
+          test "$(git rev-parse "HEAD:$base/test_know37_local_hysteresis_dev.py")" = e63c087488c69b86e2072c292340e09195430e73
+          echo YGG_KNOW37_ALL_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know37_local_hysteresis_dev.py" > "$RUNNER_TEMP/know37-local-hysteresis-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know37-local-hysteresis-first-use.json").read_text())
+          assert d["schema"] == "yggdrasil.know37.hysteresis-result.dev.v1"
+          assert d["prereg_commit"] == "9d8d55225c217ba9af2a1ca22ee2f50ac16ec468"
+          assert d["prereg_blob"] == "5fdb34aafca11cfd41277dab655b7cbf3667371a"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],d["held_unique_source_events"],d["model_events_per_arm"]) == (12,24,3072,9216,10752)
+          assert len(d["worlds"]) == 24 and set(d["families"]) == {"B1","B2"}
+          assert len(d["frozen_hypotheses"]) == 7
+          assert d["scientific"] == "SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"] == "NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit bounded aggregate frozen metrics
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know37-local-hysteresis-first-use.json").read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_events","model_events_per_arm",
+                "selected_hmm_hazard","fit_hmm_briers","families","frozen_hypotheses",
+                "sham_false_switch_worlds","A_retained_worlds","B_retained_worlds",
+                "development_verdict","scientific","protected_original_world_first_use",
+                "native_model_changed","deployment")
+          print("YGG_KNOW37_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic result only
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW37-local-hysteresis-first-use
+          path: ${{ runner.temp }}/know37-local-hysteresis-first-use.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know38-buffer-before-write-study:
+    # One entirely synthetic HELD first-use on a fresh cohort, no original #426.
+    # Requires exact first-attempt trigger and full cross-platform qualification.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know38): one-shot buffer-before-write held after full regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: One prospective noisy local memory source first-use
+        shell: bash
+        env:
+          YGG_KNOW38_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know38_buffer_before_write_protocol.json")" = b672bb9efc6e178c470ec4a13cb43cead5695d95
+          test "$(git rev-parse "HEAD:$base/know38_buffer_before_write_dev.py")" = 453564111e23bcccf065cd40fa5a90c1080a234d
+          test "$(git rev-parse "HEAD:$base/test_know38_buffer_before_write_dev.py")" = 99ccb8a8ceb23c3026e4e7b87599886ba9dfa9c0
+          echo YGG_KNOW38_ALL_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know38_buffer_before_write_dev.py" > "$RUNNER_TEMP/know38-buffer-before-write-held.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know38-buffer-before-write-held.json").read_text())
+          assert d["schema"]=="yggdrasil.know38.buffer-before-write-result.dev.v1"
+          assert d["prereg_commit"]=="585a15b00a1c2237753c1c426b456f00b68100ff"
+          assert d["prereg_blob"]=="b672bb9efc6e178c470ec4a13cb43cead5695d95"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],d["held_unique_source_events"],d["model_events_per_arm"])==(12,24,3072,9216,10752)
+          assert len(d["worlds"])==24 and set(d["families"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==7
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit frozen aggregate result to original job receipt
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know38-buffer-before-write-held.json"
+          d=json.loads(p.read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_events","model_events_per_arm",
+                "selected_hmm_hazard","fit_hmm_briers","families","frozen_hypotheses",
+                "sham_false_switch_worlds","A_retained_worlds","B_retained_worlds",
+                "development_verdict","scientific","protected_original_world_first_use",
+                "native_model_changed","deployment")
+          print("YGG_KNOW38_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic result only
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW38-buffer-before-write-first-use
+          path: ${{ runner.temp }}/know38-buffer-before-write-held.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know39-soft-deferred-study:
+    # Single fresh synthetic FIT/HELD after exact frozen source and full regression.
+    # No original #426, native checkpoint, owner runner or accepted ref change.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know39): one-shot soft deferred held after full final regression'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Stable Git checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source fence then ONE prospective synthetic source use
+        shell: bash
+        env:
+          YGG_KNOW39_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know39_soft_deferred_protocol.json")" = 5eb63f3fbb1edc87665e9a23525386eb90765a48
+          test "$(git rev-parse "HEAD:$base/know39_soft_deferred_dev.py")" = 4b61ecf922626e55a80e8390e5a28a34a8ed474e
+          test "$(git rev-parse "HEAD:$base/test_know39_soft_deferred_dev.py")" = e4705ebc711f4ecc6e0723e4c3962341a74e4762
+          echo YGG_KNOW39_ALL_FROZEN_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know39_soft_deferred_dev.py" > "$RUNNER_TEMP/know39-soft-deferred-held.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know39-soft-deferred-held.json").read_text())
+          assert d["schema"]=="yggdrasil.know39.soft-deferred-result.dev.v1"
+          assert d["prereg_commit"]=="f38313a69d029595b7d382ea2e7e1bab2b80030b"
+          assert d["prereg_blob"]=="5eb63f3fbb1edc87665e9a23525386eb90765a48"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],
+                  d["held_unique_source_events"],d["arm_events_total"])==(12,24,3072,9216,10752)
+          assert len(d["worlds"])==24 and set(d["families"])=={"B1","B2"}
+          assert len(d["frozen_hypotheses"])==7
+          assert d["scientific"]=="SCIENCE_NO_GO_SYNTHETIC_NOT_NATIVE"
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Print bounded aggregate source result
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know39-soft-deferred-held.json").read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_events","arm_events_total",
+                "fit_hazard","fit_hmm_briers","families","frozen_hypotheses",
+                "sham_false_B_admission_worlds","A_retained_worlds","B_retained_worlds",
+                "development_verdict","scientific","protected_original_world_first_use",
+                "native_model_changed","deployment")
+          print("YGG_KNOW39_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Preserve bounded synthetic first-use receipt
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW39-soft-deferred-first-use
+          path: ${{ runner.temp }}/know39-soft-deferred-held.json
+          if-no-files-found: error
+          retention-days: 30
+
+  know40-structural-action-study:
+    # Fresh unfamiliar synthetic causal graphs; NEVER source-owner #426.
+    # One run_attempt=1, after exact frozen-source and full dual-platform.
+    if: "github.event_name == 'push' && github.run_attempt == 1 && github.event.head_commit.message == 'research(know40): one-shot unfamiliar intervention evaluation after full final qualification'"
+    needs: [atlas, full-final, real-source-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Disable Git autocrlf
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.atlas.outputs.candidate }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Pin exact frozen source before any synthetic FIT or HELD
+        shell: bash
+        env:
+          YGG_KNOW40_HELD_ONE_SHOT: '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.atlas.outputs.candidate }}"
+          base=research/contrib/chatgpt/YGG-KNOW01
+          test "$(git rev-parse "HEAD:$base/know40_structural_action_protocol.json")" = 366f96e13a566520d399a78d54e838bf62a551b6
+          test "$(git rev-parse "HEAD:$base/know40_structural_action_dev.py")" = 81a165c9019045b3b2193aa417b90d549ebc242f
+          test "$(git rev-parse "HEAD:$base/test_know40_structural_action_dev.py")" = fbd9e48aeee25cad92cbc45777259865d272f402
+          test "$(git rev-parse "HEAD:$base/know39_soft_deferred_dev.py")" = 4b61ecf922626e55a80e8390e5a28a34a8ed474e
+          test "$(git rev-parse "HEAD:$base/know38_buffer_before_write_dev.py")" = 453564111e23bcccf065cd40fa5a90c1080a234d
+          test "$(git rev-parse "HEAD:$base/know36_noisy_retention_dev.py")" = 79484ead408dc1144b01897b7133a0e4c416ba55
+          echo YGG_KNOW40_ALL_FROZEN_SOURCE_PINS_OK_BEFORE_FIRST_USE
+          PYTHONPATH=$base python -B "$base/know40_structural_action_dev.py" > "$RUNNER_TEMP/know40-structural-intervention-first-use.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"know40-structural-intervention-first-use.json"
+          d=json.loads(p.read_text())
+          assert d["schema"]=="yggdrasil.know40.structural-intervention-shadow-result.dev.v1"
+          assert d["prereg_commit"]=="e8344c2c3d797fcd304c8c866ac1f1fe7e058e52"
+          assert d["prereg_blob"]=="366f96e13a566520d399a78d54e838bf62a551b6"
+          assert (d["fit_worlds"],d["held_worlds"],d["fit_source_calls"],
+                  d["held_unique_source_calls"],d["arm_events_total"])==(12,24,3072,9216,10752)
+          assert len(d["worlds"])==24 and set(d["cohorts"])=={"B1","B2"}
+          assert set(d["hypotheses"])=={"P0","P1","H1","H2","H3","H4","H5","H6"}
+          assert d["scientific_gain_verified"] is False
+          assert d["protected_original_world_first_use"] is False
+          assert d["native_model_changed"] is False and d["deployment"]=="NONE"
+          PY
+          test -z "$(git status --porcelain)"
+      - name: Emit bounded frozen original-source aggregate
+        shell: bash
+        run: |
+          python -B - <<'PY'
+          import json,os,pathlib
+          d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"know40-structural-intervention-first-use.json").read_text())
+          keys=("prereg_commit","prereg_blob","fit_worlds","held_worlds",
+                "fit_source_calls","held_unique_source_calls","arm_events_total",
+                "selected_hazards","fit_briers","cohorts","hypotheses",
+                "A_retained_worlds","B_retained_worlds","sham_B_admission_worlds",
+                "development_verdict","scientific_gain_verified","caveat",
+                "protected_original_world_first_use","native_model_changed","deployment")
+          print("YGG_KNOW40_SUMMARY="+json.dumps({k:d[k] for k in keys},sort_keys=True))
+          PY
+      - name: Archive only bounded novel synthetic result
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: YGG-KNOW40-unfamiliar-intervention-first-use
+          path: ${{ runner.temp }}/know40-structural-intervention-first-use.json
+          if-no-files-found: error
+          retention-days: 30

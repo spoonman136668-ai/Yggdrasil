@@ -1,0 +1,69 @@
+{
+  "schema": "yggdrasil.know28.unannounced-return-identifiability.v1",
+  "date": "2026-11-20",
+  "role": "Independent synthetic research contributor to Yggdrasil PR #1327; Amalgam PR #1278 owns canonical model/integration; no original-world #426 first use.",
+  "parent_know27": {
+    "prereg_commit": "e48bcdffadec0be864ae6192ce6429a2906a98cf",
+    "qualified_source": "ee717390c6d99444efe5462cf1f0afe038e46d2a",
+    "evidence_comment": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1327#issuecomment-7042757857",
+    "old_A_pre_B_high_brier": 0.19575902,
+    "old_A_pre_return_high_brier": 0.24271138
+  },
+  "question": "Can any phase-blind single live forecast be compelled to recover old A before observing the return, when two worlds have exactly the same public history but different unannounced next regimes?",
+  "mode": "ANALYTIC_STRUCTURAL_FALSIFIER_NO_NEW_HELD_FIRST_USE",
+  "branches": {
+    "public_prefix": "Identical prior, initial/checkpoint state, public contexts, timestamps, chosen actions and witnessed outcomes through t=23 under A(0..7) then B(8..23). No public phase label, schedule of future changes, privileged rule or evaluator label.",
+    "public_fork": "At t=24, same public time, context and no-op evaluation. Fork R returns to A; fork C continues B. The branch bit is evaluator-only and no post-t23 consequence has yet been witnessed.",
+    "context": 4,
+    "action": 0,
+    "frozen_laws": [
+      "H0: x0 XOR (x1 AND x2)",
+      "H2: NOT (x0 AND x2)"
+    ],
+    "probabilities": {
+      "A": 0.15,
+      "B": 0.85
+    },
+    "branch_weights": {
+      "return_A": 0.5,
+      "continue_B": 0.5
+    },
+    "proof": "Any deterministic or common-randomness phase-blind learner produces the same pre-observation point forecast p on both branches, because all accessible inputs/states are identical. An independent private phase oracle may choose different p, but is an inadmissible control."
+  },
+  "score": {
+    "proper_loss": "Expected Bernoulli Brier(q,p) = q*(1-q)+(p-q)^2; scores the same withheld c=4 no-op future on both branches without leaking labels.",
+    "phase_blind_lower_bound": 0.25,
+    "privileged_phase_oracle_loss": 0.1275,
+    "unavoidable_gap": 0.1225,
+    "equivalence": "Mean of expected branch losses = 0.25+(p-0.5)^2 for any phase-blind p in [0,1].",
+    "distinct_metrics": [
+      "archive_A_cold_functional_readout_scored_privately_on_A_after_B_not_a_live_policy",
+      "live_pre_return_branch_blind_forecast_scored_on_BOTH_equally_weighted_branches",
+      "live_reactivation_after_1_2_4_revealed_return_consequences_scored_prequentially",
+      "intervention_cost_and_action_budget_equal_across_controls"
+    ]
+  },
+  "frozen_pass_fail": {
+    "P1": "H0 at c4 predicts bit 0, H2 at c4 predicts bit 1; qA=.15, qB=.85.",
+    "P2": "With identical visible pre-fork state, the policy MUST emit identical pre-observation forecast for either hidden fork.",
+    "P3": "For every phase-blind p in [0,1], equal-fork expected Brier is >=0.25, attained at p=.5. Oracle Brier =.1275.",
+    "P4": "A phase-oracle may attain .1275 but MUST be marked ineligible as matched phase-blind control.",
+    "verdict": "If all four analytic propositions hold: IDENTIFIABILITY_LIMIT_CONFIRMED; not scientific gain. If any fail: ANALYTIC_ERROR, do not promote."
+  },
+  "next_experiment_requirements": {
+    "state": "Existing native memory and prior KNOW27 checkpoints untouched. New memory studies require separate immutable prereg before observing any fresh cohort.",
+    "fairness": "Compare slot-based retention, same-capacity static Bayes/HMM/change-point, entropy-active policy and no-archive controls under matched public cues, permitted actions, witness counts and compute; prevent privileged phase labels/schedule.",
+    "success": "Old-A archived cold readout preserved during B; fast phase-blind live recovery only AFTER new lawful return evidence; compare recovery regret/latency and familiar-B noninterference, not impossible phase-oracle success at t24."
+  },
+  "custody": {
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "branch": "docs/ygg-independent-review-assessment-20261119",
+    "original_first_use": false,
+    "new_held_trials": 0,
+    "new_actions": 0,
+    "no_model_training": true,
+    "native_modified": false,
+    "scientific_gain_verified": false,
+    "no_merge_deployment_runner_scheduler": true
+  }
+}

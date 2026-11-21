@@ -1,0 +1,38 @@
+{
+  "schema": "yggdrasil.know41.candidate-structural-no-go.v1",
+  "status": "ANALYTIC_NO_GO_NO_PRIMARY_FIRST_USE",
+  "scope": "KNOW41 v3 frozen synthetic independent reviewer experiment",
+  "date": "2026-11-20",
+  "qualified_previous_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44851537747",
+  "candidate_model_source_blob": "034e3e9c7b34bc9a6d419c359a8cd6431200de96",
+  "source_code_line": "a = 1 if (t // 8) % 4 == 0 else int(p1 - .05 > p0)",
+  "forced_b_second_interventions": "t192..199 and 224..231, all eight contexts twice, exactly 16 a1",
+  "source_free_derivation": {
+    "expected_fork_action1_q_per_8_contexts": "two .15, four .35, two .55",
+    "expected_fork_action0_q": 0.35,
+    "cost_action1": 0.05,
+    "forced_regret_per_eight_contexts": "2*(.35-(.15-.05)) + 4*(.35-(.35-.05)) + 2*0 = 0.70",
+    "forced_regret_per_b_second": "2*0.70/64 = 0.021875 = 7/320",
+    "regret_contribution_of_all_other_actions": "nonnegative",
+    "no_memory_theta1_expected_regret": "0.025 = 1/40",
+    "maximum_possible_candidate_improvement_theta1": "0.025 - 0.021875 = 0.003125 = 1/320",
+    "v3_h3_required_improvement": 0.01,
+    "proof": "1/320 is strictly below 1/100. Candidate V1 cannot satisfy H3 in theta1 under any fit seed, future consequence realization, memory state or fitted hazard; fixed action schedule alone violates requirement."
+  },
+  "classification": {
+    "engineering": "SOURCE_FREE_THEOREM_IMPLEMENTED; QUALIFICATION_PENDING_NEW_COMMIT",
+    "scientific": "ANALYTIC_NO_GO_FOR_FROZEN_CANDIDATE; empirical regret/retention/transfer UNVERIFIED",
+    "deployment": "NONE",
+    "no_trial_claim": true,
+    "no_held_first_use": true,
+    "no_original_causalgym_first_use": true,
+    "do_not_replay_or_tune_after_result": true,
+    "next": "STOP current candidate KNOW41; any successor needs new blinded held causal family, intervention policy frozen without knowledge of held structure and independent first-use admission."
+  },
+  "audit": {
+    "original_protocol_blob": "40b54a9fff183a54243c530cff0f7be34785faca",
+    "v2_protocol_blob": "8594bc3a32d7826ce8ce0b491b1f1906741bce74",
+    "v3_protocol_blob": "e05caf3b46209c597c3e14ce0fb259aca2d46d80",
+    "keep_negative_consumed_trials": "zero first-use events occurred; original impossible rule and all corrections retained"
+  }
+}
