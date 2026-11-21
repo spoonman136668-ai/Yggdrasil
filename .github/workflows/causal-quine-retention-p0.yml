@@ -127,6 +127,16 @@ jobs:
           gh run download 44420677720 -n YGG-JEPA2-03-ubuntu-latest -D "$archive"
           gh run download 44499793023 -n Amalgam-shared-consequence-ubuntu-latest -D "$archive"
           python -B research/contrib/chatgpt/CAUSAL-AMALGAM/archive_p0_cold_replay.py "$archive"
+          # Authenticate BOTH independently archived original research checkpoint JSONs.
+          archived_windows="$RUNNER_TEMP/quine-p0-original-research-windows"
+          mkdir -p "$archived_windows"
+          gh run download 44499793023 -n Amalgam-shared-consequence-windows-2022 -D "$archived_windows"
+          # This calls original NativeEpisodeExperience.restore and NativeCumulativeLearner.restore.
+          # The SHA-pinned Linux/Windows unpacked originals must agree exactly; cold restore twice.
+          python -B research/contrib/chatgpt/CAUSAL-AMALGAM/native_segment_unpacked_acceptance.py \
+            "$archive/amalgam-joint-state.json" \
+            "$archived_windows/amalgam-joint-state.json" \
+            | tee "$RUNNER_TEMP/g39-original-native-restore.json"
       - name: Verify committed G29 atlas and clean exact-source tree
         shell: bash
         run: |
