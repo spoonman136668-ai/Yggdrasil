@@ -155,6 +155,7 @@ def run_world(seed, tape, fit, fork_theta=0, sham=False, fit_only=False):
     rewards = {phase: {name: [] for name in ARMS} for phase in PHASES}
     chosen = {name: 0 for name in ARMS}
     saved = {name: 0 for name in ARMS}
+    cold_boundary_checks = 0
     base_bank = None
     a_preserved = True
     b_at128 = None
@@ -192,13 +193,23 @@ def run_world(seed, tape, fit, fork_theta=0, sham=False, fit_only=False):
                 if name == "candidate":
                     need(len(checkpoint) < 4096, "CAND_CAP")
                 cold_model = type(arms[name]).cold(checkpoint)
+                need(type(cold_model) is type(arms[name]), "COLD_POLICY_TYPE")
                 need(cold_model.checkpoint() == checkpoint, "COLD_READBACK")
                 for c0 in range(8):
                     for a0 in (0, 1):
                         if hasattr(cold_model, "prob"):
                             need(cold_model.prob(c0, a0) ==
                                  arms[name].prob(c0, a0), "COLD_PROB")
+                if t + 1 < 256:
+                    next_c = (t + 1) % 8
+                    original_choice = arms[name].choose(t + 1, next_c)
+                    restored_choice = cold_model.choose(t + 1, next_c)
+                    need(original_choice == restored_choice, "COLD_ACTION")
+                    # Discard both pending probes: only an actual next-step decision
+                    # may authorize a consequence; no second simulated observation.
+                    cold_model = type(arms[name]).cold(checkpoint)
                 arms[name] = cold_model
+                cold_boundary_checks += 1
                 saved[name] = max(saved[name], len(checkpoint))
     need(all(m.received == 256 and m.pending is None for m in arms.values()),
          "FINAL_COUNTS")
@@ -216,6 +227,7 @@ def run_world(seed, tape, fit, fork_theta=0, sham=False, fit_only=False):
         "candidate_b_writes": arms["candidate"].b_writes,
         "world_unique_exogenous_draws": 256,
         "world_observations_per_arm": 256,
+        "cold_boundary_checks": cold_boundary_checks,
     }
 
 
@@ -267,8 +279,53 @@ def fit_selection(seeds, injected_uniform):
 
 
 def compute_verdict(worlds):
-    """Preserves v1 hypothesis margins; no source sampled here."""
-    need(len(worlds) == 24, "HELD_WORLD_COUNT")
+    """Preserves v1 margins; reject spoofed/duplicate world receipts first."""
+    need(type(worlds) is list and len(worlds) == 24, "HELD_WORLD_COUNT")
+    frozen = v2()["held_worlds"]
+    theta0, theta1 = frozen["theta0_seeds"], frozen["theta1_seeds"]
+    expected = {s: 0 for s in theta0}
+    expected.update({s: 1 for s in theta1})
+    need(len(expected) == 24 and len(theta0) == 12 and len(theta1) == 12,
+         "HELD_MANIFEST_COLLISION")
+    seen = set()
+    for w in worlds:
+        need(type(w) is dict, "HELD_ROW_TYPE")
+        seed, theta = w.get("seed"), w.get("fork_theta")
+        need(type(seed) is int and seed in expected and
+             type(theta) is int and theta == expected[seed] and
+             w.get("sham") is False and w.get("fit_only") is False,
+             "HELD_CUSTODY")
+        need(seed not in seen, "HELD_DUPLICATE")
+        seen.add(seed)
+        need(w.get("world_unique_exogenous_draws") == 256 and
+             w.get("world_observations_per_arm") == 256 and
+             w.get("cold_boundary_checks") == 4 * len(ARMS),
+             "HELD_SAMPLE_COUNTS")
+        need(type(w.get("action1_counts")) is dict and
+             set(w["action1_counts"]) == set(ARMS) and
+             all(type(n) is int and 0 <= n <= 256
+                 for n in w["action1_counts"].values()),
+             "HELD_ACTION_COUNTS")
+        need(type(w.get("max_checkpoint_bytes")) is dict and
+             set(w["max_checkpoint_bytes"]) == set(ARMS) and
+             all(type(n) is int and 0 < n < 4096
+                 for n in w["max_checkpoint_bytes"].values()),
+             "HELD_CHECKPOINT_CAP")
+        for metric, low, high in (("regret", 0.0, 1.0),
+                                  ("realized_reward", -0.05, 1.0)):
+            m = w.get(metric)
+            need(type(m) is dict and set(m) == set(PHASES),
+                 "HELD_METRIC_PHASE")
+            for row in m.values():
+                need(type(row) is dict and set(row) == set(ARMS) and
+                     all(type(v) in (int, float) and low - 1e-12 <= v <= high + 1e-12
+                         for v in row.values()),
+                     "HELD_METRIC_VALUES")
+        need(type(w.get("candidate_a_preserved")) is bool and
+             type(w.get("candidate_b_preserved_on_return")) is bool and
+             type(w.get("candidate_b_writes")) is int and
+             0 <= w["candidate_b_writes"] <= 192, "HELD_RETENTION")
+    need(seen == set(expected), "HELD_MANIFEST_INCOMPLETE")
     out = {}
     for theta in (0, 1):
         rows = [x for x in worlds if x["fork_theta"] == theta and not x["sham"]]

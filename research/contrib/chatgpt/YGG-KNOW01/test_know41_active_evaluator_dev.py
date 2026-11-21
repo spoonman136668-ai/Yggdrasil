@@ -71,6 +71,34 @@ class Know41EvaluatorMockOnly(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "TAPE_TYPE"):
             create_tape(990312, lambda seed,t,c: "bad" if t==128 else mock_u(seed,t,c))
 
+
+    def test_cold_policy_type_and_prospective_next_action(self):
+        # A greedy lookup may not turn into an exploring bandit on cold restore.
+        m = GreedyLookup()
+        for t in range(64):
+            c = t % 8
+            a = m.choose(t, c)
+            m.observe(t, c, a, int((t + c) % 3 == 0))
+        saved = m.checkpoint()
+        cold = GreedyLookup.cold(saved)
+        self.assertIs(type(cold), GreedyLookup)
+        self.assertEqual(type(m), type(cold))
+        self.assertEqual(m.choose(64, 0), cold.choose(64, 0))
+        self.assertEqual(cold.checkpoint(), m.checkpoint())
+
+    def test_held_receipts_reject_foreign_or_duplicate_mock_worlds(self):
+        # Pure injected mock, NOT frozen held source or evaluation.
+        fit = {"candidate_hazard": 1 / 32,
+               "bayesian_hazard": 1 / 32, "bayesian_bonus": 1.0}
+        mock = run_world(990401, create_tape(990401, mock_u), fit)
+        self.assertEqual(mock["cold_boundary_checks"], 4 * len(ARMS))
+        with self.assertRaisesRegex(ValueError, "HELD_CUSTODY"):
+            compute_verdict([mock] * 24)
+        # Additional invalid fake metadata cannot be accepted as a completed trial.
+        mock["cold_boundary_checks"] = 0
+        with self.assertRaisesRegex(ValueError, "HELD_CUSTODY"):
+            compute_verdict([mock] * 24)
+
     def test_malformed_scientific_held_count_fails_closed(self):
         with self.assertRaisesRegex(ValueError, "HELD_WORLD_COUNT"):
             compute_verdict([])
