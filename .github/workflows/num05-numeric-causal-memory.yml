@@ -1,0 +1,210 @@
+name: NUM05 source-free numeric causal memory
+on:
+  push:
+    branches: [research/num05-numeric-causal-memory-20261120]
+    paths-ignore: [.ice/code-atlas.html, .ice/code-atlas.ice, .ice/code-atlas.json]
+permissions:
+  contents: read
+concurrency:
+  group: num05-research-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  atlas:
+    if: ${{ github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.pin.outputs.source_sha }}
+      final_sha: ${{ steps.pin.outputs.final_sha }}
+    steps:
+      - name: Deterministic checkout EOL
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify source-first prereg, original native custody and bounded scope
+        id: pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 86264b41a08d49f558418c0fba367f3a2636befa "$GITHUB_SHA"
+          git merge-base --is-ancestor 182b7a01687d3bfbaa31472148d1f62ae8034bac "$GITHUB_SHA"
+          git diff --name-only 86264b41a08d49f558418c0fba367f3a2636befa "$GITHUB_SHA" |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/"; e={p+x for x in ("prereg.json","num05.py","num05_dev.py","test_num05.py","README.md")} | {".github/workflows/num05-numeric-causal-memory.yml"}; extras={p+"primary.admit",p+"result.json",".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert e<=a and a-e<=extras,(a,e,extras)'
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = 1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4
+          test "$(git show HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/prereg.json | python -B -c 'import sys,json; x=json.load(sys.stdin); assert x["id"]=="NUM05"; assert x["fixed_source"]["development_seeds"]==[520117,520131]; assert x["authority"]["source_owner_426_protected_first_use"] is False; print("NUM05_PREREG_FIRST_SEALED")')" = NUM05_PREREG_FIRST_SEALED
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --name-only |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "index(NUM05): exact-source derived G29 only"
+          test "$(git rev-parse HEAD^)" = "$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo NUM05_SOURCE_SEALED_ATLAS_PASS
+  engineering:
+    needs: atlas
+    if: ${{ needs.atlas.result == 'success' && github.run_attempt == 1 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Deterministic checkout EOL
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.atlas.outputs.final_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact source and Atlas candidate with original model intact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ needs.atlas.outputs.final_sha }}'
+          test "$(git rev-parse HEAD^)" = '${{ needs.atlas.outputs.source_sha }}'
+          git diff --name-only HEAD^ HEAD |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
+          python -B scripts/build_code_atlas.py --check-if-present
+          echo NUM05_EXACT_SOURCE_AND_G29_PASS
+      - name: Research-only focused fixtures and nonregistered 80-event smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          workdir="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05"
+          (cd "$workdir" && python -B -m unittest -v test_num05 && python -B num05_dev.py --fixture)
+          echo NUM05_FOCUSED_FIXTURES_PASS
+      - name: Original mandatory model dependency environment
+        run: >-
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: MANDATORY full final original native regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py' -v
+          done
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo NUM05_FULL_ORIGINAL_FINAL_REGRESSION_PASS
+  primary:
+    needs: [atlas, engineering]
+    if: ${{ needs.engineering.result == 'success' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Deterministic checkout EOL
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.atlas.outputs.final_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Only marker-add source commit may consume DEV seeds once
+        id: score
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05"
+          marker="$root/primary.admit"
+          source='${{ needs.atlas.outputs.source_sha }}'
+          if [ ! -f "$marker" ]; then
+            echo NUM05_PRIMARY_HELD_BEFORE_EXPLICIT_MARKER
+            exit 0
+          fi
+          parent="$(git rev-parse "$source^")"
+          files="$(git diff --name-only "$parent" "$source")"
+          if [ "$files" != "$marker" ]; then
+            echo NUM05_ALREADY_SCORED_OR_INELIGIBLE_FOR_REUSE
+            exit 0
+          fi
+          SOURCE="$source" PARENT="$parent" python -B - <<'PY'
+          import json, os, pathlib, subprocess
+          root=pathlib.Path("research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05")
+          j=json.loads((root/"primary.admit").read_text())
+          assert j["schema"]=="yggdrasil.num05.one-shot-sourcefree-dev.v1"
+          assert j["qualified_parent_sha"]==os.environ["PARENT"]
+          assert j["science_source_sha"]==subprocess.check_output(
+            ["git","rev-parse",os.environ["PARENT"]+"^"],text=True).strip()
+          assert j["dev_seeds"]==[520117,520131]
+          assert j["admitted_for_synthetic_dev"] is True
+          print("NUM05_REGISTERED_SYNTHETIC_SOURCE_ADMISSION_EXACT_SHA")
+          PY
+          export NUM05_SINGLE_USE_DEV=1
+          (cd "$root" && python -B num05_dev.py --primary) > "$RUNNER_TEMP/num05-registered-dev.log"
+          python -B - <<'PY'
+          import hashlib,json,os,pathlib
+          log=(pathlib.Path(os.environ["RUNNER_TEMP"])/"num05-registered-dev.log").read_text()
+          rows=[line for line in log.splitlines()
+                if line.startswith("NUM05_REGISTERED_DEV_RECEIPT_JSON=")]
+          assert len(rows)==1,len(rows)
+          raw=rows[0].split("=",1)[1].encode("ascii")
+          report=json.loads(raw)
+          assert report["schema"]=="yggdrasil.num05.scored-dev.v1"
+          assert [d["seed"] for d in report["dev"]]==[520117,520131]
+          assert report["null"]["seed"]==520211
+          assert report["original_external_source_actions"]==0
+          assert report["source_owner_authenticated"] is False
+          assert report["decision"]["classification"] in ("DEV_NO_GO","DEV_FEASIBLE_NOT_SCIENTIFIC")
+          assert report["decision"]["scientific_gain_verified"] is False
+          digest=hashlib.sha256(raw).hexdigest()
+          assert "NUM05_REGISTERED_DEV_RECEIPT_SHA256="+digest in log
+          (pathlib.Path(os.environ["RUNNER_TEMP"])/"num05-primary-receipt.json").write_bytes(raw+b"\n")
+          print("NUM05_PRIMARY_ORIGINAL_SINGLE_USE_FINISHED")
+          print("NUM05_PRIMARY_RECEIPT_SHA256="+digest)
+          print("NUM05_PRIMARY_CLASSIFICATION="+report["decision"]["classification"])
+          for row in report["decision"]["per_seed"]:
+            print("NUM05_DEV_SEED="+str(row["seed"])+" GAIN="+str(row["gain"])+" MARGIN="+str(row["pooled_margin"])+" RETAINED="+str(row["retained"]))
+          PY
+          echo "scored=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ steps.score.outputs.scored == 'true' }}
+        with:
+          name: num05-original-synthetic-dev-single-use
+          path: ${{ runner.temp }}/num05-primary-receipt.json
+          if-no-files-found: error
