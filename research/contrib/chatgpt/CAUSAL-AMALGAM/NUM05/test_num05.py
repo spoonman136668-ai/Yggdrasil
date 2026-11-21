@@ -217,6 +217,17 @@ class NUM05NumericCausalFixtureTests(unittest.TestCase):
             self.assertNotIn(forbidden,script)
         self.assertEqual(SOURCE_TAG,"num05.synthetic-public-dev.v1")
 
+    def test_16_preprimary_source_precision_exact_public_six_decimal_grid(self):
+        from num05_dev import source_rows
+        fixture=list(source_rows(FIXTURE_SEED,null=True,count=80))
+        self.assertEqual(len(fixture),80)
+        for row in fixture:
+            self.assertEqual(row["source_tag"], SOURCE_TAG)
+            for v in (row["observation"] + row["successor"] + [row["reward"]]):
+                self.assertAlmostEqual(v,round(v,6),places=11)
+        self.assertTrue(all(row["action"]==i%5 for i,row in enumerate(fixture)))
+
+
 
 if __name__ == "__main__":
     unittest.main()
