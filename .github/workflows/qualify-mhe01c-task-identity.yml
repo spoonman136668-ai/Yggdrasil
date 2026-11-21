@@ -1,4 +1,4 @@
-name: EXT-MHE01-C source-only task identity fence
+name: EXT-MHE01-C/D identity and native ABI admission fences
 on:
   push:
     branches: [research/mhe01-public-packet-fence-20261119]
@@ -43,9 +43,10 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 4fe5aad62d6af0268dffd86284fb13655ae35296 "$GITHUB_SHA"
           git merge-base --is-ancestor 782cd045cc8a1ac5ee813c282128c83a86f3dad9 "$GITHUB_SHA"
+          git merge-base --is-ancestor 0fc1a3bc2e2ca18c54e280511beff895ced7bebb "$GITHUB_SHA"
           test "$(git rev-parse HEAD:research/contrib/spoonman136668-ai/mhe01-public-packet-fence/prereg.json.txt)" = 12b941082da273555d1718296107e1be0857e74e
           git diff --name-only 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 HEAD |
-            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/spoonman136668-ai/mhe01-public-packet-fence/"; e={p+x for x in ("README.md.txt","packet_fence.py.txt","prereg.json.txt","test_packet_fence.py.txt","task_identity_contract.md.txt")} | {".github/workflows/qualify-mhe01c-task-identity.yml"}; assert a==e,(a,e)'
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/spoonman136668-ai/mhe01-public-packet-fence/"; e={p+x for x in ("README.md.txt","packet_fence.py.txt","prereg.json.txt","test_packet_fence.py.txt","task_identity_contract.md.txt","native_abi_contract.md.txt")} | {".github/workflows/qualify-mhe01c-task-identity.yml"}; assert a==e,(a,e)'
           test -z "$(git status --porcelain --untracked-files=all)"
           python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
           git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
@@ -61,7 +62,7 @@ jobs:
           git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
           echo "source=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
           echo "final=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo MHE01C_DERIVED_SOURCE_PASS
+          echo MHE01D_DERIVED_SOURCE_PASS
   final-qualification:
     needs: atlas
     if: ${{ needs.atlas.result == 'success' && github.run_attempt == 1 }}
@@ -94,8 +95,17 @@ jobs:
           git diff --name-only HEAD^ HEAD |
             python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); e={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==e,(a,e)'
           test "$(git rev-parse HEAD:research/contrib/spoonman136668-ai/mhe01-public-packet-fence/prereg.json.txt)" = 12b941082da273555d1718296107e1be0857e74e
+          # Compare against ORIGINAL UNMERGED native owner; never infer it is on main.
+          owner_sha=86264b41a08d49f558418c0fba367f3a2636befa
+          if ! git cat-file -e "$owner_sha^{commit}" 2>/dev/null; then
+            git fetch --no-tags origin refs/heads/research/causal-intelligence-amalgam-20261118
+            test "$(git rev-parse FETCH_HEAD)" = "$owner_sha"
+          fi
+          test "$(git rev-parse "$owner_sha:yggdrasil/native_episode_experience.py")" = 5a18b00a4c4131526e71f51d63dfd9eb9471c81e
+          test "$(git rev-parse "$owner_sha:yggdrasil/native_cumulative_learner.py")" = 1bdeaa4277fc9b34bbf7c0f36c6d0a4cc00e1ca4
+          test "$(git rev-parse "$owner_sha:yggdrasil/native_causal_amalgam.py")" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
           python -B scripts/build_code_atlas.py --check-if-present
-          echo MHE01C_EXACT_FINAL_SOURCE_PASS
+          echo MHE01D_EXACT_FINAL_SOURCE_PASS
       - name: Existing plus task-identity shadow tests
         shell: bash
         run: |
@@ -107,8 +117,9 @@ jobs:
           cp "$source_dir/test_packet_fence.py.txt" "$workdir/test_packet_fence.py"
           cp "$source_dir/prereg.json.txt" "$workdir/prereg.json.txt"
           cp "$source_dir/task_identity_contract.md.txt" "$workdir/task_identity_contract.md.txt"
+          cp "$source_dir/native_abi_contract.md.txt" "$workdir/native_abi_contract.md.txt"
           (cd "$workdir" && python -B -m unittest -v test_packet_fence)
-          echo MHE01C_FOCUSED_31_PASS
+          echo MHE01D_FOCUSED_42_PASS
       - name: Mandatory full original root regression and clean Git source
         shell: bash
         run: |
@@ -117,4 +128,4 @@ jobs:
           python -B -m unittest discover -s tests -p 'test_code_atlas.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain --untracked-files=all)"
-          echo MHE01C_FULL_FINAL_ROOT_PASS
+          echo MHE01D_FULL_FINAL_ROOT_PASS
