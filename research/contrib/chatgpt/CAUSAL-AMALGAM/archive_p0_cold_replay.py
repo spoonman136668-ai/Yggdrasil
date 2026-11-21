@@ -22,6 +22,9 @@ from four_head_retention import (HEAD_NAMES, audit_old_heads,
 from headwise_consolidation import assess_bounded_blend
 from headwise_capsule import seal_capsule, restore_capsule
 from headwise_shadow_readout import materialize_research_readout
+from two_witness_retention import (
+    assess_two_witness_source, summarize_frozen_two_witnesses,
+)
 from fine_step_plasticity import (
     evaluate_fine_steps, summarize_fine_samples,
 )
@@ -276,7 +279,9 @@ def replay_consumed_selector(start, source_directory):
     g28_retention = []
     g29_projection_samples = []
     g30_fine_samples = []
+    g31_two_step_samples = []
     g28_native_by_next = {}
+    g31_native_by_second = {}
     original_native_parent = checked(source_directory, protocol["native_name"],
                                      protocol["native_sha256"])
     original_donor = json.loads(checked(
@@ -317,6 +322,10 @@ def replay_consumed_selector(start, source_directory):
             expected = g28_native_by_next.pop(index + 1)
             if digest(gate.system.native.checkpoint()) != expected:
                 raise ValueError("G28_ARCHIVE_NATIVE_NEXT_MISMATCH")
+        if index + 1 in g31_native_by_second:
+            expected = g31_native_by_second.pop(index + 1)
+            if digest(gate.system.native.checkpoint()) != expected:
+                raise ValueError("G31_ARCHIVE_NATIVE_SECOND_MISMATCH")
         if index + 1 in SHADOW_ORDINALS:
             # Read-only on the SAME authentic consumed trajectory; do not
             # enforce this advisory veto, branch policy or create new trials.
@@ -535,6 +544,54 @@ def replay_consumed_selector(start, source_directory):
                         "new_world_actions": 0,
                     },
                 })
+                # G31 two consecutive source-consumed events. First event
+                # is exactly G28/G29/G30; second comes from original PINNED
+                # old 96-trace without additional world/actor interaction.
+                compared, g31_analysis = assess_two_witness_source(
+                    start, before_selected, advanced, projected, fine,
+                    analysis, fine_analysis, raw_trace, index + 1)
+                cold_compared, g31_cold = assess_two_witness_source(
+                    start, before_selected, cold_advanced, cold_projected,
+                    fine_reopen, cold_analysis, fine_cold_analysis,
+                    raw_trace, index + 1)
+                if (g31_analysis != g31_cold
+                        or any(compared[arm].checkpoint()
+                               != cold_compared[arm].checkpoint()
+                               for arm in ("full", "coarse", "fine"))
+                        or len(compared) != 4):
+                    raise ValueError("G31_SOURCE_COLD_CONTINUATION_DRIFT")
+                second_native_sha = g31_analysis["native_second_sha256"]
+                seen_second = 0
+                for public in seen_views:
+                    reference_plan = compared["full"].plan(public[0])
+                    for arm in ("full", "coarse", "fine"):
+                        model = compared[arm]
+                        cold_model = cold_compared[arm]
+                        if (model.plan(public[0]) != reference_plan
+                                or cold_model.plan(public[0]) != reference_plan):
+                            raise ValueError("G31_NATIVE_SECOND_PLAN_DRIFT")
+                        for first in (0, 1):
+                            if (model.specialist_forecasts(public, first)
+                                    != cold_model.specialist_forecasts(public, first)):
+                                raise ValueError("G31_TRANSITION_COLD_DRIFT")
+                            for state, second in product((0, 1), repeat=2):
+                                if (model.specialist_forecasts(
+                                        public, first, state, second)
+                                        != cold_model.specialist_forecasts(
+                                        public, first, state, second)):
+                                    raise ValueError("G31_REWARD_COLD_DRIFT")
+                    seen_second += 10
+                if seen_second != 80:
+                    raise ValueError("G31_FROZEN_PUBLIC_PROBE_COVERAGE")
+                g31_two_step_samples.append({
+                    "ordinal": index + 1,
+                    "analysis": g31_analysis,
+                    "native_source_verified_after_both_steps": True,
+                    "historical_public_cold_address_count_per_arm": seen_second,
+                    "original_g26_capsule_sha256": capsule_pin,
+                    "new_world_actions": 0,
+                })
+                g31_native_by_second[index + 3] = second_native_sha
                 g28_native_by_next[index + 2] = g28_receipt["after_native_sha256"]
             consolidation.append({
                 "ordinal": index + 1,
@@ -549,8 +606,11 @@ def replay_consumed_selector(start, source_directory):
 
     if len(g28_retention) != len(SAMPLE_ORDINALS) or g28_native_by_next:
         raise ValueError("G28_FROZEN_SAMPLES_NOT_COMPLETED")
+    if len(g31_two_step_samples) != 4 or g31_native_by_second:
+        raise ValueError("G31_FROZEN_TWO_WITNESS_SOURCE_NOT_COMPLETED")
     g29_report = summarize_four_frozen_samples(g29_projection_samples)
     g30_report = summarize_fine_samples(g30_fine_samples)
+    g31_report = summarize_frozen_two_witnesses(g31_two_step_samples)
     shadow_report = summarize_shadow(shadow)
     consolidation_report = summarize_bounded_consolidation(consolidation)
     checkpoint = gate.system.checkpoint()
@@ -612,6 +672,7 @@ def replay_consumed_selector(start, source_directory):
         "bounded_headwise_consolidation": consolidation_report,
         "g29_post_witness_projection": g29_report,
         "g30_fine_step_plasticity": g30_report,
+        "g31_two_witness_memory": g31_report,
         "g28_consumed_source_continuation": {
             "gate": "G28_RESEARCH_ONLY_ONE_WITNESS_COLD_CONTINUATION",
             "frozen_sample_ordinals": list(SAMPLE_ORDINALS),
