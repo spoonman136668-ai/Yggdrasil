@@ -1,0 +1,130 @@
+{
+  "schema": "yggdrasil.ckad25.srl01.dev-summary.v1",
+  "classification": "DEV_GO_FOCUSED_ONLY",
+  "scientific_pass": false,
+  "scientific_gain_verified": false,
+  "native_actual_checkpoint_execution": "NOT_RUN",
+  "native_source_admission": "NOT_RUN",
+  "native_cpu_ratio": "UNVERIFIED",
+  "full_linux_windows_regression": "NOT_RUN",
+  "commit_prereg": "d7c6a60e803c0192b8f1e57cf2d9447007890948",
+  "commit_frozen_source_before_primary": "7b513cc388406bdd7ba47234ca90a887dc7c6648",
+  "commit_base": "655f13033c7ce8e9699af697437fcb9bd5a06f1e",
+  "source_blobs": {
+    "native_opt_in": "3ad851a0f9ad48de5246ce9832f6f65615ce222b",
+    "learner": "6b9811f4c61ef6fba67ba9685ca14bd14d0c5f1d",
+    "trial": "5c9f7b8c8279aad1faa39aeca47efbf20c5b854e",
+    "test": "758564e4bb47ad28cb60c9f6898f146ca8991bdc"
+  },
+  "trial": {
+    "consumed_once": true,
+    "date": "2026-11-21",
+    "runtime": "Python 3.13.5 Linux, source-free",
+    "source_free": true,
+    "new_stationary_seed_count": 48,
+    "new_negative_seed_count": 24,
+    "stationary_seed_formula": "530001 + 37*i, i in 0..47",
+    "negative_seed_formula": "540001 + 41*i, i in 0..23",
+    "training_worlds_per_cohort": 3,
+    "public_training_witnesses_per_cohort": 6,
+    "total_public_training_witnesses": 432,
+    "target_worlds_per_cohort": 32,
+    "evaluated_target_worlds_stationary": 1536,
+    "evaluated_target_worlds_negative": 768,
+    "simulated_policy_action_budget_per_arm": 4608,
+    "total_held_evaluator_outcomes_per_arm": 9216,
+    "original_stdout_sha256": "e15d86a168d3a788c6a7d9e9adbcac3d46db75da7075cae4f61715280aa04b5f",
+    "original_stdout_bytes": 299869,
+    "original_stdout_in_repository": false,
+    "note": "Frozen test exact reproducible by committing trial code and deterministic seed formula; stdout original kept locally but not yet GitHub-attached. Do not call this a raw-original-GitHub seal."
+  },
+  "focused_local_tests": {
+    "passed": 8,
+    "failed": 0,
+    "suite": "test_focused.py",
+    "native_opt_in_method_executed": false
+  },
+  "stationary": {
+    "native_beta": {
+      "detected": 1157,
+      "total_worlds": 1536,
+      "detection_rate": 0.7532552083333334,
+      "mean_brier": 0.16003036962522502
+    },
+    "candidate": {
+      "detected": 1202,
+      "total_worlds": 1536,
+      "detection_rate": 0.7825520833333334,
+      "mean_brier": 0.14202169512784202
+    },
+    "exact_independent_joint_bayes": {
+      "detected": 1202,
+      "total_worlds": 1536,
+      "detection_rate": 0.7825520833333334,
+      "mean_brier": 0.14202169512784202
+    },
+    "fixed": {
+      "detected": 767,
+      "total_worlds": 1536,
+      "detection_rate": 0.4993489583333333,
+      "mean_brier": 0.16003036962522502
+    },
+    "random": {
+      "detected": 681,
+      "total_worlds": 1536,
+      "detection_rate": 0.443359375,
+      "mean_brier": 0.16003036962522502
+    },
+    "dirichlet_positives": {
+      "detected": 1153,
+      "total_worlds": 1536,
+      "detection_rate": 0.7506510416666666,
+      "mean_brier": 0.16092391817838247
+    },
+    "trailing_2_beta": {
+      "detected": 1106,
+      "total_worlds": 1536,
+      "detection_rate": 0.7200520833333334,
+      "mean_brier": 0.16684286344623017
+    },
+    "candidate_delta_vs_native_beta": {
+      "detection_pp": 2.9296875,
+      "brier_reduction": 0.018008674497383
+    }
+  },
+  "no_persistent_mapping_negative": {
+    "native_beta": {
+      "detected": 396,
+      "total_worlds": 768,
+      "detection_rate": 0.515625,
+      "mean_brier": 0.1934164478532196
+    },
+    "candidate": {
+      "detected": 387,
+      "total_worlds": 768,
+      "detection_rate": 0.50390625,
+      "mean_brier": 0.1987098011539192
+    },
+    "candidate_regression": {
+      "detection_pp": -1.171875,
+      "brier_increase": 0.0052933533006996
+    },
+    "preset_brier_regression_ceiling": 0.02,
+    "passed": true
+  },
+  "gates": {
+    "source_evidence_action_budget_and_cold_parity": true,
+    "independent_fully_trained_exact_bayes_parity": true,
+    "detection_over_native_beta_ge_0_020": true,
+    "detection_over_fixed_ge_0_020": true,
+    "brier_over_beta_ge_0_010": true,
+    "no_mapping_negative_brier_noninferior_0_020": true
+  },
+  "limitations": [
+    "The native opt-in method is committed but not executed against authentic NativeCumulativeLearner checkpoint in this sandbox.",
+    "Actual physical/source actions were not executed. Target actions and outcomes are deterministic synthetic evaluation only.",
+    "A model-class prior over exactly one fault, four public addresses, unknown shared hotspot and q grid was supplied; not an unsupplied causal primitive.",
+    "Strong exact conventional Bayes is identical to learned candidate on every action and forecast; no scientific superiority.",
+    "Full native Windows/Linux regression and native CPU <=2x gate not run; therefore no merge/promotion."
+  ]
+}
