@@ -1,0 +1,114 @@
+{
+  "schema": "yggdrasil.research.fcr03.engineering-prereg.v1",
+  "experiment": "FCR03-SRCFREE-20261121",
+  "status": "FROZEN_BEFORE_PRIMARY_TRIAL",
+  "scope": "independent source-free architecture screening, not scientific source admission",
+  "parent_commit": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "prior_negatives": [
+    "DG1-SL14 false-retrieval DEV_NO_GO; do not rerun 107001..107032",
+    "FCR01-S resource NO_GO 5.462452x native CPU, branch 07b0e0322afba132befa9ed9eed4b763613b98bb",
+    "FCR02 cumulative selected masks reward Brier 0.281001 vs trailing32 0.038478, consumed 215001..215004"
+  ],
+  "falsifiable_hypothesis": "A bounded stage-specific archive of previously fit public affine laws, recalled after an outcome-evidenced regime change without phase labels, should improve cold reuse on a returned mechanism and cross-stage recombination over fully trained matched-history alternatives.",
+  "candidate": {
+    "stage_split": "transition: 2 public bits (context,x1); terminal reward: 4 public bits (context,x1,s2,x2)",
+    "law_class": "all affine binary XOR forms over that stage's public inputs, with optional bias (8 transition, 32 reward hypotheses)",
+    "archived_support_min": 12,
+    "alarm_recent_window": 8,
+    "alarm_mismatches_min": 4,
+    "active_cooldown_after_selection": 8,
+    "alarm_candidate_fit_recent": 8,
+    "archive_limit_per_stage": 3,
+    "head_forecast_confidence": "1/16 .. 15/16 when law selected; 1/2 before learned",
+    "initial_fit_public_rows": 12,
+    "archive_eviction": "oldest first",
+    "change_rule": "if mismatch alarm then choose lowest 8-public-witness mismatches among frozen archived laws and newly fit affine law; ties prefer archival with older retention; no phase feature",
+    "event_order": "both forecasts strictly before new revealed outcomes; no hidden evaluator source data",
+    "max_public_events_per_cohort": 368,
+    "checkpoint": "canonical JSON with immutable witnessed public ledger hash; cold restore must replay exact same records and reject altered scientific flags"
+  },
+  "dev_fixture": {
+    "cohorts_seeds": [
+      317101,
+      317102,
+      317103,
+      317104,
+      317105,
+      317106,
+      317107,
+      317108
+    ],
+    "episodes_per_phase": {
+      "A_familiar": 80,
+      "B_changed": 80,
+      "A_return": 80,
+      "C_recombination": 80,
+      "D_nonlinear_unknown": 48
+    },
+    "row_fields": [
+      "public_context",
+      "public_x1",
+      "public_s2",
+      "public_x2",
+      "public_reward"
+    ],
+    "public_draws": "sha256(seed,index,field) low bit",
+    "laws": {
+      "A": {
+        "transition": "s2=x1 XOR context",
+        "reward": "y=s2 XOR x2"
+      },
+      "B": {
+        "transition": "s2=x1",
+        "reward": "y=s2 XOR x2 XOR context"
+      },
+      "A_return": {
+        "transition": "s2=x1 XOR context",
+        "reward": "y=s2 XOR x2"
+      },
+      "C_recombination": {
+        "transition": "s2=x1 XOR context",
+        "reward": "y=s2 XOR x2 XOR context"
+      },
+      "D_nonlinear_unknown": {
+        "transition": "s2=x1 XOR context",
+        "reward": "y=(context AND x1) XOR x2"
+      }
+    },
+    "phase_feature_exposed_to_models": false,
+    "scoring": "prequential squared error (Brier) per stage before outcomes; mean on C and A-return, D diagnostic"
+  },
+  "controls": [
+    "fully fitted per-stage full-history Jeffreys Beta conditional on same observable inputs",
+    "trailing32 exact same-key Jeffreys Beta",
+    "trailing16 exact same-key Jeffreys Beta",
+    "full-history Bayes mixture over the IDENTICAL affine-law hypothesis class, Bernoulli error 1/16",
+    "hazard1/32 affine fixed-share Bayes mixture over IDENTICAL law class, Bernoulli error 1/16",
+    "hazard1/8 affine fixed-share Bayes mixture over IDENTICAL law class, Bernoulli error 1/16"
+  ],
+  "classification": {
+    "go": "C transition and reward Brier BOTH <= strongest independently fully trained matched-information control, A-return transition and reward BOTH <= matched best +0.020 Brier, source-free cold replay and negative contracts pass, zero hidden phase accesses; no science claim even if go",
+    "no_go": "either C stage worse than strongest control or A-return violates +0.020 Brier allowance; retain negatives and do not retune used seeds",
+    "invalid": "fixture leakage, mismatched information, consumed source, checkpoint hash mismatch, code changed after outcome, missing controls",
+    "native_resource_limit": "measured <=2x native CPU on exact checkout only; if unavailable mark UNVERIFIED, never infer pass",
+    "scientific_gate": "full dual-platform regression, independent disjoint source, owner first-use authority, strongest baseline, repeated qualify; NOT included in this development gate"
+  },
+  "budget": {
+    "seeds": 8,
+    "episodes_each": 368,
+    "total_episodes": 2944,
+    "trial_reruns": 0,
+    "paid_APIs": 0,
+    "workflows": 0,
+    "training": "source-free public synthetic only"
+  },
+  "authority": {
+    "original_world_first_use": false,
+    "controller_changes": false,
+    "merge": false,
+    "runner_dispatch": false,
+    "accepted_native_write": false,
+    "scientific_gain_verified": false
+  }
+}
