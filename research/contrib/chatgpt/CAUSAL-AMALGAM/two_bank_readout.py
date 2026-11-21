@@ -2,7 +2,8 @@
 
 Both banks start from the same trained heads. The anchor is immutable and
 the adaptive bank observes admitted public witnesses using existing APIs.
-Routing probabilities are fixed before each current witness's outcomes.
+First-stage routing is fixed before each current witness; optional terminal-stage
+routing uses only its already-observed intermediate public state, never reward.
 Only the native source ledger supplies chronology; no phase or ID in routing.
 Replay on consumed data is retrospective, never independent science.
 """
@@ -102,10 +103,31 @@ def _switch_prior(posterior_odds):
     return SWITCH_HAZARD + (1 - 2 * SWITCH_HAZARD) * p
 
 
-def _replay(heads, prefix, suffix, *, switching=False):
+def _staged_terminal_weight(prior_weight, anchor_transition,
+                            adaptive_transition, observed_state):
+    """After observed state, before reward; two correlated transition heads."""
+    if (type(prior_weight) not in (int, float)
+            or not isfinite(prior_weight) or not 0 < prior_weight < 1
+            or type(observed_state) is not int or observed_state not in (0, 1)
+            or any(type(v) is not tuple or len(v) != 2
+                   for v in (anchor_transition, adaptive_transition))
+            or any(not isfinite(p) or not 0 <= p <= 1
+                   for p in (*anchor_transition, *adaptive_transition))):
+        raise ValueError("G34_STAGE_INPUT")
+    evidence = sum(_likelihood(b, observed_state) -
+                   _likelihood(a, observed_state)
+                   for a, b in zip(anchor_transition, adaptive_transition,
+                                   strict=True)) / 2
+    odds = log(prior_weight / (1 - prior_weight)) + evidence
+    return 1 / (1 + exp(-odds))
+
+
+def _replay(heads, prefix, suffix, *, switching=False, staged=False):
     """Pure development seam; fixtures cannot establish source authenticity."""
     if type(switching) is not bool:
         raise ValueError("G33_SWITCH_FLAG")
+    if type(staged) is not bool or (staged and not switching):
+        raise ValueError("G34_STAGE_FLAG")
     _check_heads(heads)
     if (type(prefix) is not tuple or not 0 < len(prefix) <= MAX_PREFIX
             or type(suffix) is not tuple or not 0 < len(suffix) <= MAX_SUFFIX
@@ -146,6 +168,15 @@ def _replay(heads, prefix, suffix, *, switching=False):
             losses["switching"] = tuple(
                 (p-y)**2 for p,y in zip(switched, labels, strict=True))
             switch_odds = _advance_router(log(q / (1 - q)), a, b, labels)
+            if staged:
+                terminal_weight = _staged_terminal_weight(
+                    q, (a[0], a[2]), (b[0], b[2]), state)
+                terminal_pair = _mix((a[1], a[3]), (b[1], b[3]),
+                                     terminal_weight)
+                staged_mix = (switched[0], terminal_pair[0],
+                              switched[2], terminal_pair[1])
+                losses["staged_switching"] = tuple(
+                    (p-y)**2 for p,y in zip(staged_mix, labels, strict=True))
         adaptive[0].observe(views, (first,), state)
         adaptive[1].observe(views, (first, state, second), reward)
         adaptive[2].observe(views, (first,), history, state)
@@ -158,6 +189,9 @@ def _replay(heads, prefix, suffix, *, switching=False):
             trace[-1].update(switching=switched,
                              switching_adaptive_weight_before=q,
                              switching_log_odds_after=switch_odds)
+        if staged:
+            trace[-1].update(staged_switching=staged_mix,
+                             staged_adaptive_weight_after_transition=terminal_weight)
         odds = next_odds
         history = (history + (event,))[-8:]
     frozen_bytes = _bank_bytes(frozen)
@@ -181,11 +215,14 @@ def _replay(heads, prefix, suffix, *, switching=False):
         report.update(switching_hazard=SWITCH_HAZARD,
                       additional_router_updates=len(suffix),
                       additional_mixture_scalar_predictions=4 * len(suffix))
+    if staged:
+        report.update(staged_conditional_updates=len(suffix),
+                      staged_additional_mixture_scalar_predictions=2 * len(suffix))
     return report
 
 
 def audit_admitted_prefix(anchor, descendant, *, anchor_sha256, descendant_sha256,
-                          switching=False):
+                          switching=False, staged=False):
     """Read-only shadow replay from independently pinned original model objects.
 
     This checks identity and prefix consistency, not source-owner authenticity.
@@ -202,7 +239,8 @@ def audit_admitted_prefix(anchor, descendant, *, anchor_sha256, descendant_sha25
             or anchor._native_parent != descendant._native_parent
             or anchor._specialist_parent != descendant._specialist_parent):
         raise ValueError("G33_NATIVE_PREFIX")
-    result = _replay(heads, prefix, ledger[len(prefix):], switching=switching)
+    result = _replay(heads, prefix, ledger[len(prefix):],
+                     switching=switching, staged=staged)
     if (_inspect(anchor)[2], _inspect(descendant)[2]) != (a_pin, d_pin):
         raise ValueError("G33_SOURCE_MUTATION")
     result.update(anchor_checkpoint_sha256=a_pin, descendant_checkpoint_sha256=d_pin,
