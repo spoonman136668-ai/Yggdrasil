@@ -1,0 +1,151 @@
+name: NUM06 Bayesian comparator fixture-only qualification
+on:
+  push:
+    branches: [research/num06-matched-bayesian-controls-20261120]
+    paths-ignore: [.ice/code-atlas.html, .ice/code-atlas.ice, .ice/code-atlas.json]
+permissions:
+  contents: read
+concurrency:
+  group: num06-research-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  source_and_atlas:
+    if: ${{ github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.pin.outputs.source_sha }}
+      final_sha: ${{ steps.pin.outputs.final_sha }}
+    steps:
+      - name: Stable LF checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify locked pre-source protocol, original source untouched, and bounded scope
+        id: pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          prior=bea50c19380bad92bb27c2f218e33caa661105d2
+          frozen=998a12f07691dcf279bf205f2997e06e078e175c
+          git merge-base --is-ancestor "$frozen" HEAD
+          test "$(git rev-parse "$frozen:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/prereg.json")" = "$(git rev-parse HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/prereg.json)"
+          test "$(git rev-parse "$prior:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/num05.py")" = "$(git rev-parse HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/num05.py)"
+          test "$(git rev-parse "$prior:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/primary.admit")" = "$(git rev-parse HEAD:research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05/primary.admit)"
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
+          git diff --name-only "$prior" "$GITHUB_SHA" |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); p="research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/"; expected={p+x for x in ("prereg.json","bayesian_filter.py","test_bayesian_filter.py","bocpd.py","test_bocpd.py","BOCPD.md","numerical_source.py","numerical_scoring.py","test_numerical_harness.py","SOURCE_SCORING.md","process_scoring.py","test_process_scoring.py","PROCESS_SCORING.md")} | {".github/workflows/num06-bayesian-control.yml",".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"}; assert a==expected,(a,expected)'
+          python -B - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/prereg.json')
+          d=json.loads(p.read_text())
+          assert d["schema"] == "yggdrasil.num06.prospective-independent-synthetic.v1"
+          assert not d["authority"]["protected_first_use_allowed"]
+          assert d["source_and_splits"]["no_replay"].startswith("zero repeats")
+          assert len(d["source_and_splits"]["held_seed_schedule"]) == 3
+          print("NUM06_NO_PROTECTED_FIRST_USE_OR_REGISTERED_HELD")
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --write --source-commit "$GITHUB_SHA"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          git diff --cached --name-only |
+            python -B -c 'import sys; a=set(sys.stdin.read().splitlines()); assert a=={".ice/code-atlas.html",".ice/code-atlas.ice",".ice/code-atlas.json"},a'
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "index(NUM06): exact-source derived G29 only"
+          test "$(git rev-parse HEAD^)" = "$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  engineering:
+    needs: source_and_atlas
+    if: ${{ needs.source_and_atlas.result == 'success' && github.run_attempt == 1 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - name: Stable LF checkout
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.source_and_atlas.outputs.final_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact qualified source and untouched native owner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '${{ needs.source_and_atlas.outputs.final_sha }}'
+          test "$(git rev-parse HEAD^)" = '${{ needs.source_and_atlas.outputs.source_sha }}'
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
+          python -B scripts/build_code_atlas.py --check-if-present
+      - name: Run source-free new and parent fixtures, never held generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06 && PYTHONPATH=../NUM05 python -B -m unittest -v test_bayesian_filter test_bocpd test_numerical_harness test_process_scoring)
+          (cd research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05 && python -B -m unittest -v test_num05 && python -B num05_dev.py --fixture)
+          echo NUM06_FIXTURE_ONLY_SOURCE_FIRST_PASS
+      - name: Exact inherited dependency set
+        run: >-
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Full final original native regression on candidate SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py' -v
+          done
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo NUM06_FULL_FINAL_ORIGINAL_REGRESSION_PASS
+  source_contract:
+    needs: [source_and_atlas, engineering]
+    if: ${{ needs.engineering.result == 'success' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.source_and_atlas.outputs.final_sha }}
+          persist-credentials: false
+      - name: No scored source consumption or model admission
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 287e6fbb9d1f9612f88f9d5ed5dda88be4bb7952
+          test ! -e research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/primary.admit
+          test ! -e research/contrib/chatgpt/CAUSAL-AMALGAM/NUM06/held.result.json
+          echo NUM06_ENGINEERING_ONLY_NO_SCIENCE_PASS
