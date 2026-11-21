@@ -35,3 +35,37 @@ The first source-parser attempt failed before scoring because the original gener
 - Deployment and accepted model changes: **NONE**. Preserve original negative DWSA-64 evidence under [PR #1347](https://github.com/spoonman136668-ai/Yggdrasil/pull/1347).
 
 **Disposition:** DEV numeric replay PASS, engineering execution qualification PARTIAL, scientific superiority NO-GO/UNVERIFIED, deployment NONE. No new PR, actor, scheduler, runner dispatch, queue, native checkpoint, or original-world trial was created.
+
+
+## Further focused runtime and checkpoint integrity checks — 2026-11-21
+
+**Execution scope:** zero new protected actions; no new experimental cohorts or source-first-use. Original public upstream files were refetched at the immutable donor SHA, confirming generator blob `6f95eea88422ceb01b3118e65cd45b9a4c065bd9` and weight blob `16ea8cf939bfa0f5f21e227d159b11d4ff578eca`. Committed experiment source was read back at `8f6c89c73d6d332b36d97bf900f433e098c31b94`, run.mjs Git blob `b3e6ad7f36f5bb36828004cf3877a5a965d237db`.
+
+### Exact experiment function, separate isolated V8 executor
+
+The exact literal `function experiment(model, source)` body from committed `run.mjs` was extracted and executed with source-pinned model and generator data inside the GitHub connector's isolated JavaScript runtime; CLI imports, `readFileSync`, `gitBlobSha`, and `process.argv` were **not** executed. Complete `JSON.stringify` equality with committed `result.json`: **PASS**, including all scoring arms, all seeds, calibration/repair counts, schema, in-process pack/unpack checks, and both deltas.
+
+Four independent malicious/malformed-input negative probes raised the exact intended exception labels:
+1. Wrong donor parameter count -> `BAD_DONOR`.
+2. Malformed weight-row width -> `BAD_SHAPE`.
+3. Missing digit-pattern generator declaration -> `MISSING_GENERATOR`.
+4. Invalid authored template length -> `BAD_PATTERNS`.
+
+This was a **focused source-function execution**; it was **NOT a Node CLI invocation of the committed entrypoint**, and no root full regression/Windows runner/G29 atlas was executed.
+
+### Detached cold-process toy-bank readback and adverse mutation
+
+An instrumented copy of the already scored source function exposed the existing `pack(corrected.bank)` 44-byte bitmap, **without changing the frozen training inputs, scoring rules or recorded result**. The packed state was:
+
+- 44 bytes; SHA256 `fca2730713bf16867015e5035ac7d08284bec014524a7cf63acb7dbb38cac42e`.
+- Hex `54665cc4b57328676def2888eee821784343b9d0f787f453e10f91087a7137d4eab9585462a8c4ea8e5e1098`.
+
+Local Node.js **v22.16.0** process PID 645 wrote the 44-byte toy bitmap to a temporary private file; separate PID 652 restored it with the source's 350-bit unpacking rule and repacked it. The restored bank was 10 × 35 bits, SHA256 unchanged, exact repack parity PASS. Temporary files were deleted.
+
+**New focused negative finding:** flipping bit 7 of byte 0 passed the source's `unpack` acceptance check, silently changing one stored data bit; changing the two padding bits of the final byte correctly raised `PACK_CORRUPT`. The source's reported `tamperRejected=true` therefore means **padding rejection only**. It is not a tamper-evident or cryptographically authenticated checkpoint. The separate-process restore is a toy bitmap serialization check, **not** native Yggdrasil cold functional retention, source-age preservation, or model restart qualification.
+
+### Disposition (unchanged)
+- **ENGINEERING:** focused exact-source function execution and four negative controls PASS; toy bitmap cross-process parity PASS; payload-integrity protection NEGATIVE. Full candidate Linux/Windows root regression, committed Node CLI entrypoint, native cold restore and G29 remain UNVERIFIED.
+- **SCIENCE:** same-law donor + repair accuracy still 93.00% / 83.30%, less than fitted 98.90% / 96.55%; independent original-world scientific gain **NO-GO / NOT VERIFIED**. Do not retune/consume the same test or promote.
+- **DEPLOYMENT:** NONE. No accepted branch, core learner, checkpoint, runner, owner authorization or protected action was touched.
+- **NEXT RESEARCH:** preserve raw-native inputs beside donor-derived features with bounded isolated correction only under a *new* independently sourced, owner-qualified disjoint original-world design and fully trained equal-information baselines. Issue #426 remains first-use NO-GO.
