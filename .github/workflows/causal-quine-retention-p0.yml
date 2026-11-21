@@ -256,6 +256,13 @@ jobs:
           assert outer._episode_reader().checkpoint()==episode
           print("G41_ORIGINAL_NATIVE_1025_COLD_ABI_PASS")
           PY
+          mkdir -p "$RUNNER_TEMP/g41-original-native-parent" "$RUNNER_TEMP/g41-original-donor-parent"
+          gh run download 44391641043 -n CKAD26-refresh-primary -D "$RUNNER_TEMP/g41-original-native-parent"
+          gh run download 44420677720 -n YGG-JEPA2-03-ubuntu-latest -D "$RUNNER_TEMP/g41-original-donor-parent"
+          YGG_G41_ORIGINAL_DIR="$RUNNER_TEMP" YGG_G41_TRAINED_1153=1 \
+            python -B -m unittest -v \
+              tests.test_g41_amalgam_capacity_integration.G41CapacityIntegrationTests.test_original_trained_root_four_heads_1153
+          echo G41_ORIGINAL_TRAINED_FOUR_HEAD_1153_PASS
       - name: Final sealed atlas and exact worktree
         shell: bash
         run: |

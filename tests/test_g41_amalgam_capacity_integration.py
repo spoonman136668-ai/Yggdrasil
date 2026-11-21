@@ -1,10 +1,13 @@
 """Source-free G41 native capacity contract; not protected-world learning."""
 from hashlib import sha256
 import json
+import os
+from pathlib import Path
 import unittest
 from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_episode_experience import NativeEpisodeExperience
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam, SCHEMA, EXTENDED_SCHEMA
+from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE
 from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist, STEPS as DS, MAX_EPISODES as DM
 from yggdrasil.native_jepa_temporal import TemporalLatentSpecialist, STEPS as TS, MAX_EPISODES as TM
 
@@ -181,6 +184,71 @@ class G41CapacityIntegrationTests(unittest.TestCase):
         raw = grown.checkpoint()
         self.assertEqual(NativeEpisodeExperience.restore(raw, digest(raw)).checkpoint(), raw)
         self.assertEqual(grown.consolidate().checkpoint(), raw)
+
+    @unittest.skipUnless(os.environ.get("YGG_G41_TRAINED_1153") == "1",
+                         "original archived four-head state requires pinned engineering artifacts")
+    def test_original_trained_root_four_heads_1153(self):
+        """Archive-authenticated native 1025 + four trained heads through the v2 boundary."""
+        archive = Path(os.environ["YGG_G41_ORIGINAL_DIR"])
+        joint = (archive / "g41-original" / "amalgam-joint-state.json").read_bytes()
+        native_parent = (archive / "g41-original-native-parent"
+                         / "seed-101-refresh-native.json").read_bytes()
+        donor_package = json.loads((archive / "g41-original-donor-parent"
+                                    / "seed-14071-state.json").read_bytes())
+        donor_parent = donor_package["state_ascii"].encode("ascii")
+        native_pin = "a00119c73a6431172c19b39ec67a1d94b470897a32c55c1c946071793f37dcc4"
+        donor_pin = "ae83529696b566a12765f16749c258d9ed6addf111da41ef76dc1027938910da"
+        joint_pin = "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8"
+        self.assertEqual(digest(native_parent), native_pin)
+        self.assertEqual(digest(donor_parent), donor_pin)
+        self.assertEqual(digest(joint), joint_pin)
+        self.assertEqual(donor_package["state_sha256"], donor_pin)
+        parents = dict(native_parent=native_parent, native_pin=native_pin,
+                       donor_parent=donor_parent, donor_pin=donor_pin)
+        original = NativeCausalAmalgam.restore(joint, joint_pin, **parents)
+        self.assertEqual(original.checkpoint(), joint)
+        self.assertEqual(len(original.native._episode_reader()._ledger), 1025)
+        old_native = original.native.checkpoint()
+        old_heads = tuple(head.as_data() if index < 2 else head.data()
+                          for index, head in enumerate(original._heads))
+        self.assertEqual(tuple(head.steps for head in original._heads), (2109,) * 4)
+
+        views = ((0, 0), (0, 0))
+        row = {"s1": 0, "x1": 0, "s2": 0, "x2": 0, "y": 0}
+        learner = original
+        for i in range(1025, 1152):
+            identifier = sha256(("g41-original-source-free-%06d" % i).encode()).hexdigest()
+            former_steps = tuple(head.steps for head in learner._heads)
+            learner = learner.observe_experience(
+                identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
+                packet_sha256=digest(canonical([identifier, views, row])))
+            self.assertEqual(tuple(head.steps for head in learner._heads),
+                             tuple(value + 3 for value in former_steps))
+        self.assertEqual(len(learner.native._episode_reader()._ledger), 1152)
+        self.assertEqual(tuple(head.steps for head in learner._heads), (2490,) * 4)
+        before_upgrade = learner.checkpoint()
+        upgraded = learner.extend_capacity()
+        self.assertEqual(learner.checkpoint(), before_upgrade)
+        self.assertEqual(tuple(head.steps for head in upgraded._heads), (2490,) * 4)
+        self.assertEqual(len(upgraded.native._episode_reader()._ledger), 1152)
+        self.assertEqual(upgraded.native._episode_reader()._episode_limit, 2048)
+
+        identifier = sha256(b"g41-original-source-free-001152").hexdigest()
+        next_state = upgraded.observe_experience(
+            identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
+            packet_sha256=digest(canonical([identifier, views, row])))
+        self.assertEqual(len(next_state.native._episode_reader()._ledger), 1153)
+        self.assertEqual(tuple(head.steps for head in next_state._heads), (2493,) * 4)
+        grown_checkpoint = next_state.checkpoint()
+        recovered = NativeCausalAmalgam.restore(
+            grown_checkpoint, digest(grown_checkpoint), **parents)
+        self.assertEqual(recovered.checkpoint(), grown_checkpoint)
+        self.assertEqual(tuple(head.steps for head in recovered._heads), (2493,) * 4)
+        self.assertEqual(recovered.plan(views[0]), next_state.plan(views[0]))
+        self.assertEqual(original.native.checkpoint(), old_native)
+        self.assertEqual(tuple(head.as_data() if index < 2 else head.data()
+                               for index, head in enumerate(original._heads)), old_heads)
+        self.assertEqual(original.checkpoint(), joint)
 
 if __name__ == "__main__":
     unittest.main()
