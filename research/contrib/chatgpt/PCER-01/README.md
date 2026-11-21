@@ -6,7 +6,7 @@
 
 - Preregistration committed first at `606713e8dc6ba6b94aa40ab0e8b9f257b0c22560` ([prereg.json](prereg.json)), raw UTF-8 SHA-256 `a5151332459ffe4244debd570880c2f9a57d31a459059fc6c5a8b64ba2265fa0`.
 - Parent source: Amalgam `86264b41a08d49f558418c0fba367f3a2636befa`, unchanged. Accepted `main`: `5e74f8db85b2f5839c42148c0dfba69a88b1a2c9`.
-- Original **already consumed** [selection development trace](../../CAUSAL-AMALGAM/selection-dev-01/trace.json): **96 episodes**, raw SHA-256 `36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114` (matches prior producer), source Git blob SHA-1 `9db0d3742fc8bd009c61d0864e4aba739a19e4e1`. Source evidence remains losslessly in the original immutable repository blob. **Zero fresh source actions**.
+- Original **already consumed** [selection development trace](../CAUSAL-AMALGAM/selection-dev-01/trace.json): **96 episodes**, raw SHA-256 `36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114` (matches prior producer), source Git blob SHA-1 `9db0d3742fc8bd009c61d0864e4aba739a19e4e1`. Source evidence remains losslessly in the original immutable repository blob. **Zero fresh source actions**.
 - Frozen chronological split: FIT 0–49; VALID 50–63; familiar-regime return HELD 64–95. This is **not unfamiliar causal-family transfer**.
 - Frozen active replay quota: 10 of 50 FIT witness IDs: 7 highest prequential *native* transition residual, 2 rare/coverage preserving, 1 fixed-hash uniform. Matched 10-ID controls are pure error and uniform; full-fit history uses all 50. Only reference slots are reduced, not checkpoint bytes or archived evidence.
 
@@ -39,7 +39,7 @@ python -B research/contrib/chatgpt/PCER-01/pcer01.py \
   --trace research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json \
   --prereg research/contrib/chatgpt/PCER-01/prereg.json \
   --manifest /tmp/pcer01-index.json --report /tmp/pcer01-report.json
-python -B -m unittest tests.test_pcer01 -v
+python -B -m unittest discover -s tests -p 'test_pcer01.py' -v
 ```
 
 Output locations must be new; the original source stays unmodified. If the frozen source hash, source format, duplicate IDs, replay budget or cold-selection identity fails, this candidate stops. The generated evaluator report is different from the archival cross-language diagnostic receipt because execution/provenance categories are explicitly separated.
