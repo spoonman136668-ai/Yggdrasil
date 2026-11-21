@@ -44,12 +44,16 @@ export function gateDonor({fit,oldValid,novelValid}){
  if(donorKeys.length>16)fail("DONOR_CONTEXT_BUDGET");
  const capsules={...rawCapsules,donorKeys};
  const novelRepairBrier=brier(novelValid,r=>predict(r,capsules,0));
+ const oldGroups=new Map();
+ for(const r of oldValid){const rows=oldGroups.get(r.key)||[];rows.push(r);oldGroups.set(r.key,rows);}
  const candidates=[1,0.5,0.25].map(gamma=>{
   const oldBrier=brier(oldValid,r=>predict(r,capsules,gamma));
   const novelBrier=brier(novelValid,r=>predict(r,capsules,gamma));
   const oldDrift=oldBrier-oldRawBrier,rawGain=novelRawBrier-novelBrier,donorIncrement=novelRepairBrier-novelBrier;
-  return {gamma,oldBrier,novelBrier,oldDrift,rawGain,donorIncrement,
-   accepted:oldDrift<=0.02+1e-12&&rawGain>=0.005-1e-12&&donorIncrement>=0.002-1e-12};
+  const maxOldContextDrift=Math.max(...Array.from(oldGroups.values(),rows=>
+   brier(rows,r=>predict(r,capsules,gamma))-brier(rows,r=>r.raw)));
+  return {gamma,oldBrier,novelBrier,oldDrift,maxOldContextDrift,rawGain,donorIncrement,
+   accepted:oldDrift<=0.02+1e-12&&maxOldContextDrift<=0.02+1e-12&&rawGain>=0.005-1e-12&&donorIncrement>=0.002-1e-12};
  });
  const good=candidates.filter(c=>c.accepted).sort((a,b)=>a.novelBrier-b.novelBrier||a.gamma-b.gamma);
  const activeCapsules=good.length?capsules:{...capsules,cells:Object.create(null),donorKeys:[]};
