@@ -21,6 +21,7 @@ LR, STEPS, CLIP = 0.045, 3, 5.0
 NATIVE_WEIGHT, JEPA_WEIGHT = 0.75, 0.25
 MAX_BYTES = 1024 * 1024
 MAX_EPISODES = 1000
+EXTENDED_MAX_EPISODES = 2048
 
 
 def _bit(v):
@@ -68,6 +69,7 @@ class ActionLatentSpecialist:
         ]
         self.predictor_bias = [0.0] * LATENT
         self.steps = 0
+        self._max_steps = MAX_EPISODES * STEPS
 
     def _input(self, views, extras):
         _views(views)
@@ -134,7 +136,7 @@ class ActionLatentSpecialist:
                 and all(type(row) is list and len(row) == HIDDEN for row in self.predictor)
                 and len(self.encoder_bias) == HIDDEN
                 and len(self.predictor_bias) == LATENT
-                and type(self.steps) is int and 0 <= self.steps <= MAX_EPISODES * STEPS,
+                and type(self.steps) is int and 0 <= self.steps <= self._max_steps,
                 "JEPA2_MODEL_SHAPE")
         values = [v for row in self.encoder + self.predictor for v in row]
         values += self.encoder_bias + self.predictor_bias
@@ -148,11 +150,13 @@ class ActionLatentSpecialist:
                 "steps": self.steps}
 
     @classmethod
-    def from_data(cls, d, expected):
+    def from_data(cls, d, expected, *, extended=False):
         require(type(d) is dict and set(d) == {
             "kind", "encoder", "encoder_bias", "predictor", "predictor_bias", "steps"
         } and d["kind"] == expected, "JEPA2_MODEL_KEYS")
         obj = cls(expected)
+        if extended:
+            obj._max_steps = EXTENDED_MAX_EPISODES * STEPS
         obj.encoder = d["encoder"]
         obj.encoder_bias = d["encoder_bias"]
         obj.predictor = d["predictor"]
@@ -162,7 +166,14 @@ class ActionLatentSpecialist:
         return obj
 
     def clone(self):
-        return self.from_data(json.loads(json.dumps(self.as_data())), self.kind)
+        return self.from_data(json.loads(json.dumps(self.as_data())), self.kind,
+                              extended=self._max_steps > MAX_EPISODES * STEPS)
+
+    def enable_extended_training(self):
+        """Explicit Amalgam v2 head-budget migration; original data unchanged."""
+        require(self._max_steps == MAX_EPISODES * STEPS, "JEPA2_GROWTH_PARENT")
+        return self.from_data(json.loads(json.dumps(self.as_data())), self.kind,
+                              extended=True)
 
 
 class NativeMultiLearner:

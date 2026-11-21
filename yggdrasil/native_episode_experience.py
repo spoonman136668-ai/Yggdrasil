@@ -17,6 +17,7 @@ STREAM_SCHEMA = "yggdrasil.ckad.native-episode-experience.v4"
 REFRESH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v5"
 GROWTH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v6"
 EXTENDED_SCHEMA = "yggdrasil.ckad.native-episode-experience.v7"
+NOVEL_EXTENDED_SCHEMA = "yggdrasil.ckad.native-episode-experience.v8"
 MAX_EPISODES = 1024
 GROWN_MAX_EPISODES = 1152
 EXTENDED_MAX_EPISODES = 2048
@@ -299,6 +300,16 @@ class NativeEpisodeExperience:
         candidate._refresh_start = len(candidate._ledger)
         return candidate
 
+    def _extend_novel_capacity(self):
+        """v8 detached novel-bank migration; no reset, weight update, or forgetting."""
+        require(self._stream_start is None and self._refresh_start is None
+                and self._context_start is None and self._episode_limit == MAX_EPISODES
+                and len(self._ledger) <= MAX_EPISODES,
+                "EPISODE_NOVEL_GROWTH_PARENT")
+        candidate = self._clone()
+        candidate._episode_limit = EXTENDED_MAX_EPISODES
+        return candidate
+
     def extend_witness_capacity(self):
         """Versioned saturation migration: 1024 -> 1152 -> 2048, preserving every row."""
         require(self._refresh_start is not None
@@ -308,6 +319,16 @@ class NativeEpisodeExperience:
         candidate = self._clone()
         candidate._episode_limit = (GROWN_MAX_EPISODES if self._episode_limit == MAX_EPISODES
                                     else EXTENDED_MAX_EPISODES)
+        if candidate._episode_limit == EXTENDED_MAX_EPISODES and candidate._context_novel:
+            require(candidate._context_models, "EPISODE_NOVEL_MIGRATION_CONTEXT")
+            start, stop, source_pin, newest = candidate._context_models[-1]
+            require(start == candidate._context_start and stop == len(candidate._ledger)
+                    and source_pin == digest(canonical(newest._ledger))
+                    and newest._ledger == candidate._ledger[start:stop],
+                    "EPISODE_NOVEL_MIGRATION_SOURCE")
+            enlarged = newest._extend_novel_capacity()
+            candidate._context_models = (candidate._context_models[:-1]
+                                         + ((start, stop, source_pin, enlarged),))
         return candidate
 
     def _context_prior(self):
@@ -440,6 +461,8 @@ class NativeEpisodeExperience:
         """Rebuild the native banks from the unique, ordered witness ledger."""
         rebuilt = NativeEpisodeExperience(repair=self._repair_enabled)
         if self._stream_start is None:
+            if self._episode_limit == EXTENDED_MAX_EPISODES:
+                rebuilt = rebuilt._extend_novel_capacity()
             for event in self._ledger:
                 rebuilt._append(event)
             if self._context_start is not None:
@@ -564,11 +587,12 @@ class NativeEpisodeExperience:
             data["refresh_start"] = self._refresh_start
             data["refresh_rate"] = _ratio(REFRESH_RATE)
         if self._episode_limit != MAX_EPISODES:
-            data["schema"] = (EXTENDED_SCHEMA if self._episode_limit == EXTENDED_MAX_EPISODES
-                              else GROWTH_SCHEMA)
+            data["schema"] = (NOVEL_EXTENDED_SCHEMA if self._episode_limit == EXTENDED_MAX_EPISODES
+                              and self._refresh_start is None else EXTENDED_SCHEMA
+                              if self._episode_limit == EXTENDED_MAX_EPISODES else GROWTH_SCHEMA)
             data["episode_limit"] = self._episode_limit
         raw = canonical(data)
-        cap = (EXTENDED_MAX_CHECKPOINT_BYTES if data["schema"] == EXTENDED_SCHEMA
+        cap = (EXTENDED_MAX_CHECKPOINT_BYTES if data["schema"] in (EXTENDED_SCHEMA, NOVEL_EXTENDED_SCHEMA)
                else MAX_CHECKPOINT_BYTES)
         require(len(raw) <= cap, "EPISODE_CHECKPOINT_CAPACITY")
         return raw
@@ -582,13 +606,14 @@ class NativeEpisodeExperience:
             require(type(data) is dict
                     and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA, NOVEL_CONTEXT_SCHEMA,
                                                STREAM_SCHEMA, REFRESH_SCHEMA, GROWTH_SCHEMA,
-                                               EXTENDED_SCHEMA),
+                                               EXTENDED_SCHEMA, NOVEL_EXTENDED_SCHEMA),
                     "EPISODE_CHECKPOINT_SCHEMA")
-            extended = data["schema"] == EXTENDED_SCHEMA
+            novel_extension = data["schema"] == NOVEL_EXTENDED_SCHEMA
+            extended = data["schema"] in (EXTENDED_SCHEMA, NOVEL_EXTENDED_SCHEMA)
             require(len(raw) <= (EXTENDED_MAX_CHECKPOINT_BYTES if extended
                                  else MAX_CHECKPOINT_BYTES), "EPISODE_CHECKPOINT_CAPACITY")
             keys = {"schema", "repair", "episodes", "state_sha256"}
-            context = data["schema"] != SCHEMA
+            context = data["schema"] not in (SCHEMA, NOVEL_EXTENDED_SCHEMA)
             growth = data["schema"] in (GROWTH_SCHEMA, EXTENDED_SCHEMA)
             refresh = growth or data["schema"] == REFRESH_SCHEMA
             stream = refresh or data["schema"] == STREAM_SCHEMA
@@ -602,7 +627,7 @@ class NativeEpisodeExperience:
                 keys.add("stream_start")
             if refresh:
                 keys.update(("refresh_start", "refresh_rate"))
-            if growth:
+            if growth or novel_extension:
                 keys.add("episode_limit")
                 require(type(data.get("episode_limit")) is int
                         and data["episode_limit"] == (EXTENDED_MAX_EPISODES if extended
@@ -611,11 +636,14 @@ class NativeEpisodeExperience:
             require(set(data) == keys and canonical(data) == raw, "EPISODE_CHECKPOINT_CONTRACT")
             episodes = data["episodes"]
             require(type(episodes) is list
-                    and (GROWN_MAX_EPISODES <= len(episodes) <= EXTENDED_MAX_EPISODES
+                    and (len(episodes) <= EXTENDED_MAX_EPISODES if novel_extension
+                         else GROWN_MAX_EPISODES <= len(episodes) <= EXTENDED_MAX_EPISODES
                          if extended else MAX_EPISODES <= len(episodes) <= GROWN_MAX_EPISODES
                          if growth else len(episodes) <= MAX_EPISODES),
                     "EPISODE_CHECKPOINT_COUNT")
             candidate = cls(repair=data["repair"])
+            if novel_extension:
+                candidate = candidate._extend_novel_capacity()
             start = data.get("stream_start")
             if stream:
                 require(type(start) is int and PROJECTION_WITNESSES <= start <= len(episodes),

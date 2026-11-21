@@ -9,6 +9,7 @@ from yggdrasil.native_jepa_temporal import (
 )
 
 SCHEMA = "yggdrasil.ckad.native-causal-amalgam.v1"
+EXTENDED_SCHEMA = "yggdrasil.ckad.native-causal-amalgam.v2"
 MAX_BYTES = 32 * 1024 * 1024
 KINDS = ("transition", "reward")
 
@@ -21,11 +22,13 @@ class NativeCausalAmalgam:
     in the running state. The original checkpoints authenticate cold replay.
     """
 
-    def __init__(self, native, heads, native_parent, specialist_parent):
+    def __init__(self, native, heads, native_parent, specialist_parent, *, extended=False):
+        require(type(extended) is bool, "AMALGAM_EXTENSION_FLAG")
         self.native = native
         self._heads = heads
         self._native_parent = native_parent
         self._specialist_parent = specialist_parent
+        self._extended = extended
 
     @classmethod
     def activate(cls, native_raw, native_pin, donor_raw, donor_pin):
@@ -37,6 +40,16 @@ class NativeCausalAmalgam:
                 "AMALGAM_PUBLIC_COORDINATES")
         heads = (donor.base.transition, donor.base.reward, donor.transition, donor.reward)
         return cls(native, heads, native_pin, donor_pin)
+
+    def extend_capacity(self):
+        """Explicit versioned second growth at 1,152; no observation."""
+        experience = self.native._episode_reader()
+        require(not self._extended and len(experience._ledger) == 1152
+                and experience._episode_limit == 1152, "AMALGAM_GROWTH_PARENT")
+        native = self.native.extend_experience_capacity()
+        heads = tuple(head.enable_extended_training() for head in self._heads)
+        return NativeCausalAmalgam(native, heads, self._native_parent,
+                                  self._specialist_parent, extended=True)
 
     def plan(self, view):
         return self.native.experience_context_plan(view)
@@ -63,11 +76,13 @@ class NativeCausalAmalgam:
         temporal_t.observe(views, transition, history, row["s2"])
         temporal_r.observe(views, reward, history, row["y"])
         return NativeCausalAmalgam(native, (direct_t, direct_r, temporal_t, temporal_r),
-                                  self._native_parent, self._specialist_parent)
+                                  self._native_parent, self._specialist_parent,
+                                  extended=self._extended)
 
     def checkpoint(self):
         data = {
-            "schema": SCHEMA, "native_ascii": self.native.checkpoint().decode("ascii"),
+            "schema": EXTENDED_SCHEMA if self._extended else SCHEMA,
+            "native_ascii": self.native.checkpoint().decode("ascii"),
             "native_parent_sha256": self._native_parent,
             "specialist_parent_sha256": self._specialist_parent,
             "action_heads": [head.as_data() for head in self._heads[:2]],
@@ -85,7 +100,7 @@ class NativeCausalAmalgam:
         require(type(data) is dict and set(data) == {
             "schema", "native_ascii", "native_parent_sha256", "specialist_parent_sha256",
             "action_heads", "temporal_heads"
-        } and data["schema"] == SCHEMA and canonical(data) == raw
+        } and data["schema"] in (SCHEMA, EXTENDED_SCHEMA) and canonical(data) == raw
                 and data["native_parent_sha256"] == native_pin
                 and data["specialist_parent_sha256"] == donor_pin, "AMALGAM_CHECKPOINT_CONTRACT")
         replay = cls.activate(native_parent, native_pin, donor_parent, donor_pin)
@@ -95,19 +110,24 @@ class NativeCausalAmalgam:
         new_ledger = native._episode_reader()._ledger
         require(new_ledger[:len(old_ledger)] == old_ledger, "AMALGAM_NATIVE_PREFIX")
 
+        extended = data["schema"] == EXTENDED_SCHEMA
         for identifier, views, first, state, second, reward in new_ledger[len(old_ledger):]:
+            if extended and len(replay.native._episode_reader()._ledger) == 1152:
+                replay = replay.extend_capacity()
             row = {"s1": views[0][0], "x1": first, "s2": state, "x2": second, "y": reward}
             replay = replay.observe_experience(
                 identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
                 packet_sha256=digest(canonical([identifier, views, row])))
+        if extended and not replay._extended:
+            replay = replay.extend_capacity()
         require(replay.native.checkpoint() == current, "AMALGAM_NATIVE_REPLAY")
-        action_heads = tuple(ActionLatentSpecialist.from_data(d, kind)
+        action_heads = tuple(ActionLatentSpecialist.from_data(d, kind, extended=extended)
                              for d, kind in zip(data["action_heads"], KINDS, strict=True))
-        temporal_heads = tuple(TemporalLatentSpecialist.from_data(d, kind)
+        temporal_heads = tuple(TemporalLatentSpecialist.from_data(d, kind, extended=extended)
                                for d, kind in zip(data["temporal_heads"], KINDS, strict=True))
         heads = action_heads + temporal_heads
         for saved, recomputed in zip(heads, replay._heads, strict=True):
             _source_equivalent(saved, recomputed)
-        candidate = cls(native, heads, native_pin, donor_pin)
+        candidate = cls(native, heads, native_pin, donor_pin, extended=extended)
         require(candidate.checkpoint() == raw, "AMALGAM_CHECKPOINT_REPLAY")
         return candidate

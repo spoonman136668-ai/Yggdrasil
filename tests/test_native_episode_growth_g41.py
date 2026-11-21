@@ -66,6 +66,19 @@ class G41NativeCapacityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'CKAD_NATIVE_EPISODE_CHECKPOINT_REJECTED'):
             NativeEpisodeExperience.restore(altered,digest(altered))
 
+    def test_detached_novel_v8_cold_replay_and_v1_immutable(self):
+        native = NativeEpisodeExperience()
+        old = native.checkpoint()
+        expanded = native._extend_novel_capacity()
+        self.assertEqual(native.checkpoint(), old)
+        self.assertEqual(json.loads(expanded.checkpoint())['schema'],
+                         'yggdrasil.ckad.native-episode-experience.v8')
+        raw = expanded.checkpoint()
+        self.assertEqual(NativeEpisodeExperience.restore(raw, digest(raw)).checkpoint(), raw)
+        self.assertEqual(expanded.consolidate().checkpoint(), raw)
+        with self.assertRaisesRegex(ValueError, 'EPISODE_NOVEL_GROWTH_PARENT'):
+            expanded._extend_novel_capacity()
+
     @unittest.skipUnless(os.getenv('YGG_G41_FULL_2048') == '1',
                          'full 2048-row DEV stress requires separate bounded budget')
     def test_full_2048_roundtrip_and_2049_hard_reject(self):

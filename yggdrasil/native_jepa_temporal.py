@@ -24,6 +24,7 @@ LR, STEPS, CLIP = 0.06, 3, 5.0
 BASE_BLEND, TEMPORAL_BLEND = 0.90, 0.10
 MAX_BYTES = 1048576
 MAX_EPISODES = 1000
+EXTENDED_MAX_EPISODES = 2048
 
 
 def _sigmoid(x):
@@ -90,6 +91,7 @@ class TemporalLatentSpecialist:
         ]
         self.predictor_bias = [0.0] * LATENT
         self.steps = 0
+        self._max_steps = MAX_EPISODES * STEPS
 
     def _forward(self, x):
         h = [tanh(sum(w * v for w, v in zip(row, x)) + self.encoder_bias[j])
@@ -151,7 +153,7 @@ class TemporalLatentSpecialist:
                 all(type(row) is list and len(row) == HIDDEN
                     for row in self.predictor) and
                 len(self.predictor_bias) == LATENT and
-                type(self.steps) is int and 0 <= self.steps <= MAX_EPISODES*STEPS,
+                type(self.steps) is int and 0 <= self.steps <= self._max_steps,
                 "JEPA3_PARAMETER_SHAPE")
         vals = [x for row in (self.encoder + self.predictor) for x in row]
         vals += self.encoder_bias + self.predictor_bias
@@ -165,12 +167,14 @@ class TemporalLatentSpecialist:
                 "predictor_bias": self.predictor_bias, "steps": self.steps}
 
     @classmethod
-    def from_data(cls, d, kind):
+    def from_data(cls, d, kind, *, extended=False):
         require(type(d) is dict and set(d) == {
             "kind", "encoder", "encoder_bias", "predictor",
             "predictor_bias", "steps"
         } and d["kind"] == kind, "JEPA3_RESTORED_KEYS")
         obj = cls(kind)
+        if extended:
+            obj._max_steps = EXTENDED_MAX_EPISODES * STEPS
         obj.encoder, obj.encoder_bias = d["encoder"], d["encoder_bias"]
         obj.predictor, obj.predictor_bias = d["predictor"], d["predictor_bias"]
         obj.steps = d["steps"]
@@ -178,7 +182,14 @@ class TemporalLatentSpecialist:
         return obj
 
     def clone(self):
-        return self.from_data(json.loads(json.dumps(self.data())), self.kind)
+        return self.from_data(json.loads(json.dumps(self.data())), self.kind,
+                              extended=self._max_steps > MAX_EPISODES * STEPS)
+
+    def enable_extended_training(self):
+        """Explicit Amalgam v2 head-budget migration; original data unchanged."""
+        require(self._max_steps == MAX_EPISODES * STEPS, "JEPA3_GROWTH_PARENT")
+        return self.from_data(json.loads(json.dumps(self.data())), self.kind,
+                              extended=True)
 
 
 def _fit_history(ledger, *, mispair=False):
