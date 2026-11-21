@@ -196,6 +196,43 @@ class NativeFitReplay(unittest.TestCase):
                 self.assertEqual(native.forecast((0, 0), 0),
                                  Fraction(10, 27) if reverse else Fraction(7, 13))
 
+    def test_exact_duplicate_is_native_noop_but_compact_counts_twice(self):
+        evidence = fit()
+        native, control = NativeEpisodeExperience(), Compact()
+        for ident, views, row in evidence:
+            native = native.observe(ident, views, row)
+            control.observe(views, row)
+        initial_native = native.checkpoint()
+        initial_compact = control.checkpoint()
+        witness_id, views, row = evidence[0]
+        repeated = native.observe(witness_id, views, row)
+        self.assertIs(repeated, native)
+        self.assertEqual(native.checkpoint(), initial_native)
+        self.assertEqual(native.info()["count"], 50)
+        self.assertEqual(native.forecast((0, 0), 0), Fraction(7, 13))
+        control.observe(views, row)
+        self.assertNotEqual(control.checkpoint(), initial_compact)
+        self.assertEqual(control.n, 51)
+        self.assertEqual(control.forecast((0, 0), 0), Fraction(4, 7))
+
+    def test_conflicting_replay_rejected_by_native_not_identity_free_control(self):
+        evidence = fit()
+        native, control = NativeEpisodeExperience(), Compact()
+        for ident, views, row in evidence:
+            native = native.observe(ident, views, row)
+            control.observe(views, row)
+        initial_native = native.checkpoint()
+        witness_id, views, row = evidence[0]
+        conflict = dict(row)
+        conflict["s2"] ^= 1
+        with self.assertRaisesRegex(ValueError, "EPISODE_CONFLICTING_REPLAY"):
+            native.observe(witness_id, views, conflict)
+        self.assertEqual(native.checkpoint(), initial_native)
+        self.assertEqual(native.info()["count"], 50)
+        control.observe(views, conflict)
+        self.assertEqual(control.n, 51)
+        self.assertEqual(control.forecast((0, 0), 0), Fraction(1, 2))
+
     def test_reverse_preserves_all_static_two_stage_counts(self):
         evidence = fit()
         def cells(rows):
