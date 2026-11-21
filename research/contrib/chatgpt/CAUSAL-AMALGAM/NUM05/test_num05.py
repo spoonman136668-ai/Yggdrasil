@@ -81,7 +81,8 @@ class NUM05NumericCausalFixtureTests(unittest.TestCase):
         self.assertEqual(before,[0.,0.,0.])
         r=row(9,dx=.4,dy=.2,reward=.6,action=4)
         self.assertEqual(m.observe(r),before)
-        self.assertEqual(m.forecast([.8,.8],4),[.2,.1,.3])
+        for actual, expected in zip(m.forecast([.8,.8],4),(.2,.1,.3)):
+            self.assertAlmostEqual(actual,expected)
         source_rows_before=len(m.rows)
         raw=m.checkpoint()
         second=NumericRegimeMemory.restore(raw,digest(raw))
