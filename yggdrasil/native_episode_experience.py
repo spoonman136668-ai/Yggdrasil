@@ -326,7 +326,12 @@ class NativeEpisodeExperience:
                     and source_pin == digest(canonical(newest._ledger))
                     and newest._ledger == candidate._ledger[start:stop],
                     "EPISODE_NOVEL_MIGRATION_SOURCE")
-            enlarged = newest._extend_novel_capacity()
+            if newest._episode_limit == MAX_EPISODES:
+                enlarged = newest._extend_novel_capacity()
+            else:
+                require(newest._episode_limit == EXTENDED_MAX_EPISODES,
+                        "EPISODE_NOVEL_MIGRATION_CAPACITY")
+                enlarged = newest
             candidate._context_models = (candidate._context_models[:-1]
                                          + ((start, stop, source_pin, enlarged),))
         return candidate
@@ -384,6 +389,12 @@ class NativeEpisodeExperience:
             # The likelihood above uses predictions from before this episode.
             # Only the new member revises its counts after scoring.
             start, _, _, newest = self._context_models[-1]
+            if len(newest._ledger) == newest._episode_limit:
+                # This legal early-start context can fill before the outer
+                # learner's 1,152 -> 2,048 migration. Never reset its evidence.
+                require(newest._episode_limit == MAX_EPISODES,
+                        "EPISODE_NOVEL_CAPACITY")
+                newest = newest._extend_novel_capacity()
             revised = newest.observe(identifier, views, {
                 "s1": 0, "x1": first, "s2": next_state, "x2": second, "y": reward,
             })

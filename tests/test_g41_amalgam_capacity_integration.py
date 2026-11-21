@@ -135,5 +135,52 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                                                 "y": reward})
         self.assertEqual(original.checkpoint(), raw)
 
+    @unittest.skipUnless(__import__("os").environ.get("YGG_G41_EARLY_1033") == "1",
+                         "bounded source-free 8-start public 1033/1152 native stress is opt-in")
+    def test_early_stream_public_1033_and_later_upgrade_roundtrip(self):
+        """The legal eight-witness stream must not exhaust its inner bank at 1033."""
+        def admit(state, i):
+            identifier, views, first, next_state, second, reward = event(i)
+            return state.observe(identifier, views, {
+                "s1": 0, "x1": first, "s2": next_state, "x2": second, "y": reward,
+            })
+
+        state = NativeEpisodeExperience()
+        for i in range(8):
+            state = admit(state, i)
+        state = state.begin_stream().enable_context_refresh()
+        for i in range(8, 1032):
+            if len(state._ledger) == 1024:
+                state = state.extend_witness_capacity()
+            state = admit(state, i)
+            self.assertEqual(state._context_start, 8,
+                             "no forced context reset is allowed")
+        old_raw = state.checkpoint()
+        old_novel = state._context_models[-1][3]
+        self.assertEqual(len(state._ledger), 1032)
+        self.assertEqual(len(old_novel._ledger), 1024)
+        self.assertEqual(old_novel._episode_limit, 1024)
+
+        state = admit(state, 1032)
+        self.assertEqual(len(state._ledger), 1033)
+        novel = state._context_models[-1][3]
+        self.assertEqual(novel._episode_limit, 2048)
+        self.assertEqual(novel._ledger[:1024], old_novel._ledger)
+        self.assertEqual(state._context_start, 8)
+        raw = state.checkpoint()
+        self.assertEqual(NativeEpisodeExperience.restore(raw, digest(raw)).checkpoint(), raw)
+        self.assertEqual(NativeEpisodeExperience.restore(old_raw, digest(old_raw)).checkpoint(), old_raw)
+
+        for i in range(1033, 1152):
+            state = admit(state, i)
+            self.assertEqual(state._context_start, 8)
+        old_at_1152 = state.checkpoint()
+        grown = state.extend_witness_capacity()
+        self.assertEqual(state.checkpoint(), old_at_1152)
+        self.assertEqual(grown._context_models[-1][3]._episode_limit, 2048)
+        raw = grown.checkpoint()
+        self.assertEqual(NativeEpisodeExperience.restore(raw, digest(raw)).checkpoint(), raw)
+        self.assertEqual(grown.consolidate().checkpoint(), raw)
+
 if __name__ == "__main__":
     unittest.main()
