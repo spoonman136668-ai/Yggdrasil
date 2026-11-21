@@ -1,0 +1,57 @@
+{
+  "authority": {
+    "no_accepted_ref_edit": true,
+    "no_deploy": true,
+    "no_merge": true,
+    "no_original_first_use": true,
+    "no_source_actor": true,
+    "research_only": true
+  },
+  "contribution_class": "causal-structure-coverage-FIT-only-engineering",
+  "exact_parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "experiment_id": "CSMC-01",
+  "frozen_design": {
+    "candidate_access": "only previously consumed FIT first 50 public events; no held scoring, original-world action, native accepted checkpoint write",
+    "capacity": 20,
+    "capacity_failure": "NO_GO; do not change target or quota",
+    "controls": [
+      "full-FIT native 50 reference",
+      "PCER-02 10 selector",
+      "uniform 20 deterministic",
+      "earliest 20",
+      "stage-coverage-only 20",
+      "compact conventional exact two-stage Beta/prequential summary"
+    ],
+    "coverage_cells": "(views[0][0],row.x1,row.s2,row.x2)",
+    "coverage_picks": "chronological earliest missing cell",
+    "decisions": "all 2 first-stage and 8 second-stage action proposals",
+    "engineering_gate": "all 15 observed terminal cells covered; 10/10 full native action decisions preserved; max stage1 native probability deviation <=0.10; max stage2 <=0.15; >=60% active reference reduction; native cold restore checks on exact implementation",
+    "evaluation_budget": "at most 2500 model evaluations, 20 observed witnesses per evaluation",
+    "fill": "append one witness at a time minimizing ordered score (changed native-equivalent action decisions, maximum stage2 forecast discrepancy, maximum stage1 discrepancy, mean absolute discrepancy over 20 fixed public queries, sorted index tuple)",
+    "first_eight_native_projection_witnesses": "always retain indices 0..7",
+    "query_grid": "all 2 contexts x 2 first actions (4 transition), all 2 contexts x 2 x1 x 2 s2 x 2 x2 (16 terminal)",
+    "science_gate": "NO_RUN pending original owner first-use, unfamiliar split, >=3 seeds, equal-information/bytes/action/compute controls, cold retention, intervention utility, independent replication",
+    "stops": [
+      "do not retune post-result",
+      "no original source first-use",
+      "no 50..95 VALID/HELD labels",
+      "no source or accepted checkpoint mutation",
+      "no CI runner dispatch",
+      "no promotion"
+    ],
+    "swap": "two deterministic full one-for-one passes, strict improvement only, maintain 8 projection anchors and every observed terminal cell",
+    "tie_break": "chronological witness index; no random seed"
+  },
+  "hypothesis": "A 20/50 action- and causal-cell-aware replay subset preserves full-FIT native decision choices while covering every observed terminal causal cell. No science claim.",
+  "project": "Yggdrasil",
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "source": {
+    "excluded_indices": "50..95",
+    "fit_indices": "0..49",
+    "new_source_actions": 0,
+    "path": "research/contrib/chatgpt/CAUSAL-AMALGAM/selection-dev-01/trace.json",
+    "sha256": "36f535c451c813dd56afd58c4f1833ac8e5fca98627d898a571e40c8bc8a0114",
+    "source": "previously-consumed synthetic archive",
+    "source_blob_sha1": "9db0d3742fc8bd009c61d0864e4aba739a19e4e1"
+  }
+}
