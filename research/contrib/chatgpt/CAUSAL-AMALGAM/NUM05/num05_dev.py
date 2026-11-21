@@ -37,8 +37,8 @@ def source_rows(seed, *, null=False, count=MAX_EPISODES):
         q = (index // 5) % 4
         sx = 1 if q & 1 else -1
         sy = 1 if q & 2 else -1
-        observation = (sx * (0.68 + 0.20 * rng.random()),
-                       sy * (0.68 + 0.20 * rng.random()))
+        observation = (round(sx * (0.68 + 0.20 * rng.random()), 6),
+                       round(sy * (0.68 + 0.20 * rng.random()), 6))
         base = (action - 2) * .13
         parity = 1 if action % 2 else -1
         da = (
@@ -55,10 +55,14 @@ def source_rows(seed, *, null=False, count=MAX_EPISODES):
             dx, dy, reward = db[0], db[1], rb
         else:
             dx, dy, reward = da[0], da[1], ra
-        dx += rng.gauss(0, .02)
-        dy += rng.gauss(0, .02)
-        reward += rng.gauss(0, .02)
-        next_observation = (observation[0] + dx, observation[1] + dy)
+        # Preprimary DQ01: keep the exact RNG/noise draws and arithmetic law,
+        # but define source-observed numeric precision at 1e-6 before scoring.
+        # This eliminates OS libm last-bit drift in Gaussian/public packets.
+        dx = round(dx + rng.gauss(0, .02), 6)
+        dy = round(dy + rng.gauss(0, .02), 6)
+        reward = round(reward + rng.gauss(0, .02), 6)
+        next_observation = (round(observation[0] + dx, 6),
+                            round(observation[1] + dy, 6))
         identifier = digest(f"num05:{seed}:{index}:source-public".encode("ascii"))
         yield public_row(identifier, observation, action,
                          next_observation, reward, False, False, source_tag=SOURCE_TAG)
