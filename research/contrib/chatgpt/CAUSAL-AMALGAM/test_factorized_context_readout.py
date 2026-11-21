@@ -18,6 +18,10 @@ class Expert:
     def forecast(self, view, first, state=None, second=None):
         return self.t if state is None else self.r
 
+    def checkpoint(self):
+        return module.canonical([[self.t.numerator, self.t.denominator],
+                                 [self.r.numerator, self.r.denominator]])
+
 
 class FakeNative:
     def __init__(self, experts, ledger=(), *, weights=None, refresh=None):
@@ -112,6 +116,14 @@ class FactorizedReadoutTests(unittest.TestCase):
                                 (witness(5),))
         with self.assertRaisesRegex(ValueError, "EXPERT_SET_DRIFT"):
             a.advance(substitute)
+
+    def test_old_expert_substitution_with_same_metadata_is_rejected(self):
+        n = sample()
+        a = module.FactorizedContextReadout(n)
+        changed = [Expert(F(1, 2), F(1, 2))] + [n._context_models[1][3]]
+        forged = FakeNative(changed, (witness(18),))
+        with self.assertRaisesRegex(ValueError, "EXPERT_PROVENANCE_DRIFT"):
+            a.advance(forged)
 
     def test_exact_cold_policy_parity_and_wrong_parent_rejected(self):
         n = sample()

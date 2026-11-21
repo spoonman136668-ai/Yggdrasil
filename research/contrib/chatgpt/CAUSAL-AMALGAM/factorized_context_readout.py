@@ -114,12 +114,17 @@ class FactorizedContextReadout:
                 and len(native._context_models) == len(self._native._context_models)
                 and native._refresh_start == self._native._refresh_start,
                 "EXPERT_SET_DRIFT")
-        for previous, next_ in zip(self._native._context_models, native._context_models):
-            require(previous[:3] == next_[:3] or
-                    (self._native._context_novel and previous is self._native._context_models[-1]
-                     and next_ is native._context_models[-1] and previous[0] == next_[0]),
-                    "EXPERT_PROVENANCE_DRIFT")
         identity, views, first, state, second, reward = new[-1]
+        for index, (previous, next_) in enumerate(zip(
+                self._native._context_models, native._context_models)):
+            if self._native._context_novel and index == len(native._context_models) - 1:
+                require(previous[0] == next_[0] and next_[1] == previous[1] + 1
+                        and next_[3]._ledger == previous[3]._ledger + (new[-1],),
+                        "NOVEL_EXPERT_WITNESS_DRIFT")
+            else:
+                require(previous[:3] == next_[:3]
+                        and previous[3].checkpoint() == next_[3].checkpoint(),
+                        "EXPERT_PROVENANCE_DRIFT")
         require(type(identity) is str and len(identity) == 64
                 and all(c in "0123456789abcdef" for c in identity)
                 and type(views) is tuple and len(views) == 2,
