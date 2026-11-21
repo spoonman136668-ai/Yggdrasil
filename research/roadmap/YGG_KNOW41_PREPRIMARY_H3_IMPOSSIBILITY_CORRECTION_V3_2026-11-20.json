@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.know41.preprimary-impossibility-correction.v3",
+  "experiment": "KNOW41",
+  "frozen_date": "2026-11-20",
+  "status": "PROSPECTIVE_H3_CORRECTION_BEFORE_ANY_PRIMARY_FIRST_USE",
+  "parent_head": "317073639a68ed965434a65e794eb4b1e4fa1c57",
+  "v2_protocol_blob": "8594bc3a32d7826ce8ce0b491b1f1906741bce74",
+  "v1_prereg_blob": "40b54a9fff183a54243c530cff0f7be34785faca",
+  "source_commit": "71cd943fc09d2f2c9543ec707c5114cc849f188a",
+  "no_held_source_first_use": true,
+  "reason": "Mathematical falsification of v1 H3 prior to any FIT/HELD outcome use. The requirement to beat all negative controls by at least .05 expected regret contradicts the frozen SCM's maximum possible improvement over passive and no_memory. This is a protocol-invalid threshold, not an observed learner NO_GO. Original H3 and frozen negative remain permanently preserved.",
+  "derivation": {
+    "world": "FORK for second-B t192..255; c=t%8 uniform eight contexts exactly eight repeats per context; theta in {0,1}",
+    "q_action0": "0.35 for all contexts theta",
+    "q_action1": "0.15+0.20*((c0 XOR theta)+(c1 XOR c2 XOR theta))",
+    "net_action1": "q_action1-0.05",
+    "q_action1_distribution_per_theta": {
+      "0.15": 2,
+      "0.35": 4,
+      "0.55": 2
+    },
+    "optimal_action1_contexts": 2,
+    "optimal_expected_regret": 0,
+    "passive_expected_regret": "(2/8)*(0.55-0.05-0.35)=0.0375",
+    "no_memory_action1_contexts": [
+      0,
+      4
+    ],
+    "no_memory_theta0_expected_regret": 0.075,
+    "no_memory_theta1_expected_regret": 0.025,
+    "original_h3_margin": 0.05,
+    "impossibility": "To beat passive by >=0.05 would require candidate regret <=-0.0125. To beat no_memory in theta1 by >=0.05 would require <=-0.025. Regret is max_a expected_utility - chosen_a expected_utility >= 0 pointwise, so no candidate can satisfy v1 H3.",
+    "realized_vs_expected": "These are algebraic expected regrets from public frozen SCM, not realized stochastic y, tuned outcomes or held source calls."
+  },
+  "prospective_change": {
+    "only_superseded_rule": "v1 H3, inherited unchanged by v2",
+    "new_H3_margin": 0.01,
+    "new_H3": "Candidate second-B mean expected regret at least 0.01 lower than each of passive, deterministic random and fixed no_memory controls in EACH of the two 12-world held theta families.",
+    "feasibility": "Because theta1 no_memory regret=0.025, an ideal candidate (regret=0) could exceed this >=0.01 target; candidate must reach regret <=0.015 in theta1. All other P0-P1,H1,H2,H4, family sizes, seeds, phases, cold/custody rules, and source budgets remain unchanged.",
+    "classification": "PREPRIMARY_INVALID_V2 for original H3. Report v3 only if prospectively qualified and no first-use has occurred; never claim v1 H3 passed.",
+    "never_tune_after_first_use": true
+  },
+  "governance": {
+    "synthetic_source_generator_present": false,
+    "synthetic_first_use": "NOT_AUTHORIZED_BY_THIS_DOCUMENT",
+    "original_world_issue_426": "NOT_AUTHORIZED",
+    "native_weights_changed": false,
+    "accepted_main_changed": false,
+    "merge": false,
+    "runner_authority": false,
+    "controller_authority": false,
+    "scheduler_authority": false,
+    "paid_api": false,
+    "deployment": "NONE",
+    "scientific_gain_verified": false
+  }
+}
