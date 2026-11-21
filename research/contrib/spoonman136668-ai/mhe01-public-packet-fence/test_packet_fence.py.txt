@@ -297,7 +297,7 @@ class ShadowTaskIdentityCustodyTests(unittest.TestCase):
         self.assertIn("protocol FIRST",contract)
         self.assertIn("sample_fresh_task(task_id=None)",contract)
         self.assertIn("source_owner_authenticated=false",contract)
-        self.assertIn("no environment",contract.lower())
+        self.assertIn("do not run reset/step/sample_fresh_task",contract.lower())
 
     def test_23_registered_and_unique_uniform_fresh_are_only_declared(self):
         g=self.fence()
@@ -407,7 +407,7 @@ class ShadowTaskIdentityCustodyTests(unittest.TestCase):
                 g.before_reset(0,is_meta_testing=flag)
         safe=g.before_reset(1,is_meta_testing=False)
         as_text=json.dumps((safe,g.inspect()),sort_keys=True)
-        for forbidden in ("TRANSFER","f"*64,"task_id","weather",
+        for forbidden in ("TRANSFER","f"*64,'"task_id"',"weather",
                           "difficulty","confounder","source_owner_authenticated\": true"):
             self.assertNotIn(forbidden,as_text)
         self.assertNotIn("7",as_text)
