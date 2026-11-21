@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "GATE19-RETAINED-MECHANISM-UNDER-PARENT-REMAP-20261120",
+  "role": "independent Yggdrasil research contributor; not Amalgam native owner",
+  "pr": 1340,
+  "parent_sha": "fb772d811ba3b7758c2bca13b52982fcfed6e297",
+  "question": "Can a learned causal input-output mechanism from environment A accelerate held-action prediction in environment B with unseen parent-variable relocation, while surviving B learning and a byte-exact restore?",
+  "worlds": {
+    "families": {
+      "shared_majority": [
+        81000,
+        81047
+      ],
+      "shared_mux": [
+        82000,
+        82047
+      ],
+      "shared_essential_boolean": [
+        83000,
+        83047
+      ],
+      "shared_parity": [
+        84000,
+        84047
+      ],
+      "unrelated_essential_boolean": [
+        85000,
+        85047
+      ]
+    },
+    "worlds_per_seed": 2,
+    "controls": 5,
+    "source_A": "True causal function on three distinct hidden input bits, unknown operator and parents, with 5% independent deterministic-hash sensor flips. A receives three shuffled rounds of all 32 actions (96 outcomes).",
+    "source_B_shared": "Same latent 3-bit truth table and output orientation as A, but source input parents randomly remapped to a DIFFERENT unordered triple of 5 bits. The order of the three causal inputs may also permute. New nuisance/action semantics and new output-noise domain. Learner sees only control vectors and consequence labels, no correspondence map or operator name.",
+    "source_B_unrelated": "New independently sampled essential-three-input truth table and new parent coordinates, rejecting equality with A table or its trivial permutation; source labels remain hidden.",
+    "B_split": "Independently shuffle all 32 intervention vectors, first 24 distinct for B fitting, final 8 never shown to B fit/selection, use B held domain different from fit noise. First 16 B training observations select mapping, last 8 B training observations validate mapping-vs-scratch; all 24 used to refit B-only scratch. No B held labels for any decision.",
+    "A_memory": "Keep all 96 A action/outcome records unchanged while B learns. Validate pre-B predictions on 32 A actions against packed/restored post-B A predictions and source state bytes. This is synthetic same-process restoration, not native checkpoint custody."
+  },
+  "arms": {
+    "transfer": "Fit A's generic 1/2/3-parent causal subset and Laplace table from A96 (Gate17 fit+validation settings). Generate all ordered B action-parent mappings to A's learned k parents (k=1/2/3; up to 60 permutations). Choose best 16-B-event mean negative log loss; use final eight B training examples to decide transfer against scratch. Accept sharing only when mapping validation Brier is at least 0.015 lower than scratch-fit-on-first16 validation Brier; otherwise B-only. For accepted mapping use A96 table with no B-held updates. No true map leaks.",
+    "fixed_full": "Identical outputs and 388-byte persisted records, but always enumerate all possible B mappings even if A source subset is poor; evaluated separately for unique structural advantage. If implementation naturally identical under k=3, report exact tie.",
+    "scratch": "No A mechanism. Fit B-only one/two/three-parent conditional lookup with LOO penalization on first16 B and refit selected B route on all24; same B samples and raw persisted memory envelope. Can have weak fitting due limited samples; compare to Bayesian B-only.",
+    "bayes_shared": "Soft posterior average over B candidate mappings given A's estimated table and 24 B observations. Additionally include B-only generic subset model as an alternative mixture component, with frozen 50:50 prior mass to shared vs independent B. Bayesian evidence and held forecasting use extra temporary memory/computation not equalized.",
+    "unrelated_A": "Negative training: shuffle A outcome labels deterministically prior to fitting while preserving B evidence. Use identical transfer decision and scratch fallback. Cannot improve over genuine transfer by >0.02 on shared tasks without flagging.",
+    "oracle_map": "Informationally advantaged diagnostic: true source parent map disclosed to oracle ONLY, with A learned conditional probabilities. Not an eligible control for scientific PASS.",
+    "flat_B": "Laplace table on full five-bit B action, p=.5 for each eight strictly unseen held action vectors; reference memorization baseline.",
+    "null": "Constant p=.5 Brier 0.25."
+  },
+  "persistence": {
+    "compact_record": "All arms can store 2*(96*2+2) = 388 bytes maximum, A's 96 pairs plus B's 24 pairs occupy 240 payload bytes; 148 bytes are zero padding. No precomputed true source/table/map in persisted record. B map, source A candidate and Bayesian probabilities recomputed after restore. This is persisted-evidence parity, not equal process memory or compute.",
+    "restoration": "After B learning, encode and restore independently twice; verify byte equality and all B-held forecasts plus 32 A reference forecasts. Native cross-process durability and online B-to-A parameter reuse still untested.",
+    "work": "Report number of parent-map candidate likelihood evaluations and B-only mask fit operations. No wall-clock or energy efficiency claim without controlled benchmark."
+  },
+  "protocol": {
+    "matched_data": true,
+    "no_teacher_execution": true,
+    "no_source_parent_or_mapping_labels_to_learners": true,
+    "seed_count": 240,
+    "environment_pairs": 240,
+    "B_fit_events_each": 24,
+    "B_held_each": 8,
+    "A_fit_each": 96,
+    "paired_per_seed": "B held Brier means across 8 action labels per seed, paired normal 95% confidence intervals; compute transfer vs scratch, shuffled-A, and Bayesian. Record transfer acceptance rate on related and unrelated families.",
+    "negative": "Unrelated source has no true shared mapping. Report erroneous sharing and Brier degradation; prevent post-result tuning of validation threshold."
+  },
+  "thresholds": {
+    "majority_transfer_gain_vs_scratch_min": 0.025,
+    "mux_transfer_gain_vs_scratch_min": 0.025,
+    "essential_transfer_gain_vs_scratch_min": 0.025,
+    "parity_transfer_gain_vs_scratch_min": 0.025,
+    "combined_shared_gain_vs_scratch_CI_positive": true,
+    "shared_gain_vs_shuffled_A_min": 0.025,
+    "shared_transfer_Brier_max": 0.19,
+    "unrelated_transfer_regression_vs_scratch_max": 0.025,
+    "unrelated_false_sharing_rate_max": 0.2,
+    "max_bayes_shared_deficit": 0.02,
+    "structural_gain_vs_fixed_min": 0.015,
+    "structural_gain_vs_fixed_CI_positive": true,
+    "all_B_held_disjoint": true,
+    "cold_388_byte_prediction_A_B_replay_all": true,
+    "A_retention_no_change_all": true
+  },
+  "falsification": "Only score scientific development signal if all substantive transfer/negative/comparator thresholds pass. Structural gain requires outperforming same-memory fixed evaluator and strong Bayesian model; exact tie fails it. If scratch or Bayesian defeats transfer, mark mixed/no-go and retain negatives. No accepted native learning or general intelligence gain on any synthetic outcome.",
+  "authority": {
+    "existing_draft_PR_only": true,
+    "no_main_or_checkpoint_change": true,
+    "no_owner_or_model_promotion": true,
+    "no_new_runner_scheduler_controller": true,
+    "no_paid_API": true,
+    "source_frozen_before_results": true
+  }
+}

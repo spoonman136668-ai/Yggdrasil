@@ -1,0 +1,123 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE11-OUT-OF-FAMILY-CALIBRATED-CAUSAL-ABSTENTION-20261120",
+  "contributor": "chatgpt-independent-research",
+  "contribution_class": "falsification",
+  "question": "Can a bounded learner avoid falsely asserting two-parent causality on unseen three-parent, random, and unary relationships without losing predictive performance on genuine two-parent effects?",
+  "hypothesis": "A frozen pair-search+independent 16-observation validation gate plus two-parent conditional-contrast check will reject at least 90% of unsupported relationships in each of parity3/random/unary families, preserve >=90% genuine two-parent routes, and reduce mean OOD Brier vs Gate10 legacy by >=0.005 with <=0.025 genuine-family Brier degradation. Matched fitted fixed structure also gets identical validation gates; no structural superiority is claimed on a tie.",
+  "exact_parent_sha": "725e610a6bcd20765415aea9da455b4e12c9b50f",
+  "predecessor_evidence": [
+    "PR #1340 Gate 10 prereg and result: 121/128 true parent recovery but parity3 29/64 and random 33/64 abstentions; exact tie with matched fixed; Linux/Windows 54/54 and independent reproducibility PASS at 725e610a6bcd20765415aea9da455b4e12c9b50f"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate11/",
+    ".github/workflows/yggdrasil-g29-atlas.yml",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "synthetic interventions and binary consequence under independent PRNG",
+      "source": "original synthetic generated within frozen source; no proprietary or private data",
+      "sha256": "all generator parameters and fresh seed ranges pinned below; exact empirical sequence hashed only after source freeze"
+    }
+  ],
+  "frozen_design": {
+    "fresh_seeds": {
+      "in_family": "10000..10063 inclusive",
+      "parity3": "11000..11031 inclusive",
+      "random": "12000..12031 inclusive",
+      "unary": "13000..13031 inclusive"
+    },
+    "observations_per_context": {
+      "fit": 128,
+      "held": 32
+    },
+    "contexts": [
+      "A",
+      "B"
+    ],
+    "input_bits": 6,
+    "noise_probability": 0.05,
+    "action_sampling": "xorshift32 per seed; same uniformly random independent six-bit interventions shared across all methods in each world; exactly two world contexts per seed; outcome noise from shared PRNG, no policy-dependent sampling",
+    "world_selection": "In-family uniformly sample two distinct parents from six and one 4-bit truth table depending on both parents. Parity3 = XOR of three distinct input bits with independent 5% flip noise. Random = independent fair Bernoulli label with no action dependence. Unary = y = selected input bit or its complement with independent 5% noise. Only interventions, public context ID and outcomes go to learners.",
+    "local_memory": "Each context retains the last 64 TRAINING observations only (6-bit intervention uint8, observed binary outcome uint8), selected candidate index uint8, and route-accepted flag uint8. Exactly 130 bytes/context or 260 total, same for legacy, calibrated dynamic and calibrated fixed. No held observations are admitted to learning or the buffer. Scratch arrays not counted as persistent state and must be separately described.",
+    "causal_pair_proposal": "For each pair of 6 inputs, fit Laplace +1/+2 binary probability table on oldest 48 of the most recent 64 fit observations; choose smallest in-sample Brier pair with tie broken by pair enumeration.",
+    "causal_proof": "On SAME oldest 48, selected pair must have empirical conditional intervention contrasts >=0.45 for each parent, at least one stratum of the other parent where each of the two variant cells has >=3 samples. This is a deterministic identifiability gate, not an oracle causal label.",
+    "heldout_acceptance": "On last 16 of most recent 64 fit observations, independently compute Brier of pair model fitted only on preceding 48 and Brier of marginal null p=(ones+1)/(48+2) fitted only on preceding 48. Accept pair iff null Brier - pair Brier >=0.08 AND both independent causal-contrast tests pass. Important: all candidate comparisons and contrasts are fitted using 48, not validated on 16; the pair search may not inspect validation labels.",
+    "prediction": "If accepted, score 4-cell Laplace forecast refit on all last 64 observations, clipped [0.05,0.95]. Otherwise reject the *two-parent causal claim* but return a calibrated marginal probability fitted on all last 64 (not necessarily 0.5). Both exact route abstention and Brier are measured.",
+    "models": {
+      "gated_dynamic": "run same calibrated selection at 32,64,96,128 observations per context; at 32 use oldest 16 fit + newest16 validation; for later scans use last64 split 48/16. Always final scan at 128. Count route changes.",
+      "gated_fixed": "run only one exact calibrated selection at 128 from same last64, equal 260-byte persistent state, fewer candidate evaluations. Strong matched full-fit control; final predictions expected to tie gated_dynamic.",
+      "gate10_legacy": "implement exactly Gate10 scan-at-128 baseline selection: for each pair, on last64 use first48 fit, newest16 validation; choose pair with minimum validation Brier and accept iff min validation Brier <=0.23; fallback p0=0.5; selected forecast refit last64; use equal packed 260-byte model state.",
+      "marginal_null": "conditional on public context, ignore inputs and predict Laplace marginal p=(ones+1)/(last64+2), clipped; no learned causal claim, <=260 bytes persistent state.",
+      "bayesian_null_augmented": "15 pairs*16 two-input truth tables with explicit fixed 5% sensor noise; uniform within causal candidates and prior 0.5 on independent fair-coin null. Update two context log likelihoods; return posterior mixture of 2-input worlds and p=.5 null, nominal 3856 bytes (3840 model float64+16 for context null log scores), unmatched memory. No false causal structure claim from this control."
+    },
+    "scoring": "Held 32 A observations then held 32 B observations, no updates; Brier p-y square; 64 in-family seeds x2 worlds, 32 each negative family x2 worlds. Record abstentions per world, true-parent recovery only if accepted, paired per-seed Brier difference gated vs legacy and gated vs matched calibrated fixed, comparison counts, pack/restore prediction-only parity.",
+    "primary_thresholds": {
+      "in_family_acceptance_min_fraction": 0.9,
+      "three_parent_rejection_min_fraction": 0.9,
+      "random_label_rejection_min_fraction": 0.9,
+      "unary_rejection_min_fraction": 0.9,
+      "negative_mean_brier_gain_vs_gate10_legacy_min": 0.005,
+      "in_family_degradation_vs_gate10_legacy_max": 0.025,
+      "matched_fixed_superiority_required_for_structural_claim": 0.02,
+      "cold_prediction_restore_seeds_required": 64,
+      "packed_state_max_bytes": 260
+    },
+    "negative_controls": [
+      "Parity3 (unrepresentable, 5% noisy)",
+      "Fair independent random labels",
+      "Unidentifiable unary dependent label (5% noisy), must not assert distinct second parent"
+    ],
+    "measurement": "Macro-average Brier across three negative families, matched seeds within each; paired seed CI for OOD Brier gain and in-family loss; CI is descriptive for DEV only; no repeated tuning on same seeds.",
+    "budget": "Only one primary 64+3*32 seed run and deterministic exact replay for qualification; V8 runtime and CI two platforms on committed source; 0 external model calls, 0 paid APIs, no remote actions unrelated to PR.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Gate10 legacy uncalibrated validation winner",
+    "Matched 260-byte calibrated fixed causal structure",
+    "Marginal null forecast",
+    "Larger exact Bayes with explicit random null and all 240 Boolean hypotheses",
+    "Cold prediction serialization",
+    "Negative alternatives unrepresentable and unary non-identifiability"
+  ],
+  "metrics": [
+    "held Brier all five methods per family",
+    "accepted claimed two-parent routes in-family and three negative controls",
+    "true parent recovery where causal claim accepted",
+    "paired confidence interval of OOD improvement and in-family loss",
+    "repeated intervention candidates and fit-score operations",
+    "serialized checkpoint byte count; fresh object prediction match",
+    "cross-platform exact JSON recomputation"
+  ],
+  "classification_rules": {
+    "supported": "All preregistered gates: in-family accept >=0.90, each of parity3/random/unary abstain >=0.90, macro OOD mean Brier improvement vs legacy >=0.005 and in-family degradation <=0.025, all 64 cold prediction restores pass, <=260 serialized bytes, no leakage. May claim bounded development calibration improvement only, never topology superiority if same-capacity fixed tie.",
+    "mixed": "Any subset of thresholds passing but at least one failing, or the same calibrated fixed method ties; report exact failures without tuning on same data.",
+    "negative": "OOD or accept gates fail, or Brier gain <0.005, or greater than .025 in-family regression; report DEVELOPMENT SCIENTIFIC_NEGATIVE.",
+    "invalid": "Prereg after outcome, leaked source causal labels, comparisons on held labels, scanner uses validation labels for pair choice, corrupted packed state, bad source SHA, changed seed/split/capacity after first result."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "notes": [
+    "Seeded outcomes entirely outside canonical Yggdrasil training; accepted main and Amalgam checkpoints must remain untouched.",
+    "A calibrated null/abstention gain is not a demonstration of structural self-assembly, general causal intelligence, or native learning.",
+    "No new controller, scheduled tasks, runner, merge, or paid API."
+  ],
+  "preregistration_note": "Commit this before Gate 11 primary computation, freeze exact thresholds and candidate generation."
+}

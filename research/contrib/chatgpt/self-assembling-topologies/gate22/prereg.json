@@ -1,0 +1,106 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE22-CAUSAL-CHANGEPOINT-COLD-REACTIVATION-20261120",
+  "contributor": "chatgpt-research-contributor",
+  "contribution_class": "falsification",
+  "question": "Can a causal-topology learner detect unannounced changes from A to B and return to A, retaining dormant source knowledge and outperforming strong recency/Bayesian controls while avoiding false rewires on stationary and random noise?",
+  "hypothesis": "A local change detector with separated training-only switch witnesses and explicit source reactivation improves both changed-environment and old-environment cold-return prediction, with bounded spurious switches, over matched-information conventional online models.",
+  "exact_parent_sha": "eb44df75612be0aaa6ee388a08f308eb8fc8dc39",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1340",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44771378113"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate22/",
+    "existing G29 atlas and existing G29 CI workflow only"
+  ],
+  "inputs": [
+    {
+      "name": "seeded synthetic six-bit causal streams",
+      "source": "new deterministic local generator committed before primary execution",
+      "sha256": "will refer to exact frozen run.cjs git blob on first-use; cannot prehash uncreated source"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      "xor_pair:121000-121031",
+      "mux3:122000-122031",
+      "essential3:123000-123031",
+      "unary:124000-124031",
+      "stationary_essential3:125000-125031",
+      "independent_noise:126000-126031"
+    ],
+    "seed_count": 192,
+    "environment_order": "Pretrain A64, then unannounced stream with 48 B training observations and 48 A-return training observations (stationary/noise controls never change). Source and target hide true parents/mapping, and policies never receive segment label.",
+    "splits": "At each of B and return A, use independently shuffled 64 six-bit action IDs: 48 training-feedback prequential events and 16 strictly held, never learned; source A sees all 64 action IDs once. Source noise action/visit/domain separated from B/R and held. B remaps causal parents (same truth function), R reuses original A truth function and parents.",
+    "data_budget": "Per seed A64 labeled source; two 48-event streams visible online; two disjoint-from-training 16-action evaluation sets held until scoring; all competing arms receive identical information/times; source A64 + stream96 persisted evidence = 320 bytes plus metadata within 384 bytes. No teacher.",
+    "compute_budget": "All local graph choices evaluated only each 8 observed events, at most one edge mutation/checkpoint; each arm has its own documented work count. Strong global/Bayesian controls may use more scratch computation. No matched-compute, wall-clock, or energy gain claims.",
+    "capacity": "All predictors use only one- to three-parent Boolean conditional tables with Laplace-smoothed counts; maximum 3 active graph edges; 384-byte serialized A and stream evidence plus mode/state. Static and Bayesian comparators use same hypothesis universe; latent history source segments not exposed.",
+    "evaluator": "Prequential Brier on 48 feedback outcomes per phase before labels, held Brier on 16 never-trained actions at B48 and return48, per-family and 128 paired related trials with normal 95% CI. Count false switches and first detection delays; report raw compute and A-retention.",
+    "deterministic_expected": true
+  },
+  "mechanism": {
+    "active_graph": "Initialize selected source A mask by penalized LOO Brier. Every 8 post-source feedback events, evaluate adding, pruning or swapping one edge, selecting best neighbor using last <=32 events excluding latest 8; witness selection uses the latest 8 distinct-on-stream events not fitted into candidate. Stable A model immutable.",
+    "switch_to_new": "Enter B-mode when candidate using recent fit improves held-within-training witness Brier over A-source by >=0.025 and both 4-event witness halves improve; candidate must beat null baseline by >=0.005 on witnesses, no true boundary input. At most one graph mutation at any checkpoint; may continue local rewiring while in B-mode using same fit/witness test.",
+    "return_to_A": "While B-mode, if A-source beats active local candidate on latest witness eight by >=0.025 and two halves agree, reactivate original stored source A graph without changing A memory.",
+    "cooldown": "After any mode change, do not change mode for one further 8-event checkpoint. No behavior depends on true phase labels.",
+    "predict": "If source mode, use immutable A64 conditional-table probabilities; else use fitted active subset on last up-to-32 feedback stream events. Compare online prequential and never-trained phase holdout.",
+    "controls": [
+      "source-A-only frozen predictor",
+      "independently implemented global static best subset fitted to all A+stream observed events every 8 feedback steps",
+      "independently implemented sliding-window 32-event global subset fit every 8 steps",
+      "Bayesian hazard soft mixture of source A and a recency-32 Beta-binomial 1..3-subset posterior, hazard=1/64, updated before label learning",
+      "ungated local greedy graph on same stream, no switch witness",
+      "0.5 null and oracle-known-phase segment graph only illustrative"
+    ],
+    "cold": "Serialize A64 rows, up to 96 stream rows, source mask, active mask, mode, cooldown and counters in exactly 384 bytes at time 48, 72 and 96; restore into independent in-process instance and compare future actions, bytes and predictions. No true process-exit/native checkpoint claim."
+  },
+  "frozen_thresholds": {
+    "related_B_gain_vs_frozen_A_min": 0.045,
+    "related_B_gain_vs_frozen_A_ci_lower_positive": true,
+    "related_B_regression_vs_sliding_max": 0.02,
+    "related_B_regression_vs_hazard_bayes_max": 0.025,
+    "related_return_gain_vs_sliding_min": 0.012,
+    "related_return_gain_vs_sliding_ci_lower_positive": true,
+    "related_return_gain_vs_hazard_bayes_min": 0.005,
+    "related_return_gain_vs_hazard_bayes_ci_lower_positive": true,
+    "related_return_source_reactivated_fraction_min": 0.75,
+    "stationary_false_mode_switch_trials_max_fraction": 0.2,
+    "noise_false_mode_switch_trials_max_fraction": 0.2,
+    "stationary_holdout_Brier_regression_vs_sliding_max": 0.02,
+    "noise_holdout_Brier_regression_vs_null_max": 0.025,
+    "all_held_disjoint": true,
+    "all_A_source_immutable": true,
+    "all_384byte_replay_exact": true
+  },
+  "negative_controls": [
+    "stationary nonlinear same-world/no boundary",
+    "independent random label sequence/no structure",
+    "source-A-only, global static, sliding recency, Bayesian hazard, ungated graph and random null"
+  ],
+  "classification_rules": {
+    "supported": "All frozen thresholds PASS together, then still only preliminary synthetic DEVELOPMENT signal pending independent reproduction/native qualification.",
+    "mixed": "Some positive but any frozen required threshold FAIL, SCIENTIFIC_NO_GO, preserve results.",
+    "negative": "Stronger fully trained/Bayesian or noise negative defeats joint target, SCIENTIFIC_NO_GO.",
+    "invalid": "Missing custody, wrong data/compute accounting, held leakage, violation of frozen protocol."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "native_first_use": false,
+    "no_main_checkpoint_amalgam_change": true,
+    "retain_existing_draft_PR": true
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "GATE13-ACTION-SELECTION-COLD-CONTINUATION-20261120",
+  "contributor": "chatgpt-independent-research",
+  "project": "Yggdrasil",
+  "parent_sha": "d9353a780e4f9107002ce4dada4b48505c834bf9",
+  "prior_pr": 1340,
+  "goal": "Determine whether a causal posterior that selects its own interventions learns faster than uniform random and deterministic balanced intervention schedules with the same feedback and query budget, while exactly continuing from a cold serialized state.",
+  "hypothesis": "Active predictive-disagreement interventions improve final held Brier on genuine unknown two-parent worlds by >=0.010 over EACH control (balanced and uniform random), and paired 95% CI lower bound for each improvement >0; no more than +0.010 Brier worsening on unary worlds, +0.020 on three-parent parity/random negative worlds; 100% exact synthetic cold continuation parity.",
+  "design": {
+    "fresh_seeds": {
+      "pair": [
+        23000,
+        23063
+      ],
+      "unary": [
+        24000,
+        24031
+      ],
+      "parity3": [
+        25000,
+        25031
+      ],
+      "independent_random": [
+        26000,
+        26031
+      ]
+    },
+    "contexts": "Two isolated context-labeled worlds A then B per seed; A replayed after B (synthetic cold checkpoint continuation test). No hidden world ID or causal parent identity visible to learner, only public context ID.",
+    "inputs": "five independently chosen binary intervention settings, 32 possible actions; output one binary consequence with 5% independent noise except random case; world source synthetically sampled from 10 genuinely two-parent Boolean truth tables or single-parent copy/invert, three-parent parity, fair random independent label.",
+    "training_actions_per_world": 12,
+    "held_actions_per_world": 32,
+    "held_schedule": "all 32 possible intervention vectors, each with one deterministic source-noise outcome independent of the learner and disjoint from fit noise; immutable held labels are NEVER used for posterior updates or action decisions",
+    "cold_continuation": "after 12 actions per A/B, serialize full log posterior, per-action visit counts and step counter, independently deserialize twice, resume FOUR A actions on both restored objects with same deterministic action-indexed outcome function, demand bitwise identical action decisions, predictions and serialized state at every continuation step; score held before continuation, no scientific cold process/reboot claim",
+    "world_and_noise": "synthetic xorshift32 world priors; outcome flip determined by a distinct stateless 32-bit seed/world/action/visit counter hash, so all policies receive identical result when choosing the same action and visit count; held outcomes from a disjoint seed domain",
+    "model": "All arms share exactly the same known-class Bayesian mixture with 113 hypotheses (three zero-parent: 0.05/0.5/0.95; ten unary: five input bits x two polarities; 100 two-parent: ten distinct input pairs x ten genuinely two-parent Boolean truth tables), per-order prior mass 1/3, fixed independent 0.05 noise on deterministic hypotheses. No trained external teacher or access to private world labels.",
+    "arms": {
+      "active": "At each step compute posterior-predictive Bernoulli probabilities for all 32 candidate actions; choose action maximizing binary entropy of p (equivalently expected mutual information under all deterministic hypotheses with identical 5% noise); break near-equal entropy ties at 1e-12 by smallest prior visits of the action, then smallest x.",
+      "balanced": "At each step compute SAME full 32-action predictive vector for accounted compute but select deterministic action (11 * step + seed mod 32 + 13 * context) mod 32. Visits unique during first 12; no response-derived adaptivity.",
+      "uniform_random": "At each step compute SAME predictive vector for accounted compute but select x from an independently seeded xorshift32 stream keyed by seed/context/step; duplicates allowed; no outcome-derived adaptivity."
+    },
+    "training_update": "Bayesian log-likelihood update from observed action consequence only, stable log-sum-exp, no teacher inference. Same model, prior, outcome function, action budget and posteriors for all three arms.",
+    "cost": "Each arm forced to compute 32 posterior action predictions per training step; model evaluation and observations matched. This is an artificial compute-equalized diagnostic; efficient fixed/random controls need only one prediction if implemented normally. Report both forced matched work and minimal baseline practical work; no compute or wall-clock advantage claim.",
+    "checkpoint": "Per context 113 float64 log scores + 32 uint8 action-visit counters + 1 uint8 step => 937 bytes; two contexts =1874 packed bytes; neither JS process overhead nor code/hypothesis dictionary counted; immutable hypothesis dictionary shared by all arms. 4-step continuation after restore must match bitwise.",
+    "audit": [
+      "No teacher access, no native Yggdrasil first-use",
+      "All three arms use identical outcome function and held labels per world",
+      "No held posterior update",
+      "Cold A continuation after B identical from two independent deserializations",
+      "Uniform random action stream independent of outcomes",
+      "Candidate list consists exactly of 113 hypotheses",
+      "Out-of-family three-parent parity and random labels retained as negative controls"
+    ]
+  },
+  "analysis": {
+    "primary": "Mean per-world post-12 held Brier over 64 pair seeds x2 worlds, compare active to each control with paired by-seed differences and 95% normal CI; active gain = Brier_control - Brier_active.",
+    "secondary": "Unary seed family and out-of-family 3-parent parity and random families: mean Brier differences, rejection of any large active-induced worsening. Exact full-domain truths and binary noisy outcomes shared across policies.",
+    "thresholds": {
+      "pair_gain_vs_balanced_min": 0.01,
+      "pair_gain_vs_random_min": 0.01,
+      "paired_CI_lower_each_above": 0,
+      "unary_worsening_vs_best_control_max": 0.01,
+      "negative_parity_worsening_vs_best_control_max": 0.02,
+      "negative_random_worsening_vs_best_control_max": 0.02,
+      "cold_action_and_state_continuation_all": true,
+      "checkpoint_bytes_max": 1874
+    },
+    "pass_classification": "SCIENTIFIC_DEVELOPMENT_SIGNAL_ACTION_CHOICE only if every frozen condition passes; never assert native, transfer, intelligence or self-assembly superiority. Otherwise NO_GO or MIXED depending number of passed gates; retain negatives.",
+    "resource_reporting": [
+      "posterior hypothesis evaluation counts per arm for actual forced-equal scans",
+      "minimal fixed/random control counterfactual evaluations",
+      "per-run host wall time if available",
+      "serialized state exact bytes",
+      "no whole-process energy/cost claims"
+    ],
+    "warning": "Known grammar, known 5% sensor noise and public context IDs are structural priors. Posterior predictive action selection uses existing standard active-learning math, not an original general causal intelligence mechanism."
+  },
+  "fences": {
+    "no_accepted_main_change": true,
+    "no_merge": true,
+    "no_canonical_model_or_checkpoint_write": true,
+    "no_runner_controller_scheduler_creation": true,
+    "no_paid_API": true,
+    "no_native_first_use": true,
+    "reuse_PR_1340": true,
+    "archive_only_repo": true
+  },
+  "sealed_before_outcomes": true
+}

@@ -1,0 +1,103 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "GATE10-OPERATOR-AGNOSTIC-LOCAL-STRUCTURE-20261120",
+  "contributor": "chatgpt-independent-research",
+  "contribution_class": "falsification",
+  "question": "Can a bounded local learner dynamically discover two causal parents and an initially unspecified Boolean truth table from intervention consequences, retain two separately learned contexts through cold restore, and beat an equally informed fixed hypothesis learner?",
+  "hypothesis": "An online reviseable pair-to-truth-table local structure reduces held prequential Brier by at least 0.02 versus a memory- and evidence-matched fixed fit-end selector on novel two-input Boolean operators. Failure against that strongest fixed control is a developmental scientific NO-GO even if early frozen control loses.",
+  "exact_parent_sha": "0af13339f8d1d1d23f128a6d31dffb019df508e4",
+  "predecessor_evidence": [
+    "PR #1340 Gate 06: factorization tie against equal-capacity fixed factorized",
+    "PR #1340 Gate 07: hidden-mediator route tie with matched fully fitted fixed selector; G29 & 54-test OS CI pass"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate10/",
+    ".ice/code-atlas.json",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice"
+  ],
+  "inputs": [
+    {
+      "name": "synthetic-6-bit-intervention-worlds",
+      "sha256": "computed deterministically from committed source and seed list",
+      "source": "locally generated public domain synthetic; no external or private dataset; no fixed hidden test labels"
+    }
+  ],
+  "frozen_design": {
+    "seeds": {
+      "development_start": 7000,
+      "development_end_inclusive": 7063,
+      "negative_start": 8000,
+      "negative_end_inclusive": 8031
+    },
+    "contexts": [
+      "A",
+      "B"
+    ],
+    "input_channels": 6,
+    "parents_per_world": 2,
+    "operator_generation": "Use xorshift32(seed) to sample two distinct unordered parent indices and a 4-bit truth table that depends on BOTH parents (exclude constant and unary tables). The generator retains identities; learner receives only 6-bit intervention action, public A/B context cue, and noisy binary outcome. No operator names/tables, parent locations, or hidden mediator values go to learner.",
+    "intervention_stream": "Per context, 128 training observations from PRNG-sampled uniform independent 6-bit interventions. Then immutable 32 observations per context, A return immediately after training B, then B return. All learners observe identical interventions and outcomes. Independent Bernoulli(0.05) output noise. 64 development seeds.",
+    "negative_stream": "32 seeds each for random-label responses and 3-parent parity with independently sampled parents; same intervention schedule. Both are evaluated as out-of-family negatives; no evaluation-label exposure or selector tuning.",
+    "models": {
+      "dynamic_local": "Each context holds circular reservoir last 64 (6-bit action uint8, binary y uint8), one selected unordered parent-pair uint8 and one confidence bit. Recompute best pair via 4-cell Laplace-smoothed conditional fit (training portion) and prequential 16-point validation at fit counts 32,64,96,128. Abstain at 0.5 unless validation Brier beats 0.25 by >=0.02. Prediction uses selected pair's 4 cells from last 64, Laplace +1/+2, clipped to [0.05,0.95]. No labeled gate/operator dictionary.",
+      "first32_frozen": "Exactly same reservoir and pair-selection algorithm at 32 fit observations only; selected pair fixed thereafter, while its conditional probability table is recomputed from same last 64 observations. Same bytes and actions.",
+      "full_fit_fixed": "Exactly same reservoir, pair-selection score and memory, but pair chosen only after all 128 fit observations; fixed at held evaluation. Same final evidence as dynamic and same serialized ceiling. This is the decisive matched conventional control.",
+      "exact_boolean_bayes": "All 15 unordered input pairs times all 16 two-input truth tables, uniform prior; update log posterior from training data under known independent 5% output noise, Bayes mixture predictions on held data. Bigger capacity; label as unmatched.",
+      "chance": "p=0.5 only"
+    },
+    "comparison": "Held first 32 returning A and B Brier across matched seed worlds, before any update; lower is better. Context cues are public to all. No sealed active training. Separately score negative-family confidence, exact pair identification (not always uniquely identifiable for unary; all generated functions depend on both).",
+    "capacity": "Local and both fixed controls have same 2-context fixed 260-byte serialized upper bound: per context last 64*2 bytes plus selected pair uint8 and confidence bit uint8; Bayes logs 15*16*2 float64 (3840 bytes) nominal and additional transient arithmetic.",
+    "compute_accounting": "Count candidate pair validation evaluations and Bayes comparisons separately, report median Python/JS wall-clock if executed but no proxy as hardware compute. Dynamic scans at 32,64,96,128, full-fit fixed only after 128: compute is NOT matched; full-fit uses fewer searches, is stronger resource comparator.",
+    "evaluator": "Prequential Brier score (p-y)^2, exact two-parent set recovery; on 64-seed development. Values must be recomputed from sealed source and seeds; require exact stable output checksum after Node 20+ reproducibility.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "64-byte circular-window source-data parity between local and fixed",
+    "16-step early freeze",
+    "same-final-evidence fixed fit-end",
+    "Bayesian posterior over all 240 pair/operator hypotheses",
+    "unrepresentable three-parent parity",
+    "random labels",
+    "exact serialization restore check"
+  ],
+  "metrics": [
+    "mean development Brier local/frozen/fitted/Bayes/chance",
+    "paired Brier local-minus-fitted 95% CI across 64 seeds",
+    "exact recovered unordered parent pair fraction",
+    "negative confidence abstention rate",
+    "number of rewires/spawns",
+    "candidate calculations and wall-time",
+    "serialized byte ceiling and cold-prediction parity"
+  ],
+  "classification_rules": {
+    "supported": "Dynamic local held Brier at least 0.02 lower than full-fit fixed on A+B across fresh 64 seeds, 95% paired CI excludes zero, parent recovery >=0.90, all 64/64 cold restores identical, <=260 serialized bytes, no >0.1 negative overconfidence; independently reverified.",
+    "mixed": "Improvement over early frozen only, tie against fixed full-fit; or absent 95% confidence or partial negatives, no promotion.",
+    "negative": "Best fixed full-fit Brier <= dynamic, or gain below 0.02, or CI includes zero; preserve as SCIENTIFIC_NEGATIVE developmental evidence, not a reason to tune on same seeds.",
+    "invalid": "Any pre-registration after primary execution; seed/metric/data drift, failed deterministic replay, reservoir capacity drift, source labels leaked, bad comparator, or counterfeit resource accounting."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "scope_fences": [
+    "PR #1340 remains draft evidence only",
+    "No canonical learner/checkpoint/Amalgam integrations",
+    "No new runners, controllers, schedules, paid APIs, or production workflows",
+    "No reclassification of negative science as infrastructure failure",
+    "This study tests 2-input Boolean truth-table induction; it cannot demonstrate arbitrary unknown causal operator invention"
+  ],
+  "preregistration_note": "This commit precedes source execution and all Gate10 outcomes. Generated experimental worlds are original, not native Yggdrasil first-use."
+}

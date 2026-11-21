@@ -1,0 +1,315 @@
+{
+  "conditions": {
+    "all_work_counts_finite": true,
+    "cross_process_checkpoint_exact_all": true,
+    "cross_process_functional_replay_all": true,
+    "equal_public_action_exposure_all": true,
+    "held_contexts_out_of_sample_all": true,
+    "noise_held_brier_regression_vs_null_max": false,
+    "related_B_prequential_regret_vs_hazard_max": true,
+    "related_R_held_reward_gain_vs_hazard_ci_lower_positive": false,
+    "related_R_held_reward_gain_vs_hazard_min": false,
+    "related_R_held_reward_gain_vs_no_archive_min": false,
+    "related_R_held_reward_gain_vs_recent_global_ci_lower_positive": false,
+    "related_R_held_reward_gain_vs_recent_global_min": false,
+    "related_R_held_reward_gain_vs_source_recent_mixture_ci_lower_positive": false,
+    "related_R_held_reward_gain_vs_source_recent_mixture_min": false,
+    "related_R_prequential_regret_vs_hazard_max": true,
+    "related_R_unseen_best_action_accuracy_min": true,
+    "source_archive_unchanged_all": true,
+    "stationary_spurious_archive_rejection_fraction_max": false
+  },
+  "design": {
+    "B_events": 64,
+    "R_events": 64,
+    "checkpoint_bytes_ceiling": 20000,
+    "cold_child_processes": 192,
+    "held_per_phase": 32,
+    "related_seeds": 32,
+    "rule_hypotheses": 56,
+    "seeds": 64,
+    "source_A_events": 96
+  },
+  "groups": {
+    "pure_noise": {
+      "B_held_reward": {
+        "all_history": 0.45507812,
+        "archive": 0.49414062,
+        "hazard": 0.49023438,
+        "no_archive": 0.5,
+        "null": 0.484375,
+        "rolling": 0.5,
+        "source": 0.48632812,
+        "source_recent_bayes": 0.484375
+      },
+      "B_prequential": {
+        "all_history": 0.39774807,
+        "archive": 0.34454155,
+        "hazard": 0.29892045,
+        "no_archive": 0.33639993,
+        "null": 0.25,
+        "rolling": 0.35113825,
+        "source": 0.40146579,
+        "source_recent_bayes": 0.34217955
+      },
+      "R_held_accuracy": {
+        "all_history": 0,
+        "archive": 0,
+        "hazard": 0,
+        "no_archive": 0,
+        "null": 0,
+        "rolling": 0,
+        "source": 0,
+        "source_recent_bayes": 0
+      },
+      "R_held_brier": {
+        "all_history": 0.41086106,
+        "archive": 0.37045886,
+        "hazard": 0.31863473,
+        "no_archive": 0.37033613,
+        "null": 0.25,
+        "rolling": 0.37033613,
+        "source": 0.40464111,
+        "source_recent_bayes": 0.35248538
+      },
+      "R_held_reward": {
+        "all_history": 0.4921875,
+        "archive": 0.50585938,
+        "hazard": 0.50976562,
+        "no_archive": 0.51367188,
+        "null": 0.51367188,
+        "rolling": 0.51367188,
+        "source": 0.4921875,
+        "source_recent_bayes": 0.50195312
+      },
+      "R_prequential": {
+        "all_history": 0.37557967,
+        "archive": 0.36690348,
+        "hazard": 0.30368309,
+        "no_archive": 0.37826099,
+        "null": 0.25,
+        "rolling": 0.37826099,
+        "source": 0.40695045,
+        "source_recent_bayes": 0.35104941
+      },
+      "cold_exact": 16,
+      "equal_exposure": 16,
+      "false_archive_rejection_trials": 16,
+      "functional_exact": 16,
+      "held_disjoint": 16,
+      "max_checkpoint_bytes": 2176,
+      "mean_work": 21504,
+      "seed_first": 403000,
+      "seed_last": 403015,
+      "source_immutable": 16,
+      "trials": 16
+    },
+    "shifted_A_B_A": {
+      "B_held_reward": {
+        "all_history": 0.51855469,
+        "archive": 0.88574219,
+        "hazard": 0.87695312,
+        "no_archive": 0.88574219,
+        "null": 0.48632812,
+        "rolling": 0.88574219,
+        "source": 0.4921875,
+        "source_recent_bayes": 0.88574219
+      },
+      "B_prequential": {
+        "all_history": 0.42376495,
+        "archive": 0.14971362,
+        "hazard": 0.14493892,
+        "no_archive": 0.12451054,
+        "null": 0.25,
+        "rolling": 0.14490116,
+        "source": 0.42679688,
+        "source_recent_bayes": 0.15294647
+      },
+      "R_held_accuracy": {
+        "all_history": 1,
+        "archive": 1,
+        "hazard": 1,
+        "no_archive": 1,
+        "null": 0.50683594,
+        "rolling": 1,
+        "source": 1,
+        "source_recent_bayes": 1
+      },
+      "R_held_brier": {
+        "all_history": 0.088125,
+        "archive": 0.08812496,
+        "hazard": 0.0895915,
+        "no_archive": 0.08812493,
+        "null": 0.25,
+        "rolling": 0.08812493,
+        "source": 0.088125,
+        "source_recent_bayes": 0.08812497
+      },
+      "R_held_reward": {
+        "all_history": 0.90234375,
+        "archive": 0.90234375,
+        "hazard": 0.90234375,
+        "no_archive": 0.90234375,
+        "null": 0.50097656,
+        "rolling": 0.90234375,
+        "source": 0.90234375,
+        "source_recent_bayes": 0.90234375
+      },
+      "R_prequential": {
+        "all_history": 0.08428466,
+        "archive": 0.12014634,
+        "hazard": 0.12392797,
+        "no_archive": 0.16946141,
+        "null": 0.25,
+        "rolling": 0.16946141,
+        "source": 0.08070313,
+        "source_recent_bayes": 0.09665819
+      },
+      "cold_exact": 32,
+      "equal_exposure": 32,
+      "false_archive_rejection_trials": 32,
+      "functional_exact": 32,
+      "held_disjoint": 32,
+      "max_checkpoint_bytes": 2144,
+      "mean_work": 21504,
+      "seed_first": 401000,
+      "seed_last": 401031,
+      "source_immutable": 32,
+      "trials": 32
+    },
+    "stationary": {
+      "B_held_reward": {
+        "all_history": 0.90234375,
+        "archive": 0.90234375,
+        "hazard": 0.90234375,
+        "no_archive": 0.90234375,
+        "null": 0.50585938,
+        "rolling": 0.90234375,
+        "source": 0.90234375,
+        "source_recent_bayes": 0.90234375
+      },
+      "B_prequential": {
+        "all_history": 0.08265625,
+        "archive": 0.08547009,
+        "hazard": 0.08704752,
+        "no_archive": 0.11599229,
+        "null": 0.25,
+        "rolling": 0.09614854,
+        "source": 0.08265625,
+        "source_recent_bayes": 0.0852851
+      },
+      "R_held_accuracy": {
+        "all_history": 1,
+        "archive": 1,
+        "hazard": 1,
+        "no_archive": 0.98632812,
+        "null": 0.4765625,
+        "rolling": 0.98632812,
+        "source": 1,
+        "source_recent_bayes": 1
+      },
+      "R_held_brier": {
+        "all_history": 0.0834375,
+        "archive": 0.08364443,
+        "hazard": 0.08704318,
+        "no_archive": 0.08979616,
+        "null": 0.25,
+        "rolling": 0.08979616,
+        "source": 0.0834375,
+        "source_recent_bayes": 0.08364021
+      },
+      "R_held_reward": {
+        "all_history": 0.90820312,
+        "archive": 0.90820312,
+        "hazard": 0.90820312,
+        "no_archive": 0.90039062,
+        "null": 0.49414062,
+        "rolling": 0.90039062,
+        "source": 0.90820312,
+        "source_recent_bayes": 0.90820312
+      },
+      "R_prequential": {
+        "all_history": 0.0990625,
+        "archive": 0.09956224,
+        "hazard": 0.1039391,
+        "no_archive": 0.10388764,
+        "null": 0.25,
+        "rolling": 0.10388764,
+        "source": 0.0990625,
+        "source_recent_bayes": 0.0996397
+      },
+      "cold_exact": 16,
+      "equal_exposure": 16,
+      "false_archive_rejection_trials": 6,
+      "functional_exact": 16,
+      "held_disjoint": 16,
+      "max_checkpoint_bytes": 2158,
+      "mean_work": 21504,
+      "seed_first": 402000,
+      "seed_last": 402015,
+      "source_immutable": 16,
+      "trials": 16
+    }
+  },
+  "limitations": {
+    "accepted_checkpoint_promotion": false,
+    "active_policy_learned": false,
+    "equal_compute": false,
+    "general_intelligence": false,
+    "native_amalgam_integration": false,
+    "native_model_first_use": false,
+    "process_exit_cold_state": true,
+    "real_world_transfer": false
+  },
+  "parent_commit": "28f6ebe1552b52386e407248ddac8d576deb3be1",
+  "prereg_commit": "aeb7418b8ec5f36e306eaa1f722b9c8e72a879e4",
+  "schema": "yggdrasil.gate27.causal-signature-cold-transfer.v1",
+  "summary": {
+    "B_prequential_archive_minus_hazard": {
+      "ci95": [
+        0.00016701,
+        0.00938239
+      ],
+      "mean": 0.0047747
+    },
+    "R_held_best_action_accuracy": 1,
+    "R_held_gain_vs_hazard": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0
+    },
+    "R_held_gain_vs_no_archive": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0
+    },
+    "R_held_gain_vs_recent_global": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0
+    },
+    "R_held_gain_vs_source_recent_mixture": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0
+    },
+    "R_prequential_archive_minus_hazard": {
+      "ci95": [
+        -0.0079891,
+        0.00042584
+      ],
+      "mean": -0.00378163
+    },
+    "noise_R_brier_archive_minus_null": 0.12045886,
+    "stationary_false_rejection": 6
+  },
+  "verdict": "SCIENTIFIC_NO_GO_STRUCTURAL_TRANSFER"
+}

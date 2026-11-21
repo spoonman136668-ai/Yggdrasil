@@ -1,0 +1,43 @@
+{
+  "schema": "yggdrasil.g28.quotient-active-diagnostic-prereg.v1",
+  "parent": "23d13410d6d0a82a4bc25dfb0fb6003fbf2ae76e",
+  "scope": "Contributor development diagnostic only, no original first-use or owner admission",
+  "seeds": {
+    "diagnostic_shifted": [
+      900311,
+      900312
+    ],
+    "stationary": [
+      900321,
+      900322
+    ],
+    "independent_noise": [
+      900331,
+      900332
+    ]
+  },
+  "arms": [
+    "adaptive",
+    "fixed",
+    "random_rewire",
+    "surprise_rewire",
+    "no_memory",
+    "dense_causal_reward",
+    "dense_causal_nullmix",
+    "quotient_causal_reward",
+    "quotient_causal_eig"
+  ],
+  "protocol": "Same frozen HiddenWorld, A96 shared public rows; B64/R64 independent active policy vs externally forced action replay; one fully exited child process per phase per world. All 13 interventions equal cost. At each phase endpoint 32 held contexts for both chosen and common-action predictions, never observe held labels. Same public exposure available to all; core arms deliberately do not consume mediators. Distinct active exposures not equal information.",
+  "metrics": "Phase chosen held reward, forced-action held Brier, observed regret using evaluator-only counterfactuals, prequential Brier; frozen A functional source readout after B/R cold restore, full held checkpoint immutability, per-mode forced exposure SHA256 equality. CPU time for model choose/predict/update/pack/unpack/source reads excludes evaluator world computation and serialized interprocess transfer; include reconstruct/sort in measured inference. Per-call shared metered rule cap and checkpoint cap; transient full-process memory not matched. No claims of complete Bayes exactness or independently strongest control.",
+  "thresholds": {
+    "shifted_R_active_adaptive_gain_vs_each_control_min": 0.05,
+    "shifted_BR_active_regret_strictly_below_each_control": true,
+    "shifted_R_forced_adaptive_brier_no_worse_than_each_control": true,
+    "stationary_adaptive_active_spurious_edit_fraction_max": 0.1,
+    "noise_R_forced_adaptive_brier_max": 0.27,
+    "checkpoint_bytes_max": 16384,
+    "per_intervention_rules_max": 8192,
+    "exact_cold_source_and_forced_parity_required": true
+  },
+  "decision": "All thresholds must pass to retain candidate for independent design, never SCIENTIFIC_PASS on six development worlds. On any threshold failure preserve diagnostic NO-GO. No parameter sweeps, seed replacement, primary 501000-503023 access, native integration, changes to accepted main or owner runner. Fully trained strongest control adequacy and independent scientific reproduction remain unverified."
+}

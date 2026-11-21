@@ -17,7 +17,78 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
-      - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: Run full repository unittest regression (including G29)
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Gate10 frozen synthetic result reproducibility (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate10/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate10/result.json
+      - name: Gate11 frozen calibrated causal result reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate11/result.json
+      - name: Gate11 independent structural logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/audit.cjs
+      - name: Gate12 frozen hierarchical model-order exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate12/result.json
+      - name: Gate12 independent model-order logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/audit.cjs
+      - name: Gate13 synthetic intervention choice exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate13/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate13/result.json
+      - name: Gate13 independent posterior and result audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate13/audit.cjs
+      - name: Gate14 defensive policy exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate14/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate14/result.json
+      - name: Gate14 independent guard math and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate14/audit.cjs
+      - name: Gate15 prequential residual exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate15/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate15/result.json
+      - name: Gate15 independent arithmetic and model-information audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate15/audit.cjs
+      - name: Gate16 higher-order interaction frozen exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate16/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate16/result.json
+      - name: Gate16 independent Walsh basis and negative-result audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate16/audit.cjs
+      - name: Gate17 unknown nonlinear Boolean exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate17/result.json
+      - name: Gate17 independent Boolean model and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/audit.cjs
+      - name: Gate18 strictly withheld-action exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate18/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate18/result.json
+      - name: Gate18 independent true-parent coverage and identifiability audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate18/audit.cjs
+      - name: Gate19 A-to-B hidden-parent remap exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate19/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate19/result.json
+      - name: Gate19 independent retention and mapping-symmetry audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate19/audit.cjs
+      - name: Gate20 bounded graph rewiring exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate20/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate20/result.json
+      - name: Gate20 independent static-control and negative receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate20/audit.cjs
+      - name: Gate21 repeated-evidence rewiring exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate21/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate21/result.json
+      - name: Gate21 independent logic and frozen-threshold receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate21/audit.cjs
+      - name: Gate22 A-B-A causal changepoint exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate22/result.json
+      - name: Gate22 frozen hypothesis source and numeric receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/audit.cjs
+      - name: Gate23 calibrated source reliability exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate23/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate23/result.json
+      - name: Gate23 independent negative receipt and baseline audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate23/audit.cjs
+      - name: Gate24 local soft bridge exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate24/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate24/result.json
+      - name: Gate24 independent local/global negative receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate24/audit.cjs
+      - name: Gate25 intervention-transfer exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate25/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate25/result.json
+      - name: Gate25 causal intervention negative receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate25/audit.cjs
+      - name: Gate26 true cross-process cold-readout result exact replay (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate26/run.py --verify research/contrib/chatgpt/self-assembling-topologies/gate26/result.json
+      - name: Gate26 native-process independent receipt and negative audit (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate26/audit.py
+      - name: Gate27 real cold-process 64-world exact result replay (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate27/run.py --verify research/contrib/chatgpt/self-assembling-topologies/gate27/result.json
+      - name: Gate27 independent evidence and negative scientific receipt audit (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate27/audit.py
       - run: git diff --exit-code
   linux:
     runs-on: ubuntu-latest
@@ -31,7 +102,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/build_code_atlas.py --check-if-present
-      - run: python -m unittest discover -s tests -p test_code_atlas.py -v
+      - name: Run full repository unittest regression (including G29)
+        run: python -B -m unittest discover -s tests -p 'test_*.py' -v
       - if: always()
         name: Emit bounded diagnostic for the committed atlas (no giant Base64 log line)
         shell: bash
@@ -49,4 +121,74 @@ jobs:
               print("YGG_G29_BUNDLE_SHA256=" + digest)
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
+      - name: Gate10 frozen synthetic result reproducibility (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate10/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate10/result.json
+      - name: Gate11 frozen calibrated causal result reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate11/result.json
+      - name: Gate11 independent structural logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate11/audit.cjs
+      - name: Gate12 frozen hierarchical model-order exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate12/result.json
+      - name: Gate12 independent model-order logic and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate12/audit.cjs
+      - name: Gate13 synthetic intervention choice exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate13/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate13/result.json
+      - name: Gate13 independent posterior and result audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate13/audit.cjs
+      - name: Gate14 defensive policy exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate14/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate14/result.json
+      - name: Gate14 independent guard math and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate14/audit.cjs
+      - name: Gate15 prequential residual exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate15/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate15/result.json
+      - name: Gate15 independent arithmetic and model-information audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate15/audit.cjs
+      - name: Gate16 higher-order interaction frozen exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate16/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate16/result.json
+      - name: Gate16 independent Walsh basis and negative-result audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate16/audit.cjs
+      - name: Gate17 unknown nonlinear Boolean exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate17/result.json
+      - name: Gate17 independent Boolean model and receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate17/audit.cjs
+      - name: Gate18 strictly withheld-action exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate18/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate18/result.json
+      - name: Gate18 independent true-parent coverage and identifiability audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate18/audit.cjs
+      - name: Gate19 A-to-B hidden-parent remap exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate19/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate19/result.json
+      - name: Gate19 independent retention and mapping-symmetry audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate19/audit.cjs
+      - name: Gate20 bounded graph rewiring exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate20/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate20/result.json
+      - name: Gate20 independent static-control and negative receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate20/audit.cjs
+      - name: Gate21 repeated-evidence rewiring exact reproduction (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate21/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate21/result.json
+      - name: Gate21 independent logic and frozen-threshold receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate21/audit.cjs
+      - name: Gate22 A-B-A causal changepoint exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate22/result.json
+      - name: Gate22 frozen hypothesis source and numeric receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate22/audit.cjs
+      - name: Gate23 calibrated source reliability exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate23/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate23/result.json
+      - name: Gate23 independent negative receipt and baseline audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate23/audit.cjs
+      - name: Gate24 local soft bridge exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate24/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate24/result.json
+      - name: Gate24 independent local/global negative receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate24/audit.cjs
+      - name: Gate25 intervention-transfer exact replay (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate25/run.cjs --verify research/contrib/chatgpt/self-assembling-topologies/gate25/result.json
+      - name: Gate25 causal intervention negative receipt audit (research only)
+        run: node research/contrib/chatgpt/self-assembling-topologies/gate25/audit.cjs
+      - name: Gate26 true cross-process cold-readout result exact replay (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate26/run.py --verify research/contrib/chatgpt/self-assembling-topologies/gate26/result.json
+      - name: Gate26 native-process independent receipt and negative audit (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate26/audit.py
+      - name: Gate27 real cold-process 64-world exact result replay (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate27/run.py --verify research/contrib/chatgpt/self-assembling-topologies/gate27/result.json
+      - name: Gate27 independent evidence and negative scientific receipt audit (research only)
+        run: python -B research/contrib/chatgpt/self-assembling-topologies/gate27/audit.py
       - run: git diff --exit-code

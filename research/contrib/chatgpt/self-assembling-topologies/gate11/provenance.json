@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.external-research-provenance.v1",
+  "experiment_id": "yggdrasil.gate11.calibrated-local-causal-abstention.v1",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "pr_number": 1340,
+  "predecessor_head": "725e610a6bcd20765415aea9da455b4e12c9b50f",
+  "preregistration_created_commit": "824dac2b2a78f823e15765b7783c489d567f177d",
+  "preregistration_clarification_commit": "3941a97c557f078f45993b38395e6496e43a3328",
+  "prereg_before_primary": true,
+  "prereg_blob": "6e77cd6ceabbcf7a2323b5f65c648e6b8c611654",
+  "source_committed_before_primary": "2aafc98f708236e8f39e4f951f4cf4cba72e9a1d",
+  "source_blob": "fc99dfb1e0a90466a804e3f2797adf760fc2d86d",
+  "first_primary_execution_environment": "CodeMode V8 ECMAScript isolate; host OS/CPU details unavailable",
+  "primary_execution_elapsed_ms_observed": 2847,
+  "source_fixed_after_primary": false,
+  "result_committed_after_primary": "021ffb6f67063fcb54825972fd6acfff312e5f09",
+  "result_blob": "f33d04157393d5739847d308dece42fc55258eae",
+  "independent_logic_audit_committed_after_result": "d9106da2ea50bbf5306efa3ac48537049d990d19",
+  "logic_audit_blob": "8a6d62948a1927b0d7850871820d2d22245ac542",
+  "source_dependencies": "ECMAScript built-in functions only; Node.js fs only for CLI --verify",
+  "synthetic_data": {
+    "seed_sets": {
+      "in_family": [
+        10000,
+        10063
+      ],
+      "parity3": [
+        11000,
+        11031
+      ],
+      "random": [
+        12000,
+        12031
+      ],
+      "unary": [
+        13000,
+        13031
+      ]
+    },
+    "contexts_per_seed": 2,
+    "fit_interventions_per_context": 128,
+    "held_interventions_per_context": 32,
+    "in_family_training_observations": 16384,
+    "in_family_held_observations": 4096,
+    "negatives_training_observations_each_family": 8192,
+    "negative_held_observations_each_family": 2048,
+    "data_origin": "synthetically generated from committed xorshift32 PRNG, independent labels and sampled action consequences",
+    "disjoint_from_previous_gate10_seeds": true,
+    "all_methods_share_actions_and_outcomes": true,
+    "labels_and_hidden_parent_ids_seen_only_by_evaluator": true
+  },
+  "engineering": {
+    "local_and_matched_fixed_packed_bytes": 260,
+    "legacy_packed_bytes": 260,
+    "bayesian_nominal_bytes": 3856,
+    "candidate_comparisons_in_family": {
+      "dynamic": 630784,
+      "fixed": 188416,
+      "legacy": 122880,
+      "bayesian": 4915200
+    },
+    "cold_prediction_restores_in_family": 64,
+    "cross_platform_replay": "UNVERIFIED_PENDING_CI",
+    "independent_logic_audit": "NOT_YET_EXECUTED_AT_PROVENANCE_COMMIT",
+    "git_full_regression": "UNVERIFIED_PENDING_CI",
+    "memory_usage": "Python/Node process RSS not bounded by 260-byte serialized state",
+    "energy_savings": "NOT_MEASURED",
+    "physical_speed_comparison": "NOT_MEASURED"
+  },
+  "science": {
+    "verdict": "SCIENTIFIC_NEGATIVE_DEV",
+    "positive_family_acceptance": 115,
+    "positive_family_worlds": 128,
+    "three_parent_abstained": 64,
+    "random_abstained": 63,
+    "unary_abstained": 64,
+    "in_family_brier_calibrated": 0.0711203534,
+    "in_family_brier_legacy": 0.0607651136,
+    "unary_brier_calibrated": 0.2535735552,
+    "unary_brier_legacy": 0.0494270039,
+    "ood_macro_brier_gain_vs_legacy": -0.0609495979,
+    "matched_fixed_tie": true,
+    "native_yggdrasil_first_use": false,
+    "conclusion": "Parent-structure rejection improves false two-parent claim rates, but unary information is discarded by marginal fallback. Fails prereg macro Brier improvement and misses positive coverage minimum by one. Do not tune on same seeds."
+  },
+  "authority": {
+    "accepted_main_unchanged": true,
+    "canonical_training_owner_unchanged": true,
+    "merged": false,
+    "promoted": false
+  }
+}

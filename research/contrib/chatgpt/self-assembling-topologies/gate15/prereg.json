@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "GATE15-PREQUENTIAL-EXCESS-BRIER-ROBUST-ACTIONS-20261120",
+  "project": "Yggdrasil",
+  "pr": 1340,
+  "parent_sha": "743237b7efa667bc3cbedfd1f38e25e23a307583",
+  "contributor": "independent research",
+  "question": "Can an action-independent prequential calibration residual diagnose misspecified causal families more accurately than Gate14's individual surprise-bit guard, preserving true-pair learning under matched intervention budget and controls?",
+  "mathematical_correction": "For Gate13's 113-hypothesis family, all deterministic hypotheses assign conditional observation probabilities .05/.95, so conditional entropy h(.05) is constant; the fair-coin null has h(.5) but its posterior mass is independent of candidate action. Consequently expected conditional entropy is action-invariant and expected hypothesis-label mutual information differs from predictive entropy only by a state-dependent additive constant: the action argmax rankings are identical. Do not treat 'MI' as a new distinct action arm here.",
+  "data": {
+    "synthetic": true,
+    "fresh_seed_ranges": {
+      "pair": [
+        41000,
+        41063
+      ],
+      "unary": [
+        42000,
+        42031
+      ],
+      "parity3": [
+        43000,
+        43031
+      ],
+      "random": [
+        44000,
+        44031
+      ]
+    },
+    "worlds_per_seed": 2,
+    "context_label_visible": true,
+    "intervention_bits": 5,
+    "source_family": "Gate13 exact 113-hypothesis Bayesian source, source 2-parent or unary; OOD 3-parent parity or independent fair-label; 5% sensor flip on nonrandom",
+    "train_actions_per_world": 12,
+    "held_actions_per_world": 32,
+    "common_noise": "deterministic source output keyed by seed/context/action/visit, same if actions match",
+    "held": "all 32 action vectors, disjoint noise domain, outcomes never used for training, active selection, or controls"
+  },
+  "models": {
+    "posterior": "All policies use exactly the Gate13 113-hypothesis posterior (3 null p=.05,.5,.95; 10 unary; 100 pair) and predeclared equal third-mass priors; same log posterior likelihood updates and 113 logits per world.",
+    "arms": [
+      "residual_guard",
+      "active",
+      "balanced",
+      "random",
+      "fixed_damp"
+    ],
+    "residual_guard": "At each observed training event compute p in pre-update model for selected action. Excess Brier s=(p-y)^2 - p(1-p); accumulate s over context. After at least 6 observations, if mean accumulated excess >0.06, set sticky adequacy alarm. When alarmed choose balanced schedule rather than active entropy search, and for held forecast mix 45% fair null: p=0.55*p_model+0.225. Otherwise use active actions and unshrunk model predictions. No probe actions reserved.",
+    "active": "Gate13 original entropy-max intervention (tie fewest visits, then smallest x); unshrunk posterior prediction.",
+    "balanced": "Gate13 full-factorial permutation (11*step+(seed mod 32)+13*ctx) mod 32",
+    "random": "Gate13 seed/context/step independent uniform action selection, allowing repeats.",
+    "fixed_damp": "Exactly Gate13 active interventions with non-adaptive 30% fair-null held shrinkage p=0.7*p_model+0.15; determines whether conditional alarms beat a trivial fixed defensive forecast."
+  },
+  "capacity": "Each policy retains for two contexts: 113 float64 log scores +32 uint8 visit counters +1 uint8 step +1 float64 accumulated excess +1 uint8 alarm, totaling 946 bytes per context, 1892 bytes total; all policies allocate same full record, even when not using alarm. Temporary candidate arrays and model code not counted.",
+  "evidence": "All five policies compute all 32 candidate posterior forecasts each training step (equalized counted hypothesis work, artificial overhead for balanced/random); controls share actions/outcome function/budget, not necessarily identical selected observations; per-family 64 or 32 new seed trials. Model outcomes sealed source before run.",
+  "cold": "After training A then B, require dormant A state unchanged, pack all policies to exact 1892 bytes, restore independently twice and resume four interventions of A; every selected action, observed y, model posterior serialization and predictions must match bitwise. This is synthetic same-process cold continuation, not native cold storage.",
+  "independent_controls": [
+    "Original active",
+    "balanced",
+    "random",
+    "fixed 30% null damping",
+    "unary known-family",
+    "unrepresentable parity3",
+    "independent random labels"
+  ],
+  "measurements": [
+    "held per-world Brier mean for all five arms, paired seed normal 95% CI",
+    "false alarms in genuine pair/unary contexts and OOD alarm rate",
+    "guard Brier gain vs active, balanced/random and fixed damping",
+    "all same-budget action count and candidate-hypothesis evaluation counts",
+    "exact checkpoint bytes and continued-action equality"
+  ],
+  "hypothesis": {
+    "pair_gain_vs_balanced_min": 0.01,
+    "pair_vs_balanced_CI_lower_positive": true,
+    "pair_degradation_vs_active_max": 0.01,
+    "parity_worsening_vs_best_balanced_random_max": 0.015,
+    "random_worsening_vs_best_balanced_random_max": 0.015,
+    "parity_gain_vs_active_min": 0.015,
+    "random_gain_vs_active_min": 0.015,
+    "unary_degradation_vs_best_balanced_random_max": 0.015,
+    "guard_mean_brier_vs_fixed_damp_max_excess": 0.005,
+    "byte_limit": 1892,
+    "cold_restoration_all": true
+  },
+  "qualification": "Development-only supported if every prespecified threshold passes. Any failure is MIXED/NO-GO, not SCIENTIFIC_PASS. Fully qualified Yggdrasil native model gain requires a separate owner-controlled experiment with strong conventional comparators and native checkpoint custody.",
+  "scope": {
+    "research_only": true,
+    "draft_only": true,
+    "no_main_or_checkpoint": true,
+    "no_merge": true,
+    "no_training_owner_action": true,
+    "no_native_first_use": true,
+    "no_new_runner_workflow_scheduler": true,
+    "no_paid_API": true,
+    "repo_only_evidence": true
+  },
+  "frozen_before_experiment": true
+}

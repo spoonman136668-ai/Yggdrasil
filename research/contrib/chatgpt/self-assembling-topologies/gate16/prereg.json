@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "GATE16-THIRD-ORDER-WALSH-CAUSAL-INTERACTIONS-20261120",
+  "project": "Yggdrasil",
+  "pr": 1340,
+  "prior_candidate_sha": "2271e6d641da350b3b10729fd52c49a9af0118a7",
+  "role": "independent research contributor; not central Amalgam coordinator",
+  "question": "Can causal-action observations support bounded discovery of new third-order XOR interactions when the learner initially represents only one- and two-input influences, without false structure on independent labels or nonlinear majority?",
+  "prior_negative": "Gate13-15 entropy and prequential residual guards worsened unfamiliar-world Brier. This gate tests a DIFFERENT mechanism: order expansion via observed interaction structure rather than another alarm threshold. Keep all prior negative results unchanged.",
+  "hypotheses": {
+    "expressivity": "On fresh true three-input parity worlds, data-driven addition of third-order interaction should reduce held Brier by at least 0.10 vs best fitted <=2-order learner and recover >=116/128 exact triples.",
+    "structural_uniqueness": "For a special self-assembling advantage over a same-memory fixed 1/2/3-order classifier, require >=0.015 Brier gain, paired 95% CI lower bound >0, and no more feature comparisons. An exact tie explicitly FAILS structural uniqueness even if third-order representation is useful.",
+    "negative_safety": "Pair/unary Brier degradation <=0.015 vs <=2-order control, independent random held Brier <=0.270 and spurious nonzero routes <=6/64; unfamiliar three-way majority Brier <=0.270 and falsely asserted parity route <=6/64, with no post-result retuning.",
+    "cold": "100% exact 388-byte two-context prediction restoration for each cohort after training; resumed training after restore is not tested."
+  },
+  "frozen_design": {
+    "fresh_seeds": {
+      "triple_parity": [
+        51000,
+        51063
+      ],
+      "pair_parity": [
+        52000,
+        52031
+      ],
+      "unary": [
+        53000,
+        53031
+      ],
+      "independent_random": [
+        54000,
+        54031
+      ],
+      "majority3": [
+        55000,
+        55031
+      ]
+    },
+    "contexts_per_seed": 2,
+    "input_bits": 5,
+    "possible_intervention_actions": 32,
+    "train_interventions_per_context": 96,
+    "held_actions_per_context": 32,
+    "train_action_policy": "independent xorshift32 uniform random 5-bit interventions, same x/y stream for all compared arms; no active policy, no budget asymmetry",
+    "held": "enumerate all 32 distinct interventions with source independent noise domain, no held use in training or selection",
+    "worlds": "triple parity picks unordered 3 distinct parents and optional output inversion, pair parity picks unordered 2 and output inversion, unary picks one parent and inversion; independent random labels fair Bernoulli; 3-parent majority output is 1 iff >=2 of 3 inputs are 1 (optionally inverted); independent 5% bit flips for all except random.",
+    "features": "Walsh characters (-1)^popcount(x & mask) for five 1-bit masks, ten 2-bit masks, ten 3-bit masks. Each parity hypothesis can take either sign via estimated signed correlation. This is a known restricted feature grammar, not discovery of arbitrary causal operators.",
+    "fit_validation": "After 96 training actions, use first 64 to propose candidate and final 32 as independent within-training validation; validate chosen feature's Brier gain over Laplace marginal null >=0.10 and heldout-feature prediction Brier <=0.15; candidate must have absolute fit correlation >=0.70. No validation-label reuse to select among feature candidates. Finally refit selected feature coefficient on all 96 training labels; held Brier evaluated with that fit. Selection/report must include candidate-search work.",
+    "expanded_dynamic": "First scan only all 15 <=2-order Walsh candidates using first64 fit; IF strongest lower-order absolute correlation is <0.70, generate the 10 third-order Walsh candidates from first64 fit, by XOR composition of one unary bit with a disjoint pair, then choose the maximum absolute correlation across all 25 candidates; otherwise do not generate high-order candidates. Route may be null. This is bounded third-order hypothesis construction, not open-ended topology learning.",
+    "fixed_full": "Always scan all 25 preallocated one/two/three-order Walsh candidates from exactly the same 64 fit observations; identical candidate threshold, validation, 96-observation refit, 388-byte state capacity. Key comparator for uniqueness.",
+    "truncated_two": "Only 15 one/two-order Walsh candidates, with same fit/validation thresholds and 96-observation refit, same 388-byte allocated state. Key comparator for expressivity.",
+    "flat_table": "Fit 32 Bernoulli action-conditioned cells with Laplace priors on all 96 training examples; predictable but poor with few observations per action. Same 388-byte allocated fit record.",
+    "marginal_null": "Ignore intervention and predict context-specific Laplace marginal p from all 96 training labels.",
+    "bayes_expanded": "Unmatched memory independent reference: 50 signed parity hypotheses (25 masks x 2 polarities) plus 1 fair null, prior probability 0.5 on null and remaining 0.5/50 per deterministic hypothesis; known deterministic 5% sensor flip. Refit from all 96 training examples. Nominal posterior storage 51 float64/context =816 bytes total, not memory matched.",
+    "state_budget": "Each small learner holds per context 96 (x uint8,y uint8) action/outcome pairs plus 1 uint8 mask and 1 uint8 installed sign flag =194 bytes per context=388 total. All small learners allocate same state, including null/table controls. Source code, feature dictionary, scratch arrays and runtime RAM excluded.",
+    "scoring": "Mean held Brier over two contexts for each seed; paired per-seed 95% normal approximate CI for expanded_dynamic gain vs truncated_two and fixed_full; compare exact parent-mask recovery, false installed route rates, total feature dot-product operations and cold restore predictions.",
+    "ablation": "Independent random-label negatives and 3-parent majority explicitly test whether high-order parity representation is over-claimed. All feature selection uses training only.",
+    "run_budget": "64 triple seeds plus 32 seeds for each other family (192 seed trials/384 worlds); each arm sees 96 x/y fit events and 32 held actions per context; one primary evaluation only; 0 external model calls, 0 paid APIs.",
+    "tests": "Independent truth-table model-order audit: any two-input Boolean function matches 3-way parity on exactly 4 of 8 assignments; Walsh triple coefficient for 3-way majority is only 0.5 in magnitude; checked against exact full truth tables. Full exact-replay CI on Linux+Windows and repository tests."
+  },
+  "thresholds": {
+    "triple_recovery_min": 116,
+    "triple_brier_gain_vs_truncated_min": 0.1,
+    "triple_gain_CI_lower_positive": true,
+    "structural_gain_vs_fixed_min": 0.015,
+    "structural_gain_fixed_CI_lower_positive": true,
+    "structural_comparison_count_not_exceed_fixed": true,
+    "pair_regression_max": 0.015,
+    "unary_regression_max": 0.015,
+    "random_brier_max": 0.27,
+    "random_false_routes_max": 6,
+    "majority_brier_max": 0.27,
+    "majority_false_routes_max": 6,
+    "serialized_bytes_max": 388,
+    "cold_prediction_restore_all": true
+  },
+  "interpretation": "Passing expressivity and negative controls but tying the fixed same-memory full classifier is a BOUNDED REPRESENTATIONAL DEVELOPMENT SIGNAL ONLY, not autonomous structural self-assembly; structural SCIENTIFIC_PASS requires prespecified fixed-control superiority, native first-use, reproducibility and independent conventional baselines, which this trial does not provide.",
+  "source_lock": "Commit this protocol BEFORE committing/executing source; commit source BEFORE first outcome, then seal results with source exact SHA; do not retune seed/split/thresholds after outcome.",
+  "authority": {
+    "research_only": true,
+    "draft_PR_only": true,
+    "no_merge": true,
+    "no_accepted_main_change": true,
+    "no_model_checkpoint_or_training_owner_change": true,
+    "no_native_scientific_first_use": true,
+    "no_runner_scheduler_controller_change": true,
+    "no_paid_API": true,
+    "repo_only_artifacts": true
+  }
+}

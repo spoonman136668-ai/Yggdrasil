@@ -1,0 +1,98 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "id": "GATE17-GENERIC-BOOLEAN-INTERACTION-INDUCTION-20261120",
+  "project": "Yggdrasil",
+  "role": "independent contributor; no central learner",
+  "previous_sha": "beced851de76e4cfedf854d29c55cbbea2ec6eac",
+  "pr": 1340,
+  "question": "Can intervention data support discovery of causal functions that are NOT members of the predefined XOR family, including majority, mux and random essential-three-input Boolean rules?",
+  "source": {
+    "seed_families": {
+      "majority3": [
+        61000,
+        61031
+      ],
+      "mux3": [
+        62000,
+        62031
+      ],
+      "random_essential3": [
+        63000,
+        63031
+      ],
+      "parity3": [
+        64000,
+        64031
+      ],
+      "pair": [
+        65000,
+        65031
+      ],
+      "unary": [
+        66000,
+        66031
+      ],
+      "independent": [
+        67000,
+        67031
+      ]
+    },
+    "contexts": 2,
+    "binary_inputs": 5,
+    "train_actions": 96,
+    "held_actions": 32,
+    "train_policy": "Three independently shuffled complete 32-action rounds; first two rounds fit, third validates. All arms receive identical action/consequence records.",
+    "held_policy": "Enumerate all 32 actions with disjoint noise domain; no held updates.",
+    "noise": "0.05 deterministic-output flip, independent fair noise for independent family",
+    "truth": "majority3, mux3 (one selector and two data bits), or randomly generated essential three-parent Boolean truth table (uniform among essential tables); XOR parity, pair, unary and independent controls. Hidden parent IDs, truth table, operator labels never accessible to learners."
+  },
+  "methods": {
+    "generic": "Fit arbitrary conditional probability table on any 1/2/3-input mask, independent Laplace Beta(1,1) cell smoothing; neither operator names nor teacher responses supplied.",
+    "selection": "For each mask calculate leave-one-out Brier on first64 fit, add complexity penalty 0.003*2^order. Choose best lower-order unary/pair mask. If its raw LOO Brier >=0.09, synthesize the 10 triple masks by disjoint unary/pair union and select a triple only if it wins penalized risk. Validate proposed triple on third 32-action training round: advantage over best lower-order >=0.025 Brier and absolute validation Brier <=0.18. Otherwise use lower-order. Validate low-order against Laplace marginal null: improvement >=0.02 and Brier <=0.19, otherwise null. Refit selected mask on all96 training records.",
+    "arms": {
+      "adaptive": "As described. Only evaluate third-order masks when fit residual criterion triggers.",
+      "fixed_full": "Same candidate selection and validation, BUT always evaluate all 10 third-order fit masks; discard high-order scores unless the exact same criterion triggers. Intended same predictions, higher counted feature work.",
+      "truncated": "Only 1/2 input masks and null. Same selection and validation.",
+      "flat": "Direct 32-action Laplace frequency table from all 96 training records.",
+      "parity_only": "Gate16 signed Walsh parity-mask inference with its frozen fit/validation gates; no arbitrary truth-table representation.",
+      "bayes": "Exact integrated Beta(1,1) model evidence over null +25 1/2/3 input masks; equal prior mass 1/4 per model order. Bayesian mixture conditional forecast from all96 training records. All arms can persist the same 388 bytes of raw records, but Bayesian computes more."
+    },
+    "capacity": "2 contexts x [96 (action,label) uint8 pairs + route mask uint8 + status uint8] = 388 bytes per model. Raw records retain all fit labels; model scratch computation, process RAM, and source code excluded.",
+    "metrics": "Held Brier, exact three-parent recovery, false installed third-order masks, paired seed 95% approximate CI, comparison counts, exact prediction restoration after 388-byte pack, strongest-baseline deficits. No native checkpoint continuation claim."
+  },
+  "thresholds": {
+    "recovery_majority_min": 54,
+    "recovery_mux_min": 54,
+    "recovery_random_essential_min": 48,
+    "recovery_parity_min": 54,
+    "brier_majority_max": 0.13,
+    "brier_mux_max": 0.13,
+    "brier_random_essential_max": 0.16,
+    "brier_parity_max": 0.13,
+    "gain_vs_parity_majority_min": 0.05,
+    "gain_vs_parity_mux_min": 0.05,
+    "gain_vs_parity_random_essential_min": 0.03,
+    "pair_regression_max": 0.01,
+    "unary_regression_max": 0.01,
+    "independent_brier_max": 0.27,
+    "independent_false_triples_max": 6,
+    "structural_gain_vs_fixed_min": 0.015,
+    "structural_CI_lower_positive": true,
+    "max_deficit_to_matched_bayes": 0.015,
+    "lower_order_candidate_comparison_saving_min": 0.2,
+    "cold_prediction_all": true,
+    "serialized_state_bytes": 388
+  },
+  "interpretation": "Always disclose each failed target. Nonlinear representation advantage over parity-only does not prove unique self-assembly if matched fixed ties, nor strong general causal transfer if matched Bayes or flat is better. Scientific native PASS requires later separate owner-authorized first-use and independent conventional baselines.",
+  "scope": {
+    "research_only": true,
+    "PR_1340_draft_only": true,
+    "no_merge": true,
+    "no_accepted_main_change": true,
+    "no_checkpoint_first_use": true,
+    "no_owner_runner_controller_scheduler_change": true,
+    "no_paid_APIs": true,
+    "evidence_only_in_repo": true
+  },
+  "source_frozen_before_primary_required": true
+}

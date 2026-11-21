@@ -1,0 +1,53 @@
+{
+  "schema": "yggdrasil.gate28.NC2-prereg.v1",
+  "parent": "1edc48b8fedf5247dc4446a16d7532d283a22594",
+  "preceding_negative": "https://github.com/spoonman136668-ai/Yggdrasil/pull/1340#issuecomment-7055657589",
+  "scope": "Contributor-only synthetic diagnostic; no primary trial, native checkpoint admission or deployment",
+  "seeds": {
+    "diagnostic_shifted": [
+      900211,
+      900212,
+      900213,
+      900214
+    ],
+    "stationary": [
+      900221,
+      900222,
+      900223,
+      900224
+    ],
+    "independent_noise": [
+      900231,
+      900232,
+      900233,
+      900234
+    ]
+  },
+  "reserved_primary": "501000-503023 never accessed",
+  "method": {
+    "base": "existing dense_causal_reward, same frozen raw fitted scores and public rows",
+    "controls": [
+      "dense uncalibrated",
+      "NC1 rolling null mixture reproduced from the same raw predictions"
+    ],
+    "candidate": "Two-state fixed-share Bayesian filter over current dense forecast and fair null. Start w=0.5; prequential predict p=0.5+w*(q-0.5); posterior u=w*L/(w*L+(1-w)*0.5), L=q for consequence 1 else 1-q; next w=1/64+(1-2/64)*u. No phase reset or label. Freeze source weight at A96. All arms choose the identical uncalibrated dense argmax; no action gain asserted.",
+    "exposure": "A96 B64 R64 identical forced public rows; 32 held queries per B/R phase not observed by learner. Same base fitted state may be shared in evaluator because calibration cannot change training or action choice; independently count standalone-equivalent serialized bytes and rule work. Three-way comparison includes NC1 exactly using its 32-entry rounded log likelihood formula.",
+    "retention": "Checksum-protected candidate snapshot contains dense checkpoint, current and source weights; restore at A and B; check immutable source function on fixed public probe contexts; same-process snapshots only, not independent process-exit proof.",
+    "hypothesis": "A bounded per-step transition permits recovery from temporary evidence shocks without a 32-sample hard cutoff.",
+    "stop": "No tuning on scored seeds. On any threshold failure record NO-GO and stop this calibration line pending independent review, not another parameter sweep."
+  },
+  "thresholds": {
+    "noise_R_brier_max": 0.27,
+    "noise_R_strict_improvement_vs_dense": true,
+    "stationary_mean_BR_degradation_max": 0.015,
+    "shifted_mean_BR_degradation_max": 0.015,
+    "shifted_R_degradation_max": 0.015,
+    "stationary_R_degradation_max": 0.015,
+    "mean_BR_brier_strict_improvement_vs_NC1": true,
+    "action_parity_required": true,
+    "peak_rule_evaluations_max": 8192,
+    "checkpoint_bytes_max": 16384,
+    "source_snapshot_function_parity": true
+  },
+  "classification": "All thresholds necessary for diagnostic target attainment only; no scientific pass, independently qualified strongest control, active learning or native gain. Full exact-head regression required; no new workflow or manual dispatch."
+}

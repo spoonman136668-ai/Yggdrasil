@@ -1,0 +1,132 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt-research-contributor",
+  "experiment_id": "GATE23-SOURCE-RELIABILITY-SEQUENTIAL-CHANGE-DETECTOR-20261120",
+  "contribution_class": "falsification",
+  "exact_parent_sha": "7f177f61508d8eeb37458c5c38f117cadf1e4271",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/commit/ed488d5e9eccc79060c4175a6c198c2c48d690f7",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/44783028480"
+  ],
+  "question": "Can a source-reliability-gated, finite-window prequential log-likelihood change detector reactivate stored source A under A-B-A shifts, reject false switches on independent noise/stationary controls, and beat/equal matched-evidence rolling MAP and Bayesian-hazard models?",
+  "hypotheses": {
+    "mechanistic": "A held-source predictive-reliability check and prequential log-evidence accumulation enable a bounded causal-graph mode switch without using hidden phase labels.",
+    "null": "Any apparent return benefit is explainable by a source-memory predictor or conventional rolling/Bayesian mixing, and false switches cannot be simultaneously controlled with B adaptation.",
+    "prediction": "A64 source reliability LOO Brier <=0.20 gate, then rolling 16-event log Bayes-ratio score threshold +/-3.0 with recent-32 alternate subset will reduce noise false switches to <=20% and improve return prediction vs rolling MAP without B adaptation regression."
+  },
+  "changed_paths": [
+    "research/contrib/chatgpt/self-assembling-topologies/gate23/",
+    "existing G29 dual-OS replay workflow and derived G29 source atlas only"
+  ],
+  "frozen_design": {
+    "worlds": [
+      "pair_xor",
+      "mux3",
+      "essential3",
+      "unary",
+      "stationary3",
+      "noise_fair"
+    ],
+    "seeds": [
+      [
+        "pair_xor",
+        141000,
+        32
+      ],
+      [
+        "mux3",
+        142000,
+        32
+      ],
+      [
+        "essential3",
+        143000,
+        32
+      ],
+      [
+        "unary",
+        144000,
+        32
+      ],
+      [
+        "stationary3",
+        145000,
+        32
+      ],
+      [
+        "noise_fair",
+        146000,
+        32
+      ]
+    ],
+    "trials": 192,
+    "split": "A64 unique 6-bit actions, B48 train +16 held distinct within phase, A-return48 train +16 held distinct within phase; independent seeded splits and visit/domain separated label noise. Stationary/noise cohorts keep truth relation stationary or independent fair. A/B true parents/functions hidden.",
+    "action_information": "All policies get exactly source A64 then the same 96 online labeled feedback events. Held B/return actions are excluded from their phase's training. Their source A action IDs may overlap; treat this as action-vector rather than unseen-parent-pattern test.",
+    "protocol": "Training sequences A-B-A but phases never named or observed by learner; score stream prequential predictions before each label, and each phase's 16 held-label vectors only after its 48 training labels.",
+    "budget": "384 persisted bytes: A64 (128 bytes), B+R up to96 (192 bytes), source/active masks and mode/counters in 64 metadata bytes. No external models or paid APIs.",
+    "native_scope": "development-only synthetic finite Boolean worlds; no native Yggdrasil original first-use, production controller or Amalgam checkpoint mutation"
+  },
+  "mechanisms": {
+    "source": "Choose best <=3-parent mask over A64 by LOO Brier with penalty 0.003*2^k, tie ascending mask. Compute source model LOO Brier *without* complexity penalty for reliability check, threshold <=0.20. If not reliable, issue p=0.5 null and disable mode transitions; do not use true family labels.",
+    "alternate": "Every 8 B/R streaming consequences, globally refit <=3-parent subset mask using only most recent <=32 known stream labels; use a separately implemented global exhaustive source predictor and rolling MAP, with identical mask universe and fit cadence. Both use same rolling MAP forecast model; conditional Laplace probabilities clipped to [.05,.95].",
+    "evidence": "At each training label, calculate clipped prequential probability p_alt from rolling subset (from previous events only) and p_source from immutable A. Log-likelihood increment log(q(y)/pA(y)), append to FIFO window max16. No hidden boundary labels, no fit on held outcomes.",
+    "transitions": "if source reliable and last16 log-likelihood increments sum >=3.0, enter alternate mode and set active mask from latest rolling MAP. If in alternate and sum <=-3.0, reactivate immutable source A. No phase-dependent reset. Every 8 events refresh alternative and allow activation only when at least 8 prior feedback events exist.",
+    "cooldown": "One 8-event block after mode switch blocks additional mode switch; evidence window still updated.",
+    "controls": [
+      "immutable source A",
+      "rolling static MAP refit every 8 observations (same mask search cadence as detector)",
+      "all-history static MAP",
+      "Bayesian hazard mixture of immutable A and rolling 32 subset posterior, hazard 1/64, update weights prequentially",
+      "always alternate rolling MAP",
+      "p=0.5 fair null",
+      "phase-aware oracle only as informationally advantaged reference"
+    ],
+    "candidate_work": "Count 41 mask evaluations per panel and likelihood-evidence operations per observation for detector and controls; rolling MAP shares identical panel search and evidence with detector, source check is added overhead. Report operation/work and no equal FLOP/energy gain claims.",
+    "persistence": "Serialize A64, up to 96 stream rows, source mask, active mask, mode, cooldown and <=16 evidence log increments quantized to signed fixed-point int16 in 384-byte state. Restore at B48 and mid-return72, require identical future predictions/state; no process-exit or native checkpoint claim."
+  },
+  "metrics": {
+    "primary": "phase-end B and return held Brier with paired normal 95% CI over 128 related seeds; report 96-step prequential phase B/R Brier separately",
+    "secondary": "fraction returning to source by R48, false switches on stationary/noise, true detection delays, paired Bayes/rolling losses, source preservation and exact cold restore",
+    "limitations": "Even a positive all-threshold result is bounded synthetic development; independent actual native science is separate."
+  },
+  "frozen_thresholds": {
+    "noise_false_switch_trial_fraction_max": 0.2,
+    "stationary_false_switch_trial_fraction_max": 0.2,
+    "related_B_mean_regression_vs_rolling_max": 0.025,
+    "related_B_mean_regression_vs_bayes_max": 0.03,
+    "related_R_gain_vs_rolling_min": 0.01,
+    "related_R_gain_vs_rolling_ci_lower_positive": true,
+    "related_R_gain_vs_bayes_min": 0.005,
+    "related_R_gain_vs_bayes_ci_lower_positive": true,
+    "related_return_reactivation_fraction_min": 0.75,
+    "related_prequential_B_regression_vs_rolling_max": 0.035,
+    "noise_held_Brier_regression_vs_null_max": 0.025,
+    "stationary_held_Brier_regression_vs_rolling_max": 0.025,
+    "all_held_phase_disjoint": true,
+    "all_source_A_immutable": true,
+    "all_384byte_continuations_exact": true,
+    "eligible_comparator_work_accounted": true
+  },
+  "classification_rules": {
+    "scientific_pass": "All thresholds pass together; still only synthetic development candidate, not independently reproduced scientific gain.",
+    "scientific_no_go": "Any threshold fails; preserve negative and all consumed seeds.",
+    "invalid": "Unfrozen thresholds, missing chronological Git custody, phase label to learner, unreported comparator/data/compute imbalance, held outcome leakage or source-mismatch."
+  },
+  "prohibited_after_primary_run": [
+    "change hypotheses/seeds/thresholds",
+    "post-result model selection",
+    "reusing these seeds as fresh primary trials",
+    "silently changing capacity or training access",
+    "promotion to accepted native checkpoint"
+  ],
+  "authority": {
+    "research_only": true,
+    "keep_PR_draft": true,
+    "accepted_ref_mutation": false,
+    "scheduler_or_queue_authority": false,
+    "production_authority": false,
+    "native_first_use": false,
+    "scientific_promotion": false
+  }
+}
