@@ -14,8 +14,9 @@ import re
 SCHEMA = "yggdrasil.gate28.diagnostic-score-audit.v1"
 COHORTS = ("diagnostic_shifted", "stationary", "independent_noise")
 ARMS = ("adaptive", "fixed", "causal_bayes_reward",
-        "sparse_causal_reward", "full_reference_reward")
-MATCHED_CONTROLS = ("fixed", "causal_bayes_reward", "sparse_causal_reward")
+        "sparse_causal_reward", "dense_causal_reward", "full_reference_reward")
+MATCHED_CONTROLS = ("fixed", "causal_bayes_reward",
+                    "sparse_causal_reward", "dense_causal_reward")
 REFERENCE = "full_reference_reward"
 RULE_CAP = 8192
 CHECKPOINT_CAP = 16384
