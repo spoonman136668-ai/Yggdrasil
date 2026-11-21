@@ -263,10 +263,10 @@ jobs:
             python -B -m unittest -v \
               tests.test_g41_amalgam_capacity_integration.G41CapacityIntegrationTests.test_original_trained_root_four_heads_1153
           echo G41_ORIGINAL_TRAINED_FOUR_HEAD_1153_PASS
-          YGG_G41_ORIGINAL_DIR="$RUNNER_TEMP" YGG_G41_TRAINED_2048=1 YGG_G41_RETENTION_2048=1 YGG_G41_ATTRIBUTION_2048=1 \
+          YGG_G41_ORIGINAL_DIR="$RUNNER_TEMP" YGG_G41_TRAINED_2048=1 YGG_G41_RETENTION_2048=1 YGG_G41_R11_CONTEXT_TIMELINE=1 \
             python -B -m unittest -v \
               tests.test_g41_amalgam_capacity_integration.G41CapacityIntegrationTests.test_original_trained_root_four_heads_2048_cold_replay_and_2049_veto
-          echo G41_ORIGINAL_TRAINED_FOUR_HEAD_2048_COLD_RETENTION_ATTRIBUTION_PASS
+          echo G41_ORIGINAL_TRAINED_FOUR_HEAD_2048_COLD_RETENTION_TIMELINE_PASS
       - name: Final sealed atlas and exact worktree
         shell: bash
         run: |

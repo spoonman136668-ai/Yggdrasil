@@ -286,9 +286,13 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                 identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
                 packet_sha256=digest(canonical([identifier, views, row])))
 
+        r11_active = os.environ.get("YGG_G41_R11_CONTEXT_TIMELINE") == "1"
+        timeline = {1025: original} if r11_active else {}
         learner = original
         for i in range(1025, 1152):
             learner = accept(learner, i)
+            if r11_active and len(learner.native._episode_reader()._ledger) in (1034, 1035):
+                timeline[len(learner.native._episode_reader()._ledger)] = learner
         self.assertEqual(tuple(h.steps for h in learner._heads), (2490,) * 4)
         pre_growth = learner.checkpoint()
         learner = learner.extend_capacity()
@@ -304,6 +308,8 @@ class G41CapacityIntegrationTests(unittest.TestCase):
             learner = accept(learner, i)
             self.assertEqual(tuple(h.steps for h in learner._heads),
                              tuple(n + 3 for n in prior_steps))
+        if r11_active:
+            timeline[2048] = learner
         self.assertEqual(tuple(h.steps for h in learner._heads), (5178,) * 4)
         self.assertEqual(len(learner.native._episode_reader()._ledger), 2048)
         self.assertEqual(learner.native._episode_reader()._episode_limit, 2048)
@@ -373,6 +379,111 @@ class G41CapacityIntegrationTests(unittest.TestCase):
                                 "held_evaluation": False,
                                 "scientific_pass": False,
                                 "owner_accepted": False}, sort_keys=True))
+            if r11_active:
+                # Frozen before execution: PR #1329 issuecomment-7067196193.
+                self.assertEqual(set(timeline), {1025, 1034, 1035, 2048})
+                old_ledger = original.native._episode_reader()._ledger
+                old_ledger_digest = digest(canonical(old_ledger))
+                self.assertEqual(len(old_ledger), 1025)
+                reads = {}
+                snapshots = {}
+                for count in (1025, 1034, 1035, 2048):
+                    system = timeline[count]
+                    reader = system.native._episode_reader()
+                    self.assertEqual(len(reader._ledger), count)
+                    self.assertEqual(reader._ledger[:1025], old_ledger)
+                    self.assertEqual(digest(canonical(reader._ledger[:1025])),
+                                     old_ledger_digest)
+                    self.assertTrue(reader._context_models)
+                    self.assertEqual(len(reader._context_models),
+                                     len(reader._context_weights))
+                    self.assertEqual(sum(reader._context_weights), Fraction(1))
+                    detector = tuple(reader._stream_detections)
+                    positions = [entry[1] for entry in detector]
+                    self.assertEqual(positions, sorted(positions))
+                    self.assertEqual(len(positions), len(set(positions)))
+                    windows_read = native_module.evaluate(
+                        original, system, {name: tuple(span)
+                                           for name, span in windows.items()},
+                        max_brier_drift=Fraction(1, 50))
+                    reads[count] = windows_read["windows"]
+                    snapshots[str(count)] = {
+                        "episode_count": count,
+                        "context_start": reader._context_start,
+                        "context_expert_count": len(reader._context_models),
+                        "historical_expert_count": (len(reader._context_models) -
+                                                    int(reader._context_novel)),
+                        "novel_expert_enabled": reader._context_novel,
+                        "historical_expert_ranges": [
+                            [start, stop] for start, stop, _, _
+                            in reader._context_models[:-1 if reader._context_novel else None]
+                        ],
+                        "source_prefix_sha256": old_ledger_digest,
+                        "stream_detection_count": len(detector),
+                        "stream_detection_episode_counts": positions,
+                        "stream_detection_identifiers_sha256":
+                            digest(canonical([event_id for event_id, _, _ in detector])),
+                        "old_task_windows": windows_read["windows"],
+                    }
+                self.assertEqual(reads[2048], native_report["windows"])
+                changes = {}
+                for name in windows:
+                    per_target = {}
+                    for target_index, target in enumerate(("transition", "reward")):
+                        brier = {count: Fraction(*float(reads[count][name][
+                            "candidate_brier"][target_index]).as_integer_ratio())
+                                 for count in (1025, 1034, 1035, 2048)}
+                        # The reports contain floats; actual scoring here only
+                        # displays their exact IEEE difference, not a new metric.
+                        delta = lambda later, earlier: float(brier[later] - brier[earlier])
+                        steps = {
+                            "1025_to_1034": delta(1034, 1025),
+                            "1034_to_1035": delta(1035, 1034),
+                            "1035_to_2048": delta(2048, 1035),
+                            "1025_to_2048": delta(2048, 1025),
+                        }
+                        self.assertAlmostEqual(sum((steps["1025_to_1034"],
+                                                    steps["1034_to_1035"],
+                                                    steps["1035_to_2048"])),
+                                               steps["1025_to_2048"], places=12)
+                        self.assertAlmostEqual(steps["1025_to_2048"],
+                                               native_report["windows"][name][
+                                                   "delta_brier"][target_index], places=12)
+                        per_target[target] = {
+                            "brier_by_episode_count": {str(i): float(brier[i])
+                                                        for i in brier},
+                            "deltas": steps,
+                            "old_task_retention_within_plus_0p02":
+                                steps["1025_to_2048"] <= 0.02,
+                        }
+                    changes[name] = per_target
+                before = timeline[1034].native._episode_reader()
+                after = timeline[1035].native._episode_reader()
+                observed_reset = (after._context_start != before._context_start
+                                  and after._context_start == 1035
+                                  and 1035 in [d[1] for d in after._stream_detections]
+                                  and len(after._stream_detections) ==
+                                      len(before._stream_detections) + 1)
+                self.assertEqual(original.checkpoint(), joint)
+                self.assertEqual(learner.checkpoint(), snapshot)
+                self.assertEqual(cold.checkpoint(), snapshot)
+                print("G41_R11_CONTEXT_REBUILD_TIMELINE="
+                      + json.dumps({
+                          "schema": "yggdrasil.g41.r11.context-rebuild-timeline-v1",
+                          "source_joint_sha256": joint_pin,
+                          "descendant_checkpoint_sha256": expected,
+                          "source_prefix_sha256": old_ledger_digest,
+                          "timeline": snapshots,
+                          "frozen_old_task_deltas": changes,
+                          "detector_reset_at_1035_observed": observed_reset,
+                          "interpretation": ("RESET_TIMELINE_ASSOCIATION"
+                                             if observed_reset else
+                                             "STRUCTURAL_HYPOTHESIS_UNVERIFIED"),
+                          "single_step_is_causal_isolation": False,
+                          "historical_not_held": True,
+                          "scientific_pass": False,
+                          "owner_accepted": False,
+                      }, sort_keys=True))
             if os.environ.get("YGG_G41_ATTRIBUTION_2048") == "1":
                 # Frozen R10: PR #1329 issuecomment-7066576697, no training or mutation.
                 earlier = original.native._episode_reader()
