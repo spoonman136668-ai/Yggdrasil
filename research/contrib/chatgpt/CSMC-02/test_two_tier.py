@@ -139,6 +139,25 @@ class CSMC02Native(unittest.TestCase):
                         self.assertEqual(baseline.forecast(view, first, state, action),
                                          self.native.forecast(view, first, state, action))
 
+    def test_resigned_forged_cache_fails_against_original_source(self):
+        # A user-supplied sha256(raw) proves only byte integrity, not
+        # that the eight cached observations came from the pinned archive.
+        # Frozen original first-eight public FIT bits are independently
+        # checked against the repository archive at source_sha.
+        signed = json.loads(zlib.decompress(self.payload[4:]))
+        signed["cache"][0][2] ^= 1
+        forged = b"CSM2" + zlib.compress(canonical(signed), level=9)
+        with self.assertRaisesRegex(ValueError, "CSMC02_CACHE_SOURCE_PIN"):
+            TwoTier.restore(forged, digest(forged))
+
+    def test_direct_cache_mutation_cannot_accept_forged_witness(self):
+        mutable = TwoTier.restore(self.payload, digest(self.payload))
+        original_id = self.rows[0][0]
+        mutable._p["cache"][0][2] ^= 1
+        forged_views, forged_row = unpack_public(mutable._p["cache"][0][2])
+        with self.assertRaisesRegex(ValueError, "CSMC02_CACHE_SOURCE_PIN"):
+            mutable.check_witness(original_id, forged_views, forged_row)
+
     def test_native_loss_projection_counter_exact(self):
         shadow=self.cold._readout_native()
         self.assertEqual(shadow._projection,self.native._projection)
