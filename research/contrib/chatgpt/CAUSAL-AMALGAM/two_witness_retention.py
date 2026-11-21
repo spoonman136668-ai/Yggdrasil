@@ -9,7 +9,7 @@ from math import isfinite
 from four_head_retention import HEAD_NAMES, HEAD_TYPES, KINDS, _inspect
 from headwise_consolidation import _new_brier, _old_brier, MAX_DRIFT
 from post_witness_projection import assess_one_more_witness
-from fine_step_plasticity import evaluate_fine_steps, _weight_delta_norm
+from fine_step_plasticity import evaluate_fine_steps, _weight_delta_norm, _blend_fine, FINE_ALPHAS
 from headwise_source_continuation import _read_trace
 from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
 from yggdrasil.native_context_basis import canonical, digest
@@ -275,5 +275,160 @@ def summarize_frozen_two_witnesses(samples):
         "held_source_worlds": 0,
         "official_native_checkpoint_admitted": False,
         "scientific_pass": False,
+        "deployment": "NONE",
+    }
+
+
+# G32: new two-bank OLD + IMMEDIATE-RECENT witness loss constraint.
+# Pre-frozen at PR #1329 comment #7055586101 BEFORE source or scoring.
+# The first recently trained row may influence SECOND-step alpha selection;
+# the current second row label must NEVER influence that selection.
+G32_RECENT_TOL = 1e-12
+
+
+def protect_immediate_memory(anchor, before_first, first_fine, second_full):
+    """Screen an authentic second JEPA proposal against old AND recent losses."""
+    original_inputs = tuple(m.checkpoint() for m in (
+        anchor, before_first, first_fine, second_full))
+    ah, old, _ = _inspect(anchor)
+    _, prefix, _ = _inspect(before_first)
+    bh, one, _ = _inspect(first_fine)
+    ph, two, _ = _inspect(second_full)
+    if (len(old) != 1025 or prefix[:len(old)] != old
+            or len(one) != len(prefix) + 1 or one[:len(prefix)] != prefix
+            or len(two) != len(one) + 1 or two[:len(one)] != one):
+        raise ValueError("G32_SOURCE_TWO_EXACT_PREFIX")
+    if (one[-1][0] == two[-1][0]
+            or any(p.steps - b.steps != 3
+                   for p, b in zip(ph, bh, strict=True))):
+        raise ValueError("G32_DUPLICATE_OR_STEP")
+    # The last event of 'one' was fully observed BEFORE this second proposal.
+    # Source-authenticated last event and its authentic pre-first context ONLY.
+    first_event = one[-1]
+    selected = []
+    records = {}
+    old_calls = recent_calls = 0
+    for i, name in enumerate(HEAD_NAMES):
+        base = _old_brier(ah[i], i, old)
+        old_now = _old_brier(bh[i], i, old)
+        recent_now = _new_brier(bh[i], i, first_event, prefix)
+        old_calls += 2
+        recent_calls += 1
+        if any(not isfinite(x) for x in (base, old_now, recent_now)):
+            raise ValueError("G32_NONFINITE_OLD_OR_RECENT")
+        if old_now - base > MAX_DRIFT + G32_RECENT_TOL:
+            raise ValueError("G32_OLD_ALREADY_BREACHED")
+        chosen = None
+        for alpha in FINE_ALPHAS:
+            candidate = _blend_fine(bh[i], ph[i], alpha)
+            old_value = _old_brier(candidate, i, old)
+            recent_value = _new_brier(candidate, i, first_event, prefix)
+            old_calls += 1
+            recent_calls += 1
+            if not (isfinite(old_value) and isfinite(recent_value)):
+                raise ValueError("G32_NONFINITE_REHEARSAL")
+            if (old_value - base <= MAX_DRIFT + G32_RECENT_TOL
+                    and recent_value <= recent_now + G32_RECENT_TOL):
+                chosen = (alpha, candidate, old_value, recent_value)
+                break
+        if chosen is None:
+            raise ValueError("G32_NO_SAFE_ALPHA")
+        alpha, head, old_value, recent_value = chosen
+        delta = _weight_delta_norm(head, bh[i])
+        if (head.steps != ph[i].steps
+                or (alpha == 0.0 and delta != 0.0)
+                or recent_value - recent_now > G32_RECENT_TOL
+                or old_value - base > MAX_DRIFT + G32_RECENT_TOL):
+            raise ValueError("G32_REHEARSAL_CONTRACT")
+        selected.append(head)
+        records[name] = {
+            "selected_alpha": alpha,
+            "old_p0_anchor_brier": base,
+            "old_p0_brier_drift": old_value - base,
+            "first_event_pre_second_brier": recent_now,
+            "first_event_post_second_brier": recent_value,
+            "first_event_brier_change": recent_value - recent_now,
+            "second_weight_delta_l2": delta,
+            "real_second_weight_change": delta > 0.0,
+            "source_step_increment": head.steps - bh[i].steps,
+        }
+    if tuple(m.checkpoint() for m in (
+            anchor, before_first, first_fine, second_full)) != original_inputs:
+        raise ValueError("G32_ORIGINAL_SOURCE_MUTATED")
+    # ONLY AFTER ALL FOUR alphas selected: score the current second-row label
+    # for retrospective TRAINING-ROW fit, never for selection.
+    second_scores = _score_new(tuple(selected), two[-1], one)
+    return tuple(selected), {
+        "gate": "G32_SOURCE_CONSUMED_OLD_PLUS_RECENT_WITNESS_PROTECTION",
+        "previous_witness_source_sha256": digest(canonical(first_event)),
+        "old_p0_ledger_sha256": digest(canonical(old)),
+        "source_before_first_sha256": digest(original_inputs[1]),
+        "source_after_first_sha256": digest(original_inputs[2]),
+        "second_native_sha256": digest(second_full.native.checkpoint()),
+        "heads": records,
+        "frozen_alphas": list(FINE_ALPHAS),
+        "old_drift_limit": MAX_DRIFT,
+        "recent_witness_deterioration_limit": G32_RECENT_TOL,
+        "second_witness_postfit_brier": second_scores,
+        "all_old_memory_protected": all(
+            x["old_p0_brier_drift"] <= MAX_DRIFT + G32_RECENT_TOL
+            for x in records.values()),
+        "all_recent_witnesses_protected": all(
+            x["first_event_brier_change"] <= G32_RECENT_TOL
+            for x in records.values()),
+        "at_least_one_second_transition_changed": any(
+            records[n]["real_second_weight_change"]
+            for n in ("direct_transition", "temporal_transition")),
+        "old_brier_evaluations": old_calls,
+        "prior_witness_evaluations": recent_calls,
+        "second_witness_label_used_for_alpha": False,
+        "source_actions": 0,
+        "scientific_pass": False,
+    }
+
+
+def summarize_g32(samples):
+    """Fail closed on the predeclared two-step comparison, no retrospective tuning."""
+    if (type(samples) is not list or len(samples) != len(STARTS)
+            or [s.get("ordinal") for s in samples] != list(STARTS)):
+        raise ValueError("G32_FROZEN_STARTS")
+    all_safe = all(x["rehearsal"]["all_old_memory_protected"] and
+                   x["rehearsal"]["all_recent_witnesses_protected"]
+                   for x in samples)
+    c = samples[0]
+    critical = (
+        c["both_transition_heads_changed_first_fine"]
+        and c["rehearsal"]["at_least_one_second_transition_changed"]
+        and c["two_row_postfit_mean_transition_brier"]["rehearsal"]
+            < c["two_row_postfit_mean_transition_brier"]["fine"] - 1e-12
+        and c["two_row_postfit_mean_transition_brier"]["rehearsal"]
+            <= c["two_row_postfit_mean_transition_brier"]["coarse"] + 1e-12)
+    others = all(
+        s["two_row_postfit_mean_transition_brier"]["rehearsal"]
+        <= s["two_row_postfit_mean_transition_brier"]["coarse"] + 1e-12
+        for s in samples[1:])
+    return {
+        "gate": "G32_TWO_EVENT_SOURCE_CONSUMED_RECENT_REHEARSAL_COMPARISON",
+        "frozen_starts": list(STARTS),
+        "exact_consumed_event_pairs": [[x+1, x+2] for x in STARTS],
+        "samples": samples,
+        "all_old_and_recent_protected": all_safe,
+        "critical_case_first_fine_both_changed_second_at_least_one_changed":
+            c["both_transition_heads_changed_first_fine"] and
+            c["rehearsal"]["at_least_one_second_transition_changed"],
+        "critical_case_rehearsal_beats_fine_and_matches_coarse": critical,
+        "other_three_rehearsal_not_worse_than_coarse": others,
+        "development_classification": (
+            "DEV_REHEARSAL_REPAIR_PROMISING"
+            if all_safe and critical and others else "DEV_REHEARSAL_NO_GO"),
+        "rehearsal_old_brier_evaluations": sum(
+            s["rehearsal"]["old_brier_evaluations"] for s in samples),
+        "rehearsal_recent_brier_evaluations": sum(
+            s["rehearsal"]["prior_witness_evaluations"] for s in samples),
+        "compute_matched_to_coarse_or_fine_controls": False,
+        "source_first_use": 0,
+        "held_worlds": 0,
+        "scientific_pass": False,
+        "owner_acceptance": False,
         "deployment": "NONE",
     }

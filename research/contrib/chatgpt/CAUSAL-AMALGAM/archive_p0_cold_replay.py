@@ -19,11 +19,12 @@ from specialist_selection import SpecialistSelection
 import quine_retention as guard
 from four_head_retention import (HEAD_NAMES, audit_old_heads,
                                  assess_one_witness_head_update)
-from headwise_consolidation import assess_bounded_blend
+from headwise_consolidation import assess_bounded_blend, _new_brier
 from headwise_capsule import seal_capsule, restore_capsule
 from headwise_shadow_readout import materialize_research_readout
 from two_witness_retention import (
     assess_two_witness_source, summarize_frozen_two_witnesses,
+    protect_immediate_memory, summarize_g32,
 )
 from fine_step_plasticity import (
     evaluate_fine_steps, summarize_fine_samples,
@@ -280,6 +281,7 @@ def replay_consumed_selector(start, source_directory):
     g29_projection_samples = []
     g30_fine_samples = []
     g31_two_step_samples = []
+    g32_rehearsal_samples = []
     g28_native_by_next = {}
     g31_native_by_second = {}
     original_native_parent = checked(source_directory, protocol["native_name"],
@@ -561,12 +563,86 @@ def replay_consumed_selector(start, source_directory):
                         or len(compared) != 4):
                     raise ValueError("G31_SOURCE_COLD_CONTINUATION_DRIFT")
                 second_native_sha = g31_analysis["native_second_sha256"]
+                # G32: same authentic second already-consumed witness; a new
+                # OLD + previous-new-row rehearsal constraint (NO new grid).
+                second_from_original = records[index + 2]
+                second_views = tuple(tuple(v) for v in second_from_original["views"])
+                second_packet = digest(canonical([
+                    second_from_original["id"], second_views,
+                    second_from_original["row"]]))
+                fresh_full = fine.observe_experience(
+                    second_from_original["id"], second_views,
+                    second_from_original["row"],
+                    source_sha256=EXPERIENCE_SOURCE,
+                    packet_sha256=second_packet)
+                fresh_cold = fine_reopen.observe_experience(
+                    second_from_original["id"], second_views,
+                    second_from_original["row"],
+                    source_sha256=EXPERIENCE_SOURCE,
+                    packet_sha256=second_packet)
+                if (fresh_full is fine or fresh_cold is fine_reopen
+                        or digest(fresh_full.native.checkpoint()) != second_native_sha
+                        or fresh_full.checkpoint() != fresh_cold.checkpoint()):
+                    raise ValueError("G32_SECOND_SOURCE_PROPOSAL_DRIFT")
+                recent_heads, recent_report = protect_immediate_memory(
+                    start, before_selected, fine, fresh_full)
+                cold_recent_heads, cold_recent_report = protect_immediate_memory(
+                    start, before_selected, fine_reopen, fresh_cold)
+                from headwise_capsule import _saved as g32_saved_head
+                if (recent_report != cold_recent_report
+                        or canonical([g32_saved_head(h) for h in recent_heads])
+                        != canonical([g32_saved_head(h) for h in cold_recent_heads])):
+                    raise ValueError("G32_COLD_SELECTED_HEAD_DRIFT")
+                recent = NativeCausalAmalgam(
+                    fresh_full.native, recent_heads,
+                    fresh_full._native_parent, fresh_full._specialist_parent)
+                cold_recent = NativeCausalAmalgam(
+                    fresh_cold.native, cold_recent_heads,
+                    fresh_cold._native_parent, fresh_cold._specialist_parent)
+                if (recent.checkpoint() != cold_recent.checkpoint()
+                        or recent.native.checkpoint() != compared["full"].native.checkpoint()):
+                    raise ValueError("G32_COLD_OR_NATIVE_PLAN_DRIFT")
+                first_fit = sum(
+                    fine_analysis["heads"][name]["new_witness_fine_postfit_brier"]
+                    for name in ("direct_transition", "temporal_transition"))
+                second_fit = sum(
+                    recent_report["second_witness_postfit_brier"][name]
+                    for name in ("direct_transition", "temporal_transition"))
+                two_fit = (first_fit + second_fit) / 4
+                two_arm = dict(g31_analysis[
+                    "two_row_postfit_mean_transition_brier_by_arm"])
+                two_arm["rehearsal"] = two_fit
+                # Historical *pseudo*-prequential second-row readout, using
+                # pre-second heads. Already-consumed source, NOT held science.
+                second_event = fresh_full.native._episode_reader()._ledger[-1]
+                first_ledger = fine.native._episode_reader()._ledger
+                pre_second = {}
+                for arm, first_model in (
+                        ("full", advanced), ("coarse", projected),
+                        ("fine", fine), ("rehearsal", fine),
+                        ("frozen", before_selected)):
+                    pre_second[arm] = sum(
+                        _new_brier(first_model._heads[pos], pos,
+                                   second_event, first_ledger)
+                        for pos in (0, 2)) / 2
+                g32_rehearsal_samples.append({
+                    "ordinal": index + 1,
+                    "both_transition_heads_changed_first_fine":
+                        all(fine_analysis["heads"][n]["changed_weights"]
+                            for n in ("direct_transition", "temporal_transition")),
+                    "rehearsal": recent_report,
+                    "two_row_postfit_mean_transition_brier": two_arm,
+                    "pseudo_prequential_second_witness_brier_by_arm": pre_second,
+                    "cold_historical_public_forecast_addresses": 80,
+                    "same_native_source_after_two_events": True,
+                })
                 seen_second = 0
                 for public in seen_views:
                     reference_plan = compared["full"].plan(public[0])
-                    for arm in ("full", "coarse", "fine"):
-                        model = compared[arm]
-                        cold_model = cold_compared[arm]
+                    for arm in ("full", "coarse", "fine", "rehearsal"):
+                        model = recent if arm == "rehearsal" else compared[arm]
+                        cold_model = (cold_recent if arm == "rehearsal"
+                                      else cold_compared[arm])
                         if (model.plan(public[0]) != reference_plan
                                 or cold_model.plan(public[0]) != reference_plan):
                             raise ValueError("G31_NATIVE_SECOND_PLAN_DRIFT")
@@ -611,6 +687,7 @@ def replay_consumed_selector(start, source_directory):
     g29_report = summarize_four_frozen_samples(g29_projection_samples)
     g30_report = summarize_fine_samples(g30_fine_samples)
     g31_report = summarize_frozen_two_witnesses(g31_two_step_samples)
+    g32_report = summarize_g32(g32_rehearsal_samples)
     shadow_report = summarize_shadow(shadow)
     consolidation_report = summarize_bounded_consolidation(consolidation)
     checkpoint = gate.system.checkpoint()
@@ -673,6 +750,7 @@ def replay_consumed_selector(start, source_directory):
         "g29_post_witness_projection": g29_report,
         "g30_fine_step_plasticity": g30_report,
         "g31_two_witness_memory": g31_report,
+        "g32_recent_rehearsal": g32_report,
         "g28_consumed_source_continuation": {
             "gate": "G28_RESEARCH_ONLY_ONE_WITNESS_COLD_CONTINUATION",
             "frozen_sample_ordinals": list(SAMPLE_ORDINALS),

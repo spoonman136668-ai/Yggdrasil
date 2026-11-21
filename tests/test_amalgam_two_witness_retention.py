@@ -72,6 +72,42 @@ class TwoWitnessControlTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"G31_FROZEN_SAMPLE_SET"):
             G31.summarize_frozen_two_witnesses(samples)
 
+    def test_g32_fake_data_rejected_and_no_false_learning(self):
+        from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist
+        anchor=BASE._Core(BASE._history())
+        first=anchor.clone(BASE._history()+(
+            ("first", ((0,0),(0,1)), 0,0,0,0),))
+        second=first.clone(first.native._ledger+(
+            ("second", ((0,0),(0,1)), 0,1,0,1),))
+        for h in first._heads:
+            h.steps+=3
+        for h in second._heads:
+            h.steps+=6
+        with self.assertRaisesRegex(ValueError,"G32_SOURCE_TWO_EXACT_PREFIX"):
+            G31.protect_immediate_memory(anchor,anchor,first,second)
+        self.assertEqual(G31.G32_RECENT_TOL,1e-12)
+        no_weight_change=ActionLatentSpecialist("transition")
+        self.assertEqual(G31._weight_delta_norm(
+            no_weight_change, no_weight_change.clone()),0.0)
+
+    def test_g32_frozen_decision_fails_without_real_second_step(self):
+        samples=[{"ordinal":n,"both_transition_heads_changed_first_fine":True,
+                  "rehearsal":{"all_old_memory_protected":True,
+                               "all_recent_witnesses_protected":True,
+                               "at_least_one_second_transition_changed":False,
+                               "old_brier_evaluations":8,
+                               "prior_witness_evaluations":7},
+                  "two_row_postfit_mean_transition_brier":{
+                      "coarse":.2,"fine":.3,"rehearsal":.15}}
+                 for n in G31.STARTS]
+        result=G31.summarize_g32(samples)
+        self.assertEqual(result["development_classification"],
+                         "DEV_REHEARSAL_NO_GO")
+        self.assertFalse(result["scientific_pass"])
+        samples[0]["ordinal"]=2
+        with self.assertRaisesRegex(ValueError,"G32_FROZEN_STARTS"):
+            G31.summarize_g32(samples)
+
 
 if __name__=="__main__":
     unittest.main()
