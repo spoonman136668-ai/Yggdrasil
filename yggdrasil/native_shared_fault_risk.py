@@ -3,12 +3,47 @@
 Pure exact arithmetic; posterior is recomputed from the native three-world
 source ledger after cold restoration, and never reads generator/world labels.
 This fixed *hypothesis class* is conventional; its q value is not supplied.
+
+Integer likelihoods share denominator 60. The 3-world posterior has a
+common denominator 60**3, and predicted risks have denominator 60*sum(weights).
+No approximation, prefetch or evaluator labels are used.
 """
 from fractions import Fraction
-from itertools import product
 
 Q_GRID = (Fraction(1, 4), Fraction(1, 2), Fraction(3, 4), Fraction(9, 10))
 MAX_HISTORICAL_WORLDS = 3
+_SCALE = 60
+_Q_SCALED = (15, 30, 45, 54)
+_OTHER_SCALED = (15, 10, 5, 2)
+if any(Fraction(_Q_SCALED[i], _SCALE) != q or
+       Fraction(_OTHER_SCALED[i], _SCALE) != (1-q)/3
+       for i, q in enumerate(Q_GRID)):
+    raise RuntimeError("CKAD_SHARED_RISK_COMPILED_MODEL_DRIFT")
+
+# Hypothesis-only compilation: no source-specific observations or checkpoints
+# live in this table. For each pair of public *positions* and its observed
+# 00/10/01 outcome, precompute P(observed | unknown hot position, unknown q)
+# multiplied by the common exact denominator 60. 6 pairs * 3 outcomes = 18.
+# All table entries are nonnegative integers; no rounding or object cache.
+def _likelihood_table():
+    table = {}
+    for i in range(4):
+        for j in range(i + 1, 4):
+            for signal in range(3):
+                row = []
+                for hot in range(4):
+                    for q_index in range(len(Q_GRID)):
+                        at_i = _Q_SCALED[q_index] if hot == i else _OTHER_SCALED[q_index]
+                        at_j = _Q_SCALED[q_index] if hot == j else _OTHER_SCALED[q_index]
+                        value = (60 - at_i - at_j if signal == 0
+                                 else at_i if signal == 1 else at_j)
+                        if value < 0:
+                            raise RuntimeError('INVALID_FINITE_MODEL_LIKELIHOOD')
+                        row.append(value)
+                table[i, j, signal] = tuple(row)
+    return table
+
+_LIKELIHOOD_TABLE = _likelihood_table()
 
 
 def _require(cond, message):
@@ -22,7 +57,7 @@ def _bit(value):
 
 
 class NativeSharedFaultRisk:
-    """Finite, evidence-fitted posterior on (unknown hot site, unknown q)."""
+    """Finite evidence-fitted posterior on (unknown hot site, unknown q)."""
 
     def __init__(self, candidate_masks, public_worlds):
         _require(type(candidate_masks) in (list, tuple) and
@@ -51,43 +86,79 @@ class NativeSharedFaultRisk:
                      "SINGLE_DEFECT_HYPOTHESIS_CONFLICT")
             self.worlds.append(tuple(sorted(facts)))
         self.worlds = tuple(self.worlds)
-        posterior = []
-        for hot, q in product(self.masks, Q_GRID):
-            mass = Fraction(1, 16)
-            for world in self.worlds:
-                selected = {mask: outcome for mask, outcome in world}
-                if 1 in selected.values():
-                    fault_mask = next(mask for mask, y in world if y)
-                    likelihood = q if fault_mask == hot else (1-q)/3
-                else:
-                    likelihood = 1 - sum(
-                        (q if mask == hot else (1-q)/3 for mask in selected),
-                        Fraction(0))
-                _require(likelihood >= 0, "LIKELIHOOD")
-                mass *= likelihood
-            posterior.append((hot, q, mass))
-        evidence = sum((mass for _, _, mass in posterior), Fraction(0))
-        _require(evidence > 0, "ZERO_EVIDENCE")
-        self.evidence = evidence
-        self.posterior = tuple((hot, q, mass/evidence)
-                               for hot, q, mass in posterior)
-        risks = [sum((weight*(q if hot == mask else (1-q)/3)
-                      for hot, q, weight in self.posterior), Fraction(0))
-                 for mask in self.masks]
-        _require(sum(risks, Fraction(0)) == 1 and
-                 all(Fraction(0) <= x <= Fraction(1) for x in risks),
+
+        # Candidate IDs are not meaning-bearing; map each public address
+        # to its source-visible position and select a compiled exact likelihood
+        # for its *observed* action/outcome witness pair. Never read hidden hot.
+        positions = {mask:i for i,mask in enumerate(self.masks)}
+        event_likelihoods = []
+        for world in self.worlds:
+            left, right = world
+            signal = 1 if left[1] else 2 if right[1] else 0
+            event_likelihoods.append(_LIKELIHOOD_TABLE[
+                positions[left[0]], positions[right[0]], signal])
+        e0, e1, e2 = event_likelihoods
+
+        weighted = []
+        all_other_numerator = 0
+        hot_delta_numerators = [0,0,0,0]
+        for hot_index, hot in enumerate(self.masks):
+            for i,q in enumerate(Q_GRID):
+                index = hot_index * len(Q_GRID) + i
+                weight = e0[index] * e1[index] * e2[index]
+                weighted.append((hot, q, i, weight))
+                all_other_numerator += weight * _OTHER_SCALED[i]
+                hot_delta_numerators[hot_index] += weight * (
+                    _Q_SCALED[i] - _OTHER_SCALED[i])
+
+        total = sum(weight for _,_,_,weight in weighted)
+        _require(total > 0, "ZERO_EVIDENCE")
+        self._weighted = tuple(weighted)
+        self._total = total
+        self._risk_numerators = tuple(
+            all_other_numerator + hot_delta_numerators[i]
+            for i in range(4))
+        _require(sum(self._risk_numerators) == _SCALE * total
+                 and all(0 <= v <= _SCALE * total
+                         for v in self._risk_numerators),
                  "NORMALIZED_PREDICTION")
-        self.risks = tuple(risks)
+        self._posterior_cache = None
+        self._risks_cache = None
+
+    @property
+    def evidence(self):
+        return Fraction(self._total,
+                        16 * _SCALE ** MAX_HISTORICAL_WORLDS)
+
+    @property
+    def posterior(self):
+        if self._posterior_cache is None:
+            self._posterior_cache = tuple(
+                (hot, q, Fraction(weight, self._total))
+                for hot, q, i, weight in self._weighted)
+        return self._posterior_cache
+
+    @property
+    def risks(self):
+        if self._risks_cache is None:
+            self._risks_cache = tuple(
+                Fraction(v, _SCALE * self._total)
+                for v in self._risk_numerators)
+        return self._risks_cache
 
     def risk(self, mask):
         _require(type(mask) is int and mask in self.masks, "FORECAST_MASK")
-        return self.risks[self.masks.index(mask)]
+        return Fraction(self._risk_numerators[self.masks.index(mask)],
+                        _SCALE * self._total)
 
     def select(self):
-        return tuple(sorted(self.masks, key=lambda a: (-self.risk(a), a))[:2])
+        # All addresses share one positive denominator, so ranking exact
+        # integer numerators is identical to ranking Fraction risks.
+        return tuple(a for a, numerator in sorted(
+            zip(self.masks, self._risk_numerators),
+            key=lambda pair: (-pair[1], pair[0]))[:2])
 
     def checkpoint_fingerprint(self):
-        # Entire posterior is deterministic from existing native source rows.
         return (self.masks, self.worlds, self.posterior, self.risks)
 
 
@@ -96,7 +167,7 @@ def independent_beta_risks(masks, worlds, *, trailing_worlds=None):
     data = worlds[-trailing_worlds:] if trailing_worlds else worlds
     result = {}
     for mask in masks:
-        outcomes = [value for world in data for address,value in world
+        outcomes = [value for world in data for address, value in world
                     if address == mask]
-        result[mask] = Fraction(1+sum(outcomes), 2+len(outcomes))
+        result[mask] = Fraction(1 + sum(outcomes), 2 + len(outcomes))
     return result
