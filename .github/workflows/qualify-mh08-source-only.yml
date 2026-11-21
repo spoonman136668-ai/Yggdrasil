@@ -1,0 +1,141 @@
+name: MH08-MH11 source-only mechanical qualification
+on:
+  push:
+    branches: [research/mh08-meta-hebbian-matched-comparison-20261120]
+    paths-ignore:
+      - .ice/code-atlas.html
+      - .ice/code-atlas.ice
+      - .ice/code-atlas.json
+permissions:
+  contents: read
+concurrency:
+  group: ygg-mh08-source-only-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-atlas:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    outputs:
+      source_sha: ${{ steps.seal.outputs.source_sha }}
+      final_sha: ${{ steps.seal.outputs.final_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Verify source-only scope and produce G29 derived index
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = research/mh08-meta-hebbian-matched-comparison-20261120
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 "$GITHUB_SHA"
+          git diff --name-only 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9 "$GITHUB_SHA" |
+            python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); expected={"research/mh08_meta_hebbian_comparison_design.md","research/mh08_meta_hebbian.py","research/test_mh08_meta_hebbian.py","research/mh09_delayed_credit.py","research/test_mh09_delayed_credit.py","research/mh09_engineering_scope.md","research/mh10_frozen_recall.py","research/test_mh10_frozen_recall.py","research/mh10_engineering_scope.md","research/mh11_memory_formation.py","research/test_mh11_memory_formation.py","research/mh11_engineering_scope.md",".github/workflows/qualify-mh08-source-only.yml"}; allowed=expected|{".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert expected<=got<=allowed,(got,expected,allowed)'
+          test -z "$(git status --porcelain --untracked-files=all)"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          git diff --cached --name-only |
+            python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); expected={".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert got==expected,(got,expected)'
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'index(MH08): pin source-only derived G29 Atlas'
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo MH08_SOURCE_ONLY_G29_PASS
+
+  engineering:
+    needs: source-atlas
+    if: ${{ needs.source-atlas.result == 'success' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    permissions:
+      contents: read
+    steps:
+      - name: Preserve exact source bytes
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.source-atlas.outputs.final_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Prove exact-final derived-only index and source confinement
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == pull_request ]]; then
+            test "$(git rev-parse HEAD)" = '${{ github.event.pull_request.head.sha }}'
+          else
+            test "$(git rev-parse HEAD)" = '${{ needs.source-atlas.outputs.final_sha }}'
+            test "$(git rev-parse HEAD^)" = '${{ needs.source-atlas.outputs.source_sha }}'
+          fi
+          git diff --name-only HEAD^ HEAD |
+            python -B -c 'import sys; got=set(sys.stdin.read().splitlines()); expected={".ice/code-atlas.json",".ice/code-atlas.ice",".ice/code-atlas.html"}; assert got==expected,(got,expected)'
+          python -B scripts/build_code_atlas.py --check-if-present
+          echo MH08_FINAL_SOURCE_CUSTODY_PASS
+      - name: Focused Hebbian causal timing and negative controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m unittest research.test_mh08_meta_hebbian research.test_mh09_delayed_credit research.test_mh10_frozen_recall research.test_mh11_memory_formation -v
+          echo MH08_MH11_FOCUSED_TESTS_PASS
+      - name: Mandatory complete inherited root regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B - <<'PY'
+          import ast, pathlib, subprocess, unittest
+          expected = {"test_code_atlas.py": ("960d8f8102b1c03949269b30ff788fc1c85f2773",4),
+                      "test_free_fanout_sidecar.py": ("aa19c1cbbaf832ac0864bb7af108fff94bc55e07",21),
+                      "test_native_cells.py": ("5ca2b224650253f43d3a5d3e44381b888857ae98",8),
+                      "test_native_cells_wilson.py": ("a950374161461012313cc7e4a1c0904a3c368f05",8),
+                      "test_portable_checkpoint.py": ("fe501d6459fff9ed324a1fa3361b9a6d1b37300a",13)}
+          paths = {p.name for p in pathlib.Path("tests").rglob("test_*.py")}
+          assert paths == set(expected), ("ROOT_FILE_SET_DRIFT",paths)
+          ids = set()
+          for filename,(blob,count) in expected.items():
+              p = pathlib.Path("tests",filename)
+              assert subprocess.check_output(["git","hash-object",str(p)],text=True).strip()==blob, ("ROOT_FILE_BLOB_DRIFT",filename)
+              tree = ast.parse(p.read_text(encoding="utf-8"))
+              names = {f"{p.stem}.{c.name}.{f.name}" for c in tree.body if isinstance(c,ast.ClassDef)
+                       for f in c.body if isinstance(f,ast.FunctionDef) and f.name.startswith("test_")}
+              assert len(names)==count, (filename,names)
+              ids.update(names)
+          suite = unittest.TestLoader().discover("tests",pattern="test_*.py")
+          def flatten(s):
+              for t in s:
+                  if isinstance(t,unittest.TestSuite): yield from flatten(t)
+                  else: yield t.id()
+          discovered=list(flatten(suite))
+          assert len(discovered)==54 and set(discovered)==ids, ("ROOT_EXACT_ROSTER_DRIFT",discovered)
+          result=unittest.TextTestRunner(verbosity=2).run(suite)
+          assert result.wasSuccessful() and result.testsRun==54 and not result.skipped, "ROOT_REGRESSION_FAIL"
+          print("MH08_MH09_FULL_EXACT_ROOT_54_PASS")
+          PY
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo MH08_EXACT_FINAL_ENGINEERING_PASS
