@@ -162,6 +162,22 @@ def _update_shift(w: world.HiddenWorld, phase: str, mode: str,
     return s, stats
 
 
+def require_forced_parity(metrics: dict) -> str:
+    """Require identical actual interventions and outcomes for EVERY model arm.
+
+    A matching subset of local learners cannot prove equality for the
+    fully trained Bayesian and sparse causal controls.
+    """
+    try:
+        digests = {metrics[arm + ".forced"]["exposure_sha256"]
+                   for arm in MODEL_ARMS}
+    except (KeyError, TypeError) as exc:
+        raise ValueError("EQUAL_EXPOSURE_PARITY_FAIL") from exc
+    if len(digests) != 1:
+        raise ValueError("EQUAL_EXPOSURE_PARITY_FAIL")
+    return next(iter(digests))
+
+
 def _child(root: Path, seed: int, phase: str) -> dict:
     require_diagnostic(seed)
     if phase not in world.PHASES or not root.is_dir():
@@ -192,10 +208,7 @@ def _child(root: Path, seed: int, phase: str) -> dict:
             target.write_bytes(_model(s).pack(s))
             metrics[arm + "." + mode] = stats
     if phase in ("B", "R"):
-        forced_digests = {metrics[arm + ".forced"]["exposure_sha256"]
-                          for arm in core.ARMS}
-        if len(forced_digests) != 1:
-            raise ValueError("EQUAL_EXPOSURE_PARITY_FAIL")
+        require_forced_parity(metrics)
     return {"phase": phase, "seed": seed, "pid": __import__("os").getpid(),
             "state_keys": len(metrics), "metrics": metrics,
             "primary_scored": False, "mode": "synthetic_diagnostic_only"}
