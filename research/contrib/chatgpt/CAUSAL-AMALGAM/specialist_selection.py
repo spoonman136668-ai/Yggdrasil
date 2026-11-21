@@ -3,6 +3,7 @@
 from collections import deque
 from fractions import Fraction
 from math import isfinite
+from types import MappingProxyType
 
 from yggdrasil.native_context_basis import canonical, digest
 from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE, _two_stage_plan
@@ -10,10 +11,22 @@ from yggdrasil.native_jepa2_multilearner import _views
 
 
 class SpecialistSelection:
-    """Compare native, direct and temporal forecasts on the same past actions."""
+    """Compare forecasts using only witnessed pre-update outcomes.
+
+    This is an internal development object, not an authorization boundary
+    against arbitrary Python code running in the same process.
+    """
+
+    __slots__ = ("system", "window", "minimum_count", "minimum_gain",
+                 "enable_reward", "_evidence", "_sealed")
+
+    def __setattr__(self, name, value):
+        if getattr(self, "_sealed", False):
+            raise AttributeError("Specialist selection snapshot is immutable")
+        object.__setattr__(self, name, value)
 
     def __init__(self, system, *, window, minimum_count, minimum_gain,
-                 enable_reward=False, evidence=None):
+                 enable_reward=False):
         if (type(window) is not int or type(minimum_count) is not int
                 or not 1 <= minimum_count <= window
                 or not isinstance(minimum_gain, Fraction) or not 0 < minimum_gain <= 1
@@ -24,7 +37,10 @@ class SpecialistSelection:
         self.minimum_count = minimum_count
         self.minimum_gain = minimum_gain
         self.enable_reward = enable_reward
-        self._evidence = {} if evidence is None else evidence
+        # Never accept loss history from the caller. The only supported
+        # source is a verified successor witness or checked cold replay.
+        self._evidence = MappingProxyType({})
+        self._sealed = True
 
     @staticmethod
     def _coordinate(views):
@@ -71,13 +87,21 @@ class SpecialistSelection:
 
     def observe_experience(self, identifier, views, row, *, source_sha256, packet_sha256):
         """Add matched losses only when the shared witness transaction succeeds."""
+        coordinate = self._coordinate(views)
+        if (source_sha256 != EXPERIENCE_SOURCE
+                or packet_sha256 != digest(canonical([identifier, views, row]))):
+            raise ValueError("Specialist selection requires the signed native witness")
+        old_ledger = self.system.native._episode_reader()._ledger
         updated = self.system.observe_experience(
             identifier, views, row, source_sha256=source_sha256, packet_sha256=packet_sha256,
         )
         if updated is self.system:
             return self
-        coordinate = self._coordinate(views)
-        evidence = self._evidence.copy()
+        new_ledger = updated.native._episode_reader()._ledger
+        expected_event = (identifier, views, row["x1"], row["s2"], row["x2"], row["y"])
+        if new_ledger != old_ledger + (expected_event,):
+            raise ValueError("Specialist selection requires one actual witnessed successor")
+        evidence = dict(self._evidence)
         for actions, outcome in (((row["x1"],), row["s2"]),
                                  ((row["x1"], row["s2"], row["x2"]), row["y"])):
             # The old system is intact. Score its forecasts before retaining
@@ -89,16 +113,20 @@ class SpecialistSelection:
             losses.append((native_loss - (direct - outcome) ** 2,
                            native_loss - (temporal - outcome) ** 2))
             evidence[key] = tuple(losses)
-        return type(self)(updated, window=self.window, minimum_count=self.minimum_count,
-                          minimum_gain=self.minimum_gain, enable_reward=self.enable_reward,
-                          evidence=evidence)
+        successor = type(self)(updated, window=self.window,
+                               minimum_count=self.minimum_count,
+                               minimum_gain=self.minimum_gain,
+                               enable_reward=self.enable_reward)
+        # Internal immutable rebinding after native receipt and chronology checks.
+        object.__setattr__(successor, "_evidence", MappingProxyType(evidence))
+        return successor
 
     @classmethod
     def replay(cls, start, end, *, window, minimum_count, minimum_gain, enable_reward=False):
         """Rebuild selection evidence from the accepted suffix after the trial start."""
         prior = start.native._episode_reader()._ledger
         current = end.native._episode_reader()._ledger
-        if current[:len(prior)] != prior:
+        if len(current) < len(prior) or current[:len(prior)] != prior:
             raise ValueError("Specialist selection checkpoint has a different witness prefix")
         selection = cls(start, window=window, minimum_count=minimum_count,
                         minimum_gain=minimum_gain, enable_reward=enable_reward)
