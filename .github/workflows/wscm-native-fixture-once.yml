@@ -23,7 +23,7 @@ jobs:
           persist-credentials: false
           clean: true
       - name: Enforce source custody and forbid original-source drift
-        shell: powershell
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
           if ('${{ github.ref_name }}' -cne 'research/wscm-native-fixture-gate-20261122') {throw 'WSCM_QUALIFICATION_WRONG_BRANCH'}
@@ -45,7 +45,7 @@ jobs:
           Write-Host ('WSCM_SOURCE_SHA='+$head)
           Write-Host 'WSCM_SOURCE_PROVENANCE=PASS'
       - name: Execute bounded synthetic fixture native tests; never touch original worlds
-        shell: powershell
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
           $candidates=@(
