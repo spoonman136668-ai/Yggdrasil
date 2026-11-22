@@ -59,10 +59,26 @@ jobs:
           if(-not $python){throw 'WSCM_RUNNER_PYTHON312_UNAVAILABLE'}
           & $python -B -c 'import sys; assert sys.version_info >= (3, 12), sys.version'
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_PYTHON_VERSION_INVALID'}
+          # This existing fourteen-test fixture gate is standard-library-only.
+          # Execute it before provisioning any optional solver dependency.
+          Write-Host 'WSCM_NATIVE_SUITE=test_native_episode_external_fixture_envelope.py'
+          & $python -B -m unittest discover -s tests -p test_native_episode_external_fixture_envelope.py -v
+          if($LASTEXITCODE -ne 0){throw 'WSCM_CHILD_FIXTURE_TESTS_FAILED'}
+          & $python -B -c 'import numpy; print("WSCM_NUMPY_IMPORT=PASS")'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_NUMPY_MISSING'}
+          & $python -B -c 'import scipy'
+          if($LASTEXITCODE -ne 0){
+            # Installed into run-scoped temporary files only. Existing frozen
+            # CI uses scipy 1.16.3; public PyPI binary wheel, no paid API.
+            $deps=Join-Path $env:RUNNER_TEMP ('wscm-solver-'+$env:GITHUB_RUN_ID)
+            New-Item -ItemType Directory -Path $deps -Force | Out-Null
+            & $python -B -m pip install --disable-pip-version-check --no-input --only-binary=:all: --no-deps --target $deps scipy==1.16.3
+            if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SCIPY_INSTALL_FAILED'}
+            $env:PYTHONPATH=$deps+[IO.Path]::PathSeparator+(Resolve-Path '.').Path
+          }
           & $python -B -c 'import numpy, scipy; print("WSCM_SOLVER_IMPORT=PASS")'
-          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_DEPENDENCIES_MISSING'}
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_IMPORT_FAILED'}
           $suites=@(
-            'test_native_episode_external_fixture_envelope.py',
             'test_wscm_cumulative_fixture_replay.py',
             'test_native_cumulative_learner.py',
             'test_native_jepa2_multilearner.py'
