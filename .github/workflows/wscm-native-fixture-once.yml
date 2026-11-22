@@ -1960,3 +1960,43 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'WSCM_R03_WORKTREE_DIFF'}
           if(@(& git.exe status --porcelain).Count){throw 'WSCM_R03_WORKTREE_DIRTY'}
           Write-Host 'WSCM_R03_SOURCE_FREE_FOCUSED=PASS'
+
+
+  # ITB-01: 4-state public-function identifiability bound, static-only.
+  itb01-identifiability-windows:
+    if: ${{ contains(github.event.head_commit.message, 'itb01 exact-source information-bound check') }}
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+    steps:
+      - name: Checkout detached immutable source without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 9e5c6a9198554f949adc470c5553b1378dc19bdb
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Source custody and static exhaustive negatives
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if((& git.exe rev-parse HEAD).Trim() -cne '9e5c6a9198554f949adc470c5553b1378dc19bdb'){throw 'ITB01_SHA_DRIFT'}
+          if((& git.exe rev-parse HEAD:research/contrib/chatgpt/WSCM-TRANSFER-02/identifiability_bound.py).Trim() -cne 'beda0681c379d483e0e51e75c0cffe56a8fbb6bf'){throw 'ITB01_SOURCE_BLOB_DRIFT'}
+          if((& git.exe rev-parse HEAD:tests/test_wscm_transfer02_identifiability_bound.py).Trim() -cne '119fc9eb2681d8bafed43b91de8b540f5fcf5c51'){throw 'ITB01_TEST_BLOB_DRIFT'}
+          $paths=@('C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe','C:\Program Files\Python312\python.exe','C:\Python312\python.exe')
+          $python=$null
+          foreach($path in $paths){if(Test-Path -LiteralPath $path -PathType Leaf){$python=$path;break}}
+          if(-not $python){throw 'ITB01_ISOLATED_PYTHON_MISSING'}
+          $root=(Resolve-Path '.').Path
+          $runner='import unittest,sys;sys.path.insert(0,sys.argv[1]);suite=unittest.defaultTestLoader.discover(sys.argv[2],pattern="test_wscm_transfer02_identifiability_bound.py");result=unittest.TextTestRunner(verbosity=2).run(suite);sys.exit(0 if result.wasSuccessful() else 1)'
+          $scriptFile=Join-Path $env:RUNNER_TEMP ('wscm-itb01-'+$env:GITHUB_RUN_ID+'.py')
+          [IO.File]::WriteAllText($scriptFile,$runner,(New-Object System.Text.UTF8Encoding($false)))
+          & $python -B $scriptFile $root (Join-Path $root 'tests')
+          if($LASTEXITCODE -ne 0){throw 'ITB01_STATIC_EXHAUSTIVE_FAILED'}
+          & git.exe diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'ITB01_WORKTREE_DIFF'}
+          if(@(& git.exe status --porcelain).Count){throw 'ITB01_WORKTREE_DIRTY'}
+          Write-Host 'ITB01_EXHAUSTIVE_SOURCE_ONLY_PASS'
