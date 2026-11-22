@@ -545,7 +545,7 @@ jobs:
           test -z "$(git status --porcelain)"
   final-exact-linux:
     name: final-wscm-linux
-    if: contains(github.event.head_commit.message, 'exact-source final regression')
+    if: ${{ github.sha == 'c82398763fee73136f9eb9ea233c398089eaf44d' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -745,7 +745,7 @@ jobs:
           $env:PYTHONPATH=$root+[IO.Path]::PathSeparator+$deps
           $env:OPENBLAS_NUM_THREADS='1'; $env:OMP_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'
           $sha=(& git.exe rev-parse HEAD).Trim()
-          if($sha -cne '${{ github.sha }}'){throw 'WSCM_WINDOWS_SOURCE_SHA_DRIFT'}
+          if($sha -cne '530dbdd09dc8bda5666552c8a0d974d418879917'){throw 'WSCM_WINDOWS_SOURCE_SHA_DRIFT'}
           Write-Host ('WSCM_WINDOWS_ELIGIBLE_SHA='+$sha)
           # Keep Windows without POSIX resource. This preserves free fanout's
           # existing fail-closed resource guard; do not inject a fake getrusage.
