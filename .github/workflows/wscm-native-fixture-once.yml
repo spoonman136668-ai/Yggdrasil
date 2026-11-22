@@ -1895,7 +1895,8 @@ jobs:
 
   # WSCM-R03 pure readout research: no source world or controller dispatch.
   sourceblind03-focused-linux:
-    if: ${{ contains(github.event.head_commit.message, 'sourceblind03 focused one-shot') }}
+    # Already qualified: run #45068947301 / job #137351334033 SUCCESS.
+    if: ${{ github.sha == '257b5c32148ec994b1eb8de5397e3a6e824bbb76' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -1923,7 +1924,7 @@ jobs:
           echo WSCM_R03_SOURCE_FREE_FOCUSED=PASS
 
   sourceblind03-focused-windows:
-    if: ${{ contains(github.event.head_commit.message, 'sourceblind03 focused one-shot') }}
+    if: ${{ contains(github.event.head_commit.message, 'sourceblind03 windows retry') }}
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
     timeout-minutes: 25
     env:
@@ -1951,7 +1952,9 @@ jobs:
           if(-not $python){throw 'WSCM_R03_ISOLATED_PYTHON_MISSING'}
           $root=(Resolve-Path '.').Path
           $runner='import unittest,sys;sys.path.insert(0,sys.argv[1]);result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover(sys.argv[2],pattern="test_wscm_source_blind_role_readout03.py"));sys.exit(0 if result.wasSuccessful() else 1)'
-          & $python -B -c $runner $root (Join-Path $root 'tests')
+          $scriptPath=Join-Path $env:RUNNER_TEMP ('wscm-r03-sourceblind-'+$env:GITHUB_RUN_ID+'.py')
+          [IO.File]::WriteAllText($scriptPath,$runner,(New-Object System.Text.UTF8Encoding($false)))
+          & $python -B $scriptPath $root (Join-Path $root 'tests')
           if($LASTEXITCODE -ne 0){throw 'WSCM_R03_NEGATIVES_FAILED'}
           & git.exe diff --exit-code
           if($LASTEXITCODE -ne 0){throw 'WSCM_R03_WORKTREE_DIFF'}
