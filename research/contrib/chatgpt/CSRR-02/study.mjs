@@ -59,11 +59,12 @@ function score(seed,kind){const m=makeModels(),out=[],cold=null;let coldErrors=0
     for(const [name,model] of Object.entries(m))total[name]+=risk(p,model.predict(r))/2;
    }
    const aActive=m.paired.choose(x,z),aPassive=((Math.floor(t/4)+seed+x+z)%2),actions={paired:aActive,passive:aPassive,prior:aActive,bayes:aActive,symbolic:aActive,always1:1};
+   if(cold){if(cold.choose(x,z)!==aActive||JSON.stringify(cold.flip)!==JSON.stringify(m.paired.flip)||cold.predict({a:1,x,z})!==m.paired.predict({a:1,x,z}))coldErrors++;}
    for(const [name,model] of Object.entries(m)){
     const a=actions[name],r={a,x,z},y=draw(seed,t,a,x,z,trueP(phase,a,x,z),kind);model.update(r,y);syntheticActions[name]++;
    }
-   if(cold){if(JSON.stringify(cold.flip)!==JSON.stringify(m.paired.flip)||cold.predict({a:1,x,z})!==m.paired.predict({a:1,x,z}))coldErrors++;
-     const y=draw(seed,t,aActive,x,z,trueP(phase,aActive,x,z),kind);cold.update({a:aActive,x,z},y);cold.choose(x,z);
+   if(cold){const y=draw(seed,t,aActive,x,z,trueP(phase,aActive,x,z),kind);cold.update({a:aActive,x,z},y);
+     if(JSON.stringify(cold.flip)!==JSON.stringify(m.paired.flip)||cold.predict({a:1,x,z})!==m.paired.predict({a:1,x,z}))coldErrors++;
    }
    if(t===2*STEPS-1){cold=PairedRepair.restore(m.paired.snapshot());assert.equal(cold.snapshot(),m.paired.snapshot());}
   }
