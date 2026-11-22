@@ -2,6 +2,7 @@
 
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
+import random
 import unittest
 
 SOURCE = (Path(__file__).resolve().parents[1] /
@@ -100,6 +101,26 @@ class DelayedCreditTests(unittest.TestCase):
             MODULE.DelayedCreditRing.restore((10, -1, ring.snapshot()[2], ()))
         with self.assertRaisesRegex(ValueError, 'WSCM_SNAPSHOT_CAPACITY'):
             MODULE.DelayedCreditRing.restore((-1, -1, ((),)*17, ()))
+
+    def test_seven_deterministic_streams_replay_exactly_through_wraps(self):
+        for seed in (1, 2, 3, 4, 5, 11, 37):
+            rng = random.Random(seed)
+            ring = MODULE.DelayedCreditRing()
+            outcome_id = 100000
+            for i in range(300):
+                candidate = rng.randrange(0, 16) if rng.randrange(2) == 0 else None
+                ring.stage(i, rng.randrange(0, 64), rng.randrange(0, 257),
+                           candidate_role=candidate)
+                eligible = ({row[0] for row in ring._events}
+                            - {row[0] for row in ring._reveals})
+                if eligible and rng.random() < 0.66:
+                    outcome_id += 1
+                    ring.reveal(rng.choice(sorted(eligible)), outcome_id,
+                                rng.randrange(0, 2), charged=True, controlled=True)
+                snap = ring.snapshot()
+                self.assertEqual(MODULE.DelayedCreditRing.restore(snap).snapshot(), snap)
+                self.assertLessEqual(len(ring._events), MODULE.WINDOW)
+                self.assertLessEqual(len(ring._reveals), MODULE.WINDOW)
 
     def test_invalid_types_and_capacity_fail_closed(self):
         ring = MODULE.DelayedCreditRing()
