@@ -43,6 +43,25 @@ class WakeRouterTests(unittest.TestCase):
                          ('AMBIGUOUS', None))
         self.assertIsNone(r.next_probe(6))
 
+    def test_16_roles_two_binary_probes_cannot_identify_all(self):
+        # Exploratory negative: two binary probes give at most four outcomes.
+        # No successful role binding is claimed in the open world.
+        roles = {role: role for role in range(16)}
+        for true_role in range(16):
+            router = MODULE.WakeRoleRouter(roles)
+            action_id = 10000 + true_role
+            for attempt in range(2):
+                basis = router.next_probe(action_id)
+                self.assertIsNotNone(basis)
+                status = router.observe(action_id, basis,
+                                        (true_role >> basis) & 1,
+                                        1000 * true_role + attempt,
+                                        charged=True, controlled=True)
+            self.assertEqual(status, ('AMBIGUOUS', None))
+            self.assertEqual(len(router._candidates(
+                router._observed[action_id])), 4)
+            self.assertIsNone(router.next_probe(action_id))
+
     def test_nonidentifiable_roles_do_not_force_a_binding(self):
         r = MODULE.WakeRoleRouter({1: 0, 2: 0})
         self.assertIsNone(r.next_probe(5))
