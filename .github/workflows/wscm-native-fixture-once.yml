@@ -2638,3 +2638,170 @@ jobs:
           test -z "$(git status --porcelain)"
           echo "WSCM_CELL02_LINUX_EXACT_SHA_FULL_REGRESSION=PASS"
 
+  # Source-free original archive + max engineered fixture: no owner-gated source actions.
+  capacity04-authentic-native-linux:
+    if: contains(github.event.head_commit.message, 'WSCM_FULL_ARCHIVE_CAPACITY_04')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - name: Checkout immutable fully qualified source without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5269450b5c064130c595dc02b336a63bdb5a5df6
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Verify exact candidate and committed G29
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 5269450b5c064130c595dc02b336a63bdb5a5df6
+          test "$(git rev-parse HEAD^{tree})" = 05cd1d1bde5db9c1be6688242d6ff43cf6c805fd
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = b2341a79ef951a25b10c82f582f5279d6c0971e4
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = 1a006dd8527564606b81cb70bb78f1783554710a
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 69b1cb6b1a658fff1df6ef2cff7366c3e5968625
+          python3 -B scripts/build_code_atlas.py --check-if-present
+          echo WSCM_CAPACITY04_EXACT_SOURCE=PASS
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Restore preexisting solver dependencies, no new models
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Verify historical artifact source and owner-independent provenance
+        id: archive-meta
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import os,json,urllib.request
+          url="https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14492525071"
+          req=urllib.request.Request(url,headers={"Authorization":"Bearer "+os.environ["GITHUB_TOKEN"],"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"Yggdrasil-WSCM-capacity04-readonly"})
+          with urllib.request.urlopen(req,timeout=20) as res: a=json.load(res)
+          if a["id"]!=14492525071 or a["expired"] or not a["workflow_run"]["id"]:
+              raise ValueError("CAPACITY04_ARCHIVE_CUSTODY")
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf8") as fd: fd.write("run_id="+str(a["workflow_run"]["id"])+"\n")
+          print("WSCM_CAPACITY04_ARCHIVE_META=PASS",a["workflow_run"]["id"])
+          PY
+      - name: Download immutable previously consumed historical artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          artifact-ids: '14492525071'
+          run-id: ${{ steps.archive-meta.outputs.run_id }}
+          repository: spoonman136668-ai/Yggdrasil
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/wscm-capacity04-archive
+      - name: Execute original 1025-episode and 4-head native classes with 256 fixture receipts
+        shell: bash
+        env:
+          WSCM_ARCHIVED_JOINT_PATH: ${{ runner.temp }}/wscm-capacity04-archive/amalgam-joint-state.json
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,os,time
+          from pathlib import Path
+          from yggdrasil.native_context_basis import canonical,digest
+          from yggdrasil.native_cumulative_learner import NativeCumulativeLearner
+          from yggdrasil.native_causal_amalgam import NativeCausalAmalgam
+          from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist
+          from yggdrasil.native_jepa_temporal import TemporalLatentSpecialist
+          from yggdrasil.native_episode_experience import MAX_CHECKPOINT_BYTES
+          from yggdrasil.native_external_action_identity import RECEIPT_SCHEMA,SOURCE_MODE,STATES
+          def verify(ok,name):
+              if not ok: raise ValueError(name)
+          start=time.perf_counter()
+          raw=Path(os.environ["WSCM_ARCHIVED_JOINT_PATH"]).read_bytes()
+          verify(digest(raw)=="576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8","CAP04_JOINT_PIN")
+          joint=json.loads(raw)
+          native_raw=joint["native_ascii"].encode("ascii")
+          verify(digest(native_raw)=="5720151e18b52f7219763027c2ad9c7c37476e099b4334e42417615adb7f959d","CAP04_NATIVE_PIN")
+          base=NativeCumulativeLearner.restore(native_raw,digest(native_raw))
+          verify(base.checkpoint()==native_raw,"CAP04_NATIVE_RESTORE")
+          old=base._episode_reader()
+          verify(len(old._ledger)==1025,"CAP04_OLD_LEDGER_LENGTH")
+          verify(old.info()["state_sha256"]=="3c6433c9e60a0f7e6b750327ae7b705984fb20b25e8bd04fe16a3e9a31c9dde8","CAP04_OLD_STATE_PIN")
+          verify(old._external_action_fixture is None,"CAP04_ORIGINAL_FIXTURE_NONE")
+          old_episode=old.checkpoint()
+          before=(old.forecast((0,0),0),old.forecast((1,0),1))
+          heads=(tuple(ActionLatentSpecialist.from_data(d,k) for d,k in zip(joint["action_heads"],("transition","reward")))
+                 +tuple(TemporalLatentSpecialist.from_data(d,k) for d,k in zip(joint["temporal_heads"],("transition","reward"))))
+          verify(len(heads)==4,"CAP04_HEAD_COUNT")
+          model=NativeCausalAmalgam(base,heads,joint["native_parent_sha256"],joint["specialist_parent_sha256"])
+          verify(model.checkpoint()==raw,"CAP04_ORIGINAL_JOINT_BYTE_PARITY")
+          verify(model.external_fixture_cell_forecast((0,0),31000) is None,"CAP04_GHOST_ACTION")
+          count=0
+          original_steps=tuple(h.steps for h in model._heads)
+          for index in range(32):
+              action=31000+index*97
+              for rep in range(8):
+                  state=STATES[rep%4]
+                  outcome=state[0] ^ (state[1] & (index%2)) ^ (index%2)
+                  if index==0 and rep==7: outcome^=1
+                  request={"public_view":list(state),"external_action_id":action}
+                  receipt=canonical({"schema":RECEIPT_SCHEMA,"source_mode":SOURCE_MODE,
+                         "source_id":f"{500000+count:064x}","public_view":list(state),
+                         "external_action_id":action,"outcome":outcome})
+                  model=model.observe_external_fixture(request,receipt,digest(receipt))
+                  count+=1
+              verify(model.native._episode_reader().info()["count"]==1025,"CAP04_ORIGINAL_EPISODES_DRIFT")
+              verify(tuple(h.steps for h in model._heads)==original_steps,"CAP04_TRAINED_HEAD_MUTATION")
+              expected=(3,4,2) if index%2 else (1,4,2)
+              verify(model.external_fixture_cell_forecast((0,0),action)==expected,"CAP04_COUNTED_CELL")
+          verify(count==256 and len(model.native._episode_reader()._external_action_fixture._rows)==256,"CAP04_RECEIPT_COUNT")
+          verify(model.external_fixture_cell_forecast((1,1),31000)==(1,2,2),"CAP04_CONTRADICTION_CELL")
+          verify(model.external_fixture_cell_forecast((0,0),99999) is None,"CAP04_UNKNOWN_CELL")
+          current=model.native._episode_reader()
+          verify(current._ledger==old._ledger and current.info()["state_sha256"]==old.info()["state_sha256"],"CAP04_PRESERVED_OLD_LEARNING")
+          verify((current.forecast((0,0),0),current.forecast((1,0),1))==before,"CAP04_OLD_FORECAST_CHANGE")
+          saved=model.checkpoint()
+          parsed=json.loads(saved)
+          verify(parsed["action_heads"]==joint["action_heads"] and parsed["temporal_heads"]==joint["temporal_heads"],"CAP04_FOUR_HEADS_CHANGED")
+          with_fixture=current.checkpoint()
+          verify(len(with_fixture)<=MAX_CHECKPOINT_BYTES,"CAP04_EPISODE_SIZE_LIMIT")
+          evolved_raw=parsed["native_ascii"].encode("ascii")
+          cold=NativeCumulativeLearner.restore(evolved_raw,digest(evolved_raw))
+          verify(cold.checkpoint()==evolved_raw,"CAP04_FULL_COLD_BYTES")
+          verify(cold.external_fixture_cell_forecast((1,1),31000)==(1,2,2),"CAP04_COLD_LOST_CONTRADICTION")
+          verify(cold.external_fixture_cell_forecast((0,0),99999) is None,"CAP04_COLD_GHOST")
+          verify(cold._episode_reader()._ledger==old._ledger,"CAP04_COLD_OLD_HISTORY")
+          verify(cold.consolidate_experience().checkpoint()==evolved_raw,"CAP04_COLD_CONSOLIDATION")
+          invalid=canonical({"schema":RECEIPT_SCHEMA,"source_mode":SOURCE_MODE,
+                             "source_id":f"{999999:064x}","public_view":[0,0],
+                             "external_action_id":31000,"outcome":0})
+          try: model.observe_external_fixture({"public_view":[0,0],"external_action_id":31000},invalid,digest(invalid))
+          except ValueError as err:
+              verify("WSCM_EVENT_CAPACITY" in str(err),"CAP04_WRONG_257TH_ERROR")
+          else: raise ValueError("CAP04_ADMITTED_257TH_RECEIPT")
+          verify(model.checkpoint()==saved and base.checkpoint()==native_raw and old.checkpoint()==old_episode,"CAP04_IMMUTABILITY_VIOLATION")
+          verify(model.native.info()["accepted_native"] is False and model.native.info()["scientific_pass"] is False,"CAP04_FALSE_ADMISSION")
+          print("WSCM_CAPACITY04_ACTUAL_NATIVE_AMALGAM=PASS")
+          print("WSCM_CAPACITY04_ORIGINAL_1025_EPISODES=PASS")
+          print("WSCM_CAPACITY04_FOUR_TRAINED_HEADS_PRESERVED=PASS")
+          print("WSCM_CAPACITY04_MAX_32_ACTIONS_256_RECEIPTS_COLD=PASS")
+          print("WSCM_CAPACITY04_OLD_FORECASTS_PRESERVED=PASS")
+          print("WSCM_CAPACITY04_257TH_NEGATIVE=PASS")
+          print("WSCM_CAPACITY04_ORIGINAL_EPISODE_BYTES="+str(len(old_episode)))
+          print("WSCM_CAPACITY04_WITH_FIXTURE_EPISODE_BYTES="+str(len(with_fixture)))
+          print("WSCM_CAPACITY04_HEADROOM_BYTES="+str(MAX_CHECKPOINT_BYTES-len(with_fixture)))
+          print("WSCM_CAPACITY04_JOINT_BYTES="+str(len(saved)))
+          print("WSCM_CAPACITY04_WALL_SECONDS="+format(time.perf_counter()-start,".3f"))
+          print("WSCM_CAPACITY04_SCIENTIFIC_GAIN_VERIFIED=FALSE")
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo WSCM_CAPACITY04_READONLY_CUSTODY=PASS
+
