@@ -9,7 +9,7 @@ permissions:
 jobs:
   focused-windows:
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
-    timeout-minutes: 30
+    timeout-minutes: 90
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONHASHSEED: '0'
@@ -83,20 +83,28 @@ jobs:
           & $python -B -c 'import sys; sys.path.insert(0,sys.argv[1]); import numpy,scipy' $solverPath
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_IMPORT_FAILED'}
           Write-Host 'WSCM_SOLVER_IMPORT=PASS'
-          # An embedded Python _pth may ignore PYTHONPATH in cold subprocesses.
-          # Create a fully run-scoped standard venv to give both the parent and
-          # the original cold-process tests an identical import environment.
-          $venvDir=Join-Path $env:RUNNER_TEMP ('wscm-native-venv-'+$env:GITHUB_RUN_ID)
-          & $python -B -m venv --without-pip --system-site-packages $venvDir
-          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_VENV_CREATION_FAILED'}
-          $venvPython=Join-Path $venvDir 'Scripts\python.exe'
-          if(-not(Test-Path -LiteralPath $venvPython -PathType Leaf)){throw 'WSCM_RUNNER_VENV_EXECUTABLE_MISSING'}
+          # The existing embedded CPython lacks venv, and its _pth isolation
+          # causes subprocesses to lose test imports. Copy it into RUNNER_TEMP;
+          # modify only that disposable copy, never the runner installation.
+          $portableDir=Join-Path $env:RUNNER_TEMP ('wscm-native-interpreter-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $portableDir -Force | Out-Null
+          Copy-Item -Path (Join-Path (Split-Path -Parent $python) '*') -Destination $portableDir -Recurse -Force
+          $portable=Join-Path $portableDir (Split-Path -Leaf $python)
+          if(-not(Test-Path -LiteralPath $portable -PathType Leaf)){throw 'WSCM_PORTABLE_PYTHON_MISSING'}
+          $pthFiles=@(Get-ChildItem -LiteralPath $portableDir -Filter '*._pth' -File)
+          if($pthFiles.Count -gt 1){throw 'WSCM_PORTABLE_PTH_AMBIGUOUS'}
+          if($pthFiles.Count -eq 1){
+            $pth=$pthFiles[0].FullName
+            $utf8=New-Object System.Text.UTF8Encoding($false)
+            [IO.File]::AppendAllText($pth,([Environment]::NewLine+$sourceRoot+[Environment]::NewLine+$solverPath+[Environment]::NewLine),$utf8)
+          }
           $env:PYTHONPATH=$sourceRoot+[IO.Path]::PathSeparator+$solverPath
-          & $venvPython -B -c 'import yggdrasil.native_cumulative_learner'
-          if($LASTEXITCODE -ne 0){throw 'WSCM_COLD_PYTHON_PACKAGE_PATH_INVALID'}
-          & $venvPython -B -c 'import scipy'
-          if($LASTEXITCODE -ne 0){throw 'WSCM_COLD_PYTHON_SCIPY_PATH_INVALID'}
-          $python=$venvPython
+          & $portable -B -c 'import yggdrasil.native_cumulative_learner, scipy, sys; print("WSCM_PORTABLE_EXECUTABLE="+sys.executable)'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_PORTABLE_PARENT_IMPORT_FAILED'}
+          $probe='import subprocess,sys; p=subprocess.run([sys.executable,"-B","-c","import yggdrasil.native_cumulative_learner, scipy; print(1234)"],capture_output=True,text=True);print(p.stdout,p.stderr);sys.exit(p.returncode if p.returncode else (0 if p.stdout.strip()=="1234" else 1))'
+          & $portable -B -c $probe
+          if($LASTEXITCODE -ne 0){throw 'WSCM_PORTABLE_CHILD_IMPORT_FAILED'}
+          $python=$portable
           Write-Host 'WSCM_COLD_PYTHON_IMPORT=PASS'
           $suites=@(
             'test_wscm_cumulative_fixture_replay.py',
@@ -115,3 +123,22 @@ jobs:
           $dirty=@(& git.exe status --porcelain)
           if($dirty.Count -ne 0){throw ('WSCM_TEST_WORKTREE_DIRTY='+($dirty -join ','))}
           Write-Host 'WSCM_SOURCE_FREE_FOCUSED_TESTS=PASS'
+      - name: Full exact-source native Windows regression (no protected worlds)
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
+          $portable=Join-Path $env:RUNNER_TEMP ('wscm-native-interpreter-'+$env:GITHUB_RUN_ID)
+          $python=Join-Path $portable 'python.exe'
+          if(-not(Test-Path -LiteralPath $python -PathType Leaf)){throw 'WSCM_FULL_PYTHON_MISSING'}
+          $sourceRoot=(Resolve-Path '.').Path
+          $deps=Join-Path $env:RUNNER_TEMP ('wscm-solver-'+$env:GITHUB_RUN_ID)
+          $env:PYTHONPATH=$sourceRoot+[IO.Path]::PathSeparator+$deps
+          $env:OPENBLAS_NUM_THREADS='1'; $env:OMP_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'
+          $h=(& git.exe rev-parse HEAD).Trim()
+          if($h -cne '${{ github.sha }}'){throw 'WSCM_FULL_SHA_DRIFT'}
+          Write-Host ('WSCM_FULL_WINDOWS_SHA='+$h)
+          & $python -B -m unittest discover -s tests -p 'test_*.py' -v
+          if($LASTEXITCODE -ne 0){throw ('WSCM_FULL_WINDOWS_REGRESSION_FAILED:'+ $LASTEXITCODE)}
+          & git.exe diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'WSCM_FULL_WINDOWS_WORKTREE_CHANGED'}
+          Write-Host 'WSCM_FULL_WINDOWS_REGRESSION=PASS'
