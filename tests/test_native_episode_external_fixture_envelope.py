@@ -92,7 +92,7 @@ class NativeEpisodeExternalFixtureGate(unittest.TestCase):
         self.assertEqual(doc["native_checkpoint"], json.loads(original.checkpoint()))
         self.assertEqual(doc["native_sha256"], digest(original.checkpoint()))
         clone = NativeEpisodeExperience.restore(raw, digest(raw))
-        self.assertEqual(clone.checkpoint(), raw)
+        self.assertEqual((clone.checkpoint(), staged.consolidate().checkpoint()), (raw, raw))
         self.assertEqual(clone.info(), staged.info())
         self.assertEqual(clone.forecast((1, 0), 0), staged.forecast((1, 0), 0))
         self.assertEqual(clone.observed_external_fixture_value((1, 0), 1301), 1)
@@ -107,7 +107,7 @@ class NativeEpisodeExternalFixtureGate(unittest.TestCase):
         raw = updated.checkpoint()
         cold = NativeEpisodeExperience.restore(raw, digest(raw))
         self.assertEqual(cold.checkpoint(), raw)
-        self.assertEqual(cold._ledger, updated._ledger)
+        self.assertEqual((cold._ledger, updated.consolidate().checkpoint()), (updated._ledger, raw))
 
     def test_context_checkpoint_v2_survives_opt_in_envelope(self):
         native = NativeEpisodeExperience()

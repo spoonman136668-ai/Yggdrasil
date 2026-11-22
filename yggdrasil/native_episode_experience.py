@@ -485,6 +485,7 @@ class NativeEpisodeExperience:
             if self._episode_limit != MAX_EPISODES and len(self._ledger) == MAX_EPISODES:
                 rebuilt = rebuilt.extend_witness_capacity()
         require(rebuilt._state_digest() == self._state_digest(), "EPISODE_REPLAY_DRIFT")
+        rebuilt._external_action_fixture = self._external_action_fixture
         return rebuilt
 
     def _repair_info(self):
