@@ -61,8 +61,11 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_PYTHON_VERSION_INVALID'}
           # This existing fourteen-test fixture gate is standard-library-only.
           # Execute it before provisioning any optional solver dependency.
+          $sourceRoot=(Resolve-Path '.').Path
+          $solverPath=$sourceRoot
+          $testCode='import sys,unittest;sys.path.insert(0,sys.argv[1]);sys.path.insert(0,sys.argv[2]);result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover("tests",pattern=sys.argv[3]));sys.exit(0 if result.wasSuccessful() else 1)'
           Write-Host 'WSCM_NATIVE_SUITE=test_native_episode_external_fixture_envelope.py'
-          & $python -B -m unittest discover -s tests -p test_native_episode_external_fixture_envelope.py -v
+          & $python -B -c $testCode $sourceRoot $solverPath test_native_episode_external_fixture_envelope.py
           if($LASTEXITCODE -ne 0){throw 'WSCM_CHILD_FIXTURE_TESTS_FAILED'}
           & $python -B -c 'import numpy; print("WSCM_NUMPY_IMPORT=PASS")'
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_NUMPY_MISSING'}
@@ -74,9 +77,9 @@ jobs:
             New-Item -ItemType Directory -Path $deps -Force | Out-Null
             & $python -B -m pip install --disable-pip-version-check --no-input --only-binary=:all: --no-deps --target $deps scipy==1.16.3
             if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SCIPY_INSTALL_FAILED'}
-            $env:PYTHONPATH=$deps+[IO.Path]::PathSeparator+(Resolve-Path '.').Path
+            $solverPath=$deps
           }
-          & $python -B -c 'import numpy, scipy; print("WSCM_SOLVER_IMPORT=PASS")'
+          & $python -B -c 'import sys; sys.path.insert(0,sys.argv[1]); import numpy,scipy; print("WSCM_SOLVER_IMPORT=PASS")' $solverPath
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_IMPORT_FAILED'}
           $suites=@(
             'test_wscm_cumulative_fixture_replay.py',
@@ -86,7 +89,7 @@ jobs:
           $failed=@()
           foreach($suite in $suites){
             Write-Host ('WSCM_NATIVE_SUITE='+$suite)
-            & $python -B -m unittest discover -s tests -p $suite -v
+            & $python -B -c $testCode $sourceRoot $solverPath $suite
             if($LASTEXITCODE -ne 0){$failed+=($suite+':'+$LASTEXITCODE)}
           }
           if($failed.Count -gt 0){throw ('WSCM_NATIVE_FOCUSED_FAILURES='+($failed -join ','))}
