@@ -1,0 +1,42 @@
+{
+  "schema": "dwsa-rs05.provenance.v1",
+  "preregistration_commit": "f35f6329fa986c331b3e7d151c4d244b1f4f5576",
+  "parent_rs04_commit": "3387637118f8b088a4f5d2a43ed20cf91d1715c3",
+  "prereg_tree": "f56eaec5160eb15cef48188aa99a95d35d98fb1e",
+  "prereg_blob": "84c5257b2177b4030e60971dcd88f73b5af6f220",
+  "source_blob": "06249158151215ad5cdc535874bdecb8e1d189cf",
+  "source_sha256": "212a9e40f659c84c0ca1a79f32b9644acac1afc3be1858fbb15a6ed998dbe8c3",
+  "result_sha256": "302681b0319874adfa1b3258c0a2c03296526daf522de086722054d017d65d0f",
+  "result_git_blob": "7cde718cafea9ab85619588e3637de727794f519",
+  "execution": "node study.mjs",
+  "execution_environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "node": "v22.16.0",
+    "environment": "isolated sandbox, not approved Yggdrasil native runner"
+  },
+  "reproduction": {
+    "exact_source_blob_matches_local": true,
+    "second_independent_node_process_byte_identical": true,
+    "episodes": 2048,
+    "world_assignment": "i%2",
+    "action_budget": "one simulated query per policy per episode",
+    "original_world_actions": 0,
+    "matched_evaluator": "analytic expected Bernoulli Brier over withheld held outcome",
+    "strongest_bounded_control": "fully informed symbolic action=7"
+  },
+  "limits": {
+    "engineering_source_free_focused_pass": true,
+    "full_linux_regression": "UNVERIFIED",
+    "full_windows_regression": "UNVERIFIED",
+    "g29": "UNVERIFIED",
+    "ci": "UNVERIFIED",
+    "native_learner": "UNVERIFIED",
+    "cold_retention": "UNVERIFIED",
+    "causal_transfer_science": "UNVERIFIED",
+    "protected_original_world_first_use": "NO_GO"
+  },
+  "scientific_interpretation": "MIXED_DEV_ONLY: active selector improves synthetic Brier against raw and random, ties exact symbolic selector, and is measurably harmful under misspecified null law. Hypotheses supplied; not learned. No new scientific gain.",
+  "independent_owner": "spoonman136668-ai/Yggdrasil issue #426 remains original-world NO-GO; PR #1278 retains central coordination",
+  "provenance_capture_note": "The source/prereg were committed before the first primary Node evaluation; this provenance and result were recorded only afterward. No protected or consumed source used."
+}
