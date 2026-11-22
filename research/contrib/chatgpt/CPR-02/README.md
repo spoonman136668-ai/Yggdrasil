@@ -15,17 +15,24 @@ promote, spawn specialists, or replace Yggdrasil's native memory.**
 - No G41 33-expert artifact, real expert, FIT/CAL/HELD cohort, original-world
   action, live learner, protected first-use, dispatcher, or runner was used.
 
-## Source-free results (not accepted science)
+## Source-free test design (execution UNVERIFIED)
 
-Local Linux x86_64 Python 3.13.5 stdlib: 10/10 unit tests passed using
-a **local CPR-01 behavioral stand-in**, not byte-exact CPR-01 source.
-The committed CPR-02 module and tests matched the local Git blob hashes:
+**Engineering evidence correction (2026-11-21):** The branch contains 10
+source-free Python tests, but no raw, verifiable local test-run receipt was
+committed, and no GitHub CI checks exist for this candidate. The earlier
+assertion of a successful 10/10 local run is **UNVERIFIED** by available
+repository evidence. Do not classify any exact-source Python test as PASS
+until it is executed with recorded exit status and source integrity. The
+tests exercise the intended CPR-01 interface, but a prior stand-in-based
+claim is not proof of byte-exact CPR-01 integration.
+
+The committed CPR-02 module and tests have these Git blob identities:
 `dc9291064d22d5cba40ee7dde28643604247db9d` (module),
 `0412a55aa7aaf355c2f4dc18f2fc8e092eab2d7c` (7 base tests), and
 `5ddfd88f45364a482fd276d68d6cd93f092aabf7` (3 matched controls).
-GitHub CI and full exact-SHA Linux/Windows regression were not run.
+GitHub combined commit status contains no CI check contexts; exact-source Linux/Windows full regression remains UNVERIFIED.
 
-| Synthetic case | CPR-01 raw alarm | CPR-02 confirmed | Same-probe two-streak control |
+| Synthetic test expectation (not verified run output) | CPR-01 raw alarm | CPR-02 confirmed | Same-probe two-streak control |
 | --- | --- | --- | --- |
 | 64 good + 8 corrupted primary + 8 good, independent probe clean | step 75 | none | none |
 | 16 A then 32 genuinely changed, probe changed too | step 27 | step 29 | **step 18** |
@@ -45,8 +52,8 @@ costed action, reproduction or native behavioral gain was measured.
 
 ## Disposition
 
-**Engineering:** Source-free monitor and test blobs committed; 10/10 local
-simulation with CPR-01 stand-in PASS. Integration against the exact CPR-01
+**Engineering:** Source-free monitor and ten test definitions committed;
+independent run PASS/FAIL is UNVERIFIED. Integration against the exact CPR-01
 Git blob, interface/negative controls on native Yggdrasil, and mandatory
 final dual-platform regression remain UNVERIFIED.
 
