@@ -2,7 +2,8 @@
 
 No model/Genome writes, LSH claims, sleep consolidation, or protected-world use.
 Templates must be established separately on a complete, charged 128-probe
-basis; an unfamiliar action receives at most two *actual* charged probes.
+basis; at most two caller-asserted development probes are accepted per action.
+Caller-supplied charged/controlled flags are NOT authenticated source custody.
 """
 
 WIDTH = 128
@@ -17,6 +18,8 @@ class WakeRoleRouter:
 
     Fixed caps bound the worst-case template scan. This is an engineering
     reference, NOT a learned LSH index or a causal-identification result.
+    A single matching template is always PROVISIONAL in an open world;
+    two observations cannot certify equivalence across 128 basis points.
     """
 
     def __init__(self, templates):
@@ -54,13 +57,13 @@ class WakeRoleRouter:
             return "UNKNOWN", None
         if len(candidates) > 1:
             return "AMBIGUOUS", None
-        return "BOUND", candidates[0]
+        return "PROVISIONAL", candidates[0]
 
     def next_probe(self, action):
         """Choose a deterministic distinguishing basis bit; None means abstain."""
         self._check_action(action)
         observations = self._observed.get(action, {})
-        if len(observations) >= MAX_PROBES or self.status(action)[0] in ("BOUND", "UNKNOWN"):
+        if len(observations) >= MAX_PROBES or self.status(action)[0] == "UNKNOWN":
             return None
         candidates = self._candidates(observations)
         if not candidates:
@@ -77,7 +80,11 @@ class WakeRoleRouter:
         return best_bit if best_split > 0 or len(candidates) == 1 else None
 
     def observe(self, action, basis_bit, delta, receipt_id, *, charged, controlled):
-        """Admit one witnessed do(action) basis result; reject passive evidence."""
+        """Accept development asserted basis data, NOT an authenticated do(action) receipt.
+
+        Only a separately qualified evidence adapter may enable source use.
+        In particular, boolean flags alone are no proof of a charged action.
+        """
         self._check_action(action)
         if (type(basis_bit) is not int or not 0 <= basis_bit < WIDTH
                 or type(delta) is not int or delta not in (0, 1)

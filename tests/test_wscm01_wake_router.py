@@ -18,7 +18,10 @@ class WakeRouterTests(unittest.TestCase):
         for action, expected in ((4001, 1), (91, 2), (90017, 1)):
             self.assertEqual(r.next_probe(action), 0)
             self.assertEqual(r.observe(action, 0, int(expected == 2), action,
-                                       charged=True, controlled=True), ('BOUND', expected))
+                                       charged=True, controlled=True), ('PROVISIONAL', expected))
+            self.assertEqual(r.next_probe(action), 1)
+            self.assertEqual(r.observe(action, 1, 0, action + 100000,
+                                       charged=True, controlled=True), ('PROVISIONAL', expected))
             self.assertIsNone(r.next_probe(action))
 
     def test_two_charged_probes_disambiguate_when_separable(self):
@@ -28,7 +31,7 @@ class WakeRouterTests(unittest.TestCase):
                          ('AMBIGUOUS', None))
         self.assertEqual(r.next_probe(3), 2)
         self.assertEqual(r.observe(3, 2, 0, 12, charged=True, controlled=True),
-                         ('BOUND', 1))
+                         ('PROVISIONAL', 1))
 
     def test_two_probes_can_leave_partial_ambiguity(self):
         r = MODULE.WakeRoleRouter({1: 0, 2: 1 << 1, 3: 1 << 2, 4: 1 << 3})
@@ -48,11 +51,23 @@ class WakeRouterTests(unittest.TestCase):
     def test_unknown_signature_stays_unbound(self):
         r = MODULE.WakeRoleRouter({1: 0, 2: 1})
         self.assertEqual(r.observe(12, 0, 1, 1, charged=True, controlled=True),
-                         ('BOUND', 2))
+                         ('PROVISIONAL', 2))
         # First receipt may be provisionally bound; a contradiction invalidates it.
         self.assertEqual(r.observe(12, 5, 1, 2, charged=True, controlled=True),
                          ('UNKNOWN', None))
         self.assertIsNone(r.next_probe(12))
+
+    def test_one_bit_match_never_certifies_a_full_signature(self):
+        # Unknown true 128-bit role differs only at the unseen bit 127.
+        # An action can match both selected bits but remain NOT identifiable.
+        r = MODULE.WakeRoleRouter({1: 0, 2: 1})
+        self.assertEqual(r.observe(8, 0, 0, 100, charged=True, controlled=True),
+                         ('PROVISIONAL', 1))
+        self.assertEqual(r.next_probe(8), 1)
+        self.assertEqual(r.observe(8, 1, 0, 101, charged=True, controlled=True),
+                         ('PROVISIONAL', 1))
+        self.assertIsNone(r.next_probe(8))
+        self.assertNotEqual(r.status(8)[0], 'BOUND')
 
     def test_passive_or_uncharged_evidence_is_rejected_without_mutation(self):
         r = MODULE.WakeRoleRouter({1: 0})
@@ -103,7 +118,7 @@ class WakeRouterTests(unittest.TestCase):
         r.observe(10, 0, 0, 7, charged=True, controlled=True)
         recovered = MODULE.WakeRoleRouter.restore(templates, r.snapshot())
         self.assertEqual(recovered.snapshot(), r.snapshot())
-        self.assertEqual(recovered.status(80), ('BOUND', 2))
+        self.assertEqual(recovered.status(80), ('PROVISIONAL', 2))
         self.assertEqual(templates, {1: 0, 2: 1})
         with self.assertRaisesRegex(ValueError, 'WSCM_NONCANONICAL_SNAPSHOT'):
             MODULE.WakeRoleRouter.restore(templates, tuple(reversed(r.snapshot())))
