@@ -38,7 +38,12 @@ class DelayedCreditRing:
             raise ValueError("WSCM_EVENT_REPLAY_OR_REORDER")
         self._events = (self._events + (row,))[-WINDOW:]
         retained = {event[0] for event in self._events}
-        self._reveals = tuple(r for r in self._reveals if r[0] in retained)
+        # A cached proposal is reproducible only while every credited
+        # event remains in the bounded ring. Expired caches fail closed.
+        self._reveals = tuple(
+            r for r in self._reveals
+            if r[0] in retained and all(p[0] in retained for p in r[3])
+        )
         self._last_event_id = event_id
         return self
 
