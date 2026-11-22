@@ -99,9 +99,9 @@ jobs:
             [IO.File]::AppendAllText($pth,([Environment]::NewLine+$sourceRoot+[Environment]::NewLine+$solverPath+[Environment]::NewLine),$utf8)
           }
           $env:PYTHONPATH=$sourceRoot+[IO.Path]::PathSeparator+$solverPath
-          & $portable -B -c 'import yggdrasil.native_cumulative_learner, scipy, sys; print("WSCM_PORTABLE_EXECUTABLE="+sys.executable)'
+          & $portable -B -c 'import yggdrasil.native_cumulative_learner, scipy, sys; print(''WSCM_PORTABLE_EXECUTABLE='' + sys.executable)'
           if($LASTEXITCODE -ne 0){throw 'WSCM_PORTABLE_PARENT_IMPORT_FAILED'}
-          $probe='import subprocess,sys; p=subprocess.run([sys.executable,"-B","-c","import yggdrasil.native_cumulative_learner, scipy; print(1234)"],capture_output=True,text=True);print(p.stdout,p.stderr);sys.exit(p.returncode if p.returncode else (0 if p.stdout.strip()=="1234" else 1))'
+          $probe='import subprocess,sys; p=subprocess.run([sys.executable,''-B'',''-c'',''import yggdrasil.native_cumulative_learner, scipy; print(1234)''],capture_output=True,text=True);print(p.stdout,p.stderr);sys.exit(p.returncode if p.returncode else (0 if p.stdout.strip()==''1234'' else 1))'
           & $portable -B -c $probe
           if($LASTEXITCODE -ne 0){throw 'WSCM_PORTABLE_CHILD_IMPORT_FAILED'}
           $python=$portable
