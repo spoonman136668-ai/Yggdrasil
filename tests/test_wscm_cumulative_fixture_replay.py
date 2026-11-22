@@ -164,3 +164,112 @@ class WSCMCumulativeReplayTest(unittest.TestCase):
                          original_info)
         self.assertIsNone(cold.observed_external_fixture_value((0, 0), 1301))
         self.assertEqual(m.checkpoint(), initial)
+
+    def test_24_fresh_ids_amalgam_cold_ledger_and_specialist_isolation(self):
+        """Source-free six-phase cold replay, not original-donor activation."""
+        heads = (ActionLatentSpecialist("transition"), ActionLatentSpecialist("reward"),
+                 TemporalLatentSpecialist("transition"), TemporalLatentSpecialist("reward"))
+        base = NativeCausalAmalgam(parent(), heads, "a" * 64, "b" * 64)
+        untouched_native = base.native.checkpoint()
+        untouched_heads = tuple(h.steps for h in base._heads)
+        states = ((0, 0), (0, 1), (1, 0), (1, 1))
+        signatures = {}
+        m = base
+        source_id = 1000
+        for phase in range(6):
+            for slot in range(4):
+                action = 31000 + phase * 100 + slot * 9
+                # Harness-only fixture outcomes; learner gets only signed
+                # publicly witnessed request+outcome, no phase or role field.
+                truth = tuple((state[0] ^ (state[1] & (slot & 1)) ^
+                               (phase & 1)) for state in states)
+                self.assertIsNone(m.native.observed_external_fixture_value(
+                    (0, 0), action))
+                for index, state in enumerate(states):
+                    request, raw, pin = receipt(action, state, truth[index], source_id)
+                    source_id += 1
+                    previous = m
+                    m = m.observe_external_fixture(request, raw, pin)
+                    self.assertEqual(previous.native.checkpoint(),
+                                     (base.native.checkpoint() if phase == slot == index == 0
+                                      else previous.native.checkpoint()))
+                    if index < 3:
+                        self.assertIsNone(m.native.observed_external_fixture_value(
+                            (0, 0), action))
+                signatures[action] = truth
+            frozen = m.checkpoint()
+            with patch.object(NativeCausalAmalgam, "activate", return_value=base):
+                cold = NativeCausalAmalgam.restore(
+                    frozen, digest(frozen), native_parent=b"", native_pin="a" * 64,
+                    donor_parent=b"", donor_pin="b" * 64)
+            self.assertEqual(cold.checkpoint(), frozen)
+            self.assertEqual(tuple(h.steps for h in cold._heads), untouched_heads)
+            self.assertEqual(cold.native._episode_reader()._ledger,
+                             base.native._episode_reader()._ledger)
+            for action, truth in signatures.items():
+                for index, state in enumerate(states):
+                    self.assertEqual(cold.native.observed_external_fixture_value(
+                        state, action), truth[index])
+            self.assertEqual(base.native.checkpoint(), untouched_native)
+        self.assertEqual(source_id - 1000, 96)
+        self.assertEqual(len(signatures), 24)
+        binary = episode(m)
+        frozen = binary.checkpoint()
+        with patch.object(NativeCausalAmalgam, "activate", return_value=base):
+            cold = NativeCausalAmalgam.restore(
+                frozen, digest(frozen), native_parent=b"", native_pin="a" * 64,
+                donor_parent=b"", donor_pin="b" * 64)
+        self.assertEqual(cold.checkpoint(), frozen)
+        self.assertEqual(cold.native._episode_reader().info()["count"], 1)
+        for action, truth in signatures.items():
+            self.assertEqual(cold.native.observed_external_fixture_value(
+                (1, 0), action), truth[2])
+        self.assertEqual(m.native._episode_reader().info()["count"], 0)
+
+    def test_32_ids_256_rows_integrated_capacity_and_cold_preservation(self):
+        """The cumulative/native envelope must not silently evict prior IDs."""
+        m = parent()
+        before = m.checkpoint()
+        native_before = m._episode_reader().info()["state_sha256"]
+        states = ((0, 0), (0, 1), (1, 0), (1, 1))
+        for action_index in range(32):
+            action = 50000 + 97 * action_index
+            for index, state in enumerate(states):
+                request, raw, pin = receipt(action, state, state[0],
+                                            2000 + 8 * action_index + index)
+                m = m.observe_external_fixture(request, raw, pin)
+            self.assertEqual(m.observed_external_fixture_value((1, 0), action), 1)
+        saved128 = m.checkpoint()
+        new_request, new_raw, new_pin = receipt(99001, (0, 0), 0, 9000)
+        with self.assertRaisesRegex(ValueError, "WSCM_ACTION_CAPACITY"):
+            m.observe_external_fixture(new_request, new_raw, new_pin)
+        self.assertEqual(m.checkpoint(), saved128)
+        cold128 = NativeCumulativeLearner.restore(saved128, digest(saved128))
+        self.assertEqual(cold128.checkpoint(), saved128)
+        for action_index in range(32):
+            action = 50000 + 97 * action_index
+            for index, state in enumerate(states):
+                request, raw, pin = receipt(action, state, state[0],
+                                            2000 + 8 * action_index + 4 + index)
+                m = m.observe_external_fixture(request, raw, pin)
+        saved256 = m.checkpoint()
+        self.assertEqual(len(m._episode_reader()._external_action_fixture._rows), 256)
+        with self.assertRaisesRegex(ValueError, "WSCM_EVENT_CAPACITY"):
+            request, raw, pin = receipt(50000, (0, 0), 0, 9001)
+            m.observe_external_fixture(request, raw, pin)
+        self.assertEqual(m.checkpoint(), saved256)
+        cold256 = NativeCumulativeLearner.restore(saved256, digest(saved256))
+        self.assertEqual(cold256.checkpoint(), saved256)
+        self.assertEqual(cold256.consolidate_experience().checkpoint(), saved256)
+        self.assertEqual(cold256._episode_reader().info()["state_sha256"],
+                         native_before)
+        self.assertEqual(cold256._episode_reader()._ledger, ())
+        for action_index in range(32):
+            action = 50000 + 97 * action_index
+            for state in states:
+                self.assertEqual(cold256.observed_external_fixture_value(
+                    state, action), state[0])
+        self.assertEqual(m.info()["accepted_native"], False)
+        self.assertEqual(m.info()["scientific_pass"], False)
+        self.assertEqual(parent().checkpoint(), before)
+
