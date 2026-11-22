@@ -1,0 +1,81 @@
+{
+  "schema": "yggdrasil.wscm.epoch01.execution.v1",
+  "experiment_id": "WSCM-EPOCH-01",
+  "status": "INVALID_INCOMPLETE_WALL_TIMEOUT",
+  "classification": "UNSCORED_NO_SCIENTIFIC_DISPOSITION",
+  "preregistration": {
+    "commit": "c8dbfb5156e3ebe2878bf518806579c311df9467",
+    "git_blob": "55dbc55bf9722d02bb1f5adfea537d47e055bb15"
+  },
+  "implementation": {
+    "commit": "effa9b6ff1cd054b473ce2b22475a50568493f05",
+    "source_git_blob": "bc91d9817d4edfcfd16b2b313782270c7ef87c14",
+    "test_git_blob": "bf7e5f12478b42dd0bf7a5b92ecbf7370f7ffb7a"
+  },
+  "original_native_git_blob": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+  "original_archived_joint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "original_native_start_count": 1025,
+  "platform": "Linux x86_64 / CPython 3.13.5 / isolated source-equivalent helper shims",
+  "source_free": true,
+  "original_world_first_use": false,
+  "protected_source_actions": 0,
+  "paid_model_calls": 0,
+  "integrity_gates": {
+    "prereg_git_blob": "PASS",
+    "implementation_git_blob": "PASS",
+    "original_native_git_blob": "PASS",
+    "archived_artifact_sha256": "PASS",
+    "unscored_unit_tests": {
+      "passed": 9,
+      "failed": 0
+    }
+  },
+  "primary_attempt": {
+    "count": 1,
+    "scope": "six frozen seeds, two scenarios, 112 public Bernoulli observations per seed, all paired arms",
+    "executed": "yes, began and terminated after wall-time limit",
+    "tool_wall_timeout_seconds": 120,
+    "runner_return": "TIMEOUT",
+    "result_file_created": false,
+    "completed_seed_count": "UNKNOWN",
+    "generated_outcome_count": "UNKNOWN",
+    "scored_metrics": "UNAVAILABLE",
+    "detailed_stdout": "NONE",
+    "process_still_running": false
+  },
+  "postmortem_unscored_profiles": [
+    {
+      "description": "single native observe over 8 repeated synthetic smoke steps",
+      "per_step_seconds_approx": 0.013
+    },
+    {
+      "description": "one non-scored deterministic 112-step run_seed using constant outcome smoke",
+      "wall_seconds": 7.93
+    },
+    {
+      "description": "one non-scored 112-step run_seed using independent noisy synthetic smoke, no primary seed used",
+      "wall_seconds": 8.351
+    },
+    {
+      "description": "original native cold restore from checkpoint",
+      "wall_seconds_approx": 1.53
+    }
+  ],
+  "notes": "The reason the full primary attempt exceeded 120 seconds is not established by these unscored profiles; do not guess or blame the native learner. No result was produced. Since prereg specifies a single scored pass and no rescue tuning/replay, treat primary trial as terminal incomplete, not SCIENTIFIC_PASS, DEV_PROMISING or DEV_NO_GO. Do not replay partially consumed primary seeds under this protocol. Preserve prereg and implementation unmodified. A separately preregistered, bounded next experiment may need per-seed crash-safe receipts, exact compute budget, and independent controls.",
+  "engineering": {
+    "source_pins": "PASS",
+    "local_unscored_contracts": "PASS",
+    "primary_execution": "FAIL_TIME_BUDGET",
+    "full_final_regression": "UNVERIFIED"
+  },
+  "scientific": {
+    "quality_gain": "UNVERIFIED",
+    "retention": "UNVERIFIED",
+    "unfamiliar_transfer": "UNVERIFIED"
+  },
+  "deployment": {
+    "status": "UNVERIFIED",
+    "draft_unmerged": true,
+    "original_native_code_unchanged": true
+  }
+}
