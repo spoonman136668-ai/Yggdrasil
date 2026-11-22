@@ -41,6 +41,23 @@ class DelayedCreditTests(unittest.TestCase):
         self.assertEqual(len(ring.snapshot()[2]), 16)
         self.assertTrue(len(ring.snapshot()[3]) <= 16)
 
+    def test_cold_restore_remains_exact_after_ring_wrap(self):
+        ring = MODULE.DelayedCreditRing()
+        for i in range(16):
+            ring.stage(i, i, 0)
+        ring.reveal(15, 16, 1, charged=True, controlled=True)
+        self.assertEqual(len(ring.snapshot()[3][0][3]), 16)
+        ring.stage(16, 16, 0)  # evicts first credited entry
+        self.assertEqual(ring.snapshot()[3], ())
+        self.assertEqual(MODULE.DelayedCreditRing.restore(ring.snapshot()).snapshot(),
+                         ring.snapshot())
+        with self.assertRaisesRegex(ValueError, 'WSCM_OUTCOME_REORDER'):
+            ring.reveal(15, 16, 1, charged=True, controlled=True)
+        for i in range(17, 40):
+            ring.stage(i, i, 0)
+            self.assertEqual(MODULE.DelayedCreditRing.restore(ring.snapshot()).snapshot(),
+                             ring.snapshot())
+
     def test_source_claims_cannot_skip_validation(self):
         ring = MODULE.DelayedCreditRing().stage(4, 2, 0)
         before = ring.snapshot()
