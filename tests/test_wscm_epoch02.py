@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 import hashlib
 import json
 import unittest
+from unittest.mock import patch
 
 SRC = Path(__file__).resolve().parents[1]/'research/contrib/chatgpt/WSCM-EPOCH-02/sealed_runner.py'
 S = spec_from_file_location('wscm_epoch02',SRC)
@@ -73,8 +74,17 @@ class Epoch02Tests(unittest.TestCase):
     def test_no_replay_nonempty_directory(self):
         with TemporaryDirectory() as td:
             d=Path(td)/'receipts';d.mkdir();(d/'B-94011.started.json').write_text('{}')
-            with self.assertRaisesRegex(ValueError,'EPOCH02_PRIOR_ATTEMPT_FOUND_NO_REPLAY'):
+            # Source integrity is checked before the no-replay journal gate.
+            # This frozen runner now intentionally rejects the newer native
+            # implementation; that independent negative must remain visible.
+            with self.assertRaisesRegex(ValueError,'EPOCH02_NATIVE_SOURCE_DRIFT'):
                 M.parent(Path('/mnt/data/wscm_exact/amalgam-joint-state.json'),d,M.git_blob(SRC.read_bytes()))
+            # Isolate the journal gate without weakening source_preflight in
+            # production or launching any child. The existing marker must win.
+            with patch.object(M, 'source_preflight', return_value={}):
+                with self.assertRaisesRegex(ValueError,'EPOCH02_PRIOR_ATTEMPT_FOUND_NO_REPLAY'):
+                    M.parent(Path('/mnt/data/wscm_exact/amalgam-joint-state.json'),d,M.git_blob(SRC.read_bytes()))
+            self.assertEqual(sorted(p.name for p in d.iterdir()), ['B-94011.started.json'])
 
     def test_receipt_corruption_rejected(self):
         with TemporaryDirectory() as td:
