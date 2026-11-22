@@ -63,9 +63,9 @@ jobs:
           # Execute it before provisioning any optional solver dependency.
           $sourceRoot=(Resolve-Path '.').Path
           $solverPath=$sourceRoot
-          $testCode='import sys,unittest;sys.path.insert(0,sys.argv[1]);sys.path.insert(0,sys.argv[2]);result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover("tests",pattern=sys.argv[3]));sys.exit(0 if result.wasSuccessful() else 1)'
+          $testCode='import sys,unittest;sys.path.insert(0,sys.argv[1]);sys.path.insert(0,sys.argv[2]);result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover(sys.argv[3],pattern=sys.argv[4]));sys.exit(0 if result.wasSuccessful() else 1)'
           Write-Host 'WSCM_NATIVE_SUITE=test_native_episode_external_fixture_envelope.py'
-          & $python -B -c $testCode $sourceRoot $solverPath test_native_episode_external_fixture_envelope.py
+          & $python -B -c $testCode $sourceRoot $solverPath (Join-Path $sourceRoot 'tests') test_native_episode_external_fixture_envelope.py
           if($LASTEXITCODE -ne 0){throw 'WSCM_CHILD_FIXTURE_TESTS_FAILED'}
           & $python -B -c 'import numpy; print("WSCM_NUMPY_IMPORT=PASS")'
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_NUMPY_MISSING'}
@@ -89,7 +89,7 @@ jobs:
           $failed=@()
           foreach($suite in $suites){
             Write-Host ('WSCM_NATIVE_SUITE='+$suite)
-            & $python -B -c $testCode $sourceRoot $solverPath $suite
+            & $python -B -c $testCode $sourceRoot $solverPath (Join-Path $sourceRoot 'tests') $suite
             if($LASTEXITCODE -ne 0){$failed+=($suite+':'+$LASTEXITCODE)}
           }
           if($failed.Count -gt 0){throw ('WSCM_NATIVE_FOCUSED_FAILURES='+($failed -join ','))}
