@@ -1,0 +1,112 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CPR-01",
+  "contributor": "chatgpt-connector-research",
+  "contribution_class": "falsification",
+  "status": "DESIGN_ONLY_INPUT_CUSTODY_AND_OWNER_FIRST_USE_PENDING",
+  "question": "Does frozen-specialist finite-sample conformal coverage routing retain old causal outcomes while detecting out-of-regime predictions and reviving on A-B-A without oracle inference labels?",
+  "hypothesis": "Against strongest matched controls, an O(K) binary-outcome sidecar router using calibrations withheld from specialist fitting could achieve familiar-task Brier delta <=0.02, return <=12 observations, and no runaway speciation in 10% noise; no such guarantee follows from conformal marginal coverage.",
+  "exact_parent_sha": "40774e820b0c0e6cabb4d6b2766d38f15b63d387",
+  "main_accepted_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/g41_r13_shadow_protocol.json@438e147f243fbe51cc33819a9d777ba6c97b1760",
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/r15_expert_switch_protocol.json@55ca0440062bbe6348612657756a489c75750773",
+    "research/contrib/chatgpt/CAUSAL-AMALGAM/r15_expert_switch_result.json@43db62cd7cb9e323ea7fadbbd84a29cdf7dfd75a"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/CPR-01/",
+    "tests/test_cpr01_routing.py"
+  ],
+  "inputs": [
+    {
+      "name": "g41-r12-r13-33-expert-original-checkpoint",
+      "sha256": null,
+      "source": "source_joint_sha256 576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8; source artifact retrieval/format, independent fitting/calibration disjointness and local runner not yet verified"
+    },
+    {
+      "name": "r15-consumed-dev-traces",
+      "git_blobs": [
+        "7b3f2ff0b120d6557d4630de3461276d892b503f",
+        "bac19fb71d2a9918bd4ede1d3f2e6bae7b81dc48",
+        "449a186109b0b30ec98352b5b4565e2e96435b14"
+      ],
+      "source": "already-consumed historical development evidence, diagnostics only; NOT fresh confirmatory outcomes"
+    },
+    {
+      "name": "new-original-calibration-and-held-cohorts",
+      "sha256": null,
+      "source": "not yet available; cannot score science until pre-scored original source identities, owner lease, disjoint FIT/CAL/HELD and strongest equal-info controls are frozen"
+    }
+  ],
+  "frozen_design": {
+    "task": "binary public transition and terminal reward consequence streams; one separate router per outcome target",
+    "alpha": [
+      0.05,
+      0.1
+    ],
+    "window": [
+      1,
+      8
+    ],
+    "window8_min_coverage": "6/8 (strictly c<0.65 abstains)",
+    "calibration_size_per_specialist": 128,
+    "calibration_split": "independent 128 labeled transitions per specialist, never used to fit that specialist or tune routes; precommit exact dataset hashes and identity disjointness before original-source scoring",
+    "nonconformity": "binary 1-p(true label | public input), equivalent absolute residual for Bernoulli",
+    "quantile": "k=ceil((n+1)*(1-alpha)); kth ordered calibration residual; infinity if k=n+1, no empirical reinterpretation",
+    "online_feedback": "route before observing y; append membership only after publicly revealed outcome; W1/W8 feedback uses only prior outcomes",
+    "routing": "empty current set or low trailing coverage => zero weight; otherwise smallest prediction-set cardinality then stable immutable module identifier; no oracle regime identifiers",
+    "speciation": "only emit a signal after W consecutive universal abstentions; NEVER auto-spawn, freeze learner, mutate checkpoint or dispatch",
+    "negative_cases": "identical experts, noisy/gradual shifts, cold restore/corrupt pin, replay duplication, absence of calibration holdout, no task-oracle access",
+    "seeds": [
+      73017,
+      73031,
+      73043
+    ],
+    "data_budget": "source-free deterministic unit fixtures only until owner source custody permits new training/calibration; prospective data budget unallocated",
+    "compute_budget": "single Python stdlib per-step router, 1e5 synthetic operations for microtiming max; no paid API or external job",
+    "capacity": "existing frozen modules only; sidecar thresholds and W<=8 booleans, no native model changes",
+    "evaluator": "prequential transition and reward Brier per stage; same public inputs, actions and compute for strongest controls, no oracle regime labels",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "control_r15_bayes",
+    "control_g41_cap_12_5",
+    "control_g41_cap_25",
+    "cpr_single_step",
+    "cpr_windowed_w8",
+    "strongest fully-trained conditional/tabular/change-point baseline"
+  ],
+  "metrics": [
+    "familiar_transition_and_reward_Brier_delta",
+    "new_task_mean_brier",
+    "A_to_B_to_A_revival_step_latency",
+    "per_stage_wins_strongest_control",
+    "false_speciation_count_10pct_corrupted_observations",
+    "per_step_router_overhead_ns_at_exact_platform"
+  ],
+  "classification_rules": {
+    "supported": "fresh owner-qualified disjoint original source; all familiar Brier deltas <=0.02, per-stage matched new-task Brier <=0.195822 only if same cohort/scores and >=0.005 advantage over best per-stage equal-info control, revival <=12, majority stage wins and zero runaway speciation under both registered noise controls; independent Windows+Linux full exact-source final regression and reproduction",
+    "mixed": "some preregistered criteria pass but at least one benefit or robustness gate fails",
+    "negative": "any primary science gate fails with valid provenance or a conformal false abstention counterexample holds",
+    "invalid": "calibration overlaps FIT or HELD, reused consumed outcomes as primary, missing checkpoint/runner custody, missing fully fitted controls, runtime feedback leakage, oracle task labels, shifted pre-frozen protocol or budget"
+  },
+  "statistical_limits": "Inductive conformal finite-sample marginal validity requires exchangeability of calibration and test; it does not imply conditional accuracy, OOD detection, out-of-regime emptiness, or guaranteed A-B-A revival. W8 retrospective coverage threshold is heuristic and does not inherit conformal guarantees.",
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "protected_first_use_requires_separate_owner": true
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra actions/compute",
+    "held-out/evaluator leakage"
+  ],
+  "preregistration_note": "This design-only commit precedes implementation and any CPR scoring. No new original cohort or independent calibration source has been frozen, so prospective scientific first-use is NOT authorized or classified PASS."
+}
