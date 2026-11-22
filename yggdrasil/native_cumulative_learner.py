@@ -240,6 +240,29 @@ class NativeCumulativeLearner:
         candidate._experience = experience
         return candidate
 
+    def observe_external_fixture(self, public_request, raw, expected_sha256):
+        """Admit bounded fixture-only evidence into existing cumulative memory.
+
+        Preserve the existing integrated DTR parent requirement. External IDs
+        remain passive evidence, never binary causal counter updates or source
+        authority. The enclosing checkpoint must fit before publishing state.
+        """
+        require(self._dtr is not None, 'EPISODE_REQUIRES_INTEGRATED_PARENT')
+        previous = self._episode_reader()
+        experience = previous.observe_external_fixture(
+            public_request, raw, expected_sha256)
+        if experience is previous:
+            return self
+        candidate = self._copy()
+        candidate._experience = experience
+        candidate.checkpoint()
+        return candidate
+
+    def observed_external_fixture_value(self, view, external_action_id):
+        """Only an exact fully witnessed fixture value may be returned."""
+        return self._episode_reader().observed_external_fixture_value(
+            view, external_action_id)
+
     def consolidate_experience(self):
         """Replay the retained public episodes and verify the resulting state."""
         if self._experience is None:

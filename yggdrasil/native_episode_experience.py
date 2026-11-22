@@ -485,7 +485,13 @@ class NativeEpisodeExperience:
             if self._episode_limit != MAX_EPISODES and len(self._ledger) == MAX_EPISODES:
                 rebuilt = rebuilt.extend_witness_capacity()
         require(rebuilt._state_digest() == self._state_digest(), "EPISODE_REPLAY_DRIFT")
-        rebuilt._external_action_fixture = self._external_action_fixture
+        if self._external_action_fixture is not None:
+            # The binary ledger does not contain passive opaque-ID evidence.
+            # Keep the existing independently pinned, immutable fixture and
+            # verify both planes before publishing a consolidated state.
+            rebuilt._external_action_fixture = self._external_action_fixture
+            require(rebuilt.checkpoint() == self.checkpoint(),
+                    "EPISODE_EXTERNAL_CONSOLIDATION_DRIFT")
         return rebuilt
 
     def _repair_info(self):
