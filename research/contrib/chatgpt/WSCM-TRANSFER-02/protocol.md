@@ -58,8 +58,12 @@ Failure to beat the strongest non-oracle control on either primary measure, leak
 
 ## Explicit phase status and next implementation gate
 
-- **ENGINEERING:** Protocol prepared for review only; no T interface adapter, runnable source generator, final frozen manifests, local test result or dual-OS full regression for TRANSFER-02 yet. **UNVERIFIED.**
+- **ENGINEERING:** Protocol prepared and a separate illustrative static preflight implemented; 7/7 isolated source-free contract tests PASS on Linux CPython 3.13.5, with both original tested files verified against exact GitHub blob hashes in `static-test-result.json`. No T native interface adapter, scored source generator, final first-use freeze, source-qualified local training, or complete exact-SHA dual-OS regression. **FOCUSED STATIC PASS; FULL INTEGRATION UNVERIFIED.**
 - **SCIENTIFIC:** No new experiment run; no superiority, general retention or unfamiliar transfer established. **UNVERIFIED.**
 - **DEPLOYMENT:** No native production, accepted main, Genome, `.ice`, controller, runner, queue, CI, first-use or merge changes. **NOT DEPLOYED.**
 
 **Next authorized preparation gate:** In a research-only seam, verify actual native episode and action-ID interfaces and implement the source-free falsification fixtures/negative controls; freeze complete scorer and candidate source **before** a first scored development trial. If action IDs cannot be represented without semantic leakage or unsupported native mutation, explicitly stop and report `NATIVE_ACTION_ID_INTERFACE_BLOCKED` rather than manufacturing a positive transfer result.
+
+## Subsequent source-free static qualification checkpoint (2026-11-22)
+
+The added `contract.py` is an **illustrative law-isomorphism negative test**, not a protected-world law generator or candidate-visible held cohort. Its A/B/C truth functions are genuinely unequal under every action-role permutation; `A_return` has fresh external IDs but the same underlying A law. The public request omits hidden roles, laws, and phase. Seven isolated static tests PASS, including a deliberately permuted-A false-novelty guard and invalid-ID refusal. Complete provenance is in `static-test-result.json`; both files' Git blob IDs match the locally tested bytes. **Do not train on these disclosed example laws and then treat the same functions as held transfer.** The real scored law families, source adapter, frozen hyperparameters, seeds, action budget, information-control boundary and owner authority remain unqualified. No new scored trial or protected first-use occurred.
