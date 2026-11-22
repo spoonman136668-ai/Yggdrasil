@@ -157,7 +157,7 @@ jobs:
           skipped='test_code_atlas.G29.test_source_and_pinned_artifact'
           assert sum(t.id()==skipped for t in cases)==1, ('WSCM_ATLAS_GUARD',len(cases))
           eligible=[t for t in cases if t.id()!=skipped]
-          assert len(eligible)==503, ('WSCM_WINDOWS_COVERAGE_DRIFT',len(eligible))
+          assert len(eligible)==505, ('WSCM_WINDOWS_COVERAGE_DRIFT',len(eligible))
           print('WSCM_WINDOWS_ATLAS_SNAPSHOT_EXCLUDED_ON_TEST_ONLY_BRANCH',flush=True)
           print('WSCM_WINDOWS_POSIX_IMPORT_TESTS_DEFERRED_TO_LINUX=19',flush=True)
           print('WSCM_WINDOWS_ELIGIBLE_TESTS='+str(len(eligible)),flush=True)
@@ -251,7 +251,7 @@ jobs:
           atlas='test_code_atlas.G29.test_source_and_pinned_artifact'
           assert sum(x.id()==atlas for x in cases)==1, ('WSCM_LINUX_ATLAS_GUARD',len(cases))
           eligible=[x for x in cases if x.id()!=atlas]
-          assert len(eligible)==522, ('WSCM_LINUX_COVERAGE_DRIFT',len(eligible))
+          assert len(eligible)==524, ('WSCM_LINUX_COVERAGE_DRIFT',len(eligible))
           print('WSCM_LINUX_ELIGIBLE_TESTS='+str(len(eligible)),flush=True)
           result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(eligible))
           print('WSCM_LINUX_ELIGIBLE='+('PASS' if result.wasSuccessful() else 'FAIL'),flush=True)
