@@ -83,6 +83,21 @@ jobs:
           & $python -B -c 'import sys; sys.path.insert(0,sys.argv[1]); import numpy,scipy' $solverPath
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_IMPORT_FAILED'}
           Write-Host 'WSCM_SOLVER_IMPORT=PASS'
+          # An embedded Python _pth may ignore PYTHONPATH in cold subprocesses.
+          # Create a fully run-scoped standard venv to give both the parent and
+          # the original cold-process tests an identical import environment.
+          $venvDir=Join-Path $env:RUNNER_TEMP ('wscm-native-venv-'+$env:GITHUB_RUN_ID)
+          & $python -B -m venv --without-pip --system-site-packages $venvDir
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_VENV_CREATION_FAILED'}
+          $venvPython=Join-Path $venvDir 'Scripts\python.exe'
+          if(-not(Test-Path -LiteralPath $venvPython -PathType Leaf)){throw 'WSCM_RUNNER_VENV_EXECUTABLE_MISSING'}
+          $env:PYTHONPATH=$sourceRoot+[IO.Path]::PathSeparator+$solverPath
+          & $venvPython -B -c 'import yggdrasil.native_cumulative_learner'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_COLD_PYTHON_PACKAGE_PATH_INVALID'}
+          & $venvPython -B -c 'import scipy'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_COLD_PYTHON_SCIPY_PATH_INVALID'}
+          $python=$venvPython
+          Write-Host 'WSCM_COLD_PYTHON_IMPORT=PASS'
           $suites=@(
             'test_wscm_cumulative_fixture_replay.py',
             'test_native_cumulative_learner.py',
