@@ -67,3 +67,14 @@ Failure to beat the strongest non-oracle control on either primary measure, leak
 ## Subsequent source-free static qualification checkpoint (2026-11-22)
 
 The added `contract.py` is an **illustrative law-isomorphism negative test**, not a protected-world law generator or candidate-visible held cohort. Its A/B/C truth functions are genuinely unequal under every action-role permutation; `A_return` has fresh external IDs but the same underlying A law. The public request omits hidden roles, laws, and phase. Seven isolated static tests PASS, including a deliberately permuted-A false-novelty guard and invalid-ID refusal. Complete provenance is in `static-test-result.json`; both files' Git blob IDs match the locally tested bytes. **Do not train on these disclosed example laws and then treat the same functions as held transfer.** The real scored law families, source adapter, frozen hyperparameters, seeds, action budget, information-control boundary and owner authority remain unqualified. No new scored trial or protected first-use occurred.
+
+
+## Subsequent source-free falsification hardening (2026-11-22)
+
+The previous static contract accepted a falsified phase table where `C_composition` reused law A despite a separate unused C truth-function family being present. This is a **real preflight false-positive defect**, not evidence that a model learned or failed to learn. The source-only correction binds actual phase-to-law assignments, rejects nonbinary functions and action-ID type aliases, and applies a strict whitelist to the learner-facing request payload. A new deliberately adversarial suite rejects injected hidden `role`, `law`, `phase`, action-to-role mapping and future outcome, as well as a C family that is merely permuted A.
+
+**ENGINEERING:** Original 7 plus new 7 isolated contract/falsification tests = **14/14 PASS** on Linux CPython 3.13.5; exact tested source and new test bytes are Git-blobs pinned in `falsification-preflight-result.json`. These are source-free and illustrative, not a protected scored cohort. **SOURCE-FREE FOCUSED PASS; full Linux/Windows regression UNVERIFIED.**
+
+**NATIVE INTERFACE:** Original pinned `NativeEpisodeExperience.observe` still accepts binary `x1`/`x2` only, and its ledger is `engineering_fixture_only` without independently authenticated charged interventions. Strict external action IDs cannot be learned through this native API without a new, separately qualified interface. **NATIVE_ACTION_ID_INTERFACE_BLOCKED**. Do not smuggle a private role map through a wrapper or import this illustrative harness into a candidate.
+
+**SCIENTIFIC / DEPLOYMENT:** No new scientific trial, new held seed, owner runner use, protection first-use, native mutation, or deployment. No measured retention/transfer gain; first use remains owner gated. Do not merge or promote from these tests.

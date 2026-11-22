@@ -44,11 +44,26 @@ def canonical_law(law):
 
 def public_request(phase, state, external_id):
     """Model-visible request contains no hidden role, mapping, or law name."""
-    if phase not in ID_TO_ROLE or external_id not in ID_TO_ROLE[phase]:
+    if phase not in ID_TO_ROLE or type(external_id) is not int or external_id not in ID_TO_ROLE[phase]:
         raise ValueError("UNKNOWN_PUBLIC_ACTION")
     if type(state) is not tuple or len(state) != 2 or any(type(x) is not int or x not in (0, 1) for x in state):
         raise ValueError("INVALID_PUBLIC_STATE")
     return {"public_view": list(state), "external_action_id": external_id}
+
+
+def validate_learner_request(request):
+    """Fail closed on harness metadata in a learner-facing public request.
+
+    This checks the object boundary only; it does NOT provide process isolation
+    from a learner that imports harness-private symbols in this module.
+    """
+    if (type(request) is not dict or set(request) != {"public_view", "external_action_id"}
+            or type(request["external_action_id"]) is not int
+            or type(request["public_view"]) is not list or len(request["public_view"]) != 2
+            or any(type(bit) is not int or bit not in (0, 1) for bit in request["public_view"])):
+        raise ValueError("LEARNER_REQUEST_LEAK_OR_INVALID")
+    return {"public_view": request["public_view"][:],
+            "external_action_id": request["external_action_id"]}
 
 
 def engineering_only_outcome(phase, state, external_id):
@@ -67,8 +82,16 @@ def audit_static_contract():
     for mapping in ID_TO_ROLE.values():
         if sorted(mapping.values()) != list(ROLES):
             raise ValueError("ROLE_NOT_BIJECTIVE")
+    for law in FUNCTIONS:
+        for role in ROLES:
+            if any(type(value) is not int or value not in (0, 1)
+                   for value in signature(law, role)):
+                raise ValueError("NONBINARY_CAUSAL_FUNCTION")
     if len({canonical_law(k) for k in FUNCTIONS}) != len(FUNCTIONS):
         raise ValueError("LAWS_ISOMORPHIC_UNDER_ROLE_PERMUTATION")
+    expected = {"A_train": "A", "B_shift": "B", "A_return": "A", "C_composition": "C"}
+    if PHASE_LAW != expected or set(ID_TO_ROLE) != set(expected):
+        raise ValueError("PHASE_LAW_CONTRACT")
     if canonical_law("A") != canonical_law(PHASE_LAW["A_return"]):
         raise ValueError("A_RETURN_IS_NOT_A")
     return True

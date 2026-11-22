@@ -1,0 +1,59 @@
+{
+  "schema": "yggdrasil.wscm-transfer02.falsification-preflight-receipt.v1",
+  "date_utc": "2026-11-22",
+  "repo": "spoonman136668-ai/Yggdrasil",
+  "parent_pr": 1364,
+  "coordinator_pr": 1278,
+  "previous_head": "1187de9cbdd105ebaed7d1a7243bcd9a4293eb26",
+  "previous_tree": "5dc5cdd65c310b0eb9f567d70edbf52cbc384c42",
+  "classification": "SOURCE_FREE_FOCUSED_NEGATIVE_CONTROLS_ONLY",
+  "source": {
+    "path": "research/contrib/chatgpt/WSCM-TRANSFER-02/contract.py",
+    "git_blob_sha1": "8363ae65739ecac93dd581a5b971b2c6d9fcb8e2",
+    "sha256": "5e927a30fd6cbf3ef2d31d6c216d13876af401bc52f313db45e8f6ef0b008c99",
+    "bytes": 4352
+  },
+  "new_tests": {
+    "path": "tests/test_wscm_transfer02_falsification.py",
+    "git_blob_sha1": "c656df1c17ba75e54522c0d53beec517a366ebcc",
+    "sha256": "a894a87920d7edc98cbb645cd66e300e372f51b3e2c35c2668298e9c70c9b012",
+    "bytes": 4104
+  },
+  "unchanged_tests": {
+    "path": "tests/test_wscm_transfer02_contract.py",
+    "git_blob_sha1": "7e28614cdc469d4a98ecc1d517e56d0fc718f52b",
+    "sha256": "ed06ddca566398371a5af7a840e8ebce9767b5976ce6c92194d667e78a5830c6",
+    "bytes": 3051
+  },
+  "execution": {
+    "platform": "isolated Linux x86_64, not project owner runner",
+    "python": "CPython 3.13.5",
+    "command": "python -m unittest discover -s tests -p 'test_wscm_transfer02*.py'",
+    "tests_run": 14,
+    "passed": 14,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "source-free contract and falsification tests only",
+    "outcome": "FOCUSED_STATIC_PASS"
+  },
+  "failure_found": "Prior illustrative audit allowed C_composition to reuse A despite unused C truth-table; phase-law contract is now explicit.",
+  "native_interface": {
+    "native_episode_blob": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+    "public_cells_blob": "de8722f38d987ef7bcb4b7a0c23466b8e6f25712",
+    "external_action_ids_supported": false,
+    "charged_interventions_authenticated": false,
+    "classification": "NATIVE_ACTION_ID_INTERFACE_BLOCKED"
+  },
+  "limitations": {
+    "complete_source_deps_tested": false,
+    "full_final_linux_windows_regression": false,
+    "owner_runner_dispatched": false,
+    "first_use_authorized": false,
+    "scientific_trial_executed": false,
+    "held_seeds_consumed": false,
+    "learning_gain_verified": false,
+    "accepted_main_mutated": false,
+    "deployed": false
+  }
+}
