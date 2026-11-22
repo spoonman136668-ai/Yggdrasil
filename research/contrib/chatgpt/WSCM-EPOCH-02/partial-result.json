@@ -1,0 +1,102 @@
+{
+  "schema": "yggdrasil.wscm.epoch02.partial-result.v1",
+  "experiment_id": "WSCM-EPOCH-02",
+  "classification": "INVALID_INCOMPLETE_EXTERNAL_TIMEOUT",
+  "scientific_gain_verified": false,
+  "prereg_commit": "95c7d309ba6a4fdb2e9aa2da585d607d426fac13",
+  "implementation_commit": "f14daabd1a48dc4ac88c46091157da20da1f0ccc",
+  "parent_amalgam_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "exact_runner_git_blob": "33926ca8331277466fa8dae0ea55a511a3aa800c",
+  "prereg_git_blob": "6001dd5377e61d948d28aae8eb9e691fdfe47073",
+  "original_native_source_blob": "5a18b00a4c4131526e71f51d63dfd9eb9471c81e",
+  "original_start_checkpoint_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+  "source_free": true,
+  "protected_world_actions": 0,
+  "pre_scoring_tests": {
+    "pass": 10,
+    "fail": 0,
+    "source_only": true
+  },
+  "planned_seeds": [
+    "B-94011",
+    "B-94023",
+    "C-95011",
+    "C-95023"
+  ],
+  "completed_seeds": 3,
+  "completed_public_outcomes": 336,
+  "total_public_outcomes": "UNKNOWN",
+  "fourth_seed": {
+    "id": "C-95023",
+    "started_marker_sha256": "3520674e635ee5561d375257a60d279fdf9050e5f595a01d7e26ac960a9f1f55",
+    "completed_receipt": false,
+    "consumed_outcomes": "UNKNOWN",
+    "do_not_replay": true
+  },
+  "primary_timeout": {
+    "external_container_wall_cap_seconds": 180,
+    "child_timeout_config_seconds": 35,
+    "terminal_child_timeout_receipt": false,
+    "root_cause": "UNVERIFIED",
+    "no_remaining_processes": true
+  },
+  "metrics": [
+    {
+      "scenario": "B",
+      "seed": 94011,
+      "episodes": 112,
+      "epoch_changed_brier": 0.290251367,
+      "best_equal_info_control": "continuing",
+      "best_changed_brier": 0.205912309,
+      "delta_vs_best": 0.084339058,
+      "return_drift_vs_frozen": 0.014557452,
+      "changed_pass": false,
+      "return_pass": false,
+      "warmup_spurious": 0,
+      "wall_seconds": 9.019859,
+      "receipt_sha256": "cde0c6022e00d963e49f87ea49965f0baf37286a80f2ce13dcd9436262102654"
+    },
+    {
+      "scenario": "B",
+      "seed": 94023,
+      "episodes": 112,
+      "epoch_changed_brier": 0.275918172,
+      "best_equal_info_control": "continuing",
+      "best_changed_brier": 0.246379027,
+      "delta_vs_best": 0.029539145,
+      "return_drift_vs_frozen": 0.025083296,
+      "changed_pass": false,
+      "return_pass": false,
+      "warmup_spurious": 0,
+      "wall_seconds": 8.441137,
+      "receipt_sha256": "bf482b45a04387c133e35243505d9eb002fe51a0bf91aa5d872bd3f469351b36"
+    },
+    {
+      "scenario": "C",
+      "seed": 95011,
+      "episodes": 112,
+      "epoch_changed_brier": 0.289945249,
+      "best_equal_info_control": "trailing32",
+      "best_changed_brier": 0.216640624,
+      "delta_vs_best": 0.073304625,
+      "return_drift_vs_frozen": 0,
+      "changed_pass": false,
+      "return_pass": true,
+      "warmup_spurious": 0,
+      "wall_seconds": 9.079794,
+      "receipt_sha256": "275a587c552bc7a7adde0b547fcab983f19de34620da04534bde808da47ed404"
+    }
+  ],
+  "receipts": {
+    "file": "partial-sealed-receipts.tar.gz",
+    "encoding": "tar+gzip",
+    "sha256": "c8e8d0091530cc7e0bbaf4141f959058d6e8e62e6d5fd5184ce2c1b948931d09",
+    "git_blob": "80a85bb6a5c72f3cebafc306bd359b5bef0aa432",
+    "members": 7,
+    "format_note": "Includes three exact completed per-seed JSON receipts, four started markers including incomplete seed, no protected data"
+  },
+  "scientific_disposition": "NO_COMPLETED_FOUR_SEED_CLASSIFICATION; three negative source-free development observations; NOT scientific pass/fail, no transfer or retention gain verified",
+  "engineering_disposition": "focused tests PASS; source pins PASS; tool-level execution timeout and missing fourth terminal receipt FAIL; mandatory candidate Linux/Windows regression UNVERIFIED",
+  "deployment": "UNVERIFIED; draft unmerged, no accepted/main, Genome or native code changes",
+  "decision": "Stop WSCM-EPOCH-02; do not replay frozen seeds or tune selector on completed results. Report partial negatives and executable receipt completeness failure. New science needs independent authority/fixture; do not run more W16 loss routing studies."
+}
