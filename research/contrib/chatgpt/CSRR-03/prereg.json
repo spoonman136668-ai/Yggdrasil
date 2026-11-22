@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CSRR-03",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a generic online hypothesis tournament infer an unsupplied causal law, archive it, and reactivate it when the law returns faster than matched fully trained controls?",
+  "hypothesis": "Archive-augmented Bayesian tournament over all 256 three-bit Boolean causal laws may reduce early return-to-old-law Brier versus an identically configured uncached tournament and rolling-count control. A symbolic controller already told the three true law masks should be stronger. No source-qualified scientific gain is possible here.",
+  "exact_parent_sha": "c56a3e6a56ef1954e55956011b66a6d54954f3f9",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/commit/c56a3e6a56ef1954e55956011b66a6d54954f3f9"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/CSRR-03/study.mjs",
+    "research/contrib/chatgpt/CSRR-03/prereg.json",
+    "research/contrib/chatgpt/CSRR-03/README.md",
+    "research/contrib/chatgpt/CSRR-03/result.json",
+    "research/contrib/chatgpt/CSRR-03/provenance.json"
+  ],
+  "inputs": [],
+  "synthetic_fixture": {
+    "license": "Original source-free code; no protected or imported dataset",
+    "source_sha256": "b4fda1513b7c5f92181d4bde08f1efba63f1f1709ddd17d228ccee1c3857932d",
+    "source_git_blob": "b6e90b5dab06edc10cd53f0dc52c9248fe8de17b",
+    "worlds": "A=parity(a,x,z); B=(a AND z) XOR x; C=(a ? (x AND z) : (x XOR z)). Three truth-table identities known to the harness and informed symbolic upper bound, NOT to the generic tournament or count controls.",
+    "sampling": "For seed,t,input, SHA256('CSRR03:'+seed+':'+t+':'+input) first uint32/2^32 compared to Bernoulli with P(y=truth)=.85; public input=(5*t+seed)%8; one observed consequence to every learner.",
+    "interpretation": "Every three-bit Boolean function is enumerated. Law identity is unknown but its representational family is PREPROGRAMMED. No independent unfamiliar causal family or original-world first-use."
+  },
+  "frozen_design": {
+    "seeds": [
+      1123,
+      2234,
+      3345
+    ],
+    "split": "A,B,A,C,A,B, each 192 steps; first 32 steps of A return phases indexed 2 and 4 are the revival diagnostic; no post-result seed adjustment",
+    "ordering": "t=0..1151 per seed, input=(5*t+seed)%8; identical consequence, action and context evidence supplied to all candidate/controls",
+    "data_budget": "3456 synthetic observed action-consequences per learner; original-world actions zero",
+    "compute_budget": "Node.js 22 standard library, 256-mask enumeration and rolling 32 witnesses; one primary process and one fresh-process reproduction",
+    "capacity": "256 masks; prior log penalty -.32 per 3-cube edge transition; Bernoulli model probabilities .85/.15; rolling witness window 32; archive FIFO up to four masks, insert only after eight consecutive MAP steps with full window; archived prior log-bonus .9; controls uncached same exact grammar/parameters, Beta(1,1) last-4 per-input counts, Beta(1,1) global counts, three-law symbolic Bayesian with same 32 witnesses (extra prior law identity)",
+    "evaluator": "Harness-only analytic expected Bernoulli Brier averaged across 8 input cells BEFORE each shared observation; phase and law identities not exposed to candidate/uncached/counts. Cold SHA256 checkpoint after t=383, compare restored versus continuing candidate on all future predictions, same future updates.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Raw .5 constant",
+    "Uncached same-grammar and same-parameter fully updated 256-mask tournament",
+    "Rolling last-4 Beta(1,1) per-input counts",
+    "Cumulative Beta(1,1) per-input counts",
+    "Informed three-law Bayesian symbolic comparator (upper bound, extra prior law identities)",
+    "Corrupted-checkpoint and invalid pre-action/public label negative controls"
+  ],
+  "metrics": [
+    "Overall and phase-specific expected Brier",
+    "Changed-phase Brier gain over constant",
+    "Early 32-step A-return Brier over uncached and rolling-count controls",
+    "A-return excess Brier over correct law Bernoulli floor .1275 must be <=+.02",
+    "Exact cold prediction mismatches; archive additions and reactivations; source/witness accounting"
+  ],
+  "classification_rules": {
+    "engineering_advantage_dev_only": "Cold mismatch=0; changed-phase Brier improves >= .005 versus constant; return-world excess over .1275 <=+.020; early-return archive improves >=.005 over uncached; whole-run archive Brier improves >=.005 over BOTH rolling counts and informed symbolic. DEV only, never scientific PASS.",
+    "mixed_dev_only": "Cold mismatch=0, changed-phase gain >= .005 against constant and return-world excess <=+.020, but fails >=.005 superiority to all strongest controls.",
+    "negative_dev_only": "Valid execution but no >=.005 changed-phase gain over constant OR return-world Brier excess >+.020, or insufficient retention/transfer; preserve failed candidates.",
+    "invalid": "Different action/outcome evidence, hidden phase/law/evaluator leakage, mismatch in 3456 witness count, altered frozen source, thresholds, data or cohorts, bad checkpoint acceptance, missing negatives, protected source use, primary results before prereg commit."
+  },
+  "prohibited_after_primary_run": [
+    "Changing seeds, law functions, thresholds, model scores or chosen controls",
+    "Reusing consumed CSRR01/02 cohorts as new",
+    "Source-family first-use, runner dispatch, merge, accepted-ref mutation, deployment",
+    "Claiming independent native scientific intelligence from synthetic result"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit this and exact study source before primary run, then execute only the preregistered three seeds, reproduce freshly without changing settings, and record evidence in a separate result commit."
+}
