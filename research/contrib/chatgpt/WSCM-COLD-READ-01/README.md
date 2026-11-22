@@ -44,3 +44,21 @@ The script refuses checkpoint or original trace byte drift before reporting. It 
 **ENGINEERING:** local source-equivalent 216/216 default native parity PASS; exact original-code integration tests/full dual-OS regression UNVERIFIED. **SCIENTIFIC:** retrospective fixed-state readout diagnostic, memory/transfer gain UNVERIFIED. **DEPLOYMENT:** UNVERIFIED, draft/unmerged, no native writes.
 
 **Next decision:** Before any new architectural patch, reproduce the exact original-code cold audit and compare its **context-specific full/pooled** vs *existing selected context-mixture readout* in a separately preregistered A→B→A run with independently fitted exact Bayesian controls and matched actions, compute, source authority and functional cold retention. Do not tune these variants further on the already scored cohort.
+
+## Follow-up qualification: exact original native episode module, archived checkpoint
+
+Previous wording above describes the original status **before** the follow-up gate. In this gate the exact 31,996-byte `yggdrasil/native_episode_experience.py` from pinned Amalgam `86264b41a08d49f558418c0fba367f3a2636befa` was recovered byte-for-byte and verified against original Git blob `5a18b00a4c4131526e71f51d63dfd9eb9471c81e`. It was then **actually imported and executed**, alongside local dependency shims containing the exact source-equivalent public helper and causal-count methods (not their complete original modules). The genuine archived, SHA-pinned 2,921,047-byte joint checkpoint restored successfully to the original 1,025-witness native experience with 29 context models and state digest `3c6433c9e60a0f7e6b750327ae7b705984fb20b25e8bd04fe16a3e9a31c9dde8`.
+
+- **8/8 local Python 3.13.5/Linux tests PASS**: the previously unexecuted six source-interface tests plus two new archived-checkpoint parity and tamper-rejection tests (test file `tests/test_wscm_archived_cold01.py`, blob `3fa20913cc58f6b310ec4eba78b50ad200659891`).
+- Across the archived model's 16 complete public context/action/transition/second-action cases, the exact original episode code matched **48/48 default/full/pooled two-target readout pairs (96 scalar probabilities)** against the prior frozen `native-readout-lookup.json` blob `4aecd1529179fd1ddd93d5ea9dd3a1bafc980352`. Second independent cold restore reproduced the checkpoint bytes and info; an altered checkpoint was rejected. No state modification, training or new world outcomes.
+- The earlier **216/216** historical pinned-forecast comparison remains the *independent source-equivalent analysis* from this directory's original result; the 216 source traces themselves were not mounted and did **not** undergo direct end-to-end exact-source scoring in this sandbox. Do not add 48 and 216 or label full source data end-to-end PASS.
+- The new tests intentionally skip their archived-fixture class if `WSCM_ARCHIVED_JOINT_PATH` is unavailable; that is **UNVERIFIED**, not a passing fixture check, in normal CI with no downloaded original artifact.
+
+Reproduction with the existing archived, checksum-verified artifact extracted **outside the repository**:
+
+```sh
+WSCM_ARCHIVED_JOINT_PATH=/path/to/amalgam-joint-state.json \
+  python -m unittest discover -s tests -p 'test_wscm_*cold*.py' -v
+```
+
+The full source-tree dependency qualification and original Python audit across all three private trace files, mandatory exact-candidate Linux+Windows regression, and all prospective scientific retention/transfer acceptance remain **UNVERIFIED**. No protected scientific source was first-used, no runner/workflow dispatched, and no native learner or Genome mutated. Results, limitations and exact source pins are in `original-native-cold-qualification.json`.
