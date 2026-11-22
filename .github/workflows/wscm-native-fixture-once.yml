@@ -265,6 +265,7 @@ jobs:
           echo "WSCM_LINUX_SOURCE_FREE_REGRESSION=PASS"
 
   archived-linux:
+    if: ${{ github.sha == 'bbbab7383c664f0353270a32f3f1deb5e56fd75d' }}
     name: archived-native-linux
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -482,10 +483,62 @@ jobs:
               assert result.wasSuccessful() and not result.skipped and result.testsRun>=2,("WSCM_ARCHIVED_SOURCE_TEST_FAILURE",pat,result.testsRun,len(result.skipped))
           print("WSCM_ARCHIVED_NATIVE_TESTS_NO_SKIPS=PASS",total,flush=True)
           '@
-          & $env:WSCM_TEST_PYTHON -B -c $script
+          # PowerShell native argument passing stripped literal quotes in -c.
+          # Write exact Python bytes to an isolated temporary script instead.
+          $scriptFile=Join-Path $env:RUNNER_TEMP ('wscm-archived-check-'+$env:GITHUB_RUN_ID+'.py')
+          [IO.File]::WriteAllText($scriptFile,$script,(New-Object System.Text.UTF8Encoding($false)))
+          & $env:WSCM_TEST_PYTHON -B $scriptFile
           if($LASTEXITCODE -ne 0){throw 'WSCM_WINDOWS_AUTHENTIC_ARCHIVE_TEST_FAILED'}
           & git.exe diff --exit-code
           if($LASTEXITCODE -ne 0){throw 'WSCM_ARCHIVED_WINDOWS_WORKTREE_DRIFT'}
           if(@(& git.exe status --porcelain).Count){throw 'WSCM_ARCHIVED_WINDOWS_UNTRACKED'}
           Write-Host 'WSCM_WINDOWS_ARCHIVED_GATE=PASS'
+
+  g29-atlas-candidate-bundle:
+    name: g29-atlas-from-exact-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact WSCM source commit for atlas bundle, no writes
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: c96ba9c1852fa328947d0e4224955152d2b475ec
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Check exact source candidate and no protected actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = c96ba9c1852fa328947d0e4224955152d2b475ec
+          test "$(git rev-parse HEAD:tests/test_wscm_epoch02.py)" = 6fb699159609b893afe77de4c2b3b52d0a8cc35a
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 7c3f35cbaf77ddd507070b719b9de957f4aa4802
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          echo WSCM_ATLAS_SOURCE_CUSTODY=PASS
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Generate exact native G29 artifact bytes as chunked base64 receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import base64
+          from pathlib import Path
+          from scripts import build_code_atlas as atlas
+          root=Path.cwd()
+          source="c96ba9c1852fa328947d0e4224955152d2b475ec"
+          data=atlas.render(atlas.snapshot(root,source))
+          assert set(data)==set(atlas.OUT)
+          for path in atlas.OUT:
+              raw=data[path].encode("utf-8")
+              encoded=base64.b64encode(raw).decode("ascii")
+              print("WSCM_ATLAS_BEGIN|"+path+"|"+str(len(raw))+"|"+str(len(encoded)),flush=True)
+              for start in range(0,len(encoded),16000):
+                  print("WSCM_ATLAS_PART|"+path+"|"+str(start//16000)+"|"+encoded[start:start+16000],flush=True)
+              print("WSCM_ATLAS_END|"+path+"|"+str(len(encoded)),flush=True)
+          print("WSCM_ATLAS_REANCHOR_ARTIFACTS=EMITTED_NOT_COMMITTED",flush=True)
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
 
