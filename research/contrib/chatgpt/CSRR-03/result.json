@@ -1,0 +1,149 @@
+{
+  "schema": "csrr03.result.v1",
+  "experiment_id": "CSRR-03",
+  "classification": "NEGATIVE_DEV_ONLY",
+  "frozen_protocol_commit": "13c9cb39b821fe017498b0dbbf1f0f2fb58d33b7",
+  "source_blob": "b6e90b5dab06edc10cd53f0dc52c9248fe8de17b",
+  "source_sha256": "b4fda1513b7c5f92181d4bde08f1efba63f1f1709ddd17d228ccee1c3857932d",
+  "prereg_blob": "7d73314b432ba70df75985a75afbd571092a8dfd",
+  "primary_full_stdout_sha256": "35c4686fb5861b670c444a32a568362ebe20c10c60498edc6676d5777d254977",
+  "fresh_process_byte_identical": true,
+  "seeds": [
+    1123,
+    2234,
+    3345
+  ],
+  "phase_sequence": [
+    "A",
+    "B",
+    "A",
+    "C",
+    "A",
+    "B"
+  ],
+  "steps_per_phase": 192,
+  "observations_per_learner": 3456,
+  "overall_brier": {
+    "raw": 0.25,
+    "archive": 0.16931928649967798,
+    "no_archive": 0.17055201631860945,
+    "window_counts": 0.167299543467073,
+    "global_counts": 0.2166990404877544,
+    "informed_symbolic": 0.1473189022429499
+  },
+  "diagnostics": {
+    "changed_vs_raw": 0.08081337395763849,
+    "changed_vs_window": 0.0006179007066044462,
+    "changed_vs_uncached": 0.0017402257701716328,
+    "overall_vs_informed": -0.022000384256728067,
+    "returning_first32_vs_uncached": -0.0029815401140946274,
+    "returning_first32_vs_window": -0.022625574254004827,
+    "return_old_drift": 0.043999147439477054
+  },
+  "thresholds": {
+    "return_old_drift_max": 0.02,
+    "engineering_gain_min": 0.005
+  },
+  "checks": {
+    "return_old_drift": "FAIL",
+    "early_return_vs_uncached": "FAIL",
+    "overall_vs_equal_information_window": "FAIL",
+    "overall_vs_informed_symbolic": "FAIL",
+    "cold_prediction_mismatches": 0,
+    "source_free_node": "PASS",
+    "fresh_process_reproduction": "PASS"
+  },
+  "per_seed": [
+    {
+      "seed": 1123,
+      "archive_promotions": 33,
+      "final_archive": [
+        151,
+        158,
+        150,
+        108
+      ]
+    },
+    {
+      "seed": 2234,
+      "archive_promotions": 32,
+      "final_archive": [
+        76,
+        108,
+        236,
+        100
+      ]
+    },
+    {
+      "seed": 3345,
+      "archive_promotions": 32,
+      "final_archive": [
+        150,
+        124,
+        108,
+        236
+      ]
+    }
+  ],
+  "phase_means_rounded_six_decimals": [
+    {
+      "index": 0,
+      "world": "A",
+      "archive": 0.165358,
+      "uncached": 0.165424,
+      "rolling": 0.159319,
+      "informed": 0.131108,
+      "early32_archive": 0.196649
+    },
+    {
+      "index": 1,
+      "world": "B",
+      "archive": 0.18336,
+      "uncached": 0.182946,
+      "rolling": 0.17833,
+      "informed": 0.161041,
+      "early32_archive": 0.317146
+    },
+    {
+      "index": 2,
+      "world": "A",
+      "archive": 0.187812,
+      "uncached": 0.188204,
+      "rolling": 0.178026,
+      "informed": 0.165749,
+      "early32_archive": 0.319717
+    },
+    {
+      "index": 3,
+      "world": "C",
+      "archive": 0.156547,
+      "uncached": 0.159736,
+      "rolling": 0.159811,
+      "informed": 0.13063,
+      "early32_archive": 0.164236
+    },
+    {
+      "index": 4,
+      "world": "A",
+      "archive": 0.155186,
+      "uncached": 0.156904,
+      "rolling": 0.157038,
+      "informed": 0.134461,
+      "early32_archive": 0.164683
+    },
+    {
+      "index": 5,
+      "world": "B",
+      "archive": 0.167653,
+      "uncached": 0.170099,
+      "rolling": 0.171272,
+      "informed": 0.160924,
+      "early32_archive": 0.29641
+    }
+  ],
+  "original_source_actions": 0,
+  "native_yggdrasil_used": false,
+  "scientific_gain_verified": false,
+  "protected_first_use": "NO_GO",
+  "interpretation": "The generic 256-law candidate can assign probabilities without receiving phase labels or the three exact law identities, but its four-slot archive churns, early-return Brier worsens versus uncached and rolling controls, and old-world retention fails the frozen threshold. Symbolic family comparator has stronger prior knowledge and separately outperforms; no evidence of native causal novelty, unfamiliar source transfer, or scientific gain."
+}
