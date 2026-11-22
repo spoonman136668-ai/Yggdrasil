@@ -1,0 +1,99 @@
+{
+  "schema": "yggdrasil.nkr05.full-historical-native-knowledge-prereg.v1",
+  "experiment_id": "NKR-05",
+  "project": "Yggdrasil",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_DATA_SCAN",
+  "parent": {
+    "commit_sha": "e0ed191cc8dc2b4dd62dd1d6836fa7fb0309500c",
+    "parent_pr": 1128,
+    "accepted_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Build an independently source-pinned persistent full-historical-train factual-weight image and a read-only native semantic query bridge for Yggdrasil, NOT projecting facts into its unrelated 16-slot causal cells. Materialize every TRAIN triple (no reserved valid/test), not a small fixture or sample. Preserve identity, relationship type, exact evidence, source snapshot and cold restoration.",
+  "source": {
+    "type": "previously_consumed_historical_Wikidata5M_noncanonical_variant",
+    "url": "https://web.informatik.uni-mannheim.de/pi1/kge-datasets/wikidata5m.tar.gz",
+    "archive_sha256": "ccda8bbcd3cf599b30dd3fd8979ac26e59b48fc53d23128882a044bfbb67f878",
+    "archive_bytes": 174515774,
+    "train_member": "wikidata5m/train.txt",
+    "train_sha256": "2ef1a279f6393a8edfbb2b44114a2c97944272e5fe2a1bd2a7cbe48f94742f1a",
+    "train_bytes": 436189882,
+    "train_rows": 21343681,
+    "distinct_relation_types": 828,
+    "official_valid_test_read": false,
+    "license": "CC0 Wikidata structured triples",
+    "source_age": "historical snapshot; not verified current facts",
+    "wsp102_consumed": true,
+    "wsp116_source_replay_nonindependent": true,
+    "protected_scientific_first_use": false
+  },
+  "representation": {
+    "three_uint32_fields": [
+      "Wikidata Q subject",
+      "Wikidata P predicate",
+      "Wikidata Q object"
+    ],
+    "row_bytes": 12,
+    "total_numeric_weight_bytes": 256124172,
+    "sort_key": "(subject,predicate,object) ascending; duplicates retained",
+    "index": "memory-mapped sorted full numerical triple file; binary search on exact subject/predicate",
+    "source_ref": "immutable historical train manifest plus packed SHA256",
+    "native_model_layer": "experimental standalone typed factual store; Yggdrasil 16-slot NKR04 action-consequence memory unchanged",
+    "format_version": "yggdrasil.native-factual-weights.v1",
+    "full_train_exposure": "all historical TRAIN groups including previously consumed WSP103-held query groups; these are no longer fresh evaluation labels"
+  },
+  "build": {
+    "time_budget_seconds": 1500,
+    "memory_budget_bytes": 2500000000,
+    "disk_budget_bytes": 3500000000,
+    "chunk_rows": 500000,
+    "source_download_once": true,
+    "artifact": "full historical TRAIN-only source-pinned model image in bounded GitHub Action artifact with declared expiry; not checked into Git source",
+    "operator": "external sort + binary searchable mmap, no stochastic training",
+    "records_scope": "all 21343681 historical TRAIN rows; no masked withheld groups because objective full knowledge"
+  },
+  "fixture": {
+    "finite_source_rows": 24,
+    "source_hash_and_cold_sha": "exact",
+    "lookup_exact_membership": true,
+    "query_lexicographic": true,
+    "duplicate_preservation": true,
+    "negative_invalid_triples": true,
+    "manifest_tamper": true,
+    "open_world_unknown_abstention": true,
+    "readonly_api": true
+  },
+  "controls": {
+    "independent_exact_symbolic": "same source set for in-fixture parity",
+    "frozen_conventional": "not a learning superiority experiment; matching inference/compute comparison reserved",
+    "semantic_truth": "retains source Q/P/Q relations only; no causal interpretation invented",
+    "novel_discovery": "not asserted; typed path hypotheses labeled as hypotheses"
+  },
+  "gates": {
+    "preflight": "Ubuntu and Windows focused source-free tests, G29 pin and full root regression on candidate SHA/tree",
+    "primary": "one source-qualified single-run full TRAIN scan on GitHub-hosted Ubuntu after all preflight pass; archive and train bytes+SHA+predicate count+row count exact, fully populated file and manifest SHA/cold mmap readback, tests with exact source",
+    "post": "after source test whole root regression on same exact SHA; no source edits after results",
+    "science": "SCIENTIFIC_PASS=false; original inference and protected source unopened",
+    "admission": "research image not accepted model, no main or owners mutated"
+  },
+  "stop_rules": [
+    "missing source/repository right or mismatched digest",
+    "unexpected source member inventory",
+    "failed code fixture or G29 or root regression any OS",
+    "resource budget exceeded",
+    "any official heldout/test source read",
+    "native semantic facts mapped to 16-slot action consequences",
+    "source manifest or numerical file hash mismatch"
+  ],
+  "authority": {
+    "research_image": true,
+    "independent_science": false,
+    "accepted_main_mutation": false,
+    "merge": false,
+    "production_activation": false,
+    "first_use": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false,
+    "release_publication": false
+  }
+}

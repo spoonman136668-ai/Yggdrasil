@@ -1,0 +1,42 @@
+{
+  "schema": "yggdrasil.ckad19.dtr-composed-decision.prereg.v1",
+  "parent": "337ead74cc3a600598580747c3d8ca2d422777d0",
+  "parent_tree": "6dc08e25f3322f69cb213c58e9b250128d23c987",
+  "objective": "Compose existing two-stage DTR predictions into an explicit native decision readout. Measure training-prefix dependence and identify which claims historical public logs can support.",
+  "protocol": "Unmodified CKAD16 episode split. Fit per-replica prefixes 0,64,128,192 from retained CKAD15 state via existing API; hold rows192..255 of each replica (192 episodes). Restore and independently verify all three exact CKAD18 trained checkpoint plans. Existing probability estimates remain Beta(1,1). New derived readout uses max terminal expected reward and transition-weighted expected terminal reward at each first action. Exact rational arithmetic; choose action0 on exact ties for reproducible evaluation. Return None when DTR is untrained. Zero newly collected evidence.",
+  "controls": [
+    "Fully fitted independent conventional exact Beta dynamic program on identical per-prefix revealed rows. All raw values and choices must tie.",
+    "Fully fitted empirical-frequency dynamic program with 1/2 fallback for empty cells. Frozen informational comparator, identical observations.",
+    "Two-stage fixed action policies 00,01,10,11 and pretraining fallback 00. Logged-history terminal-only fixed policies 0,1.",
+    "Compute worst-case finite-cohort return and paired difference intervals directly from observed binary rewards on path matches. No model-imputed missing payoff and no assumptions of random propensity or state invariance under a different first action."
+  ],
+  "success": {
+    "engineering": "No state or legacy API changes. All rational decisions match independent Beta control at each nonzero prefix. All final replicas identical on this source cache. Cold restore without source/solver yields identical plan. Reject invalid context. Full Linux/Windows on sealed candidate.",
+    "development": "Report value estimates, interval widths, factual matches, matches with terminal reward and intervals against each fixed and MLE control. A positive empirical two-stage decision claim requires paired lower bound strictly above zero versus every fixed control and MLE. A positive logged-history terminal decision claim requires lower bound strictly above zero versus both constant terminal policies. These are separate retrospective gates, not population, live-policy or scientific acceptance."
+  },
+  "negative_controls": [
+    "Untrained DTR returns None and uses fixed00 only as explicit evaluation fallback.",
+    "Test mismatch of first action suppresses second-stage evidence in trajectory bounds.",
+    "Test policy agreement cancels unknown rewards when computing paired finite-cohort difference bounds.",
+    "No held outcomes in training. Independent replay only from pinned source trace; original DTR02 NO_GAIN stands."
+  ],
+  "custody": {
+    "source_sha256": "016bf254ade33b936386abf7829ff90d765da71105e2beebcb130c95febe7d1d",
+    "data": "already consumed historical public DTR02 FIT, no protected or original first-use",
+    "original_actions": 0,
+    "held_updates": 0,
+    "source_rollouts": 0
+  },
+  "budget": {
+    "wall_seconds": 180,
+    "training_prefix_rebuilds": 1,
+    "paid_apis": 0
+  },
+  "classification": "Development and engineering only; scientific_pass=false, deployment=NONE. Existing draft PR1207 only. No authority change.",
+  "allowed_paths": [
+    "yggdrasil/native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-19/**",
+    ".github/workflows/ckad19-dtr-composed-decision.yml",
+    ".ice/code-atlas.*"
+  ]
+}

@@ -49,6 +49,20 @@ class PublicCausalCells:
         old = self._counts[cell][arm][result]
         self._counts[cell][arm][result] = min(65535, old + 1)
 
+    def outcome_probability(self, address: int, action: int, *,
+                            retained: bool = False) -> tuple[int, int]:
+        """Exact Beta(1,1) posterior predictive probability of outcome one.
+
+        Returns a numerator/denominator over the EXISTING public counters.
+        The two prior pseudocounts are assumptions, not observed knowledge.
+        This readout neither changes learned bytes nor asserts determinism,
+        source identity, counterfactual validity or accepted-model admission.
+        """
+        cell = self._address(address, retained)
+        arm = self._bit(action, "ACTION")
+        failures, successes = self._counts[cell][arm]
+        return successes + 1, failures + successes + 2
+
     def choose(self, address: int, *, retained: bool = False) -> int | None:
         """Compare matched empirical rates. Abstain without both arms' evidence."""
         cell = self._address(address, retained)
@@ -62,6 +76,45 @@ class PublicCausalCells:
         if lhs == rhs:
             return None
         return 0 if lhs > rhs else 1
+
+    def choose_contextual(self, address: int, context: int, relations, *,
+                          retained: bool = False) -> int | None:
+        """Opt-in contextual inference from genuinely observed native relations.
+
+        Only an evidence-identifiable *difference* between both interventions
+        may override the native counter-only action. Missing evidence, a tie,
+        or an absent contextual advantage preserves the existing choose() path.
+        Legacy YPC1 state, interfaces and checkpoint bytes are never modified.
+        """
+        from yggdrasil.native_relation_memory import NativeRelationMemory
+
+        if not isinstance(relations, NativeRelationMemory):
+            raise ValueError("PUBLIC_CAUSAL_RELATIONS_INVALID")
+        left = relations.predict(address, context, 0, retained=retained)
+        right = relations.predict(address, context, 1, retained=retained)
+        if left is not None and right is not None and left != right:
+            return 0 if left > right else 1
+        return self.choose(address, retained=retained)
+
+    def choose_verified_contextual(self, address: int, context: int, relations, *,
+                                   retained: bool = False) -> int | None:
+        """Select only from both public intervention consequences at this context.
+
+        Unobserved compositions are *not* automatically identifiable: low-order
+        weights alone cannot exclude higher-order causal terms. When no direct
+        evidence for both action outcomes exists, preserve legacy choose().
+        This is a separately opt-in safer path; YPC1 counters/checkpoints stay
+        bit-for-bit unchanged, and no source label is an authority certificate.
+        """
+        from yggdrasil.native_relation_memory import NativeRelationMemory
+
+        if not isinstance(relations, NativeRelationMemory):
+            raise ValueError("PUBLIC_CAUSAL_VERIFIED_RELATIONS_INVALID")
+        pair = relations.observed_action_pair(address, context,
+                                             retained=retained)
+        if pair is not None and pair[0] != pair[1]:
+            return 0 if pair[0] > pair[1] else 1
+        return self.choose(address, retained=retained)
 
     def observed_action_contrast(self, address: int, *,
                                  retained: bool = False) -> tuple[int, int] | None:

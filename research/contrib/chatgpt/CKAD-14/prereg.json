@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.ckad14.sparse-native-repair.prereg.v1",
+  "experiment_id": "CKAD-14",
+  "exact_parent_sha": "8eb49bdb8f6d6886d05d6e3e67c0994aa6ebac2e",
+  "parent_tree": "2786140a50ec26a025760f771aeeb82573c10dd3",
+  "hypothesis": "A bounded minimum-support binary integer fit in the unchanged native monomial weight space can repair CKAD13's unidentified high-order representation without additional evidence or loss of previous state.",
+  "scope": "Isolated source-free development on the existing CKAD13 branch/PR1207; preserve original CKAD13 source, results, freezes, states and negative outcomes. No new PR or owner/controller/scheduler/source-first-use.",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "slots": [
+    12,
+    13
+  ],
+  "source": "Existing seed-*-stage-F.json exact pins in CKAD13/result.json. Restore full trained learner; only existing observed inputs may construct fit/calibration data. Legacy512 observed inputs per hard slot,384 FIT/128 calibration using existing input_order.",
+  "algorithm": {
+    "family": "generic sparse XOR-of-monomials, existing native 11-bit numeric space, all2048 monomials; no degree/family oracle",
+    "solver": "scipy.optimize.milp via pinned SciPy1.16.3/HiGHS; minimize number of active binary weights, with<=8 active. Integer parity slack exactly enforces FIT labels. No greedy warm start or access to calibration/evaluation outcomes during solver search.",
+    "constraints": "weights in{0,1}; integer slack0..4; sumweights<=8; AXw-2k=y",
+    "options": {
+      "presolve": true,
+      "time_limit": 30,
+      "node_limit": 100000,
+      "mip_rel_gap": 0,
+      "threads": 1,
+      "random_seed": 0
+    },
+    "admission": "Only optimal solver status0, integral bounded verified weights, FIT errors0 and calibration errors0 permit PROVISIONAL_ONLY readout. Failure/timeout is preserved and leaves original learner unchanged. No threshold adjustment or calibration-triggered solver retry.",
+    "determinism": "One solver attempt per model/arm. Linux and Windows exact semantic result parity required. Tie/timeout drift is a qualification failure, never silently normalized."
+  },
+  "arms": [
+    "REAL six original hard views",
+    "SHUFFLED six deterministic SHA label permutations of identical witnessed inputs; negative models remain separate, never adopted"
+  ],
+  "controls": [
+    "CKAD13 original degree hierarchy native, matched to identical source state",
+    "Fully grown/fitted CART using same512 observed rows; refit only if exact prior view differs",
+    "Independent set-XOR degree-hierarchy baseline on same FIT/calibration",
+    "Same conventional sparse integer program is the actual weight compiler and therefore ties native numerics; no solver/native superiority claim",
+    "No-update retained learner"
+  ],
+  "success": {
+    "engineering": "All3 final parents restored, previous source/property bytes identical, every previous answered readout preserved, source-only repair is explicit, cold checkpoint reproduction and resumed-training integration tests pass, mandatory full Linux/Windows regression and independent raw-state qualification.",
+    "development": "At least5/6 real repairs admitted, >=95% correct and0 wrong on9216 unfamiliar hard queries; all6 shuffled denied; old23040 answers preserved. Report exact totals and all misses.",
+    "scientific": "false by construction; consumed synthetic data and conventional solver supply the weights."
+  },
+  "metrics": [
+    "fit/calibration/held errors and abstentions",
+    "solver status, nodes, primal/dual bounds, elapsed cost",
+    "weight support/size and source hashes",
+    "all prior readout differences, native state bytes and cold parity",
+    "whole-process wall/CPU/RSS, dependency/setup and final qualification separately"
+  ],
+  "budgets": {
+    "whole_campaign_wall_seconds": 600,
+    "solver_attempts": 12,
+    "seconds_per_solver": 30,
+    "max_weights": 8,
+    "max_parent_or_child_checkpoint_bytes": 16777216,
+    "new_original_source_actions": 0,
+    "paid_apis": 0
+  },
+  "stop": "Fail closed on custody mismatch, solver nonintegrality, unexpected post-repair prior loss or leakage; preserve numerical negatives, no post-result algorithm/seed/split/threshold tuning. A scientifically negative/failed mechanism may be followed only by a separately frozen successor.",
+  "allowed_paths": [
+    "yggdrasil/native_sparse_hypothesis.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_sparse_hypothesis.py",
+    "tests/test_native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-14/**",
+    ".github/workflows/ckad14-sparse-repair.yml",
+    ".ice/code-atlas.*"
+  ],
+  "accepted_native": false,
+  "scientific_pass": false,
+  "deployment": "NONE"
+}

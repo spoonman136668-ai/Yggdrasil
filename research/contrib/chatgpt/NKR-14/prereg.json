@@ -1,0 +1,113 @@
+{
+  "schema": "yggdrasil.nkr14.unseen-operator-identifiability.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_NEW_WORLD_OUTCOME",
+  "project": "Yggdrasil",
+  "experiment": "NKR-14",
+  "source": {
+    "parent_pr": 1149,
+    "parent_sha": "429135fa95aad733a3ef84b167f13431db552a58",
+    "parent_tree": "ace62c0ded32b3f8a58d3edd29b49b7dda691c1f",
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "data_kind": "engineering_fixture_only",
+    "original_scientific_first_use": false,
+    "prior_nkr13": "129/192 correct, 0 confident wrong, 63 abstentions vs exact conjunction-aware symbolic tie on previously examined 12 conjunction worlds; do not retune"
+  },
+  "research_question": "Does NKR13's conjunction-specific candidate grammar become overconfident or fail to propose a rule on entirely new, previously unseen Boolean causal operator families; and what can any unrestricted exact learner infer from eight paired intervention contexts without a structural prior?",
+  "immutable_protocol": {
+    "worlds": 12,
+    "context_bits": 4,
+    "action_values": [
+      0,
+      1
+    ],
+    "old_warm": "32 source-visible outcomes (all 16 contexts x both actions), old outcome=parity(context & (1<<(world_index%4))) XOR action",
+    "new_baseline": "parity(context & BASE[world]) where BASE=[1,2,4,8,3,5,6,9,10,12,13,14]",
+    "new_outcome": "new_baseline XOR (action AND OPERATOR(world,context)); OPERATOR function kept in independent environment and not imported by learner",
+    "operator_definitions": [
+      "XOR(x0,x1)",
+      "OR(x0,x1)",
+      "NAND(x0,x1)",
+      "XNOR(x0,x2)",
+      "EXACTLY_ONE(x0,x1,x2)",
+      "AT_LEAST_TWO(x0,x1,x2)",
+      "AND(x0,NOT(x1))",
+      "MUX(x0,x1,x2): x0 ? x1 : x2",
+      "AND(OR(x0,x1),x2)",
+      "XOR(x0,AND(x1,x2))",
+      "AT_LEAST_TWO(x0,x1,x2,x3)",
+      "OR(XOR(x0,x1),XOR(x2,x3))"
+    ],
+    "operator_ids": "0 through 11, exactly one operator per world by enumerated sequence, no post-result world substitution or pruning",
+    "train_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      3,
+      5,
+      10
+    ],
+    "train_actions": "for each train context both a=0 and a=1, exactly 16 new observed outcomes; first action x0 a1, then x0 a0; subsequent 7 contexts a0 then a1",
+    "cold_contexts": [
+      6,
+      7,
+      9,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "cold_queries": "both actions on all 8 new contexts per world=16; total 192; never passed to learner",
+    "noise_control": "the existing 4 single-error NKR13 synthetic noise worlds are NOT repeated: their result remains separate completed prior qualification rather than invented new novelty",
+    "retention": "prior warm 32/32 outputs per world after new observations, 384 total",
+    "learner": "NKR13 NativeOperatorDiscovery unchanged source code and its frozen 1..15 positive-conjunction grammar; single immutable public repair bundle/world; if cannot fit or insufficient contradictions, return no new model; preserve original warm bytes",
+    "baseline": "independent unrestricted Boolean-effect truth-table version-space learner: action-0 baseline derived from visible x=0,1,2,4,8 and parity checked on all 8 training contexts; action effect at observed 8 contexts read from paired interventions; for 8 unobserved contexts allow *both* possible output bits independently, 2^8=256 consistent functions; identify outputs on cold a0 via baseline, abstain on cold a1; no source-hidden outcome truth in fitting",
+    "additional_strong_control": "NKR13's original independent exact conjunction symbolic learner from NKR12 is reported if it can fit; when it cannot, report family misspecification rather than silently substitute a stronger model",
+    "negative_controls": [
+      "wrong source bundle SHA refused",
+      "old checkpoint not mutated",
+      "checkpoint generation produces no accepted model/factual writes",
+      "cold labels absent from public intervention source",
+      "all 12 hidden operator functions are not a pure nonempty positive conjunction on all 16 contexts",
+      "exact truth-table 256 completions per world",
+      "no new original Wikidata source access",
+      "unknown result abstention never recoded as correct"
+    ]
+  },
+  "thresholds": {
+    "falsification": "At least one NKR13 confidently incorrect cold prediction OR at least one new-world source bundle unable to be represented by any positive-conjunction candidate; preserve both counts separately. Strong unrestricted version-space control must make ZERO confidently wrong predictions with eight unobserved effects and 256 consistent complete functions/world.",
+    "retention": "384/384 old predictions correct, original checkpoint source bits and legacy YPC1 unchanged",
+    "science": "scientific_pass=false regardless of outcomes because synthetic self-built worlds and arbitrary function class cannot generalize without inductive bias or more interventions",
+    "metric": "native cold correct/covered/confidently wrong/abstain/unsupported, strong unconstrained cold correct/covered/wrong/abstain, observed action budget, source SHA cold restore, all worlds including failure cases, wall time",
+    "null_policy": "If no falsification despite frozen worlds, report no observed limitation; do not change operators, test contexts, action budgets, metric or control after results.",
+    "interpretation": "Even though program-family IDs are hidden, all 12 operators are hand-authored by the experimenter. This is NOT independent authentic causal first-use, not automatic invention of an unrestricted novel operation.",
+    "next_action": "Without priors, at least 8 additional action-1 interventions covering cold contexts are needed to identify their arbitrary effect bits; a separately frozen active-information acquisition protocol is justified only if the bound is confirmed."
+  },
+  "engineering": {
+    "budget": {
+      "worlds": 12,
+      "actions_per_new_world": 16,
+      "cold_queries": 192,
+      "versions_per_world": 256,
+      "max_elapsed_seconds": 120
+    },
+    "platforms": [
+      "ubuntu-latest",
+      "windows-2022"
+    ],
+    "required": "full final regression NKR05 + entire root suite + independent G29 at exact final SHA/tree"
+  },
+  "authority": {
+    "research_source_branch_only": true,
+    "merge": false,
+    "accepted_main_mutation": false,
+    "original_science_first_use": false,
+    "owner_runner_activation": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false,
+    "full_historical_source_replay": false
+  }
+}

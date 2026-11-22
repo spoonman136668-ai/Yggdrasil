@@ -1,0 +1,48 @@
+{
+  "schema": "yggdrasil.nkr30.frozen-feedback-calibration.prereg.v1",
+  "status": "FROZEN_BEFORE_NEW_DIAGNOSTIC_IMPLEMENTATION_OR_EXPECTED_RISK_OUTCOME",
+  "parent": {
+    "sha": "e9cb0e01c74c2579e5f58ce4202aecf35c86bf35",
+    "tree": "d1e6af2ea5df59ecbe1db9e4684a5e6e70351d69",
+    "pr": 1172,
+    "nkr29_run": 43980839832
+  },
+  "question": "Does error-only correction damage the learned probability calibration under the original source's nominal IID law, rather than merely changing the finite retrospective score?",
+  "prior_observed": "NKR29 selective repair NO_GO; frozen Brier.185159824457, error-only.188826070798, all-feedback28.181150746977. This diagnostic is motivated by that frozen negative; cannot rewrite its classification.",
+  "inputs": {
+    "native_checkpoints": "NKR29 persisted164-byte cold checkpoints; all caps28/14/7 and all6 arms, no retraining",
+    "source_kernel": "NKR23/result.json, source blob6264ec5450754c009e98c3e85f6d5927ece0a9ab at originalc94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "reuse_only": true,
+    "new_original_source_actions": 0,
+    "external_dataset_scan": false
+  },
+  "method": {
+    "order": "Analyze cap28 first then14 then7. Restore/hash-pin every native checkpoint. Evaluate all32 fixed world x target x state x action forecasts; equally weight4 worlds,2 targets,2 states,2 actions. No probability selected based on learner results.",
+    "oracle": "EVALUATOR ONLY. Independently enumerate8 Bernoulli latent combinations: P(U1=1)=.9,P(U2=1)=.1,P(U3=1)=.1; Y=S xor A xor U1 xor U3; next=U1 xor U2 xor(S or A). Must exactly reproduce pinned NKR23 reward and transition marginals before looking at risk. No source code import, PRNG or env action.",
+    "risk": "For each learned p and nominal true q, exact expected Brier=q*(1-p)^2+(1-q)*p^2. Report irreducible noise mean q*(1-q),excess calibration error mean(p-q)^2 and sum. Under same source only; analytic expectation NOT earned reward or executed unfamiliar source.",
+    "controls": "Source-kernel exact oracle is an analytic risk floor, not an informed training arm. All learned native/exact Beta controls remain tied fromNKR29. Do not pass source equations/expectations into native model.",
+    "classification": "At widest28 classify DIAG_SELECTIVE_CALIBRATION_DAMAGE_SUPPORTED if error_only expectedrisk>frozen AND all_feedback expectedrisk <= frozen-.001; else DIAG_MIXED. Preserve all curves even if nonmonotonic. No new tuning, no new model edits, scientific_pass=false."
+  },
+  "thresholds": {
+    "risk_decomposition_exact": true,
+    "cold_integrity_all": true,
+    "old_files_unchanged": true,
+    "pristine_science": false
+  },
+  "resources": {
+    "max_seconds": 60,
+    "network_source_downloads": 0,
+    "new_data": 0,
+    "paid_api": 0,
+    "new_runner": 0
+  },
+  "qualification": "Focused analytic/negative tests then Ubuntu primary, independent Windows stable reproduction, mandatory final full root/NKR05 and independent G29 both OS. Same draft1172; no owner/accepted state/merge/deployment.",
+  "changed_paths": [
+    "research/contrib/chatgpt/NKR-30/",
+    "tests/test_native_feedback_calibration_audit.py",
+    ".github/workflows/nkr30-feedback-calibration.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ]
+}

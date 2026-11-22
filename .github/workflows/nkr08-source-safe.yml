@@ -1,0 +1,213 @@
+name: NKR08 cumulative factual knowledge source-safe qualification
+on:
+  push:
+    branches: [research/nkr08-cumulative-native-fact-retention-20261116]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify parent, prereg first, and no original first use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor efd0059f93b30072757c796eb905ec4d6e7609b3 HEAD
+          git merge-base --is-ancestor d5a6cecb7dc4f37fbb05e081810ce18d3ac33c75 HEAD
+          test ! -e research/contrib/chatgpt/NKR-08/result.json
+          test -z "$(git status --porcelain)"
+      - name: New 256 cumulative native facts and inherited source-safe suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_cumulative_facts.py -v
+          python -B -m unittest discover -s tests -p test_native_knowledge_activation.py -v
+          python -B -m unittest discover -s tests -p test_owned_historical_knowledge_install.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(nkr08): pin cumulative G29 atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr08-cumulative-G29-source-pin-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exactly three derived G29 code atlas artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d5a6cecb7dc4f37fbb05e081810ce18d3ac33c75 HEAD
+          test -z "$(git status --porcelain)"
+          SOURCE="$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr08): pinned cumulative G29 source at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr08-cumulative-native-fact-retention-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr08): pinned cumulative G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full original native regression and new cumulative knowledge tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d5a6cecb7dc4f37fbb05e081810ce18d3ac33c75 HEAD
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr08): pinned cumulative G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent G29 source atlas and clean tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+
+  real-original-image-cumulative-once:
+    needs: [development, final-regression, independent-g29]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr08): pinned cumulative G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: nkr08-existing-full-image-one-new-overlay-proof
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify immutable previous full image and exact source SHA
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d5a6cecb7dc4f37fbb05e081810ce18d3ac33c75 HEAD
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14220169461" > "$RUNNER_TEMP/nkr08-artifact-meta.json"
+          python -B - <<'PY'
+          import json, os, pathlib
+          meta=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"]) / "nkr08-artifact-meta.json").read_bytes())
+          assert meta["id"] == 14220169461
+          assert meta["expired"] is False
+          assert meta["name"] == "NKR05-21M-full-historical-TRAIN-native-factual-weights"
+          assert meta["workflow_run"]["id"] == 43856374741
+          assert meta["workflow_run"]["head_sha"] == "c4b4e97726f6541197913ad405a47d4c4019a3cf"
+          assert meta["digest"] == "sha256:c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275"
+          print("NKR08_PREVIOUS_FULL_IMAGE_ARTIFACT_IDENTITY_PASS", flush=True)
+          PY
+      - name: Reuse original full image and stage synthetic cumulative candidate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/nkr08-real-source"
+          gh run download 43856374741 -R "$GITHUB_REPOSITORY" -n NKR05-21M-full-historical-TRAIN-native-factual-weights -D "$RUNNER_TEMP/nkr08-real-source"
+          test "$(find "$RUNNER_TEMP/nkr08-real-source" -maxdepth 1 -type f | wc -l | tr -d ' ')" = 3
+          test "$(stat -c %s "$RUNNER_TEMP/nkr08-real-source/facts.uint32le")" = 256124172
+          python -B -m yggdrasil.native_knowledge_activation --source "$RUNNER_TEMP/nkr08-real-source" --destination-parent "$RUNNER_TEMP" --name nkr08-full-image-temporary-session > "$RUNNER_TEMP/nkr08-source-install.jsonl"
+          python -B research/contrib/chatgpt/NKR-08/qualify_real_image.py --installed-session "$RUNNER_TEMP/nkr08-full-image-temporary-session" | tee "$RUNNER_TEMP/nkr08-cumulative-proof.jsonl"
+          test -z "$(git status --porcelain)"
+      - name: Post-full-image all-source regression at exact same candidate SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Save new cumulative proof receipts only, no image duplication
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: NKR08-21M-full-image-cumulative-proof
+          path: |
+            ${{ runner.temp }}/nkr08-cumulative-proof.jsonl
+            ${{ runner.temp }}/nkr08-source-install.jsonl
+            ${{ runner.temp }}/nkr08-artifact-meta.json
+          retention-days: 30
+          if-no-files-found: error

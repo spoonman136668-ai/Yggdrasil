@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.nkr01.native-relations-integration.prereg.v1",
+  "frozen_before_implementation": true,
+  "research_objective": "Verify a bounded, non-gradient, provenance-attributed contextual cause/outcome relationship bank can be applied to Yggdrasil's ACTUAL public causal-cell decision path without duplicating observations or altering existing 164-byte checkpoints, and can improve context-specific action selection on a fully public fabricated task without weakening incumbent behavior.",
+  "baseline": {
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "main_tree": "180008502f6bdfe5a06c3d0d6f47f941dd01f20b",
+    "native_file": "yggdrasil/public_causal_cells.py",
+    "native_schema": "YPC1",
+    "slots": 16,
+    "active_slots": 7,
+    "retained_slots": 9,
+    "learned_bytes": 128,
+    "checkpoint_bytes": 164,
+    "source_truth": "Current main native cell decisions are context-free action/outcome counters; accepted 64-bit quadratic WSP114/115 coefficients do not exist on main."
+  },
+  "proposed_delta": {
+    "bounded_optional_native_ledger": "At most 16 addresses, 4 binary contextual variables, 2 action values, 32 unique address/context/action observations per address (512 total); exact deterministic public outcomes only; provenance record for first source of any observation.",
+    "weight_programming": "Fit a deterministic GF(2) 10-feature affine+action-context parity function per native address using online row elimination; coefficients materialized as exact float32 0/1 numerical weights; no gradient, transformer, tokens or unseen labels.",
+    "deduplication": "Canonical key (native slot,address-context,action) is idempotent. Repeated same public outcome and even a different source label cannot increase learned count, rank, or weights. Conflicting outcome for a canonical key is rejected atomically. No hidden inferred edge written as an observed outcome.",
+    "coefficient_reuse": "Share identical programmed ten-synapse vectors among native addresses (dedup same semantic function), but keep distinct address-bound evidence; no merging different semantic relations merely because their content text looks similar.",
+    "integration": "Add opt-in PublicCausalCells.choose_contextual(..., relations=...) which uses two exact evidence-supported conditioned predictions only when they disagree; otherwise preserves prior choose(). Never change observe/choose/choose_wilson/snapshot/restore when optional path isn't used. Legacy 164-byte bytes must remain byte-identical.",
+    "retention": "Versioned SHA256-protected replayable separate bounded relation checkpoint; no change to existing YPC1 bytes or acceptance schemas; no cross-world or unqualified accepted-model promotion."
+  },
+  "frozen_public_fixture": {
+    "train_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "heldout_contexts": [
+      3,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "addresses": "Seven active plus nine retained, each deterministic public outcome from action choice against parity(context) xor slot parity; train 10 actions/address, score 11 disjoint contexts/address.",
+    "accuracy_metric": "16*11=176 held-out action choices: success probability of selected action under fabricated public deterministic effect; baseline incumbent choose without context uses identical public intervention information; target >=20 percentage-point increase on true outcomes, no regression on baseline public tests.",
+    "safety_metric": "The same relationship imported twice, with changed source label, never changes checkpoint or decision; contradictory label outcome rejected atomically; 16 addresses stable; two semantic templates interned; legacy YPC1 checkpoint remains exact 164 bytes; cold restoration predicts identically; missing evidence abstains or uses unchanged baseline.",
+    "claim_limit": "DEV fabricated-only mechanism feasibility, NOT evidence of superiority over independent fully trained gradient model or evidence of general intelligence, open-domain associations, cross-world transfer, production use or WSP115 result exploitation."
+  },
+  "qualification": "Start with fabricated tests Linux+Windows and full root regression; G29 source atlas generated companion exactly 3 .ice files pinned to source SHA, independent G29 + full root both OS on final exact SHA. Any failed metric or drift means no promotion. Original WSP115 v2 science untouched; no rerun, no hidden labels used.",
+  "authority": {
+    "scope": "Isolated code proposal, CI qualification, draft PR only. Do not merge, update main, change accepted native learned state, controller, runner, scheduler, Wingless/FORGE/Hybrid, deploy or use live secrets. Promotion needs separately authorized and independently qualified acceptance.",
+    "user_intent": "Add beneficial nonduplicative knowledge/relationships to Yggdrasil native model, not blindly copy incompatible synthetic experimental weights."
+  }
+}

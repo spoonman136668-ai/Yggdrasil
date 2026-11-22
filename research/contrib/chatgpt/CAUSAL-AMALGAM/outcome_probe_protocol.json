@@ -1,0 +1,39 @@
+{
+  "id": "amalgam-outcome-probe-dev01",
+  "scope": "Public synthetic development action-value experiment. No protected source or operational strategy.",
+  "input_contract": "selection_protocol_dev.json",
+  "question": "Does native checkpoint-derived consequence probability improve the cost-to-correctly-identify a changed causal effect when the active probe receives the same public information and budget as fitted Bayesian controls?",
+  "sources": {
+    "outcome_probe.py": "c646530d5c0d05b6c9073aae327f6d145963aff22d3d822fb2404fe3945c07c6",
+    "outcome_probe_trial.py": "d36e45caab45d39ce4b651b49f283487342e20d75d38612aa756182951fcb4c5",
+    "selection_trial.py": "84b76e13174eb5c9d5b461532ea826fb89479d91740920f2179a74dfed0c1945",
+    "staged_retention.py": "a5c0f5872c27894caa018967e673fbb5421c382a3f665787c4d8b292940bffcc"
+  },
+  "seeds": [
+    941201,
+    941221,
+    941227,
+    941243,
+    941257,
+    941263
+  ],
+  "episodes": 32,
+  "held_episodes": 32,
+  "declaration": {
+    "posterior": 0.95,
+    "min_observations": 8,
+    "max_bits_per_outcome": 0.85
+  },
+  "min_mean_actions_saved": 2,
+  "min_shift_seeds_advantaged": 4,
+  "max_brier_loss": "1/50",
+  "wall_cap_seconds": 900,
+  "matching": "Per seed/world, use the same exogenous draw keys, identical initial public views, identical disjoint held action schedule, and equal action budgets. Different interventions may produce different observed rows. Every hypothesis uses only witnessed previous outcomes. Second action is fixed independently of the first. Every active arm uses identical information-gain arithmetic, a one-in-four diagnostic first action, and the same declaration gate. A native balanced arm has the same native probabilities and alternates per context.",
+  "controls": "Full-history and recent-128 conditional Beta predictors fitted to the complete respective slices of the same qualified starting ledger. The original native weights are retained. Candidate episodes are appended through the normal shared native-plus-four-head witness transaction. No learned-head probability directly selects an action outside this synthetic harness.",
+  "worlds": "Familiar invariant control, a supported stochastic action-effect reversal (3/4 when context and action differ, 1/2 otherwise), and a disjoint previous-action-dependent unsupported law. All worlds have a frozen external draw namespace. Source family, random flips and current outcome are evaluator-only.",
+  "primary": "Count both actions before a first eligible correct declaration. Wrong or missing supported declarations receive cost 66. Require mean saving of two source actions versus best control per seed and a positive saving with distinct interventions before either arm reaches its first correct declaration in four of six supported seeds. Require zero incorrect supported declarations, zero unsupported declarations, and held Brier within 0.02 of the strongest control on each supported case.",
+  "limits": "Two-hypothesis synthetic causal identification. Fixed world and arm budgets. No seed reruns, threshold changes, or use of sealed Amalgam trials as fresh evidence. No first-use or scientific promotion.",
+  "engineering_parent": "4d5c4c0e649e7f793d4a63c700a78c57644ec657",
+  "engineering_parent_tree": "2e3901292378366824b3144aa264dfe0480d3d05",
+  "engineering_parent_run": 44490170972
+}

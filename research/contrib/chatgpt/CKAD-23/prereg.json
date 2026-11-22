@@ -1,0 +1,88 @@
+{
+  "schema": "yggdrasil.ckad23.unsignaled-context-development.prereg.v1",
+  "parent": "f04cfcac2aa07806a6b942d968119de87bfb6aaf",
+  "parent_tree": "5ebe3abff5f8305115a671c43336f80875a7e06f",
+  "hypothesis": "The same native learner can infer useful context-change boundaries from revealed consequences and recover causal knowledge during a continuous stream, without receiving the source regime or its change points.",
+  "parent_pins": {
+    "101": "852d9eede37c6e749c2b90eefd358826cbf1f61321d58dcfa0e26348927111f9",
+    "202": "63754801ea27ed0950f4ce27ab247621c7881cb18b1fd818f3261acc2b07eacd",
+    "303": "d8132cd5c1dac818812e3a9f63c3a9ff0de16dff090c801804206cfb0f1441f9"
+  },
+  "source_sha256": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+  "seeds": [
+    101,
+    202,
+    303
+  ],
+  "source_seed_offset": 14000,
+  "phases": [
+    {
+      "family": "invariant",
+      "regime": 0
+    },
+    {
+      "family": "terminal_switch",
+      "regime": 1
+    },
+    {
+      "family": "invariant",
+      "regime": 1
+    },
+    {
+      "family": "invariant",
+      "regime": 0
+    }
+  ],
+  "source_schedule": "192 consecutive stream episodes per acquisition arm/seed. The source changes equation family/regime after counts48,96,144; phase length48. Learner sees only paired public views, its chosen first action, revealed next state, chosen second action and delayed terminal outcome. No source phase or boundary callback. Stream cohortckad23-stream uses global indices0..191 and source seed parent_seed+14000. Public begin_stream is called once at experiment start.",
+  "detector": "Initialize exact scoreS=1 at native stream start, and begin the existing novel-context mixture (prior1/8 new candidate). Before each revealed episode compute its prequential joint likelihood p=P(S2 observed|view,X1)*P(Y observed|view,X1,S2,X2), including proper S2 conditional context weights. After updating from actual evidence set S=max(1,S/(4*p)). If S>=16 and at least8 witnessed episodes since current context_start, record its actual event ID, absolute evidence count and score, begin a new context from all retained evidence at current count, reset S=1. No witness is deleted and no global/native model state is reinitialized. Checkpoint persists stream_start and derives exact detections/state by chronological replay. Max1024 capacity; parent448 +192 =640.",
+  "acquisition": "Three of every four active episodes use weighted hypothesis disagreement. Every fourth executes the learned two-stage plan. Random detector arm uses equal-budget deterministic SHA-uniform choices. Same exogenous source episode draws per arm. Other controls receive exact active receipts. All actions precede actual source feedback.",
+  "checkpoints": "Score at stream counts0,16,32,...192 using96 separate held episodes at each point. Source family at count0 is phase0 and otherwise phase((count-1)//48). Held cohortckad23-held-{count} withindices0..95, same source seed offset14000. No held updates, including detector state. Held policies condition second decisions on revealed S2. Models receive no phase information.",
+  "controls": [
+    "Independent exact consequence-likelihood monitor and same novel-context mixture; exact online probabilities, choices and inferred boundaries must tie.",
+    "Matched random acquisition with identical native detector.",
+    "Same native novel mixture started once, with no context detector resets, on identical active receipts.",
+    "Same native mixture with fixed resets before stream indices32,64,... (1-based next episodes33,65,...). Held at counts32/64/... occurs before the next reset, avoiding freshly reset control scoring.",
+    "Native pooled global readout on active evidence.",
+    "Fully trained trailing64 MLE over identical active evidence.",
+    "Frozen qualified CKAD22 context planner, descriptive zero-adaptation baseline."
+  ],
+  "metrics": "Executed held policy reward, matched-action transition/terminal Brier, online acquired reward, detected boundaries/delays/false alarms, complete legacy/witness retention, full/cold continuation, wall/CPU/memory/checkpoint cost and exact parity. Matched strongest same-method exact control ties, so no scientific superiority claim.",
+  "success": {
+    "engineering": "Source/public-row identity, prequential detector order, independent replay of all boundary decisions, legacy v1-v3 compatibility, complete original448 evidence prefix, exact conditional probability/action parity, saved-state continuation, deterministic dual-OS reproduction and mandatory complete final regression/raw/G29 audit.",
+    "development": "Mean held reward over checkpoints64,112,160 across3seeds >= no-reset control+0.05, >= periodic32, and >= trailing64MLE. Final returning invariant count192 reward>=0.80. Each seed has<=3 false alarms, defined as triggers outside counts(change+1)..(change+16) for true changes48/96/144 (counts relative to beginning stream). All must pass DEVELOPMENT_GO, else preserve DEVELOPMENT_NO_GO. Detection sensitivity and delays are descriptive. Scientific_pass=false."
+  },
+  "budgets": {
+    "stream_episodes_per_seed_per_acquisition_arm": 192,
+    "phase_episodes": 48,
+    "held_episodes_per_checkpoint": 96,
+    "checkpoints": [
+      0,
+      16,
+      32,
+      48,
+      64,
+      80,
+      96,
+      112,
+      128,
+      144,
+      160,
+      176,
+      192
+    ],
+    "max_wall_seconds": 900,
+    "max_ledger_episodes": 1024,
+    "original_source_actions": 0,
+    "protected_first_use": 0,
+    "held_updates": 0,
+    "paid_apis": 0
+  },
+  "allowed_paths": [
+    "yggdrasil/native_episode_experience.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-23/**",
+    ".github/workflows/ckad23-unsignaled-context.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Existing draftPR1207, development source only. No merge/promotion/deployment, source-owner/controller/scheduler changes, competing consumers or interruption of independent research. Preserve all earlier outcomes."
+}

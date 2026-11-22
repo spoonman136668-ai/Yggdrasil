@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.ckad05.native-property-join.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOMES",
+  "parent": {
+    "sha": "935bb8720b6cc4df2402003efb1d7e41243de07d",
+    "tree": "22116d776c2d24cbd2f26837f0dbd49dd67026ee",
+    "run": 44002807218,
+    "existing_pr": null
+  },
+  "question": "Can the corrected native relation module use100,000 source-bound observed binary properties from its OWN persistent checkpoint to answer unseen entity/action questions, retain earlier relations after subsequent training, and reason safely when some properties are unavailable?",
+  "motivation": "CKAD02 corrected native representation but supplied property vectors externally. This step closes the actual native property-state↔learned relation interface; it is not a rerun of CKAD01's knowledge-exposure benchmark.",
+  "inputs": {
+    "original_source": "CKAD-02/reference-ckad01/CKAD-01-experiment.py",
+    "sha256": "768922dc0500e94454cc4d6cb16b5556978551214acd3186b47fb326a3f9441d",
+    "seeds": [
+      101,
+      202,
+      303
+    ],
+    "entities": 10000,
+    "properties_per_entity": 10,
+    "stored_property_observations": 100000,
+    "training_entities": "exact original512",
+    "heldout_entities": "exact original2048",
+    "source_kind": "pinned deterministic synthetic simulator ONLY; no authentic real-world causal claim",
+    "original_frozen_results_unchanged": true
+  },
+  "implementation": {
+    "module": "yggdrasil/native_property_knowledge.py",
+    "change": "Optional compact known/value bit planes and source namespace, joined to unchanged NativeContextBasis. Native properties store positive AND negative witnessed values explicitly. Absent knowledge stays UNKNOWN. No external source rows read at inference; no per-entity consequence lookup table.",
+    "admission": "Engineering property and consequence namespaces must match. Verified byte pins do not authenticate real-world source. Historical Q/P/Q and original-source modes rejected; no new bridge toWikidata/CausalGym.",
+    "training": "Start FULL100k observed properties first, then learn familyC on512 observed consequences at generic degree2. Save native full checkpoint, then learn familyB in a separate native address with same512 entities; C forecasts and all100k facts must remain unchanged."
+  },
+  "evaluation": {
+    "conditions": [
+      "FULL:all10 properties visible",
+      "IRRELEVANT_WITHHELD:only property bits4,5,6 visible",
+      "RELEVANT_WITHHELD:all except bit4 visible",
+      "ZERO: no properties visible"
+    ],
+    "reason": "These are source-specific POST-TRAINING observability ablations, not four separate knowledge-scale training runs. Learned relation weights stay identical across conditions. Relevance mapping is evaluator-known from original source, never given as a fitting template.",
+    "questions": "Same2048 withheld entity IDs/seed. Record correct/incorrect/abstain and prediction hashes. Explicitly report new-entity vs novel-feature distinction.",
+    "controls": "Independent exact symbolic GF2 profile from CKAD02 on identical512 observations; enumerate consistent missing-property completions. Fully trained unpruned CART on same10 properties/outcomes; for unknown properties branch BOTH ways and predict only if all possible leaves agree. Retrieval-only abstains on all unseen IDs.",
+    "cost": "Same facts/consequences and common time ceiling, actual fit/infer/metadata costs reported. Different model classes are explicit; no efficiency/superiority claim."
+  },
+  "thresholds": {
+    "native_full": "6144/6144 correct zero wrong; same old C outputs after learningB",
+    "unknown": "No false predictions inany ablation; ZERO must all abstain; irrelevant withholding should retain FULL results if fitted model correctly ignores those features",
+    "cold": "Each complete checkpoint cold-restores in fresh process receiving checkpoint plus entity/action/visibility questions ONLY. Native facts=100000/seed, all original values survive trainingB, numeric relation weights unchanged across observation conditions.",
+    "controls": "Native/independent symbolic every query exact. No advantage expected over strongest equally informed control. CART differences reported without tuning.",
+    "scientific_pass": false,
+    "interpretation": "Native engineering development only; source-assumption/simulator-limited generalization. No new externally grounded causal effects or unfamiliar relationship types established."
+  },
+  "resources": {
+    "max_audit_seconds": 300,
+    "original_source_actions": 0,
+    "protected_cohorts": 0,
+    "knowledge_image_rescan": 0,
+    "new_runner": 0,
+    "paid_api": 0,
+    "primary": "Ubuntu native cold join",
+    "replication": "Windows exact stable result",
+    "bounded_algorithmic_repairs_max": 3
+  },
+  "qualification": "Focused native join/provenance/partial/cold/retention negatives first; primary+replication then persisted native checkpoints, mandatory full final root/NKR05 and independent G29 both OS. Continue same isolated branch, one draft PR for wholeCKAD contribution, no merge/deployment.",
+  "changed_paths": [
+    "yggdrasil/native_property_knowledge.py",
+    "tests/test_native_property_knowledge.py",
+    "research/contrib/chatgpt/CKAD-05/",
+    ".github/workflows/ckad05-native-property-join.yml",
+    ".ice/code-atlas.html",
+    ".ice/code-atlas.ice",
+    ".ice/code-atlas.json"
+  ]
+}

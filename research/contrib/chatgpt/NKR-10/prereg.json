@@ -1,0 +1,75 @@
+{
+  "schema": "yggdrasil.nkr10.historical-real-facts-masked-transfer-prereg.v1",
+  "experiment": "NKR-10",
+  "state": "FROZEN_BEFORE_IMPLEMENTATION_OR_HISTORICAL_SCAN",
+  "parent": {
+    "pr": 1137,
+    "sha": "5c9c9c93c63d3705383f9bd3d5d088f983030b3d",
+    "tree": "2d6bf9811015035b88896ae504c10826adda7ec8",
+    "main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Evaluate full historical TRAIN P31/P279 relational path inference under deterministic masked-source split vs independently implemented exact equal-evidence symbolic and frequency baselines. Preserve honest nulls and no scientific superiority claims.",
+  "source": {
+    "artifact_id": 14220169461,
+    "run_id": 43856374741,
+    "original_sha": "c4b4e97726f6541197913ad405a47d4c4019a3cf",
+    "zip_sha256": "c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275",
+    "manifest_sha256": "aa2d56e72284a042aee72587028642110327307b483de667586f105f018ebe8f",
+    "packed_sha256": "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1",
+    "records": 21343681,
+    "predicates": 828,
+    "previously_consumed": true,
+    "official_valid_test_unopened": true
+  },
+  "protocol": {
+    "target_relation": 31,
+    "first_relation": 31,
+    "second_relation": 279,
+    "cohort": "P31 source subject s if mix64(s) modulo 32 == 7",
+    "mask": "P31 source (s,31,o) goes to heldout iff mix64(s XOR (o << 1) XOR 0x9E3779B97F4A7C15) modulo 4 == 0, otherwise TRAIN; duplicate triples always same side",
+    "training": "All cohort visible P31 edges, then P279 edges only for class IDs in visible P31 edges. No heldout edge through any fact/retrieval API during prediction.",
+    "scan": "exactly two read-only scans of existing original 21M image, no original archive or official valid/test read",
+    "learned_rule": "Prespecified (31,279)->31 candidate used only if >=4 distinct TRAIN source subjects witness direct P31 target and both path legs. Never infer negatives from absent source data.",
+    "query_selection": "All masked positive P31 labels in cohort with at least one visible P31 subject class, lexicographic first 4096 UNIQUE (subject,object) pairs, irrespective of whether inference is possible. Minimum 64 eligible for positive outcome.",
+    "predictor": "Top4 candidate P31 objects by count of distinct observed P31-class -> P279-superclass paths, ties numeric ascending Q",
+    "strong_control": "Independent implementation of same exact two-hop symbolic count-based learner with identical input; parity expected, not superiority",
+    "other_controls": "Top4 globally frequent visible cohort P31 objects and no-inference/unknown abstention",
+    "metrics": "positive-label masked recall@4, candidate support, coverage, prior recall, exact symbolic parity, peak resources, total wall time",
+    "precommitted_threshold": "at least 0.10 recall@4 and >=0.05 absolute improvement above frequency prior with >=64 masked positives, BUT historical TRAIN replay and exact symbolic tie never SCIENTIFIC_PASS",
+    "nulls": "No P31/P279, insufficient eligible masked positives, zero motif support, no lift or symbolic tie => preserve negatives, never tune split post-hoc",
+    "budgets": {
+      "max_rows": 25000000,
+      "passes": 2,
+      "max_cohort_p31": 2000000,
+      "max_class_ids": 1000000,
+      "max_p279_edges": 4000000,
+      "max_queries": 4096,
+      "max_seconds": 900,
+      "max_rss_bytes": 2500000000,
+      "original_archive_fetches": 0,
+      "existing_artifact_downloads": 1
+    },
+    "negative_tests": [
+      "hash tamper",
+      "duplicate source split",
+      "hidden labels excluded from inference",
+      "no unsupported fact admission",
+      "no causal model mutation",
+      "source-order parity",
+      "symbolic strong control tie",
+      "closed restore",
+      "unrelated unknown abstention"
+    ]
+  },
+  "authority": {
+    "engineering_only": true,
+    "science_first_use": false,
+    "new_controller": false,
+    "new_scheduler": false,
+    "paid_api": false,
+    "accepted_main_mutation": false,
+    "owner_install": false,
+    "merge": false,
+    "original_source_replay": false
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.nkr07.owner-bound-full-knowledge-install.v1",
+  "experiment": "NKR-07",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION",
+  "category": "source_safe_owner_provisioning",
+  "parent": {
+    "branch": "research/nkr06-full-knowledge-offline-activation-20261116",
+    "sha": "3510870b9cde9870f055a49c9eb72ccb1a9ef671",
+    "tree": "5200f825ebf8bfb921e69a68c80742723053948c",
+    "pr": 1131,
+    "accepted_main": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9"
+  },
+  "objective": "Close owner-side installation usability gap without selecting a private user storage path, duplicating source scans, extending artifact expiry, mutating accepted Yggdrasil, or running on unverified owners. Supply explicit CLI invoking existing pinned NKR-06 offline installer after authenticated GitHub artifact metadata verification and bounded exact archive download.",
+  "artifact": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "id": 14220169461,
+    "source_run_id": 43856374741,
+    "source_sha": "c4b4e97726f6541197913ad405a47d4c4019a3cf",
+    "archive_digest_sha256": "c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275",
+    "name": "NKR05-21M-full-historical-TRAIN-native-factual-weights",
+    "expires_at": "2026-12-16T11:20:20Z",
+    "image_sha256": "6dd87ba5bbf5fd7ecaffa6d48f674e34ce2a7cc7fa748ec7698d2c0a4cdae3d1",
+    "manifest_sha256": "aa2d56e72284a042aee72587028642110327307b483de667586f105f018ebe8f",
+    "records": 21343681,
+    "bytes": 256124172,
+    "predicates": 828
+  },
+  "scope": {
+    "new_files": [
+      "scripts/install_owned_historical_knowledge.py",
+      "tests/test_owned_historical_knowledge_install.py",
+      "research/contrib/chatgpt/NKR-07/prereg.json",
+      "research/contrib/chatgpt/NKR-07/README.md",
+      ".github/workflows/nkr07-source-safe.yml"
+    ],
+    "allowed_generated_files": [
+      ".ice/code-atlas.json",
+      ".ice/code-atlas.ice",
+      ".ice/code-atlas.html"
+    ],
+    "existing_native": "no modifications to native_knowledge_activation or owner main/controller/runner"
+  },
+  "approach": {
+    "explicit_owner_action": "A human or independently authorized owner invokes CLI with existing, user-owned destination parent and existing GitHub gh login. Script MUST NOT choose owner destination, automatically run, or write owner-side secrets.",
+    "source_copy": "Gh CLI repo artifacts metadata GET and run download; require exact original immutable identity, git SHA, archive digest, expiry and full NKR-06 manifest+packed checks; no original Wikidata redownload",
+    "install": "install_offline_image source-only, atomic no-clobber, read-only verification with first+last and absent unknown, no native DG-1 accepted state writes",
+    "tests": "Mock gh subprocess safely; simulate artifact with pinned fixture using patched NKR-06 source constants. Deny bad repository, ID, SHA, archive digest, expired, insufficient metadata, missing member, existing target, failed download, temp cleanup, no gh, no owned destination. Ensure no subprocess call on denied preflight",
+    "CI": "Source-safe GitHub-hosted Ubuntu+Windows fixture and complete final root and G29 pin; do not execute owner workstation install or repeat expensive full artifact rehydrate"
+  },
+  "outcome": {
+    "engineering_pass": "New CLI source-safe negative test PASS Ubuntu+Windows and complete root regression G29 at exact-source SHA/tree",
+    "owner_persistent_installed": "UNVERIFIED_UNTIL_OWNER_APPROVED_REAL_PATH_AND_OWNER_EXECUTION_RECEIPT",
+    "science": "SCIENTIFIC_PASS=false; no general knowledge discovery or transfer",
+    "accepted_native": "NOT_ACTIVATED",
+    "original_science_first_use": false
+  },
+  "constraints": {
+    "paid_api": false,
+    "new_scheduler": false,
+    "new_controller": false,
+    "external_production_execution": false,
+    "accepted_ref_mutation": false,
+    "merge": false,
+    "source_read_from_archive": false,
+    "owner_location_guess": false,
+    "source_first_use": false
+  }
+}

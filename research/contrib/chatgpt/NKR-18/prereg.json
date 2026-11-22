@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.nkr18.knowledge-acquisition-and-compact-retention.prereg.v1",
+  "experiment": "NKR-18",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_OUTCOME",
+  "parent_sha": "23e95651f408ca05a8307e172575afe0d581925f",
+  "parent_tree": "ce2a75d579c7d11c94e6607cf7ee1921d0a317a7",
+  "parent_pr": 1154,
+  "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "question": "What is learned rather than retrieved by the existing native relation memory, does evidence diversity improve unseen combinations at fixed presentation budget, and what remains after separate-slot learning or same-slot conflict?",
+  "hypotheses": [
+    "A checkpoint containing only existing learned float32 coefficients and input-support row spaces, with no observed outcomes or observation records, reproduces native predictions after cold restoration.",
+    "Increasing distinct public observations at equal presentation count improves safe correct coverage on unseen combinations within the existing affine action/context family.",
+    "Learning in unoccupied native slots preserves earlier predictions. Contradictory same-slot evidence is rejected rather than forgotten; that does not prove successful adaptation to drift.",
+    "More populated addresses alone do not identify unobserved addresses. Equal-information exhaustive symbolic fitting matches the native learner; no architecture-specific superiority is assumed."
+  ],
+  "source": {
+    "kind": "previously_consumed_synthetic_engineering_fixtures_only",
+    "producer": "research/contrib/chatgpt/NKR-11/experiment.py",
+    "worlds": "unchanged ComputationalEnvironment world 0..11 and collect_paired_interventions",
+    "no_new_original_scientific_first_use": true,
+    "no_original_dataset_scan_or_download": true,
+    "no_nkr17_random_schedule_rerun_for_new_science": true,
+    "external_authenticity": false
+  },
+  "design": {
+    "world_count": 12,
+    "world_native_slots": "0..11 in one existing 16-address NativeRelationMemory; active/retained address mapping unchanged",
+    "distinct_observations_per_world": [2, 4, 8, 16],
+    "order": "prefix of unchanged NKR11 collect_paired_interventions: (0,1),(0,0), then both actions at 1,2,4,8,3,5,10",
+    "presentations_per_world_per_scale": 16,
+    "presentation_matching": "repeat only the chosen prefix cyclically to 16; duplicates are presentations, not new knowledge or independent actions",
+    "capacity": "existing 16 slots, ten coefficients each, no capacity increase across scales or arms",
+    "cold_test_contexts": [6, 7, 9, 11, 12, 13, 14, 15],
+    "cold_test_actions": [0, 1],
+    "cold_predictions_per_scale": 192,
+    "evaluation": "train and freeze all arms before evaluator-only cold outcomes. Correct/covered/wrong/abstained separately; abstention counts zero correct. No cold target enters training, tree fitting or checkpoint export.",
+    "controls": [
+      "exact retrieval-only lookup on identical observed pairs, abstain on absent pairs",
+      "1-nearest-neighbor memorization in the five raw input bits, Hamming metric, first-public-observation tie break",
+      "fully trained conventional binary CART: all five raw input bits, exact Gini, lowest-bit ties, split until pure or no available nonconstant feature, majority-zero ties; do not early-stop XOR at zero immediate gain",
+      "independent exhaustive fitting of all 1024 ten-bit causal signatures from existing NKR11 reference; consensus or abstention, strongest equal-family exact control"
+    ],
+    "cost_reporting": "unique public source outcomes, training presentations, training/runtime cost per arm, checkpoint bytes, cold support and coefficient counts. All arms receive same rows; native vs symbolic algorithmic compute need not be equal, so no compute superiority claim.",
+    "compact_readout": "read-only optional same-native-architecture snapshot; ten existing coefficients/slot plus outcome-free input-support basis; parent training-checkpoint digest. No event replay, observed label table, exception outcomes, trainer, network, environment or external lookup at inference. Reject export when verified exception records exist rather than silently dropping knowledge.",
+    "retention": "At each scale cold-restore the full trainer and compact readout, compare all 384 slot0..11 context/action predictions before/after 128 unique new observations on slots12..15 using already-consumed old-mechanism worlds0..3. Report identical predictions and correct retained predictions separately.",
+    "conflict": "Attempt one flipped duplicate (context0,action1) on every old slot after later learning; all 12 must reject atomically. No forgetting success claim for refused learning.",
+    "cross_address": "At scale16 populate prefixes of 1,4,8,12 worlds; score all 128 pairs in unobserved slots12..15 before interference; expect abstention. This diagnoses absence of cross-address transfer rather than a positive relation discovery test.",
+    "weight_ablation": "At scale16 restore compact numeric state with all coefficient bytes zeroed and a newly computed envelope digest; quantify changed predictions and accuracy. No label use or refit; row-space support unchanged. Causal evidence of dependence on programmed coefficients, not superiority.",
+    "leakage_negative": "Separate inference subprocess imports only native_relation_memory, reads only compact bytes and query inputs; emits predictions. Never imports source fixture or training observations. Provenance hashes and source code inspection complement, but do not constitute independent human review."
+  },
+  "frozen_rules": {
+    "engineering": "compact/full native prediction parity at every scale, exact symbolic parity, no native wrong within the declared family, distinct observation counts correct, unchanged legacy YPC1, all retention identities and conflicts checked; focused and entire inherited root regression, NKR05 and independent G29 at final source on Linux and Windows",
+    "knowledge_development_supported": "scale16 >=173/192 safe cold correct, at least +38/192 over scale2, zero confidently wrong, compact cold parity and no old prediction loss after unrelated-slot additions",
+    "scientific_pass": false,
+    "classification": "SUPPORTED_BOUNDED_KNOWLEDGE_DEVELOPMENT if preset knowledge threshold passes, else NEGATIVE_BOUNDED_KNOWLEDGE_DEVELOPMENT; report all control outcomes and ties regardless",
+    "stop": "one primary frozen sweep, one source-identical reproducibility sweep; no tuning of source, scales, splits, seeds, controls, model capacity or thresholds after outcomes. Repair only mechanical harness/schema defects, disclose and invalidate affected original result if necessary.",
+    "limits": "Reused experimenter-authored finite parity worlds and separated native addresses cannot establish real-world understanding, arbitrary nonlinear transfer, collision-resistant shared representations, new relationship types, or general intelligence. CART is a trained conventional baseline, not a neural baseline."
+  },
+  "budget": {"max_seconds_per_sweep": 120, "max_source_worlds": 12, "primary_sweeps": 1, "reproducibility_sweeps": 1, "paid_api_calls": 0, "new_runners": 0},
+  "authority": {"isolated_contribution_only": true, "protected_science_first_use": false, "merge": false, "main_mutation": false, "accepted_model_mutation": false, "owner_launch": false, "new_controller": false, "scheduled_task": false},
+  "changed_paths": ["yggdrasil/native_relation_memory.py", "tests/test_native_compact_knowledge.py", "research/contrib/chatgpt/NKR-18/", ".github/workflows/nkr18-source-safe.yml", ".ice/code-atlas.html", ".ice/code-atlas.ice", ".ice/code-atlas.json"]
+}

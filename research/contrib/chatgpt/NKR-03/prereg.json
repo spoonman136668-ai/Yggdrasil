@@ -1,0 +1,96 @@
+{
+  "schema": "yggdrasil.nkr03.supported-novel-relationship-intake.prereg.v1",
+  "status": "FROZEN_BEFORE_IMPL_AND_SOURCE",
+  "authority": {
+    "research_branch_only": true,
+    "stacked_on": "NKR01 draft PR #1092",
+    "parent_sha": "dcbc41ca50d9913e682a24833ba0190c66be5ae0",
+    "main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "no_merge": true,
+    "no_live_model_population": true,
+    "no_owner_runner_or_scheduler_change": true,
+    "no_hidden_NKR02_replay": true
+  },
+  "falsified_predecessor": {
+    "pr": 1094,
+    "head": "32b5766df9755a3fb5a4c9ae165b407aac7bb9b0",
+    "classification": "MIXED_NO_PROMOTION",
+    "evidence": "128/352 confidently wrong novel quadratic effects after only singleton training; impossible to distinguish affine from quadratic under identical singleton observations"
+  },
+  "question": "Can the actual native Yggdrasil relationship bank accept genuinely new verified public composite action/outcome knowledge without duplicating evidence, while suppressing unsupported generalization and preserving legacy decisions and checkpoint compatibility?",
+  "hypothesis": "Because two causal laws can agree on every singleton public observation but disagree on unobserved pair/triple contexts, confident extrapolation must be bounded by directly evidenced context/action pairs. A gradient-free native exception layer for new actual public consequences outside its affine grammar can safely add the missing relationships without overwriting old learned synapses. It will match strongest exact evidence-only lookup on verified contexts, not outperform it.",
+  "frozen_scale": {
+    "slots": 16,
+    "context_bits": 4,
+    "action_values": [
+      0,
+      1
+    ],
+    "training_contexts": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "train_observations_per_slot": 10,
+    "train_total": 160,
+    "pair_contexts": [
+      3,
+      5,
+      6,
+      9,
+      10,
+      12
+    ],
+    "audit_budget_descending_per_slot": [
+      12,
+      8,
+      4,
+      0
+    ],
+    "max_total_interventions_per_slot": 22,
+    "heldout_contexts": [
+      3,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "heldout_decisions_per_family": 176,
+    "worlds_per_family": 16,
+    "two_families": [
+      "new deterministic four-bit affine law plus single unknown quadratic pair (0..5) chosen by sealed SHA256 slot/world ID",
+      "independently new deterministic affine plus one unknown cubic triple term (0..3) chosen by SHA256 slot/world ID"
+    ],
+    "worlds_new": "NKR03 domain-separated source; neither NKR01 nor exposed NKR02 outcomes/worlds reused; fully public fabricated DEV source"
+  },
+  "frozen_protocol": {
+    "source_law": "Each world has a hash-determined four-bit context parity mask and bias, forced action inverse, and one hash-determined Boolean pair (quadratic) or triple (cubic) higher-order term; same relation applies to both actions. Distinct source namespace by world+family.",
+    "information": "Train native bank, original YPC1 incumbent, independently implemented evidence-only exact lookup, fully fitted independent exact quadratic symbolic (for pair cohort) and conventional gradient tanh neural learner on exactly the same public actual intervention outcomes (10 singleton + 12 two-bit pair probes per slot). No hidden evaluation labels supplied to learners. Add 6 verified two-bit contexts in frozen order [3,5,6,9,10,12], both arms each, regardless of source law, then evaluate in source-heldout 11 contexts at each prereg budget.",
+    "model_extension": "Keep existing NKR01 Legacy observe_public unchanged and v1 checkpoint bit-for-bit identical when no exceptions. Add explicit observe_public_verified to NativeRelationMemory: accept fresh genuine public outcome that conflicts with restricted affine 10-feature model only as separate bounded address-bound exception, never duplicate same context/action key already stored; no inferred counterfactual stored as public observation. Full v2 separate checkpoint on exceptions with cold restore, v1 restore backwards compatible.",
+    "inference_guard": "New opt-in choose_verified_contextual uses BOTH directly observed action outcomes at same slot/context, no guessed extrapolation, otherwise executes unchanged incumbent choose. It never yields a 'model-derived confident' causal effect for unobserved contexts. Preserve older choose_contextual as DEV-only unsupported mode; do not modify accepted YPC1 decisions without opting in.",
+    "crossworld": "No world-shared weights/records; 16 existing native slots only. New coefficient templates may still intern where equal, but key collisions across different slots cannot conflate address-bound evidence."
+  },
+  "controls": [
+    "Same observed intervention budget context-free YPC1 incumbent; counters updated by all observations",
+    "Independent exact evidence-only lookup by canonical (slot,context,action) key",
+    "Independent fully fitted quadratic GF2 symbolic using only observed (10+12) outcomes, which may generalize to triples under bounded grammar",
+    "Conventional 2000-step gradient-trained 32-hidden tanh MLP using the same observations and tests only after fit",
+    "No-exception policy and frozen 0/4/8/12 pair audit snapshots"
+  ],
+  "metrics": {
+    "primary": "At 12 extra probes/slot, 96/96 source-verified pair context decisions (6*16) must be correct for both source families; 0 unobserved-context confident effect assertions across 80 multi-bit heldout contexts/family. Overall 176-context safe decision accuracy >= incumbent +15pp in both families. No guarantee of extrapolation outside direct evidence.",
+    "negative": "Without active pair probes, supported-only decision must exactly match original choose for all 176 unseen contexts, and zero inferred claims. Strong evidence-only lookup with matched data must tie on supported decisions; avoid claiming superiority. Cubic effects affecting unobserved triples force abstention/fallback, not confident wrong law.",
+    "compatibility": "First 160 public singleton observations lead to exact same NKR01 v1 snapshot; exceptions cannot modify prior weights or original 164-byte YPC1 checkpoint. All duplicate aliases across base/exception no-op; conflicting duplicates rejected atomically. Preserve v2 checkpoint byte equality after cold replay, reject tampering and wrong schema and extra >32 unique obs/address.",
+    "cost": "Capture unique records, exception count, unique synaptic profiles, checkpoint bytes, total CPU/wall peak allocated per method; no 2x speedup inference.",
+    "acceptance": "Engineering PASS if all fixtures & root+G29 Windows/Linux PASS on candidate SHA. Scientific method-level suitability remains DEV only. No general-intelligence, cross-world, optimality or future-proof closed-world claims; no merge or accepted knowledge without independently sourced trust and evaluation."
+  },
+  "stop": "Any 0/96 verified-pair errors, unmatched receipts, unsupported confident predictions, duplicate or cold restore break -> NO_GO. If in-family gain fails frozen threshold -> NEGATIVE/MIXED and preserve original. Never tune after primary results; use disjoint new cohort for followup."
+}

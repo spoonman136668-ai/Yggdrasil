@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.ckad16.cumulative-cached-dtr.prereg.v1",
+  "experiment_id": "CKAD-16",
+  "exact_parent_sha": "d2f03363a61776f0e30c85e55dd27b33069dee9a",
+  "parent_tree": "d9fdf54d776dae68619f883d818befd9f0546fc1",
+  "hypothesis": "The single trained CKAD15 checkpoint can cumulatively learn public two-stage transition/terminal probabilities from a second previously consumed simulator family while preserving deterministic and MDP knowledge.",
+  "source": {
+    "original_repo": "CausalAILab/Causal-Gymnasium",
+    "source_sha": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "dtr_blob": "6af2371dce21804140ea141ccb7be14e003ba275",
+    "license": "Apache-2.0",
+    "original_user_repo_pr": 433,
+    "original_source_head": "d52db4e1fafd86374596ceb5e922eb4b84768341",
+    "original_run": 39932201242,
+    "original_artifact": 12492506361,
+    "zip_sha256": "ada547777ba2ba49070fe2606ac99c8d9248532f1cb16c8a0f8eab0f4001508c",
+    "raw_fit_file_sha256": "6527cb222b79c72b8d11224f63420cd8f0ddd31e152d46711a2b49b3ce7be47e",
+    "canonical_fit_sha256": "016bf254ade33b936386abf7829ff90d765da71105e2beebcb130c95febe7d1d",
+    "source_class": "PUBLIC_DEVELOPMENT_ONLY / PREVIOUSLY_CONSUMED_FIT",
+    "episodes": 768,
+    "replicas": 3,
+    "episodes_each": 256,
+    "fields": [
+      "s1",
+      "x1",
+      "s2",
+      "x2",
+      "y",
+      "seed"
+    ],
+    "not_blind": "Source law, dataset and original PUBLIC_DTR02_NO_GAIN result inspected before this development freeze. No fresh/scientific-first-use claim.",
+    "custody": "Original GitHub artifact metadata digest matched the available archive byte for byte; original receipt's all_fit_public_traces_sha256 matches canonical trace. No original module import/reset/do and no reserved cohort."
+  },
+  "initial_checkpoint": "CKAD15/seed-101-history-23.json exact result.json pin; retain complete trained state, not fresh initialization.",
+  "protocol": {
+    "stages": [
+      0,
+      64,
+      128,
+      192
+    ],
+    "training": "Within each original replica, episode indices0..stop-1. Three replicas pooled into one native conditional probability bank, same source law; seed/replica/index are provenance only, never model inputs.",
+    "evaluation": "Episode indices192..255 per replica, complete-episode holdout,192 episodes/384 probability scores. This is a retrospective split of historically consumed FIT, not independent virgin transfer.",
+    "features_transition": [
+      "public s1",
+      "chosen x1"
+    ],
+    "target_transition": "revealed s2",
+    "features_terminal": [
+      "public s1",
+      "earlier chosen x1",
+      "revealed s2",
+      "chosen x2"
+    ],
+    "target_terminal": "revealed final y",
+    "native": "Existing PublicCausalCells Beta(1,1), one164-byte bank: terminal slots s1+2*x1+4*s2 (0..7), actionx2,targety; transition slots8+s1,actionx1,targets2. No private U/info, source oracle, immediate zero reward substitute, future label, seed or held outcome enters fitting.",
+    "retention": "All16x2048 deterministic outputs and all64 MDP probability outputs survive every stage; old source/property/hypothesis/MDP bytes and quarantine state unchanged. Save complete state/cold restore without cache/solver, feed restored state into next stage. Prefix replay is idempotent.",
+    "inference": "Public transition/terminal forecasts only; no new policy rollout, intervention, source actor or causal-policy value claim."
+  },
+  "controls": [
+    "Independent exact fully fitted Beta tables using identical training prefixes, must tie every probability",
+    "Fully grown conventional CART empirical probability predictor per target on identical source inputs; fit to convergence at each distinct prefix, no hidden source law",
+    "Untrained1/2 probability baseline",
+    "Original DTR02 NO_GAIN report preserved, but its policy reward rates are different measures/information and cannot be substituted for this retrospective forecast comparison"
+  ],
+  "success": {
+    "engineering": "Train the second source family in one complete checkpoint, exact old-state retention, verified prefix source identity, no held training, source/shape/type/duplicate negatives, cold deterministic/readout parity, mandatory complete final Linux/Windows root regression and independent raw audit.",
+    "development": "Final pooled Brier<=0.225 and improvement>=0.025 from0.25, zero independent-Beta discrepancies, all retained readouts unchanged. Report both targets separately, all stages, errors, conventional comparison and costs.",
+    "scientific": "false by construction; this is consumed-source integration with a supplied public-history mapping and conventional Beta learner. No new-source, unrestricted family discovery, causal policy improvement or general-intelligence claim."
+  },
+  "budgets": {
+    "whole_wall_seconds": 180,
+    "new_original_source_actions": 0,
+    "training_episodes": 576,
+    "native_counter_updates": 1152,
+    "held_training_updates": 0,
+    "paid_apis": 0
+  },
+  "allowed_paths": [
+    "yggdrasil/native_dtr_history.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_dtr_history.py",
+    "tests/test_native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-16/**",
+    ".github/workflows/ckad16-cached-dtr-integration.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Current operator-authorized isolated cumulative development only, existing PR1207, no merge/promotion/deployment/accepted-ref/controller/scheduler change. Old PR433/workflow is provenance only, not execution authority. Protected virgin/native-scientific first-use remains barred."
+}

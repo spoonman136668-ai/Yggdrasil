@@ -1,0 +1,212 @@
+name: NKR06 previously-built full knowledge offline activation
+on:
+  push:
+    branches: [research/nkr06-full-knowledge-offline-activation-20261116]
+permissions:
+  contents: read
+env:
+  PYTHONPATH: '.'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  development:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify exact parent, frozen prereg, no original protected source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor c4b4e97726f6541197913ad405a47d4c4019a3cf HEAD
+          git merge-base --is-ancestor d9ccbc8b22bb4b3e6ff502532af093ae7b753a8a HEAD
+          test ! -e research/contrib/chatgpt/NKR-06/result.json
+          test -z "$(git status --porcelain)"
+      - name: Source-safe offline installation and trust negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p test_native_knowledge_activation.py -v
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p test_native_evidence_compiler.py -v
+          test -z "$(git status --porcelain)"
+
+  source-atlas-once:
+    needs: [development]
+    if: "github.event.head_commit.message == 'ci(nkr06): pin source G29 atlas' && github.run_attempt == 1 && needs.development.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    concurrency:
+      group: nkr06-source-atlas-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Exact pinned G29 code atlas generated only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d9ccbc8b22bb4b3e6ff502532af093ae7b753a8a HEAD
+          test -z "$(git status --porcelain)"
+          SOURCE="$GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --write --source-commit "$SOURCE"
+          git add -- .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(nkr06): pin G29 source at $SOURCE"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/research/nkr06-full-knowledge-offline-activation-20261116
+
+  final-regression:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr06): pin G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Full original root and NKR-05 and NKR-06 qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor d9ccbc8b22bb4b3e6ff502532af093ae7b753a8a HEAD
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+
+  independent-g29:
+    needs: [development]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr06): pin G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Independent source-index acceptance, no generated dirt
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          python -B -m unittest discover -s tests -p test_code_atlas.py -v
+          test -z "$(git status --porcelain)"
+
+  real-original-image-rehydrate-once:
+    needs: [development, final-regression, independent-g29]
+    if: "startsWith(github.event.head_commit.message, 'docs(nkr06): pin G29 source at ') && github.run_attempt == 1 && needs.development.result == 'success' && needs.final-regression.result == 'success' && needs.independent-g29.result == 'success'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: nkr06-existing-artifact-rehydrate-once
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Read-only original artifact ID and source SHA custody
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14220169461" > "$RUNNER_TEMP/nkr06-artifact-metadata.json"
+          python -B - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"nkr06-artifact-metadata.json"
+          j=json.loads(p.read_text())
+          assert j["id"]==14220169461
+          assert j["name"]=="NKR05-21M-full-historical-TRAIN-native-factual-weights"
+          assert j["expired"] is False
+          assert j["workflow_run"]["id"]==43856374741
+          assert j["workflow_run"]["head_sha"]=="c4b4e97726f6541197913ad405a47d4c4019a3cf"
+          assert j["digest"]=="sha256:c7265cabac91b8762fb5d65209eef44fa79a8fbf3d9a6f61300ef60ded0a5275"
+          print("NKR06_ORIGINAL_IMAGE_PROVENANCE_PASS")
+          PY
+      - name: Rehydrate existing full image without reading historical source again
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/nkr06-input"
+          gh run download 43856374741 -R "$GITHUB_REPOSITORY" -n NKR05-21M-full-historical-TRAIN-native-factual-weights -D "$RUNNER_TEMP/nkr06-input"
+          test "$(find "$RUNNER_TEMP/nkr06-input" -maxdepth 1 -type f | wc -l | tr -d ' ')" = 3
+          test "$(stat -c %s "$RUNNER_TEMP/nkr06-input/facts.uint32le")" = 256124172
+          python -B -m yggdrasil.native_knowledge_activation --source "$RUNNER_TEMP/nkr06-input" --destination-parent "$RUNNER_TEMP" --name nkr06-qualified-offline-session | tee "$RUNNER_TEMP/nkr06-activation-receipt.jsonl"
+          test -s "$RUNNER_TEMP/nkr06-qualified-offline-session/activation.json"
+          test -z "$(git status --porcelain)"
+      - name: Full post-real-artifact clean-source regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s research/contrib/chatgpt/NKR-05 -p 'test_*.py' -v
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+      - name: Save small activation and provenance receipts, not the 256MB source duplicate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: NKR06-offline-21M-native-activation-receipt
+          path: |
+            ${{ runner.temp }}/nkr06-activation-receipt.jsonl
+            ${{ runner.temp }}/nkr06-artifact-metadata.json
+            ${{ runner.temp }}/nkr06-qualified-offline-session/activation.json
+          retention-days: 30
+          if-no-files-found: error

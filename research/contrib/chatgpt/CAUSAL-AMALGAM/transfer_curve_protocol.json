@@ -1,0 +1,67 @@
+{
+  "cases": [
+    {
+      "omitted": [
+        0,
+        0
+      ],
+      "orientation": 1,
+      "seed": 990701
+    },
+    {
+      "omitted": [
+        0,
+        1
+      ],
+      "orientation": 0,
+      "seed": 990731
+    },
+    {
+      "omitted": [
+        1,
+        0
+      ],
+      "orientation": 1,
+      "seed": 990761
+    },
+    {
+      "omitted": [
+        1,
+        1
+      ],
+      "orientation": 0,
+      "seed": 990787
+    }
+  ],
+  "classification": "Both late milestones at 64 and 120 must meet pooled margin and retention on every seed. At least 3 of 4 seeds must meet the final per-seed margin. If 0, 8 or 24 meets the pooled margin, classify an otherwise favorable result as early or immediate. Otherwise classify a favorable result as delayed. Any late gate miss is DEV_NO_GO.",
+  "controls": "Full, trailing, and change-point predictors are fitted on the parent ledger and continue on all new witnessed training rows. The structural control resets to uniform over seven partitions at transfer and updates on every shared new row. All controls have access to the same public row stream and training actions.",
+  "held_episodes": 64,
+  "hypothesis": "The continuing native readout gains a sustained held-cell prediction advantage only after additional witnesses, and preserves familiar predictions.",
+  "id": "amalgam-held-cell-transfer-curve-dev-v1",
+  "max_historical_brier_drift": "1/50",
+  "milestones": [
+    8,
+    24,
+    64,
+    120
+  ],
+  "min_brier_advantage": "1/100",
+  "min_seeds_at_margin": 3,
+  "parent_certified_ci": 44499793023,
+  "parent_qualified_candidate": "40471f649364c0829c61e28d92a5758e9351056f",
+  "primary": "Per-seed held-cell native transition Brier against the lowest loss among fixed anchor, full, trailing, change-point, and Bayesian structural. The three masked training cells cannot uniquely identify the omitted truth table entry. The comparison tests transfer under ambiguity and gives no identifiability guarantee.",
+  "scope": "Fresh isolated synthetic development only. No original worlds, source actor, policy use or promotion.",
+  "secondary": "Direct, temporal, evidence-gated and uniform-blend forecasts from the same shared update. The gate can only use witnessed cell-specific evidence. Scored held batches are isolated from training and use the same rows for every snapshot and control.",
+  "source_files": {
+    "../../../../yggdrasil/native_causal_amalgam.py": "f4aab8d97973cda61b405b50207ad84f82fe2d6c4a8e15db322d5714d0fe53f6",
+    "../../../../yggdrasil/native_episode_experience.py": "96b474778a72dc75ee184a5fb963f10653594d4902bd4fa585c2fddc6a5109a9",
+    "../CKAD-20/synthetic_world.py": "20cb67447988eb0deff287f4e42e5b61d46d4763a920db5c79852c9b07e163ef",
+    "selection_protocol_dev.json": "d7a879e944f2e554156cd874aa739b4b611ffa020b0b0a748b841f9c3649b2b5",
+    "selection_trial.py": "84b76e13174eb5c9d5b461532ea826fb89479d91740920f2179a74dfed0c1945",
+    "specialist_selection.py": "4192190cdb21b6a12484790b85cabc01ee2c4b361a761aded98a8c5461870018",
+    "staged_retention.py": "a5c0f5872c27894caa018967e673fbb5421c382a3f665787c4d8b292940bffcc",
+    "transfer_curve.py": "4b1cd305875f39cf8658733097d0e73372743fa6da42cdd450c83b7b701e8035"
+  },
+  "stop": "Fixed cap of 120 witnessed episodes per seed. Preserve all outcomes and never tune thresholds or retry on these held cohorts.",
+  "wall_budget_seconds": 600
+}

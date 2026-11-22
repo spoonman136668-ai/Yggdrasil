@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.ckad15.integrated-stochastic-history.prereg.v1",
+  "experiment_id": "CKAD-15",
+  "exact_parent_sha": "30437508aef0a143605e472e31388496de14738e",
+  "parent_tree": "42933dbeace713d7c53b9921692954948e6ea434",
+  "hypothesis": "The accumulated CKAD14 native learner can learn stochastic public transition probabilities in the same full checkpoint using existing two-bank PublicCausalCells history coding, without quarantining legitimate outcome variation or losing deterministic knowledge.",
+  "initial_checkpoint": "CKAD-14/seed-101-continued-native.json exact source result.json pin; no model reset or replacement.",
+  "source": {
+    "path": "research/contrib/chatgpt/NKR-20/source_fixture.json",
+    "sha256": "e994f6adb0733c05eeae8dd19b0a4a36bb13946e1090b241023630b468276d1f",
+    "git_blob": "40ffdf63d265e635413993a4cfc4b3d666bd3cb3",
+    "upstream": "CausalAILab/Causal-Gymnasium@c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "class": "previously consumed source-owned public simulator cache, NOT physical-world or virgin evidence",
+    "episodes": 4,
+    "public_rows_total": 124,
+    "public_seeds": [
+      996100,
+      996101,
+      996102,
+      996103
+    ]
+  },
+  "protocol": {
+    "features": [
+      "public before state bit",
+      "chosen recorded action bit",
+      "previous public reward bit",
+      "explicit world index"
+    ],
+    "targets": [
+      "revealed reward bit",
+      "revealed after-state bit"
+    ],
+    "learner": "Existing16-address PublicCausalCells, two banks, unchanged Beta(1,1) posterior probability and NKR20 history encoding world*4+before+2*previous_reward. No hidden U/info or current outcome enters features.",
+    "stages": [
+      0,
+      8,
+      16,
+      23
+    ],
+    "train": "Per world, original public row indices1..8, then9..16, then17..23 cumulatively; row0 provides past-history initial cue only. No row24..30 training.",
+    "evaluation": "Frozen original public row indices24..30, two outputs per transition =>56 probability scores, after each stage. No outcome-dependent stage selection or threshold tuning.",
+    "retention": "All16x2048 deterministic readouts checked before/after every stage, old property/source bytes unchanged; full integrated state cold-restored with no cache or solver access, then next stage resumes. Replay idempotent; source tamper and chronology negatives fail closed.",
+    "final_probability_checkpoint_sha256": "Must equal qualified NKR20 history two-bank SHA256 5f35402435acccc835644d717c0107ede73354f9f2ff6c6bdbf4fe03abd2f4a7 after23 learned rows/world.",
+    "held_source_boundaries": "Loader authenticates the fixed whole cache, but only selected past prefixes reach learned state. Never keep held outcomes in the learned checkpoint or expose them to a policy."
+  },
+  "controls": [
+    "Independently aggregated full-prefix exact Beta history control, must tie every readout",
+    "Qualified NKR20 current-state Beta control, pooled Brier0.18306255304168106",
+    "Qualified NKR21 fixed4-strength hierarchical backoff, pooled Brier0.17735505429327192",
+    "Untrained probability1/2, pooled Brier0.25"
+  ],
+  "success": {
+    "engineering": "One complete state can preserve deterministic knowledge and cumulatively ingest/restore stochastic histories; original two-bank bytes match; nonzero legitimate within-key outcome variation counted rather than deterministic quarantine; all source/cold/retention negatives pass, mandatory full final Linux/Windows regression and independent audit.",
+    "development": "Final pooled Brier<=0.225 and >=0.025 improvement from untrained0.25, zero exact-Beta readout discrepancies; no superiority over strongest conventional controls expected or claimed.",
+    "scientific": "false: retrospective consumed source integration, no new policy rollout, original scientific first-use or source family; original NKR20/21 negatives remain intact."
+  },
+  "budgets": {
+    "whole_wall_seconds": 120,
+    "new_original_source_actions": 0,
+    "new_training_event_identities": 92,
+    "target_counter_updates": 184,
+    "held_training_updates": 0,
+    "paid_apis": 0
+  },
+  "allowed_paths": [
+    "yggdrasil/native_stochastic_history.py",
+    "yggdrasil/native_cumulative_learner.py",
+    "tests/test_native_stochastic_history.py",
+    "tests/test_native_cumulative_learner.py",
+    "research/contrib/chatgpt/CKAD-15/**",
+    ".github/workflows/ckad15-stochastic-integration.yml",
+    ".ice/code-atlas.*"
+  ],
+  "authority": "Isolated development on existing PR1207 only; preserve scoped owners, all earlier frozen records, accepted main, independent tracks and protected-source fences. No merge, promotion, deployment, controller, scheduler or new source actor."
+}

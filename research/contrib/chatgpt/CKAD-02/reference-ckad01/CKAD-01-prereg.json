@@ -1,0 +1,49 @@
+{
+  "schema": "ckad.exploratory-knowledge-first-v1",
+  "status": "EXPLORATORY_SYNTHETIC_DEVELOPMENT_NOT_EXTERNAL_SCIENCE",
+  "purpose": "Measure whether exposure to a 100k source-checked factual foundation improves new-entity action-consequence prediction, detect an out-of-grammar mechanism, and preserve prior rules. Do not confuse associative lookup or finite-family fitting with native cognition.",
+  "source": {
+    "kind": "deterministic synthetic public entity-attribute simulator",
+    "total_entities": 10000,
+    "properties_per_entity": 10,
+    "full_public_factual_relationships": 100000,
+    "seeds": [101, 202, 303],
+    "knowledge_levels": [10000, 25000, 50000, 100000],
+    "public_action_observations_per_world": 512,
+    "selected_training_entity_ids": "0..4095, fixed deterministic SHA256 order; take 512",
+    "development_only_ids": "4096..6143, unused for parameter selection",
+    "source_hidden_test_entity_ids": "6144..8191 (2048 entities), no causal result available to model before evaluation",
+    "source_input": "entity binary properties obtained through public fact exposure, not from hidden world truth; 1 selected action=1 consequence per training entity",
+    "no_external_original_source_first_use": true
+  },
+  "mechanisms": {
+    "A": "property0 XOR property1",
+    "B": "property2 AND NOT property3",
+    "C": "majority(property4,property5,property6), intentionally outside native 2-property truth-table grammar"
+  },
+  "arms": [
+    "bounded two-property truth-table induction from public selected effects, source evidence min64",
+    "independent exhaustive two-property symbolic truth-table control, identical information and minimum support",
+    "fully trained conventional CART decision tree max_depth 4, same 512 public outcomes and same missing-property exposure",
+    "retrieval-only entity-action exact-match memory",
+    "no knowledge records: public effects only"
+  ],
+  "evaluation": {
+    "primary": "correct cold predictions / 2048 (abstentions count incorrect) per seed/world/exposure",
+    "secondary": "prediction coverage, confident wrong predictions, retained earlier model predictions after sequential different-family learning, action count, wall time",
+    "guard": "if no pairwise rule fits 64 or more complete source-visible support events without contradiction, abstain rather than synthesize a triple/majority law",
+    "development_expectation": "100k exposure improves heldout coverage over 10k; two-property mechanisms A/B source-compatible; 3-property majority C triggers bounded NO_SUPPORTED_RELATION abstention",
+    "scientific_pass": false,
+    "science_reason": "self-generated simulation, preprogrammed two-property rule grammar, independent exhaustive symbolic control is equally informed, no external authentic first-use or owner model integration",
+    "no_postresult_retuning": true
+  },
+  "safety": {
+    "no_cross_project_architecture_merge": true,
+    "no_accepted_main_mutation": true,
+    "no_automated_runner_or_scheduled_task": true,
+    "no_paid_api": true,
+    "no_original_real_causal_source": true,
+    "no_protected_valid_test": true,
+    "no_model_promotion": true
+  }
+}

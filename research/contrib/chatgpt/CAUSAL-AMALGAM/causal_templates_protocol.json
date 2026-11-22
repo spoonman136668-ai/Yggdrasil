@@ -1,0 +1,50 @@
+{
+  "id": "amalgam-causal-templates-dev01",
+  "scope": "Disjoint synthetic development, shadow transition forecasts, exact same retained native learner and trained specialists. No new policy or protected deployment.",
+  "source_repository_head": "f352c2f9c634996f386ce95cd135ddcde3ce2f73",
+  "source_previous_result": "staged-retention-dev-01",
+  "sources": {
+    "causal_templates.py": "5a4ac0b71131bec1300af02bbe5cc1bc57ca763a10057c3736045c7e05cf17f3",
+    "causal_templates_trial.py": "6193a6a9049489f607c7f923dfbf44bd19ae4ecc0d23dc18efcd40834122bdde",
+    "staged_retention.py": "a5c0f5872c27894caa018967e673fbb5421c382a3f665787c4d8b292940bffcc",
+    "selection_trial.py": "84b76e13174eb5c9d5b461532ea826fb89479d91740920f2179a74dfed0c1945"
+  },
+  "starting_checkpoint": "selection_protocol_dev.json restored exact Linux joint witness state",
+  "question": "Can reusing the learned native transition readout under eight action-effect transformations recover the novel intervention structure without sacrificing familiar forecasts and unsupported-structure safety?",
+  "seeds": [
+    838897,
+    838919,
+    838931
+  ],
+  "phases": [
+    {
+      "name": "paired_new",
+      "swap": 1,
+      "inhibit_mask": 2,
+      "context_flip": 0,
+      "count": 32
+    },
+    {
+      "name": "unsupported",
+      "swap": 0,
+      "inhibit_mask": 0,
+      "context_flip": 2,
+      "count": 32
+    },
+    {
+      "name": "familiar",
+      "swap": 0,
+      "inhibit_mask": 0,
+      "context_flip": 0,
+      "count": 32
+    }
+  ],
+  "warmup": 8,
+  "information": "Prespecified fixed balanced public interventions. All predictor arms receive identical paired observations, phase boundaries, actions and previous revealed outcomes. Hidden source parameters and families remain evaluator-only. The prequential witnesses are admitted only after forecasts.",
+  "controls": "Pinned native predictions; native continuously growing on same witnesses; exact same structural hypotheses with fully fitted conditional Beta prior instead of native; recent-window and dynamic change-point Beta using full same parent ledger plus matched prior new outcomes; mismatched prior evidence updated with both context and action bits flipped.",
+  "gain": "1/200",
+  "old_and_unsupported_loss": "1/50",
+  "wall_seconds_per_seed": 180,
+  "gates": "On every seed, new-structure transition Brier must beat the best of all other controls by 0.005. On familiar, no more than 0.02 worse than pinned native; on unsupported, no more than 0.02 worse than best of live native, change-point and fitted structural control.",
+  "limits": "The transfer family can be expressed by the predeclared transformations. This is not claim of arbitrary causal family discovery or intervention policy superiority. No second run on these draws after scoring."
+}
