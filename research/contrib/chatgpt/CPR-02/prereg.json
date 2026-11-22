@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "CPR-02",
+  "project": "Yggdrasil",
+  "contribution_class": "source-free causal-confirmation falsification",
+  "parent_sha": "3ae43b4d79a411bd9f3a1bbca8300af7586ea435",
+  "parent_source": "research/contrib/chatgpt/CPR-01/router.py",
+  "authority": {
+    "research_only": true,
+    "first_use": false,
+    "original_sources": false,
+    "training": false,
+    "checkpoint_modification": false,
+    "auto_speciation": false,
+    "merge": false,
+    "runner_dispatch": false
+  },
+  "status": "DESIGN_PREREG_SOURCE_FREE_ONLY",
+  "rationale": "CPR-01 produced a false single-channel speciation signal under 8 clustered flipped labels in an 80-step stream. Label-only evidence cannot distinguish that corruption from a genuine change.",
+  "hypothesis": "Using two subsequent non-replayed independent intervention probes after the original W8 alarm will block the clustered single-channel false candidate and confirm a sustained mismatched regime on deterministic synthetic cases, without granting learning or retention evidence. Correlated corruption can defeat the gate.",
+  "frozen_rule": {
+    "detector": "Existing unmodified CPR-01 ConformalRouter window=8; alarm is advisory only",
+    "confirmation": "After alarm, two strictly increasing-sequence independent probes from a separately pinned source under the same prespecified intervention; both must be outside every frozen specialist's conformal set. Confirm only after second. A covered probe resets counter and resolves advisory. No probe keeps unverified alert.",
+    "observation_order": "route with forecast before primary outcome; probe forecast is fixed at route; labels observed after; earlier observations only at decision time",
+    "invalid": "Reject missing/mismatched probe pin, stale or reused sequence, mismatched intervention, invalid binary scores/labels before mutating state",
+    "checkpoint": "Canonical SHA256-pinned sidecar with embedded existing frozen CPR-01 checkpoint; cold restore requires unchanged model pins and probe source pin",
+    "automatic_actions": "NONE; no specialist spawn, freeze, promotion, checkpoint edit, controller action or dispatch",
+    "source_reality": "Probe-source pins and IDs are integrity hints, not proof of causal independence, source custody or observational validity"
+  },
+  "primary_screen": {
+    "cases": [
+      "clean 16 A -> 16 B -> 16 A with existing two frozen experts and no probes",
+      "80 observations with 8 consecutive flipped primary labels and clean independent probes",
+      "sustained 32-sample shift with independently matching probes",
+      "missing probes",
+      "duplicated and wrong-source probes",
+      "correlated probe contamination (must not claim guarantee)",
+      "cold restore and tamper detection"
+    ],
+    "metrics": [
+      "confirmed_false_alarms_clean_probe",
+      "confirmed_true_regime_by_observation_16",
+      "confirmed_false_alarms_correlated_probe",
+      "checkpoint_equivalence",
+      "mutations_on_rejected_observation"
+    ],
+    "thresholds": {
+      "clean_probe_false_confirms": 0,
+      "sustained_shift_confirm_by_step": 16,
+      "without_probes_confirms": 0,
+      "correlated_noise_zero_false_confirm_guarantee": false
+    },
+    "control_set": [
+      "unaltered CPR-01 W8 advisory alarm",
+      "two-probe-only confirmed-mismatch streak control with identical probe observations"
+    ],
+    "data_budget": "Only deterministic fixtures in this source-free design and bounded stdlib unit tests; no original G41/R15 source",
+    "seeds": [
+      73017,
+      73031,
+      73043
+    ],
+    "interpretation": "Source-free engineering only. Probe data is an additional measurement and must be afforded to every matched-information control for any future scientific evaluation."
+  },
+  "prospective_science": "BLOCKED until disjoint FIT/CAL/HELD custody and independent actual-probe source are pinned by source owner, fully fitted equal-information controls, original checkpoint restore, exact SHA cross-platform final regression and separate owner first-use",
+  "predecessor_evidence": [
+    "research/contrib/chatgpt/CPR-01/README.md@3ae43b4d79a411bd9f3a1bbca8300af7586ea435",
+    "research/contrib/chatgpt/CPR-01/prereg.json@3ae43b4d79a411bd9f3a1bbca8300af7586ea435"
+  ]
+}
