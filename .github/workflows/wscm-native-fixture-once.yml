@@ -1,0 +1,81 @@
+name: WSCM source-free native fixture qualification (one shot)
+on:
+  push:
+    branches: [research/wscm-native-fixture-gate-20261122]
+    paths:
+      - '.github/workflows/wscm-native-fixture-once.yml'
+permissions:
+  contents: read
+jobs:
+  focused-windows:
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+    steps:
+      - name: Checkout exact source without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Enforce source custody and forbid original-source drift
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
+          if ('${{ github.ref_name }}' -cne 'research/wscm-native-fixture-gate-20261122') {throw 'WSCM_QUALIFICATION_WRONG_BRANCH'}
+          $head=(& git.exe rev-parse HEAD).Trim()
+          if ($head -cne '${{ github.sha }}') {throw 'WSCM_QUALIFICATION_SHA_DRIFT'}
+          & git.exe merge-base --is-ancestor e6fcb51aa1d6a0005e2397cd70ff72ab6ab44d0f HEAD
+          if ($LASTEXITCODE -ne 0) {throw 'WSCM_NATIVE_CANDIDATE_NOT_ANCESTOR'}
+          $blobs=@{
+            'yggdrasil/native_episode_experience.py'='7c3f35cbaf77ddd507070b719b9de957f4aa4802'
+            'yggdrasil/native_cumulative_learner.py'='6dc5107530e1e38b5c412ead15bd5e1b5bad4a39'
+            'yggdrasil/native_causal_amalgam.py'='8088274e464b4f20c2e2aa1d2c659629b8fc91b4'
+            'tests/test_wscm_cumulative_fixture_replay.py'='03d0bdc1c261271404ebeacb1ffdbcc6cd324cd1'
+            'tests/test_native_episode_external_fixture_envelope.py'='8ff834cc0d2dc482521ee7705c8799cebf299a28'
+          }
+          foreach($p in $blobs.Keys){
+            $found=(& git.exe rev-parse ('HEAD:'+$p)).Trim()
+            if($LASTEXITCODE -ne 0 -or $found -cne $blobs[$p]){throw ('WSCM_SOURCE_BLOB_DRIFT:'+ $p)}
+          }
+          Write-Host ('WSCM_SOURCE_SHA='+$head)
+          Write-Host 'WSCM_SOURCE_PROVENANCE=PASS'
+      - name: Execute bounded synthetic fixture native tests; never touch original worlds
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
+          $candidates=@(
+            'C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe',
+            'C:\Program Files\Python312\python.exe',
+            'C:\Python312\python.exe'
+          )
+          $python=$null
+          foreach($p in $candidates){if(Test-Path -LiteralPath $p -PathType Leaf){$python=$p;break}}
+          if(-not $python){$found=Get-Command python.exe -ErrorAction SilentlyContinue;if($found){$python=$found.Source}}
+          if(-not $python){throw 'WSCM_RUNNER_PYTHON312_UNAVAILABLE'}
+          & $python -B -c 'import sys; assert sys.version_info >= (3, 12), sys.version'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_PYTHON_VERSION_INVALID'}
+          & $python -B -c 'import numpy, scipy; print("WSCM_SOLVER_IMPORT=PASS")'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_DEPENDENCIES_MISSING'}
+          $suites=@(
+            'test_native_episode_external_fixture_envelope.py',
+            'test_wscm_cumulative_fixture_replay.py',
+            'test_native_cumulative_learner.py',
+            'test_native_jepa2_multilearner.py'
+          )
+          $failed=@()
+          foreach($suite in $suites){
+            Write-Host ('WSCM_NATIVE_SUITE='+$suite)
+            & $python -B -m unittest discover -s tests -p $suite -v
+            if($LASTEXITCODE -ne 0){$failed+=($suite+':'+$LASTEXITCODE)}
+          }
+          if($failed.Count -gt 0){throw ('WSCM_NATIVE_FOCUSED_FAILURES='+($failed -join ','))}
+          & git.exe diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'WSCM_TEST_WORKTREE_CHANGED'}
+          $dirty=@(& git.exe status --porcelain)
+          if($dirty.Count -ne 0){throw ('WSCM_TEST_WORKTREE_DIRTY='+($dirty -join ','))}
+          Write-Host 'WSCM_SOURCE_FREE_FOCUSED_TESTS=PASS'
