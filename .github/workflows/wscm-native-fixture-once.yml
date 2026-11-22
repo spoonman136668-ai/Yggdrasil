@@ -2299,3 +2299,64 @@ jobs:
           print('WSCM_CELL02_ONLY_G29_WORKTREE_MUTATIONS=PASS')
           PY
           echo "WSCM_CELL02_GENERATED_ATLAS_WORKTREE_REGRESSION=PASS_NOT_FULL_COMMIT_ACCEPTANCE"
+
+  # One-shot emitted proof bytes for the already-authored detached WSCM cell02 candidate.
+  # This never pushes refs or changes a native model; original-world owner #426 stays HOLD.
+  cell02-atlas-emit:
+    if: contains(github.event.head_commit.message, 'WSCM_CELL02_ATLAS_EMIT')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+    steps:
+      - name: Checkout immutable original cell02 candidate without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: f79de6ecbd2a7999c148e1c4742f64435cc0ce94
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact source/parent/tree and regenerate source atlas in worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = f79de6ecbd2a7999c148e1c4742f64435cc0ce94
+          test "$(git rev-parse HEAD^{tree})" = c40ff9e1eefbeff50110ce78e70a6dc6b400f936
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = b2341a79ef951a25b10c82f582f5279d6c0971e4
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = 1a006dd8527564606b81cb70bb78f1783554710a
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 69b1cb6b1a658fff1df6ef2cff7366c3e5968625
+          test "$(git rev-parse HEAD:tests/test_wscm_cumulative_fixture_replay.py)" = 86f70b6bccd0427f44eaafcf4b051f448b60b71c
+          git config --global core.autocrlf false
+          python3 -B scripts/build_code_atlas.py --write --source-commit f79de6ecbd2a7999c148e1c4742f64435cc0ce94
+          echo 'WSCM_CELL02_ATLAS_SOURCE=PASS_WORKTREE_ONLY'
+      - name: Emit independently pinned G29 Git blob bytes in bounded numbered segments
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import base64,hashlib,subprocess
+          from pathlib import Path
+          from scripts import build_code_atlas as atlas
+          root=Path.cwd()
+          sha="f79de6ecbd2a7999c148e1c4742f64435cc0ce94"
+          blobs=atlas.render(atlas.snapshot(root,sha))
+          assert set(blobs)==set(atlas.OUT)
+          for path in atlas.OUT:
+              raw=blobs[path].encode("utf-8")
+              assert (root/path).read_bytes()==raw,("WSCM_G29_WORKTREE_DRIFT",path)
+              digest=hashlib.sha256(raw).hexdigest()
+              gitblob=hashlib.sha1(b"blob "+str(len(raw)).encode()+b"\0"+raw).hexdigest()
+              encoded=base64.b64encode(raw).decode("ascii")
+              size=16000
+              pieces=[encoded[i:i+size] for i in range(0,len(encoded),size)]
+              print("WSCM_CELL02_G29_BEGIN|"+path+"|"+str(len(raw))+"|"+gitblob+"|"+digest+"|"+str(len(pieces)),flush=True)
+              for number,piece in enumerate(pieces):
+                  print("WSCM_CELL02_G29_PART|"+path+"|"+str(number)+"|"+piece,flush=True)
+              print("WSCM_CELL02_G29_END|"+path+"|"+str(len(encoded)),flush=True)
+          dirty=set(subprocess.check_output(["git","diff","--name-only"],text=True).splitlines())
+          assert dirty <= set(atlas.OUT),("WSCM_SOURCE_MUTATION",dirty-set(atlas.OUT))
+          assert not subprocess.check_output(["git","ls-files","--others","--exclude-standard"],text=True)
+          print("WSCM_CELL02_G29_BYTE_RECEIPTS_COMPLETE=PASS_NO_REF_WRITE",flush=True)
+          PY
