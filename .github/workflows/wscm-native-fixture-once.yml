@@ -545,7 +545,7 @@ jobs:
           test -z "$(git status --porcelain)"
   final-exact-linux:
     name: final-wscm-linux
-    if: startsWith(github.event.head_commit.message, 'test(wscm-ci): exact-source final regression')
+    if: contains(github.event.head_commit.message, 'exact-source final regression')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -616,7 +616,7 @@ jobs:
 
   final-exact-windows:
     name: final-wscm-windows
-    if: startsWith(github.event.head_commit.message, 'test(wscm-ci): exact-source final regression')
+    if: contains(github.event.head_commit.message, 'exact-source final regression')
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
     timeout-minutes: 90
     env:
