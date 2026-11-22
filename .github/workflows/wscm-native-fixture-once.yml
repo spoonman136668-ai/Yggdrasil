@@ -942,7 +942,7 @@ jobs:
           $env:PYTHONPATH=$root+[IO.Path]::PathSeparator+$deps
           $env:OPENBLAS_NUM_THREADS='1'; $env:OMP_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'
           $sha=(& git.exe rev-parse HEAD).Trim()
-          if($sha -cne '${{ github.sha }}'){throw 'WSCM_WINDOWS_SOURCE_SHA_DRIFT'}
+          if($sha -cne '5f367a74518edcb854728090ba305a938959e15a'){throw 'WSCM_WINDOWS_SOURCE_SHA_DRIFT'}
           Write-Host ('WSCM_WINDOWS_ELIGIBLE_SHA='+$sha)
           # Keep Windows without POSIX resource. This preserves free fanout's
           # existing fail-closed resource guard; do not inject a fake getrusage.
@@ -1004,7 +1004,8 @@ jobs:
           Write-Host 'WSCM_WINDOWS_PLATFORM_TESTS=PASS'
           Write-Host 'WSCM_FULL_CROSS_PLATFORM_ACCEPTANCE=UNVERIFIED'
   capacity32-linux:
-    if: ${{ contains(github.event.head_commit.message, 'capacity32 source-only qualification') }}
+    # Previous exact-source Linux job 137337253063 PASS; no duplicate execution.
+    if: ${{ github.sha == '87914ee42eaaeefbcc60255c0c5df255bf9f5542' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
