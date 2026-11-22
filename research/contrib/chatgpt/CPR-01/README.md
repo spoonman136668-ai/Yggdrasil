@@ -96,3 +96,20 @@ CPR qualification, establish certified disjoint 128-row calibration sets per
 frozen expert, pin new disjoint held cohorts, equal-information fully fitted
 controls and source-owner authority, then run the whole frozen regression on
 the exact candidate. Do not tune thresholds on the consumed R15/G41 evidence.
+
+## Original-control identity correction (no post-result tuning)
+
+The **actual frozen G41 R13 protocol**, Git blob
+`438e147f243fbe51cc33819a9d777ba6c97b1760`, names
+`static_novel_cap_1/2` and `coverage_cap_3/4`. The handoff's 12.5% and
+25% caps are **not those two documented original R13 arms**; the initial
+CPR-01 design-only preregistration lists 12.5% and 25% proposed controls,
+so it cannot be represented as an exact replay of R13. No original-world
+scoring was attempted. A fresh source-pinned and owner-qualified prospective
+protocol must explicitly include the **original 1/2 and 3/4 arms** if those
+are the comparator intended, before any new held-out outcomes are inspected.
+
+A separately qualified **R15-V2** source or original cohort was not
+identified in the verified R15 branch, issue and PR discovery used here.
+The available frozen R15 protocol and report are two-expert, three-stage,
+three-seed, already-consumed **R15** records, not evidence that R15-V2 ran.
