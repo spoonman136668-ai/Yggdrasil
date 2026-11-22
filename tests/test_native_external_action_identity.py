@@ -153,7 +153,85 @@ class NativeActionIdentityAdversarialTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "WSCM_ACTION_CAPACITY"):
             m.observe_public_receipt({"public_view": [0, 0],
                                       "external_action_id": 90017}, raw, pin)
-        self.assertEqual(len(m._rows), 16)
+        self.assertEqual(len(m._rows), M.MAX_ACTIONS)
+
+    def test_six_fresh_four_id_regimes_cold_preserve_old_evidence(self):
+        """Fixture-only capacity/retention, not learned transfer or native world use."""
+        self.assertGreaterEqual(M.MAX_ACTIONS, 24)
+        laws = {
+            "A": ((0, 0, 1, 1), (0, 1, 0, 1),
+                  (0, 1, 1, 0), (0, 0, 0, 1)),
+            "B": ((1, 1, 0, 0), (1, 0, 1, 0),
+                  (0, 1, 1, 1), (1, 1, 1, 0)),
+            "C": ((0, 0, 1, 1), (1, 0, 0, 1),
+                  (1, 0, 1, 1), (0, 1, 1, 1)),
+        }
+        sequence = ("A", "B", "A", "C", "B", "A")
+        m = M.NativeExternalActionIdentity()
+        witnessed = {}
+        source_id = 1
+        first_a = 31000
+        for phase, law in enumerate(sequence):
+            for role in range(4):
+                action = 31000 + 100 * phase + 9 * role
+                expected = laws[law][role]
+                self.assertIsNone(m.observed_signature(action))
+                for idx, view in enumerate(M.STATES):
+                    raw, pin = receipt(action, view, expected[idx], source_id)
+                    source_id += 1
+                    previous = m
+                    m = m.observe_public_receipt(
+                        {"public_view": list(view), "external_action_id": action},
+                        raw, pin)
+                    self.assertIsNone(previous.observed_signature(action))
+                    if idx != 3:
+                        self.assertIsNone(m.observed_signature(action))
+                self.assertEqual(m.observed_signature(action), expected)
+                witnessed[action] = expected
+            old = m.checkpoint()
+            cold = M.NativeExternalActionIdentity.restore(old, M.NativeExternalActionIdentity.sha256(old))
+            self.assertEqual(cold.checkpoint(), old)
+            for action, expected in witnessed.items():
+                self.assertEqual(cold.observed_signature(action), expected)
+            self.assertEqual(m.checkpoint(), old)
+        self.assertEqual(len(witnessed), 24)
+        self.assertEqual(source_id - 1, 96)
+        returned_a = 31000 + 2 * 100
+        self.assertIs(m.observed_equivalent(first_a, returned_a), True)
+        self.assertIs(m.observed_equivalent(first_a, 31000 + 1 * 100), False)
+        raw, pin = receipt(90017, (0, 0), 1, source_id)
+        m2 = m.observe_public_receipt(
+            {"public_view": [0, 0], "external_action_id": 90017}, raw, pin)
+        self.assertIsNone(m2.observed_signature(90017))
+        self.assertEqual(m2.observed_signature(first_a), witnessed[first_a])
+        self.assertEqual(m.checkpoint(), old)
+
+    def test_32_distinct_id_capacity_and_256_event_cold_limit(self):
+        """Full bounded checkpoint restores; 33rd ID and 257th event fail."""
+        self.assertEqual(M.MAX_ACTIONS, 32)
+        m = M.NativeExternalActionIdentity()
+        source_id = 1
+        for action in range(32):
+            for repeat in range(2):
+                for view in M.STATES:
+                    raw, pin = receipt(action, view, view[0], source_id)
+                    source_id += 1
+                    m = m.observe_public_receipt(
+                        {"public_view": list(view), "external_action_id": action},
+                        raw, pin)
+        self.assertEqual(source_id - 1, M.MAX_EVENTS)
+        self.assertEqual(len(m._rows), 256)
+        raw = m.checkpoint()
+        self.assertLessEqual(len(raw), M.MAX_CHECKPOINT_BYTES)
+        cold = M.NativeExternalActionIdentity.restore(raw, M.NativeExternalActionIdentity.sha256(raw))
+        self.assertEqual(cold.checkpoint(), raw)
+        for action in range(32):
+            self.assertEqual(cold.observed_signature(action), (0, 0, 1, 1))
+        extra, extra_pin = receipt(99999, (0, 0), 1, source_id)
+        with self.assertRaisesRegex(ValueError, "WSCM_EVENT_CAPACITY"):
+            m.observe_public_receipt(
+                {"public_view": [0, 0], "external_action_id": 99999}, extra, extra_pin)
+        self.assertEqual(raw, m.checkpoint())
 
     def test_max_events_remain_cold_restorable(self):
         m = M.NativeExternalActionIdentity()
