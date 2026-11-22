@@ -1891,3 +1891,69 @@ jobs:
           if(@(& git.exe status --porcelain).Count){throw 'WSCM_ARCHIVED_WINDOWS_UNTRACKED'}
           Write-Host 'WSCM_WINDOWS_ARCHIVED_GATE=PASS'
 
+
+
+  # WSCM-R03 pure readout research: no source world or controller dispatch.
+  sourceblind03-focused-linux:
+    if: ${{ contains(github.event.head_commit.message, 'sourceblind03 focused one-shot') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+    steps:
+      - name: Checkout exact detached research candidate read-only
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 92df3d818771c57ef94180927d75a196db5e9a31
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Pin source-only code and run no-world negatives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "92df3d818771c57ef94180927d75a196db5e9a31"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-TRANSFER-02/source_blind_role_readout.py)" = 94dc5af7302e89bee730599a16dfaa604d595a2c
+          test "$(git rev-parse HEAD:tests/test_wscm_source_blind_role_readout03.py)" = 9d24369665dd95bf766ce61f34d0a5cefd7ffb44
+          python -B -m unittest discover -s tests -p test_wscm_source_blind_role_readout03.py -v
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo WSCM_R03_SOURCE_FREE_FOCUSED=PASS
+
+  sourceblind03-focused-windows:
+    if: ${{ contains(github.event.head_commit.message, 'sourceblind03 focused one-shot') }}
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+    steps:
+      - name: Checkout exact detached research candidate read-only
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 92df3d818771c57ef94180927d75a196db5e9a31
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Pin exact source and run fixture-only negatives
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          if((& git.exe rev-parse HEAD).Trim() -cne '92df3d818771c57ef94180927d75a196db5e9a31'){throw 'WSCM_R03_SHA_DRIFT'}
+          if((& git.exe rev-parse HEAD:research/contrib/chatgpt/WSCM-TRANSFER-02/source_blind_role_readout.py).Trim() -cne '94dc5af7302e89bee730599a16dfaa604d595a2c'){throw 'WSCM_R03_CODE_DRIFT'}
+          if((& git.exe rev-parse HEAD:tests/test_wscm_source_blind_role_readout03.py).Trim() -cne '9d24369665dd95bf766ce61f34d0a5cefd7ffb44'){throw 'WSCM_R03_TEST_DRIFT'}
+          $paths=@('C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe','C:\Program Files\Python312\python.exe','C:\Python312\python.exe')
+          $python=$null
+          foreach($path in $paths){if(Test-Path -LiteralPath $path -PathType Leaf){$python=$path;break}}
+          if(-not $python){throw 'WSCM_R03_ISOLATED_PYTHON_MISSING'}
+          $root=(Resolve-Path '.').Path
+          $runner='import unittest,sys;sys.path.insert(0,sys.argv[1]);result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover(sys.argv[2],pattern="test_wscm_source_blind_role_readout03.py"));sys.exit(0 if result.wasSuccessful() else 1)'
+          & $python -B -c $runner $root (Join-Path $root 'tests')
+          if($LASTEXITCODE -ne 0){throw 'WSCM_R03_NEGATIVES_FAILED'}
+          & git.exe diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'WSCM_R03_WORKTREE_DIFF'}
+          if(@(& git.exe status --porcelain).Count){throw 'WSCM_R03_WORKTREE_DIRTY'}
+          Write-Host 'WSCM_R03_SOURCE_FREE_FOCUSED=PASS'
