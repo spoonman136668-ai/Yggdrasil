@@ -2,7 +2,7 @@
 // NOT native Yggdrasil; no protected original-world action or learned new law.
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
-const SEEDS=[404,505,606], PHASES=['A','B','A','C','A','B'], STEPS=256, W=12;
+const SEEDS=[707,808,909], PHASES=['A','B','A','C','A','B'], STEPS=256, W=12;
 const clip=p=>Math.max(0,Math.min(1,p));
 const base=(a,x)=>a^x;
 const cell=(a,x,z)=>4*a+2*x+z;
@@ -47,7 +47,7 @@ class SymbolicKnown extends WindowBayes{
  predict(r){if(r.a&&r.z!==1)return oldP(r.a,r.x);return super.predict(r);}
 }
 function makeModels(){return {paired:new PairedRepair(),passive:new PairedRepair(),prior:new PriorRepair(),bayes:new WindowBayes(),symbolic:new SymbolicKnown(),always1:new SymbolicKnown()};}
-function score(seed,kind){const m=makeModels(),out=[],cold=null;let coldErrors=0,syntheticActions=Object.fromEntries(Object.keys(m).map(k=>[k,0]));
+function score(seed,kind){const m=makeModels(),out=[];let cold=null,coldErrors=0,syntheticActions=Object.fromEntries(Object.keys(m).map(k=>[k,0]));
  for(let phaseIndex=0;phaseIndex<PHASES.length;phaseIndex++){
   const phase=kind==='null'?'A':PHASES[phaseIndex],total=Object.fromEntries(['raw',...Object.keys(m)].map(n=>[n,0]));
   const before={paired:m.paired.promotions,passive:m.passive.promotions,prior:m.prior.promotions};
