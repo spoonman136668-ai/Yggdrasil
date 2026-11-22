@@ -67,8 +67,9 @@ jobs:
           Write-Host 'WSCM_NATIVE_SUITE=test_native_episode_external_fixture_envelope.py'
           & $python -B -c $testCode $sourceRoot $solverPath (Join-Path $sourceRoot 'tests') test_native_episode_external_fixture_envelope.py
           if($LASTEXITCODE -ne 0){throw 'WSCM_CHILD_FIXTURE_TESTS_FAILED'}
-          & $python -B -c 'import numpy; print("WSCM_NUMPY_IMPORT=PASS")'
+          & $python -B -c 'import numpy'
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_NUMPY_MISSING'}
+          Write-Host 'WSCM_NUMPY_IMPORT=PASS'
           & $python -B -c 'import scipy'
           if($LASTEXITCODE -ne 0){
             # Installed into run-scoped temporary files only. Existing frozen
@@ -79,8 +80,9 @@ jobs:
             if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SCIPY_INSTALL_FAILED'}
             $solverPath=$deps
           }
-          & $python -B -c 'import sys; sys.path.insert(0,sys.argv[1]); import numpy,scipy; print("WSCM_SOLVER_IMPORT=PASS")' $solverPath
+          & $python -B -c 'import sys; sys.path.insert(0,sys.argv[1]); import numpy,scipy' $solverPath
           if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_IMPORT_FAILED'}
+          Write-Host 'WSCM_SOLVER_IMPORT=PASS'
           $suites=@(
             'test_wscm_cumulative_fixture_replay.py',
             'test_native_cumulative_learner.py',
