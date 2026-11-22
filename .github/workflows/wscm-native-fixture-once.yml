@@ -1072,3 +1072,318 @@ jobs:
           test -z "$(git status --porcelain)"
           echo "WSCM_LINUX_SOURCE_FREE_REGRESSION=PASS"
 
+
+  # Integrated 24/32-ID source-free qualification. Source is detached.
+  integrated24-windows:
+    if: ${{ contains(github.event.head_commit.message, 'integrated24 source-free qualification') }}
+    runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
+    timeout-minutes: 90
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+    steps:
+      - name: Checkout exact source without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4a98e8dfdb1e7807ccefac76e61b9a93ac076606
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Enforce source custody and forbid original-source drift
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
+          if ('${{ github.ref_name }}' -cne 'research/wscm-native-fixture-gate-20261122') {throw 'WSCM_QUALIFICATION_WRONG_BRANCH'}
+          $head=(& git.exe rev-parse HEAD).Trim()
+          if ($head -cne '4a98e8dfdb1e7807ccefac76e61b9a93ac076606') {throw 'WSCM_QUALIFICATION_SHA_DRIFT'}
+          & git.exe merge-base --is-ancestor e6fcb51aa1d6a0005e2397cd70ff72ab6ab44d0f HEAD
+          if ($LASTEXITCODE -ne 0) {throw 'WSCM_NATIVE_CANDIDATE_NOT_ANCESTOR'}
+          $blobs=@{
+            'yggdrasil/native_episode_experience.py'='7c3f35cbaf77ddd507070b719b9de957f4aa4802'
+            'yggdrasil/native_cumulative_learner.py'='6dc5107530e1e38b5c412ead15bd5e1b5bad4a39'
+            'yggdrasil/native_causal_amalgam.py'='8088274e464b4f20c2e2aa1d2c659629b8fc91b4'
+            'tests/test_wscm_cumulative_fixture_replay.py'='5bb56f21e6bf2cb836a88a7b9babd1044440ca43'
+            'tests/test_native_episode_external_fixture_envelope.py'='8ff834cc0d2dc482521ee7705c8799cebf299a28'
+            'yggdrasil/native_external_action_identity.py'='b31538c00cda5e7b526aa1178e883e86a26be0d4'
+            'tests/test_native_external_action_identity.py'='de9be4943c21264032faf0eae809564a56811390'
+          }
+          foreach($p in $blobs.Keys){
+            $found=(& git.exe rev-parse ('HEAD:'+$p)).Trim()
+            if($LASTEXITCODE -ne 0 -or $found -cne $blobs[$p]){throw ('WSCM_SOURCE_BLOB_DRIFT:'+ $p)}
+          }
+          Write-Host ('WSCM_SOURCE_SHA='+$head)
+          Write-Host 'WSCM_SOURCE_PROVENANCE=PASS'
+      - name: Execute bounded synthetic fixture native tests; never touch original worlds
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
+          $candidates=@(
+            'C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe',
+            'C:\Program Files\Python312\python.exe',
+            'C:\Python312\python.exe'
+          )
+          $python=$null
+          foreach($p in $candidates){if(Test-Path -LiteralPath $p -PathType Leaf){$python=$p;break}}
+          if(-not $python){$found=Get-Command python.exe -ErrorAction SilentlyContinue;if($found){$python=$found.Source}}
+          if(-not $python){throw 'WSCM_RUNNER_PYTHON312_UNAVAILABLE'}
+          & $python -B -c 'import sys; assert sys.version_info >= (3, 12), sys.version'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_PYTHON_VERSION_INVALID'}
+          # This existing fourteen-test fixture gate is standard-library-only.
+          # Execute it before provisioning any optional solver dependency.
+          $sourceRoot=(Resolve-Path '.').Path
+          $solverPath=$sourceRoot
+          $testCode='import sys,unittest;sys.path.insert(0,sys.argv[1]);sys.path.insert(0,sys.argv[2]);result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.discover(sys.argv[3],pattern=sys.argv[4]));sys.exit(0 if result.wasSuccessful() else 1)'
+          Write-Host 'WSCM_NATIVE_SUITE=test_native_episode_external_fixture_envelope.py'
+          & $python -B -c $testCode $sourceRoot $solverPath (Join-Path $sourceRoot 'tests') test_native_episode_external_fixture_envelope.py
+          if($LASTEXITCODE -ne 0){throw 'WSCM_CHILD_FIXTURE_TESTS_FAILED'}
+          & $python -B -c 'import numpy'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_NUMPY_MISSING'}
+          Write-Host 'WSCM_NUMPY_IMPORT=PASS'
+          & $python -B -c 'import scipy'
+          if($LASTEXITCODE -ne 0){
+            # Installed into run-scoped temporary files only. Existing frozen
+            # CI uses scipy 1.16.3; public PyPI binary wheel, no paid API.
+            $deps=Join-Path $env:RUNNER_TEMP ('wscm-solver-'+$env:GITHUB_RUN_ID)
+            New-Item -ItemType Directory -Path $deps -Force | Out-Null
+            & $python -B -m pip install --disable-pip-version-check --no-input --only-binary=:all: --no-deps --target $deps scipy==1.16.3
+            if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SCIPY_INSTALL_FAILED'}
+            $solverPath=$deps
+          }
+          & $python -B -c 'import sys; sys.path.insert(0,sys.argv[1]); import numpy,scipy' $solverPath
+          if($LASTEXITCODE -ne 0){throw 'WSCM_RUNNER_SOLVER_IMPORT_FAILED'}
+          Write-Host 'WSCM_SOLVER_IMPORT=PASS'
+          # The existing embedded CPython lacks venv, and its _pth isolation
+          # causes subprocesses to lose test imports. Copy it into RUNNER_TEMP;
+          # modify only that disposable copy, never the runner installation.
+          $portableDir=Join-Path $env:RUNNER_TEMP ('wscm-native-interpreter-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $portableDir -Force | Out-Null
+          Copy-Item -Path (Join-Path (Split-Path -Parent $python) '*') -Destination $portableDir -Recurse -Force
+          $portable=Join-Path $portableDir (Split-Path -Leaf $python)
+          if(-not(Test-Path -LiteralPath $portable -PathType Leaf)){throw 'WSCM_PORTABLE_PYTHON_MISSING'}
+          $pthFiles=@(Get-ChildItem -LiteralPath $portableDir -Filter '*._pth' -File)
+          if($pthFiles.Count -gt 1){throw 'WSCM_PORTABLE_PTH_AMBIGUOUS'}
+          if($pthFiles.Count -eq 1){
+            $pth=$pthFiles[0].FullName
+            $utf8=New-Object System.Text.UTF8Encoding($false)
+            [IO.File]::AppendAllText($pth,([Environment]::NewLine+$sourceRoot+[Environment]::NewLine+$solverPath+[Environment]::NewLine),$utf8)
+          }
+          $env:PYTHONPATH=$sourceRoot+[IO.Path]::PathSeparator+$solverPath
+          & $portable -B -c 'import yggdrasil.native_cumulative_learner, scipy, sys; print(''WSCM_PORTABLE_EXECUTABLE='' + sys.executable)'
+          if($LASTEXITCODE -ne 0){throw 'WSCM_PORTABLE_PARENT_IMPORT_FAILED'}
+          $probe='import subprocess,sys; p=subprocess.run([sys.executable,''-B'',''-c'',''import yggdrasil.native_cumulative_learner, scipy; print(1234)''],capture_output=True,text=True);print(p.stdout,p.stderr);sys.exit(p.returncode if p.returncode else (0 if p.stdout.strip()==''1234'' else 1))'
+          & $portable -B -c $probe
+          if($LASTEXITCODE -ne 0){throw 'WSCM_PORTABLE_CHILD_IMPORT_FAILED'}
+          $python=$portable
+          Write-Host 'WSCM_COLD_PYTHON_IMPORT=PASS'
+          $suites=@(
+            'test_native_external_action_identity.py',
+            'test_wscm_cumulative_fixture_replay.py',
+            'test_native_cumulative_learner.py',
+            'test_native_jepa2_multilearner.py'
+          )
+          $failed=@()
+          foreach($suite in $suites){
+            Write-Host ('WSCM_NATIVE_SUITE='+$suite)
+            & $python -B -c $testCode $sourceRoot $solverPath (Join-Path $sourceRoot 'tests') $suite
+            if($LASTEXITCODE -ne 0){$failed+=($suite+':'+$LASTEXITCODE)}
+          }
+          if($failed.Count -gt 0){throw ('WSCM_NATIVE_FOCUSED_FAILURES='+($failed -join ','))}
+          & git.exe diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'WSCM_TEST_WORKTREE_CHANGED'}
+          $dirty=@(& git.exe status --porcelain)
+          if($dirty.Count -ne 0){throw ('WSCM_TEST_WORKTREE_DIRTY='+($dirty -join ','))}
+          Write-Host 'WSCM_SOURCE_FREE_FOCUSED_TESTS=PASS'
+      - name: Windows-platform eligible regression (keep Unix tests separate)
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'; Set-StrictMode -Version 3.0
+          $root=(Resolve-Path '.').Path
+          $dir=Join-Path $env:RUNNER_TEMP ('wscm-native-interpreter-'+$env:GITHUB_RUN_ID)
+          $python=Join-Path $dir 'python.exe'
+          if(-not(Test-Path -LiteralPath $python -PathType Leaf)){throw 'WSCM_PORTABLE_PYTHON_MISSING'}
+          $deps=Join-Path $env:RUNNER_TEMP ('wscm-solver-'+$env:GITHUB_RUN_ID)
+          $env:PYTHONPATH=$root+[IO.Path]::PathSeparator+$deps
+          $env:OPENBLAS_NUM_THREADS='1'; $env:OMP_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'
+          $sha=(& git.exe rev-parse HEAD).Trim()
+          if($sha -cne '4a98e8dfdb1e7807ccefac76e61b9a93ac076606'){throw 'WSCM_WINDOWS_SOURCE_SHA_DRIFT'}
+          Write-Host ('WSCM_WINDOWS_ELIGIBLE_SHA='+$sha)
+          # Keep Windows without POSIX resource. This preserves free fanout's
+          # existing fail-closed resource guard; do not inject a fake getrusage.
+          $windowsCode=@'
+          import sys, unittest
+          sys.path.insert(0, sys.argv[1])
+          class PlatformLoader(unittest.TestLoader):
+              def _match_path(self, path, full_path, pattern):
+                  if path in {'test_wscm_epoch01.py','test_wscm_epoch02.py'}:
+                      return False
+                  return super()._match_path(path, full_path, pattern)
+          def leaves(suite):
+              for item in suite:
+                  if isinstance(item, unittest.TestSuite):
+                      yield from leaves(item)
+                  else:
+                      yield item
+          cases=list(leaves(PlatformLoader().discover(sys.argv[2],pattern='test_*.py')))
+          skipped='test_code_atlas.G29.test_source_and_pinned_artifact'
+          assert sum(t.id()==skipped for t in cases)==1, ('WSCM_ATLAS_GUARD',len(cases))
+          eligible=[t for t in cases if t.id()!=skipped]
+          assert len(eligible)==509, ('WSCM_WINDOWS_COVERAGE_DRIFT',len(eligible))
+          print('WSCM_WINDOWS_ATLAS_SNAPSHOT_EXCLUDED_ON_TEST_ONLY_BRANCH',flush=True)
+          print('WSCM_WINDOWS_POSIX_IMPORT_TESTS_DEFERRED_TO_LINUX=19',flush=True)
+          print('WSCM_WINDOWS_ELIGIBLE_TESTS='+str(len(eligible)),flush=True)
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(eligible))
+          print('WSCM_WINDOWS_ELIGIBLE='+('PASS' if result.wasSuccessful() else 'FAIL'),flush=True)
+          sys.exit(0 if result.wasSuccessful() else 1)
+          '@
+          & $python -B -c $windowsCode $root (Join-Path $root 'tests')
+          if($LASTEXITCODE -ne 0){throw 'WSCM_WINDOWS_ELIGIBLE_TESTS_FAILED'}
+          # Import-only EPOCH unit tests are safe on Windows when the missing
+          # Unix module rejects *all calls*, not when fabricated RSS is supplied.
+          $epochCode=@'
+          import sys,types,unittest
+          class UnsupportedUnixResource(types.ModuleType):
+              def __getattr__(self,name):
+                  raise RuntimeError('WSCM_POSIX_RESOURCE_OPERATION_FORBIDDEN:'+name)
+          sys.modules['resource']=UnsupportedUnixResource('resource')
+          sys.path.insert(0,sys.argv[1])
+          def leaves(suite):
+              for item in suite:
+                  if isinstance(item,unittest.TestSuite):
+                      yield from leaves(item)
+                  else:
+                      yield item
+          suite=unittest.defaultTestLoader.discover(sys.argv[2],pattern='test_wscm_epoch0?.py')
+          cases=list(leaves(suite))
+          assert len(cases)==19, ('WSCM_WINDOWS_EPOCH_TEST_COVERAGE_DRIFT',len(cases))
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(cases))
+          print('WSCM_WINDOWS_EPOCH_IMPORT_ONLY='+('PASS' if result.wasSuccessful() else 'FAIL'),flush=True)
+          sys.exit(0 if result.wasSuccessful() else 1)
+          '@
+          & $python -B -c $epochCode $root (Join-Path $root 'tests')
+          if($LASTEXITCODE -ne 0){throw 'WSCM_WINDOWS_EPOCH_IMPORT_ONLY_TESTS_FAILED'}
+          & git.exe diff --exit-code
+          if($LASTEXITCODE -ne 0){throw 'WSCM_WINDOWS_WORKTREE_CHANGED'}
+          if(@(& git.exe status --porcelain).Count){throw 'WSCM_WINDOWS_WORKTREE_DIRTY'}
+          Write-Host 'WSCM_WINDOWS_PLATFORM_TESTS=PASS'
+          Write-Host 'WSCM_FULL_CROSS_PLATFORM_ACCEPTANCE=UNVERIFIED'
+  integrated24-linux:
+    # Previous exact-source Linux job 137337253063 PASS; no duplicate execution.
+    if: ${{ contains(github.event.head_commit.message, 'integrated24 source-free qualification') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - name: Exact source custody on free public Linux runner
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4a98e8dfdb1e7807ccefac76e61b9a93ac076606
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify baseline and unchanged native source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "4a98e8dfdb1e7807ccefac76e61b9a93ac076606"
+          git merge-base --is-ancestor e6fcb51aa1d6a0005e2397cd70ff72ab6ab44d0f HEAD
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = 7c3f35cbaf77ddd507070b719b9de957f4aa4802
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = 6dc5107530e1e38b5c412ead15bd5e1b5bad4a39
+          test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = 8088274e464b4f20c2e2aa1d2c659629b8fc91b4
+          test "$(git rev-parse HEAD:tests/test_wscm_epoch02.py)" = 6fb699159609b893afe77de4c2b3b52d0a8cc35a
+          test "$(git rev-parse HEAD:yggdrasil/native_external_action_identity.py)" = b31538c00cda5e7b526aa1178e883e86a26be0d4
+          test "$(git rev-parse HEAD:tests/test_native_external_action_identity.py)" = de9be4943c21264032faf0eae809564a56811390
+          test "$(git rev-parse HEAD:tests/test_wscm_cumulative_fixture_replay.py)" = 5bb56f21e6bf2cb836a88a7b9babd1044440ca43
+          echo "WSCM_LINUX_SOURCE_CUSTODY=PASS"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install exact native solver versions (public binaries)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: All Linux source-free tests except qualification-branch atlas snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import unittest,sys
+          from pathlib import Path
+          root=Path.cwd()
+          sys.path.insert(0,str(root))
+          def leaves(suite):
+              for item in suite:
+                  if isinstance(item,unittest.TestSuite):
+                      yield from leaves(item)
+                  else:
+                      yield item
+          cases=list(leaves(unittest.defaultTestLoader.discover(str(root/'tests'),pattern='test_*.py')))
+          atlas='test_code_atlas.G29.test_source_and_pinned_artifact'
+          assert sum(x.id()==atlas for x in cases)==1, ('WSCM_LINUX_ATLAS_GUARD',len(cases))
+          eligible=[x for x in cases if x.id()!=atlas]
+          assert len(eligible)==528, ('WSCM_LINUX_COVERAGE_DRIFT',len(eligible))
+          print('WSCM_LINUX_ELIGIBLE_TESTS='+str(len(eligible)),flush=True)
+          result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(eligible))
+          print('WSCM_LINUX_ELIGIBLE='+('PASS' if result.wasSuccessful() else 'FAIL'),flush=True)
+          sys.exit(0 if result.wasSuccessful() else 1)
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo "WSCM_LINUX_SOURCE_FREE_REGRESSION=PASS"
+
+
+
+  integrated24-g29-atlas:
+    if: ${{ contains(github.event.head_commit.message, 'integrated24 source-free qualification') }}
+    name: integrated24-g29-chunk-receipts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout immutable integrated candidate without write credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4a98e8dfdb1e7807ccefac76e61b9a93ac076606
+          fetch-depth: 0
+          persist-credentials: false
+          clean: true
+      - name: Check candidate and no mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "4a98e8dfdb1e7807ccefac76e61b9a93ac076606"
+          test "$(git rev-parse HEAD:tests/test_wscm_cumulative_fixture_replay.py)" = 5bb56f21e6bf2cb836a88a7b9babd1044440ca43
+          test "$(git rev-parse HEAD:yggdrasil/native_external_action_identity.py)" = b31538c00cda5e7b526aa1178e883e86a26be0d4
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = cef1378fd3c47ebc74675bd9dde19a183775ceeb
+          echo WSCM_INTEGRATED24_ATLAS_CUSTODY=PASS
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Produce source-pinned atlas chunk receipts for separate final candidate commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import base64
+          from pathlib import Path
+          from scripts import build_code_atlas as atlas
+          root=Path.cwd()
+          source="4a98e8dfdb1e7807ccefac76e61b9a93ac076606"
+          artifacts=atlas.render(atlas.snapshot(root,source))
+          assert set(artifacts)==set(atlas.OUT)
+          for path in atlas.OUT:
+              raw=artifacts[path].encode("utf-8")
+              encoded=base64.b64encode(raw).decode("ascii")
+              print("WSCM_ATLAS_BEGIN|"+path+"|"+str(len(raw))+"|"+str(len(encoded)),flush=True)
+              for start in range(0,len(encoded),16000):
+                  print("WSCM_ATLAS_PART|"+path+"|"+str(start//16000)+"|"+encoded[start:start+16000],flush=True)
+              print("WSCM_ATLAS_END|"+path+"|"+str(len(encoded)),flush=True)
+          print("WSCM_INTEGRATED24_G29_SOURCE_ATLAS_EMITTED_NOT_COMMITTED",flush=True)
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
