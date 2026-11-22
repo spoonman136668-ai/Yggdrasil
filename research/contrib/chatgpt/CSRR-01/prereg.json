@@ -1,0 +1,41 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "CSRR-01",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Can a bounded public-action-consequence hypothesis tournament grow local structural exceptions, preserve the old mechanism across reversible law changes, and outperform fully specified equal-observation controls?",
+  "hypothesis": "Local exception promotion with a hysteresis window of eight outcome witnesses should beat unmodified raw/base prediction on changed-rule phases, maintain cold checkpoint functional identity and recover old-rule readout when old rules return. A fully informed same-window symbolic filter is expected to tie it, and strong smoothed window counts may outperform it. No novel source or general scientific advantage is claimed.",
+  "exact_parent_sha": "4d50f913324569824fe371252479ba8f4667febf",
+  "predecessor_evidence": ["https://github.com/spoonman136668-ai/Yggdrasil/commit/4d50f913324569824fe371252479ba8f4667febf", "https://github.com/spoonman136668-ai/Yggdrasil/issues/426"],
+  "changed_paths": ["research/contrib/chatgpt/CSRR-01/prereg.json", "research/contrib/chatgpt/CSRR-01/study.mjs", "research/contrib/chatgpt/CSRR-01/README.md", "research/contrib/chatgpt/CSRR-01/result.json", "research/contrib/chatgpt/CSRR-01/provenance.json"],
+  "inputs": [],
+  "synthetic_source": {
+    "license": "Original generated fixture code, no original CausalGym or source datasets",
+    "public_features": "One forced and shared action a and two public binary context observations x,z; observed binary consequence y. No world or phase label passed into any learner.",
+    "worlds": "Baseline mechanism y=a XOR x with Bernoulli 0.9 agreement. Phase B inverts its consequence only at a,x,z=1,1,1; phase C inverts only at 1,0,1. No hidden-context control available to learner.",
+    "observation_generator": "Deterministic SHA256('csrr01:'+seed+':'+t+':'+cell) first uint32 / 2^32 compared with source p. Evaluator alone computes exact Bernoulli expected Brier before each update; no evaluator risk/phase identity to model.",
+    "limitations": "Baseline XOR law, rule family and capacity preprogrammed. Per-cell exception growth is a bounded structural lookup; no independent unknown-family discovery is established."
+  },
+  "frozen_design": {
+    "seeds": [101,202,303],
+    "split": "Prospective six consecutive 256-step phases A,B,A,C,A,B. No independent held real data. Cold state serialization at global step 511, then continued side-by-side for identity.",
+    "ordering": "Global time t 0..1535 inclusive for each seed, public cell=(5*t+seed)%8. All policies receive exactly the same (a,x,z,y) and the same 4608 observations total.",
+    "data_budget": "4608 source-free synthetic observations (3 seeds * 6 phases * 256), all shared across all comparators; no original source actions",
+    "compute_budget": "Node.js v22 standard library only; deterministic bounded 8 cells, 8 observation history per active cell, no external models or paid API",
+    "capacity": "Regenerator: XOR baseline, 8 public-context exception candidates, 8-witness rolling binary contradiction history per cell, at least 6 witnesses, promote on >=5 mismatches, revert on <=1, otherwise preserve mode; immutable SHA256 guarded snapshot with cold clone. Controls: raw XOR, global smoothed per-cell counts, 8-witness smoothed per-cell counts, and symbolic fully informed exception-locus (cells 5/7) selector with same hysteresis.",
+    "evaluator": "Prequential exact expected Bernoulli Brier on one shared sampled public input per step, with secondary harness-only uniform-grid expected Brier over all 8 cells. Neither evaluator probability nor phase label is passed into update or predict.",
+    "deterministic_expected": true
+  },
+  "controls": ["Unchanged base XOR probability .1 or .9", "Global per-context smoothed mismatch counts", "Last-8 per-context smoothed mismatch counts", "Strong informed symbolic exception-locus hypothesis tournament, same observations and local evidence window", "Malformed observation/cold-checkpoint negative controls"],
+  "metrics": ["Per-phase prequential and uniform-grid Brier", "Changed-phase improvement over raw/window/symbolic", "Old-rule return drift vs raw <=0.02", "Exception promotions/reversions/reuses", "Cold checkpoint exact future prediction identity", "Total matched observations and execution resource provenance"],
+  "classification_rules": {
+    "supported": "ENGINEERING_ADVANTAGE_DEV_ONLY only if both novel cell exceptions 5/7 detected, changed-regime mean Brier improves >=0.005 over raw, mean old return drift <= +0.02, cold mismatch count zero, whole-run Brier improves >=0.005 over BOTH smoothed window and informed symbolic control. This is NOT scientific-supported.",
+    "mixed": "MIXED_DEV_ONLY if both exception loci detected, changed-regime raw gain >=0.005, old return drift <= +0.02, cold mismatch count zero, but no >=0.005 margin over BOTH strong controls. No intelligence claim.",
+    "negative": "NEGATIVE_DEV_ONLY if detected exceptions missing, changed-regime raw gain <0.005, or old return drift > +0.02; no post-run changes.",
+    "invalid": "Any difference in action/outcome information across comparators, any hidden phase/world/evaluator leakage into model, bad public input/cold-checkpoint negative control, cold prediction mismatch, mismatch in 4608 observation budget, source-first-use, or changed settings after prereg."
+  },
+  "prohibited_after_primary_run": ["parameter changes", "split/seed/threshold changes", "post-result control selection", "held/evaluator leakage", "protected first-use under source owner issue #426", "native checkpoint mutation", "scientific claims from synthetic mechanism fixtures"],
+  "authority": {"research_only":true,"production_authority":false,"accepted_ref_mutation":false,"promotion_authority":false,"scheduler_or_queue_authority":false},
+  "preregistration_note": "Source and protocol must be committed together before first Node primary evaluation. Run one primary study then one byte-identical independent fresh-process reproduction. Results/provenance recorded in a later commit."
+}
