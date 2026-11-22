@@ -1,0 +1,76 @@
+{
+  "schema": "yggdrasil.cpr01.source-free-engineering-result.v1",
+  "status": "SOURCE_FREE_FOCUSED_TESTS_PASS_ORIGINAL_SCIENCE_UNVERIFIED",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "branch": "research/cpr01-conformal-routing-20261121",
+  "base_sha": "40774e820b0c0e6cabb4d6b2766d38f15b63d387",
+  "prereg_commit": "c3cf82c4d8d9c1f50f93e70e0da81b06bc76aedc",
+  "source_file_git_blob": "8b6109b6199c9cf161e7d65f33c69ea30c18bccd",
+  "test_file_git_blob": "29e7e24b017f1f073914c5163b2f19cfbf812b15",
+  "r15_reference_git_blob": "cf81281e22b64da31c664a7b2f1ddc5ab53b05f9",
+  "source_file_sha256": "baf81e8e9695d112f4163e7fcb9d6eb1abe9faa03356233e7d68667aea8c39f7",
+  "test_file_sha256": "fce888347ae5196d01734caea76d8a6c79afbc00bb241292c0992668b12caefb",
+  "runtime": {
+    "environment": "isolated Linux container, not user's MIND-PALACE-WIN",
+    "python": "3.13.5",
+    "cpu": "not collected",
+    "full_regression": "NOT_RUN",
+    "windows": "NOT_RUN",
+    "github_actions": "NOT_DISPATCHED",
+    "local_focused_tests": 7,
+    "local_focused_failures": 0,
+    "source_blobs_match_repo": true
+  },
+  "source_free": {
+    "alpha_percent": 10,
+    "calibration_size_per_expert": 128,
+    "aba": [
+      {
+        "stage": "A",
+        "steps": 16
+      },
+      {
+        "stage": "B",
+        "steps": 16
+      },
+      {
+        "stage": "A_return",
+        "steps": 16
+      }
+    ],
+    "revival_step_after_return": 7,
+    "old_task_brier_delta": null,
+    "new_task_brier": null,
+    "noise_case": "Two aligned frozen experts predicting clean label 1; 64 clean, 8 consecutive flipped, 8 clean; eight corruptions out of 80 observations = 10% overall",
+    "false_speciation_signals": 1,
+    "interpretation": "Negative robustness counterexample; unconstrained 10% correlated noise can trigger an unauthorized false-spawn signal; no spawning was performed",
+    "source_free_only": true
+  },
+  "timing_exploratory": {
+    "scope": "No model inference; exact Git-matched Python source implementations; distinct two-target R15 step vs single-target CPR route+observe, so per-step numbers are not a matched whole-system overhead",
+    "clock": "time.perf_counter_ns",
+    "trials": 5,
+    "r15_two_target_two_expert_median_ns": 1792.2,
+    "cpr_one_target_two_expert_median_ns": 1650.4,
+    "cpr_one_target_33_expert_median_ns": 18387.4,
+    "direct_apples_to_apples_overhead_ns": null,
+    "note": "Exploratory timing exceeded preregistered 1e5-operation microtiming cap across repeats; cannot be treated as a passing prospective timing gate"
+  },
+  "science": {
+    "old_task_brier": null,
+    "new_task_error": null,
+    "aba_original": null,
+    "wins_vs_r15": null,
+    "noise_original": null,
+    "matched_strongest_control": null,
+    "source_owner_lease": null,
+    "classification": "UNVERIFIED_FOR_YGGDRASIL; source-free adversarial noise robustness falsified"
+  },
+  "deployment": {
+    "native_checkpoint_changes": false,
+    "accepted_main_changes": false,
+    "protected_first_use": false,
+    "full_exact_sha_cross_platform_qualification": false,
+    "owner_signoff_needed_for_protected_sources": true
+  }
+}
