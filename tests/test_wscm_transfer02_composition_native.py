@@ -149,5 +149,86 @@ class CompositionActualNativeGate(unittest.TestCase):
         self.assertNotIn('fixture-dev', json.loads(empty.checkpoint())['schema'])
         self.assertIsNone(empty.observed_external_fixture_value((0, 0), 1301))
 
+class CompositionActualNativeConsensusGate(unittest.TestCase):
+    """Source-free qualification of the opt-in consensus path using REAL native
+    fixture admission and checkpoint interfaces. No external source actions.
+    """
+
+    FIRST_AND = (0, 0, 0, 1)
+    SECOND_AND = (0, 0, 0, 1)
+    SECOND_X = (0, 0, 1, 1)
+
+    @classmethod
+    def structural_rows(cls, second):
+        rows = []
+        for ordinal, start in enumerate(((0, 0), (0, 1)), 100):
+            x, y = start
+            first_outcome = cls.FIRST_AND[2*x + y]
+            middle = (first_outcome, x)  # disclosed output_then_x example
+            rows.append({
+                'source_id': f'{ordinal:064x}',
+                'public_view': list(start),
+                'first_outcome': first_outcome,
+                'second_public_view': list(middle),
+                'second_outcome': second[2*middle[0] + middle[1]],
+            })
+        return tuple(rows)
+
+    def native(self, second, *, second_limit=4):
+        model = add_witnesses(NativeEpisodeExperience(), 1301,
+                              self.FIRST_AND, initial=300)
+        return add_witnesses(model, 22007, second,
+                             initial=310, limit=second_limit)
+
+    def predict(self, model, second, *, consensus):
+        return propose(model, 1301, 22007, self.structural_rows(second),
+                       [1, 0], allow_functional_consensus=consensus)
+
+    def test_native_consensus_cold_and_unchanged_learner(self):
+        model = self.native(self.SECOND_AND)
+        before = model.checkpoint()
+        before_info = model.info().get('state_sha256')
+        old = self.predict(model, self.SECOND_AND, consensus=False)
+        result = self.predict(model, self.SECOND_AND, consensus=True)
+        self.assertEqual((old['status'], old['reason']),
+                         ('ABSTAIN', 'AMBIGUOUS_WIRING'))
+        self.assertEqual((result['status'], result['predicted_next_bit']),
+                         ('HYPOTHESIS', 0))
+        self.assertEqual(result['compatible_wirings'],
+                         ['output_then_x', 'x_then_output'])
+        for field in ('structural_chain_authenticated', 'action_authorized',
+                      'native_state_updated', 'scientific_gain_verified'):
+            self.assertIs(result[field], False)
+        self.assertEqual(model.checkpoint(), before)
+        self.assertEqual(model.info().get('state_sha256'), before_info)
+        cold = NativeEpisodeExperience.restore(before, digest(before))
+        self.assertEqual(cold.checkpoint(), before)
+        self.assertEqual(self.predict(cold, self.SECOND_AND, consensus=True),
+                         result)
+
+    def test_native_consensus_refuses_differing_outcomes(self):
+        model = self.native(self.SECOND_X)
+        result = self.predict(model, self.SECOND_X, consensus=True)
+        self.assertEqual((result['status'], result['reason']),
+                         ('ABSTAIN', 'AMBIGUOUS_FUNCTIONAL_OUTCOME'))
+        self.assertIsNone(result['predicted_next_bit'])
+        self.assertIs(result['action_authorized'], False)
+
+    def test_native_consensus_refuses_incomplete_action_identity(self):
+        partial = self.native(self.SECOND_AND, second_limit=3)
+        result = self.predict(partial, self.SECOND_AND, consensus=True)
+        self.assertEqual((result['status'], result['reason']),
+                         ('ABSTAIN', 'PRIMITIVE_NOT_FULLY_WITNESSED'))
+        self.assertIsNone(result['predicted_next_bit'])
+        self.assertIsNone(partial.observed_external_fixture_value((0, 1),
+                                                                  22007))
+
+    def test_native_consensus_rejects_nonboolean_opt_in_flag(self):
+        model = self.native(self.SECOND_AND)
+        with self.assertRaisesRegex(ValueError, 'WSCM_COMPOSE_CONSENSUS_FLAG'):
+            propose(model, 1301, 22007, self.structural_rows(self.SECOND_AND),
+                    [1, 0], allow_functional_consensus=1)
+
+
 if __name__ == '__main__':
     unittest.main()
