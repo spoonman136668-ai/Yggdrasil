@@ -1,0 +1,103 @@
+name: Y2 CCE PR1367 exact-candidate full regression once
+
+on:
+  push:
+    branches:
+      - qualification/y2-cce-pr1367-4a88258-20261123
+    paths:
+      - '.github/workflows/y2-cce-pr1367-full-regression-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: y2-cce-pr1367-4a88258-one-shot
+  cancel-in-progress: false
+
+env:
+  SOURCE_SHA: 4a88258ae32be0ce4455396344fd4aa5184cffaa
+  SOURCE_TREE: aae0cc3e047ab68e28ef98f54832f9d5dca7cba4
+  QUAL_BRANCH: qualification/y2-cce-pr1367-4a88258-20261123
+  PYTHONPATH: .
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONHASHSEED: '0'
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+
+jobs:
+  full-native-and-cce:
+    if: "github.event_name == 'push' && github.event.head_commit.message == 'ci(y2): qualify exact frozen CCE01-05 head'"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Stable checkout configuration
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 4a88258ae32be0ce4455396344fd4aa5184cffaa
+          persist-credentials: false
+          fetch-depth: 0
+          clean: true
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Verify isolated trigger, exact source SHA and tree, zero executable drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/$QUAL_BRANCH"
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          git fetch --no-tags origin "$GITHUB_SHA"
+          test "$(git rev-parse "$GITHUB_SHA^")" = "$SOURCE_SHA"
+          test "$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA")" = ".github/workflows/y2-cce-pr1367-full-regression-once.yml"
+          test -z "$(git status --porcelain)"
+          echo "Y2_FULL_IDENTITY=PASS source=$SOURCE_SHA tree=$SOURCE_TREE runner=$RUNNER_OS python=$(python --version 2>&1)"
+
+      - name: G29 code atlas consistency at original candidate source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          echo "Y2_FULL_G29=PASS sha=$SOURCE_SHA"
+
+      - name: Mandatory entire native tests directory regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          test -z "$(git status --porcelain)"
+          echo "Y2_FULL_NATIVE=PASS sha=$SOURCE_SHA os=$RUNNER_OS"
+
+      - name: Mandatory CCE01-05 frozen engineering suites only
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 01 02 03 04 05; do
+            python -B -m unittest discover -s "research/contrib/chatgpt/y2-cce$n" -p "test_cce$n.py" -v
+          done
+          test -z "$(git status --porcelain)"
+          echo "Y2_FULL_CCE=PASS sha=$SOURCE_SHA os=$RUNNER_OS"
+          echo "Y2_PRIMARY_RESEARCH_RUNS=0"
+
+      - name: Final candidate checkout and custody verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test "$(git rev-parse HEAD^{tree})" = "$SOURCE_TREE"
+          test -z "$(git status --porcelain)"
+          git diff --exit-code
+          echo "Y2_FULL_CANDIDATE_FINAL=PASS sha=$SOURCE_SHA tree=$SOURCE_TREE os=$RUNNER_OS"
