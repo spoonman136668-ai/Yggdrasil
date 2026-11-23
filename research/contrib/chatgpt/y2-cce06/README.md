@@ -35,7 +35,7 @@ integration, or protected scientific result.
   posteriors, priced interventions and expected Bayesian parameter
   information gain. `choose()` is paired with a real public
   `update()` witness. Off-policy evaluation against unrelated logged
-  actions is forbidden: the interactive cost/accuracy frontier remains
+  actions is forbidden: a source-custodied cost/accuracy frontier remains
   unmeasured.
 
 - `calibration_recurrent.py` is a compact, fully trainable tanh recurrent
@@ -45,6 +45,16 @@ integration, or protected scientific result.
   reported honestly; a fixture-only fit is **not** a fully qualified strongest
   recurrent comparator or a causal-learning gain.
 
+- `calibration_policy_frontier.py` is a **DEV-only on-policy evaluator
+  interface**: it calls each policy's selected `env.step(action)`, supplies
+  only its actual public action/outcome witness, and scores all frozen
+  posteriors against a shared terminal public audit. It includes hard
+  paid-probe budgets, simple no-action/alternating references, per-seed
+  receipts and a descriptive cost/Brier Pareto view. Its local fixture
+  hashes reject exact TRAIN/audit duplication, **not** source overlap,
+  independent custody or oracle contamination outside the public schema.
+  Its output is never a scientific GO/NO-GO or the strongest-policy frontier.
+
 ## Current gaps / strict stop
 
 - No CCE06 split/merge candidate or learned relations. A trainable
@@ -52,7 +62,7 @@ integration, or protected scientific result.
   Bayesian policy exist as isolated engineering controls, but have **not**
   completed strong TRAIN-only source-custodied selection, cross-platform full
   regression or qualified strongest-comparator comparison. No interactive
-  matched cost/accuracy Pareto frontier.
+  source-custodied cost/accuracy Pareto frontier (DEV fixtures only).
 - No committed independent-source lock, evaluator, data manifests or independent
   custody receipt. No CAL-EVAL materialized and **no primary first-use**.
 - No physical-world evidence, learning gain, accepted promotion, deployment or
@@ -72,6 +82,7 @@ cd research/contrib/chatgpt/y2-cce06
 python -m unittest -v test_calibration test_calibration_fit_selection
 python -m unittest -v test_calibration_psr test_calibration_psr_selection test_calibration_active_bayes
 python -m unittest -v test_calibration_recurrent
+python -m unittest -v test_calibration_policy_frontier
 ```
 
 Fixture tests never use the frozen experimental seed list and cannot validate
