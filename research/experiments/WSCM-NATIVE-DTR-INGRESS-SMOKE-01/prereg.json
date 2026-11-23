@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-NATIVE-DTR-INGRESS-SMOKE-01",
+  "exact_parent_sha": "9a1d09e09824ea9494db46b7f9970e0fdc1ee704",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "ENGINEERING_NATIVE_EPISODE_INGRESS_SMOKE_ONLY",
+  "purpose": "Exercise the existing NativeEpisodeExperience public row/checkpoint interface with one already-recorded public DTR episode. No source interaction and no canonical learner or model mutation.",
+  "source_record": {
+    "origin_run_id": 45277935671,
+    "origin_result_sha256": "b8228c4fd94a2b8506d34e2cf7aa95a349b42f8069bc786ca83349479d5f3e7d",
+    "upstream_repository": "CausalAILab/Causal-Gymnasium",
+    "upstream_commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "previous_source_use": true,
+    "public_row": {
+      "s1": 0,
+      "x1": 0,
+      "s2": 0,
+      "x2": 1,
+      "y": 1
+    }
+  },
+  "native_interface": {
+    "source": "yggdrasil/native_episode_experience.py",
+    "git_blob": "5a77232cdd4a0fda314e47278c9ba0ed109cfd50",
+    "schema": "yggdrasil.ckad.native-episode-experience.v1",
+    "existing_test_pattern": "tests/test_native_episode_external_fixture_envelope.py::native_episode",
+    "existing_test_blob": "8ff834cc0d2dc482521ee7705c8799cebf299a28",
+    "view_encoding": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "view_encoding_disposition": "duplicate unprojected development views; not independent observations; expected projection remains null",
+    "info_visibility": "source info dictionaries are not ingested"
+  },
+  "constraints": {
+    "ckb_plane_authority": "NOT_REQUIRED",
+    "runner": "existing Yggdrasil Windows self-hosted research-only runner",
+    "new_source_environment_constructions": 0,
+    "new_source_reset_calls": 0,
+    "new_source_step_calls": 0,
+    "new_source_interventions": 0,
+    "native_scratch_rows": 1,
+    "native_canonical_learner_updates": 0,
+    "persistent_checkpoint_writes": 0,
+    "heldout_scoring": 0,
+    "scientific_gain_verified": false
+  },
+  "preregistered_acceptance": {
+    "native_source_blob_matches": true,
+    "existing_native_observe_accepts_row": true,
+    "baseline_instance_remains_byte_identical": true,
+    "scratch_checkpoint_round_trip_byte_identical": true,
+    "observed_transition_forecast": [
+      1,
+      3
+    ],
+    "observed_terminal_forecast": [
+      2,
+      3
+    ],
+    "projection_remains_null": true,
+    "no_new_source_actions": true,
+    "no_transfer_or_science_claim": true
+  }
+}
