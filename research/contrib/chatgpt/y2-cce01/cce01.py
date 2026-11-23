@@ -52,6 +52,8 @@ class CountModel:
 
     def observe(self, bits: tuple[int, int], action: int, outcome: int) -> None:
         validate_event(bits, action, outcome)
+        if not _bit(outcome):
+            raise ValueError("CCE01_PUBLIC_OUTCOME_INVALID")
         if self.events >= MAX_EVENTS:
             raise ValueError("CCE01_EVENT_BUDGET_EXCEEDED")
         forecast = self.predict(bits, action)
@@ -131,6 +133,8 @@ class CausalContractEcology:
 
     def observe(self, bits: tuple[int, int], action: int, outcome: int) -> None:
         validate_event(bits, action, outcome)
+        if not _bit(outcome):
+            raise ValueError("CCE01_PUBLIC_OUTCOME_INVALID")
         if self.events >= MAX_EVENTS:
             raise ValueError("CCE01_EVENT_BUDGET_EXCEEDED")
         for model in (self.pooled, *self.candidates):
