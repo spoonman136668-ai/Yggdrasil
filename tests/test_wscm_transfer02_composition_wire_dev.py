@@ -1,6 +1,17 @@
 """Offline unit gates for WSCM provisional composition; no protected worlds."""
+import importlib.util
+from pathlib import Path
 import unittest
-from composition_wire_dev import propose_two_step_composition as propose, STATES
+
+# Full-repository unittest discovery uses PYTHONPATH=. and must not require a
+# second test-only module search path. Keep the original readout unchanged.
+READOUT = (Path(__file__).resolve().parents[1] / 'research' / 'contrib'
+           / 'chatgpt' / 'WSCM-TRANSFER-02' / 'composition_wire_dev.py')
+SPEC = importlib.util.spec_from_file_location('wscm_composition_wire_dev', READOUT)
+MOD = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MOD)
+propose = MOD.propose_two_step_composition
+STATES = MOD.STATES
 
 FIRST = (0, 1, 1, 0)  # XOR, existing fully witnessed primitive
 SECOND = (0, 0, 1, 1)  # first-coordinate, independently witnessed primitive
