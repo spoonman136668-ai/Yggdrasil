@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.y2.cce02.dev-provenance.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE02",
+  "authority": {
+    "development_only": true,
+    "source_first_use_admitted": false,
+    "independent_science_accepted": false,
+    "accepted_ref_mutated": false,
+    "runner_dispatched": false,
+    "controller_modified": false
+  },
+  "source": {
+    "repo": "spoonman136668-ai/Yggdrasil",
+    "base_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_before_prereg": "4092b3ce41438f948056b12c6f4ccdadcd9b3d1d",
+    "preregistration_commit_sha": "d32644ef28d120e80351f24d0ace59f666996cde",
+    "frozen_candidate_head_before_first_result_sha": "acd54f2c21cba294088d4db6cbdf630cc03b7553",
+    "frozen_candidate_tree_sha": null,
+    "tree_status": "UNVERIFIED: connector exposes commit/source blobs but not underlying commit tree; no alternate tree identity assumed.",
+    "code": {
+      "path": "research/contrib/chatgpt/y2-cce02/cce02.py",
+      "git_blob_sha1": "664acb0e260e8bb73f2fa097cf53adf2c893e2e0",
+      "sha256": "d821fc8fa5add56d3d06f3a1eb679e1688d6a5e3d798e304a8187d007d2ccd22"
+    },
+    "tests": {
+      "path": "research/contrib/chatgpt/y2-cce02/test_cce02.py",
+      "git_blob_sha1": "a867e16a8574110bc62cf67f4631915edb1d929d",
+      "sha256": "a1aef838dc23b32f38148d9ea2187adf6ac469defae73d1ec657eadb107bacbd"
+    },
+    "evaluator": {
+      "path": "research/contrib/chatgpt/y2-cce02/run_cce02.py",
+      "git_blob_sha1": "f1315fb48407bf5468ebab4ddebe9c8c1966b075",
+      "sha256": "58e561f7732d5876687f8a20a6fdc9e58066c14666fa96bc150ec0a9eb412d0b"
+    },
+    "result": {
+      "path": "research/contrib/chatgpt/y2-cce02/result.json",
+      "git_blob_sha1": "42332a072c490e89f4cd1525e6e4da2756de8f59",
+      "sha256": "c759ab776a595aa41ea66f26904c76b609ac157786ca8955df177c0ea8bc138d"
+    }
+  },
+  "execution": {
+    "date_utc": "2026-11-23",
+    "environment": "isolated Linux container, x86_64, CPython 3.13.5, kernel 6.18.57, glibc 2.41; not official Yggdrasil Windows/CI runner",
+    "first_primary_execution_observed": 1,
+    "test_command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s . -p test_cce02.py -v",
+    "test_results": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "elapsed_seconds": 0.006
+    },
+    "primary_command": "PYTHONDONTWRITEBYTECODE=1 python -B run_cce02.py --output result.json",
+    "budgets": {
+      "worlds": 2,
+      "seeds_per_world": 5,
+      "train_episodes_per_seed": 512,
+      "eval_episodes_per_seed": 256,
+      "total_episodes": 7680,
+      "training_updates": 5120
+    },
+    "source_identity_check": "GitHub connector returned source/test/runner/result Git blob hashes matching locally computed git hash-object of exact executed files; source snapshot commit was committed before the result."
+  },
+  "results": {
+    "classification": "DEVELOPMENT_SIGNAL",
+    "not_scientific_pass": true,
+    "positive_cce_success": 0.87578125,
+    "uniform_probe_success": 0.69375,
+    "strongest_trained_full_table_success": 0.87578125,
+    "improvement_vs_uniform": 0.18203125,
+    "improvement_vs_strongest": 0,
+    "correct_positive_probe_seeds": 5,
+    "null_false_admission_seeds": 0,
+    "cold_equal_seeds": 5
+  },
+  "qualification": {
+    "local_focused_engineering": "PASS",
+    "github_ci": "FAIL_BLOCKED_PENDING_G29_SOURCE_ATLAS_REFRESH",
+    "github_ci_root_cause": "Existing generated atlas pins an older source_commit and rejects the added indexed files.",
+    "existing_ci_run": "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/45155997856",
+    "full_regression": "UNVERIFIED",
+    "windows_regression": "UNVERIFIED",
+    "accepted_native_scientific_first_use": "NONE",
+    "independent_reproduction": "UNVERIFIED",
+    "deployment": "NONE"
+  },
+  "important_limitations": [
+    "Result is a single easy synthetic hidden-bit mechanism world with five seeds, not unfamiliar semantic transfer.",
+    "The terminal reward plus terminal action indirectly reveals the hidden regime; identity emergence is not demonstrated.",
+    "Centralized evidence gate; fixed signatures and known binary public variables.",
+    "Strongest matched trained full-table control ties the candidate: no verified scientific or engineering advantage.",
+    "Native sources, owner-runner qualification and full multi-platform regression not executed.",
+    "No generated .ice artifacts modified, no policy bypass, no protected merge."
+  ]
+}
