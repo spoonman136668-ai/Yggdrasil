@@ -1,0 +1,32 @@
+{
+  "schema": "yggdrasil.wscm.test-import-qualification.dev.v1",
+  "experiment_id": "WSCM-TRANSFER-02-ROOT-DISCOVERY-FIX-DEV-04",
+  "status": "FROZEN_BEFORE_TEST_IMPORT_FIX",
+  "parent_sha": "9cb8f40189e373973fbf48ceee0998d7989d4853",
+  "parent_tree": "85ad4e6b4197013424b83a89903d8d8cb0c98e0f",
+  "reproduced_failure": "At research candidate, running `python -B -m unittest discover -s tests -p test_wscm_transfer02_unrestricted_safe_readout.py -q` from isolated repository root without a custom PYTHONPATH imports zero tests: ModuleNotFoundError unrestricted_safe_readout_dev. Existing two tests in tests/ also import composition_wire_dev by basename and require custom PYTHONPATH.",
+  "root_cause": "Research-only module is at research/contrib/chatgpt/WSCM-TRANSFER-02, but root-level test discovery imports test_*.py with repository root only on sys.path.",
+  "scope": "Repair imports only in three WSCM research tests, using exact __file__-relative research module path; do not mutate native packages, algorithms, accepted branch or first-use semantics.",
+  "allowed_paths": [
+    "research/contrib/chatgpt/WSCM-TRANSFER-02/test-root-discovery-prereg.json",
+    "tests/test_wscm_transfer02_composition_wire_dev.py",
+    "tests/test_wscm_transfer02_composition_native_component.py",
+    "tests/test_wscm_transfer02_unrestricted_safe_readout.py"
+  ],
+  "checks": [
+    "Root discovery without custom PYTHONPATH imports all source-free tests and passes normal plus -O",
+    "Direct research-path PYTHONPATH remains compatible",
+    "No extra external code paths, no unsafe dynamic module name or role oracle",
+    "The original native component test is not counted unless exact original native source files are available and executed",
+    "No additional protected first-use or CI runner dispatch",
+    "No code changes outside three test harness import preambles"
+  ],
+  "scientific_gain_verified": false,
+  "allowed_authority": {
+    "research_only": true,
+    "runner_dispatch": false,
+    "accepted_ref_change": false,
+    "protected_first_use": false,
+    "merge": false
+  }
+}
