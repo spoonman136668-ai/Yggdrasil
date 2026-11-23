@@ -44,8 +44,8 @@ jobs:
           test "$GITHUB_REF" = "refs/heads/research/wscsm01-wake-sleep-protocol-20261121"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           # Frozen source: do not qualify arbitrary subsequent code changes.
-          FROZEN_SOURCE_SHA="5b348685771f00eda9952ab49b4c7bf6b707728b"
-          test "$(git rev-parse "$FROZEN_SOURCE_SHA^{tree}")" = "3079eb48191f720fc9e5898abc8525b003551be1"
+          FROZEN_SOURCE_SHA="be321cf19d33443c26f7eab5344eb1ed01fd5463"
+          test "$(git rev-parse "$FROZEN_SOURCE_SHA^{tree}")" = "1873db8e29af93b561db15c989c6b5c6fabeff92"
           git merge-base --is-ancestor "$FROZEN_SOURCE_SHA" "$GITHUB_SHA"
           test "$(git diff --name-only "$FROZEN_SOURCE_SHA" "$GITHUB_SHA")" = ".github/workflows/wscm-native-fixture-qualification.yml"
           test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/wscm-native-fixture-qualification.yml"
@@ -55,8 +55,8 @@ jobs:
           test "$(git rev-parse HEAD:tests/test_wscm_native_grid5_dev.py)" = "941547a72fb0711a092ec0edc9f9b16a00bf8983"
           test "$(git rev-parse HEAD:tests/test_wscm_grid5_learned_delta_dev.py)" = "6c79ddcec1b959566dd51c0b1a902c25c427a6c9"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/operator-delta-prereg.json)" = "ae23cb0ca55761e485f1a49c7f4026da4bf2f1eb"
-          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = "498c22f4b6cd71fe713cceb2773cc51971ea5953"
-          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = "1a1ea559de730c7aa230548d04b893ba61f030b4"
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = "5a77232cdd4a0fda314e47278c9ba0ed109cfd50"
+          test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = "88a184fa172cd5b912546c786bd5c26785c9e060"
           test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = "cdf0ac676ea231bd780dbe63346bd50a59ced55f"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/prereg.json)" = "e971a574113bcc5dd6e2e5b57d2556e10a1aea13"
           # Frozen opt-in WSCM implementation, focused tests and G29 builder.
@@ -69,6 +69,13 @@ jobs:
           test "$(git rev-parse HEAD:tests/test_wscm_grid5_corroboration_dev.py)" = "48e9d926d9b12d0252469eb5409534b9d5608198"
           test "$(git rev-parse HEAD:tests/test_wscm_grid5_discrimination_preflight_dev.py)" = "1e4235a2a6046be8ed2926e0b44d4e12e3275d60"
           test "$(git rev-parse HEAD:tests/test_wscm_grid5_version_space_dev.py)" = "7adb53e547e81c8ff6248e653452e31eee029c48"
+          test "$(git rev-parse HEAD:yggdrasil/native_sparse_operator_evidence.py)" = "1fda97c9a3c53e32d0be880353bda2ce02b32237"
+          test "$(git rev-parse HEAD:tests/test_native_sparse_operator_evidence.py)" = "0a427227c6e418c37e9e0586b470473e9c8089b3"
+          test "$(git rev-parse HEAD:tests/test_native_sparse_operator_integration.py)" = "bdff9a80bb894f3c3a8881d3b8e8c7789f9fdaf5"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-SPARSE-OPERATOR-DEV-01/sparse_operator_dev.py)" = "e915d18f3b4914debd637c05e257332bed8f1c60"
+          test "$(git rev-parse HEAD:tests/test_wscm_sparse_operator_dev.py)" = "08c45c9b99a9d5e7b9b0d4518cc6e11cc9decbe4"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-SPARSE-NATIVE-DEV-02/README.md)" = "5ecf1b1d685c478f85de5b24f398a6982677f98b"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-SPARSE-NATIVE-DEV-02/result.json)" = "301165bd31073363236753b90a844f5742fbd3b3"
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
           grep -Fx "SOURCE_COMMIT: $GITHUB_SHA" .ice/code-atlas.ice
@@ -141,11 +148,11 @@ jobs:
           path: ${{ runner.temp }}/wscm-code-atlas.*
           if-no-files-found: error
           retention-days: 30
-      - name: Focused original-native external-ID and cold-memory tests
+      - name: Focused original-native external-ID, sparse-v9, and cold-memory tests
         shell: bash
         run: |
           set -euo pipefail
-          for suite in test_wscm_transfer02_fixture_plan.py test_native_episode_external_fixture_envelope.py test_native_external_action_identity.py test_native_grid5_evidence_dev.py test_wscm_grid5_episode_scope_dev.py test_wscm_native_grid5_dev.py test_wscm_grid5_conditional_native_dev.py test_wscm_grid5_corroboration_dev.py test_wscm_grid5_discrimination_preflight_dev.py test_wscm_grid5_version_space_dev.py test_wscm_grid5_learned_delta_dev.py; do
+          for suite in test_wscm_transfer02_fixture_plan.py test_native_episode_external_fixture_envelope.py test_native_external_action_identity.py test_native_grid5_evidence_dev.py test_wscm_grid5_episode_scope_dev.py test_wscm_native_grid5_dev.py test_wscm_grid5_conditional_native_dev.py test_wscm_grid5_corroboration_dev.py test_wscm_grid5_discrimination_preflight_dev.py test_wscm_grid5_version_space_dev.py test_wscm_grid5_learned_delta_dev.py test_wscm_sparse_operator_dev.py test_native_sparse_operator_evidence.py test_native_sparse_operator_integration.py; do
             python -B -m unittest discover -s tests -p "$suite" -v
           done
           (cd research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01 && python -B -m unittest discover -s . -p 'test_conditional_rule_dev.py' -v)
