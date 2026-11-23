@@ -62,7 +62,28 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -B -m unittest discover -s tests -p 'test_*.py'
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            # POSIX-only historical EPOCH sources require Python's 'resource'.
+            # They execute on Linux; Windows records TWO explicit module skips,
+            # without loading/replaying or altering their immutable sources.
+            python -B - <<'PY'
+          import sys
+          import unittest
+
+          class PlatformLoader(unittest.TestLoader):
+              def _get_module_from_name(self, name):
+                  if name in ("test_wscm_epoch01", "test_wscm_epoch02"):
+                      raise unittest.SkipTest(
+                          "POSIX resource-dependent historical tests: Linux-only")
+                  return super()._get_module_from_name(name)
+
+          result = unittest.TextTestRunner(verbosity=1).run(
+              PlatformLoader().discover("tests", pattern="test_*.py"))
+          sys.exit(0 if result.wasSuccessful() else 1)
+          PY
+          else
+            python -B -m unittest discover -s tests -p 'test_*.py'
+          fi
           for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
             python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
           done
