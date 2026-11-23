@@ -1,6 +1,12 @@
 """Frozen source-free ambiguity/safety tests; zero protected world actions."""
 import itertools
 import unittest
+import sys
+from pathlib import Path
+
+RESEARCH_DIR = Path(__file__).resolve().parents[1] / "research" / "contrib" / "chatgpt" / "WSCM-TRANSFER-02"
+sys.path.insert(0, str(RESEARCH_DIR))
+
 from unrestricted_safe_readout_dev import propose_unrestricted_safe_composition as safe
 from composition_wire_dev import propose_two_step_composition as legacy
 

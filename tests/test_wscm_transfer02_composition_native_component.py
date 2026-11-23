@@ -7,6 +7,12 @@ No source-authorized causal chain or protected scientific first use is claimed.
 import hashlib
 import json
 import unittest
+import sys
+from pathlib import Path
+
+RESEARCH_DIR = Path(__file__).resolve().parents[1] / "research" / "contrib" / "chatgpt" / "WSCM-TRANSFER-02"
+sys.path.insert(0, str(RESEARCH_DIR))
+
 
 from composition_wire_dev import propose_two_step_composition
 from yggdrasil.native_external_action_identity import (
