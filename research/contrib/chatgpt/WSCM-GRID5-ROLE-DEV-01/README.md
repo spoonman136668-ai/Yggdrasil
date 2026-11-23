@@ -1,0 +1,3 @@
+# WSCM-GRID5-ROLE-DEV-01
+
+Opt-in fixed-family role hypothesis *within* existing native Grid5 fixture memory. Source-free development, NOT an original-world learner, action actor, scientific gain or new controller. The old exact-witness readout, archive format and default plan remain unchanged. The model filters the 120 known fixed-role mappings by public evidence from the same episode and entails only unanimous successors; contradictory or ambiguous evidence abstains. The independent WSCM-PERMUTE-EXACT-01 conventional reference already has a strong 5.5-action mean / seven-action maximum; no performance gain is asserted. Tests and controls are frozen in prereg.json. Original-first-use issue #426 remains HOLD.

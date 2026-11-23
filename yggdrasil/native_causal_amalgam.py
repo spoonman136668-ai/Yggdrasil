@@ -54,6 +54,10 @@ class NativeCausalAmalgam:
         return self.native.grid5_fixture_forecast(
             public_state, public_action, episode_id=episode_id)
 
+    def grid5_fixture_role_forecast(self, public_state, public_action, *, episode_id):
+        return self.native.grid5_fixture_role_forecast(
+            public_state, public_action, episode_id=episode_id)
+
     def specialist_forecasts(self, views, first, state=None, second=None):
         terminal = state is not None or second is not None
         history = self.native._episode_reader()._ledger[-8:]

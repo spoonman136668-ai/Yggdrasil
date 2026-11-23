@@ -87,6 +87,69 @@ class NativeGrid5Tests(unittest.TestCase):
         self.assertIsNone(obj.public_forecast([0,0], 0, episode_id='a'*64))
         self.assertEqual(persist_and_restore(obj).public_forecast([0,0], 0, episode_id='a'*64), obj.public_forecast([0,0], 0, episode_id='a'*64))
 
+    def test_role_forecast_entails_unseen_state_and_cold_restore(self):
+        empty = NativeGrid5Evidence()
+        unknown = empty.public_role_forecast([4,4], 0, episode_id='a'*64)
+        self.assertEqual(unknown['surviving_permutations'], 120)
+        self.assertEqual(unknown['status'], 'ABSTAIN')
+        m = empty.observe_public_receipt(*receipt(0, act=0, after=(1,0)))
+        self.assertIsNone(m.public_forecast([4,4], 0, episode_id='a'*64))
+        inferred = m.public_role_forecast([4,4], 0, episode_id='a'*64)
+        self.assertEqual(inferred['surviving_permutations'], 24)
+        self.assertEqual(inferred['status'], 'ENTAILED')
+        self.assertEqual(inferred['predicted_next_state'], [5,4])
+        self.assertEqual(persist_and_restore(m).public_role_forecast(
+            [4,4], 0, episode_id='a'*64), inferred)
+
+    def test_role_forecast_corner_ambiguity_and_conflict_abstain(self):
+        m = NativeGrid5Evidence().observe_public_receipt(
+            *receipt(0, act=0, after=(0,0)))
+        ambiguous = m.public_role_forecast([4,4], 0, episode_id='a'*64)
+        self.assertEqual(ambiguous['surviving_permutations'], 72)
+        self.assertEqual(ambiguous['status'], 'ABSTAIN')
+        m = NativeGrid5Evidence().observe_public_receipt(
+            *receipt(0, act=0, after=(1,0)))
+        m = m.observe_public_receipt(
+            *receipt(1, act=0, before=(1,0), after=(0,0)))
+        contradiction = m.public_role_forecast([4,4], 0, episode_id='a'*64)
+        self.assertEqual(contradiction['status'], 'CONTRADICTION')
+        self.assertEqual(contradiction['surviving_permutations'], 0)
+        self.assertIsNone(contradiction['predicted_next_state'])
+
+    def test_role_hypotheses_isolate_world_laws_and_validate_actions(self):
+        m = NativeGrid5Evidence()
+        for i in range(50):
+            m = m.observe_public_receipt(*receipt(
+                i, act=0 if i == 0 else 4,
+                before=(0,0) if i == 0 else (1,0),
+                after=(1,0)))
+        old = m.public_role_forecast([4,4], 0, episode_id='a'*64)
+        self.assertEqual(old['predicted_next_state'], [5,4])
+        m = m.observe_public_receipt(*receipt(
+            0, act=0, before=(0,0), after=(0,1),
+            episode='b'*64, sid='f'*64))
+        newer = m.public_role_forecast([4,4], 0, episode_id='b'*64)
+        self.assertEqual(newer['predicted_next_state'], [4,5])
+        self.assertEqual(m.public_role_forecast([4,4], 0, episode_id='a'*64), old)
+        self.assertEqual(persist_and_restore(m).public_role_forecast(
+            [4,4], 0, episode_id='b'*64), newer)
+        for bad in (True, -1, 5, '0'):
+            with self.assertRaises(ValueError):
+                m.public_role_forecast([4,4], bad, episode_id='b'*64)
+        with self.assertRaises(ValueError):
+            m.public_role_forecast([4,4], 0, episode_id=None)
+
+    def test_role_full_realisable_path_yields_unique_mapping(self):
+        states = ((0,0),(1,0),(0,0),(0,1),(0,0),(0,0))
+        m = NativeGrid5Evidence()
+        for a in range(5):
+            m = m.observe_public_receipt(*receipt(
+                a, act=a, before=states[a], after=states[a+1]))
+        result = m.public_role_forecast([4,4], 4, episode_id='a'*64)
+        self.assertEqual(result['surviving_permutations'], 1)
+        self.assertEqual(result['status'], 'ENTAILED')
+        self.assertEqual(result['predicted_next_state'], [4,4])
+
     def test_source_mode_not_original(self):
         r=receipt(0)
         data=json.loads(r[1]);data['source_mode']='owner_real_source'

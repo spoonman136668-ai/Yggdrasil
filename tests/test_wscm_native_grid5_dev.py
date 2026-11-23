@@ -104,6 +104,20 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
                          native.grid5_fixture_plan([0,0], episode_id='a'*64))
         self.assertEqual(cold.consolidate().checkpoint(), raw)
 
+    def test_optional_role_hypothesis_native_cold_stable(self):
+        m = NativeEpisodeExperience().observe_grid5_fixture(*grid5_fixture())
+        self.assertIsNone(m.grid5_fixture_forecast(
+            [4,4], 0, episode_id='a'*64))
+        readout = m.grid5_fixture_role_forecast([4,4], 0, episode_id='a'*64)
+        self.assertEqual(readout['predicted_next_state'], [5,4])
+        self.assertEqual(readout['surviving_permutations'], 24)
+        self.assertEqual(readout['source_mode'], 'engineering_fixture_only')
+        cold = NativeEpisodeExperience.restore(m.checkpoint(), digest(m.checkpoint()))
+        self.assertEqual(cold.grid5_fixture_role_forecast(
+            [4,4], 0, episode_id='a'*64), readout)
+        self.assertEqual(cold.grid5_fixture_role_forecast(
+            [4,4], 0, episode_id='b'*64)['status'], 'ABSTAIN')
+
     def test_legacy_v7_and_grid5_v8_coexist_without_alias(self):
         base = NativeEpisodeExperience()
         legacy = base.observe_external_fixture(*legacy_fixture())
@@ -147,6 +161,8 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         model = original.observe_grid5_fixture(*grid5_fixture())
         self.assertEqual(original.checkpoint(), original_raw)
         self.assertEqual(model.grid5_fixture_forecast([0,0], 0, episode_id='a'*64),[1,0])
+        self.assertEqual(model.grid5_fixture_role_forecast(
+            [4,4], 0, episode_id='a'*64)['predicted_next_state'], [5,4])
         saved = model.checkpoint()
         cold = NativeCumulativeLearner.restore(saved, digest(saved))
         self.assertEqual(cold.checkpoint(), saved)
@@ -169,6 +185,8 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
                 donor_parent=b'',donor_pin='b'*64)
         self.assertEqual(restored.checkpoint(),raw)
         self.assertEqual(restored.grid5_fixture_forecast([1,0], 1, episode_id='a'*64),[1,1])
+        self.assertEqual(restored.grid5_fixture_role_forecast(
+            [4,4], 0, episode_id='a'*64)['predicted_next_state'], [5,4])
         self.assertEqual(tuple(h.steps for h in restored._heads),original_head_steps)
 
 

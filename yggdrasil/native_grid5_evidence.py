@@ -5,6 +5,7 @@ causal law learner, original-world credential, separate planner or source actor.
 """
 import hashlib
 import json
+from itertools import permutations
 
 from yggdrasil.native_grid5_ingress import (
     SCHEMA as RECEIPT_SCHEMA, SOURCE_MODE, MAX_BATCH,
@@ -13,6 +14,16 @@ from yggdrasil.native_grid5_ingress import (
 
 SCHEMA = 'yggdrasil.wscm.grid5-evidence.dev.v1'
 MAX_CHECKPOINT_BYTES = 128 * 1024
+# Known public fixture-family roles only. Never an original-world role oracle.
+_ROLE_DELTAS = ((1, 0), (-1, 0), (0, 1), (0, -1), (0, 0))
+
+
+def _role_move(state, role):
+    delta = _ROLE_DELTAS[role]
+    return (max(0, min(8, state[0] + delta[0])),
+            max(0, min(8, state[1] + delta[1])))
+
+
 
 
 def _require(condition, reason):
@@ -72,6 +83,39 @@ class NativeGrid5Evidence:
         answers = {r[5] for r in self._rows
                    if r[1] == episode_id and r[3] == state and r[4] == action}
         return list(next(iter(answers))) if len(answers) == 1 else None
+
+    def public_role_forecast(self, state, action, *, episode_id):
+        """Optional DEV fixed-family hypothesis; not original-world source use.
+
+        Constrain 120 source-known movement permutations by publicly witnessed
+        outcomes from this episode only. An unseen state/action may be entailed;
+        ambiguity and contradictory evidence always abstain. Never infer a
+        privileged source-hidden role label or change witness-only forecasts.
+        """
+        state = public_state(state)
+        if type(action) is not int or not 0 <= action < 5:
+            raise ValueError('GRID5_ACTION')
+        if not pinned(episode_id):
+            raise ValueError('GRID5_EPISODE_PIN')
+        observed = tuple((r[3], r[4], r[5])
+                         for r in self._rows if r[1] == episode_id)
+        compatible = tuple(
+            roles for roles in permutations(range(5))
+            if all(_role_move(before, roles[a]) == after
+                   for before, a, after in observed)
+        )
+        outcomes = {_role_move(state, roles[action]) for roles in compatible}
+        status = ('CONTRADICTION' if not compatible else
+                  'ENTAILED' if len(outcomes) == 1 else 'ABSTAIN')
+        return {
+            'source_mode': SOURCE_MODE,
+            'hypothesis_family': 'fixed_grid5_120_permutations_dev',
+            'status': status,
+            'surviving_permutations': len(compatible),
+            'observations_in_episode': len(observed),
+            'predicted_next_state': list(next(iter(outcomes)))
+                                    if len(outcomes) == 1 else None,
+        }
 
     def public_plan(self, state, *, episode_id):
         """Same-episode coverage proposal only, NOT action-role learning.
