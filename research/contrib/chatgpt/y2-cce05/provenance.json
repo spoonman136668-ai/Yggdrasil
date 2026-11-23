@@ -1,0 +1,100 @@
+{
+  "schema": "yggdrasil.y2.cce05.dev-provenance.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE05",
+  "date_utc": "2026-11-23",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/y2-cce01-causal-contract-ecology-20261123",
+    "original_main_base": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_before_prereg": "f0d6b5e612ae7c403e7b798c0d69eaaf38387194",
+    "frozen_prereg_commit": "19a70935044b74997dd5b48d3924eacbfa6b4cf8",
+    "candidate_pre_primary_commit": "c17c5d4a66d9ca484aae97c188d3acf14ff764fe",
+    "candidate_pre_primary_git_tree": "5996ea3085a0ee57f7a3d639871a3846cd667ce0",
+    "git_tree_evidence": "GitHub original GET git/commits/c17c5d4a66d9ca484aae97c188d3acf14ff764fe",
+    "matched_local_source_git_blobs": [
+      {
+        "path": "research/contrib/chatgpt/y2-cce05/cce05.py",
+        "git_blob_sha1": "cdcdbf78e413e455d09653a8020888dee632392b",
+        "sha256": "74dad31a539cffc8e6c888e8ae81a32a65581d0d0fca124eb4c4e2597a117704"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce05/test_cce05.py",
+        "git_blob_sha1": "93a5b6f6077e3de3063c5c4411e746c588310f5f",
+        "sha256": "f2e717662a8bb935b7fd880c13a309454d52a56f9fa866cd9c9300aeee8fabdf"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce05/run_cce05.py",
+        "git_blob_sha1": "485f7dc6448222301baed4facfb909f65c06f3de",
+        "sha256": "3f1747bbf9d702271b30a0bb08b2aa3b2e8d8dc83543b1a43a87734db88fb678"
+      }
+    ]
+  },
+  "execution": {
+    "environment": "Isolated Linux x86_64 container, CPython 3.13.5, standard library, not owner Windows self-hosted runner or GitHub CI",
+    "focused_tests": {
+      "status": "PASS",
+      "tests": 10,
+      "errors": 0,
+      "failures": 0,
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest -v test_cce05.py",
+      "note": "Engineering fixture uses separate non-primary seed 997, executed before primary."
+    },
+    "primary": {
+      "observed_executions": 1,
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B run_cce05.py --output first_primary_result.json",
+      "original_raw_sha256": "654080193193c2e154484d94b6b8d825c31d3c5d4d8e9a7b1bf7d1b01f35c84f",
+      "original_raw_git_blob_sha1": "6677c6e9d466f4c82937a3cee667a2c2ad8faea3",
+      "original_raw_bytes": 8313,
+      "train_transitions": 46080,
+      "heldout_predictions": 24000,
+      "positive_seeds": 5,
+      "null_seeds": 5,
+      "execution_completed": true
+    }
+  },
+  "result": {
+    "git_path": "research/contrib/chatgpt/y2-cce05/result.json",
+    "git_blob_sha1": "03c276970d306183582127504207101b5ed25651",
+    "representation": "Field-preserving normalized per-seed JSON built from original primary output, NOT a byte-identical original. Raw source output hashed separately and retained in isolated working container. No rerun or post-hoc tuning.",
+    "classification": "MIXED",
+    "scientific_gain_verified": false,
+    "cce_mean_brier": 0.16159443113982855,
+    "strongest_trained_hmm_mean_brier": 0.15448235342393896,
+    "margin_positive_is_better": -0.007112077715889592,
+    "frozen_required_margin": 0.01,
+    "mean_full_depth3": 0.16453194022516832,
+    "mean_depth1": 0.17552171483812073,
+    "null_zero_cells": 5,
+    "cold_equivalence": 5,
+    "withheld_212_substrings_positive": 806,
+    "selected_cells_positive": [
+      33,
+      33,
+      35,
+      31,
+      33
+    ]
+  },
+  "qualification": {
+    "focused_local_engineering": "PASS",
+    "github_ci": "NOT_ACCEPTED_G29_ATLAS_INDEXED_FILE_SET_FAILURE",
+    "full_final_regression": "UNVERIFIED",
+    "windows_qualification": "UNVERIFIED",
+    "independent_reproduction": "UNVERIFIED",
+    "source_first_use_native_science": "NOT_RUN",
+    "deployment": "NONE",
+    "merged": false,
+    "accepted_model_changed": false,
+    "runner_dispatched": false,
+    "generated_ice_manually_edited": false
+  },
+  "limitations": [
+    "A public suffix context is an operational predictive state, NOT an independently identified latent causal variable.",
+    "Training never includes action triple 212 but evaluation forces it into sequences; this is held-out sequence interpolation, not out-of-family transfer.",
+    "4-state HMM receives state count as a strong baseline capacity advantage but does not receive labels or world transition rules.",
+    "Ephemeral full-depth candidate statistics are larger than the frozen cell snapshot; memory and compute advantage not established.",
+    "Scientific preset strongest-control gain failed; negative result preserved unchanged.",
+    "Fixed depth, thresholds and action alphabet; no open-domain generality, interference retention or AGI validation."
+  ]
+}
