@@ -1,0 +1,68 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "TP-HDC-02",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "source-free-falsification",
+  "predecessor": {
+    "pr": 1366,
+    "head_sha": "a2a7267c18d7e5bb15815735123dec4091895962",
+    "source": "research/contrib/chatgpt/TP-HDC-01/probe.py",
+    "outcome": "TP-HDC-01 lacks efficiency advantage vs 24-byte exact counters"
+  },
+  "question": "At identical real 128/512/2048 byte persistent memory caps and with task IDs known to every arm, does int8 task-projected hyperdimensional superposition retain older stochastic action-outcome predictions better than exact packed or hashed packed memories after 2x distinct task exposure?",
+  "hypothesis": "TP-HDC may reduce task interference in overcapacity conditions, but can be falsified by packed exact and hashed counter controls; no non-native benefit should be presumed.",
+  "source_free": true,
+  "protected_first_use": false,
+  "frozen_design": {
+    "seeds": [
+      101,
+      202,
+      303,
+      404
+    ],
+    "cases": [
+      {
+        "bytes": 128,
+        "old_tasks": 32
+      },
+      {
+        "bytes": 128,
+        "old_tasks": 128
+      },
+      {
+        "bytes": 512,
+        "old_tasks": 128
+      },
+      {
+        "bytes": 512,
+        "old_tasks": 512
+      },
+      {
+        "bytes": 2048,
+        "old_tasks": 512
+      }
+    ],
+    "timeline": "A tasks [0,N) trained once, score expected A-law Brier; then B tasks [N,2N) trained once, score expected A-law Brier again, without A retraining or prediction-update leakage.",
+    "task_laws": "For each (seed,task,context,action), SHA256('TP-HDC-02|law|v1|'+seed+'/'+task+'/'+context+'/'+action) first byte low bit => Bernoulli p=0.2 when zero, 0.8 when one. Same law available to evaluation only, never candidate forecasts.",
+    "observations": "Four training samples for each task, each c in [0,1], a in [0,1], in that order. Sample y by random.Random(seed) for each case, task order ascending A then B. All models receive precisely the same sample. Task ID given to all arms.",
+    "key_generation": "Deterministic seed from SHA256('TP-HDC-02|key|v1|'+task+'/'+context+'/'+action+'/'+outcome) first 8 bytes interpreted little-endian, numpy.random.Generator(PCG64(seed)).integers(0,2,size=budget,dtype=int8)*2-1. Cache keys for only the current task; count the 8*budget transient projection bytes.",
+    "hdc": "Persistent signed-int8 vector of length budget, initialized zero, one vector update per observed outcome, saturate [-128,127]. Decoder max(0,dot(v,key)/budget) with Beta(1,1)-style +1 per outcome.",
+    "exact_controls": "Exact bounded LRU and exact deterministic-priority-reservoir: per task, 2-byte task+1 ID plus eight 3-bit saturating outcome counts (3 bytes), so five persistent bytes/task. No hidden sidecar metadata. Capacity=floor(budget/5), eviction included. Unbounded exact separately labeled unattainable reference.",
+    "hashed_control": "Deterministic task-keyed hash modulo floor(budget/3) buckets, each bucket eight packed 3-bit count slots (3 bytes); no hidden per-task learned state, saturation at seven. Hash function SHA256('TP-HDC-02|bucket|v1|'+task) first eight bytes little endian.",
+    "checkpoints": "For every arm, budget-byte payload + four-byte experiment tag + 32-byte SHA256. Cold restores reproduce forecasts and corrupted payload must reject. Exact entries include task IDs; LRU ordering must be retained. Only learned/checkpoint bytes are bounded; runtime allocation, regenerated projection keys, peak RSS and cost separately reported.",
+    "primary_execution_budget": "One frozen local CPU primary run with five cases x four seeds x five bounded arms plus oracle reference; no extra seeds, retuning or score-driven changes. Independent reimplementations can replay same source law/data, but no first-use.",
+    "expected_brier": "Average p*(1-q)^2+(1-p)*q^2 over all old task/context/action cells. Measure pre-B and post-B; lower better. Mean and per-seed metrics preserved; difference post-pre measures forgetting.",
+    "compute": "Report wall time by arm, HDC key-cache peak and saturation count, exact capacity and stored count, actual persistent bytes, checkpoint size and peak RSS. Use original seed/case 4x4 training samples for all.",
+    "invalidity": "Any future-outcome access, mismatched observations, hidden unbounded learned memory, non-deterministic keys, broken snapshot restore, corruption accepted, used source not matching prereg commit, or comparison that omits strong controls invalidates primary.",
+    "result_rules": "SOURCE_FREE_SCREEN_POSITIVE only if HDC post-B expected Brier <= best of LRU, priority and hashed by >=0.005 in mean AND >=3 of 4 seeds in at least one overcapacity case, HDC A drift <=0.02 for all four seeds of that same case, and its measured peak resident memory <= best-control peak *2; otherwise SCREEN_NEGATIVE_OR_MIXED. No result qualifies SCIENTIFIC_PASS without native replication and preauthorized first-use."
+  },
+  "boundaries": {
+    "native_integration": false,
+    "accepted_ref_edits": false,
+    "merges": false,
+    "runner_dispatch": false,
+    "paid_api": false,
+    "production": false
+  }
+}
