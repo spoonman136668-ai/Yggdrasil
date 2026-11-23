@@ -90,9 +90,13 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
 
     def test_v8_native_cold_and_consolidation_bit_identical(self):
         native = NativeEpisodeExperience()
+        # All five actions are source-realizable under one identity permutation;
+        # five no-ops at the corner would require inconsistent action roles.
+        states = ((0, 0), (1, 0), (0, 0), (0, 1), (0, 0), (0, 0))
         for a in range(5):
             native = native.observe_grid5_fixture(*grid5_fixture(
-                step=a, action=a, before=(0, 0), after=(0, 0), sid=a+1))
+                step=a, action=a, before=states[a],
+                after=states[a+1], sid=a+1))
         raw = native.checkpoint()
         cold = NativeEpisodeExperience.restore(raw, digest(raw))
         self.assertEqual(cold.checkpoint(), raw)

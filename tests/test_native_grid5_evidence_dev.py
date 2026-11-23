@@ -61,13 +61,21 @@ class NativeGrid5Tests(unittest.TestCase):
 
     def test_all_five_action_labels(self):
         obj = NativeGrid5Evidence()
-        pos=(0,0)
-        for step,a in enumerate(range(5)):
-            obj=obj.observe_public_receipt(*receipt(step,act=a,before=pos,after=pos))
-        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['public_action'],0)
-        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['observed_next_state'],[0,0])
-        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['witness_count'],1)
-        self.assertEqual(persist_and_restore(obj).public_plan([0,0], episode_id='a'*64),obj.public_plan([0,0], episode_id='a'*64))
+        # Source-realizable five-action sequence, identity permutation.
+        # No private action-role labels are supplied to the evidence API.
+        states = ((0,0),(1,0),(0,0),(0,1),(0,0),(0,0))
+        for action in range(5):
+            obj=obj.observe_public_receipt(*receipt(
+                action,act=action,before=states[action],after=states[action+1]))
+        self.assertEqual(
+            [obj.public_forecast(list(states[a]), a, episode_id='a'*64)
+             for a in range(5)], [list(s) for s in states[1:]])
+        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['public_action'],1)
+        self.assertIsNone(obj.public_plan([0,0], episode_id='a'*64)['observed_next_state'])
+        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['witness_count'],0)
+        self.assertEqual(
+            persist_and_restore(obj).public_plan([0,0], episode_id='a'*64),
+            obj.public_plan([0,0], episode_id='a'*64))
 
     def test_contradictory_same_context_forces_abstention(self):
         obj=NativeGrid5Evidence()
