@@ -19,6 +19,23 @@ class DecisionFocusedBayesFixtures(unittest.TestCase):
         self.assertGreater(weak, strong)
         self.assertTrue(math.isfinite(weak))
 
+    def test_exact_expected_reduction_matches_two_channel_brier(self):
+        alpha = [1., 2., 3., 4.]
+        total = sum(alpha)
+        p0 = (alpha[2] + alpha[3]) / total
+        p1 = (alpha[1] + alpha[3]) / total
+        before = 0.5 * (p0*(1-p0) + p1*(1-p1))
+        after = 0.0
+        for outcome, count in enumerate(alpha):
+            updated = alpha[:]
+            updated[outcome] += 1
+            denom = total + 1
+            q0 = (updated[2] + updated[3]) / denom
+            q1 = (updated[1] + updated[3]) / denom
+            after += (count / total) * 0.5 * (q0*(1-q0) + q1*(1-q1))
+        self.assertAlmostEqual(before - after,
+                               expected_dirichlet_brier_reduction(alpha), places=14)
+
     def test_rejects_invalid_dirichlet_vectors(self):
         for row in ([0, 1, 1, 1], [1, 1, 1], [1, 1, 1, float('nan')], "1111"):
             with self.subTest(row=row):

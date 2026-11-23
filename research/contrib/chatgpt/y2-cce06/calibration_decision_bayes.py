@@ -1,7 +1,7 @@
 """Decision-focused Bayesian intervention baseline, strictly public TRAIN.
 
 Unlike parameter-information-gain selection, this policy values an action by
-its expected reduction in posterior predictive Brier risk for the same
+its expected reduction in posterior predictive two-channel Brier risk for the same
 state/action cell, weighted by that cell's empirical frequency in TRAIN.
 This is a myopic one-step value-of-information baseline, not full planning.
 """
@@ -24,12 +24,14 @@ def expected_dirichlet_brier_reduction(alpha):
                 for x in alpha)):
         raise ValueError("CCE06_DECISION_BAD_DIRICHLET")
     total = float(sum(alpha))
-    mean_sq = sum((x / total) ** 2 for x in alpha)
-    next_mean_sq = sum(
-        (x*x + 2*x*(x/total) + x/total) / ((total + 1) ** 2)
-        for x in alpha
-    )
-    gain = next_mean_sq - mean_sq
+    # The benchmark loss is the mean of two binary-channel Brier scores,
+    # not four-class categorical Brier. Under a Dirichlet posterior the
+    # marginal probabilities are Beta-distributed. One observed transition
+    # changes each marginal mean by +/-1/(total+1), with Bernoulli variance
+    # p*(1-p); average both channels exactly.
+    p0 = (alpha[2] + alpha[3]) / total
+    p1 = (alpha[1] + alpha[3]) / total
+    gain = 0.5 * (p0*(1-p0) + p1*(1-p1)) / ((total + 1) ** 2)
     if not math.isfinite(gain) or gain < -1e-12:
         raise ValueError("CCE06_DECISION_INVALID_RISK_REDUCTION")
     return max(0.0, gain)
