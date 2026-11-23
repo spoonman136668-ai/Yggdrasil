@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - research/autonomy-yggdrasil-active
-      - research/wscm-causalgym-venv-import-20261123
+      - research/wscm-causalmbrl-import-20261123
     paths:
       - 'research/applications/plane/**'
       - '.yggdrasil/**'
@@ -43,7 +43,7 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           $Branch=$env:GITHUB_REF_NAME
-          if(@('research/autonomy-yggdrasil-active','research/wscm-causalgym-venv-import-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
+          if(@('research/autonomy-yggdrasil-active','research/wscm-causalmbrl-import-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
           $QPath='.yggdrasil/qualification-request.json'
           $RPath='.yggdrasil/isolated-run.json'
           foreach($P in @($QPath,$RPath)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "REQUEST_MISSING path=$P"}}
@@ -155,7 +155,7 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           $Branch=$env:GITHUB_REF_NAME
-          if(@('research/autonomy-yggdrasil-active','research/wscm-causalgym-venv-import-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
+          if(@('research/autonomy-yggdrasil-active','research/wscm-causalmbrl-import-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
           $Head='${{ steps.frozen.outputs.head }}'
           git fetch origin $Branch
           if($LASTEXITCODE-ne0){throw 'REMOTE_REFRESH_FAILED'}
