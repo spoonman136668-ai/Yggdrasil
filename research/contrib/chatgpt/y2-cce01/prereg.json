@@ -1,0 +1,90 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE01",
+  "contributor": "chatgpt-connector",
+  "contribution_class": "successor-proposal",
+  "question": "Can a bounded population of locally updating feature-conditional causal hypotheses discover a reusable action-outcome contract from randomized interventions more efficiently than a pooled or fully factored observation-count control?",
+  "hypothesis": "A prequential-evidence-gated contract will select an action-dependent public feature on an action-interaction world, retain exact predictions across serialization, and avoid spurious specialization on a null world. This is a synthetic development screen, not evidence of general intelligence or causal identifiability.",
+  "exact_parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "predecessor_evidence": [
+    "Yggdrasil main@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9:research/architecture/structural-plasticity.ice",
+    "Yggdrasil main@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9:yggdrasil/public_causal_cells.py"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/y2-cce01/prereg.json",
+    "research/contrib/chatgpt/y2-cce01/README.md",
+    "research/contrib/chatgpt/y2-cce01/cce01.py",
+    "research/contrib/chatgpt/y2-cce01/test_cce01.py",
+    "research/contrib/chatgpt/y2-cce01/run_cce01.py",
+    "research/contrib/chatgpt/y2-cce01/result.json",
+    "research/contrib/chatgpt/y2-cce01/provenance.json"
+  ],
+  "inputs": [
+    {
+      "name": "positive synthetic intervention world",
+      "sha256": null,
+      "source": "In-memory bits x0,x1,a iid Bernoulli(1/2) drawn by Python random.Random with frozen seeds; public y = a XOR x0; actions selected randomly, not inferred from hidden state; world label not sent to learner."
+    },
+    {
+      "name": "null synthetic intervention world",
+      "sha256": null,
+      "source": "Same public iid bits; public y=a; x0,x1 are distractors; world label not sent to learner. Deterministic code identity pinned by implementation SHA before outcome execution."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      7,
+      19,
+      43,
+      83,
+      131
+    ],
+    "split": "Train 192 independent randomized observed (x0,x1,a,y) transitions per seed and world; fixed, nonlearning evaluation on 256 independent transitions using random.Random(seed+100000). World generators do not share PRNG state.",
+    "ordering": "Train from RNG draw order. For each transition, compute pre-update predictions of pooled, each singleton-feature candidate, and full-table controls, then update counts. After sufficient observations, structural choice may activate exactly one feature-conditional candidate. Do not inspect heldout predictions for selection.",
+    "data_budget": "2 worlds x 5 seeds x (192 train + 256 evaluation) = 4480 events, of which 1920 update learner; separate tests may use synthetic hand fixtures but no primary heldout events.",
+    "compute_budget": "CPython stdlib only; each event may update pooled, two 1-feature candidate counters, and one 2-feature full-table control. No model APIs or external compute. No hyperparameter searches or extra evals.",
+    "capacity": "Exactly 2 candidate feature cells, at most 1 selected structural split, 2 binary actions/outcomes, public x0,x1. No births, unrestricted growth, training oracle, third feature, or unbounded causal graph. Beta(1,1) posterior predictive.",
+    "evaluator": "Frozen heldout Brier score: average (predicted P(y=1) - observed y)^2 without evaluation updates; comparator is min(pooled Brier, full-table Brier) on the positive world, aggregated per-seed then averaged; null false split count; checkpoint prediction equality across all eight public (x0,x1,a) configurations.",
+    "structural_trigger": "At least 48 transitions and at least 6 observed events in each public (feature-bit, action) cell; candidate prequential Brier cumulative improvement over pooled at least max(2.0,0.01*N); select best gain, ties by lower feature index, permanently freeze selection. No feature ID is supplied by the environment.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Pooled Beta-Bernoulli action-only predictor trained on identical public examples",
+    "Full-context Beta-Bernoulli x0,x1,action table trained on same public examples",
+    "Null world with no relevant feature (false-split negative control)",
+    "Disable structural selection (pooled ablation)",
+    "Corrupt checkpoint and malformed event rejection unit tests"
+  ],
+  "metrics": [
+    "positive-world heldout Brier: candidate, pooled, full table",
+    "null-world selected feature count",
+    "selected feature index and selection step",
+    "checkpoint round-trip prediction equality",
+    "resident entry counts, serialized byte size, training/eval counts",
+    "per-seed scores and aggregate margins"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL only: across five preregistered positive seeds, average candidate Brier <= average per-seed min(pooled, full) Brier - 0.005, chosen feature index 0 in >=4/5 positive seeds, no splits in >=4/5 null seeds, and 5/5 exact cold checkpoint predictions. Never label SCIENTIFIC_PASS on this synthetic screen.",
+    "mixed": "Benefit threshold passes but one of split/null/checkpoint conditions fails, or only some seeds improve; preserve all negatives without policy revision.",
+    "negative": "When all identities valid and evaluator executes but supported/mixed conditions are not met. Report strongest control wins and all negative seeds.",
+    "invalid": "Any data leakage, generator rule supplied to learner, wrong parent/protocol/code identity, heldout use for model selection, changed frozen budgets or thresholds, missing baseline, contradictory counts, serialization mismatch, or unauthorized run."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless separately preregistered",
+    "held-out/evaluator leakage",
+    "repair of a negative by rerunning different settings"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Pre-implementation and pre-primary-result freeze. This exploratory architecture is not independently admitted first-use science. No production, branch promotion, or runner dispatch."
+}
