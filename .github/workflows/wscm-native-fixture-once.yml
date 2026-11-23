@@ -2805,3 +2805,135 @@ jobs:
           test -z "$(git status --porcelain)"
           echo WSCM_CAPACITY04_READONLY_CUSTODY=PASS
 
+  # Source-free historic readback only; no protected first-use, no promotion.
+  ab04-native-functional-return-linux:
+    if: contains(github.event.head_commit.message, 'WSCM_AB04_NATIVE_COLD_RETURN')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      actions: read
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+    steps:
+      - name: Checkout exact previously qualified Yggdrasil native source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 5269450b5c064130c595dc02b336a63bdb5a5df6
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify exact native/G29 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 5269450b5c064130c595dc02b336a63bdb5a5df6
+          test "$(git rev-parse HEAD^{tree})" = 05cd1d1bde5db9c1be6688242d6ff43cf6c805fd
+          test "$(git rev-parse HEAD:yggdrasil/native_episode_experience.py)" = b2341a79ef951a25b10c82f582f5279d6c0971e4
+          python3 -B scripts/build_code_atlas.py --check-if-present
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install existing native binary dependencies, no models trained
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+      - name: Verify already-consumed original archive identity
+        shell: bash
+        id: meta
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -B - <<'PY'
+          import os,json,urllib.request
+          url="https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/14492525071"
+          q=urllib.request.Request(url,headers={"Authorization":"Bearer "+os.environ["GITHUB_TOKEN"],"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"WSCM-AB04-readonly"})
+          with urllib.request.urlopen(q,timeout=20) as r: x=json.load(r)
+          if x["id"]!=14492525071 or x["expired"] or x["workflow_run"]["id"]!=44442089107:raise ValueError("AB04_ARCHIVE_CUSTODY")
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("run_id=44442089107\n")
+          print("WSCM_AB04_HISTORICAL_ARCHIVE_AUTH=PASS")
+          PY
+      - name: Download original previously consumed 1025 historical witnesses
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          artifact-ids: '14492525071'
+          run-id: ${{ steps.meta.outputs.run_id }}
+          repository: spoonman136668-ai/Yggdrasil
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/wscm-ab04-archived
+      - name: Actual original native 891 A, 1025 B, immutable cold return and retrospective guard
+        shell: bash
+        env:
+          WSCM_AB04_JOINT: ${{ runner.temp }}/wscm-ab04-archived/amalgam-joint-state.json
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,os,time
+          from pathlib import Path
+          from fractions import Fraction
+          from yggdrasil.native_context_basis import digest
+          from yggdrasil.native_episode_experience import NativeEpisodeExperience
+          from yggdrasil.native_cumulative_learner import NativeCumulativeLearner
+          def need(x,msg):
+              if not x:raise ValueError(msg)
+          t=time.perf_counter()
+          p=Path(os.environ["WSCM_AB04_JOINT"]).read_bytes()
+          need(digest(p)=="576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8","AB04_JOINT_SHA")
+          joint=json.loads(p)
+          nr=joint["native_ascii"].encode("ascii")
+          need(digest(nr)=="5720151e18b52f7219763027c2ad9c7c37476e099b4334e42417615adb7f959d","AB04_NATIVE_SHA")
+          real=NativeCumulativeLearner.restore(nr,digest(nr))
+          B=real._episode_reader()
+          Braw=B.checkpoint()
+          need(digest(Braw)=="9158254b80f147d7eb7516d630f6003441df4b8373375b994d864ee1d55568f4","AB04_B_SHA")
+          rows=B._ledger
+          need(len(rows)==1025 and B._stream_start==448 and B._refresh_start==832,"AB04_PHASES")
+          A=NativeEpisodeExperience(repair=B._repair_enabled)
+          for i,(ident,views,first,state,second,reward) in enumerate(rows[:891]):
+              if i==448:A=A.begin_stream()
+              if i==832:A=A.enable_context_refresh()
+              A=A.observe(ident,views,{"s1":views[0][0],"x1":first,"s2":state,"x2":second,"y":reward})
+          Araw=A.checkpoint()
+          need(digest(Araw)=="97a689667c792b3cf81bf482dde946f4b4e9e9a64d9cbc4e78b895bc36c28569","AB04_A_EXACT_REPLAY_SHA")
+          need(A._ledger==rows[:891],"AB04_A_OLD_PREFIX")
+          old=rows[:891]
+          def score(model):
+              tr=rw=Fraction(0)
+              for _,views,first,state,second,reward in old:
+                  view=views[0]
+                  tr+=(model.context_forecast(view,first)-state)**2
+                  rw+=(model.context_forecast(view,first,state,second)-reward)**2
+              return (tr/891,rw/891)
+          a=score(A)
+          b=score(B)
+          Ac=NativeEpisodeExperience.restore(Araw,digest(Araw))
+          Bc=NativeEpisodeExperience.restore(Braw,digest(Braw))
+          need(Ac.checkpoint()==Araw and Bc.checkpoint()==Braw,"AB04_COLD_BYTES")
+          need(score(Ac)==a and score(Bc)==b,"AB04_COLD_FUNCTION_DRIFT")
+          delta=(b[0]-a[0],b[1]-a[1])
+          # Original fixed old-memory guard +0.02 per target, not post-result tuned.
+          retention_pass=all(d<=Fraction(1,50) for d in delta)
+          need(not retention_pass and delta[0]>Fraction(1,50),"AB04_EXPECTED_OLD_RETENTION_NEGATIVE_CHANGED")
+          # Prior source-mirror values are consumed DEV parity checks, not new science.
+          need(abs(float(sum(a)/2)-0.195173899)<0.00001,"AB04_PRIOR_A_MIRROR_MISMATCH")
+          need(abs(float(sum(b)/2)-0.218909471)<0.00001,"AB04_PRIOR_B_MIRROR_MISMATCH")
+          need(A.checkpoint()==Araw and B.checkpoint()==Braw,"AB04_SOURCE_STATE_CHANGED")
+          print("WSCM_AB04_REAL_ORIGINAL_NATIVE_891_REPLAY=PASS")
+          print("WSCM_AB04_ORIGINAL_A_AND_B_COLD_BYTES=PASS")
+          print("WSCM_AB04_COLD_A_FUNCTIONAL_RETURN=PASS")
+          print("WSCM_AB04_RETENTION_GUARD_B_REJECT=PASS")
+          for label,arr in (("A",a),("B",b),("RETURN_A",score(Ac))):
+              print("WSCM_AB04_"+label+"_OLD_TRANSITION="+format(float(arr[0]),".12f"))
+              print("WSCM_AB04_"+label+"_OLD_REWARD="+format(float(arr[1]),".12f"))
+              print("WSCM_AB04_"+label+"_OLD_MEAN="+format(float(sum(arr)/2),".12f"))
+          print("WSCM_AB04_B_MINUS_A_TRANSITION="+format(float(delta[0]),".12f"))
+          print("WSCM_AB04_B_MINUS_A_MEAN="+format(float(sum(delta)/2),".12f"))
+          print("WSCM_AB04_WALL_SECONDS="+format(time.perf_counter()-t,".3f"))
+          print("WSCM_AB04_FIRST_USE=NONE; SCIENTIFIC_GAIN_VERIFIED=FALSE")
+          PY
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+          echo WSCM_AB04_WORKTREE_READONLY=PASS
+
