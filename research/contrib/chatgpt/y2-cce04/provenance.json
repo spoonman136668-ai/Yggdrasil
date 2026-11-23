@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.y2.cce04.dev-provenance.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE04",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/y2-cce01-causal-contract-ecology-20261123",
+    "base_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+    "parent_before_prereg": "274b470507fa892a408252a3e98315d19f534b69",
+    "preregistration_commit_sha": "8ac9dbebaba21b50a27f3bbbc64870656cf831bd",
+    "pre_result_candidate_sha": "9fa5ad2a3b6b7e8cc8014d92f8c357c3a6e277f9",
+    "pre_result_tree_sha": "a8759545a37f49d228c21c275115bf853baa8198",
+    "tree_source": "GitHub original GET /repos/spoonman136668-ai/Yggdrasil/git/commits/9fa5ad2a3b6b7e8cc8014d92f8c357c3a6e277f9; source tree pinned before primary.",
+    "files": [
+      {
+        "path": "research/contrib/chatgpt/y2-cce04/prereg.json",
+        "sha1_git_blob": "d03f237940e58daf125f05860f99384034982054"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce04/cce04.py",
+        "sha1_git_blob": "673a3f46cf375568b6e39bbf5d7636930b1c928a",
+        "sha256": "0db9a1a59ae495a3c30e9efbd256a32fb7ca68ec7b6fd9434331c97d54887153"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce04/test_cce04.py",
+        "sha1_git_blob": "99d6cb410cd371b4f90afc44817a33b61d4202fe",
+        "sha256": "d9be9e730525920cbaf7053973aa702608a373763145274a7f46129422fbce1c"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce04/run_cce04.py",
+        "sha1_git_blob": "bc570f580eea5cd42ecefca70c18ceac519518ef",
+        "sha256": "8d9790472704504c092de0c61723e0fae7225291a75e5ada6287f490e7c038ee"
+      }
+    ]
+  },
+  "execution": {
+    "date_utc": "2026-11-23",
+    "environment": "isolated Linux container, CPython 3.13.5, x86_64; not owner local Windows/CI",
+    "focused_tests": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s . -p test_cce04.py -v",
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "local_elapsed_seconds": 0.093,
+      "exact_source_github_blob_matched": true
+    },
+    "primary": {
+      "number_of_executions": 1,
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B run_cce04.py --output first_primary_result.json",
+      "wall_seconds": 7.12,
+      "original_output_sha256": "03a964cb92cd60308df974a57ced56cf1570b0d604c285cbe2b98396b9cf137e",
+      "original_output_git_blob_sha1": "bee2372fde794fc185db9bd7228776b4b4f8b060",
+      "original_output_bytes": 12037,
+      "transitions_consumed": 15360,
+      "heldout_predictions_scored": 4800,
+      "seed_count_per_world": 5,
+      "worlds": 2
+    },
+    "result": {
+      "path": "research/contrib/chatgpt/y2-cce04/result.json",
+      "git_blob_sha1": "d3c37d93e483af9971d74fd500de1aaf3bfe6393",
+      "representation": "Field-preserving JSON normalized on writeback to GitHub from original first-use result; not byte-for-byte identical. Original local bytes hashed separately. No replay.",
+      "classification": "MIXED",
+      "scientific_gain_verified": false,
+      "mean_brier_cce": 0.22597564799875083,
+      "mean_brier_strongest_trained_hmm": 0.22402664669375688,
+      "margin_over_strongest": -0.0019490013049939525,
+      "predeclared_required_margin": 0.01,
+      "correct_action_family_seeds": 5,
+      "null_iid_selection_seeds": 5,
+      "cold_equal_seeds": 5
+    }
+  },
+  "qualification": {
+    "engineering_focused_local": "PASS",
+    "full_repository_regression": "UNVERIFIED",
+    "windows_ci": "UNVERIFIED_NEW_HEAD; PREVIOUS G29 FAIL",
+    "linux_ci": "UNVERIFIED_NEW_HEAD; PREVIOUS G29 FAIL",
+    "original_native_scientific_first_use": "NOT_RUN",
+    "independent_reproduction": "UNVERIFIED",
+    "deployment": "NONE",
+    "accepted_ref_mutation": false,
+    "generated_ice_manual_edit": false,
+    "controller_or_runner_dispatch": false
+  },
+  "limitations": [
+    "Known two-state shape and action alphabet built into hypothesis set; does not discover latent state dimension.",
+    "Novel suffix 11111 unseen during training but dynamics belong to same synthetic environment family.",
+    "Fine trained HMM has 432 templates, CCE has 36; their compute differs and no matched-runtime gain is claimed.",
+    "Outcome is slightly negative versus strongest trained HMM, though basic causal-role and null controls behave as intended.",
+    "Raw first-use JSON hashed but not attached to GitHub; normalized fields independently cross-checked.",
+    "No AGI evidence, scientific improvement, accepted model, merge or deployment."
+  ]
+}
