@@ -1,0 +1,71 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-CAUSALGYM-DTR-API-SMOKE-01",
+  "exact_parent_sha": "9a1d09e09824ea9494db46b7f9970e0fdc1ee704",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "ENGINEERING_API_SMOKE_DEVELOPMENT_ONLY",
+  "purpose": "Exercise the exact pinned original Causal-Gymnasium DTR SCM public two-stage API on the Yggdrasil Windows research runner. Development compatibility smoke, not a new scientific trial.",
+  "source": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "license": "Apache-2.0",
+    "license_git_blob": "993e3a4922f003dced0fd061735697c850ea7205",
+    "source_file": "causal_gym/envs/dtr.py",
+    "source_git_blob": "6af2371dce21804140ea141ccb7be14e003ba275",
+    "source_status": "previously consumed source family; development smoke only"
+  },
+  "dev_smoke": {
+    "seed": 20261123,
+    "episodes": 1,
+    "action_sequence": [
+      0,
+      1
+    ],
+    "expected_stages": [
+      0,
+      1,
+      2
+    ],
+    "expected_transition_termination": [
+      false,
+      true
+    ],
+    "scored": false,
+    "source_family_virgin": false,
+    "cohort_virginity_claimed": false
+  },
+  "dependencies": {
+    "mode": "temporary RUNNER_TEMP package target; clean after both Python invocations exit",
+    "versions": {
+      "numpy": "1.26.4",
+      "gymnasium": "0.29.1",
+      "networkx": "3.4.2",
+      "toposort": "1.10",
+      "pydash": "8.0.5"
+    },
+    "wheel_only": true
+  },
+  "constraints": {
+    "ckb_plane_authority": "NOT_REQUIRED",
+    "runner": "existing Yggdrasil Windows self-hosted research-only runner",
+    "environment_constructions": 1,
+    "reset_calls": 1,
+    "step_calls": 2,
+    "source_actions": 2,
+    "interventions": 2,
+    "model_fits": 0,
+    "native_learner_updates": 0,
+    "hidden_info_to_learner": false,
+    "heldout_scoring": false,
+    "scientific_gain_verified": false,
+    "model_promotion": false,
+    "persistent_runner_changes": 0
+  },
+  "preregistered_acceptance": {
+    "exact_source_blobs": "all 13 upstream source/license blobs must verify",
+    "api": "DTRSCM constructs; reset(seed) returns binary s1; first action returns binary s2 and no termination; second returns None observation, binary reward, terminated=true, truncated=false",
+    "determinism": "two invocations with fixed seed yield byte-identical public-only result",
+    "output_visibility": "only public s1/s2/x1/x2/y/stage/status fields; drop source info dictionaries",
+    "science": "not scored; no transfer, retention or learner-gain claim"
+  }
+}
