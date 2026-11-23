@@ -117,6 +117,60 @@ class NativeGrid5Evidence:
                                     if len(outcomes) == 1 else None,
         }
 
+    def public_learned_delta_forecast(self, state, action, *, episode_id):
+        """Opt-in public-only displacement hypothesis, not a role/physics oracle.
+
+        Infer arithmetic displacement ONLY when an observed successor is
+        strictly interior: clipping then cannot explain the observed result.
+        All source rows come from the same explicitly identified episode.
+        No hard-coded action->movement table or role-permutation prior is used.
+        Predictions are HYPOTHESES, never source-certified causal truth.
+        """
+        state = public_state(state)
+        if type(action) is not int or not 0 <= action < 5:
+            raise ValueError('GRID5_ACTION')
+        if not pinned(episode_id):
+            raise ValueError('GRID5_EPISODE_PIN')
+        rows = tuple((r[3], r[5]) for r in self._rows
+                     if r[1] == episode_id and r[4] == action)
+        informative = tuple((before, after) for before, after in rows
+                            if all(0 < coordinate < 8 for coordinate in after))
+        deltas = {tuple(after[i] - before[i] for i in (0, 1))
+                  for before, after in informative}
+        status = 'ABSTAIN'
+        predicted = None
+        delta = None
+        if len(deltas) > 1:
+            status = 'CONTRADICTION'
+        elif len(deltas) == 1:
+            delta = next(iter(deltas))
+            # A conflicting public outcome is decisive only when the learned
+            # translation would have produced a nonclipped interior successor.
+            inconsistent = any(
+                all(0 < before[i] + delta[i] < 8 for i in (0, 1))
+                and tuple(before[i] + delta[i] for i in (0, 1)) != after
+                for before, after in rows)
+            if inconsistent:
+                status = 'CONTRADICTION'
+                delta = None
+            else:
+                candidate = tuple(state[i] + delta[i] for i in (0, 1))
+                # Never extrapolate a clipping or boundary law from an interior
+                # displacement. The grid's actual transition law is unknown.
+                if (all(0 < coordinate < 8 for coordinate in state)
+                        and all(0 < coordinate < 8 for coordinate in candidate)):
+                    status = 'HYPOTHESIS'
+                    predicted = list(candidate)
+        return {
+            'source_mode': SOURCE_MODE,
+            'hypothesis_family': 'observed_interior_translation_dev',
+            'status': status,
+            'support': len(informative),
+            'observations_in_episode_action': len(rows),
+            'learned_delta': list(delta) if delta is not None else None,
+            'predicted_next_state': predicted,
+        }
+
     def public_plan(self, state, *, episode_id):
         """Same-episode coverage proposal only, NOT action-role learning.
 

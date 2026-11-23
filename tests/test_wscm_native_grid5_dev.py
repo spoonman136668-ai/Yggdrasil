@@ -118,6 +118,28 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         self.assertEqual(cold.grid5_fixture_role_forecast(
             [4,4], 0, episode_id='b'*64)['status'], 'ABSTAIN')
 
+    def test_learned_delta_native_optional_cold(self):
+        n = NativeEpisodeExperience()
+        n = n.observe_grid5_fixture(*grid5_fixture(
+            step=0, action=0, before=(0, 0), after=(1, 0)))
+        self.assertEqual(n.grid5_fixture_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64)['status'], 'ABSTAIN')
+        n = n.observe_grid5_fixture(*grid5_fixture(
+            step=1, action=1, before=(1, 0), after=(1, 1), sid=2))
+        n = n.observe_grid5_fixture(*grid5_fixture(
+            step=2, action=0, before=(1, 1), after=(2, 1), sid=3))
+        learned = n.grid5_fixture_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64)
+        self.assertEqual(learned['status'], 'HYPOTHESIS')
+        self.assertEqual(learned['predicted_next_state'], [5, 4])
+        self.assertIsNone(n.grid5_fixture_forecast(
+            [4, 4], 0, episode_id='a'*64))
+        checkpoint = n.checkpoint()
+        cold = NativeEpisodeExperience.restore(checkpoint, digest(checkpoint))
+        self.assertEqual(cold.checkpoint(), checkpoint)
+        self.assertEqual(cold.grid5_fixture_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64), learned)
+
     def test_legacy_v7_and_grid5_v8_coexist_without_alias(self):
         base = NativeEpisodeExperience()
         legacy = base.observe_external_fixture(*legacy_fixture())
@@ -163,6 +185,8 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         self.assertEqual(model.grid5_fixture_forecast([0,0], 0, episode_id='a'*64),[1,0])
         self.assertEqual(model.grid5_fixture_role_forecast(
             [4,4], 0, episode_id='a'*64)['predicted_next_state'], [5,4])
+        self.assertEqual(model.grid5_fixture_learned_delta_forecast(
+            [4,4], 0, episode_id='a'*64)['status'], 'ABSTAIN')
         saved = model.checkpoint()
         cold = NativeCumulativeLearner.restore(saved, digest(saved))
         self.assertEqual(cold.checkpoint(), saved)
@@ -187,6 +211,8 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         self.assertEqual(restored.grid5_fixture_forecast([1,0], 1, episode_id='a'*64),[1,1])
         self.assertEqual(restored.grid5_fixture_role_forecast(
             [4,4], 0, episode_id='a'*64)['predicted_next_state'], [5,4])
+        self.assertEqual(restored.grid5_fixture_learned_delta_forecast(
+            [4,4], 1, episode_id='a'*64)['predicted_next_state'], [4,5])
         self.assertEqual(tuple(h.steps for h in restored._heads),original_head_steps)
 
 

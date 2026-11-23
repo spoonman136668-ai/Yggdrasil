@@ -150,6 +150,64 @@ class NativeGrid5Tests(unittest.TestCase):
         self.assertEqual(result['status'], 'ENTAILED')
         self.assertEqual(result['predicted_next_state'], [4,4])
 
+    def test_learned_delta_requires_nonclipped_witness(self):
+        m = NativeGrid5Evidence()
+        none = m.public_learned_delta_forecast([4, 4], 0, episode_id='a'*64)
+        self.assertEqual(none['status'], 'ABSTAIN')
+        m = m.observe_public_receipt(*receipt(0, act=0, after=(1, 0)))
+        # Source-known 120-map control can infer from a clipped-corner move,
+        # but the learned-delta mechanism does NOT get that physics oracle.
+        self.assertEqual(m.public_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64)['status'], 'ABSTAIN')
+        self.assertEqual(m.public_role_forecast(
+            [4, 4], 0, episode_id='a'*64)['predicted_next_state'], [5, 4])
+        self.assertIsNone(m.public_forecast([4, 4], 0, episode_id='a'*64))
+
+    def test_learned_delta_witness_to_unseen_interior_and_cold(self):
+        m = NativeGrid5Evidence()
+        m = m.observe_public_receipt(*receipt(0, act=0, after=(1, 0)))
+        m = m.observe_public_receipt(*receipt(
+            1, act=1, before=(1, 0), after=(1, 1)))
+        m = m.observe_public_receipt(*receipt(
+            2, act=0, before=(1, 1), after=(2, 1)))
+        inferred = m.public_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64)
+        self.assertEqual(inferred['status'], 'HYPOTHESIS')
+        self.assertEqual(inferred['learned_delta'], [1, 0])
+        self.assertEqual(inferred['support'], 1)
+        self.assertEqual(inferred['predicted_next_state'], [5, 4])
+        self.assertEqual(m.public_learned_delta_forecast(
+            [4, 4], 0, episode_id='b'*64)['status'], 'ABSTAIN')
+        self.assertIsNone(m.public_forecast([4, 4], 0, episode_id='a'*64))
+        self.assertEqual(persist_and_restore(m).public_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64), inferred)
+        self.assertEqual(m.public_learned_delta_forecast(
+            [7, 4], 0, episode_id='a'*64)['status'], 'ABSTAIN')
+        self.assertEqual(m.public_learned_delta_forecast(
+            [0, 4], 0, episode_id='a'*64)['status'], 'ABSTAIN')
+
+    def test_learned_delta_conflicting_interior_effect_abstains(self):
+        m = NativeGrid5Evidence()
+        for step, action, before, after in (
+            (0, 0, (0, 0), (1, 0)),
+            (1, 1, (1, 0), (1, 1)),
+            (2, 0, (1, 1), (2, 1)),
+            (3, 0, (2, 1), (2, 2)),
+        ):
+            m = m.observe_public_receipt(*receipt(
+                step, act=action, before=before, after=after))
+        out = m.public_learned_delta_forecast([4, 4], 0, episode_id='a'*64)
+        self.assertEqual(out['status'], 'CONTRADICTION')
+        self.assertIsNone(out['predicted_next_state'])
+        self.assertIsNone(out['learned_delta'])
+        self.assertEqual(persist_and_restore(m).public_learned_delta_forecast(
+            [4, 4], 0, episode_id='a'*64), out)
+        for action in (True, -1, 5, '0'):
+            with self.assertRaises(ValueError):
+                m.public_learned_delta_forecast([4, 4], action, episode_id='a'*64)
+        with self.assertRaises(ValueError):
+            m.public_learned_delta_forecast([4, 4], 0, episode_id=None)
+
     def test_source_mode_not_original(self):
         r=receipt(0)
         data=json.loads(r[1]);data['source_mode']='owner_real_source'

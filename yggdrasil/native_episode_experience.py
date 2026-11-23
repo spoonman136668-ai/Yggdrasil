@@ -169,6 +169,13 @@ class NativeEpisodeExperience:
         return current.public_role_forecast(
             public_state, public_action, episode_id=episode_id)
 
+    def grid5_fixture_learned_delta_forecast(
+            self, public_state, public_action, *, episode_id):
+        """DEV-only witness-derived operator, not default planning."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_learned_delta_forecast(
+            public_state, public_action, episode_id=episode_id)
+
     def observe_external_fixture(self, public_request, raw, expected_sha256):
         """Stage an opaque public action witness in THIS learner's durable state.
 

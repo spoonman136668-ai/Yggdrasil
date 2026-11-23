@@ -268,6 +268,11 @@ class NativeCumulativeLearner:
         return self._episode_reader().grid5_fixture_role_forecast(
             public_state, public_action, episode_id=episode_id)
 
+    def grid5_fixture_learned_delta_forecast(
+            self, public_state, public_action, *, episode_id):
+        return self._episode_reader().grid5_fixture_learned_delta_forecast(
+            public_state, public_action, episode_id=episode_id)
+
     def observe_external_fixture(self, public_request, raw, expected_sha256):
         """Admit bounded fixture-only evidence into existing cumulative memory.
 
