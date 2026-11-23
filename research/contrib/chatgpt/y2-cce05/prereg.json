@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE05",
+  "contributor": "chatgpt-connector",
+  "contribution_class": "successor-proposal",
+  "question": "Can an action-conditioned population of bounded predictive suffix cells grow and retract using only public evidence, improving unseen intervention-sequence predictions over fully trained history-table and four-state HMM controls without spurious growth on action-independent observations?",
+  "hypothesis": "Conditional prediction-error gates will recruit only useful public action/observation-history cells, retain exact cold predictions and beat fully trained controls on an unfamiliar action-sequence regime; rejection against a strong four-state learned HMM counts as negative.",
+  "exact_parent_sha": "f0d6b5e612ae7c403e7b798c0d69eaaf38387194",
+  "predecessor_evidence": [
+    "CCE01 frozen MIXED; prereg 985a402c69360556b7eaa2c2691c9c72d4b1d787",
+    "CCE02 matched best full-table control; prereg d32644ef28d120e80351f24d0ace59f666996cde",
+    "CCE03 near-perfect but below strongest-control gain; prereg a5075e14068ace2d1e7de1b0b9b644ea3cf84a40",
+    "CCE04 hidden-state trial worse than strong HMM (0.22597565 vs 0.22402665); prereg 8ac9dbebaba21b50a27f3bbbc64870656cf831bd",
+    "G29 code atlas CI repeatedly fails on new indexed-file set; NOT science"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/y2-cce05/prereg.json",
+    "research/contrib/chatgpt/y2-cce05/cce05.py",
+    "research/contrib/chatgpt/y2-cce05/test_cce05.py",
+    "research/contrib/chatgpt/y2-cce05/run_cce05.py",
+    "research/contrib/chatgpt/y2-cce05/result.json",
+    "research/contrib/chatgpt/y2-cce05/provenance.json",
+    "research/contrib/chatgpt/y2-cce05/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "positive aliased causal world",
+      "sha256": null,
+      "source": "Synthetic 2-bit hidden state (u,v), never supplied to learner. Observation o=u XOR v corrupted with independent p=0.08. Public actions in {0,1,2}: 0 flips u, 1 flips v, 2 flips u iff v=1 (conditional intervention). World state is unchanged between episodes. Conditional intervention makes different latent states potentially distinguishable by sequences, not single observations."
+    },
+    {
+      "name": "action-null control",
+      "sha256": null,
+      "source": "All public observation bits are iid Bernoulli(0.5), independent of history/actions; no hidden causal dynamics or intervention value."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      31,
+      59,
+      101,
+      149,
+      211
+    ],
+    "split": "Per seed/world 192 independent training episodes of length 24 actions, and 80 evaluation episodes of length 30 actions. Training action sequence sampled uniformly conditional on rejecting any three-action substring 2,1,2; eval action string generated from independent random.Random(seed+500000) with prefixes at least one 2,1,2 by explicit insertion at positions 7,8,9. Seed controls all environment randomness per world. No eval update or reuse in split selection.",
+    "ordering": "All learners receive exactly the same training public (obs0, action, obs1...) episodes and histories, and condition online on public eval prefixes only. Candidate predicts each next public observation using a fixed-length history of (previous action, observation) pairs (depth<=3), then observes the true next observation and updates training counters only. No hidden generator states/actions from the future supplied to the models.",
+    "data_budget": "2 worlds * 5 seeds * (192*24 train + 80*30 eval) = 70080 transitions, 46080 training transitions and 24000 heldout next-observation Brier evaluations; one frozen primary execution after code/test freeze.",
+    "compute_budget": "Python 3 standard library local CPU. CCE bounded depth<=3, max 64 accepted contexts per action; all candidate sub-contexts scored prequentially without updating evaluation. Baselines: full depth3 suffix table with same training events, depth1 table, 4-state action-dependent HMM fitted using forward-backward EM for 12 iterations and 2 fixed deterministic initializations (no truth initialization), iid 0.5. Log model evaluations, memory bytes and timings; do not claim equal compute.",
+    "capacity": "Per public action at most 64 admitted suffix prediction cells; max structural memory 192, fixed maximum context depth3, seeded posterior Beta(1,1), with an evidence-gated predicate for cell activation. No hidden state dimensionality, object IDs or transition parameters fed to candidate. Model capacity and depth are still manually bounded.",
+    "selection_rule": "For each depth k=1..3, context can activate if n>=12, its cumulative prequential Brier improvement against its suffix parent predictor >= max(1.5, 0.02*n), and its posterior differs from parent by at least 0.08; no more than 64 per action, choose largest gain then lexical context on capacity overflow. Contexts lacking qualifying parents may still be considered; evaluation chooses deepest qualifying suffix else pooled action predictor. No threshold tuning after outcome.",
+    "evaluator": "One-step next-observation Brier over all heldout evaluation transitions; evaluate positive and null separately. Compare against best trained of 4-state action-HMM, full depth3 suffix table, depth1 suffix, and IID. Count nonempty action-null candidate contexts, exact predictions across all evaluated public prefixes after checkpoint, selected cell count, resident checkpoint bytes and runtime. Track which eval sequences include withheld 212 and number of OOD-scored transitions.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Fully trained 4-state action-conditioned discrete HMM: forward-backward Baum-Welch 12 EM iterations, two deterministic public-only random initializations; pick higher TRAIN observation likelihood; no hidden source parameters or dimensions supplied as correct-answer truth. Strong structured control.",
+    "Fully trained unconditional longest-suffix depth3 table using same public histories, no action oracle",
+    "Trained depth1 action-conditioned suffix memory, same public histories",
+    "Uniform IID 0.5 predictor",
+    "Action-null negative control: reject irrelevant structural growth",
+    "Cold checkpoint exact result continuity and tampered/semantically forged state rejection",
+    "Ground truth generator observed only by evaluator, not prediction models"
+  ],
+  "metrics": [
+    "Heldout positive-world Brier per seed and strongest-control margin",
+    "Null-world admitted context cell counts and null heldout Brier",
+    "Exact cold prediction equality on all eval histories",
+    "Action-sequence 212 withheld from train verified and included in eval",
+    "Model hypothesis/cell count, checkpoint bytes, training and inference duration diagnostic",
+    "Per-seed all baselines, strongest-control identity, negative findings"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL only if candidate mean positive heldout Brier beats min(mean trained 4-state HMM, mean full depth3, mean depth1, 0.25) by >=0.010 absolute, all 5 action-null seeds have <=3 admitted cells, 5/5 cold prediction equality, and eval includes >=50 withheld 212 substrings. Not SCIENTIFIC_PASS or proof of latent variable discovery.",
+    "mixed": "Some learned action/history specialization or comparator benefit but one or more support gates missed; preserve all negative controls and full strong baseline.",
+    "negative": "No benefit versus strongest control, substantial null spurious growth, checkpoint mismatch, or OOD degradation; do not revise primary threshold.",
+    "invalid": "Exact parent/candidate tree/provenance drift; hidden state or oracle leaked; the eval action split violated; changed frozen budgets, model grid, thresholds or seeds post-first-use; heldout used for selection; unofficial runner/acceptance."
+  },
+  "prohibited_after_primary_run": [
+    "post-result threshold/data/code changes under same experiment ID",
+    "replay uncertain primary trial",
+    "weaker substituted HMM baseline",
+    "extra eval seeds or parameter search",
+    "hidden source state used by model",
+    "merges, runner dispatch, CI override, paid API"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Frozen synthetic development research only; no native first-use/accepted-state authority. Explicitly does NOT claim truly autonomous latent cardinality discovery: predictive-context cells are not hidden causal entities."
+}
