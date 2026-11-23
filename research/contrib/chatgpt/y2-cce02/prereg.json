@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE02",
+  "contributor": "chatgpt-connector",
+  "contribution_class": "successor-proposal",
+  "question": "Can an online bounded contract ecology discover which action reveals a previously unobserved causal regime, then act on the resulting information and retain the discovered intervention policy across cold restarts?",
+  "hypothesis": "From identically distributed public training trajectories, an intervention-value-gated population of four public signature cells will prefer the diagnostic probe in 4/5 positive worlds, substantially outperform random probing, remain competitive with an equally informed full-tabular action-conditioned control, abstain from asserting a useful probe in null worlds, and exactly recover after cold restart.",
+  "exact_parent_sha": "4092b3ce41438f948056b12c6f4ccdadcd9b3d1d",
+  "preregistration_parent": "Original research parent main 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9; CCE01 result frozen MIXED; CCE02 is a new experiment ID. No change to or replay of CCE01.",
+  "predecessor_evidence": [
+    "Y2-CCE01 prereg 985a402c69360556b7eaa2c2691c9c72d4b1d787",
+    "Y2-CCE01 candidate head and recorded result 4092b3ce41438f948056b12c6f4ccdadcd9b3d1d",
+    "CI run 45155997856 atlas-source-indexed failure; no native scientific acceptance"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/y2-cce02/prereg.json",
+    "research/contrib/chatgpt/y2-cce02/README.md",
+    "research/contrib/chatgpt/y2-cce02/cce02.py",
+    "research/contrib/chatgpt/y2-cce02/test_cce02.py",
+    "research/contrib/chatgpt/y2-cce02/run_cce02.py",
+    "research/contrib/chatgpt/y2-cce02/result.json",
+    "research/contrib/chatgpt/y2-cce02/provenance.json"
+  ],
+  "inputs": [
+    {
+      "name": "diagnostic synthetic world",
+      "sha256": null,
+      "source": "Each episode latent h uniformly random, hidden from all learners; public intervention probe in {0,1}; diagnostic probe 0 yields observation z=h with probability 0.9, otherwise flipped; probe 1 produces iid fair random z; public terminal action t in {0,1}; public reward = int(t==h). Hidden h and world type never passed into learner."
+    },
+    {
+      "name": "null synthetic world",
+      "sha256": null,
+      "source": "Same latent hidden h and terminal reward, but both probes yield fair random z independent of h. Negative test for spurious identity/probe claims."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      11,
+      23,
+      47,
+      89,
+      167
+    ],
+    "split": "Each world/seed has 512 open-loop randomized training episodes with independent fair probe choice and terminal action; 256 frozen evaluation episodes. Eval RNG random.Random(seed+200000). Training uses random.Random(seed) with exact order h, probe, sensor noise, terminal action, reward. Evaluation uses one latent h and independent sensor noise streams per probe choice per episode, without evaluator update.",
+    "ordering": "Before public reward observed, learner predicts using current pooled and conditional signature counters; update only after public terminal outcome. Selection or freezing uses training-only prequential evidence. No hidden regime label or generator rule is provided to learner; world type remains outside learner.",
+    "data_budget": "2 worlds x 5 seeds x (512 training + 256 eval) = 7680 synthetic episodes; 5120 permitted learner updates; one preregistered primary run, no post-score reruns.",
+    "compute_budget": "Python stdlib single process; at most 2 probe arms x 2 observations x 2 terminal actions x 2 reward bins, no stochastic models, external APIs, search, schedule or runner dispatch.",
+    "capacity": "Exactly 4 conditional signature cells (probe, observation), 2 terminal actions per cell, one pooled terminal-action baseline; no hidden-world identity labels; no growth beyond fixed slots; beta(1,1) posterior reward probabilities and beta(1,1) probe-signal predictive.",
+    "algorithm": "For each probe compute predicted z frequencies and optimal terminal reward from that probe's signature cells. A probe is admitted only if all its (z,t) counts >= 12, its expected terminal reward is >= pooled-best +0.08, and its prequential reward-Brier improvement over pooled on that probe's episodes >= max(2,0.01*N_probe). Prefer greatest evidence-qualified expected value, ties lower probe number; otherwise abstain and use pooled terminal choice. One frozen admission after 512 training episodes. Null negative must avoid positive intervention-identity claims.",
+    "evaluator": "Mean heldout terminal success rate for gated CCE02, uniform-probe full-table policy, full-table best-fixed-probe oracle-selected-from-TRAINING (not hidden generator), pooled memoryless policy. Uniform probe evaluation RNG seeded independently from world RNG. Evaluate all matched open-loop training counts; no hidden true h access to candidate or controls. Also evaluate null false admissions, exact checkpoint continuity over probe/observation/terminal predictions, active cell counts and serialized bytes.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Full-tabular best-fixed-probe control selected from its own training reward estimates, same observations and capacity budget",
+    "Uniform-probe full-tabular control with identical training information and independently seeded action RNG",
+    "Pooled terminal-action reward predictor ignoring probe signal",
+    "Ablate value/evidence admission: remain pooled despite interventions",
+    "Null regime environment, all probes uninformative",
+    "Strong oracle knowing hidden regime (upper bound only, NOT a matched control)",
+    "Checksum/semantic checkpoint corruption and malformed public-event negative unit tests"
+  ],
+  "metrics": [
+    "Per-seed diagnostic-world mean terminal reward and controls",
+    "Number of diagnostic intervention selections (probe0), source-free identity claim rate in null world",
+    "Cold snapshot prediction equality across public probe,z,t combinations",
+    "Training prequential reward Brier, data/update counts, resident bytes",
+    "Difference versus strongest trained full-tabular best-fixed-probe control and uniform probe",
+    "Per-seed outcome distribution and confidence intervals over preregistered seeds"
+  ],
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL only when >=4/5 positive seeds choose probe 0, 0/5 null seeds admit an informative probe, average CCE02 heldout reward >= uniform-full-table +0.08, average CCE02 reward >= best-trained-full-table-fixed-probe -0.025, and 5/5 exact cold state roundtrips. This never establishes AGI or native SCIENTIFIC_PASS.",
+    "mixed": "Any partial correct identity signal without full supported criteria; report every negative metric and baseline. If best trained full-table wins beyond margin, classify MIXED or NEGATIVE despite CCE outperforming random.",
+    "negative": "Protocol-valid execution with no meaningful advantage or systematic false identity claims. Preserve frozen failure; do not retune thresholds, seed list or task.",
+    "invalid": "Violation of public-only channel, hidden h/world leak into learner, train/eval contamination, altered budgets or split, changed scores after first-use, missing candidate/blobs, hash-unsupported test, missing or mismatched provenance or any qualification boundary failure."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "repeat primary run with new seeds, new metrics or post-hoc policy",
+    "unbudgeted model/API calls",
+    "target identity labels delivered to learner",
+    "claimed scientific gain from synthetic pass",
+    "override of generated atlas check"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit this protocol before implementation/results. Development-only with isolated local testing permitted; no native first-use or accepted research promotion. CCE01 failed CI atlas check and is not silently repaired."
+}
