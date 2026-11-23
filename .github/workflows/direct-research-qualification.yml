@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - research/autonomy-yggdrasil-active
+      - research/wscm-source-preflight-20261123
     paths:
       - 'research/applications/plane/**'
       - '.yggdrasil/**'
@@ -31,7 +32,7 @@ jobs:
       - name: Checkout exact active branch
         uses: actions/checkout@v4
         with:
-          ref: research/autonomy-yggdrasil-active
+          ref: ${{ github.ref }}
           fetch-depth: 0
           persist-credentials: true
           clean: true
@@ -41,7 +42,8 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch=$env:GITHUB_REF_NAME
+          if(@('research/autonomy-yggdrasil-active','research/wscm-source-preflight-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
           $QPath='.yggdrasil/qualification-request.json'
           $RPath='.yggdrasil/isolated-run.json'
           foreach($P in @($QPath,$RPath)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "REQUEST_MISSING path=$P"}}
@@ -74,7 +76,7 @@ jobs:
           if([string]$Prereg.exact_parent_sha-cne$Baseline){throw 'PREREG_PARENT_MISMATCH'}
           if([string]$Prereg.north_star_sha256-cne'57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c'){throw 'PREREG_NORTH_STAR_IDENTITY_MISMATCH'}
 
-          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath)
+          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath,'.github/workflows/direct-research-qualification.yml')
           $AllFiles=@()
           foreach($C in $Commits){$AllFiles+=@(git diff-tree --no-commit-id --name-only -r $C|Where-Object{$_ -and $_.Trim()})}
           foreach($F in $AllFiles){if($Allowed-notcontains[string]$F){throw "CHANGE_OUTSIDE_FROZEN_PACKAGE path=$F"}}
@@ -147,7 +149,8 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch=$env:GITHUB_REF_NAME
+          if(@('research/autonomy-yggdrasil-active','research/wscm-source-preflight-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
           $Head='${{ steps.frozen.outputs.head }}'
           git fetch origin $Branch
           if($LASTEXITCODE-ne0){throw 'REMOTE_REFRESH_FAILED'}
