@@ -74,9 +74,23 @@ def _terminal_brier(policy, terminal):
     return total / n
 
 
-def _episode(policy, env, *, steps, budget, terminal):
+def _paired_noise_receipt(env):
+    """Caller-reported exogenous-noise commitment, never a custody proof.
+
+    A compliant evaluator draws a fixed, action-independent random tape for
+    each episode seed and exposes its digest to the *evaluator*, not the policy.
+    """
+    digest = getattr(env, "paired_noise_digest", None)
+    if (type(digest) is not str or len(digest) != 64 or
+            any(c not in "0123456789abcdef" for c in digest)):
+        raise ValueError("CCE06_PAIRED_NOISE_RECEIPT_REQUIRED")
+    return digest
+
+
+def _episode(policy, env, *, steps, budget, terminal, paired_noise_required=False):
     obs = env.reset()
     code(obs)
+    noise_receipt = _paired_noise_receipt(env) if paired_noise_required else None
     policy.start(obs[:], paid_budget=budget)
     actions = []
     for t in range(steps):
@@ -95,12 +109,16 @@ def _episode(policy, env, *, steps, budget, terminal):
     if policy.pending is not None or policy.actions_taken != steps or \
             policy.spent != sum(COST[a] for a in actions) or policy.spent > budget:
         raise ValueError("CCE06_POLICY_COST_OR_WITNESS_MISMATCH")
+    if paired_noise_required and _paired_noise_receipt(env) != noise_receipt:
+        raise ValueError("CCE06_NOISE_RECEIPT_CHANGED")
     return dict(paid_actions=policy.spent, actions=tuple(actions),
-                terminal_brier=_terminal_brier(policy, terminal))
+                terminal_brier=_terminal_brier(policy, terminal),
+                paired_noise_digest=noise_receipt)
 
 
 def run_dev_frontier(train, terminal, env_factory, *, specs, budgets,
-                     seeds=(997, 998, 999), steps=40):
+                     seeds=(997, 998, 999), steps=40,
+                     paired_noise_required=False):
     """Development-only descriptive frontier, with no scientific GO authority.
 
     The caller must independently prove TRAIN/terminal/family custody before
@@ -114,6 +132,7 @@ def run_dev_frontier(train, terminal, env_factory, *, specs, budgets,
             type(budgets) is not tuple or not budgets or type(seeds) is not tuple or \
             not seeds or type(steps) is not int or not 1 <= steps <= 512 or \
             len(seeds) > 16 or len(set(seeds)) != len(seeds) or \
+            type(paired_noise_required) is not bool or \
             any(type(seed) is not int or seed < 0 for seed in seeds) or \
             any(type(b) is not int or not 0 <= b <= steps for b in budgets) or \
             len(set(budgets)) != len(budgets):
@@ -126,6 +145,7 @@ def run_dev_frontier(train, terminal, env_factory, *, specs, budgets,
     if len(set(s.name for s in specs)) != len(specs):
         raise ValueError("CCE06_DUPLICATE_POLICY_NAME")
     results = []
+    seen_noise = {}
     for spec in specs:
         # Fail closed on invalid configuration even when no costed probes remain.
         _fresh_policy(spec, train)
@@ -136,8 +156,18 @@ def run_dev_frontier(train, terminal, env_factory, *, specs, budgets,
                 # evaluation episodes, except for the shared TRAIN baseline.
                 policy = _fresh_policy(spec, train)
                 env = env_factory(seed)
-                rows.append(_episode(policy, env, steps=steps, budget=budget,
-                                     terminal=terminal))
+                row = _episode(policy, env, steps=steps, budget=budget,
+                               terminal=terminal,
+                               paired_noise_required=paired_noise_required)
+                if paired_noise_required:
+                    digest = row['paired_noise_digest']
+                    if seed in seen_noise and seen_noise[seed] != digest:
+                        raise ValueError("CCE06_UNPAIRED_EXOGENOUS_NOISE")
+                    if seed not in seen_noise:
+                        if digest in seen_noise.values():
+                            raise ValueError("CCE06_NONINDEPENDENT_NOISE_SEEDS")
+                        seen_noise[seed] = digest
+                rows.append(row)
             spent = sum(row['paid_actions'] for row in rows) / len(rows)
             brier = sum(row['terminal_brier'] for row in rows) / len(rows)
             if not math.isfinite(brier) or not 0 <= brier <= 1 or spent > budget:
@@ -158,4 +188,60 @@ def run_dev_frontier(train, terminal, env_factory, *, specs, budgets,
                 terminal_events=sum(len(e) for e in terminal),
                 train_events=sum(len(e) for e in train),
                 results=tuple(results), nondominated=frontier,
+                paired_noise_receipts_matched=(paired_noise_required and
+                                               len(seen_noise) == len(seeds)),
+                paired_noise_custody_verified=False,
                 custody_verified=False, gain_verified=False)
+
+
+def matched_target_report(frontier, *, target_brier, reference_policy,
+                          require_each_seed=True):
+    """DESCRIPTIVE DEV-only minimum probes at a caller-frozen accuracy target.
+
+    Never optimize the threshold from the returned frontier. No lower-bound
+    confidence interval, resource matching or independent-custodian claim.
+    If reference cost is zero, percent saving is undefined, not a 100% gain.
+    """
+    if (type(frontier) is not dict or
+            frontier.get('status') != 'DEV_FIXTURE_ONLY_SCIENCE_UNVERIFIED' or
+            type(target_brier) not in (int, float) or
+            not math.isfinite(target_brier) or not 0 <= target_brier <= 1 or
+            type(reference_policy) is not str or not reference_policy or
+            type(require_each_seed) is not bool):
+        raise ValueError('CCE06_UNFROZEN_OR_INVALID_TARGET')
+    rows = frontier.get('results')
+    if type(rows) not in (tuple, list) or not rows:
+        raise ValueError('CCE06_EMPTY_POLICY_FRONTIER')
+    if not any(r['policy'] == reference_policy for r in rows):
+        raise ValueError('CCE06_MISSING_REFERENCE_POLICY')
+    feasible = {}
+    for r in rows:
+        per_seed = r['per_seed']
+        if (not per_seed or not math.isfinite(r['mean_terminal_brier']) or
+                not math.isfinite(r['mean_paid_actions'])):
+            raise ValueError('CCE06_INVALID_FRONTIER_RECEIPT')
+        eligible = all(x['terminal_brier'] <= target_brier for x in per_seed) \
+            if require_each_seed else r['mean_terminal_brier'] <= target_brier
+        if eligible:
+            old = feasible.get(r['policy'])
+            if old is None or (r['mean_paid_actions'], r['mean_terminal_brier'], r['budget']) < \
+                    (old['mean_paid_actions'], old['mean_terminal_brier'], old['budget']):
+                feasible[r['policy']] = r
+    reference = feasible.get(reference_policy)
+    if reference is None:
+        status = 'REFERENCE_TARGET_INFEASIBLE'
+    elif reference['mean_paid_actions'] == 0:
+        status = 'ZERO_COST_REFERENCE_NO_SAVING_CLAIM'
+    else:
+        status = 'DESCRIPTIVE_MATCHED_TARGET_ONLY'
+    savings = {}
+    for name, row in sorted(feasible.items()):
+        savings[name] = (None if reference is None or reference['mean_paid_actions'] == 0
+                         else (reference['mean_paid_actions'] - row['mean_paid_actions']) /
+                         reference['mean_paid_actions'])
+    return dict(status=status, target_brier=float(target_brier),
+                reference_policy=reference_policy,
+                require_each_seed=require_each_seed,
+                feasible_costs={k: v['mean_paid_actions'] for k,v in sorted(feasible.items())},
+                fractional_probe_savings=savings, scientific_gain_verified=False,
+                target_preregistered_and_custody_verified=False)
