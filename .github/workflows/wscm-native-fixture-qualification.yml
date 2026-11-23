@@ -16,8 +16,59 @@ env:
   OMP_NUM_THREADS: '1'
   MKL_NUM_THREADS: '1'
 jobs:
+  reanchor-g29:
+    if: "github.event_name == 'push' && github.event.head_commit.message == 'ci(wscm): reanchor generated G29 and qualify Grid5'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    outputs:
+      head: ${{ steps.seal.outputs.head }}
+    steps:
+      - name: Byte-stable source checkout
+        shell: bash
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Write exactly three generated G29 artifacts on the authorized draft PR branch
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/research/wscsm01-wake-sleep-protocol-20261121"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = "a2bcec8aea2c6268f9e589a744d017e797bfa74f"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/wscm-native-fixture-qualification.yml"
+          test "$(git rev-parse HEAD:yggdrasil/native_grid5_evidence.py)" = "198056465930d1c2c5f47d6dc8f70fb43754aa0c"
+          test "$(git rev-parse HEAD:tests/test_native_grid5_evidence_dev.py)" = "1452b93c8a6cded57ee56262b2b2814b0145fe24"
+          test "$(git rev-parse HEAD:tests/test_wscm_grid5_episode_scope_dev.py)" = "7085619c0386b06faa122d04a0a30ac41501e1b6"
+          test "$(git rev-parse HEAD:tests/test_wscm_native_grid5_dev.py)" = "4cc700de1625b14160802265c0a4654ab620a5ae"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          grep -Fx "SOURCE_COMMIT: $GITHUB_SHA" .ice/code-atlas.ice
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(wscm): regenerate G29 atlas from source $GITHUB_SHA"
+          python -B scripts/build_code_atlas.py --check-if-present
+          test -z "$(git status --porcelain)"
+          git push origin "HEAD:refs/heads/research/wscsm01-wake-sleep-protocol-20261121"
+          echo "head=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "WSCM_G29_ARTIFACT_COMMIT=$(git rev-parse HEAD)"
+          git rev-parse HEAD^{tree}
   native-fixture:
-    if: "startsWith(github.event.head_commit.message, 'ci(wscm): qualify reconciled Grid5')"
+    needs: reanchor-g29
+    if: "needs.reanchor-g29.result == 'success'"
+    env:
+      QUALIFIED_SHA: ${{ needs.reanchor-g29.outputs.head }}
+      G29_SOURCE_SHA: ${{ github.sha }}
     strategy:
       fail-fast: false
       matrix:
@@ -30,7 +81,7 @@ jobs:
         run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ needs.reanchor-g29.outputs.head }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -40,8 +91,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          echo "WSCM_CANDIDATE_SHA=$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$QUALIFIED_SHA"
+          test "$(git rev-parse HEAD^)" = "$G29_SOURCE_SHA"
+          echo "WSCM_CANDIDATE_SHA=$QUALIFIED_SHA"
+          echo "WSCM_SOURCE_SHA=$G29_SOURCE_SHA"
           git rev-parse HEAD^{tree}
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
@@ -49,12 +102,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python -B scripts/build_code_atlas.py --source-commit "$G29_SOURCE_SHA" --write
           grep -Fx "SOURCE_COMMIT: $GITHUB_SHA" .ice/code-atlas.ice
           cp .ice/code-atlas.json "$RUNNER_TEMP/wscm-code-atlas.json"
           cp .ice/code-atlas.html "$RUNNER_TEMP/wscm-code-atlas.html"
           cp .ice/code-atlas.ice "$RUNNER_TEMP/wscm-code-atlas.ice"
-          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          python -B scripts/build_code_atlas.py --source-commit "$G29_SOURCE_SHA" --write
           cmp .ice/code-atlas.json "$RUNNER_TEMP/wscm-code-atlas.json"
           cmp .ice/code-atlas.html "$RUNNER_TEMP/wscm-code-atlas.html"
           cmp .ice/code-atlas.ice "$RUNNER_TEMP/wscm-code-atlas.ice"
@@ -63,7 +116,7 @@ jobs:
           test -z "$(git status --porcelain)"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: WSCM-exact-G29-${{ runner.os }}-${{ github.sha }}
+          name: WSCM-exact-G29-${{ runner.os }}-${{ needs.reanchor-g29.outputs.head }}
           path: ${{ runner.temp }}/wscm-code-atlas.*
           if-no-files-found: error
           retention-days: 30
