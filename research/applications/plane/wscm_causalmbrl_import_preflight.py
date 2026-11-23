@@ -5,7 +5,7 @@ import argparse, ast, hashlib, importlib, importlib.metadata as metadata
 import json, os, shutil, subprocess, sys, tempfile, urllib.request
 from pathlib import Path
 
-EXPERIMENT = "WSCM-CAUSALMBRL-IMPORT-01"
+EXPERIMENT = "WSCM-CAUSALMBRL-IMPORT-01-R1"
 REPO = "dido1998/CausalMBRL"
 COMMIT = "2c595988b06b3d568fdde53213029e97841acb03"
 ROOT_URL = f"https://raw.githubusercontent.com/{REPO}/{COMMIT}/"
