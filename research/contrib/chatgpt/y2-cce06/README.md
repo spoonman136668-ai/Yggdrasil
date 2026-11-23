@@ -38,12 +38,21 @@ integration, or protected scientific result.
   actions is forbidden: the interactive cost/accuracy frontier remains
   unmeasured.
 
+- `calibration_recurrent.py` is a compact, fully trainable tanh recurrent
+  network using truncated backpropagation through time and Adam. `calibration_recurrent_selection.py`
+  selects capacity and learning rate on chronological public TRAIN-only data,
+  then refits on all TRAIN. Max epochs and non-activated early stop are
+  reported honestly; a fixture-only fit is **not** a fully qualified strongest
+  recurrent comparator or a causal-learning gain.
+
 ## Current gaps / strict stop
 
-- No CCE06 split/merge candidate or learned relations, and no fully trained
-  recurrent neural estimator. A learned-operator PSR comparator and public-only
-  Bayesian probe policy now exist, but neither establishes superiority over the
-  strongest controls. No interactive matched cost/accuracy Pareto frontier.
+- No CCE06 split/merge candidate or learned relations. A trainable
+  recurrent neural estimator, learned-operator PSR comparator and costed
+  Bayesian policy exist as isolated engineering controls, but have **not**
+  completed strong TRAIN-only source-custodied selection, cross-platform full
+  regression or qualified strongest-comparator comparison. No interactive
+  matched cost/accuracy Pareto frontier.
 - No committed independent-source lock, evaluator, data manifests or independent
   custody receipt. No CAL-EVAL materialized and **no primary first-use**.
 - No physical-world evidence, learning gain, accepted promotion, deployment or
@@ -62,6 +71,7 @@ integration, or protected scientific result.
 cd research/contrib/chatgpt/y2-cce06
 python -m unittest -v test_calibration test_calibration_fit_selection
 python -m unittest -v test_calibration_psr test_calibration_psr_selection test_calibration_active_bayes
+python -m unittest -v test_calibration_recurrent
 ```
 
 Fixture tests never use the frozen experimental seed list and cannot validate
