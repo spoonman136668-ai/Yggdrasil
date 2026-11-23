@@ -1,0 +1,65 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-CAUSALMBRL-IMPORT-01-R2",
+  "exact_parent_sha": "363c0ba35577248bca409008ab20aa96ac68572c",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "ENGINEERING_SOURCE_IMPORT_PREFLIGHT_ONLY",
+  "purpose": "Bounded retry after R1 confirmed exact source custody but pip's wheel-only policy rejected the upstream-compatible Gym package. Permit Gym's pure-Python source distribution to build only in the job-scoped temporary target; retain CPU-only PyTorch wheels and no persistent runner changes.",
+  "source": {
+    "repository": "dido1998/CausalMBRL",
+    "commit": "2c595988b06b3d568fdde53213029e97841acb03",
+    "tree": "ed34634ee075f84f70620e7045b8149d163f2a33",
+    "license": "MIT",
+    "files": {
+      "LICENSE": "cff393fe08ddf5fdd6fa4b8f509df9789bf54900",
+      "envs/__init__.py": "cbc2249a3893cf821aaf55464ec72871fe51569f",
+      "envs/chemistry_env_rl.py": "58af54d7e7e30f8abe059df3d68565845a5b2c51",
+      "cswm/utils.py": "0957887f49293195ebdc76f68ca6be3bc1a110da",
+      "cswm/models/__init__.py": "2a7cfd6149cf5f8a1b180e62008fa7fefc0f8001",
+      "cswm/models/losses.py": "fa7edc79220e05eec641df1928f13e8364d1abf8"
+    }
+  },
+  "runtime": {
+    "python": "3.12.10",
+    "dependency_target": "RUNNER_TEMP only; parent removes after duplicate runs",
+    "packages": {
+      "numpy": "1.26.4",
+      "torch": "2.5.1+cpu",
+      "torchvision": "0.20.1+cpu",
+      "gym": "0.26.2",
+      "matplotlib": "3.9.4",
+      "Pillow": "11.0.0",
+      "scikit-image": "0.24.0",
+      "h5py": "3.12.1",
+      "tqdm": "4.67.1"
+    },
+    "install_policy": "wheel packages preferred; allow pure-Python Gym source build in RUNNER_TEMP only; pip cache also in RUNNER_TEMP and removed",
+    "note": "Modern temporary compatibility set for import-only checking; not the upstream Python 3.7 lock or full runtime compatibility."
+  },
+  "constraints": {
+    "runner": "existing Yggdrasil Windows research-only runner",
+    "environment_construction": false,
+    "reset_calls": 0,
+    "step_calls": 0,
+    "interventions": 0,
+    "source_actions": 0,
+    "model_fits": 0,
+    "learner_state_mutation": false,
+    "source_cohort_first_use": false,
+    "source_first_use_authorization_used": false,
+    "persistent_runner_changes": 0,
+    "fake_dependency_stubs": false,
+    "source_api_shims": false
+  },
+  "acceptance": {
+    "all_six_source_blobs_and_license_match": true,
+    "pinned_import_dependencies_importable": true,
+    "original_ColorChangingRL_imports": true,
+    "signatures_inspected_without_instantiation": true,
+    "hidden_information_boundary_reported": true,
+    "step_horizon_and_seed_limits_reported": true,
+    "source_world_instantiated": false,
+    "source_actions": 0,
+    "scientific_gain_verified": false
+  }
+}
