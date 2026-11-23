@@ -43,7 +43,11 @@ jobs:
           set -euo pipefail
           test "$GITHUB_REF" = "refs/heads/research/wscsm01-wake-sleep-protocol-20261121"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = "27ab1f79b0448f9e1be714f2d1334b6d32eaa59b"
+          # Frozen source: do not qualify arbitrary subsequent code changes.
+          FROZEN_SOURCE_SHA="5b348685771f00eda9952ab49b4c7bf6b707728b"
+          test "$(git rev-parse "$FROZEN_SOURCE_SHA^{tree}")" = "3079eb48191f720fc9e5898abc8525b003551be1"
+          git merge-base --is-ancestor "$FROZEN_SOURCE_SHA" "$GITHUB_SHA"
+          test "$(git diff --name-only "$FROZEN_SOURCE_SHA" "$GITHUB_SHA")" = ".github/workflows/wscm-native-fixture-qualification.yml"
           test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/wscm-native-fixture-qualification.yml"
           test "$(git rev-parse HEAD:yggdrasil/native_grid5_evidence.py)" = "e743a02d194e2e76c6a689268d376bb3d2b4880e"
           test "$(git rev-parse HEAD:tests/test_native_grid5_evidence_dev.py)" = "2e358daaaeec71207a1c58b35f02e9f2e29c22c9"
@@ -55,6 +59,16 @@ jobs:
           test "$(git rev-parse HEAD:yggdrasil/native_cumulative_learner.py)" = "1a1ea559de730c7aa230548d04b893ba61f030b4"
           test "$(git rev-parse HEAD:yggdrasil/native_causal_amalgam.py)" = "cdf0ac676ea231bd780dbe63346bd50a59ced55f"
           test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/prereg.json)" = "e971a574113bcc5dd6e2e5b57d2556e10a1aea13"
+          # Frozen opt-in WSCM implementation, focused tests and G29 builder.
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/conditional_rule_dev.py)" = "f1abe0f883019478730409ab1e917b6ed4995f13"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/evidence_gate_dev.py)" = "71bd54a0b975f1ad4d46cacaefa8ebfd2b186f5d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/discrimination_preflight_dev.py)" = "d3fc4d191fd2b620adeabd4a2e8ab6c978b4d93d"
+          test "$(git rev-parse HEAD:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/native_version_space_dev.py)" = "37c12c98fd9ba13b937feed953efcd3f09438ca4"
+          test "$(git rev-parse HEAD:tests/test_wscm_grid5_conditional_native_dev.py)" = "a5feb10136027a23c1f30157af6513aa78552fc9"
+          test "$(git rev-parse HEAD:tests/test_wscm_grid5_corroboration_dev.py)" = "48e9d926d9b12d0252469eb5409534b9d5608198"
+          test "$(git rev-parse HEAD:tests/test_wscm_grid5_discrimination_preflight_dev.py)" = "1e4235a2a6046be8ed2926e0b44d4e12e3275d60"
+          test "$(git rev-parse HEAD:tests/test_wscm_grid5_version_space_dev.py)" = "7adb53e547e81c8ff6248e653452e31eee029c48"
           test -z "$(git status --porcelain)"
           python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
           grep -Fx "SOURCE_COMMIT: $GITHUB_SHA" .ice/code-atlas.ice
@@ -99,6 +113,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$QUALIFIED_SHA"
           test "$(git rev-parse HEAD^)" = "$G29_SOURCE_SHA"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD | LC_ALL=C sort)" = "$(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)"
           echo "WSCM_CANDIDATE_SHA=$QUALIFIED_SHA"
           echo "WSCM_SOURCE_SHA=$G29_SOURCE_SHA"
           git rev-parse HEAD^{tree}
@@ -130,9 +145,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in test_wscm_transfer02_fixture_plan.py test_native_episode_external_fixture_envelope.py test_native_external_action_identity.py test_native_grid5_evidence_dev.py test_wscm_grid5_episode_scope_dev.py test_wscm_native_grid5_dev.py; do
+          for suite in test_wscm_transfer02_fixture_plan.py test_native_episode_external_fixture_envelope.py test_native_external_action_identity.py test_native_grid5_evidence_dev.py test_wscm_grid5_episode_scope_dev.py test_wscm_native_grid5_dev.py test_wscm_grid5_conditional_native_dev.py test_wscm_grid5_corroboration_dev.py test_wscm_grid5_discrimination_preflight_dev.py test_wscm_grid5_version_space_dev.py test_wscm_grid5_learned_delta_dev.py; do
             python -B -m unittest discover -s tests -p "$suite" -v
           done
+          (cd research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01 && python -B -m unittest discover -s . -p 'test_conditional_rule_dev.py' -v)
           test -z "$(git status --porcelain)"
       - name: Install existing pinned native solver test dependencies
         shell: bash
