@@ -71,7 +71,8 @@ def _result(status, *, reason, matches=(), prediction=None, witnesses=0):
 
 
 def propose_two_step_composition(native, first_action, second_action,
-                                 public_traces, query_view):
+                                 public_traces, query_view, *,
+                                 allow_functional_consensus=False):
     """Infer a *provisional* two-stage wiring from public fixture traces.
 
     Each trace has source_id, public_view, first_outcome, second_public_view,
@@ -80,6 +81,8 @@ def propose_two_step_composition(native, first_action, second_action,
     signatures were previously fully witnessed. Any equivalent conventional
     symbolic engine given this same grammar/data can make the same prediction.
     """
+    _require(type(allow_functional_consensus) is bool,
+             "WSCM_COMPOSE_CONSENSUS_FLAG")
     first = _action(first_action)
     second = _action(second_action)
     _require(first != second, "WSCM_COMPOSE_IDENTICAL_ACTIONS")
@@ -133,8 +136,21 @@ def propose_two_step_composition(native, first_action, second_action,
         return _result("CONTRADICTION", reason="NO_SUPPORTED_WIRING",
                        witnesses=len(rows))
     if len(fits) != 1:
-        return _result("ABSTAIN", reason="AMBIGUOUS_WIRING",
-                       matches=fits, witnesses=len(rows))
+        if not allow_functional_consensus:
+            return _result("ABSTAIN", reason="AMBIGUOUS_WIRING",
+                           matches=fits, witnesses=len(rows))
+        # Matching wiring identity is NOT necessary for a common outcome.
+        # This forecast is valid only conditional on the supplied four-wire
+        # grammar and fully witnessed public primitive truth tables.
+        first_value = _predict(first_sig, query)
+        outputs = {_predict(second_sig, _wire(wire, query, first_value))
+                   for wire in fits}
+        if len(outputs) != 1:
+            return _result("ABSTAIN", reason="AMBIGUOUS_FUNCTIONAL_OUTCOME",
+                           matches=fits, witnesses=len(rows))
+        return _result("HYPOTHESIS", reason="SOURCE_FREE_FUNCTIONAL_CONSENSUS",
+                       matches=fits, prediction=next(iter(outputs)),
+                       witnesses=len(rows))
     intermediate = _wire(fits[0], query, _predict(first_sig, query))
     return _result("HYPOTHESIS", reason="SOURCE_FREE_FIXED_GRAMMAR_COMPOSITION",
                    matches=fits, prediction=_predict(second_sig, intermediate),
