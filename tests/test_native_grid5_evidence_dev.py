@@ -26,7 +26,7 @@ def persist_and_restore(obj):
 
 class NativeGrid5Tests(unittest.TestCase):
     def test_empty_plan_is_stable(self):
-        self.assertEqual(NativeGrid5Evidence().public_plan([0, 0]),
+        self.assertEqual(NativeGrid5Evidence().public_plan([0, 0], episode_id='a'*64),
                          {'source_mode':SOURCE_MODE,'public_action':0,
                           'observed_next_state':None,'witness_count':0})
 
@@ -35,9 +35,9 @@ class NativeGrid5Tests(unittest.TestCase):
         nextobj = start.observe_public_receipt(*receipt(0, after=(1, 0)))
         self.assertEqual(len(start._rows), 0)
         self.assertEqual(len(nextobj._rows), 1)
-        self.assertEqual(nextobj.public_plan([0, 0])['public_action'], 1)
-        self.assertEqual(nextobj.public_plan([1, 0])['public_action'], 0)
-        self.assertIsNone(nextobj.public_plan([0, 0])['observed_next_state'])
+        self.assertEqual(nextobj.public_plan([0, 0], episode_id='a'*64)['public_action'], 1)
+        self.assertEqual(nextobj.public_plan([1, 0], episode_id='a'*64)['public_action'], 0)
+        self.assertIsNone(nextobj.public_plan([0, 0], episode_id='a'*64)['observed_next_state'])
 
     def test_idempotent_identical_receipt(self):
         one = receipt(0)
@@ -57,17 +57,17 @@ class NativeGrid5Tests(unittest.TestCase):
         obj=obj.observe_public_receipt(*receipt(1,act=2,before=(1, 0),after=(1, 1)))
         restored=persist_and_restore(obj)
         self.assertEqual(restored.checkpoint(),obj.checkpoint())
-        self.assertEqual(restored.public_plan([1, 0]),obj.public_plan([1, 0]))
+        self.assertEqual(restored.public_plan([1, 0], episode_id='a'*64),obj.public_plan([1, 0], episode_id='a'*64))
 
     def test_all_five_action_labels(self):
         obj = NativeGrid5Evidence()
         pos=(0,0)
         for step,a in enumerate(range(5)):
             obj=obj.observe_public_receipt(*receipt(step,act=a,before=pos,after=pos))
-        self.assertEqual(obj.public_plan([0,0])['public_action'],0)
-        self.assertEqual(obj.public_plan([0,0])['observed_next_state'],[0,0])
-        self.assertEqual(obj.public_plan([0,0])['witness_count'],1)
-        self.assertEqual(persist_and_restore(obj).public_plan([0,0]),obj.public_plan([0,0]))
+        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['public_action'],0)
+        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['observed_next_state'],[0,0])
+        self.assertEqual(obj.public_plan([0,0], episode_id='a'*64)['witness_count'],1)
+        self.assertEqual(persist_and_restore(obj).public_plan([0,0], episode_id='a'*64),obj.public_plan([0,0], episode_id='a'*64))
 
     def test_contradictory_same_context_forces_abstention(self):
         obj=NativeGrid5Evidence()
@@ -76,8 +76,8 @@ class NativeGrid5Tests(unittest.TestCase):
         obj=obj.observe_public_receipt(*receipt(2,act=0,before=(0,0),after=(0,0)))
         for a in range(1,5):
             obj=obj.observe_public_receipt(*receipt(2+a,act=a,before=(0,0),after=(0,0)))
-        self.assertIsNone(obj.public_forecast([0,0], 0))
-        self.assertEqual(persist_and_restore(obj).public_forecast([0,0], 0), obj.public_forecast([0,0], 0))
+        self.assertIsNone(obj.public_forecast([0,0], 0, episode_id='a'*64))
+        self.assertEqual(persist_and_restore(obj).public_forecast([0,0], 0, episode_id='a'*64), obj.public_forecast([0,0], 0, episode_id='a'*64))
 
     def test_source_mode_not_original(self):
         r=receipt(0)

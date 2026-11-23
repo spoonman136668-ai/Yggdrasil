@@ -57,29 +57,40 @@ class NativeGrid5Evidence:
         staged.checkpoint()
         return staged
 
-    def public_forecast(self, state, action):
-        """Exact public same-state successor if all observations agree."""
+    def public_forecast(self, state, action, *, episode_id):
+        """Exact SAME-EPISODE public witness; never reuse an unknown new law.
+
+        Hidden action permutations may change between episodes. Query callers
+        must explicitly identify their active public episode; neither a prior
+        episode nor an implicit last-seen ID supplies transferable knowledge.
+        """
         state = public_state(state)
         if type(action) is not int or not 0 <= action < 5:
             raise ValueError('GRID5_ACTION')
-        answers = {r[5] for r in self._rows if r[3] == state and r[4] == action}
+        if not pinned(episode_id):
+            raise ValueError('GRID5_EPISODE_PIN')
+        answers = {r[5] for r in self._rows
+                   if r[1] == episode_id and r[3] == state and r[4] == action}
         return list(next(iter(answers))) if len(answers) == 1 else None
 
-    def public_plan(self, state):
-        """Only a coverage probe choice plus EXACT same-state witnesses.
+    def public_plan(self, state, *, episode_id):
+        """Same-episode coverage proposal only, NOT action-role learning.
 
-        No inferred physical role, grid source oracle, reward maximization or
-        hidden permutation is accepted/returned. The deterministic tie rule is
-        lowest action ID; this is NOT a source-optimal planning policy.
+        Future episodes may present a different hidden action permutation.
+        The caller must supply an explicit public episode ID, and all counts
+        and witnessed outcomes remain isolated to that episode.
         """
         state = public_state(state)
-        counts = tuple(sum(r[3] == state and r[4] == a for r in self._rows)
-                       for a in range(5))
+        if not pinned(episode_id):
+            raise ValueError('GRID5_EPISODE_PIN')
+        counts = tuple(sum(r[1] == episode_id and r[3] == state and r[4] == a
+                           for r in self._rows) for a in range(5))
         action = min(range(5), key=lambda a: (counts[a], a))
         return {
             'source_mode': SOURCE_MODE,
             'public_action': action,
-            'observed_next_state': self.public_forecast(list(state), action),
+            'observed_next_state': self.public_forecast(
+                list(state), action, episode_id=episode_id),
             'witness_count': counts[action],
         }
 

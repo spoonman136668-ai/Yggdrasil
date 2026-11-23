@@ -84,8 +84,8 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         self.assertEqual(staged.forecast((0, 0), 0), before)
         self.assertEqual(staged._transition.snapshot(), baseline._transition.snapshot())
         self.assertEqual(staged._terminal.snapshot(), baseline._terminal.snapshot())
-        self.assertEqual(staged.grid5_fixture_forecast([0,0],0), [1,0])
-        self.assertEqual(staged.grid5_fixture_plan([0,0])['public_action'], 1)
+        self.assertEqual(staged.grid5_fixture_forecast([0,0], 0, episode_id='a'*64), [1,0])
+        self.assertEqual(staged.grid5_fixture_plan([0,0], episode_id='a'*64)['public_action'], 1)
         self.assertEqual(json.loads(staged.checkpoint())['schema'], GRID5_FIXTURE_SCHEMA)
 
     def test_v8_native_cold_and_consolidation_bit_identical(self):
@@ -96,8 +96,8 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         raw = native.checkpoint()
         cold = NativeEpisodeExperience.restore(raw, digest(raw))
         self.assertEqual(cold.checkpoint(), raw)
-        self.assertEqual(cold.grid5_fixture_plan([0,0]),
-                         native.grid5_fixture_plan([0,0]))
+        self.assertEqual(cold.grid5_fixture_plan([0,0], episode_id='a'*64),
+                         native.grid5_fixture_plan([0,0], episode_id='a'*64))
         self.assertEqual(cold.consolidate().checkpoint(), raw)
 
     def test_legacy_v7_and_grid5_v8_coexist_without_alias(self):
@@ -127,7 +127,7 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         model = NativeEpisodeExperience().observe_grid5_fixture(*grid5_fixture())
         with self.assertRaises(ValueError):
             model.forecast((0,0),4)
-        self.assertEqual(model.grid5_fixture_plan([0,0])['source_mode'],
+        self.assertEqual(model.grid5_fixture_plan([0,0], episode_id='a'*64)['source_mode'],
                          'engineering_fixture_only')
 
     def test_existing_parent_gate_is_preserved(self):
@@ -142,7 +142,7 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         original_raw = original.checkpoint()
         model = original.observe_grid5_fixture(*grid5_fixture())
         self.assertEqual(original.checkpoint(), original_raw)
-        self.assertEqual(model.grid5_fixture_forecast([0,0],0),[1,0])
+        self.assertEqual(model.grid5_fixture_forecast([0,0], 0, episode_id='a'*64),[1,0])
         saved = model.checkpoint()
         cold = NativeCumulativeLearner.restore(saved, digest(saved))
         self.assertEqual(cold.checkpoint(), saved)
@@ -157,15 +157,49 @@ class NativeGrid5EnvelopeIntegration(unittest.TestCase):
         model=model.observe_grid5_fixture(*grid5_fixture(
             step=1,action=1,before=(1,0),after=(1,1),sid=2))
         self.assertEqual(tuple(h.steps for h in model._heads),original_head_steps)
-        self.assertEqual(model.plan_grid5_fixture([1,0])['public_action'],0)
+        self.assertEqual(model.plan_grid5_fixture([1,0], episode_id='a'*64)['public_action'],0)
         raw=model.checkpoint()
         with patch.object(NativeCausalAmalgam,'activate',return_value=base):
             restored=NativeCausalAmalgam.restore(
                 raw,digest(raw),native_parent=b'',native_pin='a'*64,
                 donor_parent=b'',donor_pin='b'*64)
         self.assertEqual(restored.checkpoint(),raw)
-        self.assertEqual(restored.grid5_fixture_forecast([1,0],1),[1,1])
+        self.assertEqual(restored.grid5_fixture_forecast([1,0], 1, episode_id='a'*64),[1,1])
         self.assertEqual(tuple(h.steps for h in restored._heads),original_head_steps)
+
+
+    def test_new_episode_does_not_inherit_old_witnesses_after_native_cold_replay(self):
+        # Source-free fixtures: original law A differs from new B; no hidden
+        # permutation or source-world first-use. Querying B's unwitnessed
+        # action 0 MUST abstain, including after v8 cold restore.
+        native = NativeEpisodeExperience()
+        for step in range(50):
+            native = native.observe_grid5_fixture(*grid5_fixture(
+                step=step, action=0 if step == 0 else 4,
+                before=(0, 0) if step == 0 else (0, 1),
+                after=(0, 1), sid=step + 1))
+        native = native.observe_grid5_fixture(*grid5_fixture(
+            step=0, action=1, before=(0, 0), after=(0, 0),
+            sid=51, episode='b'*64))
+        self.assertEqual(native.grid5_fixture_forecast(
+            [0, 0], 0, episode_id='a'*64), [0, 1])
+        self.assertIsNone(native.grid5_fixture_forecast(
+            [0, 0], 0, episode_id='b'*64))
+        self.assertEqual(native.grid5_fixture_plan(
+            [0, 0], episode_id='b'*64)['public_action'], 0)
+        saved = native.checkpoint()
+        cold = NativeEpisodeExperience.restore(saved, digest(saved))
+        self.assertEqual(cold.checkpoint(), saved)
+        self.assertIsNone(cold.grid5_fixture_forecast(
+            [0, 0], 0, episode_id='b'*64))
+        updated = cold.observe_grid5_fixture(*grid5_fixture(
+            step=1, action=0, before=(0, 0), after=(1, 0),
+            sid=52, episode='b'*64))
+        self.assertEqual(updated.grid5_fixture_forecast(
+            [0, 0], 0, episode_id='b'*64), [1, 0])
+        self.assertEqual(updated.grid5_fixture_forecast(
+            [0, 0], 0, episode_id='a'*64), [0, 1])
+
 
 
 if __name__ == '__main__':

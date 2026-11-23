@@ -45,12 +45,14 @@ class NativeCausalAmalgam:
     def plan(self, view):
         return self.native.experience_context_plan(view)
 
-    def plan_grid5_fixture(self, public_state):
-        """Separately named DEV-only five-action coverage plan, not plan(view)."""
-        return self.native.grid5_fixture_plan(public_state)
+    def plan_grid5_fixture(self, public_state, *, episode_id):
+        """DEV-only, explicitly scoped to the public episode."""
+        return self.native.grid5_fixture_plan(
+            public_state, episode_id=episode_id)
 
-    def grid5_fixture_forecast(self, public_state, public_action):
-        return self.native.grid5_fixture_forecast(public_state, public_action)
+    def grid5_fixture_forecast(self, public_state, public_action, *, episode_id):
+        return self.native.grid5_fixture_forecast(
+            public_state, public_action, episode_id=episode_id)
 
     def specialist_forecasts(self, views, first, state=None, second=None):
         terminal = state is not None or second is not None

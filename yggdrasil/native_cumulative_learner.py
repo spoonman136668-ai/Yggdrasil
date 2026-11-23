@@ -256,12 +256,13 @@ class NativeCumulativeLearner:
         candidate.checkpoint()
         return candidate
 
-    def grid5_fixture_plan(self, public_state):
-        return self._episode_reader().grid5_fixture_plan(public_state)
+    def grid5_fixture_plan(self, public_state, *, episode_id):
+        return self._episode_reader().grid5_fixture_plan(
+            public_state, episode_id=episode_id)
 
-    def grid5_fixture_forecast(self, public_state, public_action):
+    def grid5_fixture_forecast(self, public_state, public_action, *, episode_id):
         return self._episode_reader().grid5_fixture_forecast(
-            public_state, public_action)
+            public_state, public_action, episode_id=episode_id)
 
     def observe_external_fixture(self, public_request, raw, expected_sha256):
         """Admit bounded fixture-only evidence into existing cumulative memory.

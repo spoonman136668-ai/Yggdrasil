@@ -152,15 +152,16 @@ class NativeEpisodeExperience:
         candidate.checkpoint()
         return candidate
 
-    def grid5_fixture_plan(self, public_state):
-        """DEV-only coverage probe, never the protected binary causal policy."""
+    def grid5_fixture_plan(self, public_state, *, episode_id):
+        """DEV-only within-episode probe; no unverified cross-world identity."""
         current = self._grid5_fixture or NativeGrid5Evidence()
-        return current.public_plan(public_state)
+        return current.public_plan(public_state, episode_id=episode_id)
 
-    def grid5_fixture_forecast(self, public_state, public_action):
-        """Only exact same-state fixture successor, never inferred source law."""
+    def grid5_fixture_forecast(self, public_state, public_action, *, episode_id):
+        """Only witnessed same-episode successor; otherwise abstain."""
         current = self._grid5_fixture or NativeGrid5Evidence()
-        return current.public_forecast(public_state, public_action)
+        return current.public_forecast(
+            public_state, public_action, episode_id=episode_id)
 
     def observe_external_fixture(self, public_request, raw, expected_sha256):
         """Stage an opaque public action witness in THIS learner's durable state.
