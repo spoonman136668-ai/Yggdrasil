@@ -1,0 +1,95 @@
+{
+  "schema": "yggdrasil.y2.cce03.dev-provenance.v1",
+  "experiment_id": "Y2-CCE03",
+  "project": "Yggdrasil",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "branch": "research/y2-cce01-causal-contract-ecology-20261123",
+    "original_parent_sha": "44938e86e8e18ff2fc52b999b809a3c1cf008a0e",
+    "prereg_commit_sha": "a5075e14068ace2d1e7de1b0b9b644ea3cf84a40",
+    "frozen_code_candidate_commit_sha": "05828736cfa48c75f0b80194671a2ba6a81b927f",
+    "frozen_code_candidate_tree_sha": "5006143b4cce30e2de6688d6cd5f9e58da50ba97",
+    "frozen_candidate_tree_source": "GitHub original GET git/commits/05828736cfa48c75f0b80194671a2ba6a81b927f",
+    "files": [
+      {
+        "path": "research/contrib/chatgpt/y2-cce03/cce03.py",
+        "git_blob_sha1": "b7b2f298aa626616de9ad6a5b845b661d3556c3b",
+        "sha256": "8607e60b9229c1a25e126b3b4c4d7f3ebc1b3c87f81584ea6fc0be4a3d687b26"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce03/test_cce03.py",
+        "git_blob_sha1": "96550386d353bcdd388a0b091bcdd5fde98ea9a2",
+        "sha256": "6d55689259d33507c3e41cea136a82f1893a901dfcfe6731748203428b5f0ad1"
+      },
+      {
+        "path": "research/contrib/chatgpt/y2-cce03/run_cce03.py",
+        "git_blob_sha1": "2c1edc0628a55e9fe77bad8ce7c22359d114b784",
+        "sha256": "33c0420d875d18c643a57acf87e5b572abcbe2930bfc0e7b1da1a6d107180a83"
+      }
+    ],
+    "normalized_result_path": "research/contrib/chatgpt/y2-cce03/result.json",
+    "normalized_result_blob_sha1": "6a6f0aefb3e89fd948e9416378181652ad34e62e",
+    "original_raw_primary_stdout_sha256": "c3a2731bfd6dc9b3bf5b35b3e083bdff9c594a9834745b82680af4f2745b34a8",
+    "raw_primary_is_normalized_result_identical_bytes": false,
+    "normalization_note": "Committed JSON is a field-preserving transcription of the one original local primary result. Original stdout was captured as a local source file but its exact bytes were not uploaded; only its SHA256 is recorded. No rerun or repaired evaluation was used."
+  },
+  "execution": {
+    "date_utc": "2026-11-23",
+    "environment": "isolated Linux 6.18.57 x86_64, CPython 3.13.5, not native Windows or GitHub CI runner",
+    "focused_engineering_tests": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS",
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s /mnt/data/y2-cce03-dev -p test_cce03.py -v"
+    },
+    "first_primary_executions": 1,
+    "primary_command": "PYTHONDONTWRITEBYTECODE=1 python -B run_cce03.py --output result.json",
+    "frozen_train_events_per_seed_world": 768,
+    "frozen_eval_episodes_per_seed_world": 384,
+    "train_updates_total": 7680,
+    "evaluation_episodes_total": 3840
+  },
+  "result": {
+    "classification": "MIXED",
+    "scientific_gain_verified": false,
+    "mean_two_step_exact_cce": 1,
+    "mean_two_step_exact_full_table": 0.96875,
+    "mean_two_step_exact_one_parent": 0.4666666666666667,
+    "mean_two_step_exact_pooled": 0.4078125,
+    "improvement_vs_strongest": 0.03125,
+    "preregistered_required_improvement": 0.1,
+    "cold_equal_seeds": 5,
+    "null_worlds_all_zero_parent_seeds": 5,
+    "checkpoint_bytes_positive_range": [
+      43060,
+      43258
+    ],
+    "matched_control_gap_status": "BELOW_PRESET_DEVELOPMENT_SIGNAL"
+  },
+  "qualification": {
+    "focused_engineering": "PASS",
+    "candidate_full_regression": "UNVERIFIED",
+    "windows_qualification": "UNVERIFIED",
+    "github_ci": "FAIL_PREVIOUS_G29_ATLAS; NEW_CANDIDATE_CI_NOT_ACCEPTED",
+    "original_native_scientific_first_use": "NOT_RUN",
+    "independent_reproduction": "UNVERIFIED",
+    "deployment": "NONE",
+    "runner_dispatched": false
+  },
+  "guardrails": {
+    "main_mutated": false,
+    "accepted_ref_mutated": false,
+    "generated_ice_manually_edited": false,
+    "runner_scheduled": false,
+    "controller_changed": false,
+    "paid_apis_used": false
+  },
+  "limitations": [
+    "Six observed bit slots and three action identities are supplied; not autonomous identity emergence.",
+    "Synthetic stationary deterministic local rule world; no partial observability, long-term interference, or open world transfer.",
+    "Hypothesis search is more expensive than full-state and pooled comparators; computational advantage is not proven.",
+    "Even 100% correct prediction does not satisfy frozen 10 percentage point advantage over strongest fully trained baseline.",
+    "No AGI, scientific acceptance or deployment claim."
+  ]
+}
