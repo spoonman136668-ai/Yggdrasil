@@ -5,7 +5,7 @@ import unittest
 
 from calibration_fit_selection import (
     split_train_only, score_public_brier, select_suffix_on_train, select_hmm_on_train)
-from calibration_controls import FullSuffixTable, validated
+from calibration_controls import FullSuffixTable, multichannel_brier, validated
 
 
 def fixture(seed=997, length=75):
@@ -74,6 +74,16 @@ class PublicTrainOnlySelectionFixture(unittest.TestCase):
             split_train_only((fixture(length=20),), min_select=16)
         with self.assertRaises(ValueError):
             split_train_only((fixture(),), fraction=0.6)
+
+    def test_bounded_suffix_history_matches_full_history(self):
+        model = FullSuffixTable(3).fit(self.public_train)
+        events = fixture(1001, 150)
+        original = sum(
+            multichannel_brier(
+                model.predict(events[:t], e["action"]), e["next_observation"])
+            for t, e in enumerate(events)) / len(events)
+        bounded = score_public_brier(model, (events,))
+        self.assertAlmostEqual(original, bounded, places=15)
 
     def test_predictive_holdout_scoring_prohibits_leaked_labels(self):
         model = FullSuffixTable(2).fit(self.public_train)

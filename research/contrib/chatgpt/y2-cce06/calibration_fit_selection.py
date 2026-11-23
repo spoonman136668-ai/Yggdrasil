@@ -52,7 +52,11 @@ def score_public_brier(model, data):
     for events in data:
         validated(events)
         for t, e in enumerate(events):
-            probs = model.predict(events[:t], e["action"])
+            # For the suffix control, only the last `depth` public pairs can
+            # affect its prediction. Avoid quadratic replay of older history.
+            prior = (events[max(0, t - model.depth):t]
+                     if isinstance(model, FullSuffixTable) else events[:t])
+            probs = model.predict(prior, e["action"])
             total += multichannel_brier(probs, e["next_observation"])
             count += 1
     if not count:
