@@ -1,0 +1,63 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "experiment_id": "TP-HDC-02B",
+  "project": "Yggdrasil",
+  "contributor": "chatgpt",
+  "contribution_class": "source-free-falsification-custody-repair",
+  "predecessor_invalid": {
+    "experiment": "TP-HDC-02",
+    "pr": 1366,
+    "prereg_commit": "201b7bd0fb898a108f8e9c4e152a9d83bba0b8f9",
+    "source_commit": "9e45addcbb1cb0d0d915dc40f2ba1bfb4e881f57",
+    "original_source_sha256": "db5f66e633193ccb2a6a593347c57fa91bbbf43b307764230158975c2d93b082",
+    "invalid_trial_result_sha256": "9d36ad749eed33df61b7d24b4a858e769b72c0306073f0a3ae935a7bbfed9aa3",
+    "invalid_reason": "Original probe hashed(tag, components) inserts '/', while frozen law/key/bucket descriptions demand '|' between version tag and first component. Original five-case scores are a diagnostic only; not scientifically qualified."
+  },
+  "frozen_correction": "Use exact original TP-HDC-02 source bytes whose SHA256 is db5f66e633193ccb2a6a593347c57fa91bbbf43b307764230158975c2d93b082, replacing ONLY hashed(tag,*components) with SHA256(tag+'|'+join('/',components)); original experiment cases, task ordering, controls, metrics, allocation, evaluator and thresholds unchanged. Do not mutate original frozen source.",
+  "independent_first_use": {
+    "fresh_seeds": [
+      515,
+      626,
+      737,
+      848
+    ],
+    "seed_reason": "Four predetermined unused seeds; never reuse consumed TP-HDC-02 seeds [101,202,303,404].",
+    "data_source": "Synthetic SHA256 per-task law and Python random.Random(seed); no protected world source or original Yggdrasil checkpoints.",
+    "cases": [
+      {
+        "bytes": 128,
+        "old_tasks": 32
+      },
+      {
+        "bytes": 128,
+        "old_tasks": 128
+      },
+      {
+        "bytes": 512,
+        "old_tasks": 128
+      },
+      {
+        "bytes": 512,
+        "old_tasks": 512
+      },
+      {
+        "bytes": 2048,
+        "old_tasks": 512
+      }
+    ]
+  },
+  "hash_specification": "Each tag is one of TP-HDC-02|law|v1, TP-HDC-02|key|v1, TP-HDC-02|bucket|v1, TP-HDC-02|priority|v1; SHA256 ASCII of tag + '|' + '/'-joined decimal components. For law parity 0.8 else 0.2; key PCG64 seeded from 8 low-order SHA bytes interpreted little endian.",
+  "controls": "TP-HDC int8 B byte superposition; exact tagged packed 3-bit counters with LRU and priority (5 bytes/task); hashed packed 3-bit counters (3 bytes/bucket); unbounded exact reference not a qualifying budgeted competitor. No oracle outcomes at forecast.",
+  "replay_instructions": "Run repaired wrapper on source unchanged; preregister wrapper commit before any fresh scoring. Preserve diagnostic result separately. Require code-source SHA check before execution.",
+  "metrics": "Expected A Brier pre B and post B; per-seed and mean drift, clip count, persistent/checkpoint bytes, per-arm update time, projection cache high-water, whole-process RSS; cold snapshot parity and corruption rejection.",
+  "frozen_screen": "Identical to 02: screen positive requires HDC post-B Brier <= best bounded control minus 0.005 in mean and >=3/4 seeds in an overcapacity case, drift <=0.02 in all 4 seeds, independently qualified per-arm RSS <= 2x best control. If performance criteria fail, report scientific negative; if RSS missing but performance passed, report unverified; source-free cannot be SCIENTIFIC_PASS.",
+  "boundaries": {
+    "no_runner_dispatch": true,
+    "protected_first_use": false,
+    "native_integration": false,
+    "merge": false,
+    "paid_api": false,
+    "accepted_refs": false,
+    "scientific_pass": false
+  }
+}
