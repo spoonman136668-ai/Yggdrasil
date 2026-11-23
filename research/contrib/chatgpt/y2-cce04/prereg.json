@@ -1,0 +1,92 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE04",
+  "contributor": "chatgpt-connector",
+  "contribution_class": "successor-proposal",
+  "question": "Can a fixed-capacity population of public-evidence causal hypotheses infer a persistent hidden binary state and predict an untrained repeated-action sequence from noisy observation histories better than an adequately trained action-dependent two-state HMM?",
+  "hypothesis": "Evidence-selected local action-transition hypotheses with a carried belief state improve long-horizon sensor prediction, reject spurious action causation on an iid null world, and restore exactly after cold restart; a richer trained action-dependent HMM is the principal control.",
+  "exact_parent_sha": "274b470507fa892a408252a3e98315d19f534b69",
+  "predecessor_evidence": [
+    "CCE01 frozen MIXED; original prereg 985a402c69360556b7eaa2c2691c9c72d4b1d787",
+    "CCE02 ties trained full-table control at 0.87578125; original prereg d32644ef28d120e80351f24d0ace59f666996cde",
+    "CCE03 100% two-step exact but +0.03125 < frozen 0.10 vs full-table control; prereg a5075e14068ace2d1e7de1b0b9b644ea3cf84a40",
+    "GitHub CI #45160102353 failed G29 indexed file set changed; qualification and science distinct"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/y2-cce04/prereg.json",
+    "research/contrib/chatgpt/y2-cce04/cce04.py",
+    "research/contrib/chatgpt/y2-cce04/test_cce04.py",
+    "research/contrib/chatgpt/y2-cce04/run_cce04.py",
+    "research/contrib/chatgpt/y2-cce04/result.json",
+    "research/contrib/chatgpt/y2-cce04/provenance.json",
+    "research/contrib/chatgpt/y2-cce04/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "positive synthetic partially observed action world",
+      "sha256": null,
+      "source": "Hidden h0~Bernoulli(0.5). Before each next observation, action 0 holds h, action 1 flips h, then independent background flip probability 0.07; public observation is h with independent error 0.18. Environment never supplies hidden h or ground-truth noise/transition parameters to learner."
+    },
+    {
+      "name": "iid-null world",
+      "sha256": null,
+      "source": "Public observation iid fair coin independent of actions and prior observations. No causal state; useful null model is 0.5 prediction. Hidden state is not created or exposed."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      17,
+      37,
+      61,
+      109,
+      173
+    ],
+    "split": "Each world and seed: 128 training episodes of 12 actions, publicly emitting initial sensor and 12 subsequent sensors; 96 independent eval episodes with 6 action/observation prefix steps and fixed 5-action heldout suffix [1,1,1,1,1]. Training random action generator forbids three consecutive action1 steps; no sequence containing 111 is trained. Training generator Random(seed); eval generator Random(seed+400000). All sensor and background noise generated with same per-world generator; no heldout outcomes visible to learners before scoring.",
+    "ordering": "Each hypothesis uses exact binary forward-filter likelihood on public observations/actions for each independent training trajectory. Sum prequential log likelihoods over train episodes, select candidate before eval. Evaluations start posterior at 0.5, condition on observed public prefix, then predict five future observations open-loop using fixed action suffix; do not update with actual suffix outcomes. Same prefix and heldout data supplied to all controls.",
+    "data_budget": "2 worlds x 5 seeds x 128 train trajectories x 12 transitions = 15360 training transitions; 96 evaluation trajectories per world and seed x 5 future observations = 4800 scored predictions; all candidates trained on identical public trajectories, 0 hidden-state supervision.",
+    "compute_budget": "CPython standard library, isolated local evaluation. CCE 36 positive hypotheses + iid null (4 action-effect tuples x emission error [0.1,0.2,0.3] x disturbance [0.03,0.10,0.20]). Strong trained HMM baseline 432 positive models + iid (4 action tuples x emission [0.05,0.10,...,0.45] x disturbance [0.02,0.04,...,0.24]); action-ignorant HMM 108 plus iid; suffix-two Beta count baseline. All train once on same data. Report model evaluations and runtime; no efficiency superiority inferred.",
+    "capacity": "CCE fixed 36 binary 2-state hypotheses plus 1 iid, with one selected model only retained after training and versioned checksum. Supports belief-state inference but no dynamic cells, self-assembled ontology or autonomous experiment selection.",
+    "selection_rule": "Maximum public-observation log likelihood, with an iid null favored unless best stateful candidate exceeds it by 2*log(number_of_training_sensor_observations). Ties prefer null, then lower hypothesis index. Coarse and fine trained HMM controls each apply same null penalty and identical tie rules; no hidden world knowledge to selector.",
+    "evaluator": "Mean heldout open-loop five-step observation Brier; compare CCE, strongest trained fine-grid 2-state HMM, action-ignorant trained HMM, suffix-two Beta count baseline (Markov observation/action), and iid constant 0.5. Predict full five-step suffix without updating on outcomes; suffix baseline recursively feeds its own hard predictions. Record exact selected latent action-flip family (0,1) in positive, iid selection in null, checkpoint equality across every prefix, bytes, training CPU time, and all 10 seed/world records.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Fine-grid maximum-likelihood 2-state HMM trained from identical public histories (432 candidates+IID) with fixed null complexity penalty; strongest structured comparator",
+    "Action-ignorant 2-state HMM fitted by same likelihood method",
+    "Trained suffix-two empirical Beta-Bernoulli memory, recursion for open-loop suffix",
+    "Constant 0.5 iid observation predictor",
+    "Ground-truth parameter-model oracle used only as reported upper/lower-bound reference, NOT eligible trained comparator",
+    "No action-dependence null-world negative controls; checksum and forged checkpoint tests"
+  ],
+  "metrics": [
+    "Positive-world per-seed heldout five-step Brier by every learner/control",
+    "Difference CCE Brier to strongest trained HMM and absolute threshold",
+    "Correct positive causal-action family count",
+    "Null-world iid-selection count",
+    "Exact cold state and belief prediction continuity on all 5 seeds",
+    "Model-count/runtime/cold bytes and data budget",
+    "Unfamiliar suffix action string [1,1,1,1,1] never seen in training"
+  ],
+  "classification_rules": {
+    "supported": "Synthetic DEVELOPMENT_SIGNAL only if CCE mean positive-world Brier <= min(mean fine HMM,mean no-action HMM,mean suffix memory,0.25)-0.01, >=4/5 positive seeds select true action flip family (0,1), all 5 null seeds select iid, and 5/5 checkpoint cold exact; no SCIENTIFIC_PASS.",
+    "mixed": "Correct causal family, null restraint, cold retention, or partial baseline benefit without strongest-comparator margin; report all metrics and negatives.",
+    "negative": "Protocol-valid results with no substantial benefit, false actions selected on null, or collapse on unfamiliar suffix. Freeze and preserve.",
+    "invalid": "Unmatched samples, source/tree mismatch, hidden state/effect tuple leaked into trained model, heldout used to choose candidate, changed frozen threshold/seeds/evaluator, unbudgeted reruns, malformed snapshot accepted, or unauthorized native source first-use."
+  },
+  "prohibited_after_primary_run": [
+    "post-outcome model grid revisions",
+    "new or reused heldout seeds",
+    "post-outcome evaluation changes",
+    "SCIENCE_PASS claimed from synthetic results",
+    "unauthorized runner dispatch, protected merge, atlas bypass, paid API"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Commit before implementation, tests and primary result. One frozen DEV evaluation, negative first-class; no native original-source science admission. Existing G29 generated atlas requires separate approved qualification."
+}
