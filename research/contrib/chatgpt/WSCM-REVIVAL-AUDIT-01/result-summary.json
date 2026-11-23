@@ -1,0 +1,118 @@
+{
+  "schema": "yggdrasil.wscm.revival-audit-01.summary.v1",
+  "classification": "RETROSPECTIVE_SELECTOR_NO_GO",
+  "parent_amalgam_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "source_reused": "staged-retention-dev-01 prequential forecast trace; previously consumed 2026-11-21",
+  "source_git_blobs": {
+    "818621": "7b3f2ff0b120d6557d4630de3461276d892b503f",
+    "818653": "bac19fb71d2a9918bd4ede1d3f2e6bae7b81dc48",
+    "818687": "449a186109b0b30ec98352b5b4565e2e96435b14"
+  },
+  "n_seeds": 3,
+  "episodes_per_seed": 72,
+  "episodes_per_stage_per_seed": 24,
+  "reused_episode_forecasts": 216,
+  "selector": {
+    "experts": [
+      "pinned",
+      "unguarded"
+    ],
+    "previous_only": true,
+    "window": 16,
+    "min_count": 4,
+    "minimum_brier_gain": "1/100",
+    "performance_metric": "equal mean transition/reward Brier",
+    "no_regime_label": true
+  },
+  "stage_averages": {
+    "1_first_change": {
+      "pinned": 0.301633091,
+      "continuing": 0.172604203,
+      "revival": 0.180111043,
+      "mean_best_fitted_control_per_seed_posthoc": 0.170896032,
+      "selected_continuing_count": 60,
+      "revival_minus_pinned": -0.121522048
+    },
+    "2_second_change": {
+      "pinned": 0.169413271,
+      "continuing": 0.194226571,
+      "revival": 0.199188217,
+      "mean_best_fitted_control_per_seed_posthoc": 0.225299544,
+      "selected_continuing_count": 36,
+      "revival_minus_pinned": 0.029774946
+    },
+    "3_familiar_return": {
+      "pinned": 0.129036462,
+      "continuing": 0.143066405,
+      "revival": 0.132622404,
+      "mean_best_fitted_control_per_seed_posthoc": 0.12288291,
+      "selected_continuing_count": 3,
+      "revival_minus_pinned": 0.003585942
+    }
+  },
+  "seed_stage_revival": [
+    {
+      "seed": 818621,
+      "revival_brier": [
+        0.200294915,
+        0.242852295,
+        0.12386515
+      ],
+      "pinned_brier": [
+        0.299786432,
+        0.216056313,
+        0.12386515
+      ],
+      "ung_selected": [
+        20,
+        9,
+        0
+      ],
+      "switches": 2
+    },
+    {
+      "seed": 818653,
+      "revival_brier": [
+        0.175467172,
+        0.152518816,
+        0.145980373
+      ],
+      "pinned_brier": [
+        0.279927461,
+        0.123846381,
+        0.142167704
+      ],
+      "ung_selected": [
+        20,
+        9,
+        1
+      ],
+      "switches": 4
+    },
+    {
+      "seed": 818687,
+      "revival_brier": [
+        0.164571043,
+        0.202193541,
+        0.128021689
+      ],
+      "pinned_brier": [
+        0.325185379,
+        0.168337119,
+        0.121076533
+      ],
+      "ung_selected": [
+        20,
+        18,
+        2
+      ],
+      "switches": 6
+    }
+  ],
+  "negative_evidence": "revival selector worse than preserved old predictor in second changed stage on all 3 replicas; loses first changed stage to fitted comparator on 2/3; worse on familiar return on 2/3",
+  "qualification": "unpreregistered retrospective diagnostic; previously inspected trace outcomes; no prospective scientific acceptance",
+  "source_world_actions": 0,
+  "new_model_training_steps": 0,
+  "scientific_gain_verified": false,
+  "complete_dual_platform_regression_verified": false
+}

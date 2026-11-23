@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.wscm.grid5-learned-delta-dev.v1",
+  "designation": "WSCM-GRID5-LEARNED-DELTA-DEV-01",
+  "parent_sha": "5e8dc509fcccfd37e744f24c424f041a6c712b00",
+  "parent_tree": "c6d295240970ec95f5dc8b627aa1cef20f2917fe",
+  "classification": "SOURCE_FREE_DEV_ENGINEERING_ONLY_NOT_FIRST_USE_OR_SCIENTIFIC_GAIN",
+  "hypothesis": "Within one episode, a translation-like public action can be hypothesized from observed coordinates without a table of fixed action roles. Strict-interior witnessed successors identify a displacement; conflicting witness effects force abstention. Predictions are tentative, never source-authorized or proof of unfamiliar laws.",
+  "candidate_algorithm": {
+    "input": "existing immutable source-free Grid5 witness rows only; episode_id, public state, public action",
+    "training": "for same-episode same-action rows whose observed successor is strictly interior on both coordinates, collect arithmetic (successor - predecessor) vectors; no hardcoded 5-role delta table, role ordering or hidden identity; reject nonunique vectors",
+    "consistency": "if inferred vector predicts a strictly interior outcome at any observed predecessor, a nonmatching observed successor is contradictory",
+    "forecast": "if query and translated successor strictly interior, return HYPOTHESIS and predicted successor; otherwise ABSTAIN; never silently identify a hidden role",
+    "memory": "derive readout from existing immutable ledger, no new checkpoint fields or persistent learner/controller; >=1 interior informative witnessed row; episode-specific and cold-stable"
+  },
+  "frozen_tests": [
+    "zero observations -> ABSTAIN; stale prior episode cannot bind",
+    "corner-only clipped observation -> ABSTAIN even if known-physics symbolic arm can predict",
+    "strictly interior witnessed transition -> HYPOTHESIS at previously unseen interior state; old witness-only prediction remains None",
+    "same-action conflicting interior transitions -> CONTRADICTION and no next state",
+    "near boundary or translated boundary target -> ABSTAIN",
+    "invalid bool/string/out-of-range actions and bad episode id reject",
+    "native episode/cumulative/amalgam forwarding and cold replay preserve exact checkpoint bytes",
+    "development source-equivalent disclosed 120-permutation 5-receipt screen: zero false nonabstaining predictions; >0 correct; report coverage/abstentions against exact witnessed and physics-informed symbolic control; no tuning after scoring"
+  ],
+  "controls": [
+    "exact witnessed NativeGrid5Evidence.public_forecast",
+    "existing known-physics native public_role_forecast (120 maps)",
+    "previous WSCM-GRID5-GENERALIZATION-01 standalone fitted delta (62.6667% coverage)",
+    "previous exact known-physics control (75.6% coverage)"
+  ],
+  "scientific_boundary": "All 120 world cases are already publicly disclosed and previously consumed for development. No independent held transfer, new physics, real source, adapted planner, superiority or AGI gain claim may be derived.",
+  "stop_rules": "Any false forecast, unqualified first-use, post-result parameter edits, checkpoint format drift, native regression failure or cross-episode use -> fail closed; preserve negative; no automatic retry or promotion.",
+  "safety": {
+    "real_source_world_steps": 0,
+    "protected_first_use": false,
+    "merge": false,
+    "deploy": false,
+    "new_controller": false,
+    "paid_apis": false
+  },
+  "resources": {
+    "max_public_receipts": 256,
+    "one_opt_in_query": true,
+    "external_action_budget": 0
+  }
+}

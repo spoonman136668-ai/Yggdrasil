@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSCM-GRID5-DISCRIMINATION-PREFLIGHT-DEV-01",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "classification": "SOURCE_FREE_STATIC_ENGINEERING_ONLY_NOT_SCIENTIFIC_FIRST_USE",
+  "question": "Can an offline discriminator identify a state/action where two supplied candidate causal laws predict different successors, charge an explicit travel-plus-intervention cost, and abstain when information or budget is insufficient?",
+  "hypothesis": "Disagreement-aware probe proposals can be bounded, cost-accounted and deterministic, but this does not identify a hidden causal law or authorize an action. The existing two-witness learned-delta filter cannot prove general transfer.",
+  "exact_parent_sha": "c8c6405493e6c09dd08a33716c77bdfc2f7eb90d",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/pull/1364#issuecomment-7099460619",
+    "https://github.com/spoonman136668-ai/Yggdrasil/blob/c8c6405493e6c09dd08a33716c77bdfc2f7eb90d/research/contrib/chatgpt/WSCM-TRANSFER-02/protocol.md"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/discrimination-prereg.json",
+    "research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/discrimination_preflight_dev.py",
+    "tests/test_wscm_grid5_discrimination_preflight_dev.py"
+  ],
+  "frozen_design": {
+    "purpose": "STATIC contract only. Two public candidate law tables are deliberately provided to the offline proposer as an oracle-information upper bound, never to a native learner.",
+    "cases": "Constructed static two-law counterexample: equal successor at [2,2], different successors for the same action at [4,4]. Neither world is stepped.",
+    "execution": "No live environment, reset, native integration, fitted training, held-science score, runner, workflow dispatch or new seeds. Only self-contained Python stdlib tests.",
+    "input_contract": "<=16 unique public state/action probe candidates, <=8 distinct fully specified hypotheses, bounded integer costs, candidate travel charge + intervention charge; missing or duplicate candidate predictions rejected.",
+    "fixed_cost_unit": "One abstract charged unit. Travel and intervention charges are caller-provided, not independently source-certified; only an authorized native source/actor can later certify executable reachability/cost.",
+    "limits": {
+      "candidate_count": 16,
+      "hypothesis_count": 8,
+      "remaining_charge_units": 10,
+      "per_candidate_travel_charge": 10,
+      "per_candidate_intervention_charge": 10,
+      "original_source_actions": 0,
+      "production_merges": 0,
+      "paid_api_calls": 0
+    },
+    "selection": "For affordable informative candidates, sort by exact rational fraction disagreeing_hypothesis_pairs / (travel_charge + intervention_charge), then more disagreeing pairs, less cost, lexicographic candidate ID.",
+    "outcomes": [
+      "PROPOSAL_ONLY",
+      "ABSTAIN",
+      "BUDGET_EXHAUSTED"
+    ],
+    "safety": "Always action_authorized=false and scientific_gain_verified=false; proposal is not an actor command or scientific action permission.",
+    "deterministic_expected": true,
+    "seeds": [],
+    "split": "No TRAIN/VALID/HELD worlds created or accessed; source-free fixtures only.",
+    "data_budget": "Zero new original-world steps; zero scored independent scientific trials",
+    "compute_budget": "Stdlib Python local static unit tests only; no runner dispatch",
+    "capacity": "16 candidate probes, 8 proposed law tables, 10 abstract charge units, deterministic"
+  },
+  "controls": [
+    "No-discriminator abstain",
+    "Fixed cheapest candidate (planned comparison only)",
+    "Full-information candidate-law oracle: this static helper IS an upper bound, not an eligible learned control",
+    "For actual science, independently FIT-trained strongest non-oracle symbolic/Bayesian/native controls required by WSCM-TRANSFER-02"
+  ],
+  "metrics": [
+    "static proposal or abstention classification",
+    "exact charged_units_if_executed, no actual charge consumed",
+    "disagreeing hypothesis-pair count",
+    "invalid input/replay/leakage rejection",
+    "source actions actually executed = 0"
+  ],
+  "classification_rules": {
+    "supported": "All seven negative/static unit tests pass against exact committed files; original source actions remain zero. This is an ENGINEERING-only acceptance.",
+    "mixed": "Core safety assertions pass but some optional static ordering checks fail. No scientific gain.",
+    "negative": "Informative candidates are unavailable or unaffordable, or static selection fails required controls. Preserve failing fixture.",
+    "invalid": "Actual external actions, hidden-law leakage, unauthorized runner use, unpinned source, reused scientific seed or post-score threshold changes. Do not replay uncertain trials."
+  },
+  "not_frozen_for_science": [
+    "No independently sourced unfamiliar family or source lease",
+    "No proved candidate reachability or trustworthy charge receipt",
+    "No learned (non-oracle) hypothesis induction",
+    "No frozen TRAIN/VALID/HELD disjoint identities, seeds or fully fitted baseline hyperparameters",
+    "No measurable prequential Brier or intervention superiority as yet"
+  ],
+  "later_sci_go_nogo": "A separate complete source- and owner-authenticated freeze under WSCM-TRANSFER-02, with equal-info fully fitted controls, preset Brier/charge/retention/compute gates, verified source custody, and separately authorized first use is mandatory. This document cannot authorize those actions.",
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false,
+    "original_world_first_use": false
+  },
+  "preregistration_note": "Committed before any new scored real scientific execution. Static local tests are engineering diagnostics, not independent evidence of learning."
+}

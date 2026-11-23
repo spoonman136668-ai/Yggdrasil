@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "WSCM-TRACE-01",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does the isolated WSCM-01 W16 eligibility proposal have any algorithmic output beyond a same-input conventional truncated TD(lambda=1/2) eligibility trace with the identical surprise gate?",
+  "hypothesis": "For every source-free 1..17 event prefix, public target event, Q8 target prediction and binary outcome, the ring's proposed (event,role,lag,Q15 magnitude,signed surprise) tuples equal a conventional finite-horizon TD(lambda=1/2) trace gated on |error|>=128. The goal is to falsify a claim of unique delayed-credit computation, NOT measure real learning or transfer.",
+  "exact_parent_sha": "053bafd38531aee961dadf240ca6164a5dab0ef3",
+  "exact_parent_tree": "66c3c89efff4d071294ee1d8297b22e3c8362529",
+  "ring_source_path": "research/contrib/chatgpt/CAUSAL-AMALGAM/wscm01_delayed_credit.py",
+  "ring_source_git_blob": "c010d7a74cf95cd579223e0b09f09f1d6cbb899c",
+  "predecessor_evidence": [
+    "WSCM-01 gate 5: ten local W16 tests PASS; no scientific retention gain or real source action"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/WSCM-TRACE-01/prereg.json",
+    "research/contrib/chatgpt/WSCM-TRACE-01/trial.py",
+    "research/contrib/chatgpt/WSCM-TRACE-01/result.json",
+    "research/contrib/chatgpt/WSCM-TRACE-01/provenance.json",
+    "research/contrib/chatgpt/WSCM-TRACE-01/README.md",
+    "tests/test_wscm_trace01.py"
+  ],
+  "inputs": [
+    {
+      "name": "deterministic-public-exhaustive-synthetic-event-prefixes",
+      "source": "generated, source-free in trial.py; no external data, no protected first-use",
+      "sha256": null,
+      "license": "original synthetic fixture authored for this experiment"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [],
+    "split": "No FIT/held/test split: mechanism identity evaluation, NOT training/generalization",
+    "ordering": "For n=1..17 increasing, target event j=0..n-1 increasing, predicted_q8 in (0,64,128,192,256) then observed outcome in (0,1). Stage n events with event_id=i, action_id=100+i, predicted_q8=128 except target j uses selected q8, role=i%16; expose same current retained W16 entries, target ID and outcome to both arms. Ring outcome_id=1000+n*100+j*10+predicted_q8+observed is unique within each fresh ring.",
+    "data_budget": "1,530 finite source-free cases, 1,520 comparable and 10 expired-target negative controls (n=17,j=0); no paid calls.",
+    "compute_budget": "One executed pass; optional zero-outcome replay of same exact result hashes. No tuning or repeated trial selection.",
+    "capacity": "WSCM WINDOW=16, Q8=256, surprise threshold=128, Q15=32768, lambda=1/2, role=i%16.",
+    "evaluator": "Exact Python tuple identity; classify ties by 100% element-wise equality. No numeric tolerance. Count mismatched cases, eligible cases, expired-target rejects, mismatched proposal elements and total emitted proposals.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Ring: unchanged WSCM-01 DelayedCreditRing.stage/reveal implementation pinned by Git blob",
+    "Strongest same-input exact conventional control: truncated finite-horizon TD(lambda=0.5) eligibility computed independently from retained event tuples, with the same 128-Q8 signed-surprise gate and identical Q15 coefficients",
+    "Negative-control n=17, j=0 expired target rejects and has no eligible comparison; the control likewise reports expired."
+  ],
+  "metrics": [
+    "eligible_cases",
+    "expired_cases",
+    "mismatched_cases",
+    "matching_cases",
+    "proposal_elements",
+    "uncontrolled_source_uses"
+  ],
+  "classification_rules": {
+    "supported": "UNAVAILABLE for scientific learning claims: no learning or new-task scoring; exact match cannot be called scientific improvement",
+    "mixed": "Any mismatch with reproducible exact inputs is CONTROL_MISMATCH, inspect as engineering discrepancy, not scientific gain.",
+    "negative": "If mismatched_cases==0 and expired_cases==10, classify MECHANISM_EQUIVALENCE_NO_UNIQUE_GAIN and stop standalone W16 eligibility research unless a distinct scored advantage is preregistered.",
+    "invalid": "Missing exact source pins, source use, unexpected count, data leakage, modified protocol after outcomes, unmatched compute/information, or source dependence of the independent comparator => INVALID."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "scope": "Development-only deterministic equivalence. No native inference, action transfer, reward, retention, or sleep genome. Do not infer scientific PASS.",
+  "preregistration_note": "Commit this protocol alone before creating trial implementation or first scored results. It fixes the exhaustive support and exact comparator, no retuning."
+}

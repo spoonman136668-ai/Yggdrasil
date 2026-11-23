@@ -2,6 +2,10 @@
 import json
 
 from yggdrasil.native_context_basis import canonical, digest, pin, require
+from yggdrasil.native_external_action_identity import RECEIPT_SCHEMA, SOURCE_MODE
+from yggdrasil.native_grid5_ingress import (
+    SCHEMA as GRID5_RECEIPT_SCHEMA, SOURCE_MODE as GRID5_SOURCE_MODE,
+)
 from yggdrasil.native_cumulative_learner import EXPERIENCE_SOURCE, NativeCumulativeLearner
 from yggdrasil.native_jepa2_multilearner import ActionLatentSpecialist
 from yggdrasil.native_jepa_temporal import (
@@ -41,6 +45,24 @@ class NativeCausalAmalgam:
     def plan(self, view):
         return self.native.experience_context_plan(view)
 
+    def plan_grid5_fixture(self, public_state, *, episode_id):
+        """DEV-only, explicitly scoped to the public episode."""
+        return self.native.grid5_fixture_plan(
+            public_state, episode_id=episode_id)
+
+    def grid5_fixture_forecast(self, public_state, public_action, *, episode_id):
+        return self.native.grid5_fixture_forecast(
+            public_state, public_action, episode_id=episode_id)
+
+    def grid5_fixture_role_forecast(self, public_state, public_action, *, episode_id):
+        return self.native.grid5_fixture_role_forecast(
+            public_state, public_action, episode_id=episode_id)
+
+    def grid5_fixture_learned_delta_forecast(
+            self, public_state, public_action, *, episode_id):
+        return self.native.grid5_fixture_learned_delta_forecast(
+            public_state, public_action, episode_id=episode_id)
+
     def specialist_forecasts(self, views, first, state=None, second=None):
         terminal = state is not None or second is not None
         history = self.native._episode_reader()._ledger[-8:]
@@ -64,6 +86,28 @@ class NativeCausalAmalgam:
         temporal_r.observe(views, reward, history, row["y"])
         return NativeCausalAmalgam(native, (direct_t, direct_r, temporal_t, temporal_r),
                                   self._native_parent, self._specialist_parent)
+
+    def observe_grid5_fixture(self, public_request, raw, expected_sha256):
+        """Carry public five-action fixture evidence, never train shadow heads."""
+        native = self.native.observe_grid5_fixture(
+            public_request, raw, expected_sha256)
+        if native is self.native:
+            return self
+        candidate = NativeCausalAmalgam(
+            native, self._heads, self._native_parent, self._specialist_parent)
+        candidate.checkpoint()
+        return candidate
+
+    def observe_external_fixture(self, public_request, raw, expected_sha256):
+        """Carry fixture-only evidence without training native or specialists."""
+        native = self.native.observe_external_fixture(
+            public_request, raw, expected_sha256)
+        if native is self.native:
+            return self
+        candidate = NativeCausalAmalgam(
+            native, self._heads, self._native_parent, self._specialist_parent)
+        candidate.checkpoint()
+        return candidate
 
     def checkpoint(self):
         data = {
@@ -100,6 +144,44 @@ class NativeCausalAmalgam:
             replay = replay.observe_experience(
                 identifier, views, row, source_sha256=EXPERIENCE_SOURCE,
                 packet_sha256=digest(canonical([identifier, views, row])))
+        # The binary ledger omits external fixture receipts. Cold restoration
+        # must reconstruct the second, independently verified evidence plane
+        # rather than silently dropping it. The nested native restore above
+        # validates each receipt's original content-addressed hash.
+        saved_fixture = native._episode_reader()._external_action_fixture
+        prior_fixture = replay.native._episode_reader()._external_action_fixture
+        saved_rows = () if saved_fixture is None else saved_fixture._rows
+        prior_rows = () if prior_fixture is None else prior_fixture._rows
+        require(saved_rows[:len(prior_rows)] == prior_rows,
+                "AMALGAM_FIXTURE_PREFIX")
+        for source_id, action, view, outcome, receipt_pin in saved_rows[len(prior_rows):]:
+            request = {"public_view": list(view), "external_action_id": action}
+            receipt = canonical({
+                "schema": RECEIPT_SCHEMA, "source_mode": SOURCE_MODE,
+                "source_id": source_id, "public_view": list(view),
+                "external_action_id": action, "outcome": outcome,
+            })
+            replay = replay.observe_external_fixture(request, receipt, receipt_pin)
+        # Third passive evidence plane: source-free five-action public
+        # consequences. Full checkpoint replay pins every source receipt.
+        saved_grid5 = native._episode_reader()._grid5_fixture
+        prior_grid5 = replay.native._episode_reader()._grid5_fixture
+        saved_grid5_rows = () if saved_grid5 is None else saved_grid5._rows
+        prior_grid5_rows = () if prior_grid5 is None else prior_grid5._rows
+        require(saved_grid5_rows[:len(prior_grid5_rows)] == prior_grid5_rows,
+                "AMALGAM_GRID5_PREFIX")
+        for source_id, episode_id, step, state, action, next_state, reward, term, trunc, receipt_pin in saved_grid5_rows[len(prior_grid5_rows):]:
+            request = {
+                "episode_id": episode_id, "step_index": step,
+                "public_state": list(state), "public_action": action,
+            }
+            receipt = canonical({
+                **request, "schema": GRID5_RECEIPT_SCHEMA,
+                "source_mode": GRID5_SOURCE_MODE, "source_id": source_id,
+                "next_state": list(next_state), "reward": reward,
+                "terminated": term, "truncated": trunc,
+            })
+            replay = replay.observe_grid5_fixture(request, receipt, receipt_pin)
         require(replay.native.checkpoint() == current, "AMALGAM_NATIVE_REPLAY")
         action_heads = tuple(ActionLatentSpecialist.from_data(d, kind)
                              for d, kind in zip(data["action_heads"], KINDS, strict=True))

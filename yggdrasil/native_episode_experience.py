@@ -9,6 +9,11 @@ import json
 
 from yggdrasil.native_context_basis import canonical, digest, pin, require
 from yggdrasil.public_causal_cells import PublicCausalCells
+from yggdrasil.native_external_action_identity import (
+    NativeExternalActionIdentity, _public as _external_request,
+)
+from yggdrasil.native_grid5_evidence import NativeGrid5Evidence
+from yggdrasil.native_sparse_operator_evidence import NativeSparseOperatorEvidence
 
 SCHEMA = "yggdrasil.ckad.native-episode-experience.v1"
 CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v2"
@@ -16,6 +21,9 @@ NOVEL_CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v3"
 STREAM_SCHEMA = "yggdrasil.ckad.native-episode-experience.v4"
 REFRESH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v5"
 GROWTH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v6"
+EXTERNAL_FIXTURE_SCHEMA = "yggdrasil.ckad.native-episode-experience.v7-fixture-dev"
+GRID5_FIXTURE_SCHEMA = "yggdrasil.ckad.native-episode-experience.v8-grid5-dev"
+SPARSE_FIXTURE_SCHEMA = "yggdrasil.ckad.native-episode-experience.v9-sparse-dev"
 MAX_EPISODES = 1024
 GROWN_MAX_EPISODES = 1152
 MAX_CHECKPOINT_BYTES = 160 * 1024
@@ -66,7 +74,8 @@ class NativeEpisodeExperience:
         "_streaks", "_repairs",
         "_context_start", "_context_models", "_context_weights", "_context_novel",
         "_stream_start", "_stream_score", "_stream_detections",
-        "_refresh_start", "_episode_limit",
+        "_refresh_start", "_episode_limit", "_external_action_fixture",
+        "_grid5_fixture", "_sparse_operator_fixture",
     )
 
     def __init__(self, *, repair=True):
@@ -91,6 +100,9 @@ class NativeEpisodeExperience:
         self._stream_detections = ()
         self._refresh_start = None
         self._episode_limit = MAX_EPISODES
+        self._external_action_fixture = None
+        self._grid5_fixture = None
+        self._sparse_operator_fixture = None
 
     @staticmethod
     def _selected(loss):
@@ -125,7 +137,93 @@ class NativeEpisodeExperience:
         candidate._stream_detections = self._stream_detections
         candidate._refresh_start = self._refresh_start
         candidate._episode_limit = self._episode_limit
+        candidate._external_action_fixture = self._external_action_fixture
+        candidate._grid5_fixture = self._grid5_fixture
+        candidate._sparse_operator_fixture = self._sparse_operator_fixture
         return candidate
+
+    def observe_sparse_fixture(self, public_request, raw, expected_sha256):
+        """Opt-in four-bit public evidence, carried only by THIS native memory.
+
+        Source-free developer receipts, not real charged interventions.
+        Legacy causal counters, Genome, and normal planner stay untouched.
+        """
+        current = self._sparse_operator_fixture or NativeSparseOperatorEvidence()
+        staged = current.observe_public_receipt(public_request, raw, expected_sha256)
+        if staged is current:
+            return self
+        candidate = self._clone()
+        candidate._sparse_operator_fixture = staged
+        candidate.checkpoint()
+        return candidate
+
+    def sparse_fixture_forecast(self, public_view, external_action_id):
+        """Bounded hypothesis readout; never a certified causal law."""
+        current = self._sparse_operator_fixture or NativeSparseOperatorEvidence()
+        return current.forecast(public_view, external_action_id)
+
+    def observe_grid5_fixture(self, public_request, raw, expected_sha256):
+        """Carry source-free 5-action evidence in THIS cumulative episode state.
+
+        No binary counter, donor specialist, source actor or privilege is changed.
+        """
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        staged = current.observe_public_receipt(public_request, raw, expected_sha256)
+        if staged is current:
+            return self
+        candidate = self._clone()
+        candidate._grid5_fixture = staged
+        candidate.checkpoint()
+        return candidate
+
+    def grid5_fixture_plan(self, public_state, *, episode_id):
+        """DEV-only within-episode probe; no unverified cross-world identity."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_plan(public_state, episode_id=episode_id)
+
+    def grid5_fixture_forecast(self, public_state, public_action, *, episode_id):
+        """Only witnessed same-episode successor; otherwise abstain."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_forecast(
+            public_state, public_action, episode_id=episode_id)
+
+    def grid5_fixture_role_forecast(self, public_state, public_action, *, episode_id):
+        """Optional development-only role hypothesis; no source authority."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_role_forecast(
+            public_state, public_action, episode_id=episode_id)
+
+    def grid5_fixture_learned_delta_forecast(
+            self, public_state, public_action, *, episode_id):
+        """DEV-only witness-derived operator, not default planning."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_learned_delta_forecast(
+            public_state, public_action, episode_id=episode_id)
+
+    def observe_external_fixture(self, public_request, raw, expected_sha256):
+        """Stage an opaque public action witness in THIS learner's durable state.
+
+        Fixtures are never routed into binary x1/x2 causal counters. No hidden
+        action-role map is inferred. This has no real-source admission authority.
+        """
+        current = self._external_action_fixture or NativeExternalActionIdentity()
+        staged = current.observe_public_receipt(public_request, raw, expected_sha256)
+        if staged is current:
+            return self
+        candidate = self._clone()
+        candidate._external_action_fixture = staged
+        candidate.checkpoint()  # Fail closed if joint state cannot cold-restore.
+        return candidate
+
+    def observed_external_fixture_value(self, view, external_action_id):
+        """Exact witnessed truth-table lookup; otherwise abstain, never infer."""
+        view = _view(view)
+        _external_request({"public_view": list(view),
+                           "external_action_id": external_action_id})
+        if self._external_action_fixture is None:
+            return None
+        signature = self._external_action_fixture.observed_signature(external_action_id)
+        return None if signature is None else signature[2 * view[0] + view[1]]
 
     def observe(self, identifier, views, row):
         """Return an updated copy from one revealed public intervention episode.
@@ -454,6 +552,25 @@ class NativeEpisodeExperience:
             if self._episode_limit != MAX_EPISODES and len(self._ledger) == MAX_EPISODES:
                 rebuilt = rebuilt.extend_witness_capacity()
         require(rebuilt._state_digest() == self._state_digest(), "EPISODE_REPLAY_DRIFT")
+        if self._external_action_fixture is not None:
+            # The binary ledger does not contain passive opaque-ID evidence.
+            # Keep the existing independently pinned, immutable fixture and
+            # verify both planes before publishing a consolidated state.
+            rebuilt._external_action_fixture = self._external_action_fixture
+            if self._grid5_fixture is None and self._sparse_operator_fixture is None:
+                require(rebuilt.checkpoint() == self.checkpoint(),
+                        "EPISODE_EXTERNAL_CONSOLIDATION_DRIFT")
+        if self._grid5_fixture is not None:
+            # One cumulative learner; extra grid5 fixture rows are a separate
+            # passive evidence plane, not binary causal bank updates.
+            rebuilt._grid5_fixture = self._grid5_fixture
+            if self._sparse_operator_fixture is None:
+                require(rebuilt.checkpoint() == self.checkpoint(),
+                        "EPISODE_GRID5_CONSOLIDATION_DRIFT")
+        if self._sparse_operator_fixture is not None:
+            rebuilt._sparse_operator_fixture = self._sparse_operator_fixture
+            require(rebuilt.checkpoint() == self.checkpoint(),
+                    "EPISODE_SPARSE_CONSOLIDATION_DRIFT")
         return rebuilt
 
     def _repair_info(self):
@@ -536,9 +653,77 @@ class NativeEpisodeExperience:
             info["refresh"] = {"refresh_start": self._refresh_start, "rate": _ratio(REFRESH_RATE)}
         if self._episode_limit != MAX_EPISODES:
             info["episode_limit"] = self._episode_limit
+        if self._external_action_fixture is not None:
+            info["external_action_fixture_sha256"] = digest(
+                self._external_action_fixture.checkpoint())
+            info["external_action_fixture_count"] = len(
+                self._external_action_fixture._rows)
+            info["external_action_source_mode"] = "engineering_fixture_only"
+        if self._grid5_fixture is not None:
+            info["grid5_fixture_sha256"] = digest(self._grid5_fixture.checkpoint())
+            info["grid5_fixture_count"] = len(self._grid5_fixture._rows)
+            info["grid5_source_mode"] = "engineering_fixture_only"
+        if self._sparse_operator_fixture is not None:
+            info["sparse_fixture_sha256"] = digest(
+                self._sparse_operator_fixture.checkpoint())
+            info["sparse_fixture_count"] = len(self._sparse_operator_fixture._rows)
+            info["sparse_source_mode"] = "engineering_fixture_only"
         return info
 
     def checkpoint(self):
+        if self._sparse_operator_fixture is not None:
+            # Opt-in v9 envelope over unmodified v1-v8 checkpoint bytes.
+            baseline = self._clone()
+            baseline._sparse_operator_fixture = None
+            native_raw = baseline.checkpoint()
+            sparse_raw = self._sparse_operator_fixture.checkpoint()
+            data = {
+                "schema": SPARSE_FIXTURE_SCHEMA,
+                "native_checkpoint": json.loads(native_raw.decode("ascii")),
+                "native_sha256": digest(native_raw),
+                "sparse_checkpoint": json.loads(sparse_raw.decode("ascii")),
+                "sparse_sha256": digest(sparse_raw),
+                "native_accepted": False, "scientific_pass": False,
+            }
+            raw = canonical(data)
+            require(len(raw) <= MAX_CHECKPOINT_BYTES,
+                    "EPISODE_SPARSE_CHECKPOINT_CAPACITY")
+            return raw
+        if self._grid5_fixture is not None:
+            # Opt-in v8 envelope over byte-identical legacy v1-v7 payloads.
+            prior = self._clone()
+            prior._grid5_fixture = None
+            native_raw = prior.checkpoint()
+            fixture_raw = self._grid5_fixture.checkpoint()
+            data = {
+                "schema": GRID5_FIXTURE_SCHEMA,
+                "native_checkpoint": json.loads(native_raw.decode("ascii")),
+                "native_sha256": digest(native_raw),
+                "grid5_checkpoint": json.loads(fixture_raw.decode("ascii")),
+                "grid5_sha256": digest(fixture_raw),
+                "native_accepted": False, "scientific_pass": False,
+            }
+            raw = canonical(data)
+            require(len(raw) <= MAX_CHECKPOINT_BYTES,
+                    "EPISODE_GRID5_CHECKPOINT_CAPACITY")
+            return raw
+        if self._external_action_fixture is not None:
+            baseline = self._clone()
+            baseline._external_action_fixture = None
+            native_raw = baseline.checkpoint()  # Preserve original v1-v6 bytes.
+            fixture_raw = self._external_action_fixture.checkpoint()
+            data = {
+                "schema": EXTERNAL_FIXTURE_SCHEMA,
+                "native_checkpoint": json.loads(native_raw.decode("ascii")),
+                "native_sha256": digest(native_raw),
+                "fixture_checkpoint": json.loads(fixture_raw.decode("ascii")),
+                "fixture_sha256": digest(fixture_raw),
+                "native_accepted": False, "scientific_pass": False,
+            }
+            raw = canonical(data)
+            require(len(raw) <= MAX_CHECKPOINT_BYTES,
+                    "EPISODE_CHECKPOINT_CAPACITY")
+            return raw
         data = {
             "schema": SCHEMA, "repair": self._repair_enabled,
             "episodes": self._ledger, "state_sha256": self._state_digest(),
@@ -569,6 +754,90 @@ class NativeEpisodeExperience:
                 and pin(expected_sha256) and digest(raw) == expected_sha256, "EPISODE_CHECKPOINT_PIN")
         try:
             data = json.loads(raw.decode("ascii"))
+            if type(data) is dict and data.get("schema") == SPARSE_FIXTURE_SCHEMA:
+                keys = {"schema", "native_checkpoint", "native_sha256",
+                        "sparse_checkpoint", "sparse_sha256",
+                        "native_accepted", "scientific_pass"}
+                require(set(data) == keys and canonical(data) == raw
+                        and data["native_accepted"] is False
+                        and data["scientific_pass"] is False
+                        and type(data["native_checkpoint"]) is dict
+                        and type(data["sparse_checkpoint"]) is dict
+                        and data["native_checkpoint"].get("schema") != SPARSE_FIXTURE_SCHEMA,
+                        "EPISODE_SPARSE_ENVELOPE_SCHEMA")
+                native_raw = canonical(data["native_checkpoint"])
+                sparse_raw = canonical(data["sparse_checkpoint"])
+                require(pin(data["native_sha256"])
+                        and digest(native_raw) == data["native_sha256"]
+                        and pin(data["sparse_sha256"])
+                        and digest(sparse_raw) == data["sparse_sha256"],
+                        "EPISODE_SPARSE_ENVELOPE_PINS")
+                baseline = cls.restore(native_raw, data["native_sha256"])
+                require(baseline._sparse_operator_fixture is None,
+                        "EPISODE_NESTED_SPARSE_ENVELOPE")
+                fixture = NativeSparseOperatorEvidence.restore(
+                    sparse_raw, data["sparse_sha256"])
+                require(len(fixture._rows) > 0, "EPISODE_EMPTY_SPARSE_FIXTURE")
+                candidate = baseline._clone()
+                candidate._sparse_operator_fixture = fixture
+                require(candidate.checkpoint() == raw,
+                        "EPISODE_SPARSE_ENVELOPE_REPLAY")
+                return candidate
+            if type(data) is dict and data.get("schema") == GRID5_FIXTURE_SCHEMA:
+                keys = {"schema", "native_checkpoint", "native_sha256",
+                        "grid5_checkpoint", "grid5_sha256",
+                        "native_accepted", "scientific_pass"}
+                require(set(data) == keys and canonical(data) == raw
+                        and data["native_accepted"] is False
+                        and data["scientific_pass"] is False
+                        and type(data["native_checkpoint"]) is dict
+                        and type(data["grid5_checkpoint"]) is dict
+                        and data["native_checkpoint"].get("schema") != GRID5_FIXTURE_SCHEMA,
+                        "EPISODE_GRID5_ENVELOPE_SCHEMA")
+                native_raw = canonical(data["native_checkpoint"])
+                grid5_raw = canonical(data["grid5_checkpoint"])
+                require(pin(data["native_sha256"])
+                        and digest(native_raw) == data["native_sha256"]
+                        and pin(data["grid5_sha256"])
+                        and digest(grid5_raw) == data["grid5_sha256"],
+                        "EPISODE_GRID5_ENVELOPE_PINS")
+                baseline = cls.restore(native_raw, data["native_sha256"])
+                require(baseline._grid5_fixture is None,
+                        "EPISODE_NESTED_GRID5_ENVELOPE")
+                grid5 = NativeGrid5Evidence.restore(
+                    grid5_raw, data["grid5_sha256"])
+                candidate = baseline._clone()
+                candidate._grid5_fixture = grid5
+                require(candidate.checkpoint() == raw,
+                        "EPISODE_GRID5_ENVELOPE_REPLAY")
+                return candidate
+            if type(data) is dict and data.get("schema") == EXTERNAL_FIXTURE_SCHEMA:
+                keys = {"schema", "native_checkpoint", "native_sha256",
+                        "fixture_checkpoint", "fixture_sha256",
+                        "native_accepted", "scientific_pass"}
+                require(set(data) == keys and canonical(data) == raw
+                        and data["native_accepted"] is False
+                        and data["scientific_pass"] is False
+                        and type(data["native_checkpoint"]) is dict
+                        and type(data["fixture_checkpoint"]) is dict
+                        and data["native_checkpoint"].get("schema") != EXTERNAL_FIXTURE_SCHEMA,
+                        "EPISODE_EXTERNAL_FIXTURE_SCHEMA")
+                native_raw = canonical(data["native_checkpoint"])
+                fixture_raw = canonical(data["fixture_checkpoint"])
+                require(pin(data["native_sha256"])
+                        and digest(native_raw) == data["native_sha256"]
+                        and pin(data["fixture_sha256"])
+                        and digest(fixture_raw) == data["fixture_sha256"],
+                        "EPISODE_EXTERNAL_FIXTURE_PINS")
+                baseline = cls.restore(native_raw, data["native_sha256"])
+                fixture = NativeExternalActionIdentity.restore(
+                    fixture_raw, data["fixture_sha256"])
+                require(len(fixture._rows) > 0, "EPISODE_EMPTY_EXTERNAL_FIXTURE")
+                candidate = baseline._clone()
+                candidate._external_action_fixture = fixture
+                require(candidate.checkpoint() == raw,
+                        "EPISODE_EXTERNAL_FIXTURE_REPLAY")
+                return candidate
             require(type(data) is dict
                     and data.get("schema") in (SCHEMA, CONTEXT_SCHEMA, NOVEL_CONTEXT_SCHEMA,
                                                STREAM_SCHEMA, REFRESH_SCHEMA, GROWTH_SCHEMA),

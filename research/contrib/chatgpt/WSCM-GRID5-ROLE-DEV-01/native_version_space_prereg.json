@@ -1,0 +1,46 @@
+{
+  "schema": "yggdrasil.wscm.native-version-space-preflight.dev.v1",
+  "experiment_id": "WSCM-GRID5-OBSERVED-VERSION-SPACE-DEV-01",
+  "status": "FROZEN_SOURCE_FREE_STATIC_ENGINEERING_ONLY",
+  "base_commit": "320c55b75ddb5c5591e744419feb169737d031d6",
+  "hypothesis": "A fixed x-parity finite grammar can generate alternative provisional action effects from one real public witnessed interior transition without supplied hidden law tables; a bounded offline disagreement selector may propose an informative hypothetical probe but cannot establish the truth, reachability or utility of any law.",
+  "source_limits": {
+    "evidence": "NativeGrid5Evidence receipt-validated immutable _rows, filtered by exact episode_id and public action",
+    "grammar": "Public x-coordinate parity only (x%2). Each parity branch takes a single cardinal-or-stay displacement chosen from (1,0),(-1,0),(0,1),(0,-1),(0,0). The visited branch is constrained by at least one strictly interior witness; the other branch retains all five possibilities.",
+    "no_hidden_role_labels": true,
+    "no_true_law_oracle": true,
+    "no_cross_episode_reuse": true,
+    "no_native_planner_integration": true,
+    "no_original_world_actions": true,
+    "no_new_training_data": true
+  },
+  "algorithm": "Validate native evidence type, episode pin and bounds. Only same-episode same-action rows; reject contradictory witnessed effects, including distinct successors at same state, rather than inventing model confidence. Require every witness from this action to be explainable by a grammar law when its predicted successor is strictly interior; clipped inputs are noninformative, never treated as evidence for a boundary rule. Deduce constrained branch delta from at least one interior witness. Enumerate all five alternative deltas on one unobserved branch, max five fitting models. Candidate states must be distinct, unobserved, strictly interior with strictly interior predictions for every surviving alternative. Hand the derived complete alternative tables to existing offline discrimination_preflight_dev.propose_probe with budget <=10. If no disagreement, insufficient evidence, conflict, incomplete hypothesis, unsupported boundary or budget exhausted, abstain/fail closed.",
+  "action_budget": {
+    "real_actions": 0,
+    "proposed_only": true,
+    "maximum_candidates": 16,
+    "maximum_hypotheses": 5,
+    "maximum_abstract_charge": 10,
+    "source_authenticated_cost": false
+  },
+  "frozen_test_cases": [
+    "no witness or only clipped witness => ABSTAIN",
+    "one unique interior witness on even x => generate five alternatives for odd x and proposal at affordable odd-x candidate, no proposal at even-x candidate",
+    "proposal is not an authorized action and cannot modify native checkpoint or planner",
+    "mixed same-parity effects or contradictory identical state => CONTRADICTION and no candidate",
+    "both x-parity branches observed => no disagreement => ABSTAIN",
+    "prior episode witness cannot supply active episode model",
+    "unaffordable discriminating candidate => BUDGET_EXHAUSTED without touching action actor",
+    "invalid actions, episode, candidate shapes, duplicate candidates and out-of-domain coordinates reject",
+    "deterministic output and cold exact checkpoint parity"
+  ],
+  "control": "Current supplied-table discrimination preflight is an oracle upper-bound; the new path must construct full candidate tables from native witness rows only. Existing conditional_rule_dev finds a single supported parity fit after two witnesses per branch; this version-space task instead represents uncertainty from ONE observed branch, and never claims a unique law.",
+  "success": "All new frozen source-free focused tests PASS and unchanged legacy focused tests PASS on exact source bytes. This is ENGINEERING ONLY.",
+  "failure": "Any false safety flag, missing receipt isolation, hidden law injection, unsupported branch treated as known, inconsistent forecast accepted, unbounded hypothesis growth, unaudited original action or non-deterministic output is a development FAIL.",
+  "science": "No held source first-use, no trained equal-information controls, no Brier or unfamiliar-family gain claim, no deployment. Protected scientific evaluation requires separate source-owner approved prereg and source lease; this protocol cannot grant execution.",
+  "changed_paths": [
+    "research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/native_version_space_prereg.json",
+    "research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01/native_version_space_dev.py",
+    "tests/test_wscm_grid5_version_space_dev.py"
+  ]
+}

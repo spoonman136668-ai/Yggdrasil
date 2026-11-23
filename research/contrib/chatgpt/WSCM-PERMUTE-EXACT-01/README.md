@@ -1,0 +1,23 @@
+# WSCM-PERMUTE-EXACT-01 — exact symbolic action-identification baseline
+
+**Status:** SOURCE-ONLY LOCAL ANALYSIS AND FOCUSED TESTS PASS; native integration and full Linux/Windows regression UNVERIFIED; SCIENTIFIC GAIN NOT VERIFIED; no protected first-use, no deployment.
+
+## Pinned custody
+- Contributor PR #1364 parent `628ab0022f3fd7d3cb3f0925d9b93e8aa788b9cf` (tree `7a9440a80af12183941e2d4fcf2824be6dedd319`), coordinator #1278 `86264b41a08d49f558418c0fba367f3a2636befa`. This study is a DETACHED Git commit and does not move the PR.
+- External original [jaehyeon-son/dicp](https://github.com/jaehyeon-son/dicp) at `e36b3f713fdca775728525dc621820a1989691f8`, [Darkroom source](https://github.com/jaehyeon-son/dicp/blob/e36b3f713fdca775728525dc621820a1989691f8/gridworld/env/darkroom.py) blob `54f12df08dbe9215d0b7be91a94f0b059f2787ab`, config blob `7d2c2f7c2dc26cbb854a8aaf071e947f20461891`.
+- Our reference source `probe_bound.py` Git blob `f3e76c1a5b163b00acba0d7d2f2b1ef33660a826`, SHA256 `17e199c3d537312f9c81a6f68b3226519e3558628e26b83a28a9c8f2ae77f224`; independently coded test `test_probe_bound.py` blob `ae646ef120d7603d04bd7b45a1c928c6863c688a`, SHA256 `71ff917f92bef86560467dbfbbfe9116a6e242ddb3555cfcd6d752608b25465b`.
+- No vendored upstream code. Repository has no identified license file at pinned source tree; copying external code requires source-use permission.
+
+## Mechanism and result
+- Fixed deterministic closed world: 9x9 public state; five *native* discrete action labels mapped bijectively to physical up/down/left/right/stay by a source-private permutation; 120 candidate permutations; start (0,0), horizon 50.
+- Exhaustive minimax dynamic programming conditions the unknown permutation set **only on publicly witnessed (state, chosen action, next state)**. Its partition calculation uses known source physics as a conventional exact-symbolic control, not hidden `perm_idx` input. It outputs a public action without reading a true permutation.
+- **Worst-case identification requires seven charged observations from corner:** six insufficient, seven sufficient. A separate independent replay of the certified adaptive policy resolves **120/120** hidden permutations. At (4,4), worst-case four observations suffice.
+- Minimize **total interventions over all 120 equiprobable permutations subject to the seven-action worst-case**: total **660**, average **5.5**, histogram **4:20, 5:36, 6:48, 7:16**. This is a strong exact-symbolic control, not a WSCM gain. A first feasible worst-case-seven policy had mean 6.9; optimizing the expected cost improves the comparator before scientific admission, not by tuning to experimental outcomes.
+- At the start corner, even counterfactual observation of all five distinct raw action outcomes would leave six indistinguishable permutations in each of 20 groups; the physical roles up/left/stay all clip to the same location. An interior move is necessary to distinguish those roles.
+- Original `DarkroomPermuted.step` indexes `self.perm[action]`, so unvalidated negative/boolean/out-of-range public actions must be rejected at any future source actor boundary. Our analytical control enforces validation **before** caching: an initial local test caught Python `True == 1` cache-key alias and was repaired before the current source Git-blob pin.
+
+## Exact local reproduction (no environment use)
+From this directory: `python -B -m unittest -v test_probe_bound` and `python -O -B -m unittest -v test_probe_bound`. Linux CPython 3.13.5: **9/9 PASS** in normal and optimized; first failed local validation case was fixed and not concealed. Tests independently reproduce the published movement and replay all 120 hidden maps without any actual upstream environment construction, reset, action, file dataset opening, or use of optimal-action labels. See `result.json` for the machine record.
+
+## Explicit limits and decision
+This is **one deterministic fixed-grid operator family under a hidden permutation**, not a general causal law, composed unseen operator, robust noisy family, or native Yggdrasil 5-action learner. `NativeCausalAmalgam.plan` presently plans binary actions; external fixtures carry no source-authenticated custody or novel learning. The source's collected `optimal_actions` and test permutations cannot be offered as candidate observations. Protected original-world first-use remains HOLD under Yggdrasil issue #426. No source-owner lease, action actor, charged new original step, runner dispatch, workflow, ref change, accepted-main modification, or scientific promotion occurred here. Full exact-SHA Linux/Windows final regression and acceptance are UNVERIFIED.

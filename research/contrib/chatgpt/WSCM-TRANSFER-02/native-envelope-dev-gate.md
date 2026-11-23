@@ -1,0 +1,16 @@
+# WSCM-TRANSFER-02 / NativeEpisodeExperience fixture envelope (DEV-only design freeze)
+
+Date: 2026-11-22. Base draft PR #1364 head `8de7e8f6055baa7102801b0ac0700a7547d7f4ca`, tree `d69d55f32938144b31dea6ccb3b1ff80a976fcde`. Native original blob `5a18b00a4c4131526e71f51d63dfd9eb9471c81e`. Fixture identity original blob `58219fff874f2f1227822c92998c7427661feb3e`.
+
+**Purpose:** make fixture-only external action evidence persist on the *same* native episode component as legacy causal counts, without creating a competing learner, generating hidden law/role labels or rewriting previously scored outcomes. This is an opt-in engineering seam and versioned checkpoint format, **not** a change to the accepted model or a scientific qualification. No experiment seed, protected intervention, owner first-use or controller action is authorized by this file.
+
+### Fixed contract before scientific first use
+
+- Legacy `NativeEpisodeExperience` v1-v6 checkpoint bytes and forecast/propose/observe behavior remain unchanged when this feature is unused. The original native causal banks and their stable state digest are *not* updated from opaque external actions.
+- New method `observe_external_fixture(public_request, fixture_bytes, sha256)` admits only exact public `(binary_view, opaque_action_ID)` and source fixture with verified canonical **byte integrity**. It does not authenticate real intervention provenance; all source records remain `engineering_fixture_only`. Mutations are immutable and capacity-checked before return.
+- New `observed_external_fixture_value(binary_view, opaque_ID)` returns only a fully witnessed four-state deterministic outcome or abstains; no early A-return zero-shot transfer, hidden action-role mapping, nearest-neighbor interpolation or probability of correctness is exposed. Changed external IDs require their own witnesses.
+- An optional `v7-fixture-dev` checkpoint envelope binds the complete original native v1-v6 checkpoint bytes and the complete action fixture receipt checkpoint with separate SHA256 digests. Strict canonical schema, no nested envelope, false native/scientific acceptance flags, restored identical base and external state; enforce original total 160 KiB checkpoint bound.
+- Fail closed on mismatched request, duplicate source ID with different evidence, hash/canonical changes, forged authority, altered cold checkpoint, ID aliasing, and new evidence that would exceed capacity. Do not treat caller-supplied SHA as a signature or claim an authenticated real intervention.
+- Qualification requires isolated actual native runtime tests (normal legacy parity, context checkpoint, exact cold restore and rehash negatives), Linux/Windows full final regression on exact candidate SHA/tree, baseline controls, and explicit owner authority for protected scientific first-use. G29 code atlas success alone is insufficient.
+
+**Hard limit:** this does **not** solve the native action-to-operator identification problem or improve cumulative causal learning by itself; it only makes action provenance and strict abstention part of the same checkpoint custody. The strong exact-table lookup control can match these outputs and therefore there is no positive scientific claim. If real external source custody or native counter semantics cannot be qualified, retain `NATIVE_ACTION_ID_LEARNING_BLOCKED`.

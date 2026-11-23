@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.wscm.grid5-episode-isolation-dev.v1",
+  "classification": "SOURCE_FREE_DEVELOPMENT_ONLY",
+  "repository": "spoonman136668-ai/Yggdrasil",
+  "source_head": "448d5d49df68ecc56dc3040c8c42b0633016fda2",
+  "source_tree": "f70dabaaa637c9f724954c1ddd363790e778ccc2",
+  "active_pr": 1364,
+  "active_pr_head": "628ab0022f3fd7d3cb3f0925d9b93e8aa788b9cf",
+  "coordinator_head": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "failure": "Cross-episode contamination: original NativeGrid5Evidence.public_forecast(state,action) read all historical episode rows. Episode B had no witness for action 0, but returned episode A's [0,1] observation; public_plan also carried previous episode counts.",
+  "baseline_original_source_blob": "8734509b24dac0d3a13d5795f198082bda37f939",
+  "original_base_tests": {
+    "normal": 18,
+    "pass": 18
+  },
+  "observed_counterexample": {
+    "episode_A_action0_observed": [
+      0,
+      1
+    ],
+    "episode_B_action0_witnesses": 0,
+    "incorrect_prediction_before": [
+      0,
+      1
+    ],
+    "correct_safe_behavior": null
+  },
+  "repair": "Require explicit valid episode_id for public_forecast/public_plan; filter all observations and counts by that exact public episode ID; forbid implicit fallback. Thread required episode ID through existing NativeEpisodeExperience/NativeCumulativeLearner/NativeCausalAmalgam fixture-only methods; no change to binary plan(view), no learned role transfer.",
+  "tested_files": {
+    "yggdrasil/native_grid5_evidence.py": {
+      "git_blob": "198056465930d1c2c5f47d6dc8f70fb43754aa0c",
+      "sha256": "5829ff7309fbffc8e09fd4d08b502ba07723e4937c39f738c485badba0ca659e",
+      "bytes": 6749
+    },
+    "tests/test_native_grid5_evidence_dev.py": {
+      "git_blob": "351c0c1167d44f0b0db07e7a1fffac79f9fc2d8f",
+      "sha256": "a0c821a5bb22e30c24c360be073ec09817461ddfd365c3fd57a7bbed1f71b642",
+      "bytes": 8200
+    },
+    "tests/test_wscm_grid5_episode_scope_dev.py": {
+      "git_blob": "7085619c0386b06faa122d04a0a30ac41501e1b6",
+      "sha256": "aad24540ba0c87b78da5f5a91d2790117b731a633c9f47db75939aefec158ac2",
+      "bytes": 3806
+    }
+  },
+  "executed": {
+    "linux": "Python 3.13.5",
+    "normal": {
+      "passed": 24,
+      "failed": 0
+    },
+    "optimized": {
+      "passed": 24,
+      "failed": 0
+    },
+    "py_compile": "PASS",
+    "checkpoint_cold_restore": "PASS_ON_ACTUAL_EVIDENCE_CLASS"
+  },
+  "integration_wrappers": {
+    "native_episode_patch": "60f9286ddcec2ee265bef034f3f59242d9ca3219",
+    "native_cumulative_patch": "e3eb242b422ca727694aafc5814c7a9c6f3de58d",
+    "native_amalgam_patch": "af067de90a8c2bf4559d4382c3cd77cc6c0c4143",
+    "integration_test_unrun": "720fb0cf0eec281892e0f048cfbf9474f948d4f0"
+  },
+  "unverified": [
+    "original NativeEpisodeExperience / NativeCumulativeLearner / NativeCausalAmalgam integration execution",
+    "G29/source atlas regeneration",
+    "full final exact-candidate Linux/Windows regression",
+    "source-owner original-world first-use",
+    "upstream software reuse license"
+  ],
+  "safety": {
+    "original_source_actions": 0,
+    "runner_dispatches": 0,
+    "branch_ref_updated": false,
+    "accepted_main_changed": false,
+    "scientific_gain_verified": false
+  },
+  "interpretation": "Safety correction only; episode-isolation fails open-world transfer by deliberately abstaining, not evidence of learned generalization. Cross-episode reuse requires independently authenticated shared causal-law provenance."
+}
