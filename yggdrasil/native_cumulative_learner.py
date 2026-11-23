@@ -240,6 +240,28 @@ class NativeCumulativeLearner:
         candidate._experience = experience
         return candidate
 
+    def observe_sparse_fixture(self, public_request, raw, expected_sha256):
+        """Four-bit source-free evidence through the one native episode owner.
+
+        This research-only seam does not alter the original binary counter bank,
+        qualify an external intervention, or authorize a source action.
+        """
+        require(self._dtr is not None, 'EPISODE_REQUIRES_INTEGRATED_PARENT')
+        previous = self._episode_reader()
+        experience = previous.observe_sparse_fixture(
+            public_request, raw, expected_sha256)
+        if experience is previous:
+            return self
+        candidate = self._copy()
+        candidate._experience = experience
+        candidate.checkpoint()
+        return candidate
+
+    def sparse_fixture_forecast(self, public_view, external_action_id):
+        """Read a bounded provisional hypothesis, never causal certification."""
+        return self._episode_reader().sparse_fixture_forecast(
+            public_view, external_action_id)
+
     def observe_grid5_fixture(self, public_request, raw, expected_sha256):
         """Opt-in fixture-only five-action evidence in existing native memory.
 
