@@ -184,5 +184,8 @@ jobs:
           for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
             python -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py'
           done
+          # Include the new pure conditional-rule tests outside tests/; native
+          # integration and version-space tests are included by the full suite.
+          PYTHONPATH=".:research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01" python -B -m unittest discover -s research/contrib/chatgpt/WSCM-GRID5-ROLE-DEV-01 -p 'test_conditional_rule_dev.py' -v
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
