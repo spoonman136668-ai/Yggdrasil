@@ -116,5 +116,53 @@ class FunctionalConsensusDev(unittest.TestCase):
         self.assertEqual(self.call(native=native),self.call(native=native))
         self.assertEqual(old,native.rows)
 
+    def test_exhaustive_fixed_grammar_control_parity(self):
+        # Deterministic recheck of the already-inspected, source-free family.
+        # These cases are correlated logic fixtures, NOT scientific trials.
+        from itertools import combinations, product
+        states = ((0, 0), (0, 1), (1, 0), (1, 1))
+        wires = ('output_then_x', 'output_then_y',
+                 'x_then_output', 'y_then_output')
+        counts = {'total': 0, 'default': 0, 'consensus': 0,
+                  'recovered': 0, 'wrong': 0}
+        for f in product((0, 1), repeat=4):
+            for g in product((0, 1), repeat=4):
+                native = Ledger(f, g)
+                for wire in wires:
+                    for observed in combinations(states, 2):
+                        receipts = trace(f, g, starts=observed, wire=wire)
+                        for query in states:
+                            if query in observed:
+                                continue
+                            before = propose(native, 1301, 22007, receipts,
+                                             list(query))
+                            after = propose(native, 1301, 22007, receipts,
+                                            list(query), allow_functional_consensus=True)
+                            control = independent_symbolic(f, g, receipts, query)
+                            x, y = query
+                            first = f[2*x+y]
+                            mids = {'output_then_x': (first, x),
+                                    'output_then_y': (first, y),
+                                    'x_then_output': (x, first),
+                                    'y_then_output': (y, first)}
+                            actual_mid = mids[wire]
+                            truth = g[2*actual_mid[0]+actual_mid[1]]
+                            counts['total'] += 1
+                            if before['status'] == 'HYPOTHESIS':
+                                counts['default'] += 1
+                                self.assertEqual(before['predicted_next_bit'], truth)
+                            if after['status'] == 'HYPOTHESIS':
+                                counts['consensus'] += 1
+                                counts['wrong'] += int(after['predicted_next_bit'] != truth)
+                                self.assertEqual(after['predicted_next_bit'], control)
+                                self.assertIsNotNone(control)
+                            else:
+                                self.assertEqual(after['status'], 'ABSTAIN')
+                                self.assertIsNone(control)
+                            if before['status'] != 'HYPOTHESIS' and after['status'] == 'HYPOTHESIS':
+                                counts['recovered'] += 1
+        self.assertEqual(counts, {'total': 12288, 'default': 7680,
+                                  'consensus': 10496, 'recovered': 2816, 'wrong': 0})
+
 if __name__ == '__main__':
     unittest.main()
