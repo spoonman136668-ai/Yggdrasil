@@ -1,0 +1,13 @@
+# WSCM-EPISTEMIC-GUARD-01 — unknown-family abstention (research-only)
+
+**Combined source-free compatibility candidate; NOT a native-planner integration, scientific gain, acceptance, or deployment.**
+
+- This detached candidate starts from WSCM contributor PR #1364 at `c8c6405493e6c09dd08a33716c77bdfc2f7eb90d`, tree `622b531ce1a865a2b0b8199e979f3e177808fb85`, and brings over the isolated guard and tests from detached commit `d82ba013e1b2e40989fa3bfaf661dd14bdc011d2`. The original three guard/test source blobs are unchanged.
+- The original GitHub-read source blobs are `native_grid5_ingress.py=2733e0c587ae64ec7e17a550bda243569353dbc4`, `native_grid5_evidence.py=e743a02d194e2e76c6a689268d376bb3d2b4880e`, and the PR's corroboration adapter `evidence_gate_dev.py=71bd54a0b975f1ad4d46cacaefa8ebfd2b186f5d`. Local reconstructed source files matched each Git blob via `git hash-object`.
+- **Actual local source-free Linux CPython 3.13.5 checks**: stubbed pure contract `6/6 PASS` normal and optimized, original native-component adversarial `4/4 PASS` normal and optimized, current PR corroboration `6/6 PASS` normal and optimized, new cross-readout tests `5/5 PASS` normal and optimized (total 21 distinct cases per mode). Original-native code was executed directly, not a math-only simulator. A small `receipt()` helper was taken from the original native test source; the full original repository and original-world actor were not executed.
+- The guarded readout always returns `ABSTAIN_UNVERIFIED_FAMILY` and `action_admissible=false` when physics applicability has not been authenticated, even when the opt-in family readout returns `ENTAILED` or the corroboration filter returns `HYPOTHESIS`. Historical witness outcomes remain separately labeled. Default `public_plan`, stored model checkpoints and native source are unchanged.
+- A guaranteed no-action guard is a **safety interface only**, with zero candidate-action coverage; it cannot identify unfamiliar mechanisms, establish improvement over conventional controls, or show autonomous learning.
+
+See `verification-native-local.json` for the exact source pin, tests, environment, scope and outstanding gates. Historical prior isolated-draft qualification remains preserved at `d82ba013...` and is not retroactively rewritten.
+
+**HOLD:** Full final exact-candidate Linux/Windows original regression, G29 atlas regeneration and exact-tree qualification, source-owner first-use issue #426, independent scientific score and owner acceptance remain outstanding. No new CI runner dispatch, PR ref update, protected original-world step, accepted-main mutation, or merge was performed.
