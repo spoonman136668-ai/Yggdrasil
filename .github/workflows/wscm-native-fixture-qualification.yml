@@ -17,7 +17,7 @@ env:
   MKL_NUM_THREADS: '1'
 jobs:
   native-fixture:
-    if: "startsWith(github.event.head_commit.message, 'docs(wscm): regenerate G29 atlas')"
+    if: "startsWith(github.event.head_commit.message, 'ci(wscm): qualify reconciled Grid5')"
     strategy:
       fail-fast: false
       matrix:
@@ -45,11 +45,33 @@ jobs:
           git rev-parse HEAD^{tree}
           python -B scripts/build_code_atlas.py --check-if-present
           test -z "$(git status --porcelain)"
+      - name: Deterministic exact-head G29 re-render (temporary evidence, no source mutation)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          grep -Fx "SOURCE_COMMIT: $GITHUB_SHA" .ice/code-atlas.ice
+          cp .ice/code-atlas.json "$RUNNER_TEMP/wscm-code-atlas.json"
+          cp .ice/code-atlas.html "$RUNNER_TEMP/wscm-code-atlas.html"
+          cp .ice/code-atlas.ice "$RUNNER_TEMP/wscm-code-atlas.ice"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          cmp .ice/code-atlas.json "$RUNNER_TEMP/wscm-code-atlas.json"
+          cmp .ice/code-atlas.html "$RUNNER_TEMP/wscm-code-atlas.html"
+          cmp .ice/code-atlas.ice "$RUNNER_TEMP/wscm-code-atlas.ice"
+          sha256sum "$RUNNER_TEMP"/wscm-code-atlas.*
+          git restore -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: WSCM-exact-G29-${{ runner.os }}-${{ github.sha }}
+          path: ${{ runner.temp }}/wscm-code-atlas.*
+          if-no-files-found: error
+          retention-days: 30
       - name: Focused original-native external-ID and cold-memory tests
         shell: bash
         run: |
           set -euo pipefail
-          for suite in test_wscm_transfer02_fixture_plan.py test_native_episode_external_fixture_envelope.py test_native_external_action_identity.py; do
+          for suite in test_wscm_transfer02_fixture_plan.py test_native_episode_external_fixture_envelope.py test_native_external_action_identity.py test_native_grid5_evidence_dev.py test_wscm_grid5_episode_scope_dev.py test_wscm_native_grid5_dev.py; do
             python -B -m unittest discover -s tests -p "$suite" -v
           done
           test -z "$(git status --porcelain)"
