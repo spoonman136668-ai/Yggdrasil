@@ -61,18 +61,21 @@
     "tp_hdc_channel_allocated_bytes": 4096,
     "checkpoint_bytes": 4132,
     "cpu_seconds_initial": 11.72849843,
-    "tracemalloc_peak_bytes_initial": 579582
+    "tracemalloc_peak_bytes_initial": 579582,
+    "cpu_seconds_replay": 11.505236432,
+    "tracemalloc_peak_bytes_replay": 579582
   },
   "interpretation": "Numeric HDC vs pooled thresholds pass, but exact task-aware counts beat HDC Brier on every stage with far fewer actual needed bytes. The prereg negative/ mixed clause on exact-control dominance is applicable. No independent native Yggdrasil science gain established.",
   "qualification": {
     "engineering_source_identity": "PASS",
     "checkpoint_restore_and_corruption": "PASS_IN_PRIMARY",
     "linux_focused_primary": "PASS",
-    "independent_replay": "UNVERIFIED",
+    "independent_replay": "UNVERIFIED (exact-source reexecution only)",
     "full_candidate_regression": "UNVERIFIED",
     "windows": "UNVERIFIED",
     "native_yggdrasil_learning": "UNVERIFIED",
     "scientific_pass": false,
-    "production": false
+    "production": false,
+    "exact_source_replay": "PASS scientific fields seed-wise and aggregate identical; two local executions; same code blob and generator; not independent implementation"
   }
 }
