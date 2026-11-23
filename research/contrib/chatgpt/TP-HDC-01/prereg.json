@@ -1,0 +1,80 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "TP-HDC-01",
+  "contributor": "chatgpt",
+  "contribution_class": "falsification",
+  "question": "Does a fixed-byte task-keyed hyperdimensional superposition preserve witnessed causal action-outcome predictions after sequential interfering tasks, at matched 4096-byte allocated state and identical observations?",
+  "hypothesis": "In source-free synthetic A -> B -> A -> C, task-keyed 4096-dimensional signed-int8 superposition reduces A retention drift relative to a task-blind shared counter, but cannot be assumed better than exact task-tagged counts.",
+  "exact_parent_sha": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "predecessor_evidence": [
+    "spoonman136668-ai/Yggdrasil@5e74f8db85b2f5839c42148c0dfba69a88b1a2c9:yggdrasil/public_causal_cells.py",
+    "spoonman136668-ai/Yggdrasil#1278",
+    "spoonman136668-ai/Yggdrasil#1364",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7256401/"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/TP-HDC-01/"
+  ],
+  "inputs": [
+    {
+      "name": "Deterministic source-free stochastic binary-outcome generator. Frozen version-string UTF-8 SHA256; generated observations not inspected before prereg commit.",
+      "sha256": "ca8558bf6fb863939d0c0adc51991d53ca5211e9ed8602076a007c7b12676346",
+      "source": "TP-HDC-01|v1|probabilities:A:0.2,0.8,0.75,0.25;B:0.8,0.2,0.25,0.75;C:0.5,0.5,0.5,0.5|order:A,B,A,C|contexts:0,1|actions:0,1|obs-per-cell-per-stage:32|seeds:101,202,303,404|rng:python-random-MT19937"
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      101,
+      202,
+      303,
+      404
+    ],
+    "split": "All four seeds fixed before any outcome. Each uses 512 sequential public observations (4 stages x 2 contexts x 2 actions x 32 outcomes). A and B are contrary laws; the later A stage returns to earlier law; C is independent 0.5 unknown law.",
+    "ordering": "Stages A,B,A,C; within each stage for context in (0,1), for action in (0,1), then 32 independent observations from random.Random(seed), outcome=int(rng.random() < p(stage,context,action)). Tasks available to all task-aware candidates; task-blind variant gets no stage label. Probability tuple indexes c0/a0,c0/a1,c1/a0,c1/a1; A=(0.2,0.8,0.75,0.25), B=(0.8,0.2,0.25,0.75), C=(0.5,0.5,0.5,0.5).",
+    "data_budget": "512 outcomes/seed, 2048 across exactly four seeds; zero external episodes, no original CausalGym, no pretrained checkpoints",
+    "compute_budget": "One deterministic primary execution of four frozen seeds, exactly one iteration per arm, Python standard library only, no model calls or runner/workflow dispatch. No retries to improve scores; independent replay permitted only with exact identities.",
+    "capacity": "HDC channel 4096 signed int8 values = 4096 learned bytes, saturated at [-128,127], no task-specific stored parameters. The deterministic projection keys are generated from a fixed public seed and task/context/action/outcome with SHA256; generation code and runtime costs counted. All controls allocate 4096 bytes (unused padding reported, not claimed learned). Exact task-tagged count can actually be much smaller.",
+    "evaluator": "For each pre-observation forecast q, report (q-y)^2. For A retention, compare expected Brier over all four A context-action Bernoulli laws immediately after initial A training versus after B training; expected Brier(p,q)=p*(1-q)^2+(1-p)*q^2. Task-aware decoded HDC counters: q=(max(0,dot(hv,key1)/D)+1)/(max(0,dot(hv,key0)/D)+max(0,dot(hv,key1)/D)+2). Exact and shared use Beta(1,1). HDC task keys do not receive outcomes from the future.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "Exact per-(task,context,action,outcome) uint8 counters with saturation and Beta(1,1) readout; 4096-byte allocation, same observations; strongest memory-control.",
+    "Task-blind pooled (context,action,outcome) uint8 counters with saturation and Beta(1,1) readout; 4096-byte allocation.",
+    "Sham HDC with all tasks using the same projection key (same dimensionality and update budget); 4096-byte channel.",
+    "No-update HDC initialized at zero to check chance/accidental oracle behavior."
+  ],
+  "metrics": [
+    "Expected A-law Brier immediately after A and immediately after B, delta after B (retention interference)",
+    "Prequential stage-wise observed-outcome Brier for A, B, A-return, C",
+    "All-seed mean and seed-wise A-return Brier versus strongest exact and shared controls",
+    "Cold byte-for-byte snapshot/restore parity and corruption rejection",
+    "Actual serialized and learned bytes, count of key material, dimensionality, clipping occurrences, CPU time, peak RSS, per-update operation count",
+    "Task-label-oracle limitation; no causal intervention-value or unfamiliar transfer claim"
+  ],
+  "classification_rules": {
+    "supported": "Synthetic development mechanism supported ONLY if all four seeds have A expected-Brier drift <= 0.02; A-return mean prequential Brier at least 0.01 below task-blind shared; and A-return mean within 0.02 absolute of exact task-aware. Engineering guards also pass. This is not SCIENTIFIC_PASS.",
+    "mixed": "Engineering guards pass but only some of all three frozen candidate performance criteria pass, or candidate improves shared but loses substantially to exact control.",
+    "negative": "Engineering guards pass but none of the performance conditions jointly hold, or exact count clearly dominates with lower state use; preserve as scientific negative.",
+    "invalid": "Any source identity/custody mismatch, task label leakage beyond declared task-known controls, unregistered run, oracle outcome during prediction, non-fixed learned bytes, nondeterminism, corrupted checkpoint accepted, unequal outcomes, or mismatched compute/data accounting."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "source-family first use",
+    "native checkpoint edits",
+    "production/promotions/merges"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "This synthetic development experiment isolates storage and task-known retrieval; it cannot verify native Yggdrasil learning, causal generalization, deployment, or first-use authority. Keep source SHA, first-run receipt, and candidate tree distinct. Freeze this Git commit before writing primary outcomes."
+}
