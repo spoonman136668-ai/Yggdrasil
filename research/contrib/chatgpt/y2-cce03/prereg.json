@@ -1,0 +1,89 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "Y2-CCE03",
+  "contributor": "chatgpt-connector",
+  "contribution_class": "successor-proposal",
+  "question": "Can bounded causal-delta contracts compose learned one-step interventions to predict previously unseen two-action trajectories?",
+  "hypothesis": "Locally selected 0/1/2-parent causal-delta contracts learn sparse action effects and transfer compositionally across untrained two-action sequences, outperforming tabular full-state and one-parent models, with cold retention and no spurious null-world parents.",
+  "exact_parent_sha": "44938e86e8e18ff2fc52b999b809a3c1cf008a0e",
+  "predecessor_evidence": [
+    "CCE01 frozen MIXED, prereg 985a402c69360556b7eaa2c2691c9c72d4b1d787",
+    "CCE02 result 0.87578125 tied strongest table, prereg d32644ef28d120e80351f24d0ace59f666996cde",
+    "CI run 45158300762 G29 indexed set fail; not a science failure"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/y2-cce03/prereg.json",
+    "research/contrib/chatgpt/y2-cce03/cce03.py",
+    "research/contrib/chatgpt/y2-cce03/test_cce03.py",
+    "research/contrib/chatgpt/y2-cce03/run_cce03.py",
+    "research/contrib/chatgpt/y2-cce03/result.json",
+    "research/contrib/chatgpt/y2-cce03/provenance.json",
+    "research/contrib/chatgpt/y2-cce03/README.md"
+  ],
+  "inputs": [
+    {
+      "name": "positive sparse 6-bit action world",
+      "sha256": null,
+      "source": "Public 6 binary state bits, actions 0/1/2, deterministic concurrent XOR-delta rules of at most two other state-bit parents. Ground truth solely in evaluator, never passed as learner rules or variable labels."
+    },
+    {
+      "name": "null action world",
+      "sha256": null,
+      "source": "Same public state/action generator; actions do not change any state bit. Negative selection control."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      13,
+      29,
+      53,
+      97,
+      181
+    ],
+    "split": "Per seed/world, 768 independent public one-step transitions, x=randrange(64) and action=randrange(3) from random.Random(seed). Evaluation 384 fresh two-step sequences, x=randrange(64), a=randrange(3), b=randrange(3) from independent random.Random(seed+300000). No two-step training or evaluation updating.",
+    "ordering": "Each hypothesis predicts before consuming observed next state. Freeze 18 selected local mechanisms after 768 transitions based only on training prequential losses; test on heldout initial states and action pairs without updates.",
+    "data_budget": "2 worlds x 5 seeds x (768 one-step training + 384 two-step evaluation) = 11520 episodes total, 7680 training examples and 3840 two-step evaluations. One primary execution, no search.",
+    "compute_budget": "Python stdlib CPU only. Each trained candidate maintains 16 fixed possible parent subsets per target/action, no unbudgeted extra models/APIs; comparator cost separately reported, no compute-efficiency claim.",
+    "capacity": "6 bits, 3 actions, 18 target-action slots. 16 candidate parents per slot: empty, five singleton, ten pairs of other bits; Beta(1,1) flip counts; at most two parents selected; fixed bounded slots.",
+    "selection_rule": "Choose min cumulative prequential Brier + 0.5*(2**k)*log2(1+N_a), k=parent count, tie to shorter then lexicographic. Predict delta_i = old_i XOR new_i; flip predicted bit only when selected conditional posterior >0.5.",
+    "controls": [
+      "Same-data full-state action-conditional Beta(1,1) per-bit delta table",
+      "Same-data 0/1 parent prequential selection with identical penalty",
+      "Same-data pooled action-conditional per-bit delta table",
+      "Oracle source model scored solely as evaluator ceiling, not eligible matched control",
+      "Null world zero action effects; all 18 slots should prefer zero parents",
+      "Corrupted/forged snapshot and invalid-event negative tests"
+    ],
+    "metrics": [
+      "Two-step exact 6-bit state accuracy per seed",
+      "Per-bit output error rate",
+      "Selected parent sets and counts of nonempty null-world parents",
+      "Exact cold restore predictions over all 64x3 possible public one-step inputs",
+      "Serialized bytes, trained counters and wall-clock diagnostic",
+      "Strongest matched trained control plus full seed-level results"
+    ],
+    "deterministic_expected": true
+  },
+  "classification_rules": {
+    "supported": "DEVELOPMENT_SIGNAL only if mean positive-world CCE03 two-step full-state accuracy >=0.80 and >= strongest learned baseline +0.10, all 5 null-world seeds select 0 parents in all 18 slots, and 5/5 exact cold restore for all 64x3 predictions. Not SCIENTIFIC_PASS.",
+    "mixed": "Any improvement over a learned baseline with a missed support criterion, or recovered causal parents without strongest-control advantage. Report complete per-seed negatives.",
+    "negative": "Valid run with no advantage or repeated false parents. Preserve without post-result tuning.",
+    "invalid": "Source/first-use drift; hidden rules leaked into learner; heldout reuse in selection; changed frozen budgets, seeds, evaluator, threshold; missing source/negative controls; tamper accepted; unauthorized runner."
+  },
+  "prohibited_after_primary_run": [
+    "threshold or evaluator changes",
+    "extra seeds, compute, hidden labels or search",
+    "post-result tuning and repeat primary run",
+    "native scientific promotion or deployment",
+    "new runner/controller/queue"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Freeze separate experiment identity before code or outcome. Existing G29 atlas CI remains a qualification blocker, never bypassed."
+}
