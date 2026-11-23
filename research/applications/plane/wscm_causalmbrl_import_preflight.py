@@ -5,7 +5,7 @@ import argparse, ast, hashlib, importlib, importlib.metadata as metadata
 import json, os, shutil, subprocess, sys, tempfile, urllib.request
 from pathlib import Path
 
-EXPERIMENT = "WSCM-CAUSALMBRL-IMPORT-01-R1"
+EXPERIMENT = "WSCM-CAUSALMBRL-IMPORT-01-R2"
 REPO = "dido1998/CausalMBRL"
 COMMIT = "2c595988b06b3d568fdde53213029e97841acb03"
 ROOT_URL = f"https://raw.githubusercontent.com/{REPO}/{COMMIT}/"
@@ -82,7 +82,7 @@ def main():
                 command = [
                     sys.executable, "-m", "pip", "install",
                     "--disable-pip-version-check", "--no-warn-script-location",
-                    "--only-binary=:all:", "--target", str(package_target),
+                    "--target", str(package_target),
                     "--index-url", "https://pypi.org/simple",
                     "--extra-index-url", "https://download.pytorch.org/whl/cpu",
                     *PACKAGES,
