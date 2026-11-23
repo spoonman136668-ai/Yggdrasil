@@ -1,0 +1,78 @@
+{
+  "schema": "yggdrasil.tp-hdc01.provenance.v1",
+  "project": "Yggdrasil",
+  "experiment": "TP-HDC-01",
+  "status": "PRIMARY_SYNTHETIC_DEVELOPMENT_ONLY",
+  "prereg_commit": "13852c61883a76b08396add9e58b87a7c9bbd368",
+  "candidate_source_commit": "d1114fedb5988a174a00f1e080cba5f552a0ef37",
+  "candidate_source_git_blob": "fc293f4aa3fb7bdc80dd7e433e809ddbca271a06",
+  "candidate_source_sha256": "a5fe0fa221585ac594e6ca03563a2c2b7bbcbe5f43cda137c66d26e73cae556d",
+  "candidate_source_path": "research/contrib/chatgpt/TP-HDC-01/probe.py",
+  "source_parent": "86264b41a08d49f558418c0fba367f3a2636befa",
+  "accepted_main_at_preflight": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "input_spec_sha256": "ca8558bf6fb863939d0c0adc51991d53ca5211e9ed8602076a007c7b12676346",
+  "primary_result_raw_json_sha256": "2835204c3474816d7a7f1999400a6f6b59307d00ba4a79962f76744513d76244",
+  "primary_result_raw_json_bytes": 10857,
+  "primary_receipt_archive_path": "research/contrib/chatgpt/TP-HDC-01/result.json.gz.base64",
+  "primary_receipt_gzip_sha256": "87fbada4f5931cc3b7658c2ff27bbfc5204123dc47b16361a78f7939e91aa275",
+  "primary_receipt_archive_git_blob": "c923d4cad741f4e5b86206de29fc0ee76ce1d8d8",
+  "primary_execution": "One initial unmodified 4-seed Python source-free local simulation. No GitHub workflow, runner, protected first-use, source-family action, deployment, merge or accepted-reference mutation",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux 6.18.57 x86_64 glibc 2.41",
+    "cpu_count_reported": 5,
+    "os": "container local sandbox"
+  },
+  "results": {
+    "stage_order": [
+      "A",
+      "B",
+      "A-return",
+      "C"
+    ],
+    "A_return_mean_Brier": {
+      "exact": 0.16724486754988205,
+      "tp_hdc": 0.16831881609306173,
+      "shared": 0.22354634187785707,
+      "sham": 0.22157667539857798,
+      "no_update": 0.25
+    },
+    "tp_hdc_retention_delta_per_seed": [
+      -0.0000997851605872846,
+      0.0011488262689955397,
+      0.0029030980977256537,
+      -0.0017678571823397382
+    ],
+    "exact_retention_delta_per_seed": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "clips_total": {
+      "tp_hdc": 442817,
+      "sham": 920576,
+      "exact": 0,
+      "shared": 0
+    },
+    "source_free_frozen_numeric_rules_passed": 3,
+    "source_free_frozen_numeric_rules_total": 3,
+    "exact_counter_used_slots_bytes": 24,
+    "tp_hdc_channel_allocated_bytes": 4096,
+    "checkpoint_bytes": 4132,
+    "cpu_seconds_initial": 11.72849843,
+    "tracemalloc_peak_bytes_initial": 579582
+  },
+  "interpretation": "Numeric HDC vs pooled thresholds pass, but exact task-aware counts beat HDC Brier on every stage with far fewer actual needed bytes. The prereg negative/ mixed clause on exact-control dominance is applicable. No independent native Yggdrasil science gain established.",
+  "qualification": {
+    "engineering_source_identity": "PASS",
+    "checkpoint_restore_and_corruption": "PASS_IN_PRIMARY",
+    "linux_focused_primary": "PASS",
+    "independent_replay": "UNVERIFIED",
+    "full_candidate_regression": "UNVERIFIED",
+    "windows": "UNVERIFIED",
+    "native_yggdrasil_learning": "UNVERIFIED",
+    "scientific_pass": false,
+    "production": false
+  }
+}
