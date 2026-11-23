@@ -13,6 +13,7 @@ import json
 import math
 
 from calibration_active_bayes import ActiveBayesianPolicy, COST
+from calibration_decision_bayes import DecisionFocusedBayesianPolicy
 from calibration_controls import code, validated, multichannel_brier
 
 
@@ -52,10 +53,13 @@ def _digest(sequences):
 
 def _fresh_policy(spec, train):
     if type(spec) is not PolicySpec or type(spec.name) is not str or not spec.name or \
-            type(spec.kind) is not str or spec.kind not in ("active", "noop", "alternating"):
+            type(spec.kind) is not str or spec.kind not in ("active", "decision", "noop", "alternating"):
         raise ValueError("CCE06_BAD_POLICY_SPEC")
     if spec.kind == "active":
         policy = ActiveBayesianPolicy(alpha=spec.alpha, probe_penalty=spec.probe_penalty)
+    elif spec.kind == "decision":
+        policy = DecisionFocusedBayesianPolicy(alpha=spec.alpha,
+                                               probe_penalty=spec.probe_penalty)
     else:
         if spec.probe_penalty != 0:
             raise ValueError("CCE06_REFERENCE_PENALTY_FORBIDDEN")

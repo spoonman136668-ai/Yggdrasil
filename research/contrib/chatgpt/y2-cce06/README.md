@@ -37,6 +37,13 @@ integration, or protected scientific result.
   `update()` witness. Off-policy evaluation against unrelated logged
   actions is forbidden: a source-custodied cost/accuracy frontier remains
   unmeasured.
+- `calibration_decision_bayes.py` is a separate myopic value-of-information
+  baseline. It scores each public state/action using the expected reduction
+  in posterior predictive Brier risk, weighted by that context's empirical
+  TRAIN frequency. Online posterior updates never change the frozen TRAIN
+  weights. This is more directly aligned to terminal prediction risk than
+  parameter information gain, but only approximates the fixed audit
+  distribution and does not plan multi-step downstream state changes.
 
 - `calibration_recurrent.py` is a compact, fully trainable tanh recurrent
   network using truncated backpropagation through time and Adam. `calibration_recurrent_selection.py`
@@ -59,8 +66,9 @@ integration, or protected scientific result.
 
 - No CCE06 split/merge candidate or learned relations. A trainable
   recurrent neural estimator, learned-operator PSR comparator and costed
-  Bayesian policy exist as isolated engineering controls, but have **not**
-  completed strong TRAIN-only source-custodied selection, cross-platform full
+  Bayesian policies (information-gain and decision-focused) exist as isolated
+  engineering controls, but have **not** completed strong TRAIN-only
+  source-custodied selection, cross-platform full
   regression or qualified strongest-comparator comparison. No interactive
   source-custodied cost/accuracy Pareto frontier (DEV fixtures only).
 - No committed independent-source lock, evaluator, data manifests or independent
@@ -83,6 +91,7 @@ python -m unittest -v test_calibration test_calibration_fit_selection
 python -m unittest -v test_calibration_psr test_calibration_psr_selection test_calibration_active_bayes
 python -m unittest -v test_calibration_recurrent
 python -m unittest -v test_calibration_policy_frontier
+python -m unittest -v test_calibration_decision_bayes test_calibration_decision_frontier
 ```
 
 Fixture tests never use the frozen experimental seed list and cannot validate
