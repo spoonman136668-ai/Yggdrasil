@@ -12,6 +12,7 @@ from yggdrasil.public_causal_cells import PublicCausalCells
 from yggdrasil.native_external_action_identity import (
     NativeExternalActionIdentity, _public as _external_request,
 )
+from yggdrasil.native_grid5_evidence import NativeGrid5Evidence
 
 SCHEMA = "yggdrasil.ckad.native-episode-experience.v1"
 CONTEXT_SCHEMA = "yggdrasil.ckad.native-episode-experience.v2"
@@ -20,6 +21,7 @@ STREAM_SCHEMA = "yggdrasil.ckad.native-episode-experience.v4"
 REFRESH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v5"
 GROWTH_SCHEMA = "yggdrasil.ckad.native-episode-experience.v6"
 EXTERNAL_FIXTURE_SCHEMA = "yggdrasil.ckad.native-episode-experience.v7-fixture-dev"
+GRID5_FIXTURE_SCHEMA = "yggdrasil.ckad.native-episode-experience.v8-grid5-dev"
 MAX_EPISODES = 1024
 GROWN_MAX_EPISODES = 1152
 MAX_CHECKPOINT_BYTES = 160 * 1024
@@ -71,6 +73,7 @@ class NativeEpisodeExperience:
         "_context_start", "_context_models", "_context_weights", "_context_novel",
         "_stream_start", "_stream_score", "_stream_detections",
         "_refresh_start", "_episode_limit", "_external_action_fixture",
+        "_grid5_fixture",
     )
 
     def __init__(self, *, repair=True):
@@ -96,6 +99,7 @@ class NativeEpisodeExperience:
         self._refresh_start = None
         self._episode_limit = MAX_EPISODES
         self._external_action_fixture = None
+        self._grid5_fixture = None
 
     @staticmethod
     def _selected(loss):
@@ -131,7 +135,32 @@ class NativeEpisodeExperience:
         candidate._refresh_start = self._refresh_start
         candidate._episode_limit = self._episode_limit
         candidate._external_action_fixture = self._external_action_fixture
+        candidate._grid5_fixture = self._grid5_fixture
         return candidate
+
+    def observe_grid5_fixture(self, public_request, raw, expected_sha256):
+        """Carry source-free 5-action evidence in THIS cumulative episode state.
+
+        No binary counter, donor specialist, source actor or privilege is changed.
+        """
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        staged = current.observe_public_receipt(public_request, raw, expected_sha256)
+        if staged is current:
+            return self
+        candidate = self._clone()
+        candidate._grid5_fixture = staged
+        candidate.checkpoint()
+        return candidate
+
+    def grid5_fixture_plan(self, public_state):
+        """DEV-only coverage probe, never the protected binary causal policy."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_plan(public_state)
+
+    def grid5_fixture_forecast(self, public_state, public_action):
+        """Only exact same-state fixture successor, never inferred source law."""
+        current = self._grid5_fixture or NativeGrid5Evidence()
+        return current.public_forecast(public_state, public_action)
 
     def observe_external_fixture(self, public_request, raw, expected_sha256):
         """Stage an opaque public action witness in THIS learner's durable state.
@@ -490,8 +519,15 @@ class NativeEpisodeExperience:
             # Keep the existing independently pinned, immutable fixture and
             # verify both planes before publishing a consolidated state.
             rebuilt._external_action_fixture = self._external_action_fixture
+            if self._grid5_fixture is None:
+                require(rebuilt.checkpoint() == self.checkpoint(),
+                        "EPISODE_EXTERNAL_CONSOLIDATION_DRIFT")
+        if self._grid5_fixture is not None:
+            # One cumulative learner; extra grid5 fixture rows are a separate
+            # passive evidence plane, not binary causal bank updates.
+            rebuilt._grid5_fixture = self._grid5_fixture
             require(rebuilt.checkpoint() == self.checkpoint(),
-                    "EPISODE_EXTERNAL_CONSOLIDATION_DRIFT")
+                    "EPISODE_GRID5_CONSOLIDATION_DRIFT")
         return rebuilt
 
     def _repair_info(self):
@@ -580,9 +616,31 @@ class NativeEpisodeExperience:
             info["external_action_fixture_count"] = len(
                 self._external_action_fixture._rows)
             info["external_action_source_mode"] = "engineering_fixture_only"
+        if self._grid5_fixture is not None:
+            info["grid5_fixture_sha256"] = digest(self._grid5_fixture.checkpoint())
+            info["grid5_fixture_count"] = len(self._grid5_fixture._rows)
+            info["grid5_source_mode"] = "engineering_fixture_only"
         return info
 
     def checkpoint(self):
+        if self._grid5_fixture is not None:
+            # Opt-in v8 envelope over byte-identical legacy v1-v7 payloads.
+            prior = self._clone()
+            prior._grid5_fixture = None
+            native_raw = prior.checkpoint()
+            fixture_raw = self._grid5_fixture.checkpoint()
+            data = {
+                "schema": GRID5_FIXTURE_SCHEMA,
+                "native_checkpoint": json.loads(native_raw.decode("ascii")),
+                "native_sha256": digest(native_raw),
+                "grid5_checkpoint": json.loads(fixture_raw.decode("ascii")),
+                "grid5_sha256": digest(fixture_raw),
+                "native_accepted": False, "scientific_pass": False,
+            }
+            raw = canonical(data)
+            require(len(raw) <= MAX_CHECKPOINT_BYTES,
+                    "EPISODE_GRID5_CHECKPOINT_CAPACITY")
+            return raw
         if self._external_action_fixture is not None:
             baseline = self._clone()
             baseline._external_action_fixture = None
@@ -630,6 +688,34 @@ class NativeEpisodeExperience:
                 and pin(expected_sha256) and digest(raw) == expected_sha256, "EPISODE_CHECKPOINT_PIN")
         try:
             data = json.loads(raw.decode("ascii"))
+            if type(data) is dict and data.get("schema") == GRID5_FIXTURE_SCHEMA:
+                keys = {"schema", "native_checkpoint", "native_sha256",
+                        "grid5_checkpoint", "grid5_sha256",
+                        "native_accepted", "scientific_pass"}
+                require(set(data) == keys and canonical(data) == raw
+                        and data["native_accepted"] is False
+                        and data["scientific_pass"] is False
+                        and type(data["native_checkpoint"]) is dict
+                        and type(data["grid5_checkpoint"]) is dict
+                        and data["native_checkpoint"].get("schema") != GRID5_FIXTURE_SCHEMA,
+                        "EPISODE_GRID5_ENVELOPE_SCHEMA")
+                native_raw = canonical(data["native_checkpoint"])
+                grid5_raw = canonical(data["grid5_checkpoint"])
+                require(pin(data["native_sha256"])
+                        and digest(native_raw) == data["native_sha256"]
+                        and pin(data["grid5_sha256"])
+                        and digest(grid5_raw) == data["grid5_sha256"],
+                        "EPISODE_GRID5_ENVELOPE_PINS")
+                baseline = cls.restore(native_raw, data["native_sha256"])
+                require(baseline._grid5_fixture is None,
+                        "EPISODE_NESTED_GRID5_ENVELOPE")
+                grid5 = NativeGrid5Evidence.restore(
+                    grid5_raw, data["grid5_sha256"])
+                candidate = baseline._clone()
+                candidate._grid5_fixture = grid5
+                require(candidate.checkpoint() == raw,
+                        "EPISODE_GRID5_ENVELOPE_REPLAY")
+                return candidate
             if type(data) is dict and data.get("schema") == EXTERNAL_FIXTURE_SCHEMA:
                 keys = {"schema", "native_checkpoint", "native_sha256",
                         "fixture_checkpoint", "fixture_sha256",

@@ -240,6 +240,29 @@ class NativeCumulativeLearner:
         candidate._experience = experience
         return candidate
 
+    def observe_grid5_fixture(self, public_request, raw, expected_sha256):
+        """Opt-in fixture-only five-action evidence in existing native memory.
+
+        Preserve the accepted DTR parent and binary learner isolation.
+        """
+        require(self._dtr is not None, 'EPISODE_REQUIRES_INTEGRATED_PARENT')
+        previous = self._episode_reader()
+        experience = previous.observe_grid5_fixture(
+            public_request, raw, expected_sha256)
+        if experience is previous:
+            return self
+        candidate = self._copy()
+        candidate._experience = experience
+        candidate.checkpoint()
+        return candidate
+
+    def grid5_fixture_plan(self, public_state):
+        return self._episode_reader().grid5_fixture_plan(public_state)
+
+    def grid5_fixture_forecast(self, public_state, public_action):
+        return self._episode_reader().grid5_fixture_forecast(
+            public_state, public_action)
+
     def observe_external_fixture(self, public_request, raw, expected_sha256):
         """Admit bounded fixture-only evidence into existing cumulative memory.
 
