@@ -70,14 +70,16 @@ jobs:
             if(Test-Path -LiteralPath 'research/contrib/chatgpt/stage7-capacity/result.json'){throw 'PRIMARY_EVIDENCE_PRESENT'}
             & $Py -B -c "import sys,torch; print('python='+sys.version); print('torch='+torch.__version__); print('threads='+str(torch.get_num_threads())); assert torch.get_num_threads()==1"
             if($LASTEXITCODE-ne0){throw 'STAGE7_RUNTIME_PREFLIGHT_FAILED'}
-            & $Py -B -c "import os; from pathlib import Path; from experiments.procedural_event_stage7_capacity import corpus; tr,va=corpus(Path(os.environ['STAGE7_CORPUS'])); assert (tr.numel(),va.numel())==(78268,19568); print('STAGE7_CORPUS_HASHES=PASS')"
+            & $Py -B -c "import os,sys; from pathlib import Path; sys.path.insert(0, str(Path.cwd().resolve())); from experiments.procedural_event_stage7_capacity import corpus; tr,va=corpus(Path(os.environ['STAGE7_CORPUS'])); assert (tr.numel(),va.numel())==(78268,19568); print('STAGE7_CORPUS_HASHES=PASS')"
             if($LASTEXITCODE-ne0){throw 'STAGE7_CORPUS_PREFLIGHT_FAILED'}
             # Run the frozen positive test directly; mirror the frozen missing-corpus
             # negative with stdlib exception handling, without changing shared Python.
             $Focused = @'
           import runpy
+          import sys
           import tempfile
           from pathlib import Path
+          sys.path.insert(0, str(Path.cwd().resolve()))
           from experiments.procedural_event_stage7_capacity import corpus
           tests = runpy.run_path("tests/test_procedural_event_stage7.py")
           tests["test_factor_identity_and_gradient"]()
