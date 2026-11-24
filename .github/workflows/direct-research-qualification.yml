@@ -4,6 +4,9 @@ on:
     branches: [dev/ujepa-uj01-distributional-latent]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
+      - '.ice/code-atlas.json'
+      - '.ice/code-atlas.html'
+      - '.ice/code-atlas.ice'
 permissions:
   contents: read
 concurrency:
@@ -35,10 +38,24 @@ jobs:
           $tree='1485d224161d5abbcc18faee3f90cd84edca3025'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
-          if((git rev-parse 'HEAD^').Trim() -cne '67e346796ed1d3fa94e15c8b64d7d089a93e09c6'){throw 'PARENT_SHA_MISMATCH'}
+          $prior='64289733ffe5a382b739955d146920c31a968975'
+          if((git rev-parse "$prior^{tree}").Trim() -cne 'b66039470f1976372e1aa61e69655b1ab2fa8cb8'){throw 'PRIOR_TREE_MISMATCH'}
           if((git rev-parse "$source^{tree}").Trim() -cne $tree){throw 'SOURCE_TREE_MISMATCH'}
-          $changed=@(git diff --name-only $source HEAD)
-          if($changed.Count -ne 1 -or $changed[0] -cne '.github/workflows/direct-research-qualification.yml'){throw 'WORKFLOW_ONLY_DELTA_REQUIRED'}
+          $workflow='.github/workflows/direct-research-qualification.yml'
+          $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
+          $parent=(git rev-parse 'HEAD^').Trim()
+          $delta=@(git diff --name-only $parent HEAD | Sort-Object)
+          if($parent -ceq $prior -and ($delta -join '|') -ceq $workflow){
+            $phase='prepare'
+            $anchor=$head
+          } elseif((git rev-parse "$parent^").Trim() -ceq $prior -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $prior $parent) -join '|') -ceq $workflow){
+            $phase='qualify'
+            $anchor=$parent
+          } else {throw 'UNEXPECTED_ATLAS_TRANSITION'}
+          if((@(git diff --name-only $source $anchor) -join '|') -cne $workflow){throw 'LEARNER_SOURCE_DELTA_FORBIDDEN'}
+          "phase=$phase" >> $env:GITHUB_OUTPUT
+          "UJ_ATLAS_ANCHOR=$anchor" >> $env:GITHUB_ENV
+          Write-Output "UJ_PHASE=$phase"
           if(@(git status --porcelain --untracked-files=all).Count){throw 'DIRTY_CHECKOUT'}
           $py='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
           if(-not(Test-Path -LiteralPath $py -PathType Leaf)){throw 'NATIVE_RUNTIME_MISSING'}
@@ -52,7 +69,7 @@ jobs:
           if($LASTEXITCODE -ne 0 -or $headTree -notmatch '^[0-9a-f]{40}$'){throw 'QUALIFICATION_TREE_INVALID'}
           Write-Output "UJ_QUALIFICATION_TREE=$headTree"
           Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
-      - name: Full repository regression, including atlas
+      - name: Native package import and focused native regressions
         if: steps.custody.outcome == 'success'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -60,10 +77,44 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -m unittest discover -s tests -p 'test_*.py' -v
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; root=pathlib.Path.cwd().resolve(); sys.path.insert(0,str(root)); import yggdrasil.public_causal_cells as m; assert pathlib.Path(m.__file__).resolve()==root/'yggdrasil'/'public_causal_cells.py'; print('NATIVE_PACKAGE_SOURCE=PASS'); runpy.run_module('unittest',run_name='__main__')" discover -s tests -p 'test_native_cells*.py' -v
+          if($LASTEXITCODE -ne 0){throw 'NATIVE_FOCUSED_REGRESSION_FAILED'}
+      - name: Generate frozen atlas for exact committed source
+        if: steps.custody.outputs.phase == 'prepare'
+        run: |
+          $ErrorActionPreference='Stop'
+          & $env:UJ_PYTHON -B scripts/build_code_atlas.py --source-commit $env:UJ_ATLAS_ANCHOR --write
+          if($LASTEXITCODE -ne 0){throw 'ATLAS_GENERATION_FAILED'}
+          $expected=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
+          $changed=@(git diff --name-only | Sort-Object)
+          if(($changed -join '|') -cne ($expected -join '|')){throw 'ATLAS_OUTPUT_SCOPE_DRIFT'}
+          if(@(git ls-files --others --exclude-standard).Count){throw 'UNTRACKED_OUTPUT'}
+          foreach($path in $expected){
+            $bytes=[IO.File]::ReadAllBytes((Join-Path (Get-Location) $path))
+            $blob=(git hash-object --no-filters -- $path).Trim()
+            $hash=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            $encoded=[Convert]::ToBase64String($bytes)
+            Write-Output "UJ_ATLAS_FILE=$path SIZE=$($bytes.Length) BLOB=$blob SHA256=$hash"
+            for($i=0;$i -lt $encoded.Length;$i+=2048){
+              $chunk=$encoded.Substring($i,[Math]::Min(2048,$encoded.Length-$i))
+              Write-Output "UJ_ATLAS_CHUNK=$path OFFSET=$i DATA=$chunk"
+            }
+          }
+          Write-Output 'ATLAS_PREPARE_ONLY_NO_FULL_REGRESSION_CLAIM'
+      - name: Full repository regression including original atlas gate
+        if: steps.custody.outputs.phase == 'qualify'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          & $env:UJ_PYTHON -B scripts/build_code_atlas.py --source-commit $env:UJ_ATLAS_ANCHOR --check
+          if($LASTEXITCODE -ne 0){throw 'PINNED_ATLAS_CHECK_FAILED'}
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; sys.path.insert(0,str(pathlib.Path.cwd().resolve())); runpy.run_module('unittest',run_name='__main__')" discover -s tests -p 'test_*.py' -v
           if($LASTEXITCODE -ne 0){throw 'FULL_REPOSITORY_REGRESSION_FAILED'}
       - name: All U-JEPA development fixtures and syntax build
-        if: always() && steps.custody.outcome == 'success'
+        if: always() && steps.custody.outputs.phase == 'qualify'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
           OMP_NUM_THREADS: '1'
@@ -72,30 +123,10 @@ jobs:
           $ErrorActionPreference='Stop'
           & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_*.py' -v
           if($LASTEXITCODE -ne 0){throw 'UJ_FULL_FIXTURES_FAILED'}
-          & $env:UJ_PYTHON -B -c "import ast,pathlib; paths=list(pathlib.Path('research/contrib/ujepa/uj-01').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('UJ_SYNTAX_BUILD_FILES='+str(len(paths)))"
+          & $env:UJ_PYTHON -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/ujepa/uj-01').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('UJ_SYNTAX_BUILD_FILES='+str(len(paths)))"
           if($LASTEXITCODE -ne 0){throw 'UJ_SYNTAX_BUILD_FAILED'}
-      - name: Acquire pinned AQuA TRAIN bytes only
-        if: always() && steps.custody.outcome == 'success'
-        run: |
-          $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP ("uj01-aqua-train-"+$env:GITHUB_RUN_ID)
-          if(Test-Path -LiteralPath $root){throw 'ACQUISITION_PATH_ALREADY_EXISTS'}
-          New-Item -ItemType Directory -Path $root | Out-Null
-          $data=Join-Path $root 'train.json'
-          $url='https://raw.githubusercontent.com/google-deepmind/AQuA/26b64ed1f22208c6742f47df547dfd65088ec30d/train.json'
-          Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $data -TimeoutSec 120 -MaximumRedirection 0
-          $size=(Get-Item -LiteralPath $data).Length
-          if($size -ne 47570935){throw "TRAIN_SIZE_MISMATCH actual=$size"}
-          $blob=(git hash-object --no-filters -- $data).Trim()
-          if($LASTEXITCODE -ne 0 -or $blob -cne 'a805bddefde8d70fdb66ff7ab85a1999bdc3eece'){throw 'TRAIN_BLOB_MISMATCH'}
-          $sha=(Get-FileHash -LiteralPath $data -Algorithm SHA256).Hash.ToLowerInvariant()
-          Write-Output "AQUA_TRAIN_BYTES=$size"
-          Write-Output "AQUA_TRAIN_GIT_BLOB=$blob"
-          Write-Output "AQUA_TRAIN_SHA256=$sha"
-          Write-Output 'AQUA_TRAIN_ACQUISITION=PASS_NO_TRAINING'
-          Write-Output 'NO_VALIDATION_OR_TEST_ACCESSED'
-      - name: Verify tracked source unchanged
-        if: always() && steps.custody.outcome == 'success'
+      - name: Verify final tracked source unchanged
+        if: always() && steps.custody.outputs.phase == 'qualify'
         run: |
           $ErrorActionPreference='Stop'
           if(@(git status --porcelain --untracked-files=all).Count){throw 'QUALIFICATION_MUTATED_SOURCE'}
