@@ -1,0 +1,152 @@
+{
+  "schema": "yggdrasil.procedural-event-screen.v1",
+  "classification": "EXPLORATORY_STAGE1_PERFORMANCE_PASS_NOT_SCIENTIFIC_ACCEPTANCE",
+  "parent_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "source_commit": "4a0eef319f823d7ffc19d613e9031c336fcbbff2",
+  "source_tree": "add417986130eade0daddca0cf105f0638c5eb5e",
+  "source_blob_sha": "f662197d1b5b96df8b86d218d6acf54b5f08761c",
+  "source_sha256": "a5b68a27e8212465915336110fda78e135b76efc764ef9ebe6bdf28409ec7bf6",
+  "environment": {
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "visible_logical_cpus": 5,
+    "torch": "2.10.0+cpu",
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "cuda_available": false,
+    "threads": 1,
+    "dtype": "float32",
+    "execution": "isolated local Linux sandbox, exact GitHub blob checked by git hash-object; no full repository clone"
+  },
+  "commands": [
+    "python -m py_compile experiments/procedural_event_proto.py",
+    "python experiments/procedural_event_proto.py --self-test",
+    "python experiments/procedural_event_proto.py --device cpu --dim 1024 --steps 300",
+    "python experiments/procedural_event_proto.py --device cpu --dim 2048 --steps 300"
+  ],
+  "self_test": "SELF_TEST_PASS: shapes, finite, both paths, equality, footprint, factor oracle",
+  "full_repo_regression": "UNVERIFIED: shell GitHub DNS resolution failed",
+  "seed": 1729,
+  "tau": 0.1,
+  "rank": 16,
+  "coordinate_basis_width": 8,
+  "warmup": 32,
+  "shift_prob": 0.2,
+  "quality_matched": false,
+  "runs": [
+    {
+      "dim": 1024,
+      "steps": 300,
+      "stream_sha256": "bc2c0090338b4f24b82545e5ec7ac9c980fa91fc0b843c59a8e05dff58825534",
+      "arms": {
+        "dense": {
+          "parameter_bytes": 8396800,
+          "static_bytes": 8396800,
+          "state_bytes": 0,
+          "ms_per_step": 0.17529424333333335,
+          "steps_per_second": 5704.693896298895,
+          "p50_ms": 0.160607,
+          "p95_ms": 0.236588,
+          "skip_rate": 0,
+          "deep_calls": 300
+        },
+        "dense_gated": {
+          "parameter_bytes": 8404992,
+          "static_bytes": 8404992,
+          "state_bytes": 8192,
+          "ms_per_step": 0.07476449,
+          "steps_per_second": 13375.333664417425,
+          "p50_ms": 0.023915,
+          "p95_ms": 0.235507,
+          "skip_rate": 0.7433333333333333,
+          "deep_calls": 77
+        },
+        "event": {
+          "parameter_bytes": 150016,
+          "static_bytes": 281088,
+          "state_bytes": 8192,
+          "ms_per_step": 0.047316753333333336,
+          "steps_per_second": 21134.163473881625,
+          "p50_ms": 0.018998,
+          "p95_ms": 0.129891,
+          "skip_rate": 0.7433333333333333,
+          "deep_calls": 77
+        },
+        "procedural": {
+          "parameter_bytes": 141824,
+          "static_bytes": 272896,
+          "state_bytes": 0,
+          "ms_per_step": 0.10888946333333334,
+          "steps_per_second": 9183.625021080246,
+          "p50_ms": 0.089632,
+          "p95_ms": 0.178123,
+          "skip_rate": 0,
+          "deep_calls": 300
+        }
+      },
+      "speedup": 3.7046971946370513,
+      "static_compression": 29.872495446265937,
+      "stage1_gate": "NOT_PRIMARY"
+    },
+    {
+      "dim": 2048,
+      "steps": 300,
+      "stream_sha256": "52b6c6dcb3c7f75d7bbf20bb6a0232804913f85b6ad67f712c22afb052ab2017",
+      "arms": {
+        "dense": {
+          "parameter_bytes": 33570816,
+          "static_bytes": 33570816,
+          "state_bytes": 0,
+          "ms_per_step": 1.6024126699999999,
+          "steps_per_second": 624.0589697783656,
+          "p50_ms": 1.575331,
+          "p95_ms": 1.784509,
+          "skip_rate": 0,
+          "deep_calls": 300
+        },
+        "dense_gated": {
+          "parameter_bytes": 33587200,
+          "static_bytes": 33587200,
+          "state_bytes": 16384,
+          "ms_per_step": 0.4090671166666667,
+          "steps_per_second": 2444.5866197914465,
+          "p50_ms": 0.02089,
+          "p95_ms": 1.772731,
+          "skip_rate": 0.78,
+          "deep_calls": 66
+        },
+        "event": {
+          "parameter_bytes": 166400,
+          "static_bytes": 428544,
+          "state_bytes": 16384,
+          "ms_per_step": 0.054384263333333335,
+          "steps_per_second": 18387.672071069086,
+          "p50_ms": 0.019168,
+          "p95_ms": 0.164793,
+          "skip_rate": 0.78,
+          "deep_calls": 66
+        },
+        "procedural": {
+          "parameter_bytes": 150016,
+          "static_bytes": 412160,
+          "state_bytes": 0,
+          "ms_per_step": 0.13897972,
+          "steps_per_second": 7195.294392591955,
+          "p50_ms": 0.127768,
+          "p95_ms": 0.191262,
+          "skip_rate": 0,
+          "deep_calls": 300
+        }
+      },
+      "speedup": 29.464638698486244,
+      "static_compression": 78.33691756272401,
+      "stage1_gate": "PASS"
+    }
+  ],
+  "limitations": [
+    "No matched training, target loss or held-out task quality; the eight-feature basis caps effective linear rank at eight despite nominal factor width 16.",
+    "Skip path reuses previous output; slowly accumulating input drift can cause stale outputs.",
+    "Static bytes include parameters and buffers, not peak allocation, cache residency or full process memory. State bytes are logical tensor footprint.",
+    "One CPU run per scale, fixed arm order, no independent replication; consumer Windows/CUDA performance unverified.",
+    "Frozen design committed before measurement in experiment source; formal external contribution preregistration path not added to preserve requested experiments-only scope; not confirmatory research.",
+    "No official acceptance, production integration, runner dispatch or deployment."
+  ]
+}
