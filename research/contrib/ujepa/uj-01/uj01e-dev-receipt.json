@@ -1,0 +1,28 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "source_commit": "80ed2ec319ec21429bf53fa71425e0b3d84d2281",
+  "source_tree": "b5d01125d29960ce36ceb77c382bcd594de8e957",
+  "source_blobs": {
+    "checkpoint.py": "a2cfa3338eb7119eba582ba2bd61936654eaedd8",
+    "test_checkpoint.py": "43c5637587217bbff493ed72ddf8e86a26321803",
+    "learned_jepa.py": "30be62055a9205132c0d709bb99c7ad351bf10b4"
+  },
+  "custody": "Local git hash-object matched all three exact candidate GitHub blob identities.",
+  "environment": "Linux sandbox Python 3.13.5 PyTorch 2.10.0+cpu",
+  "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest -v test_checkpoint",
+  "passed": 5,
+  "failed": 0,
+  "reported_seconds": 0.647,
+  "negative": {
+    "scope": "analytic variance penalty at exactly constant latent representation",
+    "penalty": 0.19,
+    "max_abs_gradient": 0,
+    "conclusion": "Existing variance term alone cannot generate a recovery gradient at exact collapse; not proof of spontaneous collapse during real training."
+  },
+  "snapshot_scope": "Weight/config/provenance bytes with digest; both prediction modes restored bit-exact in same process after one optimizer update. No filesystem atomicity, optimizer state, data cursor, RNG snapshot, cross-process retention or crash-resume guarantee.",
+  "full_regression": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false
+}
