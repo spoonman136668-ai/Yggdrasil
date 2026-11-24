@@ -21,3 +21,8 @@ Replaces $O(|A|!)$ whole-world action-permutation enumeration with **$O(|A|^2)$ 
 ```bash
 python3 -m unittest discover -s research/contrib/gemini/y2-scdr02 -p "test_*.py" -v
 ```
+
+## Cycles 8–9 Upgrade (`scdr_hazard_v7.py`)
+
+- **Mid-Episode Silent Gauge Shift (`HazardSinkhornRoleCellV7`, `h=0.015`):** On a 300-step 7-action episode with a silent permutation swap at step 150, `SCDR-v7` matched stationary pre-shift accuracy (`0.0601` vs `0.0593`) and beat log-decay `SCDR-v6` by **`-0.2399` Brier** over post-shift steps `150..210` (`0.1496` vs `0.3895`) and `Fresh7A` by **`-0.1370`** over steps `150..300`.
+- **Bonferroni Multi-Lag $H_1$ + Event-Triggered Latch (`LatchAndBonferroniH1Sheet`):** Held `action_null` at **`0.00` false splits / `0.00` false latches**, beating `ActionHMM (h=6)` by **`-0.0150`** on `gated_nonlocal` (`0.1249` vs `0.1400`) and **`-0.0067`** on `local_reversible` (`0.1269` vs `0.1336`).
