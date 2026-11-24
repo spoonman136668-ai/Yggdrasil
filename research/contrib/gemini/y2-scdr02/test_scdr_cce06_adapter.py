@@ -1,4 +1,4 @@
-"""Unit tests verifying SCDRCCE06PolicyAdapter directly inside y2-cce06's calibration_policy_frontier._episode."""
+"""Unit tests for SCDRCCE06PolicyAdapter (y2-cce06 _episode, multi-sheet switching, goal-directed control)."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ class _ToyEnv:
     def reset(self) -> list[int]:
         return list(self.obs)
 
-    def step(self, action: int) -> dict:
+    def step(self, action: int) -> list[int]:
         ta = self.perm[action]
         nxt = [self.obs[0] ^ (1 if ta == 1 else 0), self.obs[1] ^ (1 if ta == 2 else 0)]
         self.obs = nxt
@@ -61,6 +61,22 @@ class TestSCDRCCE06Adapter(unittest.TestCase):
         _ = pol.choose()
         with self.assertRaises(ValueError):
             pol.choose()
+
+    def test_goal_directed_control_reaches_target_in_permuted_world(self) -> None:
+        train = [_make_trace(10, 200, (0, 1, 2))]
+        pol = SCDRCCE06PolicyAdapter(hazard=0.015).fit(train)
+        env = _ToyEnv(11, (2, 0, 1))
+        obs = env.reset()
+        pol.start(obs[:], paid_budget=40)
+        hits = 0
+        for _ in range(30):
+            a = pol.choose_for_goal([1, 1])
+            nxt = env.step(a)
+            pol.update({"observation": obs[:], "action": a, "next_observation": nxt[:]})
+            if nxt == [1, 1]:
+                hits += 1
+            obs = nxt
+        self.assertGreaterEqual(hits, 20)
 
 
 if __name__ == "__main__":
