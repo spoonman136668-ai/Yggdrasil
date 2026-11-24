@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - research/autonomy-yggdrasil-active
+      - research/wscm-dtr-native-contract-20261123
     paths:
       - 'research/applications/plane/**'
       - '.yggdrasil/**'
@@ -31,7 +32,7 @@ jobs:
       - name: Checkout exact active branch
         uses: actions/checkout@v4
         with:
-          ref: research/autonomy-yggdrasil-active
+          ref: ${{ github.ref }}
           fetch-depth: 0
           persist-credentials: true
           clean: true
@@ -41,7 +42,8 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch=$env:GITHUB_REF_NAME
+          if(@('research/autonomy-yggdrasil-active','research/wscm-dtr-native-contract-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
           $QPath='.yggdrasil/qualification-request.json'
           $RPath='.yggdrasil/isolated-run.json'
           foreach($P in @($QPath,$RPath)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "REQUEST_MISSING path=$P"}}
@@ -74,7 +76,7 @@ jobs:
           if([string]$Prereg.exact_parent_sha-cne$Baseline){throw 'PREREG_PARENT_MISMATCH'}
           if([string]$Prereg.north_star_sha256-cne'57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c'){throw 'PREREG_NORTH_STAR_IDENTITY_MISMATCH'}
 
-          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath)
+          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath,'.github/workflows/direct-research-qualification.yml')
           $AllFiles=@()
           foreach($C in $Commits){$AllFiles+=@(git diff-tree --no-commit-id --name-only -r $C|Where-Object{$_ -and $_.Trim()})}
           foreach($F in $AllFiles){if($Allowed-notcontains[string]$F){throw "CHANGE_OUTSIDE_FROZEN_PACKAGE path=$F"}}
@@ -127,8 +129,13 @@ jobs:
           }
           $Out1=Join-Path $Root 'result-1.json'
           $Out2=Join-Path $Root 'result-2.json'
-          Invoke-One $Out1
-          Invoke-One $Out2
+          $PackageTarget=Join-Path $env:RUNNER_TEMP 'wscm-causalgym-import02-packages'
+          try {
+            Invoke-One $Out1
+            Invoke-One $Out2
+          } finally {
+            if(Test-Path -LiteralPath $PackageTarget){Remove-Item -LiteralPath $PackageTarget -Recurse -Force}
+          }
           $B1=[IO.File]::ReadAllBytes($Out1);$B2=[IO.File]::ReadAllBytes($Out2)
           if($B1.Length-ne$B2.Length){throw 'SCIENTIFIC_RESULT_NONDETERMINISTIC_LENGTH'}
           for($I=0;$I-lt$B1.Length;$I++){if($B1[$I]-ne$B2[$I]){throw 'SCIENTIFIC_RESULT_NONDETERMINISTIC_BYTES'}}
@@ -136,6 +143,8 @@ jobs:
           if([string]$Science.schema-cne'yggdrasil.research-scientific-result.v1'){throw 'SCIENTIFIC_RESULT_SCHEMA_INVALID'}
           if([string]$Science.experiment-cne[string]$Q.experiment){throw 'SCIENTIFIC_RESULT_EXPERIMENT_MISMATCH'}
           if($null-eq$Science.metrics){throw 'SCIENTIFIC_RESULT_METRICS_MISSING'}
+          if([string]$Science.status-cne'SOURCE_FREE_ADAPTER_CONTRACT_PASS'){throw "ADAPTER_CONTRACT_NOT_PASS status=$($Science.status)"}
+          if($Science.source_first_use-ne$false -or $Science.scientific_gain_verified-ne$false){throw 'SOURCE_FREE_BOUNDARY_VIOLATION'}
           if((git status --porcelain)-join''){throw "QUALIFICATION_MUTATED_WORKTREE status=$((git status --porcelain)-join';')"}
           $ResultSha=(Get-FileHash -LiteralPath $Out1 -Algorithm SHA256).Hash.ToLowerInvariant()
           "result_path=$Out1" >> $env:GITHUB_OUTPUT
@@ -147,7 +156,8 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch=$env:GITHUB_REF_NAME
+          if(@('research/autonomy-yggdrasil-active','research/wscm-dtr-native-contract-20261123') -notcontains $Branch){throw "QUALIFICATION_BRANCH_NOT_ALLOWED branch=$Branch"}
           $Head='${{ steps.frozen.outputs.head }}'
           git fetch origin $Branch
           if($LASTEXITCODE-ne0){throw 'REMOTE_REFRESH_FAILED'}
@@ -199,4 +209,6 @@ jobs:
           if($LASTEXITCODE-ne0){throw 'EVIDENCE_COMMIT_FAILED'}
           git push origin ("HEAD:refs/heads/"+$Branch)
           if($LASTEXITCODE-ne0){throw 'EVIDENCE_PUSH_FAILED'}
+          $TempRoot=Join-Path $env:RUNNER_TEMP ("ygg-direct-"+$env:GITHUB_RUN_ID)
+          if(Test-Path -LiteralPath $TempRoot){Remove-Item -LiteralPath $TempRoot -Recurse -Force}
           Write-Host 'YGGDRASIL_DIRECT_EVIDENCE_SEALED=PASS'
