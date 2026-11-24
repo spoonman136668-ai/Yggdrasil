@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-REVERSIBLE-SHARING-01",
+  "exact_parent_sha": "08f01f5f990c8f87565f8999c1153bb6ae730568",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "FROZEN_SYNTHETIC_DEVELOPMENT_ONLY",
+  "hypothesis": "Replace irreversible greedy merges with exact reversible posterior sharing over context partitions, computed by subset dynamic programming rather than enumerating Bell(n) partitions. This is conventional Bayesian inference; exact parity is expected, not unique intelligence. Test whether the speed/accuracy tradeoff warrants a bounded diagnostic control.",
+  "prior_refs": [
+    "#488 tier-local missing-arm partial pooling (different scope)",
+    "#1200 fixed OR/AND hierarchical Bayesian grammar",
+    "#505 stable/candidate sequential revision",
+    "run 45385500839 hard grouping DEV_NO_GO"
+  ],
+  "source_pins": {
+    "research/applications/plane/wscm_dtr_effect_partition.py": "8ad052791d4bc884703048dfd79c831e6f17f8eb",
+    "research/applications/plane/wscm_effect_partition_retention.py": "c550fe557ce84ae795114459c1540c478249a5f4"
+  },
+  "method": "Retain per-context action counts. Uniform prior over set partitions; Beta(1,1) independent action-specific group likelihoods. For subset S use Z(empty)=1; Z(S)=sum over nonempty T subset S containing least member of S of exp(log evidence(T))*Z(S\\T). Marginal probability T is a block equals w(T)*Z(full\\T)/Z(full). Recompute from intact counts at each read; no permanent merge. Compare original exhaustive BMA on identical counts at 8 contexts. Use exact group membership probabilities; no graph hard decisions.",
+  "cohort": {
+    "domain": "WSCM-REVERSIBLE-SHARING-01",
+    "seeds": [
+      792301,
+      792311,
+      792319
+    ],
+    "worlds_per_seed": 3,
+    "families": [
+      "shared response profiles, A and B independent 3-group assignments",
+      "all 8 independent response profiles, A and B",
+      "no change, shared 3-group response profiles"
+    ],
+    "probabilities": [
+      0.15,
+      0.35,
+      0.65,
+      0.85
+    ],
+    "sizes": "shared 3,3,2; independent 1,1,1,1,1,1,1,1; sample distinct response pairs",
+    "actions": "6 independently shuffled balanced 16-cell blocks each A and B; 2 blocks A return; 2016 total outcomes, same rows all arms",
+    "scores": "A/B after 32 and 96 observations, expected excess Brier over all 16 cells using evaluator-only true Bernoulli means; return at 0,8,16,32 using parent identical frozen bank likelihood router; original source untouched, boundaries known to all, no closed-loop policy"
+  },
+  "controls": [
+    "parent exact enumerated BMA; compare all predictions at each scoring prefix to DP within 1e-10",
+    "full independent Beta",
+    "parent greedy hard partition",
+    "parent CART at 32/96"
+  ],
+  "engineering": [
+    "finite normalized weights; pair co-membership symmetric; cold JSON restore exact forecast parity; read-only return; deterministic contradiction fixture: four contexts 8 zeros per action, append 64 ones per action to context0 only; co-membership (0,1) must fall by >=.5, other context counts unchanged; no regime inference claim",
+    "12-context deterministic count fixture; report operations and compute time, no exhaustive enumeration at n12; no new original source"
+  ],
+  "decision": {
+    "engineering": "exact enumeration parity 1e-10, fixture and cold checks pass; duplicate byte-identical",
+    "development": "DP vs full Beta seed mean excess Brier gain >=.002 each; no family harm >.01 vs full; return max drift <=.02. If fail stop as learning proposal; if parity and faster retain only as conventional research comparator; no native promotion",
+    "timing": "record fit+predict wall time for identical prefix counts DP vs exhaustive in runner log both executions; target >=2x, timing not included in deterministic result; report actual",
+    "memory": "report counts JSON byte size and transient subset arrays; no compressed checkpoint claim"
+  },
+  "limits": {
+    "source_first_use": false,
+    "scientific_pass": false,
+    "original_source_actions": 0,
+    "native_model_mutation": false,
+    "full_final_regression": "NOT_RUN",
+    "no_paid_api": true,
+    "no_new_controller": true
+  }
+}
