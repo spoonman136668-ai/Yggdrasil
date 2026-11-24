@@ -19,3 +19,9 @@ Adding a **self-calibrated relative surprise gate** (`min(0.15, max(0.025, 8.0 *
 ```bash
 python3 -m unittest discover -s research/contrib/gemini/y2-scdr03-num05 -p "test_*.py" -v
 ```
+
+## Cycles 28-29 Upgrade (`scdr_num05_multibank.py` — Precision-Gated Multi-Bank & Continuous Control)
+
+- **Precision-Gated Readout (`disjoint_ABA`):** Truncating sub-floor hazard weights (`< 0.03`) before mixing forecasts cut `disjoint_ABA` pooled MSE from `0.0074` to **`0.0059`** (within `0.001` of `NUM05_Native`'s `0.0049`) while pushing `permuted_ABA` to **`0.0027`** (**10.9x lower** than `NUM05_Native`'s `0.0296`).
+- **6-Phase Multi-Regime Chain (`A -> B -> C -> Perm(A) -> B -> A`, 510 rows):** `MultiBankSCDRNumV2` achieved **`0.0276`** pooled MSE across the 3 return phases vs. `NUM05_Native` `0.0704` (**2.55x lower**) and `CellHist_40` `0.1744` (**6.3x lower**).
+- **Continuous Reward-Maximizing Control (100 steps, zero-reward Phase A pre-training):** Earned **`+17.73`** on `perm_A` vs. `Fresh_UCB` `+14.19` (`+25.0%`), and **`+47.34`** on `partial_B` vs. `Fresh_UCB` `+31.64` (**`+49.6%`**) and `Random` `+16.63`.
