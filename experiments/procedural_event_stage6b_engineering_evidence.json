@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.experimental-engineering-evidence.v1",
+  "parent": "8e3534db5902a5342258d1601f9fa5e774cde26c",
+  "base_tree": "6e74892eeabbdfc0f95e7a8181e3dbf9182dcc1f",
+  "source_blobs": {
+    "experiments/procedural_event_stage6b_qualification.py": "d7c2e707da556ba4a125fe196877c17badc31a01",
+    "tests/test_procedural_event_stage6b.py": "8d2eb4351f1fbf088295e639c61dd0499ee01cc4"
+  },
+  "source_sha256": [
+    "e44c60e2e21900f9dccbead7bb3ddbfc30c5274716b0882a7795b149b5e204d1",
+    "d8e5beb63d67ca055a0e3c9b0cd8c0dadc48c07d86774109a2f9084fe57cc0fe"
+  ],
+  "environment": {
+    "os": "Linux 6.18.57 x86_64",
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "cuda": false
+  },
+  "scope": "isolated applied experimental patch files, not full repository checkout",
+  "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest -q tests -k 'not corpus'",
+  "focused": {
+    "passed": 17,
+    "deselected": 1,
+    "seconds": 2.5,
+    "compileall": "PASS",
+    "initial_failure": "uniform 8 BPB FP32 sum error 1.28e-6; corrected using FP64 cross entropy"
+  },
+  "rank": {
+    "original_blocks": 8,
+    "original_rank": 64,
+    "corrected_blocks": 16,
+    "seeds": [
+      42,
+      43
+    ],
+    "projections_per_seed": 8,
+    "rank_each": 128,
+    "post_training": "UNVERIFIED"
+  },
+  "static_ffn_bytes": {
+    "dense": 2107392,
+    "original": 405600,
+    "corrected": 407648
+  },
+  "validation_transitions": {
+    "expected": 19567,
+    "covered": 19567,
+    "probe": "synthetic index vector, not actual corpus evaluation"
+  },
+  "prefix_tests": "PASS train and eval, dropout disabled, both causal and position-pseudorandom gates",
+  "controls": "constructors and fail-closed scoring prerequisites only; not trained",
+  "scientific_gain_verified": false,
+  "full_regression": "UNVERIFIED",
+  "native_runner": "not dispatched",
+  "primary_training": "not run"
+}
