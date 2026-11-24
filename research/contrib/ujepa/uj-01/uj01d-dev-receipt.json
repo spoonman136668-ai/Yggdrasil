@@ -1,0 +1,61 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "source_commit": "bcb2cf987f7a499343793c54897334d42aa25cb5",
+  "source_tree": "b7764f43fd0325b98342d016f8c2ca83c6e90f69",
+  "source_blobs": {
+    "bounded_train.py": "e545710f1be6ec259be1ffd04cc1ed4272d822ac",
+    "test_bounded_train.py": "0ca49c9366789842a6b4a069c4c86a48f2442136",
+    "learned_jepa.py": "30be62055a9205132c0d709bb99c7ad351bf10b4"
+  },
+  "custody": "All three locally tested git hash-object values match GitHub source blob identities.",
+  "environment": "Linux sandbox Python 3.13.5 PyTorch 2.10.0+cpu; OMP_NUM_THREADS=1 MKL_NUM_THREADS=1",
+  "command": "python -m unittest -v test_bounded_train",
+  "passed": 5,
+  "failed": 0,
+  "reported_seconds": 0.638,
+  "integration": {
+    "status": "DEV_SMOKE_PASS",
+    "pairs": [
+      [
+        "a",
+        "b"
+      ],
+      [
+        "c",
+        "d"
+      ],
+      [
+        "e",
+        "f"
+      ],
+      [
+        "g",
+        "h"
+      ]
+    ],
+    "initial_torch_seed": 11,
+    "train_seed": 5,
+    "epochs": 2,
+    "batch_size": 2,
+    "steps_per_model": 4,
+    "observations_per_model": 8,
+    "exposure_bytes_per_model": 16,
+    "trainable_parameters_per_model": 1546,
+    "assertions": [
+      "online weights changed",
+      "EMA target weights changed",
+      "target gradients absent",
+      "expected steps, exposures and parameters"
+    ],
+    "minimum_online_std": {
+      "mixture": 0.010046349838376045,
+      "pooled": 0.010328485630452633
+    },
+    "warning": "Tiny fabricated fixture. Std values close to the 0.01 numerical floor; not evidence of healthy long-run representations or a measured learning advantage."
+  },
+  "full_regression": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false
+}
