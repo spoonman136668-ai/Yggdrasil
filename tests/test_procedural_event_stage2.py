@@ -1,4 +1,4 @@
-"""Unit tests for Stage 2 trainable procedural-event prototype."""
+"""Unit tests for Stage 2 and Stage 2b trainable procedural-event prototypes."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from experiments.procedural_event_stage2_train import (
     TrainableEventProceduralPredictor,
     run_stage2_experiment,
 )
+from experiments.procedural_event_stage2b_ablation import run_regime
 
 
 def test_procedural_hypernet_receives_nonzero_gradients() -> None:
@@ -51,3 +52,21 @@ def test_stage2_smoke_training_reduces_loss() -> None:
     for r in results:
         assert r["train_loss_end"] < r["train_loss_start"], f"{r['name']} did not decrease training loss"
         assert r["val_mse_overall"] > 0.0
+
+
+def test_stage2b_structured_rank_regime_smoke() -> None:
+    reg = run_regime(
+        "Smoke Structured",
+        teacher_rank=8,
+        dim=64,
+        train_steps=160,
+        val_steps=64,
+        epochs=4,
+        batch_size=32,
+        lr=5e-3,
+        seed=9,
+    )
+    assert reg["teacher_rank"] == 8
+    assert len(reg["results"]) == 3
+    for r in reg["results"]:
+        assert r["train_loss_end"] < r["train_loss_start"]
