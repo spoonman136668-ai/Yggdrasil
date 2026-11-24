@@ -1,0 +1,57 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-TRANSFER02-NATIVE-FUNCTIONAL-CONSENSUS-QUAL-01",
+  "exact_parent_sha": "9a1d09e09824ea9494db46b7f9970e0fdc1ee704",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "FROZEN_ENGINEERING_NATIVE_FIXTURE_QUALIFICATION",
+  "purpose": "Run prepared WSCM-TRANSFER-02 functional-consensus tests against exact v9 NativeEpisodeExperience and NativeExternalActionIdentity modules. Engineering integration only; no causal source trial or scientific claim.",
+  "source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "commit": "9a1d09e09824ea9494db46b7f9970e0fdc1ee704",
+    "native_episode_experience_blob": "5a77232cdd4a0fda314e47278c9ba0ed109cfd50",
+    "native_external_action_identity_blob": "b31538c00cda5e7b526aa1178e883e86a26be0d4",
+    "composition_wire_dev_blob": "eb141d75b0af6af3b217dd68703222df451b61ed",
+    "tests": {
+      "tests/test_wscm_transfer02_composition_wire_dev.py": "a25a13c2c004a9a9001a234fcc9bb1dce0e4ff68",
+      "tests/test_wscm_transfer02_functional_consensus_dev.py": "e6a852f6d55bb0f5d09e00d7b06d0fc88ce0191d",
+      "tests/test_wscm_transfer02_composition_native.py": "cf22ad059d02cd82ec7ceed7f13a47ed10fb53c5"
+    }
+  },
+  "test_contract": {
+    "suites": [
+      "test_wscm_transfer02_composition_wire_dev.py",
+      "test_wscm_transfer02_functional_consensus_dev.py",
+      "test_wscm_transfer02_composition_native.py"
+    ],
+    "no_stubs": true,
+    "no_real_source_environment": true,
+    "no_protected_source_first_use": true,
+    "duplicate_execution_required": true,
+    "no_skipped_tests": true,
+    "exact_source_blobs_required": true
+  },
+  "constraints": {
+    "authority": "existing Yggdrasil research-only self-hosted Windows runner",
+    "source_world_constructed": false,
+    "source_resets": 0,
+    "source_steps": 0,
+    "source_interventions": 0,
+    "source_actions": 0,
+    "protected_first_use": false,
+    "learner_training": false,
+    "accepted_ref_mutation": false,
+    "production_model_mutation": false,
+    "merge_or_deployment": false,
+    "paid_api": false,
+    "new_controller_or_scheduler": false
+  },
+  "acceptance": {
+    "native_source_blob_pins_match": true,
+    "all_three_focused_suites_pass": true,
+    "zero_skipped_tests": true,
+    "byte_identical_duplicate_result": true,
+    "working_tree_clean": true,
+    "scientific_gain_verified": false,
+    "scientific_pass": false
+  }
+}
