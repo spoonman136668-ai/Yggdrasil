@@ -1,0 +1,33 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "source_commit": "1f1b7b3b827f52ef44e0b7b7e70ff0ff636cb828",
+  "source_tree": "e78c4227324e1804e68c0a075e15f71f2e882bf4",
+  "source_blobs": {
+    "latent_density.py": "f1860099c97c69b3875a4931b5ea0c8afe1c12b8",
+    "test_latent_density.py": "e2c167aecb335023c0f837bb228e153ac225e7bb",
+    "learned_jepa.py": "30be62055a9205132c0d709bb99c7ad351bf10b4",
+    "test_learned_jepa.py": "d1dcde6650f3c587abd5514fe47c831fa09acdb0"
+  },
+  "custody": "All four tested sandbox files matched GitHub blob SHAs using git hash-object",
+  "environment": "Linux sandbox Python 3.13.5 PyTorch 2.10.0+cpu; not owner runner",
+  "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest discover -s . -p 'test_*.py' -v",
+  "passed": 13,
+  "failed": 0,
+  "reported_seconds": 0.616,
+  "trainable_parameters": {
+    "mixture": 1546,
+    "pooled": 1546
+  },
+  "full_regression": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false,
+  "limitations": [
+    "Fabricated engineering fixtures only",
+    "Parameter count matched, not measured compute parity",
+    "Collapse diagnostic detects forced collapse, does not establish sustained noncollapse",
+    "Full native regression and real corpus not executed",
+    "Earlier proxy workflow run 45383514984 failed with no job records; root cause unverified"
+  ]
+}
