@@ -1,0 +1,35 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-SCDR04-WITNESS-BOUND-01",
+  "exact_parent_sha": "d56da8b324a9529fab3a9e82a1d368ed0d34c4bd",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "SOURCE_FREE_ENGINEERING_ONLY",
+  "purpose": "Reuse unchanged SCDR04 observer on exact NativeGrid5Evidence receipts; correct SIDE mismatch and remove unbound observer training from the proposed readout. No new learner or source actor.",
+  "source_pins": {
+    "yggdrasil/native_grid5_evidence.py": "e743a02d194e2e76c6a689268d376bb3d2b4880e",
+    "yggdrasil/native_grid5_ingress.py": "2733e0c587ae64ec7e17a550bda243569353dbc4",
+    "research/contrib/gemini/y2-scdr04-wscm-grid5/scdr_grid5_observer.py": "9bb942e79041af0745c4bf849f3092917b22422e",
+    "research/contrib/chatgpt/WSCM-EPISTEMIC-GUARD-01/guard.py": "4e2970cade642aa46426165d9d74aa6e219ff9dd"
+  },
+  "frozen_cases": [
+    "Eight positive-x moves from (0,0) to (8,0) followed by one clipped stay: old default SIDE=5 should misclassify; replay using native SIDE=9 should map PLUS_X with higher mass and lower novel mass.",
+    "Two separate 50-step fixture episodes: A action 0 moves +x, B action 0 moves +y. Reconstruct each separately from native checkpoint; no foreign rows; A readout unchanged after B appended.",
+    "Exact duplicate receipt is idempotent; no extra observer events.",
+    "Cold restore reconstructs identical readouts; tampered receipt pin rejected.",
+    "Empty/unknown episode explicitly abstains with zero support, invalid query rejected.",
+    "Two corner stays yield three exact conditional roles; do not report identified role from arbitrary tie-breaking.",
+    "All diagnostic readouts preserve action_admissible=false, family_authenticated=false, no actionable successor, and byte-exact native checkpoint/public_plan."
+  ],
+  "controls": "Unmodified SCDR04 default, corrected dimension alone, per-action exact deterministic version space without one-to-one assumption; all use identical synthetic native ledger. No claimed superiority over Bayes.",
+  "limits": {
+    "source_first_use": false,
+    "source_actions": 0,
+    "source_environment_constructed": false,
+    "scientific_gain_verified": false,
+    "accepted_model_mutation": false,
+    "paid_api": false,
+    "new_controller": false,
+    "runner_scope": "existing direct Yggdrasil research-only qualification"
+  },
+  "acceptance": "All frozen fixture checks and original contributor/native Grid5 test suites pass; deterministic result twice; report diagnostics only. Not full final acceptance or protected source trial."
+}
