@@ -34,14 +34,14 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $baseline='1da8c98b62456de4b9543c8b771ee0781af65587'
-          $baseTree='8c614ccd2fe6198d8c1a5feb01b8f228f7ee2cc0'
+          $baseline='9e45fec45f7d9d14306d6f5e7c7b1ae98f6b7112'
+          $baseTree='8931b7ce6e6ea9953015dd46e477ee14410e4431'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
           if((git rev-parse "$baseline^{tree}").Trim() -cne $baseTree){throw 'BASELINE_TREE_MISMATCH'}
           $workflow='.github/workflows/direct-research-qualification.yml'
           $p='research/contrib/ujepa/uj-01'
-          $expected=@($workflow,"$p/UJ04A.md","$p/uj04a_pilot.py","$p/test_uj04a_pilot.py") | Sort-Object
+          $expected=@($workflow,"$p/UJ04A-prefix-fixture-correction.md","$p/test_uj04a_pilot.py") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
@@ -173,6 +173,7 @@ jobs:
           if($hash -cne '35b70c7cb1660c34d302bb932dfd3656ce3d05e8c982c797767fec31d7d1e0ba'){throw 'TRAIN_HASH_MISMATCH'}
           Write-Output "UJ04A_DEV_TRIAL_STARTED=$env:GITHUB_RUN_ID"
           Write-Output 'PRIOR_UJ03B_RUN_45459013630_CONSUMED_NOT_REPLAYED'
+          Write-Output 'UJ04A_RUN_45501682789_PRE_DATA_FIXTURE_ABORT'
           & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04a_pilot; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04a_pilot)); runpy.run_path(str(p/'uj04a_pilot.py'),run_name='__main__')" --train $data --source-sha $env:GITHUB_SHA
           if($LASTEXITCODE -ne 0){throw 'UJ04A_PILOT_FAILED_NO_REPLAY'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'PILOT_MUTATED_SOURCE'}

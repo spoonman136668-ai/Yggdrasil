@@ -2,8 +2,9 @@
 import json
 import time
 import unittest
+from unittest.mock import patch
 import torch
-from uj04a_pilot import fresh,model_for,MultiPrefix,fit,measure,scores,rank_stats,penalty,ARMS
+from uj04a_pilot import fresh,model_for,MultiPrefix,fit,measure,scores,rank_stats,penalty,signal,ARMS
 from uj03a_pilot import digest
 
 class UJ04ATests(unittest.TestCase):
@@ -26,8 +27,23 @@ class UJ04ATests(unittest.TestCase):
     def test_causal_prefix_and_parameter_match(self):
         m=model_for('slots_cov',1901)
         z,idx=m.prefixes((b'abcd1111',b'abcd9999'))
-        self.assertTrue(torch.equal(z[0,:2],z[1,:2]))
-        self.assertFalse(torch.equal(z[0,-1],z[1,-1]))
+        # Causality is a numerical invariant; bitwise equality across
+        # batched floating-point kernel lanes is not guaranteed.
+        delta=float((z[0,:2]-z[1,:2]).abs().max().detach())
+        suffix=float((z[0,-1]-z[1,-1]).abs().max().detach())
+        print(f'PREFIX_MAX_DELTA={delta:.12g} SUFFIX_MAX_DELTA={suffix:.12g}',flush=True)
+        self.assertLessEqual(delta,1e-6)
+        self.assertGreater(suffix,1e-4)
+        x,lens=signal((b'abcd1111',b'abcd9999'))
+        x.requires_grad_()
+        with patch('uj04a_pilot.signal',return_value=(x,lens)):
+            states,indices=m.prefixes((b'abcd1111',b'abcd9999'))
+            self.assertEqual(indices.tolist(),[[1,3,5,7],[1,3,5,7]])
+            grad=torch.autograd.grad(states[:,:2].sum(),x)[0]
+        self.assertEqual(float(grad[:,4:].abs().max()),0.0)
+        self.assertGreater(float(grad[:,:4].abs().max()),0.0)
+        short,_=m.prefixes((b'abcd',b'abcd'))
+        torch.testing.assert_close(z[:,1],short[:,-1],rtol=0,atol=1e-6)
         for arm in ('pooled','slots','shuffled'):
             q=model_for(arm,1901)
             self.assertTrue(all(torch.equal(v,q.state_dict()[k]) for k,v in m.state_dict().items()))
