@@ -1,0 +1,104 @@
+{
+  "cycles": [
+    {
+      "cycle_id": "cycle_30",
+      "date": "2026-11-24",
+      "title": "Continuous D4 Spatial-Symmetry x Sinkhorn Transfer on NUM05 Physics (SpatialSymSCDRNumV3)",
+      "hypothesis": "Factorizing continuous 2D equivariance over the dihedral group D4 (8 rotations/reflections acting on both input (x, y) and output (dx, dy)) with inner 5x6 Sub-Stochastic Sinkhorn Soft-Exclusion and exact Rao-Blackwellized mixture marginal likelihood enables immediate transfer across simultaneous 2D spatial rotations/reflections and 5-action permutations (including partial novelty isolation) while preserving null restraint and disjoint parity.",
+      "seeds": [
+        620101,
+        620103,
+        620107
+      ],
+      "reserved_seeds_untouched": [
+        520117,
+        520131,
+        520211,
+        520311,
+        520331,
+        520411,
+        520431,
+        520451
+      ],
+      "scenarios": [
+        "rot90_perm_ABA",
+        "reflect_partial_ABA",
+        "disjoint_ABA",
+        "null_AAA",
+        "rot270_perm_control"
+      ],
+      "baselines": [
+        "SpatialSymSCDRNumV3",
+        "MultiBankSCDRNumV2",
+        "NUM05_Native",
+        "CellHist_40"
+      ],
+      "pass_criteria": {
+        "rot90_perm_ABA_phase2_vs_baselines": "SpatialSymSCDRNumV3 Phase 2 MSE at least 3x lower than MultiBankSCDRNumV2 and NUM05_Native; Bank 0 byte-exact",
+        "reflect_partial_ABA": "SpatialSymSCDRNumV3 beats MultiBankSCDRNumV2 and NUM05_Native on Phase 2 MSE; familiar abstain < 0.15 and novel abstain > 0.75",
+        "disjoint_ABA": "SpatialSymSCDRNumV3 pooled MSE within +0.002 of NUM05_Native",
+        "null_AAA": "0.0 false archives across all seeds and exact MSE parity with NUM05_Native",
+        "rot270_perm_control": "SpatialSymSCDRNumV3 cumulative reward at least +15% higher than both MultiBankSCDRNumV2 and Fresh_UCB"
+      },
+      "scientific_status": "DEV_SANDBOX_UNVERIFIED"
+    },
+    {
+      "cycle_id": "cycle_31",
+      "date": "2026-11-24",
+      "title": "SpatialSymSCDRNumV3b: Mild Identity Prior on (bank, id) + Fast Novelty Cold-Start on Disjoint Worlds",
+      "hypothesis": "Adding a mild diagonal prior (0.40 on r=a) exclusively for g=id and lowering the active_bank write gate from 0.30 to 0.15 during cold-start (active_events < 20) closes both the disjoint_ABA pooled MSE gap (within +0.002 of NUM05_Native) and Phase-3 return latency without degrading rot90_perm_ABA, reflect_partial_ABA, null_AAA, or rot270_perm_control.",
+      "seeds": [
+        620101,
+        620103,
+        620107
+      ],
+      "reserved_seeds_untouched": [
+        520117,
+        520131,
+        520211,
+        520311,
+        520331,
+        520411,
+        520431,
+        520451
+      ],
+      "pass_criteria": {
+        "rot90_perm_ABA": "Phase 2 MSE >= 3x lower than MultiBankSCDRNumV2 and NUM05_Native; Bank 0 byte-exact",
+        "reflect_partial_ABA": "Beats MultiBankSCDRNumV2 and NUM05_Native; fam abstain < 0.15, nov abstain > 0.75",
+        "disjoint_ABA": "Pooled MSE within +0.002 of NUM05_Native",
+        "null_AAA": "0.0 false archives and exact MSE parity with NUM05_Native",
+        "rot270_perm_control": "Cumulative reward >= +15% higher than MultiBankSCDRNumV2 and Fresh_UCB"
+      },
+      "scientific_status": "DEV_SANDBOX_UNVERIFIED"
+    },
+    {
+      "cycle_id": "cycle_32",
+      "date": "2026-11-24",
+      "title": "SpatialSymSCDRNumV3c: Pre-Archive Contradiction Quarantine Buffer for Zero-Contamination Freezing",
+      "hypothesis": "Quarantining pre-archive contradiction rows (instead of writing them into bank0 prior to archival) and replaying them into the hierarchical D4 x Sinkhorn filter upon archival prevents pre-freeze bank contamination and eliminates the disjoint_ABA cold-start gap to within +0.002 of NUM05_Native while preserving all D4 spatial-symmetry transfer gains.",
+      "seeds": [
+        620101,
+        620103,
+        620107
+      ],
+      "reserved_seeds_untouched": [
+        520117,
+        520131,
+        520211,
+        520311,
+        520331,
+        520411,
+        520431,
+        520451
+      ],
+      "pass_criteria": {
+        "rot90_perm_ABA": "Phase 2 MSE >= 3x lower than MultiBankSCDRNumV2 and NUM05_Native; Bank 0 byte-exact",
+        "reflect_partial_ABA": "Beats MultiBankSCDRNumV2 and NUM05_Native; fam abstain < 0.15, nov abstain > 0.75",
+        "disjoint_ABA": "Pooled MSE within +0.002 of NUM05_Native",
+        "null_AAA": "0.0 false archives and exact MSE parity with NUM05_Native",
+        "rot270_perm_control": "Cumulative reward >= +15% higher than MultiBankSCDRNumV2 and Fresh_UCB"
+      },
+      "scientific_status": "DEV_SANDBOX_UNVERIFIED"
+    }
+  ]
+}
