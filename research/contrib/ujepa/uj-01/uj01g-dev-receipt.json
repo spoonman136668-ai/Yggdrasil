@@ -1,0 +1,37 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "parent_sha": "9796dd21081683e27c2b2a9f20d106a134382431",
+  "source_blobs": {
+    "corpus_prepare.py": "8f2fe624faec369f88cb3433026ede6dc6be3ecc",
+    "pair_controls.py": "ff35f9725d6752b88840b69eae7d333643539fa2",
+    "test_uj01g.py": "915b6d50be3d311bd2116982278c6ad6d760f8fc",
+    "bounded_train.py": "e545710f1be6ec259be1ffd04cc1ed4272d822ac"
+  },
+  "environment": "Linux sandbox Python 3.13.5, PyTorch 2.10.0+cpu",
+  "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest -v test_uj01g",
+  "passed": 5,
+  "failed": 0,
+  "reported_seconds": 0.725,
+  "control_parameter_counts": {
+    "jepa_reference": 1546,
+    "recurrent": 1521,
+    "attention": 1508
+  },
+  "fixture_budget_per_control": {
+    "steps": 4,
+    "observations": 8,
+    "exposure_bytes": 32
+  },
+  "full_regression": "NOT_RUN",
+  "native_windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false,
+  "limitations": [
+    "Fabricated fixtures only; control convergence and FLOP parity not established.",
+    "In-batch different answers can be semantic false negatives; exact duplicate answers masked as positives.",
+    "Raw dataset acquisition blocked, no corpus bytes converted. Source metadata and converter are not a frozen preregistration.",
+    "OpenBookQA code license verified, dataset distribution terms and payload identity still need verification.",
+    "Public AQuA test search snippet surfaced during metadata discovery; do not treat that partition as pristine first-use. Owner must seal a disjoint unused cohort."
+  ]
+}
