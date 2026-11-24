@@ -470,3 +470,53 @@ class POHiddenModePlannerV10(POHiddenModePlannerV9):
         self.z_belief = [0.95 * next_z[0] + 0.025, 0.95 * next_z[1] + 0.025]
         self.fresh.update(obs_code, action, next_obs_code)
         self._steps += 1
+
+
+def serialize_po_v10(planner: POHiddenModePlannerV10) -> bytes:
+    """Canonical deterministic JSON serialization for POHiddenModePlannerV10."""
+    payload = {
+        "schema": "yggdrasil.scdr.po_v10.cold_state.v1",
+        "n_bits": planner.n_bits,
+        "n_actions": planner.n_actions,
+        "horizon": planner.horizon,
+        "gamma": planner.gamma,
+        "hazard": planner.hazard,
+        "explore_weight": planner.explore_weight,
+        "M": planner.po_sheet.M,
+        "E": planner.po_sheet.E,
+        "role_beliefs": planner.role_beliefs,
+        "z_belief": planner.z_belief,
+        "fresh_counts": planner.fresh.counts,
+        "prev_action": planner._prev_action,
+        "prev_z_post": planner._prev_z_post,
+        "steps": planner._steps,
+        "surprise_win": planner._surprise_win,
+        "last_bcast": planner._last_bcast,
+    }
+    return json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def deserialize_po_v10(raw: bytes) -> POHiddenModePlannerV10:
+    """Restore POHiddenModePlannerV10 bit-exactly from canonical JSON bytes."""
+    d = json.loads(raw.decode("utf-8"))
+    if d.get("schema") != "yggdrasil.scdr.po_v10.cold_state.v1":
+        raise ValueError("SCDR_INVALID_PO_V10_SCHEMA")
+    sheet = FactorizedStallTwoModeSheet(int(d["n_bits"]), int(d["n_actions"]))
+    sheet.M = [[[float(x) for x in r] for r in mat] for mat in d["M"]]
+    sheet.E = [[[[float(x) for x in row] for row in mat] for mat in st] for st in d["E"]]
+    pl = POHiddenModePlannerV10(
+        sheet,
+        horizon=int(d["horizon"]),
+        gamma=float(d["gamma"]),
+        hazard=float(d["hazard"]),
+        explore_weight=float(d["explore_weight"]),
+    )
+    pl.role_beliefs = [[float(x) for x in row] for row in d["role_beliefs"]]
+    pl.z_belief = [float(x) for x in d["z_belief"]]
+    pl.fresh.counts = [[[float(x) for x in row] for row in mat] for mat in d["fresh_counts"]]
+    pl._prev_action = d["prev_action"]
+    pl._prev_z_post = [float(x) for x in d["prev_z_post"]]
+    pl._steps = int(d["steps"])
+    pl._surprise_win = [int(x) for x in d["surprise_win"]]
+    pl._last_bcast = int(d["last_bcast"])
+    return pl
