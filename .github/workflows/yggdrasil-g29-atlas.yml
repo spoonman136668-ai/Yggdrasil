@@ -2,10 +2,14 @@ name: Yggdrasil G29 Atlas Acceptance
 on:
   pull_request:
   workflow_dispatch:
+  push:
+    branches: [research/y2-scdr03-num05-continuous-20261123]
+    paths: ['.github/workflows/yggdrasil-g29-atlas.yml']
 permissions:
   contents: read
 jobs:
   windows:
+    if: github.event_name != 'push'
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -20,6 +24,7 @@ jobs:
       - run: python -m unittest discover -s tests -p test_code_atlas.py -v
       - run: git diff --exit-code
   linux:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -50,3 +55,138 @@ jobs:
               print("YGG_G29_BUNDLE_BYTES=" + str(sum(map(len, parts))))
           PY
       - run: git diff --exit-code
+  scdr03-reanchor:
+    if: >-
+      github.event_name == 'push' &&
+      github.repository == 'spoonman136668-ai/Yggdrasil' &&
+      github.actor == 'spoonman136668-ai' &&
+      github.ref == 'refs/heads/research/y2-scdr03-num05-continuous-20261123' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'ci(scdr03): one-shot exact-tree engineering qualification'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    outputs:
+      candidate: ${{ steps.seal.outputs.candidate }}
+    env:
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify frozen source, regenerate three artifacts, fast-forward draft only
+        id: seal
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = "cefe6b3d68589e5f03f27496b7bd361ebf65e6e8"
+          test "$(git rev-parse "cefe6b3d68589e5f03f27496b7bd361ebf65e6e8^{tree}")" = "68ac81dbe7c7c0b3922cd205b805c0e8eece8e04"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/yggdrasil-g29-atlas.yml"
+          test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
+          test -z "$(git status --porcelain)"
+          python -B scripts/build_code_atlas.py --source-commit "$GITHUB_SHA" --write
+          git add -- .ice/code-atlas.json .ice/code-atlas.html .ice/code-atlas.ice
+          diff -u <(git diff --cached --name-only | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          test -z "$(git diff --name-only)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "index(SCDR03): exact-source G29 derived artifacts only"
+          python -B scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin "refs/heads/research/y2-scdr03-num05-continuous-20261123" | cut -f1)" = "$GITHUB_SHA"
+          git push origin "HEAD:refs/heads/research/y2-scdr03-num05-continuous-20261123"
+          echo "candidate=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "SCDR03_FINAL_SHA=$(git rev-parse HEAD)"
+          echo "SCDR03_FINAL_TREE=$(git rev-parse HEAD^{tree})"
+  scdr03-full:
+    needs: scdr03-reanchor
+    if: needs.scdr03-reanchor.result == 'success' && github.run_attempt == 1
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            runner: [ubuntu-latest]
+          - platform: windows-native
+            runner: [self-hosted, Windows, X64, yggdrasil, research-only]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    env:
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      QUALIFIED_SHA: ${{ needs.scdr03-reanchor.outputs.candidate }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ needs.scdr03-reanchor.outputs.candidate }}
+          path: scdr03-qualification-${{ github.run_id }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        if: runner.os == 'Linux'
+        with:
+          python-version: '3.12'
+      - name: Exact-candidate engineering tests only (no scored source invocation)
+        shell: bash
+        working-directory: scdr03-qualification-${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$QUALIFIED_SHA"
+          test "$(git rev-parse HEAD^)" = "$GITHUB_SHA"
+          diff -u <(git diff --name-only HEAD^ HEAD | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
+          test "$(git diff --name-only 'cefe6b3d68589e5f03f27496b7bd361ebf65e6e8' HEAD^)" = ".github/workflows/yggdrasil-g29-atlas.yml"
+          test "$(git rev-parse 'cefe6b3d68589e5f03f27496b7bd361ebf65e6e8^{tree}')" = "68ac81dbe7c7c0b3922cd205b805c0e8eece8e04"
+          test -z "$(git status --porcelain)"
+          echo "SCDR03_EXACT_SHA=$QUALIFIED_SHA"
+          echo "SCDR03_EXACT_TREE=$(git rev-parse HEAD^{tree})"
+          echo "SCDR03_RUNNER=$RUNNER_NAME OS=$RUNNER_OS"
+          if [ "$RUNNER_OS" = Windows ]; then
+            basepy='C:/ProgramData/CKBR/research-sidecar-yggdrasil/python312/python.exe'
+            test -x "$basepy"
+          else
+            basepy=python
+          fi
+          "$basepy" -B -c 'import sys; assert sys.version_info[:2]==(3,12),sys.version; print(sys.version)'
+          "$basepy" -B scripts/build_code_atlas.py --check
+          "$basepy" -B -m unittest discover -s tests -p test_code_atlas.py -v
+          "$basepy" -B -m unittest discover -s research/contrib/gemini/y2-scdr03-num05 -p 'test_*.py' -v
+          venv="$RUNNER_TEMP/scdr03-venv-$GITHUB_RUN_ID"
+          test ! -e "$venv"
+          "$basepy" -m venv "$venv"
+          if [ "$RUNNER_OS" = Windows ]; then
+            py="$venv/Scripts/python.exe"
+          else
+            py="$venv/bin/python"
+          fi
+          "$py" -m pip install --disable-pip-version-check --only-binary=:all: numpy==2.3.5 scipy==1.16.3 scikit-learn==1.8.0 joblib==1.5.2 threadpoolctl==3.6.0
+          "$py" -B -m unittest discover -s tests -p 'test_*.py' -v
+          for era in NKR-05 CKAD-23 CKAD-24 CKAD-25 CKAD-26; do
+            "$py" -B -m unittest discover -s "research/contrib/chatgpt/$era" -p 'test_*.py' -v
+          done
+          "$py" -B -m unittest discover -s research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05 -p test_num05.py -v
+          "$py" -B -m unittest discover -s research/contrib/gemini/y2-scdr03-num05 -p 'test_*.py' -v
+          "$py" -B scripts/build_code_atlas.py --check
+          test -z "$(git status --porcelain)"
+          echo SCDR03_FULL_FINAL_REGRESSION_PASS
