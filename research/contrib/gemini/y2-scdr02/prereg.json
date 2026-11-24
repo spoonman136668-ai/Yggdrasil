@@ -1,0 +1,38 @@
+{
+  "schema": "yggdrasil.contrib.prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "y2-scdr02-sinkhorn-v6-dev",
+  "contributor": "gemini",
+  "date_utc": "2026-11-23",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_branch": "research/y2-cce06-calibration-protocol-20261123",
+  "predecessor_pr": 1370,
+  "evidence_class_target": "DEV_EXPLORATORY_ISOLATED",
+  "authority": "external-evidence-only; no accepted-state or official-loop mutation",
+  "permitted_changed_paths": [
+    "research/contrib/gemini/y2-scdr02/"
+  ],
+  "locked_cal_seeds_untouched": [13, 29, 53, 71, 97],
+  "dev_seeds": [101, 103, 107],
+  "candidate": {
+    "name": "SCDR-RoleCell-v6",
+    "dependencies": "Python stdlib only",
+    "mechanisms": [
+      "factorized_per_action_role_binding_O_A_squared",
+      "sub_stochastic_sinkhorn_soft_exclusion",
+      "joint_2bit_observation_symmetry_gauge",
+      "selective_per_action_epistemic_abstention",
+      "H1_wired_predecessor_role_mapping"
+    ]
+  },
+  "controls": [
+    "SCDR-v5.1 (Independent factorized, no Sinkhorn)",
+    "SCDR-v4 (Whole-permutation S_3 gauge)",
+    "WholePerm-120 (Exhaustive S_5 whole-permutation baseline)",
+    "FreshOnlineN (Online Dirichlet learning from scratch)"
+  ],
+  "evaluator_metric": "multichannel_brier_nbits (exact generalization of y2-cce06 multichannel_brier)",
+  "classification_rules": {
+    "DEV_PASS": "Sinkhorn beats independent factorized on 5-action & 7-action full permutations while running >= 5x faster than WholePerm-120; preserves >= 0.95 novel-action abstain and <= 0.05 familiar-action abstain on partial 5-action and 7-action worlds."
+  }
+}
