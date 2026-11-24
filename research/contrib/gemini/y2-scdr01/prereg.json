@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.contrib.prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "y2-scdr01-rolecell-dev",
+  "contributor": "gemini",
+  "date_utc": "2026-11-23",
+  "parent_main_sha": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+  "parent_branch": "research/y2-cce06-calibration-protocol-20261123",
+  "evidence_class_target": "DEV_EXPLORATORY_ISOLATED",
+  "authority": "external-evidence-only; no accepted-state or official-loop mutation",
+  "permitted_changed_paths": [
+    "research/contrib/gemini/y2-scdr01/"
+  ],
+  "locked_cal_seeds_untouched": [13, 29, 53, 71, 97],
+  "dev_seeds": [101, 103, 107],
+  "train_steps": 800,
+  "eval_steps": 300,
+  "on_policy_episode_steps": 40,
+  "on_policy_budgets": [0, 6, 12, 24],
+  "action_costs": [0, 1, 1],
+  "candidate": {
+    "name": "SCDR-RoleCell-v4",
+    "dependencies": "Python stdlib only",
+    "mechanisms": [
+      "calibrated_H1_sheaf_cycle_splitting",
+      "immutable_anchor_to_genesis_quine_ledger",
+      "gauge_deduplicated_sheet_compression",
+      "bayesian_epistemic_abstention_guard",
+      "charged_probe_evgi_on_policy_exploration"
+    ],
+    "max_splits_per_sheet": 4,
+    "quine_witnesses_per_regime": 8,
+    "quine_drift_budget": 0.02,
+    "gauge_dedup_tol": 0.012
+  },
+  "controls": [
+    "ActionHMM(hidden=6, 2 restarts)",
+    "ActiveBayesianPolicy (y2-cce06)",
+    "DecisionFocusedBayesianPolicy (y2-cce06)",
+    "Ablation: SCDR without Genesis Ledger (overwrite quine)",
+    "Ablation: SCDR without Gauge Deduplication",
+    "Ablation: SCDR without Quine Guard (1-sheet pooling)"
+  ],
+  "evaluator_metric": "y2-cce06 calibration_controls.multichannel_brier",
+  "classification_rules": {
+    "DEV_PASS": "action_null splits == 0; 10-world max cold-return drift <= 0.02 with <= 4 unique sheets; beats ActiveBayes & DecisionBayes across budgets 6, 12, 24 on permuted local_reversible & aliased_probe; stays within 0.015 of best Bayes control on OOD bit-inverted gated_nonlocal.",
+    "MIXED": "Meets some but not all DEV_PASS criteria.",
+    "NEGATIVE": "Fails core retention or transfer criteria against matched controls."
+  }
+}
