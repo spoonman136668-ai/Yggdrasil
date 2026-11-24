@@ -17,7 +17,7 @@ NUM05_DIR = Path(__file__).resolve().parents[2] / "chatgpt" / "CAUSAL-AMALGAM" /
 if NUM05_DIR.exists() and str(NUM05_DIR) not in sys.path:
     sys.path.insert(0, str(NUM05_DIR))
 
-from num05 import Bank, error, region, target
+from num05 import Bank, canonical, digest, error, region, target
 
 
 def sinkhorn_sub_stochastic(raw_rows: list[list[float]], n_actions: int, iters: int = 3) -> list[list[float]]:
@@ -151,3 +151,47 @@ class SCDRNumContinuous:
                     self.beliefs[oa] = [(1.0 - pulse) * x + pulse * unif for x in self.beliefs[oa]]
             self._last_bcast = self.events_seen
             self._surprise_win.clear()
+
+
+    def checkpoint(self) -> dict:
+        """Canonical cold checkpoint matching NUM05's cold-replay contract."""
+        return {
+            "schema": "yggdrasil.scdr_num05.checkpoint.v1",
+            "sigma": self.sigma,
+            "hazard": self.hazard,
+            "broadcast_pulse": self.broadcast_pulse,
+            "bank0": self.bank0.snapshot(),
+            "bank1": self.bank1.snapshot(),
+            "archived": self.archived,
+            "events_seen": self.events_seen,
+            "consec_contradictions": self.consec_contradictions,
+            "ema_mse": self.ema_mse,
+            "bank0_frozen_signature": self.bank0_frozen_signature,
+            "beliefs": [row[:] for row in self.beliefs],
+            "surprise_win": self._surprise_win[:],
+            "last_bcast": self._last_bcast,
+        }
+
+    def checkpoint_digest(self) -> str:
+        return digest(canonical(self.checkpoint()))
+
+    @classmethod
+    def restore(cls, state: dict) -> "SCDRNumContinuous":
+        if state.get("schema") != "yggdrasil.scdr_num05.checkpoint.v1":
+            raise ValueError("SCDR_NUM05_BAD_CHECKPOINT_SCHEMA")
+        obj = cls(
+            sigma=float(state["sigma"]),
+            hazard=float(state["hazard"]),
+            broadcast_pulse=float(state["broadcast_pulse"]),
+        )
+        obj.bank0.cells = {k: [int(v[0]), [float(x) for x in v[1]]] for k, v in state["bank0"].items()}
+        obj.bank1.cells = {k: [int(v[0]), [float(x) for x in v[1]]] for k, v in state["bank1"].items()}
+        obj.archived = bool(state["archived"])
+        obj.events_seen = int(state["events_seen"])
+        obj.consec_contradictions = int(state["consec_contradictions"])
+        obj.ema_mse = float(state["ema_mse"])
+        obj.bank0_frozen_signature = state["bank0_frozen_signature"]
+        obj.beliefs = [[float(x) for x in row] for row in state["beliefs"]]
+        obj._surprise_win = [int(x) for x in state["surprise_win"]]
+        obj._last_bcast = int(state["last_bcast"])
+        return obj

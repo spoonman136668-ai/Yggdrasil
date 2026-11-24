@@ -80,5 +80,23 @@ class TestSCDRNumContinuous(unittest.TestCase):
         self.assertGreater(sum(abstain_b[3:]) / 2.0, 0.90)
 
 
+
+    def test_checkpoint_restore_is_byte_exact(self) -> None:
+        rows = _rows(77004, "partial")
+        m1 = SCDRNumContinuous()
+        for row in rows[:210]:
+            m1.observe(row)
+        ckpt = m1.checkpoint()
+        d_before = m1.checkpoint_digest()
+        m2 = SCDRNumContinuous.restore(ckpt)
+        self.assertEqual(d_before, m2.checkpoint_digest())
+        for row in rows[210:]:
+            p1 = m1.forecast(row["observation"], row["action"])
+            p2 = m2.forecast(row["observation"], row["action"])
+            self.assertEqual(p1, p2)
+            m1.observe(row)
+            m2.observe(row)
+        self.assertEqual(m1.checkpoint_digest(), m2.checkpoint_digest())
+
 if __name__ == "__main__":
     unittest.main()
