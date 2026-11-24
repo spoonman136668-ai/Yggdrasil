@@ -1,0 +1,67 @@
+{
+  "schema": "yggdrasil.stage7-dense-causal-skip.v1",
+  "corpus": {
+    "files": 16,
+    "train_sha256_16": "ee346df1120165c8",
+    "val_sha256_16": "4ce8d6a707dad6dd",
+    "bigram_bpb": 3.809197449589861,
+    "score_sha256": "21147bac8b56f5b9a3a8a649fa6c3b7cde768b84d19144de74e7d05ed8353d4b"
+  },
+  "metrics": {
+    "dense_always": {
+      "bpb": 3.2832078390378525,
+      "bytes": 19567,
+      "score_sha256": "21147bac8b56f5b9a3a8a649fa6c3b7cde768b84d19144de74e7d05ed8353d4b",
+      "per_layer_skip": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "dense_causal": {
+      "bpb": 3.667742441104828,
+      "bytes": 19567,
+      "score_sha256": "21147bac8b56f5b9a3a8a649fa6c3b7cde768b84d19144de74e7d05ed8353d4b",
+      "per_layer_skip": [
+        0.5456636180794586,
+        0.5567026113113738,
+        0.5494454943476392,
+        0.5491388577697723
+      ]
+    },
+    "dense_random": {
+      "bpb": 3.7944105938558472,
+      "bytes": 19567,
+      "score_sha256": "21147bac8b56f5b9a3a8a649fa6c3b7cde768b84d19144de74e7d05ed8353d4b",
+      "per_layer_skip": [
+        0.5045740282023186,
+        0.49501711987947083,
+        0.5113711855807168,
+        0.4864823430275499
+      ]
+    }
+  },
+  "meta": {
+    "dense_always": {
+      "train_bpb_end": 3.0535,
+      "mean_val_skip": 0.0,
+      "elapsed_sec": 117.07
+    },
+    "dense_causal": {
+      "train_bpb_end": 3.7023,
+      "mean_val_skip": 0.5502,
+      "elapsed_sec": 104.39
+    },
+    "dense_random": {
+      "train_bpb_end": 3.9278,
+      "mean_val_skip": 0.4994,
+      "elapsed_sec": 93.43
+    }
+  },
+  "deltas": {
+    "causal_minus_always_bpb": 0.3845,
+    "causal_minus_random_bpb": -0.1267
+  },
+  "verdict": "MIXED"
+}
