@@ -1,0 +1,94 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "stage7-capacity",
+  "contributor": "chatgpt",
+  "contribution_class": "ablation",
+  "question": "Does shared procedural weight generation impose an avoidable capacity or optimization bottleneck at dim128, independent of event routing?",
+  "hypothesis": "Direct factors or bounded rank-four residual correction will reduce BPB by at least 0.10 versus generated Monarch on every frozen seed, while staying within 0.15 BPB of dense and retaining at least 4x FFN compression.",
+  "exact_parent_sha": "0f3b57c6abe633c77ebf2b5c46d1bdc950e2aca2",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/blob/0f3b57c6abe633c77ebf2b5c46d1bdc950e2aca2/experiments/procedural_event_stage6b_primary_results.json"
+  ],
+  "changed_paths": [
+    "experiments/procedural_event_stage7_capacity.py",
+    "tests/test_procedural_event_stage7.py",
+    "research/contrib/chatgpt/stage7-capacity/prereg.json",
+    "research/contrib/chatgpt/stage7-capacity/README.md",
+    "research/contrib/chatgpt/stage7-capacity/engineering.json",
+    "research/contrib/chatgpt/stage7-capacity/result.json",
+    "research/contrib/chatgpt/stage7-capacity/provenance.json"
+  ],
+  "inputs": [
+    {
+      "name": "training",
+      "sha256": "ee346df1120165c816b99772f3230a09ada2d7883815c46ac12a0b26bbbfd616",
+      "source": "16 explicitly enumerated public Yggdrasil .py/.md files at 5e74f8db85b2f5839c42148c0dfba69a88b1a2c9; original repo licensing applies; join LF; first 78268 bytes"
+    },
+    {
+      "name": "validation",
+      "sha256": "4ce8d6a707dad6dd3135b784509c5046add37bbb7ba65124656e38e932030dab",
+      "source": "same frozen corpus, last 19568 bytes; previously observed Stage6b validation, not a novel holdout"
+    }
+  ],
+  "code_identity": {
+    "source_blob": "3a9a830ba4e1f10e87bc313c7c44396e72bc6877",
+    "test_blob": "a26abc0c2a7f38df86ddefc681630299264bf63a",
+    "source_sha256": "af248220dd3b16f1a736492566f695f7b612d74d2049c51643a493156a7fe4b8"
+  },
+  "frozen_design": {
+    "seeds": [
+      43,
+      44,
+      45
+    ],
+    "split": "78268 training bytes, 19568 validation bytes, no data changes",
+    "ordering": "fixed corpus order, no shuffling, dense/generated/direct/residual per seed; matched dropout RNG seed+10000",
+    "data_budget": "78267 transitions per epoch, 20 epochs per arm; complete tail; 19567 validation transitions",
+    "compute_budget": "40 batches/epoch, 800 optimizer updates/arm, 12 fits total, 9600 updates; CPU 1 thread; matched data and update budget, not FLOPs or wall-clock; no extension or uncertain replay",
+    "capacity": "4 layers dim128 hidden512 G16; rank-four residual per projection; no skipping; fixed backbone and identical initial Monarch functions",
+    "evaluator": "Stage6b byte-weighted FP64 evaluation; exact score SHA256 21147bac8b56f5b9a3a8a649fa6c3b7cde768b84d19144de74e7d05ed8353d4b; train-only alpha0.1 bigram; rank before/after",
+    "optimizer": "AdamW lr0.003 wd0.01 cosine20, clip1, dropout0.1; report epoch curve; convergence not guaranteed",
+    "deterministic_expected": true
+  },
+  "controls": [
+    "dense",
+    "generated",
+    "direct",
+    "residual",
+    "matched bigram"
+  ],
+  "metrics": [
+    "BPB",
+    "static FFN bytes",
+    "train seconds",
+    "train BPB curve",
+    "updates",
+    "pre/post rank",
+    "skip rate",
+    "score identity"
+  ],
+  "classification_rules": {
+    "supported": "One same candidate (direct or residual) gains >=0.10 BPB over generated on all 3 seeds, <=dense+0.15 BPB and >=4x static FFN compression on all 3. Local supported classification is not official scientific acceptance.",
+    "mixed": "All-seed gain >=0.10 for at least one candidate but parity/compression fails.",
+    "negative": "Neither candidate achieves >=0.10 gain on all seeds.",
+    "invalid": "Missing seed/arm, nonfinite score, mismatched evaluation identity/count, nonzero routing, rank deficiency, dense not better than bigram, missing corpus, interruption or provenance failure."
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result policy selection",
+    "capacity growth",
+    "extra data/compute/model calls unless preregistered",
+    "held-out/evaluator leakage",
+    "uncertain replay"
+  ],
+  "authority": {
+    "research_only": true,
+    "production_authority": false,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "scheduler_or_queue_authority": false
+  },
+  "preregistration_note": "Frozen before any Stage7 primary outcome. Stage6b results already seen; this is a targeted ablation on previously inspected validation corpus. Reproduction and disjoint native causal test required before promotion."
+}

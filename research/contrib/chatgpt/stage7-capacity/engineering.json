@@ -1,0 +1,70 @@
+{
+  "schema": "yggdrasil.experimental-engineering-evidence.v1",
+  "source_blobs": {
+    "experiments/procedural_event_stage7_capacity.py": "3a9a830ba4e1f10e87bc313c7c44396e72bc6877",
+    "tests/test_procedural_event_stage7.py": "a26abc0c2a7f38df86ddefc681630299264bf63a"
+  },
+  "scope": "isolated local patch checkout, not full repo",
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "cuda": false,
+    "threads": 1
+  },
+  "commands": [
+    "python -m compileall -q experiments/procedural_event_stage7_capacity.py tests/test_procedural_event_stage7.py",
+    "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest -q tests -k 'not test_repo_corpus_loads_deterministically'"
+  ],
+  "focused": {
+    "passed": 19,
+    "deselected": 1,
+    "seconds": 2.56,
+    "compile": "PASS",
+    "unfiltered": "19 passed, 1 failed (original corpus loader had zero source files)"
+  },
+  "static_ffn_bytes": {
+    "dense": 2107392,
+    "generated": 405568,
+    "direct": 337984,
+    "residual": 487488
+  },
+  "initial_rank": {
+    "seed": 43,
+    "dim": 128,
+    "layers": 4,
+    "generated": [
+      128,
+      128,
+      128,
+      128,
+      128,
+      128,
+      128,
+      128
+    ],
+    "direct": [
+      128,
+      128,
+      128,
+      128,
+      128,
+      128,
+      128,
+      128
+    ],
+    "residual": [
+      128,
+      128,
+      128,
+      128,
+      128,
+      128,
+      128,
+      128
+    ]
+  },
+  "equivalence": "Exact initial logits at dim32/layers1, seed43, eval; finite gradients; missing-corpus refusal; empty verdict invalid.",
+  "primary": "NOT_RUN",
+  "full_regression": "UNVERIFIED",
+  "scientific_gain_verified": false
+}
