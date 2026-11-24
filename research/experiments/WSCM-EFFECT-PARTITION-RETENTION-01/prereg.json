@@ -1,0 +1,62 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-EFFECT-PARTITION-RETENTION-01",
+  "exact_parent_sha": "33beeea276d7f3cdaf344d70c389c65f0503c15b",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "FROZEN_SYNTHETIC_DEVELOPMENT_ONLY",
+  "parent_result": "WSCM-DTR-EFFECT-PARTITION-01 archived deterministic compression; conventional CART zero terminal error, no superior intelligence",
+  "source_pins": {
+    "research/applications/plane/wscm_dtr_effect_partition.py": "8ad052791d4bc884703048dfd79c831e6f17f8eb"
+  },
+  "hypothesis": "Reuse greedy learned action-effect partitions as immutable banks. With stochastic outcomes and changed partitions, pooling improves prediction over unpooled counts without sacrificing exact-Bayes/CART accuracy or cold-return performance.",
+  "generator": {
+    "domain": "WSCM-EFFECT-PARTITION-RETENTION-01",
+    "seeds": [
+      781201,
+      781211,
+      781219
+    ],
+    "worlds_per_seed": 4,
+    "world_families": [
+      "two independent 3-to-4 group repartitions (two worlds)",
+      "unstructured B with 8 independent context response pairs",
+      "no-change B identical to A null"
+    ],
+    "A": "8 shuffled context IDs assigned to 3 nonempty classes (size3,3,2); each class independently sampled two Bernoulli probabilities from {.1,.2,.3,.7,.8,.9}; distinct class response pairs",
+    "B": "repartition: independently shuffled 4 groups of size2 and four distinct response pairs; unstructured: 8 distinct response pairs; null: identical to A",
+    "observations": "128 A +128 B +32 return to A per world; 8/8/2 independently shuffled complete blocks of 16 context-action pairs; independent Bernoulli draw for each observed consequence; generation uses isolated SHA256-domain deterministic Random",
+    "budget": "12 worlds, 3456 witnessed synthetic outcomes; identical rows to all arms, no original source calls",
+    "boundary": "All methods know A and B fitting session boundaries; no regime identity given to recall router, equal prior over two frozen banks. A-return evaluator identity not provided to router. No closed-loop probe selection."
+  },
+  "arms": [
+    "greedy partition: exact unchanged parent greedy(), pool counts by discovered groups, immutable A and B banks",
+    "full context/action Beta table with same two frozen banks and routing",
+    "exact BMA over all 4140 context partitions with same Beta priors and routing",
+    "fully grown binary-feature CART (greedy squared-error split with positive gain, deterministic tie; leaf empirical mean), same two banks and recall routing; clip to [1e-6,1-1e-6] only for likelihood routing",
+    "pooled full context/action Beta (A+B combined, ignores regime; negative)"
+  ],
+  "scoring": {
+    "primary": "expected Bernoulli excess Brier mean (prediction-p_true)^2 over all 16 equally weighted cells for A and B trained banks, average per world then seed; report full expected Brier too or irreducible floor; evaluator law never fed learner",
+    "return": "after 0,8,16,32 witnessed return outcomes, use frozen two-bank Bernoulli likelihood mixture in log domain; predictions are scored against private A law across 16 cells; no updates to banks; report mean drift vs original A bank and max world drift at 32; report A weight, no-change null separately",
+    "compression": "candidate logical probability cells plus actual canonical JSON serialized bank bytes vs full bank, separately; exact partition count; measure fit wall time in log only, do not claim timing parity from deterministic outputs",
+    "integrity": "cold restore both frozen bank snapshots via JSON and reconstruct predictions, exact parity; no mutation across recall; no hidden source law to fit or route; no protected first use"
+  },
+  "gates": {
+    "seed_gain_vs_full": ">=.005 expected excess Brier per seed",
+    "seed_gap_vs_exact_and_cart": "<=.002 vs strongest exact BMA/CART each seed",
+    "unstructured_B_harm": "mean candidate excess Brier <= best full/exact/CART +.01",
+    "return_mean_drift": "<=.01 each seed at 32",
+    "return_max_world_drift": "<=.02",
+    "compression": "mean <=12 probability cells per fitted bank",
+    "negative": "all gates required to continue; otherwise DEV_NO_GO, no tuning this consumed cohort. Even pass is synthetic development only, not scientific acceptance."
+  },
+  "limits": {
+    "scientific_pass": false,
+    "source_first_use": false,
+    "original_source_actions": 0,
+    "native_model_mutation": false,
+    "full_final_regression": "NOT_RUN",
+    "paid_api": false,
+    "new_controller": false
+  }
+}
