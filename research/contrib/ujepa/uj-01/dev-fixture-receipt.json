@@ -1,0 +1,33 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "source_commit": "f4896d661aba748bf94c8a539b8754efc888b95e",
+  "source_tree": "1294e2fe67b32d8309321389dec08f4bf9ea0c80",
+  "source_blobs": {
+    "latent_density.py": "f1860099c97c69b3875a4931b5ea0c8afe1c12b8",
+    "test_latent_density.py": "e2c167aecb335023c0f837bb228e153ac225e7bb"
+  },
+  "custody": "GitHub blob identities matched git hash-object for sandbox copies prior to execution",
+  "environment": "Linux sandbox, Python 3.13.5, not native owner runner",
+  "command": "python -m unittest discover -s . -p 'test_*.py' -v",
+  "tests": [
+    "test_config_rejected",
+    "test_fixture_gradient_direction",
+    "test_negative_inputs_do_not_mutate",
+    "test_normalization_and_bounded_means",
+    "test_read_only_and_preupdate_score",
+    "test_reproducible_updates",
+    "test_single_component_matches_gaussian"
+  ],
+  "passed": 7,
+  "failed": 0,
+  "reported_seconds": 0.002,
+  "full_regression": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false,
+  "limitations": [
+    "No scientific corpus, real trained encoder, matched baseline or native model integration.",
+    "Sandbox Git remote lookup failed DNS; full source checkout unavailable."
+  ]
+}
