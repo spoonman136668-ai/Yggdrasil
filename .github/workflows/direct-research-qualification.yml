@@ -68,11 +68,30 @@ jobs:
             if((git rev-parse "HEAD:$Test").Trim() -cne 'a26abc0c2a7f38df86ddefc681630299264bf63a'){throw 'TEST_BLOB_MISMATCH'}
             if((Get-FileHash -LiteralPath $Source -Algorithm SHA256).Hash.ToLowerInvariant() -cne 'af248220dd3b16f1a736492566f695f7b612d74d2049c51643a493156a7fe4b8'){throw 'SOURCE_BYTES_MISMATCH'}
             if(Test-Path -LiteralPath 'research/contrib/chatgpt/stage7-capacity/result.json'){throw 'PRIMARY_EVIDENCE_PRESENT'}
-            & $Py -B -c "import sys,torch,pytest; print('python='+sys.version); print('torch='+torch.__version__); print('pytest='+pytest.__version__); print('threads='+str(torch.get_num_threads())); assert torch.get_num_threads()==1"
+            & $Py -B -c "import sys,torch; print('python='+sys.version); print('torch='+torch.__version__); print('threads='+str(torch.get_num_threads())); assert torch.get_num_threads()==1"
             if($LASTEXITCODE-ne0){throw 'STAGE7_RUNTIME_PREFLIGHT_FAILED'}
             & $Py -B -c "import os; from pathlib import Path; from experiments.procedural_event_stage7_capacity import corpus; tr,va=corpus(Path(os.environ['STAGE7_CORPUS'])); assert (tr.numel(),va.numel())==(78268,19568); print('STAGE7_CORPUS_HASHES=PASS')"
             if($LASTEXITCODE-ne0){throw 'STAGE7_CORPUS_PREFLIGHT_FAILED'}
-            & $Py -B -m pytest -q -p no:cacheprovider $Test
+            # Run the frozen positive test directly; mirror the frozen missing-corpus
+            # negative with stdlib exception handling, without changing shared Python.
+            $Focused = @'
+          import runpy
+          import tempfile
+          from pathlib import Path
+          from experiments.procedural_event_stage7_capacity import corpus
+          tests = runpy.run_path("tests/test_procedural_event_stage7.py")
+          tests["test_factor_identity_and_gradient"]()
+          print("STAGE7_FROZEN_FACTOR_IDENTITY_AND_GRADIENT=PASS")
+          with tempfile.TemporaryDirectory() as tmp:
+              try:
+                  corpus(Path(tmp))
+              except FileNotFoundError:
+                  print("STAGE7_MISSING_CORPUS_REFUSAL=PASS")
+              else:
+                  raise AssertionError("missing corpus was accepted")
+          print("STAGE7_FOCUSED_DIRECT_CHECKS=2/2; PYTEST_SUITE_NOT_EXECUTED")
+          '@
+            $Focused | & $Py -B -
             if($LASTEXITCODE-ne0){throw 'STAGE7_FOCUSED_TEST_FAILED'}
             if(Test-Path -LiteralPath 'research/contrib/chatgpt/stage7-capacity/result.json'){throw 'UNEXPECTED_PRIMARY_EVIDENCE'}
             if((git status --porcelain)-join''){throw 'CANDIDATE_MUTATED'}
