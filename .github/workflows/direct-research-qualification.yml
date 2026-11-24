@@ -1,7 +1,7 @@
-name: Direct U-JEPA UJ-02 development qualification
+name: Direct U-JEPA UJ-03A development pilot
 on:
   push:
-    branches: [dev/ujepa-uj02-independent-runtime]
+    branches: [dev/ujepa-uj03a-aqua-pilot]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
       - '.ice/code-atlas.json'
@@ -14,9 +14,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   qualify:
-    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj02-independent-runtime' && github.run_attempt == 1
+    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj03a-aqua-pilot' && github.run_attempt == 1
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
-    timeout-minutes: 20
+    timeout-minutes: 65
     defaults:
       run:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
@@ -34,30 +34,24 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $source='3a8ddcf508f8ba934b81d4448b7aca1679caa48d'
-          $tree='d12ccbd006d5ea58e6a036c28b3473d4c4bc5a3d'
-          $baseline='b9e2c11cf60fe43e7ff87ab263294d1aacb228bd'
-          $baseTree='ec102c61afddb0ce659dd799e055bb2fe5e3e300'
+          $baseline='bdcbf9221d6c8197982bde67477978ef6f4e1bcc'
+          $baseTree='6e2d270e3482d67f0bd43fa49d59c79552574ef1'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
-          if((git rev-parse "$source^{tree}").Trim() -cne $tree){throw 'SOURCE_TREE_MISMATCH'}
           if((git rev-parse "$baseline^{tree}").Trim() -cne $baseTree){throw 'BASELINE_TREE_MISMATCH'}
-          if((git rev-parse "$source^").Trim() -cne $baseline){throw 'SOURCE_PARENT_MISMATCH'}
           $workflow='.github/workflows/direct-research-qualification.yml'
           $p='research/contrib/ujepa/uj-01'
-          $expected=@($workflow,"$p/session.py","$p/test_session_cold.py","$p/uj02-dev-receipt.json") | Sort-Object
-          $allExpected=@($expected+"$p/UJ02.md"+"$p/test_session.py") | Sort-Object
+          $expected=@($workflow,"$p/uj03a_pilot.py","$p/test_uj03a_pilot.py","$p/UJ03A.md") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
-          if($parent -ceq $source -and ($delta -join '|') -ceq ($expected -join '|')){
+          if($parent -ceq $baseline -and ($delta -join '|') -ceq ($expected -join '|')){
             $phase='prepare'
             $anchor=$head
-          } elseif((git rev-parse "$parent^").Trim() -ceq $source -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $source $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
+          } elseif((git rev-parse "$parent^").Trim() -ceq $baseline -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $baseline $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
             $phase='qualify'
             $anchor=$parent
-          } else {throw 'UNEXPECTED_ATLAS_TRANSITION'}
-          if((@(git diff --name-only $baseline $anchor | Sort-Object) -join '|') -cne ($allExpected -join '|')){throw 'UNEXPECTED_UJ02_SOURCE_DELTA'}
+          } else {throw 'UNEXPECTED_UJ03A_TRANSITION'}
           "phase=$phase" >> $env:GITHUB_OUTPUT
           "UJ_ATLAS_ANCHOR=$anchor" >> $env:GITHUB_ENV
           Write-Output "UJ_PHASE=$phase"
@@ -67,13 +61,13 @@ jobs:
           & $py -B -c "import sys, torch; print(sys.version); print('torch='+torch.__version__)"
           if($LASTEXITCODE -ne 0){throw 'NATIVE_RUNTIME_INVALID'}
           "UJ_PYTHON=$py" >> $env:GITHUB_ENV
-          Write-Output "UJ_SOURCE_SHA=$source"
-          Write-Output "UJ_SOURCE_TREE=$tree"
+          Write-Output "UJ_BASELINE_SHA=$baseline"
+          Write-Output "UJ_BASELINE_TREE=$baseTree"
           Write-Output "UJ_QUALIFICATION_SHA=$head"
           $headTree=(git rev-parse 'HEAD^{tree}').Trim()
           if($LASTEXITCODE -ne 0 -or $headTree -notmatch '^[0-9a-f]{40}$'){throw 'QUALIFICATION_TREE_INVALID'}
           Write-Output "UJ_QUALIFICATION_TREE=$headTree"
-          Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
+          Write-Output 'PROTECTED_SCIENTIFIC_FIRST_USE=FALSE'
       - name: Native package import and focused native regressions
         if: steps.custody.outcome == 'success'
         env:
@@ -84,6 +78,16 @@ jobs:
           $ErrorActionPreference='Stop'
           & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; root=pathlib.Path.cwd().resolve(); sys.path.insert(0,str(root)); import yggdrasil.public_causal_cells as m; assert pathlib.Path(m.__file__).resolve()==root/'yggdrasil'/'public_causal_cells.py'; print('NATIVE_PACKAGE_SOURCE=PASS'); runpy.run_module('unittest',run_name='__main__')" discover -s tests -p 'test_native_cells*.py' -v
           if($LASTEXITCODE -ne 0){throw 'NATIVE_FOCUSED_REGRESSION_FAILED'}
+      - name: UJ-03A focused fabricated-data fixtures
+        if: steps.custody.outcome == 'success'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_uj03a_pilot.py' -v
+          if($LASTEXITCODE -ne 0){throw 'UJ03A_FIXTURES_FAILED'}
       - name: Generate frozen atlas for exact committed source
         if: steps.custody.outputs.phase == 'prepare'
         run: |
@@ -137,3 +141,27 @@ jobs:
           if(@(git status --porcelain --untracked-files=all).Count){throw 'QUALIFICATION_MUTATED_SOURCE'}
           Write-Output 'UJ_SOURCE_UNCHANGED'
           Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
+      - name: Acquire exact AQuA TRAIN only and execute one bounded DEV pilot
+        if: success() && steps.custody.outputs.phase == 'qualify'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ("uj03a-aqua-"+$env:GITHUB_RUN_ID)
+          if(Test-Path -LiteralPath $root){throw 'TRIAL_PATH_ALREADY_EXISTS_NO_REPLAY'}
+          New-Item -ItemType Directory -Path $root | Out-Null
+          $data=Join-Path $root 'train.json'
+          $url='https://raw.githubusercontent.com/google-deepmind/AQuA/26b64ed1f22208c6742f47df547dfd65088ec30d/train.json'
+          Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $data -TimeoutSec 120 -MaximumRedirection 0
+          if((Get-Item -LiteralPath $data).Length -ne 47570935){throw 'TRAIN_SIZE_MISMATCH'}
+          $blob=(git hash-object --no-filters -- $data).Trim()
+          if($LASTEXITCODE -ne 0 -or $blob -cne 'a805bddefde8d70fdb66ff7ab85a1999bdc3eece'){throw 'TRAIN_BLOB_MISMATCH'}
+          $hash=(Get-FileHash -LiteralPath $data -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($hash -cne '35b70c7cb1660c34d302bb932dfd3656ce3d05e8c982c797767fec31d7d1e0ba'){throw 'TRAIN_HASH_MISMATCH'}
+          Write-Output "UJ03A_DEV_TRIAL_STARTED=$env:GITHUB_RUN_ID"
+          & $env:UJ_PYTHON -B research/contrib/ujepa/uj-01/uj03a_pilot.py --train $data --source-sha $env:GITHUB_SHA
+          if($LASTEXITCODE -ne 0){throw 'UJ03A_PILOT_FAILED_NO_REPLAY'}
+          if(@(git status --porcelain --untracked-files=all).Count){throw 'PILOT_MUTATED_SOURCE'}
+          Write-Output 'UJ03A_DEV_TRIAL_COMPLETE_NO_SCIENTIFIC_PROMOTION'
