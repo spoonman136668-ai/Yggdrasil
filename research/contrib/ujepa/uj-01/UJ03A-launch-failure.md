@@ -1,0 +1,7 @@
+# UJ-03A launch failure — preserved negative, pre-model abort
+
+Original run: https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/45415819688/job/138521581762
+Candidate 25caa29e0667a38f2ae258403a5d0f3c6e4ffce7, tree 3500baf08f711189aff2c23b9317e08f949cae0e, runner YGG-B-LINKDEADKB, attempt 1.
+Repository 54/54, U-JEPA 52/52, syntax 24/24; AQuA byte count, Git blob and SHA-256 checks succeeded. The trial-start marker preceded a top-level ModuleNotFoundError: No module named 'learned_jepa' at line 15 of uj03a_pilot.py. Source inspection confirms failure before main(), selection, diagnostics, model construction or training. No UJ03A manifest or completed arm emitted; zero optimizer steps. Acquisition occurred, not diagnostic consumption by the model. Preserve failed run; never rerun its job.
+
+Correction only: explicitly set the local module search path and verify module origins in a runpy launcher; use that same launcher with --help as a no-data preflight in preparation and qualification. No change to pilot code, corpus, grouping, seeds, arms, budget, scoring, or criteria. One fresh invocation on the corrected exact candidate under existing bounded train-only authorization, conditional on all final regression gates. No official validation/test or scientific first-use. Stop on failure, no consumed or uncertain trial replay. No promotion or deployment. Qualification still unverified.

@@ -1,4 +1,4 @@
-name: Direct U-JEPA UJ-03A development pilot
+name: Direct U-JEPA UJ-03A launch correction
 on:
   push:
     branches: [dev/ujepa-uj03a-aqua-pilot]
@@ -34,14 +34,14 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $baseline='bdcbf9221d6c8197982bde67477978ef6f4e1bcc'
-          $baseTree='6e2d270e3482d67f0bd43fa49d59c79552574ef1'
+          $baseline='25caa29e0667a38f2ae258403a5d0f3c6e4ffce7'
+          $baseTree='3500baf08f711189aff2c23b9317e08f949cae0e'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
           if((git rev-parse "$baseline^{tree}").Trim() -cne $baseTree){throw 'BASELINE_TREE_MISMATCH'}
           $workflow='.github/workflows/direct-research-qualification.yml'
           $p='research/contrib/ujepa/uj-01'
-          $expected=@($workflow,"$p/uj03a_pilot.py","$p/test_uj03a_pilot.py","$p/UJ03A.md") | Sort-Object
+          $expected=@($workflow,"$p/UJ03A-launch-failure.md") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
@@ -88,6 +88,17 @@ jobs:
           $ErrorActionPreference='Stop'
           & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_uj03a_pilot.py' -v
           if($LASTEXITCODE -ne 0){throw 'UJ03A_FIXTURES_FAILED'}
+      - name: Verify exact training launcher before data access
+        if: steps.custody.outcome == 'success'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+        run: |
+          $ErrorActionPreference='Stop'
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,anchor_adapter,anchor_loss,bounded_train,grounded_eval,checkpoint,symbolic_control; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,anchor_adapter,anchor_loss,bounded_train,grounded_eval,checkpoint,symbolic_control)); runpy.run_path(str(p/'uj03a_pilot.py'),run_name='__main__')" --help
+          if($LASTEXITCODE -ne 0){throw 'UJ03A_LAUNCH_PREFLIGHT_FAILED'}
+          Write-Output 'UJ03A_LAUNCH_PREFLIGHT_PASS_NO_DATA'
       - name: Generate frozen atlas for exact committed source
         if: steps.custody.outputs.phase == 'prepare'
         run: |
@@ -149,7 +160,7 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP ("uj03a-aqua-"+$env:GITHUB_RUN_ID)
+          $root=Join-Path $env:RUNNER_TEMP ("uj03a-launch-correction-"+$env:GITHUB_RUN_ID)
           if(Test-Path -LiteralPath $root){throw 'TRIAL_PATH_ALREADY_EXISTS_NO_REPLAY'}
           New-Item -ItemType Directory -Path $root | Out-Null
           $data=Join-Path $root 'train.json'
@@ -161,7 +172,8 @@ jobs:
           $hash=(Get-FileHash -LiteralPath $data -Algorithm SHA256).Hash.ToLowerInvariant()
           if($hash -cne '35b70c7cb1660c34d302bb932dfd3656ce3d05e8c982c797767fec31d7d1e0ba'){throw 'TRAIN_HASH_MISMATCH'}
           Write-Output "UJ03A_DEV_TRIAL_STARTED=$env:GITHUB_RUN_ID"
-          & $env:UJ_PYTHON -B research/contrib/ujepa/uj-01/uj03a_pilot.py --train $data --source-sha $env:GITHUB_SHA
+          Write-Output 'PRIOR_RUN_45415819688_IMPORT_ABORT_ZERO_MODEL_OBSERVATIONS'
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,anchor_adapter,anchor_loss,bounded_train,grounded_eval,checkpoint,symbolic_control; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,anchor_adapter,anchor_loss,bounded_train,grounded_eval,checkpoint,symbolic_control)); runpy.run_path(str(p/'uj03a_pilot.py'),run_name='__main__')" --train $data --source-sha $env:GITHUB_SHA
           if($LASTEXITCODE -ne 0){throw 'UJ03A_PILOT_FAILED_NO_REPLAY'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'PILOT_MUTATED_SOURCE'}
           Write-Output 'UJ03A_DEV_TRIAL_COMPLETE_NO_SCIENTIFIC_PROMOTION'
