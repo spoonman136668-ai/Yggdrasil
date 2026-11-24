@@ -35,7 +35,7 @@ jobs:
           $tree='1485d224161d5abbcc18faee3f90cd84edca3025'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
-          if((git rev-parse 'HEAD^').Trim() -cne '926a88be8fcaaf484443baddb9aa0aeb63de8462'){throw 'PARENT_SHA_MISMATCH'}
+          if((git rev-parse 'HEAD^').Trim() -cne '67e346796ed1d3fa94e15c8b64d7d089a93e09c6'){throw 'PARENT_SHA_MISMATCH'}
           if((git rev-parse "$source^{tree}").Trim() -cne $tree){throw 'SOURCE_TREE_MISMATCH'}
           $changed=@(git diff --name-only $source HEAD)
           if($changed.Count -ne 1 -or $changed[0] -cne '.github/workflows/direct-research-qualification.yml'){throw 'WORKFLOW_ONLY_DELTA_REQUIRED'}
@@ -49,58 +49,7 @@ jobs:
           Write-Output "UJ_SOURCE_TREE=$tree"
           Write-Output "UJ_QUALIFICATION_SHA=$head"
           $headTree=(git rev-parse 'HEAD^{tree}').Trim()
-          if($LASTEXITCODE -ne 0 -or $headTree -notmatch '^[0-9a-f]{40}
-          Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
-      - name: Full repository regression, including atlas
-        if: steps.custody.outcome == 'success'
-        env:
-          PYTHONDONTWRITEBYTECODE: '1'
-          OMP_NUM_THREADS: '1'
-          MKL_NUM_THREADS: '1'
-        run: |
-          $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -m unittest discover -s tests -p 'test_*.py' -v
-          if($LASTEXITCODE -ne 0){throw 'FULL_REPOSITORY_REGRESSION_FAILED'}
-      - name: All U-JEPA development fixtures and syntax build
-        if: always() && steps.custody.outcome == 'success'
-        env:
-          PYTHONDONTWRITEBYTECODE: '1'
-          OMP_NUM_THREADS: '1'
-          MKL_NUM_THREADS: '1'
-        run: |
-          $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_*.py' -v
-          if($LASTEXITCODE -ne 0){throw 'UJ_FULL_FIXTURES_FAILED'}
-          & $env:UJ_PYTHON -B -c "import ast,pathlib; paths=list(pathlib.Path('research/contrib/ujepa/uj-01').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('UJ_SYNTAX_BUILD_FILES='+str(len(paths)))"
-          if($LASTEXITCODE -ne 0){throw 'UJ_SYNTAX_BUILD_FAILED'}
-      - name: Acquire pinned AQuA TRAIN bytes only
-        if: always() && steps.custody.outcome == 'success'
-        run: |
-          $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP ("uj01-aqua-train-"+$env:GITHUB_RUN_ID)
-          if(Test-Path -LiteralPath $root){throw 'ACQUISITION_PATH_ALREADY_EXISTS'}
-          New-Item -ItemType Directory -Path $root | Out-Null
-          $data=Join-Path $root 'train.json'
-          $url='https://raw.githubusercontent.com/google-deepmind/AQuA/26b64ed1f22208c6742f47df547dfd65088ec30d/train.json'
-          Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $data -TimeoutSec 120 -MaximumRedirection 0
-          $size=(Get-Item -LiteralPath $data).Length
-          if($size -ne 47570935){throw "TRAIN_SIZE_MISMATCH actual=$size"}
-          $blob=(git hash-object --no-filters -- $data).Trim()
-          if($LASTEXITCODE -ne 0 -or $blob -cne 'a805bddefde8d70fdb66ff7ab85a1999bdc3eece'){throw 'TRAIN_BLOB_MISMATCH'}
-          $sha=(Get-FileHash -LiteralPath $data -Algorithm SHA256).Hash.ToLowerInvariant()
-          Write-Output "AQUA_TRAIN_BYTES=$size"
-          Write-Output "AQUA_TRAIN_GIT_BLOB=$blob"
-          Write-Output "AQUA_TRAIN_SHA256=$sha"
-          Write-Output 'AQUA_TRAIN_ACQUISITION=PASS_NO_TRAINING'
-          Write-Output 'NO_VALIDATION_OR_TEST_ACCESSED'
-      - name: Verify tracked source unchanged
-        if: always() && steps.custody.outcome == 'success'
-        run: |
-          $ErrorActionPreference='Stop'
-          if(@(git status --porcelain --untracked-files=all).Count){throw 'QUALIFICATION_MUTATED_SOURCE'}
-          Write-Output 'UJ_SOURCE_UNCHANGED'
-          Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
-){throw 'QUALIFICATION_TREE_INVALID'}
+          if($LASTEXITCODE -ne 0 -or $headTree -notmatch '^[0-9a-f]{40}$'){throw 'QUALIFICATION_TREE_INVALID'}
           Write-Output "UJ_QUALIFICATION_TREE=$headTree"
           Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
       - name: Full repository regression, including atlas
