@@ -1,4 +1,4 @@
-"""Unit tests for Stage 3 real-data byte-level streaming LM benchmark."""
+"""Unit tests for Stage 3 and Stage 3b real-data byte-level streaming LM benchmarks."""
 
 from __future__ import annotations
 
@@ -15,6 +15,10 @@ from experiments.procedural_event_stage3_lm import (
     CausalByteLM,
     empirical_bigram_bpb,
     load_repo_byte_corpus,
+)
+from experiments.procedural_event_stage3b_redesign import (
+    CausalAttentionByteLM,
+    NormalizedProceduralLinear,
 )
 
 
@@ -38,3 +42,22 @@ def test_causal_byte_lm_dense_and_procedural_shapes() -> None:
         assert torch.isfinite(logits).all()
         assert torch.isfinite(track_loss)
         assert 0.0 <= skip_rate <= 1.0
+
+
+def test_stage3b_normalized_procedural_and_ema_budget_gate() -> None:
+    torch.manual_seed(0)
+    layer = NormalizedProceduralLinear(in_dim=64, out_dim=256, rank=8, seed_dim=32, basis_dim=4)
+    u, v = layer.synthesize_factors()
+    assert u.shape == (256, 8) and v.shape == (64, 8)
+    # Columns of v should have unit L2 norm
+    v_norms = torch.linalg.vector_norm(v, dim=0)
+    assert torch.allclose(v_norms, torch.ones_like(v_norms), atol=1e-4)
+
+    tokens = torch.randint(0, 256, (4, 24))
+    lm = CausalAttentionByteLM(dim=64, n_heads=2, ffn_type="procedural", rank=8, basis_dim=4, target_skip_rate=0.5)
+    lm.train()
+    logits, track_loss, skip_rate = lm(tokens)
+    assert logits.shape == (4, 24, 256)
+    assert torch.isfinite(logits).all() and torch.isfinite(track_loss)
+    # EMA quantile calibration should hold skip rate near 50% (not 0% or 98%)
+    assert 0.25 <= skip_rate <= 0.75
