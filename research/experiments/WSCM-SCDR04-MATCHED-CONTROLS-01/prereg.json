@@ -1,0 +1,60 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-SCDR04-MATCHED-CONTROLS-01",
+  "exact_parent_sha": "0733e6e88cfd1a7342d8b915fdfe9c615708acfe",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "FROZEN_SYNTHETIC_DEVELOPMENT_ONLY",
+  "hypothesis": "The exact corrected SCDR04 soft-exclusion readout improves six-class causal role Brier versus independent row likelihood Bayes and exact joint partial injection on unfamiliar action permutations, aliases and checkerboard-dependent novel actions, without novelty or alias harm.",
+  "source_pins": {
+    "research/applications/plane/wscm_scdr04_witness_bound.py": "492de744158f1d56b7176ae1d411614fb5b6bad8",
+    "research/contrib/gemini/y2-scdr04-wscm-grid5/scdr_grid5_observer.py": "9bb942e79041af0745c4bf849f3092917b22422e",
+    "yggdrasil/native_grid5_evidence.py": "e743a02d194e2e76c6a689268d376bb3d2b4880e"
+  },
+  "cohorts": {
+    "generator": "new synthetic deterministic public 9x9 clipped moves; source owner original worlds untouched; SHA256 domain WSCM-SCDR04-MATCHED-CONTROLS-01",
+    "dev_seeds": [
+      741103,
+      741107,
+      741109
+    ],
+    "worlds_per_seed_per_family": 8,
+    "families": [
+      "random bijective five-role permutation",
+      "one duplicated familiar role replacing one role in a permutation",
+      "one action switching between two distinct cardinal/stay effects by checkerboard parity"
+    ],
+    "episodes_per_world": 1,
+    "actions_per_world": 20,
+    "behavior": "four independently shuffled balanced five-action blocks; same action/outcome stream and charges for every arm",
+    "readouts_after": [
+      5,
+      10,
+      20
+    ],
+    "no_source_oracle_to_candidate": true
+  },
+  "controls": [
+    "unchanged independent row likelihood posterior (same candidate priors and likelihood factors, no Sinkhorn)",
+    "exact joint posterior of row factors conditioned on injective familiar roles; repeatable novel column, same information",
+    "exact independent deterministic version space of five fixed laws plus 20 ordered checkerboard pairs; prior .18 per fixed law, .005 per pair; known synthetic grammar comparison, not blinded source discovery"
+  ],
+  "metrics": {
+    "primary": "mean unnormalized six-class Brier (sum over 6 roles) at steps 5,10,20 across all actions/worlds, report per family and per seed; lower better",
+    "secondary": "MAP accuracy, novel probability Brier, maximum familiar column sum, cold restored identical diagnostic on first world per family/seed",
+    "charges": "20 synthetic witnessed actions/world; no intervention efficiency claim because shared behavior",
+    "compute": "report exact joint assignment count and fixed Sinkhorn iterations; no wall-time superiority claim"
+  },
+  "decision": {
+    "continue_only_if": "candidate Brier >=0.02 absolute lower than strongest of row and exact joint controls in each seed pooled, no family mean Brier > strongest same-information control +0.01, novel Brier no worse than row, and report exact grammar upper-bound separately",
+    "otherwise": "DEV_NO_GO; no tuning these worlds, no promotion",
+    "scientific_pass": false
+  },
+  "limits": {
+    "original_source_actions": 0,
+    "original_source_first_use": false,
+    "accepted_model_mutation": false,
+    "full_final_regression": "required before any integration; this is pure detached evaluation",
+    "no_paid_api": true,
+    "no_new_controller": true
+  }
+}
