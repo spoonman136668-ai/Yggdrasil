@@ -42,3 +42,8 @@ python3 -m unittest discover -s research/contrib/gemini/y2-scdr02 -p "test_*.py"
 
 - **7-Action Multi-Step Planning (`SCDRMultiStepPlannerV8`, `H=3`, Cycle 18):** On 60-step 2-step-minimum goal tasks (`000 -> 101`) after zero-reward passive pre-training, `SCDR-v8` reached **`26.0`** completions (full $S_7$ perm) and **`26.33`** (partial 5 familiar + 2 novel), beating 1-step greedy (`9.33`), fresh model-based VI3 RL (`20.67` / `21.67`), and random (`4.0` / `2.67`).
 - **Simultaneous Mid-Episode World + Goal Shift (Cycle 19):** After a silent disjoint 7-action gauge swap + goal switch at step 60, `SCDR-v8` achieved **`40.0`** Phase 2 completions vs. `31.33` without hazard (`+27.7%`), `22.67` for fresh VI3 MBRL (**`+76.4%`**), and `7.33` random.
+
+## Cycles 20-22 (`scdr_po_planner_v9.py` — Cold-Restore PASS & PO Hidden-Lock NEGATIVE)
+
+- **Cycle 20 (Cold-Save / Cold-Restore, DEV PASS):** Canonical JSON serialization of `SCDRMultiStepPlannerV8` averages **`5,305 bytes`** (`5.2 KB`) with **`100%` (`1.000`) bit-exact equivalence** across 60 post-reload steps.
+- **Cycles 21-22 (Partially Observable 7-Action Hidden-Lock, HONEST DEV NEGATIVE):** Both 896-param 2-mode EM (`6.67` hits) and 28-param factorized-stall EM (`7.33` hits) trailed Markov `SCDR-v8` (`8.00`) and `FreshModel-VI3` (`7.67`). Root cause: joint gauge + hidden-lock identifiability deadlock at `000` where `swap_b0_b1(000) == noop(000)`.
