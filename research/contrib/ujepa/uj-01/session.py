@@ -27,8 +27,10 @@ def _hash(raw):
 
 
 def _environment():
-    if torch.get_num_threads() != 1 or not torch.are_deterministic_algorithms_enabled():
-        raise ValueError('requires deterministic single-thread CPU runtime')
+    if (torch.get_num_threads() != 1 or not torch.are_deterministic_algorithms_enabled()
+            or torch.is_deterministic_algorithms_warn_only_enabled()
+            or torch.get_default_device().type != 'cpu' or torch.get_default_dtype() != torch.float32):
+        raise ValueError('requires strict deterministic single-thread float32 CPU runtime')
     return dict(python=sys.version, torch=str(torch.__version__), machine=platform.machine(),
                 system=platform.platform(), build=_hash(torch.__config__.show().encode()),
                 mkldnn=torch.backends.mkldnn.enabled)
@@ -77,15 +79,18 @@ class Session:
         self.cursor = 0
         self.exposure = 0
         self.poisoned = False
+        self._epoch, self._order = None, ()
         self.model.eval()
 
     def _batch(self, step):
         count = len(self.pairs) // self.plan['batch_size']
         epoch, offset = divmod(step, count)
-        order = list(range(len(self.pairs)))
-        random.Random(self.plan['seed'] + epoch).shuffle(order)
+        if epoch != self._epoch:
+            order = list(range(len(self.pairs)))
+            random.Random(self.plan['seed'] + epoch).shuffle(order)
+            self._epoch, self._order = epoch, tuple(order)
         k = self.plan['batch_size']
-        return [self.pairs[i] for i in order[offset*k:(offset+1)*k]]
+        return [self.pairs[i] for i in self._order[offset*k:(offset+1)*k]]
 
     def advance(self, count=1):
         if self.poisoned or _environment() != self.environment:

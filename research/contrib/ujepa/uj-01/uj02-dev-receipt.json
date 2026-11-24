@@ -1,0 +1,48 @@
+{
+  "schema": "ujepa.uj02.dev-receipt.v1",
+  "scope": "caller-reported isolated Linux engineering fixtures; not native qualification or science",
+  "source_parent": "3a8ddcf508f8ba934b81d4448b7aca1679caa48d",
+  "source_blobs": {
+    "session.py": "47bc230b0204691a5cf150e979919240d32399ac",
+    "test_session.py": "999e0ef3e63e6ccde8475aa2990b1fcbfac91d90",
+    "test_session_cold.py": "85a1f4eacf61439e3dac58941789aa9d1c7d6372",
+    "learned_jepa.py": "30be62055a9205132c0d709bb99c7ad351bf10b4",
+    "checkpoint.py": "a2cfa3338eb7119eba582ba2bd61936654eaedd8"
+  },
+  "source_sha256": {
+    "session.py": "e6baf6c77f4c2605cead1c5260456866d4bf14a879694a7e6cf1b9309f988dd6",
+    "test_session.py": "fc29ac6a59d254e423143522ea86d3a1761cf139085a48d925d181edc5bb7111",
+    "test_session_cold.py": "ee88b602fec83c328af1b098eb8bef3c570cf08d2bdb7de1e0f1ec17a50d1241",
+    "learned_jepa.py": "3dfd5d3227f4d66cdb8c51f8ab3f4e50f0048889ce971adf0a8f0217d32e4b3f",
+    "checkpoint.py": "60984d4a26e3c576fddb10b2b1fc9028e55a797285bf114b9c497859b25635b8"
+  },
+  "runtime": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "command": "env -u PYTHONPATH OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -B -m unittest discover -s . -p 'test_session*.py' -v",
+  "tests": {
+    "passed": 5,
+    "failed": 0,
+    "seconds": 11.4,
+    "fresh_process_checkpoint_byte_identical": true,
+    "fixture_steps": 6,
+    "fixture_observations_bytes": 24
+  },
+  "batch_selection": {
+    "previous_session_blob": "7e09fee702343ff9fd61627e6881cff60b53128d",
+    "observations": 8192,
+    "batch_size": 8,
+    "batches": 1024,
+    "repeats": 3,
+    "statistic": "median seconds, batch selection only",
+    "baseline_seconds": 1.8216206190000435,
+    "candidate_seconds": 0.0022123420000070837,
+    "batch_order_equal": true,
+    "training_speedup_measured": false
+  },
+  "scientific_first_use": false,
+  "scientific_gain_verified": false,
+  "windows_final_regression": "UNVERIFIED"
+}

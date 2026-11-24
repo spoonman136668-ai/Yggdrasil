@@ -1,7 +1,7 @@
-name: Direct U-JEPA development qualification
+name: Direct U-JEPA UJ-02 development qualification
 on:
   push:
-    branches: [dev/ujepa-uj01-distributional-latent]
+    branches: [dev/ujepa-uj02-independent-runtime]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
       - '.ice/code-atlas.json'
@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   qualify:
-    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj01-distributional-latent' && github.run_attempt == 1
+    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj02-independent-runtime' && github.run_attempt == 1
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
     timeout-minutes: 20
     defaults:
@@ -34,25 +34,30 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $source='647082d7837b022dacea4c136e870aef4cd46fa1'
-          $tree='1485d224161d5abbcc18faee3f90cd84edca3025'
+          $source='3a8ddcf508f8ba934b81d4448b7aca1679caa48d'
+          $tree='d12ccbd006d5ea58e6a036c28b3473d4c4bc5a3d'
+          $baseline='b9e2c11cf60fe43e7ff87ab263294d1aacb228bd'
+          $baseTree='ec102c61afddb0ce659dd799e055bb2fe5e3e300'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
-          $prior='64289733ffe5a382b739955d146920c31a968975'
-          if((git rev-parse "$prior^{tree}").Trim() -cne 'b66039470f1976372e1aa61e69655b1ab2fa8cb8'){throw 'PRIOR_TREE_MISMATCH'}
           if((git rev-parse "$source^{tree}").Trim() -cne $tree){throw 'SOURCE_TREE_MISMATCH'}
+          if((git rev-parse "$baseline^{tree}").Trim() -cne $baseTree){throw 'BASELINE_TREE_MISMATCH'}
+          if((git rev-parse "$source^").Trim() -cne $baseline){throw 'SOURCE_PARENT_MISMATCH'}
           $workflow='.github/workflows/direct-research-qualification.yml'
+          $p='research/contrib/ujepa/uj-01'
+          $expected=@($workflow,"$p/session.py","$p/test_session_cold.py","$p/uj02-dev-receipt.json") | Sort-Object
+          $allExpected=@($expected+"$p/UJ02.md"+"$p/test_session.py") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
-          if($parent -ceq $prior -and ($delta -join '|') -ceq $workflow){
+          if($parent -ceq $source -and ($delta -join '|') -ceq ($expected -join '|')){
             $phase='prepare'
             $anchor=$head
-          } elseif((git rev-parse "$parent^").Trim() -ceq $prior -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $prior $parent) -join '|') -ceq $workflow){
+          } elseif((git rev-parse "$parent^").Trim() -ceq $source -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $source $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
             $phase='qualify'
             $anchor=$parent
           } else {throw 'UNEXPECTED_ATLAS_TRANSITION'}
-          if((@(git diff --name-only $source $anchor) -join '|') -cne $workflow){throw 'LEARNER_SOURCE_DELTA_FORBIDDEN'}
+          if((@(git diff --name-only $baseline $anchor | Sort-Object) -join '|') -cne ($allExpected -join '|')){throw 'UNEXPECTED_UJ02_SOURCE_DELTA'}
           "phase=$phase" >> $env:GITHUB_OUTPUT
           "UJ_ATLAS_ANCHOR=$anchor" >> $env:GITHUB_ENV
           Write-Output "UJ_PHASE=$phase"
