@@ -28,7 +28,10 @@ NUM05_DIR = Path(__file__).resolve().parents[2] / "chatgpt" / "CAUSAL-AMALGAM" /
 if NUM05_DIR.exists() and str(NUM05_DIR) not in sys.path:
     sys.path.insert(0, str(NUM05_DIR))
 
-from num05 import Bank, canonical, digest, error, target
+from num05 import Bank, canonical, digest, error, target, public_row
+from scdr_num05_quarantine import (
+    ZERO_DIGEST, account_unassigned, checked_rows, stage_row, validate_accounting,
+)
 from scdr_num05_continuous import sinkhorn_sub_stochastic
 
 D4_NAMES: tuple[str, ...] = (
@@ -65,6 +68,16 @@ def apply_d4(g: int, x: float, y: float) -> tuple[float, float]:
     raise ValueError(f"SCDR_NUM05_BAD_D4_ELEMENT: {g}")
 
 
+def _normalize_quarantine_row(row):
+    fields = {"id", "source_tag", "observation", "action", "successor",
+              "reward", "terminated", "truncated"}
+    if type(row) is not dict or set(row) != fields:
+        raise ValueError("SCDR_NUM05_QUARANTINE_PUBLIC_FIELDS")
+    return public_row(row["id"], row["observation"], row["action"],
+                      row["successor"], row["reward"], row["terminated"],
+                      row["truncated"], source_tag=row["source_tag"])
+
+
 class SpatialSymSCDRNumV3:
     """Factorized D4 x Sub-Stochastic Sinkhorn continuous causal memory with quarantine freezing."""
 
@@ -76,6 +89,8 @@ class SpatialSymSCDRNumV3:
         hazard: float = 0.025,
         readout_floor: float = 0.03,
     ):
+        if type(max_frozen_banks) is not int or max_frozen_banks < 1:
+            raise ValueError("SCDR_NUM05_FROZEN_CAPACITY")
         self.max_frozen_banks = max_frozen_banks
         self.sigma = sigma
         self.hazard = hazard
@@ -92,6 +107,8 @@ class SpatialSymSCDRNumV3:
         self.outer_beliefs: list[float] = [1.0]
         self.inner_beliefs: list[list[list[float]]] = []
         self._quarantine: list[dict] = []
+        self.quarantine_unassigned_count = 0
+        self.quarantine_unassigned_digest = ZERO_DIGEST
         self._surprise_win: list[int] = []
         self._last_bcast = -100
 
@@ -209,6 +226,29 @@ class SpatialSymSCDRNumV3:
         self.outer_beliefs = [p_hyp] * n_h + [p_fresh]
         self.inner_beliefs = [self._init_inner_matrix(hi % 8) for hi in range(n_h)]
 
+    def _stage_quarantine(self, row):
+        self._quarantine = stage_row(
+            self._quarantine, row, _normalize_quarantine_row,
+            frozen_count=len(self.frozen_banks), max_frozen=self.max_frozen_banks)
+        self.consec_contradictions = len(self._quarantine)
+
+    def _account_interrupted_quarantine(self):
+        self.quarantine_unassigned_count, self.quarantine_unassigned_digest = (
+            account_unassigned(self._quarantine, self.quarantine_unassigned_count,
+                               self.quarantine_unassigned_digest))
+        self._quarantine.clear()
+        self.consec_contradictions = 0
+
+    def _validated_pending(self):
+        if len(self.frozen_banks) > self.max_frozen_banks:
+            raise ValueError("SCDR_NUM05_FROZEN_CAPACITY")
+        pending = checked_rows(self._quarantine, _normalize_quarantine_row)
+        if self.consec_contradictions != len(pending):
+            raise ValueError("SCDR_NUM05_QUARANTINE_STREAK")
+        validate_accounting(self.quarantine_unassigned_count,
+                            self.quarantine_unassigned_digest, self.events_seen)
+        return pending
+
     def observe(self, row: dict) -> None:
         obs = row["observation"]
         act = int(row["action"])
@@ -220,8 +260,7 @@ class SpatialSymSCDRNumV3:
             cell_count = self.active_bank.count(obs, act)
             rel_thresh = min(0.15, max(0.025, 8.0 * self.ema_mse))
             if self.active_events >= 100 and cell_count >= 3 and mse > rel_thresh:
-                self._quarantine.append(row)
-                self.consec_contradictions = len(self._quarantine)
+                self._stage_quarantine(row)
                 if self.consec_contradictions >= 3:
                     q_rows = self._quarantine[:]
                     self._quarantine.clear()
@@ -264,9 +303,8 @@ class SpatialSymSCDRNumV3:
                     for g in range(8)
                 )
                 if best_frozen_mse > rel_thresh:
-                    self._quarantine.append(row)
-                    self.consec_contradictions = len(self._quarantine)
-                    if self.consec_contradictions >= 3 and len(self.frozen_banks) < self.max_frozen_banks:
+                    self._stage_quarantine(row)
+                    if self.consec_contradictions >= 3:
                         q_rows = self._quarantine[:]
                         self._quarantine.clear()
                         self.archive_active_bank()
@@ -281,13 +319,13 @@ class SpatialSymSCDRNumV3:
                     self.events_seen += 1
                     return
                 else:
-                    self._quarantine.clear()
-                    self.consec_contradictions = 0
+                    self._account_interrupted_quarantine()
             else:
-                self._quarantine.clear()
-                self.consec_contradictions = 0
+                self._account_interrupted_quarantine()
                 if self.active_events >= 40:
                     self.ema_mse = 0.95 * self.ema_mse + 0.05 * act_mse
+        else:
+            self._account_interrupted_quarantine()
 
         self._update_hierarchical(row, obs, act, y, mse)
         self.events_seen += 1
@@ -366,8 +404,9 @@ class SpatialSymSCDRNumV3:
             self._surprise_win.clear()
 
     def checkpoint(self) -> dict:
+        pending = self._validated_pending()
         return {
-            "schema": "yggdrasil.scdr_num05_spatial_d4.checkpoint.v1",
+            "schema": "yggdrasil.scdr_num05_spatial_d4.checkpoint.v2",
             "max_frozen_banks": self.max_frozen_banks,
             "sigma": self.sigma,
             "hazard": self.hazard,
@@ -381,7 +420,9 @@ class SpatialSymSCDRNumV3:
             "ema_mse": self.ema_mse,
             "outer_beliefs": self.outer_beliefs[:],
             "inner_beliefs": [[r[:] for r in mat] for mat in self.inner_beliefs],
-            "quarantine": [dict(r) for r in self._quarantine],
+            "quarantine": pending,
+            "quarantine_unassigned_count": self.quarantine_unassigned_count,
+            "quarantine_unassigned_digest": self.quarantine_unassigned_digest,
             "surprise_win": self._surprise_win[:],
             "last_bcast": self._last_bcast,
         }
@@ -391,14 +432,17 @@ class SpatialSymSCDRNumV3:
 
     @classmethod
     def restore(cls, state: dict) -> "SpatialSymSCDRNumV3":
-        if state.get("schema") != "yggdrasil.scdr_num05_spatial_d4.checkpoint.v1":
+        # Historical v1 checkpoints lack disposition accounting; never silently migrate.
+        if state.get("schema") != "yggdrasil.scdr_num05_spatial_d4.checkpoint.v2":
             raise ValueError("SCDR_NUM05_D4_BAD_CHECKPOINT_SCHEMA")
         obj = cls(
-            max_frozen_banks=int(state["max_frozen_banks"]),
+            max_frozen_banks=state["max_frozen_banks"],
             sigma=float(state["sigma"]),
             hazard=float(state["hazard"]),
             readout_floor=float(state["readout_floor"]),
         )
+        if type(state["frozen_banks"]) is not list or len(state["frozen_banks"]) > obj.max_frozen_banks:
+            raise ValueError("SCDR_NUM05_FROZEN_CAPACITY")
         for snap in state["frozen_banks"]:
             b = Bank()
             b.cells = {k: [int(v[0]), [float(x) for x in v[1]]] for k, v in snap.items()}
@@ -411,7 +455,10 @@ class SpatialSymSCDRNumV3:
         obj.ema_mse = float(state["ema_mse"])
         obj.outer_beliefs = [float(x) for x in state["outer_beliefs"]]
         obj.inner_beliefs = [[[float(x) for x in r] for r in mat] for mat in state["inner_beliefs"]]
-        obj._quarantine = [dict(r) for r in state.get("quarantine", [])]
+        obj._quarantine = checked_rows(state["quarantine"], _normalize_quarantine_row)
+        obj.quarantine_unassigned_count = state["quarantine_unassigned_count"]
+        obj.quarantine_unassigned_digest = state["quarantine_unassigned_digest"]
+        obj._validated_pending()
         obj._surprise_win = [int(x) for x in state["surprise_win"]]
         obj._last_bcast = int(state["last_bcast"])
         return obj
