@@ -1,0 +1,22 @@
+{
+  "schema": "yggdrasil.contrib.prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "y2-scdr04-wscm-grid5-observer-dev",
+  "contributor": "gemini",
+  "date_utc": "2026-11-23",
+  "parent_branch": "research/wscm-epistemic-guard-integration-20261123",
+  "reference_prs": [1368, 1371, 1372],
+  "evidence_lane": "DEV_ENGINEERING_COMPATIBILITY_ONLY",
+  "authority": "read-only observer; zero edits to yggdrasil/, WSCM guard.py, main, or .ice; never authorizes actions or bypasses NativeGrid5Evidence validators",
+  "permitted_changed_paths": [
+    "research/contrib/gemini/y2-scdr04-wscm-grid5/"
+  ],
+  "candidate": {
+    "name": "SCDRGrid5Observer (Sub-Stochastic Sinkhorn Per-Action Diagnostic + WSCM Epistemic Guard Wrapper)",
+    "dependencies": "Python stdlib only + read-only calls to NativeGrid5Evidence and WSCM guard.py"
+  },
+  "hypotheses": {
+    "H1_safety_preservation": "Wrapped readout always preserves WSCM guard action_admissible=False, family_authenticated=False, NativeGrid5Evidence fail-closed validation, and byte-exact evidence.checkpoint().",
+    "H2_partial_contradiction_isolation": "When action 0 contradicts fixed Grid5 translation ((0,0)->(1,0) then (1,0)->(0,0)) causing NativeGrid5Evidence.public_role_forecast to collapse to CONTRADICTION globally, SCDRGrid5Observer selectively flags action 0 as NOVEL_OR_CONTRADICTED (abstain > 0.85) while keeping the other 4 consistent Grid5 actions cleanly identified (abstain < 0.15)."
+  }
+}
