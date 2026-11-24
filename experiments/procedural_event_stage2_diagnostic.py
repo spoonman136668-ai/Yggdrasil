@@ -7,9 +7,12 @@ Design: dim=128, seeds 1729/1730, train prefixes 1200/10000, independent
 updates of batch 128, lr=.003, FP32 single-thread CPU. All learned arms
 receive identical batches. No tuning, retries, official acceptance or
 training-latency claims. Inference latency is not tested here.
-Gate: each full-teacher large-data seed must achieve >=20% shift MSE
-reduction vs persistence, <=1.15x best dense overall MSE and >=5x
-static compression vs dense-gated. Otherwise retain the negative.
+Pre-run correction: at dim=128 the seed hypernetwork alone prevents 5x
+compression; no outcomes have been run. This diagnostic scores quality
+separately: >=20% shift MSE reduction vs persistence and <=1.15x best
+trained dense overall MSE for both full-teacher large-data seeds. Retain
+original combined gate including >=5x compression; a small-dimension
+quality pass cannot qualify Stage 2. No post-result changes.
 """
 import argparse
 import hashlib
@@ -181,13 +184,16 @@ def run():
                     gate_agreement=float((val[1]==val[3]).float().mean()),
                     val_sha256=hashlib.sha256(val[0].numpy().tobytes()+val[2].numpy().tobytes()).hexdigest(),
                     arms=arms,shift_gain=gain,dense_ratio=ratio,
-                    compression=compression,gate_pass=bool(gain>=.2 and ratio<=1.15 and compression>=5)))
+                    compression=compression,quality_pass=bool(gain>=.2 and ratio<=1.15),
+                    gate_pass=bool(gain>=.2 and ratio<=1.15 and compression>=5)))
                 print(f"finished {seed} {kind} {n}",flush=True,file=__import__("sys").stderr)
     return dict(dim=D,seeds=SEEDS,budgets=BUDGETS,updates=STEPS,batch=BATCH,
                 validation=VAL,torch=torch.__version__,python=platform.python_version(),
                 platform=platform.platform(),threads=torch.get_num_threads(),
                 cuda=torch.cuda.is_available(),elapsed_seconds=time.perf_counter()-start,
-                rows=rows,gate_pass=all(r["gate_pass"] for r in rows
+                rows=rows,quality_pass=all(r["quality_pass"] for r in rows
+                                        if r["teacher"]=="full" and r["train_n"]==10000),
+                gate_pass=all(r["gate_pass"] for r in rows
                                         if r["teacher"]=="full" and r["train_n"]==10000))
 
 
