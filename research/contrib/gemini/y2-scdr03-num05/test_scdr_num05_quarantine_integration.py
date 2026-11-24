@@ -1,9 +1,9 @@
 """Unexecuted-on-owner-runner integration negatives for bounded SCDR03 quarantine."""
 import unittest
-from unittest.mock import patch
 
-from num05 import Bank, SOURCE_TAG, public_row
+# The spatial module bootstraps the pinned NUM05 import path.
 from scdr_num05_spatial_d4 import SpatialSymSCDRNumV3
+from num05 import Bank, SOURCE_TAG, public_row
 
 
 def fixture(i):
