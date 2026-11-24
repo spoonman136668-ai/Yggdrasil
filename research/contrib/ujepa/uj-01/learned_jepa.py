@@ -57,27 +57,34 @@ class LearnedJEPA(nn.Module):
         encoder = self.target if target else self.online
         return encoder(signal.to(self.head.weight), lengths)
 
-    def predict(self, context):
-        z = self.encode(context)
+    def _components(self, z):
         raw = self.head(z).reshape(-1, 2, self.latent + 1)
         return raw[..., 0].log_softmax(dim=1), raw[..., 1:].tanh()
+
+    def _distribution(self, z):
+        logp, means = self._components(z)
+        if self.mode == "pooled":
+            means = (logp.exp()[..., None] * means).sum(1, keepdim=True)
+            logp = torch.zeros_like(logp[:, :1])
+        return logp, means
+
+    def predict(self, context):
+        """Log weights and means of the actual predictive distribution."""
+        return self._distribution(self.encode(context))
 
     def objective(self, context, future):
         if len(context) != len(future):
             raise ValueError("context/future batch mismatch")
-        logp, means = self.predict(context)
+        z = self.encode(context)
+        logp, means = self._distribution(z)
         with torch.no_grad():
             y = self.encode(future, target=True)
         sigma = 0.5
         constant = self.latent * math.log(sigma * math.sqrt(2 * math.pi))
-        if self.mode == "mixture":
-            nll = -torch.logsumexp(logp - constant -
-                (means - y[:, None]).square().sum(-1) / (2*sigma**2), dim=1)
-        else:
-            mu = (logp.exp()[..., None] * means).sum(1)
-            nll = constant + (mu-y).square().sum(-1)/(2*sigma**2)
+        nll = -torch.logsumexp(logp - constant -
+            (means - y[:, None]).square().sum(-1) / (2*sigma**2), dim=1)
         # Equal regularizer and information for both heads. No target gradient.
-        views = (self.encode(context), self.encode(future))
+        views = (z, self.encode(future))
         stds = [torch.sqrt(v.var(dim=0, unbiased=False) + 1e-4)
                 for v in views]
         penalty = sum(F.relu(0.2-s).mean() for s in stds) / 2

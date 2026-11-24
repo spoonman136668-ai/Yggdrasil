@@ -14,7 +14,7 @@ class LearnedJEPATests(unittest.TestCase):
         self.future = [b"d", b"h", b"4", b"8"]
 
     def test_byte_signal(self):
-        x, lengths = byte_signal([b"\\x00", b"\\xff\\x80"])
+        x, lengths = byte_signal([bytes([0]), bytes([255, 128])])
         self.assertEqual(lengths.tolist(), [1, 2])
         self.assertEqual(x[0, 0].tolist(), [-1]*8)
         self.assertEqual(x[1, 0].tolist(), [1]*8)
@@ -25,8 +25,12 @@ class LearnedJEPATests(unittest.TestCase):
         self.assertEqual(a.trainable_count(), b.trainable_count())
         self.assertEqual(list(a.state_dict()), list(b.state_dict()))
         b.load_state_dict(a.state_dict())
-        for x, y in zip(a.predict(self.context), b.predict(self.context)):
-            torch.testing.assert_close(x, y)
+        logp, means = a.predict(self.context)
+        pooled_logp, pooled_mean = b.predict(self.context)
+        self.assertEqual(tuple(pooled_logp.shape), (4, 1))
+        torch.testing.assert_close(pooled_logp, torch.zeros_like(pooled_logp))
+        torch.testing.assert_close(pooled_mean,
+            (logp.exp()[..., None] * means).sum(1, keepdim=True))
 
     def test_gradients_and_ema(self):
         for mode in ("mixture", "pooled"):
@@ -39,7 +43,7 @@ class LearnedJEPATests(unittest.TestCase):
                 self.assertIsNotNone(p.grad)
                 self.assertTrue(torch.isfinite(p.grad).all())
             self.assertTrue(all(p.grad is None for p in model.target.parameters()))
-            optimizer = torch.optim.SGD(model.online.parameters(), lr=0.01)
+            optimizer = torch.optim.SGD((p for p in model.parameters() if p.requires_grad), lr=0.01)
             optimizer.step()
             self.assertTrue(any(not torch.equal(p, original["online."+k])
                                 for k,p in model.online.state_dict().items()))
