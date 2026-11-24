@@ -1,0 +1,30 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "parent_sha": "d1ce3c3a0c32508bc29d4ef039f8ea4fb0587898",
+  "source_blobs": {
+    "anchor_adapter.py": "bd147b28cc23ab883ace845822de82dca52fbed3",
+    "test_anchor_adapter.py": "3b6143c53bdf15033431e2dbd4d62eb9fa2cd797",
+    "anchor_loss.py": "a891eb3b9c1294ed6028e6f4304dc6b2b88f6a62",
+    "test_anchor_loss.py": "12eeeb7cafb20ebbb3a58ef74269738b8d53e72d",
+    "learned_jepa.py": "30be62055a9205132c0d709bb99c7ad351bf10b4",
+    "bounded_train.py": "e545710f1be6ec259be1ffd04cc1ed4272d822ac"
+  },
+  "environment": "Linux sandbox Python 3.13.5 torch 2.10.0+cpu",
+  "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest -v test_anchor_loss test_anchor_adapter",
+  "passed": 7,
+  "failed": 0,
+  "reported_seconds": 0.668,
+  "observations": [
+    "All 3 anchor modes with both JEPA prediction heads complete one bounded optimizer update on fabricated observations.",
+    "Disabled-anchor wrapper matches unwrapped model state exactly after one update."
+  ],
+  "full_regression": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false,
+  "limitations": [
+    "No full recurrent collapse recovery test, real-data training, or measured compute parity.",
+    "Snapshot underlying model; record anchor mode and weight separately for provenance."
+  ]
+}
