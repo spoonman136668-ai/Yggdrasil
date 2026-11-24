@@ -1,0 +1,30 @@
+{
+  "schema": "ujepa.dev-fixture-receipt.v1",
+  "classification": "DEV_FOCUSED_PASS_ONLY",
+  "source_commit": "90785772c815147c40dd3b6f9815c9d98d166376",
+  "source_tree": "03e218fa184947d5a4da3c5da6c8c6b306c9c6e8",
+  "source_blobs": {
+    "grounded_eval.py": "1c4b3a733629126bfadd798a9568f691f709b5cd",
+    "test_grounded_eval.py": "3496cc8df3d0a8b9cdc4fd44b3b9083fa5628451"
+  },
+  "custody": "Sandbox copies matched exact GitHub blob SHAs",
+  "environment": "Linux sandbox Python 3.13.5 PyTorch 2.10.0+cpu",
+  "command": "python -m unittest discover -s . -p 'test_grounded_eval.py' -v",
+  "passed": 6,
+  "failed": 0,
+  "reported_seconds": 0.001,
+  "additional_adapter_fixture": {
+    "status": "PASS",
+    "description": "Mock model with zero log weights and zero means (1 component, 2 dimensions); target vectors [0,0] and [1,1]; jepa_scores returns [0,-4]. Not actual model integration."
+  },
+  "full_regression": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "scientific_first_use": false,
+  "scientific_gain_verified": false,
+  "limitations": [
+    "No real corpus, trained controls or end-to-end training",
+    "Historical UJ-01B fixture receipt was read, not independently rerun",
+    "No semantic decontamination guarantee",
+    "Proxy workflow 45383970048 failed with zero job records; root cause unverified"
+  ]
+}
