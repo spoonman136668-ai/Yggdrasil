@@ -37,3 +37,8 @@ python3 -m unittest discover -s research/contrib/gemini/y2-scdr02 -p "test_*.py"
 
 - **Multi-Sheet Cross-Family Silent Shifts (`fit_regimes`, Cycle 16):** Over a 180-step continuous episode silently shifting across `local_reversible(2,0,1) -> aliased_probe(1,2,0) -> gated_nonlocal(0,2,1)` with zero reset signals, `SCDRCCE06PolicyAdapter` beat `ActiveBayes` and `DecisionBayes` at all 3 phases (`0.1354 / 0.1098 / 0.1251` vs. `0.1601 / 0.2012 / 0.1820` and `0.1670 / 0.1971 / 0.1786`).
 - **Zero-Reward Pre-Training -> Goal-Directed Control (`choose_for_goal`, Cycle 17):** Transferred passive world models into unfamiliar permuted worlds to reach target `[1, 1]` over 40 steps, achieving **`19.67`** reward on `gated_nonlocal` vs. **`8.33`** for a fresh model-based controller (**2.36x reward**, **4.0x** in first 20 steps) and `6.33` random.
+
+## Cycles 18-19 Upgrade (`scdr_planner_v8.py` — Multi-Step Value-Iteration Planning)
+
+- **7-Action Multi-Step Planning (`SCDRMultiStepPlannerV8`, `H=3`, Cycle 18):** On 60-step 2-step-minimum goal tasks (`000 -> 101`) after zero-reward passive pre-training, `SCDR-v8` reached **`26.0`** completions (full $S_7$ perm) and **`26.33`** (partial 5 familiar + 2 novel), beating 1-step greedy (`9.33`), fresh model-based VI3 RL (`20.67` / `21.67`), and random (`4.0` / `2.67`).
+- **Simultaneous Mid-Episode World + Goal Shift (Cycle 19):** After a silent disjoint 7-action gauge swap + goal switch at step 60, `SCDR-v8` achieved **`40.0`** Phase 2 completions vs. `31.33` without hazard (`+27.7%`), `22.67` for fresh VI3 MBRL (**`+76.4%`**), and `7.33` random.
