@@ -66,5 +66,102 @@
   "equivalence": "Exact initial logits at dim32/layers1, seed43, eval; finite gradients; missing-corpus refusal; empty verdict invalid.",
   "primary": "NOT_RUN",
   "full_regression": "UNVERIFIED",
-  "scientific_gain_verified": false
+  "scientific_gain_verified": false,
+  "execution_preflight": {
+    "schema": "yggdrasil.stage7-preflight.v1",
+    "frozen_primary_commit": "892dbd16f008d5fe9719dc18cd6fe9a898bdf177",
+    "frozen_primary_tree": "b63c664ce049f10d045f3a258ed55777365d1b21",
+    "prereg_blob": "7a316a63fd32c100ed56d24f6ef4038a23198a1e",
+    "scope": "Connector corpus verification plus isolated local exact experimental source probes; not a full checkout, training, or native qualification.",
+    "local_source_blobs_verified": {
+      "experiments/procedural_event_proto.py": "d9315b33bb6f43c38e4f655b6be463e3babdb1c5",
+      "experiments/procedural_event_stage2_train.py": "ced62119f736f4cd8b721bcfde44cf38658a27ab",
+      "experiments/procedural_event_stage2b_ablation.py": "b3f03381b7b8df46a830ed8be4c5c3658a26a8c8",
+      "experiments/procedural_event_stage3_lm.py": "5d654bb5c6e6bc74aa39d7957e4eea65e5130269",
+      "experiments/procedural_event_stage3b_redesign.py": "b81d214cacf9eda748d82d6590aa2c39e03d7294",
+      "experiments/procedural_event_stage4_monarch.py": "124000085d42251de5de054dd44d3c9abd2e3360",
+      "experiments/procedural_event_stage5_entropy_gate.py": "5b5c4b9c934a025b0dc57eae0c1c1a0c089cdf05",
+      "experiments/procedural_event_stage6_multilayer.py": "68d87ec856d809a122a02ac4e07c4bfca014f0c4",
+      "experiments/procedural_event_stage6b_qualification.py": "d7c2e707da556ba4a125fe196877c17badc31a01",
+      "experiments/procedural_event_stage7_capacity.py": "3a9a830ba4e1f10e87bc313c7c44396e72bc6877",
+      "experiments/run_stage6b_primary.py": "89b34d76b50dec5f8a3cb5bc2d1f4420081d20de",
+      "tests/test_procedural_event_proto.py": "80c0dee2d14e435981959a3c8a83a7e4ebffde85",
+      "tests/test_procedural_event_stage2.py": "b4f69007944ea3934dbecc05a41930fdbe4222d9",
+      "tests/test_procedural_event_stage3.py": "35f868c16530befd35a35735a88a16e44ada2e52",
+      "tests/test_procedural_event_stage4.py": "29d4274e30559dc875f5337eefe5e3454b2604fa",
+      "tests/test_procedural_event_stage5.py": "336838a4849129b41d2f9b194100a61e0ea562e6",
+      "tests/test_procedural_event_stage6.py": "9f89a99c86897cebc0a383cf6143ccfaebb4846e",
+      "tests/test_procedural_event_stage6b.py": "8d2eb4351f1fbf088295e639c61dd0499ee01cc4",
+      "tests/test_procedural_event_stage7.py": "a26abc0c2a7f38df86ddefc681630299264bf63a"
+    },
+    "local_source_sha256": "af248220dd3b16f1a736492566f695f7b612d74d2049c51643a493156a7fe4b8",
+    "corpus": {
+      "baseline": "5e74f8db85b2f5839c42148c0dfba69a88b1a2c9",
+      "tree": "180008502f6bdfe5a06c3d0d6f47f941dd01f20b",
+      "files_verified": 16,
+      "total_bytes": 97836,
+      "train_bytes": 78268,
+      "train_sha256": "ee346df1120165c816b99772f3230a09ada2d7883815c46ac12a0b26bbbfd616",
+      "val_bytes": 19568,
+      "val_sha256": "4ce8d6a707dad6dd3135b784509c5046add37bbb7ba65124656e38e932030dab",
+      "train_transitions": 78267,
+      "train_batches": 40,
+      "train_tail": 59,
+      "val_transitions": 19567,
+      "val_batches": 11,
+      "val_tail": 47,
+      "score_sha256": "21147bac8b56f5b9a3a8a649fa6c3b7cde768b84d19144de74e7d05ed8353d4b",
+      "bigram_bpb": 3.80919744958955,
+      "verification": "All original 16 base64 file bytes fetched at baseline and matched tree path/size/blob; SHA256 split and exact int64 shape-tagged scoring identities independently recomputed in connector context. Corpus bytes not materialized locally."
+    },
+    "synthetic_probe": {
+      "seeds": [
+        43,
+        44,
+        45
+      ],
+      "arms": [
+        "dense",
+        "generated",
+        "direct",
+        "residual"
+      ],
+      "input_shape": [
+        2,
+        64
+      ],
+      "input": "arange(128).reshape(2,64)*7 mod 256; target (x+1) mod 256",
+      "exact_initial_eval_logits": "generated == direct == residual for each seed",
+      "full_rank_monarch_projections": 72,
+      "model_forward_backward_passes": 12,
+      "all_deep": true,
+      "finite_gradients": true,
+      "optimizer_steps": 0,
+      "verdict_fixtures": {
+        "supported": "SCIENTIFIC_SUPPORTED",
+        "mixed": "MIXED",
+        "negative": "SCIENTIFIC_NEGATIVE",
+        "weak_dense": "INVALID",
+        "rank_mismatch": "INVALID",
+        "score_mismatch": "INVALID",
+        "route_mismatch": "INVALID"
+      },
+      "probe_seconds": 0.681,
+      "torch": "2.10.0+cpu",
+      "threads": 1
+    },
+    "primary_trials_consumed_by_this_preflight": 0,
+    "external_trial_status": "not independently known; confirm never executed before first use",
+    "full_regression": "UNVERIFIED",
+    "qualification_ci": {
+      "run": 45385126772,
+      "executed_jobs": 0,
+      "conclusion": "failure"
+    },
+    "blockers": [
+      "Local GitHub DNS failure; no complete exact candidate checkout or materialized corpus.",
+      "Existing direct native workflow restricts research/autonomy-yggdrasil-active and prescribed package schema; not this frozen contribution. No dispatch or accepted-ref mutation authorized."
+    ],
+    "next": "Execute original preregistration commit only, on an authorized exact checkout with original corpus; preserve first-use evidence, result and provenance. No replay."
+  }
 }
