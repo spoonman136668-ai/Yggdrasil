@@ -335,5 +335,161 @@
         97
       ]
     }
+  },
+  "cycle_10_1bit_latch_and_shift_to_partial": {
+    "benchmark_1_1bit_latch_y2_cce06": {
+      "local_reversible": {
+        "BitLatchH1": 0.118258,
+        "ActionHMM_h6": 0.116501,
+        "margin": 0.001757,
+        "lag_splits": 0.3333,
+        "full_latch": 0.0,
+        "bit_latch": 0.0,
+        "bit_latch_specs": []
+      },
+      "gated_nonlocal": {
+        "BitLatchH1": 0.118068,
+        "ActionHMM_h6": 0.118125,
+        "margin": -5.7e-05,
+        "lag_splits": 2.0,
+        "full_latch": 0.6667,
+        "bit_latch": 0.0,
+        "bit_latch_specs": []
+      },
+      "action_null": {
+        "BitLatchH1": 0.137925,
+        "ActionHMM_h6": 0.13912,
+        "margin": -0.001195,
+        "lag_splits": 0.0,
+        "full_latch": 0.0,
+        "bit_latch": 0.0,
+        "bit_latch_specs": []
+      },
+      "aliased_probe": {
+        "BitLatchH1": 0.076511,
+        "ActionHMM_h6": 0.075263,
+        "margin": 0.001248,
+        "lag_splits": 0.0,
+        "full_latch": 0.0,
+        "bit_latch": 0.0,
+        "bit_latch_specs": []
+      }
+    },
+    "benchmark_2_unified_shift_into_partial_5a": {
+      "SCDR_v7_pre120": 0.068297,
+      "SCDR_v7_post60": 0.212082,
+      "SCDR_v7_post150": 0.146835,
+      "SCDR_v7_abstain_fam": 0.006855,
+      "SCDR_v7_abstain_novel": 0.942525,
+      "Fresh5A_pre120": 0.120657,
+      "Fresh5A_post60": 0.337388,
+      "Fresh5A_post150": 0.258305
+    },
+    "runtime_sec": 16.02,
+    "provenance": {
+      "python": "3.11.2",
+      "platform": "Linux-6.12.105+-x86_64-with-glibc2.36",
+      "dev_seeds": [
+        101,
+        103,
+        107
+      ],
+      "locked_cal_seeds_untouched": [
+        13,
+        29,
+        53,
+        71,
+        97
+      ]
+    }
+  },
+  "cycles_11_14_cce06_adapter_and_broadcast_hazard": {
+    "cycle_11_adaptive_reprobing_silent_shift": {
+      "local_reversible": {
+        "AdaptiveHazard_brier": 0.126186,
+        "AdaptiveHazard_cost": 16.0,
+        "AdaptiveHazard_probes_0_15": 6.666667,
+        "AdaptiveHazard_probes_16_39": 4.333333,
+        "AdaptiveHazard_probes_40_79": 5.0,
+        "StaticNoHazard_brier": 0.222597,
+        "StaticNoHazard_cost": 12.666667,
+        "StaticNoHazard_probes_40_79": 2.666667,
+        "ActiveBayes_brier": 0.231876,
+        "ActiveBayes_cost": 16.0,
+        "DecisionBayes_brier": 0.240458,
+        "DecisionBayes_cost": 16.0
+      },
+      "gated_nonlocal": {
+        "AdaptiveHazard_brier": 0.146705,
+        "AdaptiveHazard_cost": 16.0,
+        "AdaptiveHazard_probes_0_15": 7.0,
+        "AdaptiveHazard_probes_16_39": 5.333333,
+        "AdaptiveHazard_probes_40_79": 3.666667,
+        "StaticNoHazard_brier": 0.174763,
+        "StaticNoHazard_cost": 11.0,
+        "StaticNoHazard_probes_40_79": 0.0,
+        "ActiveBayes_brier": 0.220424,
+        "ActiveBayes_cost": 16.0,
+        "DecisionBayes_brier": 0.221632,
+        "DecisionBayes_cost": 16.0
+      }
+    },
+    "cycle_12_y2_cce06_episode_frontier": {
+      "local_reversible": {
+        "SCDR_Adapter_brier": 0.145271,
+        "SCDR_Adapter_cost": 12.0,
+        "ActiveBayes_brier": 0.179173,
+        "ActiveBayes_cost": 12.0,
+        "DecisionBayes_brier": 0.206219,
+        "DecisionBayes_cost": 12.0
+      },
+      "gated_nonlocal": {
+        "SCDR_Adapter_brier": 0.152754,
+        "SCDR_Adapter_cost": 10.666667,
+        "ActiveBayes_brier": 0.21565,
+        "ActiveBayes_cost": 12.0,
+        "DecisionBayes_brier": 0.209694,
+        "DecisionBayes_cost": 12.0
+      },
+      "aliased_probe": {
+        "SCDR_Adapter_brier": 0.086796,
+        "SCDR_Adapter_cost": 5.333333,
+        "ActiveBayes_brier": 0.16612,
+        "ActiveBayes_cost": 12.0,
+        "DecisionBayes_brier": 0.164417,
+        "DecisionBayes_cost": 12.0
+      }
+    },
+    "cycle_13_triple_shift_240steps": {
+      "SCDR_shift1_brier": 0.121551,
+      "SCDR_shift2_brier": 0.144791,
+      "SCDR_shift3_brier": 0.161357,
+      "SCDR_total_cost": 24.0,
+      "ActiveBayes_shift1_brier": 0.151812,
+      "ActiveBayes_shift2_brier": 0.223177,
+      "ActiveBayes_shift3_brier": 0.175006,
+      "ActiveBayes_total_cost": 24.0,
+      "DecisionBayes_shift1_brier": 0.149628,
+      "DecisionBayes_shift2_brier": 0.240585,
+      "DecisionBayes_shift3_brier": 0.165526,
+      "DecisionBayes_total_cost": 24.0
+    },
+    "runtime_sec": 0.39,
+    "provenance": {
+      "python": "3.11.2",
+      "platform": "Linux-6.12.105+-x86_64-with-glibc2.36",
+      "dev_seeds": [
+        101,
+        103,
+        107
+      ],
+      "locked_cal_seeds_untouched": [
+        13,
+        29,
+        53,
+        71,
+        97
+      ]
+    }
   }
 }

@@ -26,3 +26,9 @@ python3 -m unittest discover -s research/contrib/gemini/y2-scdr02 -p "test_*.py"
 
 - **Mid-Episode Silent Gauge Shift (`HazardSinkhornRoleCellV7`, `h=0.015`):** On a 300-step 7-action episode with a silent permutation swap at step 150, `SCDR-v7` matched stationary pre-shift accuracy (`0.0601` vs `0.0593`) and beat log-decay `SCDR-v6` by **`-0.2399` Brier** over post-shift steps `150..210` (`0.1496` vs `0.3895`) and `Fresh7A` by **`-0.1370`** over steps `150..300`.
 - **Bonferroni Multi-Lag $H_1$ + Event-Triggered Latch (`LatchAndBonferroniH1Sheet`):** Held `action_null` at **`0.00` false splits / `0.00` false latches**, beating `ActionHMM (h=6)` by **`-0.0150`** on `gated_nonlocal` (`0.1249` vs `0.1400`) and **`-0.0067`** on `local_reversible` (`0.1269` vs `0.1336`).
+
+## Cycles 10-14 Upgrade (`scdr_cce06_adapter.py`)
+
+- **Plug-Compatible `y2-cce06` Policy Frontier Adapter (`SCDRCCE06PolicyAdapter`):** Implements `fit`, `start`, `choose`, `update`, `posterior`, `spent`, `actions_taken`, `pending` and runs directly inside `y2-cce06` `calibration_policy_frontier._episode(..., paired_noise_required=True)` with zero edits to `y2-cce06`.
+- **Coupled Broadcast Changepoint Hazard:** When any action flips its MAP role after step 10, it broadcasts a `0.35` hazard pulse to all other actions, waking up paid probing after silent mid-episode shifts. On `local_reversible` (silent shift at step 40), post-shift Brier dropped from `0.2087` to **`0.1262`** vs. `StaticNoHazard` (`0.2226`), `ActiveBayes` (`0.2319`), and `DecisionBayes` (`0.2405`).
+- **240-Step Triple-Shift Campaign:** Beat both `ActiveBayes` and `DecisionBayes` across all three consecutive silent shifts (`0.1216` / `0.1448` / `0.1614` vs. `0.1518` / `0.2232` / `0.1750`).
