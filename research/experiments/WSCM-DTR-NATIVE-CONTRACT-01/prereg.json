@@ -1,0 +1,73 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-DTR-NATIVE-CONTRACT-01",
+  "exact_parent_sha": "9a1d09e09824ea9494db46b7f9970e0fdc1ee704",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "FROZEN_SOURCE_FREE_ADAPTER_CONTRACT_ONLY",
+  "purpose": "Verify, without constructing or interacting with an original Causal-Gymnasium world, that the pinned upstream two-stage binary DTR API can be represented by the existing Yggdrasil NativeEpisodeExperience public episode interface. This is a mechanical mapping and negative-control test, not source first-use or scientific evaluation.",
+  "source": {
+    "repository": "CausalAILab/Causal-Gymnasium",
+    "commit": "c94e9a4cd3641588b6b8507e71ccee5c27032bdf",
+    "license": "Apache-2.0",
+    "expected_git_blobs": 13
+  },
+  "native_source": {
+    "repository": "spoonman136668-ai/Yggdrasil",
+    "commit": "9a1d09e09824ea9494db46b7f9970e0fdc1ee704",
+    "module": "yggdrasil/native_episode_experience.py",
+    "expected_interface": "NativeEpisodeExperience.observe(identifier, views, row); propose(view, first=None, next_state=None); checkpoint/restore"
+  },
+  "frozen_mapping": {
+    "stage0_public_observation": "S1",
+    "stage0_action": "X1 in {0,1}",
+    "stage1_public_observation": "S2",
+    "stage1_action": "X2 in {0,1}",
+    "terminal_public_reward": "Y in {0,1}",
+    "paired_views": "((S1,0),(S1,1)); coordinate 0 retains S1 and coordinate 1 is the public stage marker",
+    "native_row": "exact keys s1,x1,s2,x2,y; s1 is retained in paired_views; x1,s2,x2,y enter the native ordered event",
+    "update_timing": "Only after terminal Y is observed; no stage-0 partial episode update",
+    "forbidden_inputs": ["info", "U", "get_graph", "private SCM attributes", "source law", "role labels", "future outcome", "counterfactual result"]
+  },
+  "constraints": {
+    "source_world_constructed": false,
+    "source_reset_calls": 0,
+    "source_see_calls": 0,
+    "source_do_calls": 0,
+    "source_step_calls": 0,
+    "source_interventions": 0,
+    "source_cohort_first_use": false,
+    "model_training_on_original_source": false,
+    "accepted_model_mutation": false,
+    "persistent_runner_changes": 0,
+    "paid_api": false,
+    "new_controller_or_scheduler": false
+  },
+  "required_checks": [
+    "Verify all 13 pinned upstream source Git blob identities and import exact DTRSCM/DTRPCH classes without instantiating either.",
+    "Verify DTRPCH constructor signature has no task argument and Task() defaults to ctf_do.",
+    "Verify the do-only PCH permission contract allows do and denies see and ctf_do, without a DTR instance.",
+    "Static-check that DTRPCH.do policy callbacks receive S1 then S1,X1,S2 and do not pass U; confirm see can pass U and therefore is forbidden.",
+    "Verify the do/step info payload is excluded from all learner inputs.",
+    "Run the frozen paired-view mapping against synthetic binary fixtures through the exact NativeEpisodeExperience.observe/propose/checkpoint/restore implementation.",
+    "Verify projection selects stable S1 coordinate, action proposals are binary, predictions survive cold restore, malformed/missing/extra fields fail closed, and no state changes occur on invalid updates.",
+    "Write one deterministic result with explicit zero source interaction counts."
+  ],
+  "acceptance": {
+    "all_source_blobs_verified": true,
+    "exact_upstream_classes_imported": true,
+    "source_object_constructed": false,
+    "native_fixture_contract_pass": true,
+    "cold_restore_parity": true,
+    "invalid_input_rejection": true,
+    "duplicate_execution_byte_identical": true,
+    "scientific_gain_verified": false,
+    "scientific_pass": false,
+    "source_first_use": false
+  },
+  "stop_conditions": [
+    "Any source hash mismatch or native interface drift.",
+    "Any path that instantiates DTRSCM/DTRPCH, calls reset/see/do/ctf_do/step, or consumes a source cohort.",
+    "Any attempt to pass upstream info, hidden U, graph, evaluator fields, or future outcome into the learner.",
+    "Any failure of the frozen paired-view mapping or cold restore."
+  ]
+}
