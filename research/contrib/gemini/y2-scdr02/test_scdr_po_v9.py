@@ -7,6 +7,8 @@ import unittest
 
 from scdr_planner_v8 import SCDRMultiStepPlannerV8
 from scdr_po_planner_v9 import (
+    FactorizedStallTwoModeSheet,
+    POHiddenModePlannerV10,
     POHiddenModePlannerV9,
     TwoModeLatentSheet,
     cold_state_sha256,
@@ -94,6 +96,33 @@ class TestSCDRPOV9(unittest.TestCase):
         a = planner.choose_action(0, 5)
         self.assertIn(a, range(7))
 
+
+
+    def test_po_v10_retroactive_credit_runs(self) -> None:
+        rng = random.Random(91)
+        st, lock = 0, 0
+        tr = []
+        for _ in range(600):
+            a = rng.randrange(7)
+            if a == 5:
+                lock = 1
+                nst = _step_7a(st, a)
+            elif lock == 0 and a in (1, 2, 3, 6):
+                nst = st
+            else:
+                nst = _step_7a(st, a)
+            if nst == 5:
+                lock = 0
+            tr.append({"obs_code": st, "action": a, "next_obs_code": nst})
+            st = nst
+        fs = FactorizedStallTwoModeSheet(3, 7, seed=11)
+        fs.fit_em(tr, iters=8)
+        pl = POHiddenModePlannerV10(fs, horizon=4, hazard=0.015)
+        a0 = pl.choose_action(0, 5)
+        pl.update(0, a0, 0)
+        a1 = pl.choose_action(0, 5)
+        pl.update(0, a1, 4)
+        self.assertIn(a1, range(7))
 
 if __name__ == "__main__":
     unittest.main()

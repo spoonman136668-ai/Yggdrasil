@@ -47,3 +47,8 @@ python3 -m unittest discover -s research/contrib/gemini/y2-scdr02 -p "test_*.py"
 
 - **Cycle 20 (Cold-Save / Cold-Restore, DEV PASS):** Canonical JSON serialization of `SCDRMultiStepPlannerV8` averages **`5,305 bytes`** (`5.2 KB`) with **`100%` (`1.000`) bit-exact equivalence** across 60 post-reload steps.
 - **Cycles 21-22 (Partially Observable 7-Action Hidden-Lock, HONEST DEV NEGATIVE):** Both 896-param 2-mode EM (`6.67` hits) and 28-param factorized-stall EM (`7.33` hits) trailed Markov `SCDR-v8` (`8.00`) and `FreshModel-VI3` (`7.67`). Root cause: joint gauge + hidden-lock identifiability deadlock at `000` where `swap_b0_b1(000) == noop(000)`.
+
+## Cycles 23-24 Upgrade (`POHiddenModePlannerV10` — 2-Step Retroactive Mode Credit)
+
+- **Breaking the Cycle 21-22 Deadlock (Cycle 23):** Adding exact 1-step backward message passing (2-step retroactive mode-transition credit) plus mode-EVGI raised 90-step PO hidden-lock goal hits from `6.67` (Cycle 21) and `7.33` (Cycle 22) to **`10.00`**, beating Markov `SCDR-v8` (`8.00`, `+25.0%`), `FreshModel-VI3` (`7.67`, `+30.4%`), and `Random` (`6.00`, `+66.7%`).
+- **Silent Mid-Episode Hidden-Lever Swap (Cycle 24):** Over 180 steps with a silent disjoint 7-action swap at step 90, `PO-SCDR-v10` achieved **`10.33`** (Phase 1) and **`11.33`** (Phase 2) vs. Markov `SCDR-v8` (`7.67` / `8.33`, `+36.0%` in Phase 2), `FreshModel-VI3` (`7.67` / `6.33`, **`+78.9%`** in Phase 2), and `Random` (`4.67` / `5.00`).
