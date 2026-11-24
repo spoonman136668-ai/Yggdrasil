@@ -1,0 +1,50 @@
+{
+  "schema": "yggdrasil.research-preregistration.v1",
+  "experiment_id": "WSCM-DTR-EFFECT-PARTITION-01",
+  "exact_parent_sha": "c0e94affe5246bd81fb008b598d1e7ed13fe224f",
+  "north_star_sha256": "57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c",
+  "status": "RETROSPECTIVE_DEVELOPMENT_DIAGNOSTIC_ONLY",
+  "question": "Can an evidence-driven equivalence partition compress the original DTR terminal response table without losing predictive accuracy? Is terminal action x2 dependence needed after public history? No new source or novel-family claim.",
+  "original": {
+    "source_pr": 433,
+    "original_run": 39932201242,
+    "artifact": 12492506361,
+    "original_zip_sha256": "ada547777ba2ba49070fe2606ac99c8d9248532f1cb16c8a0f8eab0f4001508c",
+    "cache_path": "research/contrib/chatgpt/CKAD-16/source_public_fit.json",
+    "cache_blob": "724dae2143e5f1ce2e2e405b7687ae61ff85b72e",
+    "cache_sha256": "016bf254ade33b936386abf7829ff90d765da71105e2beebcb130c95febe7d1d",
+    "native_history_blob": "6b9617cf8e0839000783b9d3aa5b60de5ce0a6d0",
+    "checkpoint_artifact": 14492525071,
+    "joint_state_sha256": "576370a1963158f7dc43099360f491eb6a1e49355448922943b6bde374d484c8",
+    "checkpoint_prefix_sha256": "de6e2bb77d8b378d6c776a9b011129b6e4e6298953f1f66379f4f4e84955f571"
+  },
+  "prior_work": [
+    "CKAD16 already established exact Beta parity on same 576/192 split; do not reframe as new gain.",
+    "CKAD49 learned a supplied 16-hypothesis partition/operator grammar and failed; WSP111 effect-class discovery tied conventional controls; WSCM fixed parity grammar and SCDR04 no-go preserved."
+  ],
+  "design": {
+    "contexts": "8 public histories c=s1+2*x1+4*s2; action x2 binary, outcome y binary; no hidden U, source seed or future label as input",
+    "fit": "first192 of each of three replicas",
+    "evaluation": "remaining64 each; already exposed, descriptive only; score per replica and pooled",
+    "candidate": "start with eight singleton context cells; repeatedly merge the pair with maximal strictly positive log marginal likelihood improvement (Beta(1,1) action-specific evidence), lexicographic tie break; stop at no improvement. Fit pooled beta counts only; no held tuning",
+    "controls": [
+      "full native-style independent Beta per (context,x2)",
+      "independent action-invariant Beta per context",
+      "exact posterior predictive averaging over all 4140 set partitions of 8 contexts, uniform partition prior, identical Beta action-specific marginal likelihood",
+      "all eight feature subsets of (s1,x1,s2), exact evidence-weighted predictive mixture, with and without x2, equal model prior",
+      "constant Beta"
+    ],
+    "metrics": "Brier on existing 192 archived evaluation outcomes, per replica; selected groups and fit counts; number of probability cells vs full 16; exact optimal partition vs greedy; full posterior mass on action-invariant models; observed x2 contrast within context, uncertainty descriptive only",
+    "gates": "at most four context groups, pooled Brier no worse than best fitted comparison +.005 and per replica no worse +.01. If exact tied or better, no unique learning gain. Action-invariant result may show lack of need for x2 effect but not prove causal null. Not a first-use or native capability gate.",
+    "negative_controls": "same partitions under permuted public context identifiers up to tie equivalence; no held labels in fit; exact enumeration count 4140; all input source hashes verified; no new source actions."
+  },
+  "limits": {
+    "scientific_pass": false,
+    "source_first_use": false,
+    "source_actions": 0,
+    "accepted_model_mutation": false,
+    "full_final_regression": "NOT_RUN",
+    "no_paid_api": true,
+    "no_new_controller": true
+  }
+}
