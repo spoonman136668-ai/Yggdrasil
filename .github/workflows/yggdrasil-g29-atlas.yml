@@ -62,7 +62,7 @@ jobs:
       github.actor == 'spoonman136668-ai' &&
       github.ref == 'refs/heads/research/y2-scdr03-num05-continuous-20261123' &&
       github.run_attempt == 1 &&
-      github.event.head_commit.message == 'ci(scdr03): one-shot exact-tree engineering qualification'
+      github.event.head_commit.message == 'ci(scdr03): native PowerShell qualification repair'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -91,8 +91,8 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = "cefe6b3d68589e5f03f27496b7bd361ebf65e6e8"
-          test "$(git rev-parse "cefe6b3d68589e5f03f27496b7bd361ebf65e6e8^{tree}")" = "68ac81dbe7c7c0b3922cd205b805c0e8eece8e04"
+          test "$(git rev-parse HEAD^)" = "ec36bdc9d8f81ac06f145bb3d6520e472c37bd47"
+          test "$(git rev-parse "ec36bdc9d8f81ac06f145bb3d6520e472c37bd47^{tree}")" = "1eb177e10f2928dd5b488eafc77e386e87d2f3b1"
           test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/yggdrasil-g29-atlas.yml"
           test "$(git rev-parse HEAD:scripts/build_code_atlas.py)" = "cef1378fd3c47ebc74675bd9dde19a183775ceeb"
           test -z "$(git status --porcelain)"
@@ -148,7 +148,8 @@ jobs:
         if: runner.os == 'Linux'
         with:
           python-version: '3.12'
-      - name: Exact-candidate engineering tests only (no scored source invocation)
+      - name: Exact-candidate engineering tests only (Linux; no scored source invocation)
+        if: runner.os == 'Linux'
         shell: bash
         working-directory: scdr03-qualification-${{ github.run_id }}
         run: |
@@ -156,8 +157,8 @@ jobs:
           test "$(git rev-parse HEAD)" = "$QUALIFIED_SHA"
           test "$(git rev-parse HEAD^)" = "$GITHUB_SHA"
           diff -u <(git diff --name-only HEAD^ HEAD | LC_ALL=C sort) <(printf '%s\n' .ice/code-atlas.html .ice/code-atlas.ice .ice/code-atlas.json | LC_ALL=C sort)
-          test "$(git diff --name-only 'cefe6b3d68589e5f03f27496b7bd361ebf65e6e8' HEAD^)" = ".github/workflows/yggdrasil-g29-atlas.yml"
-          test "$(git rev-parse 'cefe6b3d68589e5f03f27496b7bd361ebf65e6e8^{tree}')" = "68ac81dbe7c7c0b3922cd205b805c0e8eece8e04"
+          test "$(git diff --name-only 'ec36bdc9d8f81ac06f145bb3d6520e472c37bd47' HEAD^)" = ".github/workflows/yggdrasil-g29-atlas.yml"
+          test "$(git rev-parse 'ec36bdc9d8f81ac06f145bb3d6520e472c37bd47^{tree}')" = "1eb177e10f2928dd5b488eafc77e386e87d2f3b1"
           test -z "$(git status --porcelain)"
           echo "SCDR03_EXACT_SHA=$QUALIFIED_SHA"
           echo "SCDR03_EXACT_TREE=$(git rev-parse HEAD^{tree})"
@@ -190,3 +191,52 @@ jobs:
           "$py" -B scripts/build_code_atlas.py --check
           test -z "$(git status --porcelain)"
           echo SCDR03_FULL_FINAL_REGRESSION_PASS
+      - name: Exact-candidate engineering tests only (native Windows; no scored source invocation)
+        if: runner.os == 'Windows'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
+        working-directory: scdr03-qualification-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Git = 'C:\Program Files\Git\cmd\git.exe'
+          function Invoke-Checked {
+            param([string]$Executable, [string[]]$Arguments)
+            & $Executable @Arguments
+            if ($LASTEXITCODE -ne 0) { throw "Native command failed: $Executable (exit $LASTEXITCODE)" }
+          }
+          function Get-Git {
+            param([string[]]$Arguments)
+            $out = @(& $Git @Arguments)
+            if ($LASTEXITCODE -ne 0) { throw "Git identity check failed (exit $LASTEXITCODE)" }
+            return $out
+          }
+          if ((Get-Git -Arguments @('rev-parse','HEAD')) -ne $env:QUALIFIED_SHA) { throw 'Candidate SHA mismatch' }
+          if ((Get-Git -Arguments @('rev-parse','HEAD^')) -ne $env:GITHUB_SHA) { throw 'Candidate parent mismatch' }
+          $delta = @(Get-Git -Arguments @('diff','--name-only','HEAD^','HEAD') | Sort-Object)
+          if (($delta -join '|') -ne '.ice/code-atlas.html|.ice/code-atlas.ice|.ice/code-atlas.json') { throw 'Unexpected generated delta' }
+          $armDelta = @(Get-Git -Arguments @('diff','--name-only','ec36bdc9d8f81ac06f145bb3d6520e472c37bd47','HEAD^'))
+          if (($armDelta -join '|') -ne '.github/workflows/yggdrasil-g29-atlas.yml') { throw 'Unexpected workflow delta' }
+          if ((Get-Git -Arguments @('rev-parse','ec36bdc9d8f81ac06f145bb3d6520e472c37bd47^{tree}')) -ne '1eb177e10f2928dd5b488eafc77e386e87d2f3b1') { throw 'Frozen tree mismatch' }
+          if (@(Get-Git -Arguments @('status','--porcelain')).Count -ne 0) { throw 'Checkout dirty' }
+          Write-Output "SCDR03_EXACT_SHA=$env:QUALIFIED_SHA"
+          Write-Output ("SCDR03_EXACT_TREE=" + (Get-Git -Arguments @('rev-parse','HEAD^{tree}')))
+          Write-Output "SCDR03_RUNNER=$env:RUNNER_NAME OS=$env:RUNNER_OS"
+          $BasePy = 'C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
+          if (-not (Test-Path -LiteralPath $BasePy -PathType Leaf)) { throw 'Pinned native Python missing' }
+          Invoke-Checked -Executable $BasePy -Arguments @('-B','-c','import sys; assert sys.version_info[:2]==(3,12),sys.version; print(sys.version)')
+          Invoke-Checked -Executable $BasePy -Arguments @('-B','scripts/build_code_atlas.py','--check')
+          Invoke-Checked -Executable $BasePy -Arguments @('-B','-m','unittest','discover','-s','tests','-p','test_code_atlas.py','-v')
+          Invoke-Checked -Executable $BasePy -Arguments @('-B','-m','unittest','discover','-s','research/contrib/gemini/y2-scdr03-num05','-p','test_*.py','-v')
+          $Venv = Join-Path $env:RUNNER_TEMP "scdr03-venv-$env:GITHUB_RUN_ID"
+          if (Test-Path -LiteralPath $Venv) { throw 'Refuse to reuse prior venv' }
+          Invoke-Checked -Executable $BasePy -Arguments @('-m','venv',$Venv)
+          $Py = Join-Path $Venv 'Scripts\python.exe'
+          Invoke-Checked -Executable $Py -Arguments @('-m','pip','install','--disable-pip-version-check','--only-binary=:all:','numpy==2.3.5','scipy==1.16.3','scikit-learn==1.8.0','joblib==1.5.2','threadpoolctl==3.6.0')
+          Invoke-Checked -Executable $Py -Arguments @('-B','-m','unittest','discover','-s','tests','-p','test_*.py','-v')
+          foreach ($Era in @('NKR-05','CKAD-23','CKAD-24','CKAD-25','CKAD-26')) {
+            Invoke-Checked -Executable $Py -Arguments @('-B','-m','unittest','discover','-s',"research/contrib/chatgpt/$Era",'-p','test_*.py','-v')
+          }
+          Invoke-Checked -Executable $Py -Arguments @('-B','-m','unittest','discover','-s','research/contrib/chatgpt/CAUSAL-AMALGAM/NUM05','-p','test_num05.py','-v')
+          Invoke-Checked -Executable $Py -Arguments @('-B','-m','unittest','discover','-s','research/contrib/gemini/y2-scdr03-num05','-p','test_*.py','-v')
+          Invoke-Checked -Executable $Py -Arguments @('-B','scripts/build_code_atlas.py','--check')
+          if (@(Get-Git -Arguments @('status','--porcelain')).Count -ne 0) { throw 'Checkout dirty after tests' }
+          Write-Output 'SCDR03_FULL_FINAL_REGRESSION_PASS'
