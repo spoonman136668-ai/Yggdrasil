@@ -13,6 +13,10 @@ import sys
 import time
 from pathlib import Path
 
+# Embedded Windows Python may omit the script directory from sys.path.
+# Resolve only the checked-out sibling modules, not ambient PYTHONPATH.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from transfer_study_eval import (ARMS, make_arm, forecast, checkpoint, split,
     events, probability_tenths, expected_brier)
 from study_gate import (TASKS, PER_ARM_SECONDS, TOTAL_SECONDS, allocation_probe,
@@ -116,8 +120,10 @@ def child(req, timeout):
     if len(payload)>MAX_REQUEST or not 0<timeout<=PER_ARM_SECONDS:
         raise ValueError('request or time budget')
     # Direct child only; subprocess.run kills/waits on timeout, no grandchildren.
-    p=subprocess.run([sys.executable,'-B',str(Path(__file__).resolve()),'--explicit-worker'],
-                     input=payload,capture_output=True,timeout=timeout,check=True)
+    p=subprocess.run([sys.executable,'-B',*(['-O'] if sys.flags.optimize else []),str(Path(__file__).resolve()),'--explicit-worker'],
+                     input=payload,capture_output=True,timeout=timeout,check=False)
+    if p.returncode:
+        raise RuntimeError('cold child failed: '+p.stderr[:4096].decode('utf-8',errors='replace'))
     if len(p.stdout)>MAX_REPLY:
         raise ValueError('reply budget')
     return json.loads(p.stdout)

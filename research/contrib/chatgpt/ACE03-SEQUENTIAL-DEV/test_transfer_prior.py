@@ -3,6 +3,7 @@ import hashlib
 import subprocess
 import sys
 import unittest
+from pathlib import Path
 
 from adaptive_contract import AdaptiveContract, LIMIT
 from transfer_prior import TransferContract, HEADER, BLOCK, SLOT
@@ -41,11 +42,14 @@ class TransferFixtures(unittest.TestCase):
         train(m,1,256,0)
         prefix = m.checkpoint()
         expected = train(m,2,256,1).checkpoint()
-        code = ('import sys; from test_transfer_prior import train, TransferContract; '
+        code = ('import sys; sys.path.insert(0,sys.argv[1]); from test_transfer_prior import train, TransferContract; '
                 'm=TransferContract.restore(sys.stdin.buffer.read()); '
                 'sys.stdout.buffer.write(train(m,2,256,1).checkpoint())')
-        got = subprocess.run([sys.executable,'-B','-c',code],input=prefix,
-                             capture_output=True,check=True).stdout
+        child = subprocess.run([sys.executable, '-B', *(['-O'] if sys.flags.optimize else []),
+                                '-c', code, str(Path(__file__).resolve().parent)],
+                               input=prefix, capture_output=True, timeout=60)
+        self.assertEqual(child.returncode, 0, child.stderr[:4096].decode('utf-8',errors='replace'))
+        got = child.stdout
         self.assertEqual(expected,got)
 
     def test_read_only_and_invalid_event(self):

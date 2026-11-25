@@ -2,6 +2,7 @@ import hashlib
 import subprocess
 import sys
 import unittest
+from pathlib import Path
 from adaptive_contract import AdaptiveContract, HEADER, ROW, WARMUP, GATE, LIMIT
 
 
@@ -17,11 +18,14 @@ class EngineeringFixtures(unittest.TestCase):
     def test_cold_continuation(self):
         prefix = stream(AdaptiveContract(), 0, 900).checkpoint()
         expected = stream(AdaptiveContract(), 0, 1800).checkpoint()
-        code = ('import sys; from test_adaptive_contract import stream, AdaptiveContract; '
+        code = ('import sys; sys.path.insert(0,sys.argv[1]); from test_adaptive_contract import stream, AdaptiveContract; '
                 'm=AdaptiveContract.restore(sys.stdin.buffer.read()); '
                 'sys.stdout.buffer.write(stream(m,900,1800).checkpoint())')
-        out = subprocess.run([sys.executable, '-B', '-c', code], input=prefix,
-                             capture_output=True, check=True).stdout
+        child = subprocess.run([sys.executable, '-B', *(['-O'] if sys.flags.optimize else []),
+                                '-c', code, str(Path(__file__).resolve().parent)],
+                               input=prefix, capture_output=True, timeout=60)
+        self.assertEqual(child.returncode, 0, child.stderr[:4096].decode('utf-8',errors='replace'))
+        out = child.stdout
         self.assertEqual(out, expected)
 
     def test_context_isolation(self):

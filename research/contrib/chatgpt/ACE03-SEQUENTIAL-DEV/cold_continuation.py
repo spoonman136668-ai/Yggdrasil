@@ -4,6 +4,10 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+
+# Embedded Windows Python may omit the script directory from sys.path.
+# Resolve only the checked-out sibling modules, not ambient PYTHONPATH.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from transfer_study_eval import ARMS, make_arm, forecast, checkpoint
 
 MAX_BYTES = 16384
@@ -48,8 +52,10 @@ def cold_probe(arm,seed,raw,probes,events=(),timeout=60):
                         "probes":probes,"events":events},separators=(",",":"),allow_nan=False).encode("ascii")
     if len(payload)>MAX_REQUEST:
         raise ValueError("request budget")
-    child=subprocess.run([sys.executable,"-B",str(Path(__file__).resolve())],
-                         input=payload,capture_output=True,timeout=timeout,check=True)
+    child=subprocess.run([sys.executable,"-B",*(['-O'] if sys.flags.optimize else []),str(Path(__file__).resolve())],
+                         input=payload,capture_output=True,timeout=timeout,check=False)
+    if child.returncode:
+        raise RuntimeError('cold child failed: '+child.stderr[:4096].decode('utf-8',errors='replace'))
     return json.loads(child.stdout)
 
 

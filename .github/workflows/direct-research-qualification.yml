@@ -32,13 +32,14 @@ jobs:
       - name: Verify exact candidate custody and runner runtime
         run: |
           $ErrorActionPreference='Stop'
-          $base='21a11549cd0c5ed3f576607200a49e8d39b57c5a'
-          $tree='3039012ba7836732666f674c5091b13bcf7d1282'
+          $base='3ecd30237360ce048e228347c5c2fcac4ae1913c'
+          $tree='af30dac0e406fc2529938592687d5fb71dadd2f1'
           if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
           if((git rev-parse 'HEAD^').Trim() -cne $base){throw 'PARENT_DRIFT'}
           if((git rev-parse "$base^{tree}").Trim() -cne $tree){throw 'PARENT_TREE_DRIFT'}
           $delta=@(git diff --name-only $base HEAD)
-          if($delta.Count -ne 1 -or $delta[0] -cne '.github/workflows/direct-research-qualification.yml'){throw 'SCOPE_DRIFT'}
+          $allowed=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_worker.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/cold_continuation.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_adaptive_contract.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_transfer_prior.py') | Sort-Object
+          if((($delta | Sort-Object) -join '|') -cne ($allowed -join '|')){throw 'SCOPE_DRIFT'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'DIRTY_CHECKOUT'}
           $py='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
           if(-not(Test-Path -LiteralPath $py -PathType Leaf)){throw 'NATIVE_RUNTIME_MISSING'}
