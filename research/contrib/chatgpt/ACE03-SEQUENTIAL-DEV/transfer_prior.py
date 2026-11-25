@@ -17,7 +17,15 @@ LOG_ODDS_LIMIT = 16.0
 
 
 def clone(rows):
-    return [State.unpack(a.pack()) for a in rows]
+    # Trusted internal State instances only; restore still validates all bytes.
+    # Copy every mutable list before staging any update or frozen snapshot.
+    copies = []
+    for a in rows:
+        c = State()
+        c.n, c.ones, c.pair = a.n, a.ones, a.pair
+        c.corr, c.w, c.loss = a.corr.copy(), a.w.copy(), a.loss.copy()
+        copies.append(c)
+    return copies
 
 
 def readout(rows, pattern):
