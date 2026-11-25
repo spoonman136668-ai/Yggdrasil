@@ -1,0 +1,56 @@
+{
+  "schema": "yggdrasil.contributor-engineering-fixture.v1",
+  "scope": "ACE03 pre-data accounting/classifier; fabricated accounting records and earlier engineering fixtures only",
+  "parent_sha": "7828ec4ea9201bd97ebdcfe2a405cc507d12118d",
+  "parent_tree": "a8a2e387a93d3756b38ea9e7cb8b79ae740236ce",
+  "source_blobs": {
+    "study_gate.py": "4d4e812d39b059816487264c9fbfd29ad6f7e4ec",
+    "test_study_gate.py": "3dae2536e743b40ec5433117705d3c1a2e76be5b"
+  },
+  "source_sha256": {
+    "study_gate.py": "e28b1208a25a21bbdcc539881b9b600865d4011f39236021ad91ec39f1279419",
+    "test_study_gate.py": "4c0f96f8064624d407ce40d1bf0e4c47c2fe4718de3a1d4ab418db8164d49a6f"
+  },
+  "runtime": "local Linux Python 3.13.5",
+  "commands": [
+    "python -B -m unittest -v test_study_gate test_study_interfaces test_transfer_prior test_cold_controls",
+    "python -B -O -m unittest -v test_study_gate test_study_interfaces test_transfer_prior test_cold_controls"
+  ],
+  "normal": {
+    "tests": 22,
+    "failures": 0,
+    "unittest_seconds": 7.447,
+    "wall_seconds": 8.1,
+    "peak_rss_kib": 98444
+  },
+  "optimized": {
+    "tests": 22,
+    "failures": 0,
+    "unittest_seconds": 7.062,
+    "wall_seconds": 9.18,
+    "peak_rss_kib": 104000
+  },
+  "new_fixtures": 7,
+  "prior_interfaces_and_cold_fixtures": 15,
+  "study_tasks_per_pass": 240,
+  "primary_tasks_per_pass": 224,
+  "counterfactual_tasks_per_pass": 16,
+  "maximum_passes": 2,
+  "combined_wall_cap_seconds": 14400,
+  "decisions": [
+    "sequential timing pass and instrumented independent repetition share the previously declared 14400-second total budget, not 14400 each",
+    "counterfactual limited to related candidate/local-only arms across all eight seeds; same C observation digest and local-only prediction identity required",
+    "counterfactual influence reported separately; no new scientific pass threshold",
+    "worker-wide traced Python memory is a conservative upper bound, not native RSS; Windows API source untested",
+    "compute ratio <=2 against per-seed best scoring conventional arm; failure invalidates comparison"
+  ],
+  "remaining": [
+    "wire actual worker records, cold process boundary verification, stream and forecast hashing, timing and resource accounting into evaluator; external hard timeout and process-tree accounting",
+    "final source lock and complete preregistration, exact-tree atlas regeneration and full final Windows/Linux regression",
+    "existing owner runner admission and confirmed scientific execution authority"
+  ],
+  "registered_scientific_worlds_executed": 0,
+  "scientific_gain_verified": false,
+  "full_final_regression": "NOT_RUN",
+  "owner_runner": "NOT_RUN"
+}
