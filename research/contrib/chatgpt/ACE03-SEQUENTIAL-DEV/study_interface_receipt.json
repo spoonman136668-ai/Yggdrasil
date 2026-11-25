@@ -1,0 +1,74 @@
+{
+  "schema": "yggdrasil.contributor-engineering-fixture.v1",
+  "scope": "ACE03-XFER01-DEV-A1 controls, evaluator arithmetic/interface and cold process fixtures; NO scored study",
+  "parent_sha": "0aa1501ea76b97e7e5e666ffe17c26d12df2f243",
+  "parent_tree": "c0f18f297b02fd1fb7f113844351cca66ea98bcc",
+  "tested_source_tree": "0ceaa2e6c9334beaa95722195ff11c4a25d72676",
+  "source_blobs": {
+    "adaptive_contract.py": "f59745cb24d6eb3f9302a7aa71c34caafe9fb998",
+    "transfer_prior.py": "6f190ddde155a0c4676e614b0f5d49f63aaf87a7",
+    "test_transfer_prior.py": "6e50a9d65ccbea970b3da7f8cc1cbbd0d41dae6b",
+    "../ACE03-WSCM-CONTROL/shared_count_control.py": "d4a2600a8efd766fc41c34a165c6adeab44dacdf",
+    "quadratic_controls.py": "72c5bb608ded1deba00897b5b960a83e5c86254b",
+    "transfer_study_eval.py": "dea12aa3603aa94b983d9d7f2b2a3c98214371cf",
+    "test_study_interfaces.py": "996a8dc2c778db0831cf0bca66c97d833e45751d",
+    "cold_continuation.py": "ff0cde18f4435c0602eda595e6302e28ea128415",
+    "test_cold_controls.py": "3336278e3b6f3bf8d1729214e5bd401ccb077b8b"
+  },
+  "source_sha256": {
+    "quadratic_controls.py": "819229da7aae8c4dbd757c772d5133420eb4ada049fa21cceec45d3679817eeb",
+    "transfer_study_eval.py": "05f3220147ad0ad7f376d3fdfee0654ba58727df70d2f68bfceb50a5a3880283",
+    "test_study_interfaces.py": "2d0febfec28905ce35b99a2668a83bd29493850c4fbb6dd82d18832885510b85",
+    "cold_continuation.py": "b827549c1f7803c1367194b6ca6ef55e3d0cd1d3aa0389ea30058e85d5dac871",
+    "test_cold_controls.py": "98b6aa273957b4eb4d671518d2f6955e45fb625be622a1816387d48cc7a30369"
+  },
+  "runtime": "local Linux Python 3.13.5, locally reconstructed bytes checked against GitHub tree before execution",
+  "commands": [
+    "python -B -m unittest -v test_study_interfaces test_transfer_prior test_cold_controls",
+    "python -B -O -m unittest -v test_study_interfaces test_transfer_prior test_cold_controls"
+  ],
+  "normal": {
+    "tests": 15,
+    "failures": 0,
+    "unittest_seconds": 6.857,
+    "wall_seconds": 7.75,
+    "process_peak_rss_kib": 97948
+  },
+  "optimized": {
+    "tests": 15,
+    "failures": 0,
+    "unittest_seconds": 7.149,
+    "wall_seconds": 9.17,
+    "process_peak_rss_kib": 103848
+  },
+  "cold_fixture": {
+    "arms": 7,
+    "initial_events": 300,
+    "continuation_events": 12,
+    "identical_preupdate_predictions": true,
+    "identical_final_checkpoint": true,
+    "seed": 1
+  },
+  "fixture_checkpoint_bytes_after_520_events": {
+    "candidate": 10845,
+    "local-only": 4634,
+    "count": 15412,
+    "quadratic": 4487,
+    "shared-quadratic": 10490,
+    "replay": 6535,
+    "fixed-prior": 10845
+  },
+  "seed_serialization_correction": "32-bit seed field supports actual planned seeds; pre-publication correction; no scientific scores",
+  "source_actions": 0,
+  "registered_scientific_worlds_executed": 0,
+  "scientific_gain_verified": false,
+  "full_final_regression": "NOT_RUN",
+  "owner_runner_dispatch": "NOT_RUN",
+  "atlas": "NOT_REGENERATED",
+  "limitations": [
+    "checkpoint bytes are not process memory or equal-accuracy performance",
+    "cold-process worker tested on explicit public fixture events only; primary orchestration does not yet use it",
+    "resource instrumentation, counterfactual budget, final classifications and pre-score source locks remain incomplete",
+    "no Windows runner or native integration"
+  ]
+}
