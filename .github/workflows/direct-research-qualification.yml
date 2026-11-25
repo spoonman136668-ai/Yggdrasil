@@ -40,10 +40,10 @@ jobs:
         id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='84d8e59a9de59f9b3d8ceb6babfa028146f78d6a'
-          $tree='35f00dd1aac2b19e4cd7a442b624896b6057031f'
+          $base='25fe69fdbb86df305be517dad10ecae63954eb5d'
+          $tree='cd47be90681291306dd56b4d80e74c1cf919f44e'
           $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
-          $expected=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_archive_adapter.py') | Sort-Object
+          $expected=@('.github/workflows/direct-research-qualification.yml') | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
@@ -140,9 +140,36 @@ jobs:
           $root=Join-Path $env:RUNNER_TEMP ('ace03-archive-fixture-'+$env:GITHUB_RUN_ID)
           $url='https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/'+$env:ACE_ARCHIVE_ID
           $headers=@{Authorization=('Bearer '+$env:GH_READ_TOKEN);Accept='application/vnd.github+json'}
-          $meta=Invoke-RestMethod -Uri $url -Headers $headers -TimeoutSec 60
+          # Upload finalization can precede REST visibility. Read only; never retry upload or collection.
+          $listUrl='https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/'+$env:GITHUB_RUN_ID+'/artifacts?per_page=100'
+          $meta=$null
+          foreach($delay in @(0,2,4,8,16)){
+            if($delay){Start-Sleep -Seconds $delay}
+            try{
+              $listed=Invoke-RestMethod -Uri $listUrl -Headers $headers -TimeoutSec 30
+              if($listed.total_count -gt 100){throw 'ARTIFACT_LIST_INCOMPLETE'}
+              $matches=@($listed.artifacts | Where-Object { "$($_.id)" -ceq $env:ACE_ARCHIVE_ID })
+              if($matches.Count -gt 1){throw 'ARTIFACT_ID_DUPLICATE'}
+              if($matches.Count -eq 1){$meta=$matches[0];break}
+            }catch{
+              if($_.Exception -isnot [System.Net.WebException] -or $null -eq $_.Exception.Response -or [int]$_.Exception.Response.StatusCode -ne 404){throw}
+            }
+          }
+          if($null -eq $meta){throw 'ARTIFACT_METADATA_NOT_VISIBLE'}
+          if($meta.expired -ne $false -or $meta.digest -cne ('sha256:'+$env:ACE_ARCHIVE_DIGEST) -or "$($meta.workflow_run.id)" -cne $env:GITHUB_RUN_ID -or $meta.workflow_run.head_sha -cne $env:GITHUB_SHA){throw 'ARTIFACT_METADATA_DRIFT'}
           $meta | ConvertTo-Json -Depth 15 | Set-Content -LiteralPath (Join-Path $root 'started.metadata.json') -Encoding UTF8
-          Invoke-WebRequest -UseBasicParsing -Uri ($url+'/zip') -Headers $headers -TimeoutSec 120 -OutFile (Join-Path $root 'started.zip')
+          $zip=Join-Path $root 'started.zip'
+          $downloaded=$false
+          foreach($delay in @(0,2,4,8,16)){
+            if($delay){Start-Sleep -Seconds $delay}
+            try{
+              Invoke-WebRequest -UseBasicParsing -Uri ($url+'/zip') -Headers $headers -TimeoutSec 60 -OutFile $zip
+              $downloaded=$true;break
+            }catch{
+              if($_.Exception -isnot [System.Net.WebException] -or $null -eq $_.Exception.Response -or [int]$_.Exception.Response.StatusCode -ne 404){throw}
+            }
+          }
+          if(-not $downloaded){throw 'ARTIFACT_ZIP_NOT_VISIBLE'}
           Remove-Item Env:GH_READ_TOKEN
           & $env:ACE_PYTHON -B 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_archive_adapter.py' --fixture-collect $root
           if($LASTEXITCODE -ne 0){throw 'INDEPENDENT_ARCHIVE_FIXTURE_FAILED'}
@@ -167,9 +194,36 @@ jobs:
           $root=Join-Path $env:RUNNER_TEMP ('ace03-archive-fixture-'+$env:GITHUB_RUN_ID)
           $url='https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/'+$env:ACE_ARCHIVE_ID
           $headers=@{Authorization=('Bearer '+$env:GH_READ_TOKEN);Accept='application/vnd.github+json'}
-          $meta=Invoke-RestMethod -Uri $url -Headers $headers -TimeoutSec 60
+          # Upload finalization can precede REST visibility. Read only; never retry upload or collection.
+          $listUrl='https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/runs/'+$env:GITHUB_RUN_ID+'/artifacts?per_page=100'
+          $meta=$null
+          foreach($delay in @(0,2,4,8,16)){
+            if($delay){Start-Sleep -Seconds $delay}
+            try{
+              $listed=Invoke-RestMethod -Uri $listUrl -Headers $headers -TimeoutSec 30
+              if($listed.total_count -gt 100){throw 'ARTIFACT_LIST_INCOMPLETE'}
+              $matches=@($listed.artifacts | Where-Object { "$($_.id)" -ceq $env:ACE_ARCHIVE_ID })
+              if($matches.Count -gt 1){throw 'ARTIFACT_ID_DUPLICATE'}
+              if($matches.Count -eq 1){$meta=$matches[0];break}
+            }catch{
+              if($_.Exception -isnot [System.Net.WebException] -or $null -eq $_.Exception.Response -or [int]$_.Exception.Response.StatusCode -ne 404){throw}
+            }
+          }
+          if($null -eq $meta){throw 'ARTIFACT_METADATA_NOT_VISIBLE'}
+          if($meta.expired -ne $false -or $meta.digest -cne ('sha256:'+$env:ACE_ARCHIVE_DIGEST) -or "$($meta.workflow_run.id)" -cne $env:GITHUB_RUN_ID -or $meta.workflow_run.head_sha -cne $env:GITHUB_SHA){throw 'ARTIFACT_METADATA_DRIFT'}
           $meta | ConvertTo-Json -Depth 15 | Set-Content -LiteralPath (Join-Path $root 'raw.metadata.json') -Encoding UTF8
-          Invoke-WebRequest -UseBasicParsing -Uri ($url+'/zip') -Headers $headers -TimeoutSec 120 -OutFile (Join-Path $root 'raw.zip')
+          $zip=Join-Path $root 'raw.zip'
+          $downloaded=$false
+          foreach($delay in @(0,2,4,8,16)){
+            if($delay){Start-Sleep -Seconds $delay}
+            try{
+              Invoke-WebRequest -UseBasicParsing -Uri ($url+'/zip') -Headers $headers -TimeoutSec 60 -OutFile $zip
+              $downloaded=$true;break
+            }catch{
+              if($_.Exception -isnot [System.Net.WebException] -or $null -eq $_.Exception.Response -or [int]$_.Exception.Response.StatusCode -ne 404){throw}
+            }
+          }
+          if(-not $downloaded){throw 'ARTIFACT_ZIP_NOT_VISIBLE'}
           Remove-Item Env:GH_READ_TOKEN
           & $env:ACE_PYTHON -B 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_archive_adapter.py' --fixture-classify $root
           if($LASTEXITCODE -ne 0){throw 'INDEPENDENT_ARCHIVE_FIXTURE_FAILED'}
