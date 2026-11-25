@@ -39,10 +39,10 @@ jobs:
         id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='03bc054c62adbb3458397478b695ca9dbeeef37e'
-          $tree='b21e27cc3f69dd3a818f3c6efecbd31ce8587e2d'
+          $base='1d2ed55544b1c94989383f4697a430c965fc8c79'
+          $tree='9e76615fb84e1bc7f60e05f4123176912bb45f50'
           $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
-          $expected=@('.github/workflows/direct-research-qualification.yml',$pr) | Sort-Object
+          $expected=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_supervisor.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_supervisor.py') | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
@@ -56,7 +56,7 @@ jobs:
           }else{throw 'UNEXPECTED_SOURCE_TRANSITION'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'DIRTY_CHECKOUT'}
           $m=Get-Content -Raw $pr | ConvertFrom-Json
-          if($m.status -cne 'PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' -or $m.exact_parent_sha -cne $base -or $m.exact_parent_tree -cne $tree -or $m.authority.execution_admitted -ne $false){throw 'MANIFEST_DRIFT'}
+          if($m.status -cne 'PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' -or $m.exact_parent_sha -cne '03bc054c62adbb3458397478b695ca9dbeeef37e' -or $m.exact_parent_tree -cne 'b21e27cc3f69dd3a818f3c6efecbd31ce8587e2d' -or $m.authority.execution_admitted -ne $false){throw 'MANIFEST_DRIFT'}
           foreach($entry in $m.source_blobs.PSObject.Properties){
             $actual=(git rev-parse ("HEAD:"+$entry.Name)).Trim()
             if($LASTEXITCODE -ne 0 -or $actual -cne $entry.Value){throw ('SOURCE_BLOB_DRIFT '+$entry.Name)}
