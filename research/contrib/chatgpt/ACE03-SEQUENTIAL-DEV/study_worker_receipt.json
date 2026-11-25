@@ -1,0 +1,58 @@
+{
+  "schema": "yggdrasil.contributor-engineering-fixture.v1",
+  "scope": "explicit tiny nonstudy worker fixtures and existing focused regression subset; no registered source generation",
+  "parent_sha": "0d4110053f0a7680282576bd65ee8f8d50383542",
+  "parent_tree": "6765e4ee815894c5e1c58b029243a5d419841961",
+  "source_blobs": {
+    "study_worker.py": "f83d5f056104af9b757912702314af911a5a98ab",
+    "test_study_worker.py": "fdf7a514f01c1e97630b9bdbb95b521a902f3d55"
+  },
+  "source_sha256": {
+    "study_worker.py": "dbf6cd0d336d656b33d1e41f93a3007c1c0e80f2a80f91ad8f0ecc839da04c9c",
+    "test_study_worker.py": "23a9f8b426f6e50dfaa9007cd1400661b46b220786cea464a07e5d7cd9375d06"
+  },
+  "runtime": "local Linux Python 3.13.5",
+  "normal": {
+    "passed": 27,
+    "commands": "first worker command passed four checks then shell timeout at mismatch; mismatch separately PASS 4.078s; 22-test regression subset PASS 7.691s",
+    "combined_wall": "not measured; initial timeout retained"
+  },
+  "optimized": {
+    "passed": 27,
+    "commands": "all-arm worker test PASS 25.409s; remaining four worker + 22 regression tests PASS 10.992s",
+    "wall_seconds": [
+      27.61,
+      13.2
+    ]
+  },
+  "fixture": {
+    "seed": 1,
+    "events_per_arm": 48,
+    "held_patterns": 2,
+    "arms": 7,
+    "cold_restore_boundary_identity": true,
+    "independent_process_reproduction": true
+  },
+  "registered_worlds_executed": 0,
+  "scientific_gain_verified": false,
+  "decisions": [
+    "uninterrupted pass single child; traced pass four direct sequential children",
+    "parent peak RSS plus max child peak is conservative bound, not measured simultaneous usage",
+    "child-side traced memory excludes already-decoded input and interpreter overhead, RSS includes both",
+    "model/evaluator compute timing includes worker checkpoint and evaluation, excludes parent source construction; separate total wall includes construction",
+    "no new primary CLI or admission token"
+  ],
+  "remaining": [
+    "integrate supervisor with durable once-only run custody, exact prereg/source locks and aggregate classifier",
+    "validate full-size nonstudy resource and payload bounds without generating registered observations",
+    "regenerate atlas and complete exact-candidate full Windows/Linux final regression via existing owner runner; Windows resource probe not yet qualified",
+    "native admission and bounded scientific execution"
+  ],
+  "previous_ci": {
+    "run_id": 45597918231,
+    "status": "failed; zero jobs returned; same proxy workflow; not candidate qualification"
+  },
+  "owner_runner": "NOT_RUN",
+  "full_regression": "NOT_RUN",
+  "deployment": "NONE"
+}
