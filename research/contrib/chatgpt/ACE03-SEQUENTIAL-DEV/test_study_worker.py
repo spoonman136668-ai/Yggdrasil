@@ -1,7 +1,7 @@
 """Explicit tiny fixtures, nonstudy seed. No registered generator or scores."""
 import time
 import unittest
-from study_worker import execute_explicit,verify_pair,child,worker,encode
+from study_worker import execute_explicit,verify_pair,child,worker,encode,expected_stream_identity,verify_counterfactual_inputs
 from transfer_study_eval import ARMS
 
 
@@ -29,6 +29,18 @@ class WorkerFixtures(unittest.TestCase):
                 self.assertGreater(a['peak_rss_bytes'],0)
                 self.assertEqual(len(a['readout_boundaries']),4)
                 self.assertIsNone(a['traced_peak_bytes'])
+    def test_exact_counterfactual_contract(self):
+        import copy
+        held,phases=fixture()
+        altered=copy.deepcopy(phases)
+        for p in altered[:3]:
+            p['events']=[(k,x,tuple(1-v for v in y)) for k,x,y in p['events']]
+        before,after=verify_counterfactual_inputs(phases,altered)
+        self.assertNotEqual(before[0],after[0]); self.assertEqual(before[1],after[1])
+        with self.assertRaises(ValueError): verify_counterfactual_inputs(phases,phases)
+        altered[3]['events'][0]=(2,0,(0,0,0,0))
+        with self.assertRaises(ValueError): verify_counterfactual_inputs(phases,altered)
+
     def test_deadline(self):
         held,phases=fixture()
         with self.assertRaises(TimeoutError):

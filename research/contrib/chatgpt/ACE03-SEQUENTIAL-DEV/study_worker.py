@@ -123,6 +123,39 @@ def child(req, timeout):
     return json.loads(p.stdout)
 
 
+def expected_phase_stream(spec):
+    """Supervisor independently derives identities from explicit public input."""
+    h=hashlib.sha256()
+    for key,pattern,labels in spec['events']:
+        h.update(encode([key,pattern,labels])+b'\n')
+    return h.hexdigest()
+
+
+def expected_stream_identity(phases):
+    if [p['phase'] for p in phases]!=[0,1,2,3]:
+        raise ValueError('expected four ordered phases')
+    hashes=[expected_phase_stream(p) for p in phases]
+    return digest(hashes),hashes[-1]
+
+
+def verify_counterfactual_inputs(original, altered):
+    """Exact label complement only for A/B/A; same C events and evaluator laws."""
+    if len(original)!=4 or len(altered)!=4:
+        raise ValueError('counterfactual phases')
+    for i,(a,b) in enumerate(zip(original,altered)):
+        if a['phase']!=i or b['phase']!=i or {k:v for k,v in a.items() if k!='events'}!={k:v for k,v in b.items() if k!='events'}:
+            raise ValueError('counterfactual phase metadata')
+        if not a['events'] or len(a['events'])!=len(b['events']):
+            raise ValueError('counterfactual event count')
+        for (ka,pa,ya),(kb,pb,yb) in zip(a['events'],b['events']):
+            if (ka,pa)!=(kb,pb) or tuple(yb)!=(tuple(1-v for v in ya) if i<3 else tuple(ya)):
+                raise ValueError('counterfactual changed wrong inputs')
+    before,after=expected_stream_identity(original),expected_stream_identity(altered)
+    if before[0]==after[0] or before[1]!=after[1]:
+        raise ValueError('counterfactual digest mismatch')
+    return before,after
+
+
 def execute_explicit(task,held,phases,traced,deadline):
     """One explicit task; fresh subprocess per phase only in traced pass."""
     start=time.monotonic()
@@ -140,6 +173,8 @@ def execute_explicit(task,held,phases,traced,deadline):
         if [p['phase'] for p in out['reports']]!=[p['phase'] for p in group]:
             raise ValueError('worker phase identity')
         for report,spec in zip(out['reports'],group):
+            if report['stream_sha256']!=expected_phase_stream(spec):
+                raise ValueError('worker input identity mismatch')
             cursor+=len(spec['events'])
             if report['cursor']!=cursor:
                 raise ValueError('worker cursor')

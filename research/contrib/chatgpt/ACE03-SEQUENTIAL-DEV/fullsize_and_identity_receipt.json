@@ -1,0 +1,142 @@
+{
+  "schema": "yggdrasil.contributor-engineering-fixture.v1",
+  "scope": "full-size constant-label engineering fixture and input-identity hardening; NOT registered scientific trial",
+  "tested_fullsize_commit": "187e495a5bc186a1b310fd4b1158224e38919f71",
+  "tested_fullsize_tree": "156d0f7d66f124a2a59bbb4ecdbcd62a7386f90f",
+  "source_verification": "local git hash-object matched pinned adaptive_contract, transfer_prior, shared_count_control, quadratic_controls, transfer_study_eval, study_worker and study_gate Git blobs before full-size fixture",
+  "fixture": {
+    "seed": 1,
+    "held": "384..511 inclusive",
+    "training": "phase counts 1024,1024,512,256; keys 0,1,0,2; pattern j%384 in each phase, labels (1,0,1,0), laws all 5/10; no registered generator",
+    "events": 2816,
+    "held_patterns": 128,
+    "phase_payload_bytes": 60179,
+    "all_7_arms_cold_identity": true
+  },
+  "measurements": [
+    [
+      "candidate",
+      1.696520913,
+      0.797365158,
+      7.411435324,
+      4.010944273,
+      199839744,
+      199307264,
+      595019
+    ],
+    [
+      "shared-quadratic",
+      1.214900991,
+      0.396634171,
+      4.689469583,
+      1.714208212,
+      199901184,
+      199507968,
+      575644
+    ],
+    [
+      "replay",
+      1.047280355,
+      0.325251131,
+      4.215752574,
+      1.174515258,
+      199901184,
+      199774208,
+      669789
+    ],
+    [
+      "count",
+      1.025455957,
+      0.045901307,
+      3.394724791,
+      0.363392535,
+      199643136,
+      199118848,
+      291371
+    ],
+    [
+      "quadratic",
+      0.910323711,
+      0.191943508,
+      3.747018311,
+      0.815375321,
+      199897088,
+      199380992,
+      533785
+    ],
+    [
+      "local-only",
+      1.265775308,
+      0.408969931,
+      4.940107345,
+      1.849253063,
+      199831552,
+      199516160,
+      560696
+    ],
+    [
+      "fixed-prior",
+      1.642135689,
+      0.764226975,
+      7.48984949,
+      4.071347799,
+      199905280,
+      199516160,
+      593459
+    ]
+  ],
+  "columns": [
+    "arm",
+    "untraced_wall_s",
+    "untraced_worker_compute_s",
+    "traced_wall_s",
+    "traced_worker_compute_s",
+    "untraced_rss_bound_bytes",
+    "traced_rss_bound_bytes",
+    "traced_peak_bytes"
+  ],
+  "negative": "candidate worker compute ~2.01x shared-quadratic and 2.45x replay on engineering fixture; potential 2x scientific compute eligibility failure; no threshold change",
+  "correction": {
+    "source": "Mind-Palace #415 comment 7160168248, source-grounded parity gap",
+    "changes": [
+      "classifier requires independently derived expected stream and C digests for every task",
+      "reject zero measured compute and unchanged counterfactual prior stream",
+      "parent independently verifies phase digests",
+      "explicit helper verifies exact A/B/A bit-complement, same C events and laws"
+    ],
+    "new_source_blobs": {
+      "study_gate.py": "19a8ae88b5298efe00480e12d0fa61ce5781f928",
+      "test_study_gate.py": "da1cf03395308c3e8c33bf9a76f4a87aaec517da",
+      "study_worker.py": "70b76252e22ce662a4ccda546c644ba13478de21",
+      "test_study_worker.py": "83c8d03ab6aa7659d2527ce79df8b73d87a32c51"
+    },
+    "normal": {
+      "passed": 14,
+      "seconds": [
+        0.196,
+        4.115
+      ]
+    },
+    "optimized": {
+      "passed": 14,
+      "seconds": [
+        0.196,
+        4.261
+      ]
+    },
+    "test_scope": "nine gate tests + four explicit fixture checks + one real-child mismatch test per mode; not full regression"
+  },
+  "registered_worlds_executed": 0,
+  "scientific_gain_verified": false,
+  "limitations": [
+    "full-size measurement applies to parent code before parity correction, not final exact candidate",
+    "only constant-label fixture and one sample per timing mode; no claim of scientific accuracy or compute superiority",
+    "Linux only; Windows and full final regression still outstanding",
+    "expected digests and counterfactual helper must be called by existing native admission/supervisor; no new controller or run authority"
+  ],
+  "remaining": [
+    "owner-bound durable single-execution custody and prereg/source lock",
+    "full final Windows/Linux regression and atlas regenerated via existing generator",
+    "native owner runner admission"
+  ]
+}

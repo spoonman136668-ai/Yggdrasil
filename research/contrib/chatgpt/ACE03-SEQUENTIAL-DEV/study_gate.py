@@ -84,7 +84,7 @@ def index(rows, traced):
             raise ValueError('event count or cold identity')
         if not number(row['wall_seconds'],0,PER_ARM_SECONDS):
             raise ValueError('arm wall budget')
-        if not number(row['compute_seconds'],0,row['wall_seconds']):
+        if not number(row['compute_seconds'],0,row['wall_seconds']) or row['compute_seconds'] <= 0:
             raise ValueError('compute accounting')
         if not number(row['peak_rss_bytes'],1,RSS_CAP):
             raise ValueError('worker RSS budget')
@@ -118,12 +118,20 @@ DETERMINISTIC = ('cursor','cold_identity','c_final','c_cold','c_early',
                  'unknown_abstentions','unknown_prediction','stream_sha256','c_trace_sha256','c_forecast_sha256')
 
 
-def classify(first, second, elapsed_seconds):
+def classify(first, second, elapsed_seconds, expected_streams):
     """Arithmetic only. Cannot establish owner admission, custody or science."""
     try:
         if not number(elapsed_seconds,0,TOTAL_SECONDS):
             raise ValueError('total wall budget')
         a,b = index(first,False),index(second,True)
+        if set(expected_streams)!=set(TASKS):
+            raise ValueError('missing independently derived input identities')
+        for k in TASKS:
+            expected=expected_streams[k]
+            if (type(expected) not in (tuple,list) or len(expected)!=2 or
+                    not all(valid_digest(v) for v in expected) or
+                    any((r[k]['stream_sha256'],r[k]['c_trace_sha256'])!=tuple(expected) for r in (a,b))):
+                raise ValueError('expected stream identity mismatch')
         if sum(r['wall_seconds'] for r in first+second)>elapsed_seconds:
             raise ValueError('elapsed time inconsistent with sequential execution')
         if any(a[k][f]!=b[k][f] for k in TASKS for f in DETERMINISTIC):
@@ -136,6 +144,8 @@ def classify(first, second, elapsed_seconds):
                     raise ValueError('arm input parity')
             if len({get('related',n,True)['stream_sha256'] for n in ('candidate','local-only')})!=1:
                 raise ValueError('counterfactual input parity')
+            if get('related','candidate')['stream_sha256']==get('related','candidate',True)['stream_sha256']:
+                raise ValueError('counterfactual prior stream unchanged')
             cand=get('related','candidate')
             winner=min(CONVENTIONAL,key=lambda n:get('related',n)['c_final'])
             ctrl=get('related',winner)
