@@ -1,127 +1,161 @@
-name: Direct ACE03-XFER01 nonstudy engineering qualification
+name: Direct ACE03-XFER01 atlas and final nonstudy regression
 on:
   push:
     branches: [research/ace03-sequential-contract-dev-20261124]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
+      - '.ice/code-atlas.json'
+      - '.ice/code-atlas.html'
+      - '.ice/code-atlas.ice'
 permissions:
   contents: read
 concurrency:
   group: yggdrasil-direct-research-qualification
   cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
 jobs:
-  qualify:
+  windows:
     if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/research/ace03-sequential-contract-dev-20261124' && github.run_attempt == 1
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
-    timeout-minutes: 20
+    timeout-minutes: 30
     defaults:
       run:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
-    env:
-      PYTHONDONTWRITEBYTECODE: '1'
-      OMP_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
+    outputs:
+      phase: ${{ steps.custody.outputs.phase }}
+      anchor: ${{ steps.custody.outputs.anchor }}
     steps:
-      - name: Checkout exact isolated qualification commit
+      - name: Checkout exact candidate
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
           clean: true
-      - name: Verify exact candidate custody and runner runtime
+      - name: Verify source lock and phase custody
+        id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='fd7a9557bddb472ed7c228ce6e78ed55f698851e'
-          $tree='c4c5d94433725fcbbe2f7a60c4d76944ad9a9ff5'
-          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
-          if((git rev-parse 'HEAD^').Trim() -cne $base){throw 'PARENT_DRIFT'}
-          if((git rev-parse "$base^{tree}").Trim() -cne $tree){throw 'PARENT_TREE_DRIFT'}
-          $delta=@(git diff --name-only $base HEAD)
-          $allowed=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-WSCM-CONTROL/test_shared_count_control.py') | Sort-Object
-          if((($delta | Sort-Object) -join '|') -cne ($allowed -join '|')){throw 'SCOPE_DRIFT'}
+          $base='03bc054c62adbb3458397478b695ca9dbeeef37e'
+          $tree='b21e27cc3f69dd3a818f3c6efecbd31ce8587e2d'
+          $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
+          $expected=@('.github/workflows/direct-research-qualification.yml',$pr) | Sort-Object
+          $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
+          $head=(git rev-parse HEAD).Trim()
+          if($head -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
+          if((git rev-parse "$base^{tree}").Trim() -cne $tree){throw 'BASE_TREE_DRIFT'}
+          $parent=(git rev-parse 'HEAD^').Trim()
+          $delta=@(git diff --name-only $parent HEAD | Sort-Object)
+          if($parent -ceq $base -and ($delta -join '|') -ceq ($expected -join '|')){
+            $phase='prepare';$anchor=$head
+          }elseif((git rev-parse "$parent^").Trim() -ceq $base -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $base $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
+            $phase='qualify';$anchor=$parent
+          }else{throw 'UNEXPECTED_SOURCE_TRANSITION'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'DIRTY_CHECKOUT'}
+          $m=Get-Content -Raw $pr | ConvertFrom-Json
+          if($m.status -cne 'PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' -or $m.exact_parent_sha -cne $base -or $m.exact_parent_tree -cne $tree -or $m.authority.execution_admitted -ne $false){throw 'MANIFEST_DRIFT'}
+          foreach($entry in $m.source_blobs.PSObject.Properties){
+            $actual=(git rev-parse ("HEAD:"+$entry.Name)).Trim()
+            if($LASTEXITCODE -ne 0 -or $actual -cne $entry.Value){throw ('SOURCE_BLOB_DRIFT '+$entry.Name)}
+          }
           $py='C:\ProgramData\CKBR\research-sidecar-yggdrasil\python312\python.exe'
           if(-not(Test-Path -LiteralPath $py -PathType Leaf)){throw 'NATIVE_RUNTIME_MISSING'}
-          & $py -B -c "import sys,platform; print(sys.version); print(platform.platform()); assert sys.platform=='win32'"
-          if($LASTEXITCODE -ne 0){throw 'RUNTIME_INVALID'}
           "ACE_PYTHON=$py" >> $env:GITHUB_ENV
-          Write-Output "ACE_MODEL_PARENT=$base"
-          Write-Output "ACE_MODEL_TREE=$tree"
-          Write-Output "ACE_QUAL_SHA=$env:GITHUB_SHA"
-          $headTree=(git rev-parse 'HEAD^{tree}').Trim()
-          Write-Output "ACE_QUAL_TREE=$headTree"
-          Write-Output 'REGISTERED_WORLDS=0'
-      - name: All ACE03 engineering fixtures normal and optimized
+          "ACE_ANCHOR=$anchor" >> $env:GITHUB_ENV
+          "phase=$phase" >> $env:GITHUB_OUTPUT
+          "anchor=$anchor" >> $env:GITHUB_OUTPUT
+          Write-Output "ACE_PHASE=$phase SHA=$head TREE=$((git rev-parse 'HEAD^{tree}').Trim()) ANCHOR=$anchor REGISTERED_WORLDS=0"
+      - name: Generate exact source atlas only
+        if: steps.custody.outputs.phase == 'prepare'
         run: |
           $ErrorActionPreference='Stop'
-          $p='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV'
-          $q='research/contrib/chatgpt/ACE03-WSCM-CONTROL'
+          & $env:ACE_PYTHON -B scripts/build_code_atlas.py --source-commit $env:ACE_ANCHOR --write
+          if($LASTEXITCODE -ne 0){throw 'ATLAS_GENERATION_FAILED'}
+          $files=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
+          if((@(git diff --name-only | Sort-Object) -join '|') -cne ($files -join '|')){throw 'ATLAS_SCOPE_DRIFT'}
+          if(@(git ls-files --others --exclude-standard).Count){throw 'UNTRACKED_OUTPUT'}
+          foreach($path in $files){
+            $bytes=[IO.File]::ReadAllBytes((Join-Path (Get-Location) $path))
+            $blob=(git hash-object --no-filters -- $path).Trim()
+            $hash=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            $encoded=[Convert]::ToBase64String($bytes)
+            Write-Output "ACE_ATLAS_FILE=$path SIZE=$($bytes.Length) BLOB=$blob SHA256=$hash"
+            for($i=0;$i -lt $encoded.Length;$i+=2048){
+              $chunk=$encoded.Substring($i,[Math]::Min(2048,$encoded.Length-$i))
+              Write-Output "ACE_ATLAS_CHUNK=$path OFFSET=$i DATA=$chunk"
+            }
+          }
+          Write-Output 'ATLAS_PREPARE_ONLY_NO_FINAL_REGRESSION_CLAIM'
+      - name: Full repository regression and frozen atlas check
+        if: steps.custody.outputs.phase == 'qualify'
+        run: |
+          $ErrorActionPreference='Stop'
+          & $env:ACE_PYTHON -B scripts/build_code_atlas.py --source-commit $env:ACE_ANCHOR --check
+          if($LASTEXITCODE -ne 0){throw 'ATLAS_CHECK_FAILED'}
+          & $env:ACE_PYTHON -B -c "import sys,pathlib,runpy; sys.path.insert(0,str(pathlib.Path.cwd().resolve())); runpy.run_module('unittest',run_name='__main__')" discover -s tests -p 'test_*.py' -v
+          if($LASTEXITCODE -ne 0){throw 'FULL_REPOSITORY_REGRESSION_FAILED'}
+      - name: All ACE03 fixtures and syntax build
+        if: steps.custody.outputs.phase == 'qualify'
+        run: |
+          $ErrorActionPreference='Stop'
           foreach($mode in @('normal','optimized')){
             $flags=@('-B')
-            if($mode -eq 'optimized'){$flags+= '-O'}
-            foreach($dir in @($p,$q)){
-              Write-Output "ACE_TEST_MODE=$mode DIRECTORY=$dir"
+            if($mode -eq 'optimized'){$flags+='-O'}
+            foreach($dir in @('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV','research/contrib/chatgpt/ACE03-WSCM-CONTROL')){
               & $env:ACE_PYTHON @flags -m unittest discover -s $dir -p 'test_*.py' -v
               if($LASTEXITCODE -ne 0){throw "ACE_TEST_FAILED mode=$mode dir=$dir"}
             }
           }
-      - name: Matched full-size nonstudy benchmark and cold identity
-        run: |
-          $ErrorActionPreference='Stop'
-          $code=@'
-          import json, pathlib, statistics, sys, time
-          from unittest.mock import patch
-          p=pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').resolve()
-          sys.path.insert(0,str(p))
-          import transfer_prior as t
-          from adaptive_contract import State
-          from study_worker import execute_explicit, verify_pair, worker
-          from transfer_study_eval import ARMS
-          if pathlib.Path(t.__file__).resolve().parent != p:
-              raise RuntimeError('import custody')
-          held=tuple(range(384,512))
-          phases=[dict(phase=i,events=[(k,j%384,(1,0,1,0)) for j in range(n)],
-                       a_law=[[5]*4 for _ in held],c_law=[[5]*4 for _ in held],
-                       negative_key=2)
-                  for i,(k,n) in enumerate(((0,1024),(1,1024),(0,512),(2,256)))]
-          for arm in ARMS:
-              task=(1,'fixture',arm,False)
-              a=execute_explicit(task,held,phases,False,time.monotonic()+60)
-              b=execute_explicit(task,held,phases,True,time.monotonic()+60)
-              verify_pair(a,b)
-              if not (a['cold_identity'] and b['cold_identity'] and a['cursor']==2816):
-                  raise RuntimeError('fixture identity')
-              print('ACE_ARM='+json.dumps(dict(arm=arm,compute=a['compute_seconds'],
-                    wall=a['wall_seconds'],rss=a['peak_rss_bytes'],
-                    traced_peak=b['traced_peak_bytes'],cold_identity=True)),flush=True)
-          req=dict(arm='candidate',seed=1,traced=False,held=held,phases=phases,
-                   checkpoint=None,expected_before=None,expected_cursor=0)
-          def legacy(rows):
-              return [State.unpack(a.pack()) for a in rows]
-          fast=t.clone
-          timings={'legacy':[],'optimized':[]}
-          identity=None
-          for mode in ('legacy','optimized','optimized','legacy'):
-              with patch.object(t,'clone',legacy if mode=='legacy' else fast):
-                  result=worker(req)
-              observed=(result['checkpoint'],result['reports'])
-              if identity is None:
-                  identity=observed
-              elif identity!=observed:
-                  raise RuntimeError('legacy/optimized full-size parity')
-              timings[mode].append(result['compute_seconds'])
-          med={k:statistics.median(v) for k,v in timings.items()}
-          print('ACE_MATCHED='+json.dumps(dict(samples=timings,medians=med,
-                 legacy_over_optimized=med['legacy']/med['optimized'],
-                 exact_parity=True,registered_worlds=0)),flush=True)
-          '@
-          $code | & $env:ACE_PYTHON -B -
-          if($LASTEXITCODE -ne 0){throw 'ACE_BENCHMARK_FAILED'}
-      - name: Verify final source unchanged
-        if: always()
+          & $env:ACE_PYTHON -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
+          if($LASTEXITCODE -ne 0){throw 'ACE_BUILD_FAILED'}
+      - name: Final exact worktree
+        if: always() && steps.custody.outputs.phase == 'qualify'
         run: |
           $ErrorActionPreference='Stop'
           if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'FINAL_SHA_DRIFT'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'FINAL_DIRTY'}
-          Write-Output 'NONSTUDY_ONLY_NO_PROMOTION_NO_FULL_REGRESSION_CLAIM'
+          Write-Output 'NONSTUDY_ONLY_REGISTERED_WORLDS=0'
+  linux:
+    needs: windows
+    if: needs.windows.outputs.phase == 'qualify' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+      - name: Exact frozen source, atlas, full regression and ACE03 build
+        env:
+          ACE_ANCHOR: ${{ needs.windows.outputs.anchor }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD^)" = "$ACE_ANCHOR"
+          python -B - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          m=json.loads(Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json').read_text())
+          if m['status']!='PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' or m['authority']['execution_admitted'] is not False:
+              raise RuntimeError('manifest admission drift')
+          for path, blob in m['source_blobs'].items():
+              if subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip()!=blob:
+                  raise RuntimeError('source blob drift: '+path)
+          PY
+          python -B scripts/build_code_atlas.py --source-commit "$ACE_ANCHOR" --check
+          python -B -m unittest discover -s tests -p 'test_*.py' -v
+          for d in 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' 'research/contrib/chatgpt/ACE03-WSCM-CONTROL'; do
+            python -B -m unittest discover -s "$d" -p 'test_*.py' -v
+            python -B -O -m unittest discover -s "$d" -p 'test_*.py' -v
+          done
+          python -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          echo "NONSTUDY_ONLY_REGISTERED_WORLDS=0"

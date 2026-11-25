@@ -1,0 +1,129 @@
+{
+  "schema": "yggdrasil.external-research-prereg.v1",
+  "project": "Yggdrasil",
+  "experiment_id": "ACE03-XFER01-DEV-A1",
+  "contributor": "chatgpt-connector",
+  "contribution_class": "successor-proposal",
+  "status": "PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED",
+  "question": "Can learned shared structure improve predictions in a new observable context without degrading prior-context predictions or benefiting from an inferior comparator?",
+  "hypothesis": "Relative to the strongest fully trained equally informed and budgeted conventional control, candidate achieves at least .005 Brier improvement on unfamiliar C patterns and positive paired gain on every fixed seed, with familiar A Brier drift at most .02 at each boundary and after cold restart.",
+  "exact_parent_sha": "03bc054c62adbb3458397478b695ca9dbeeef37e",
+  "exact_parent_tree": "b21e27cc3f69dd3a818f3c6efecbd31ce8587e2d",
+  "predecessor_evidence": [
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/45615256552/job/139208856866",
+    "https://github.com/spoonman136668-ai/Yggdrasil/actions/runs/45604001948/job/139173479365"
+  ],
+  "changed_paths": [
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json",
+    ".github/workflows/direct-research-qualification.yml"
+  ],
+  "source_blobs": {
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/adaptive_contract.py": "f59745cb24d6eb3f9302a7aa71c34caafe9fb998",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/cold_continuation.py": "21222c8a9f1042d429cdd2588f20d575985d6c56",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/quadratic_controls.py": "72c5bb608ded1deba00897b5b960a83e5c86254b",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_gate.py": "19a8ae88b5298efe00480e12d0fa61ce5781f928",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_worker.py": "2d28582bff6b6072c422d86902d4453acffef63c",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_adaptive_contract.py": "1604c17bbfb6d4426fd9529073d7a9e0ed82b101",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_cold_controls.py": "3336278e3b6f3bf8d1729214e5bd401ccb077b8b",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_gate.py": "da1cf03395308c3e8c33bf9a76f4a87aaec517da",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_interfaces.py": "996a8dc2c778db0831cf0bca66c97d833e45751d",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_worker.py": "83c8d03ab6aa7659d2527ce79df8b73d87a32c51",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_transaction_copy.py": "d6a91b3e7d4bc89afd2b4dac2b8779601286c819",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_transfer_prior.py": "8c4d31ff673aff2b4381eea420020ef2b7e3a456",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/transfer_prior.py": "e14a6015a6aff1004f96c5f0491666f8e51b3e2c",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/transfer_study_design_v1.json": "28559327c970ed7ec60daac0600d964e9e37d7ae",
+    "research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/transfer_study_eval.py": "dea12aa3603aa94b983d9d7f2b2a3c98214371cf",
+    "research/contrib/chatgpt/ACE03-WSCM-CONTROL/shared_count_control.py": "d4a2600a8efd766fc41c34a165c6adeab44dacdf",
+    "research/contrib/chatgpt/ACE03-WSCM-CONTROL/test_shared_count_control.py": "9f66b8fac6e7f4c76c307893bac8b5bf39862509"
+  },
+  "inputs": [
+    {
+      "name": "synthetic DEV worlds only",
+      "sha256": null,
+      "source": "Deterministic generator in exact locked transfer_study_eval.py; original design blob 28559327c970ed7ec60daac0600d964e9e37d7ae; no protected source."
+    }
+  ],
+  "frozen_design": {
+    "seeds": [
+      97001,
+      97003,
+      97009,
+      97021,
+      97027,
+      97031,
+      97033,
+      97039
+    ],
+    "split": "rank all 512 patterns by SHA256(domain:seed:split:pattern), tie by pattern; first 384 TRAIN, last 128 held; same split for all arms, diagnostic patterns never update learner",
+    "ordering": "[{\"phase\":\"A1\",\"key\":0,\"updates\":1024},{\"phase\":\"B\",\"key\":1,\"updates\":1024},{\"phase\":\"A2\",\"key\":0,\"updates\":512},{\"phase\":\"C\",\"key\":2,\"updates\":256}]",
+    "data_budget": "32 worlds × 7 arms = 224 primary tasks per pass, plus 16 related counterfactual tasks (8 seeds × candidate/local-only); exactly 2 passes, 480 tasks maximum, 2816 observations each (1,351,680 total), four labels per observation; 128 held patterns, never updated. No additional trials.",
+    "compute_budget": "60 s per task, 14400 s total across both passes and counterfactuals, 2x best-scoring conventional control per seed; untraced worker timings, independent traced cold passes; no paid services.",
+    "capacity": "{\"persistent_checkpoint_max_bytes\":16384,\"process_peak_rss_max_bytes\":268435456,\"learner_traced_peak_max_bytes\":1048576,\"keys\":3,\"global_observations_max\":65535,\"per_world_arm_wall_seconds\":60,\"whole_primary_wall_seconds\":14400,\"compute_match\":\"Report actual per-arm update and prediction times in identical runtime, untraced timing separately from instrumented allocation. Same per-arm budget ceiling; require candidate time <=2x the best-scoring conventional comparator, report exact ratios; do not call ceiling alone equal actual compute. Charge replay, duplicate state updates, checkpoint and evaluation; exceeding budget is invalid, no pruning of strong controls.\"}",
+    "evaluator": "Exact source_blobs plus original prospective design; study_gate.classify, study_worker.verify_pair, expected_stream_identity and verify_counterfactual_inputs; preserve the frozen metric and negative thresholds.",
+    "deterministic_expected": true
+  },
+  "controls": [
+    {
+      "name": "local-only ACE03",
+      "role": "ablation; original frozen AdaptiveContract"
+    },
+    {
+      "name": "shared-exposure exact table",
+      "role": "reuse pinned b41ae5a9 control; same keys and observations; convert exact Fractions only for scoring"
+    },
+    {
+      "name": "online contextual quadratic/logistic",
+      "role": "46 features incl intercept, 9 signed bits, all 36 pair products; four independent outputs per key; fixed SGD step .125/sqrt(1+key_age/256), clamp [-32,32], full stream"
+    },
+    {
+      "name": "conventional shared prior / partial pooling",
+      "role": "same full quadratic online features and fixed update as above; pooled global state trained on every event, local per-key; freeze prior at first key exposure; identical Brier loss-based gate, thereby testing whether ACE03 grammar adds value beyond ordinary shared logistic regression"
+    },
+    {
+      "name": "reservoir replay quadratic",
+      "role": "same local quadratic, 512-event uniform reservoir; one extra replay gradient step per current event when reservoir nonempty, deterministic SHA256 seeded index; preserve each event's observable key; charge full reservoir and counts"
+    },
+    {
+      "name": "fixed-prior mixture",
+      "role": "candidate architecture with mixture weight fixed .5, no admission gate; charge same state; ablation"
+    }
+  ],
+  "metrics": {
+    "primary": "Expected mean Brier across 128 held C patterns and all 4 outputs immediately after 256 C updates, using true Bernoulli expected loss p*(1-q)^2+(1-p)*q^2. Related family only. Compare candidate to minimum loss among all eligible conventional controls for each seed, average eight paired gains; no evaluation outcomes generated.",
+    "secondary": [
+      "cold C expected Brier before any C update",
+      "early C mean pre-update observed Brier on 256 TRAIN stream events",
+      "A expected Brier after A1, B, A2, C, and after exact cold restore",
+      "all arm checkpoint and process working-memory bytes, measured update/predict timings and budget accounting",
+      "same C subsequence, altered A/B prior counterfactual; separate development negative; not included in primary score"
+    ],
+    "negatives": "null and alias balanced-mixture expected Brier <=.252 on held patterns at final boundary; conflicting_C excess held Brier <=.02 over original local-only learner; unknown key abstention mapped to q=.5 for scoring, count abstentions explicitly; duplicate, gap, malformed event and checkpoint rejection; no source leakage or silent evictions."
+  },
+  "classification_rules": {
+    "supported": "DEV_PASS only if related mean gain >=.005 and every seed gain >0, familiar A max drift <=.02 each seed at all boundaries, cold continuation identical and negatives pass, all arms meet common caps and compute rule; repeat deterministically before scientific qualification. No native/scientific PASS.",
+    "mixed": "some gates pass but any substantive improvement or retention/negative gate fails; terminal DEV_NO_GO",
+    "negative": "any primary gain or retention/negative criterion fails under valid protocol; preserve result and stop without retuning",
+    "invalid": "source hash, frozen generator/evaluator/control identity, custody, budget, full qualification, reproducibility or information parity missing; do not consume primary scores"
+  },
+  "prohibited_after_primary_run": [
+    "threshold changes",
+    "split changes",
+    "post-result selection or tuning",
+    "capacity growth",
+    "extra data/compute/trials",
+    "held-out leakage",
+    "uncertain replay",
+    "weakened comparator"
+  ],
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "production_authority": false,
+    "scheduler_or_queue_authority": false,
+    "paid_services": false,
+    "execution_admitted": false,
+    "protected_first_use": false
+  },
+  "preregistration_note": "Frozen prospective protocol and scientific source identity only. No registered inputs generated or scored. Prior exact candidate engineering run: 96/96 test executions, 7/7 cold identity, 1.4416488972691404x median speedup with two samples per implementation, not scientific evidence. Before registered execution require native owner-admitted single-use identity and durable consumed/started ledger, exact qualified SHA/tree, full Windows/Linux regression on final atlas-bearing candidate, fixed owner execution package and independent receipt. Any interrupted or uncertain registered run is consumed/held, never replayed. This manifest grants no execution authority; no scientific execution entrypoint is enabled."
+}
