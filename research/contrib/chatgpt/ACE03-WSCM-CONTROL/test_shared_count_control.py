@@ -3,6 +3,7 @@ import subprocess
 import sys
 import unittest
 from fractions import Fraction
+from pathlib import Path
 from shared_count_control import SharedCountControl, HEADER, CELL, LIMIT
 
 
@@ -33,10 +34,13 @@ class SharedCountTests(unittest.TestCase):
     def test_fresh_process_continuation(self):
         prefix = stream(SharedCountControl(), 0, 1536).checkpoint()
         expected = stream(SharedCountControl(), 0, 3072).checkpoint()
-        code = ('import sys; from test_shared_count_control import stream, SharedCountControl; '
+        code = ('import sys; sys.path.insert(0,sys.argv[1]); from test_shared_count_control import stream, SharedCountControl; '
                 'm=SharedCountControl.restore(sys.stdin.buffer.read()); '
                 'sys.stdout.buffer.write(stream(m,1536,3072).checkpoint())')
-        p = subprocess.run([sys.executable, '-B', '-c', code], input=prefix, capture_output=True, check=True)
+        p = subprocess.run([sys.executable, '-B', *(['-O'] if sys.flags.optimize else []),
+                            '-c', code, str(Path(__file__).resolve().parent)],
+                           input=prefix, capture_output=True, timeout=60)
+        self.assertEqual(p.returncode, 0, p.stderr[:4096].decode('utf-8', errors='replace'))
         self.assertEqual(p.stdout, expected)
 
     def test_prediction_collision(self):
