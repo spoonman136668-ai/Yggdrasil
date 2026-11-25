@@ -43,6 +43,12 @@ class ZFixtures(unittest.TestCase):
                 after=z.trace(model,s,p,i,m,a,o,self.deadline)[0]
             self.assertTrue(torch.equal(before,after))
 
+    def test_disjoint_split_seed_ranges(self):
+        z.assert_disjoint_seeds()
+        from unittest.mock import patch
+        with patch.object(z,'FAMILIAR_SEED',z.FIT_SEED+1):
+            with self.assertRaises(RuntimeError):z.assert_disjoint_seeds()
+
     def test_bad_permutation(self):
         with self.assertRaises(ValueError):
             z.loss_for(x.Cell(False),'relational_rollout',self.row,torch.tensor([0,0]),self.deadline)

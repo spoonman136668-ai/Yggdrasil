@@ -43,12 +43,14 @@ jobs:
           $p='research/contrib/ujepa/uj-01'
           $expected=@($workflow,"$p/UJ04Z-multistep-protocol.md","$p/uj04z_multistep_pilot.py","$p/test_uj04z_multistep_pilot.py") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
+          $draft='00e923265abb4fe2d76b12370098014648aad88a'
+          if((git rev-parse "$draft^").Trim() -cne $baseline -or (@(git diff --name-only $baseline $draft | Sort-Object) -join '|') -cne ($expected -join '|')){throw 'SUPERSEDED_DRAFT_CUSTODY_MISMATCH'}
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
-          if($parent -ceq $baseline -and ($delta -join '|') -ceq ($expected -join '|')){
+          if($parent -ceq $draft -and ($delta -join '|') -ceq ($expected -join '|')){
             $phase='prepare'
             $anchor=$head
-          } elseif((git rev-parse "$parent^").Trim() -ceq $baseline -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $baseline $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
+          } elseif((git rev-parse "$parent^").Trim() -ceq $draft -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $baseline $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
             $phase='qualify'
             $anchor=$parent
           } else {throw 'UNEXPECTED_UJ04Z_TRANSITION'}

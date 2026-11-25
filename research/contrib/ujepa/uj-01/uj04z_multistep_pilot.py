@@ -16,12 +16,20 @@ SEEDS=(3001,3002,3003)
 EPOCHS=40
 BATCH=16
 HORIZON=8
+FIT_SEED=301100
+FAMILIAR_SEED=301200
+TRANSFER_SEED=301300
 SELECT=(0,1,3,7)
 ARM_SECONDS=360
 TOTAL_SECONDS=9000
 
 def emit(event,**fields):
     print('UJ04Z '+canonical(dict(event=event,**fields)).decode(),flush=True)
+
+def assert_disjoint_seeds():
+    ranges=[set(range(start,start+n)) for start,n in ((FIT_SEED,6),(FAMILIAR_SEED,6),(TRANSFER_SEED,16))]
+    if any(a & b for i,a in enumerate(ranges) for b in ranges[i+1:]):
+        raise RuntimeError('split seed overlap')
 
 def cases(seed,count,transfer=False):
     out=[]
@@ -188,11 +196,12 @@ def main():
         raise ValueError('source or exclusive trial directory')
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True)
     deadline=time.monotonic()+TOTAL_SECONDS
-    fit=prepare(cases(301001,64),deadline);familiar=prepare(cases(301002,16),deadline)
+    assert_disjoint_seeds()
+    fit=prepare(cases(FIT_SEED,64),deadline);familiar=prepare(cases(FAMILIAR_SEED,16),deadline)
     if sum(len(r[1]) for r in fit)!=384 or sum(len(r[1]) for r in familiar)!=96:
         raise RuntimeError('dataset count')
     manifest=dict(source_sha=a.source_sha,fit_sha256=datahash(fit),familiar_sha256=datahash(familiar),
-                  seeds=SEEDS,arms=ARMS,epochs=EPOCHS,batch=BATCH,horizon=HORIZON,torch=str(torch.__version__),
+                  seeds=SEEDS,data_seed_bases=(FIT_SEED,FAMILIAR_SEED,TRANSFER_SEED),arms=ARMS,epochs=EPOCHS,batch=BATCH,horizon=HORIZON,torch=str(torch.__version__),
                   protected_evaluation_accessed=False)
     emit('manifest',**manifest)
     rows=[];models={}
@@ -204,7 +213,7 @@ def main():
     checks,eligible=eligibility(rows);emit('mastery_gate',checks=checks,eligible=eligible)
     scores=[];gates=[];cohort_hash=None
     if any(eligible.values()):
-        data=prepare(cases(301003,24,True),deadline);cohort_hash=datahash(data)
+        data=prepare(cases(TRANSFER_SEED,24,True),deadline);cohort_hash=datahash(data)
         emit('transfer_manifest',cohort_sha256=cohort_hash,strata=len(data),paired_scenarios=24*len(data))
         for seed in SEEDS:
             results={}
