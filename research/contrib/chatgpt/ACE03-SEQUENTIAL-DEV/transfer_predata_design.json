@@ -1,0 +1,34 @@
+{
+  "schema": "yggdrasil.contributor-predata-design.v1",
+  "experiment_id": "ACE03-XFER01",
+  "parent_sha": "edc04fb173b96c06fe5d76f8bcff908e3d122579",
+  "parent_tree": "5eb16597a51cff75ffdfbbad82fff36fc2f459d8",
+  "original_candidate_status": "preserved; exact structural NO_GO for cross-key transfer only; not a scored trial",
+  "source_audit": {
+    "readout": "adaptive_contract.py lines 120-126 reads only selected local rows",
+    "update": "lines 132-144 writes only selected local rows and global cursor; cursor is not a feature",
+    "cold": "all four probabilities 0.5; input-pattern-independent pooled readout until 256 observations of that key",
+    "proof": "For identical C observation subsequences, C state and forecasts are invariant to every A/B observation and outcome. Therefore no cross-key learning effect, even after C receives updates; within-key unfamiliar-pattern generalization remains untested."
+  },
+  "successor": "Reuse State for a shared relation prior, freeze one prior snapshot on first exposure to each key; combine with local readout via pre-update squared-loss log odds. Existing context is unaffected by unrelated shared updates. All extra statistics are charged. No new canonical learner.",
+  "engineering_fixtures": "test_transfer_prior.py; NOT_RUN",
+  "qualification": "NOT_RUN",
+  "scientific_trial": "NOT_FROZEN_NOT_RUN",
+  "study_requirements": [
+    "fresh disjoint DEV seed/split identities and immutable source hashes; never reuse ACE01/02 or CCE06 registered data",
+    "A-B-A-C plus same-C-stream/different-A control; cold C before any C observations, early prequential C, held unfamiliar C patterns; A return retention",
+    "same public observations/actions for all arms; no hidden context or truth; unknown/aliased keys charged using same policy",
+    "strongest fully trained contextual online quadratic/logistic, shared-exposure count table, reservoir replay, shared conventional prior/partial pooling, local-only and fixed-prior/no-admission ablations",
+    "retain <=0.02 familiar Brier drift and >=0.005 unfamiliar-combination mean Brier improvement over strongest equally budgeted conventional control; positive paired gain every seed; null/alias negatives",
+    "freeze evaluator, seeds, exact generator, event counts, actual persistent/working and compute budgets before score; independently qualify and reproduce",
+    "no external source, protected first-use, paid services, merge, deployment or controller changes"
+  ],
+  "limitations": [
+    "caller supplies observable key; no context discovery",
+    "shared prior may be polluted by conflicts; learned mixture may fail on negative transfer",
+    "global shared capacity capped at 65535 total observations, stricter than original per-context cap",
+    "extra shared and local state, snapshots, and duplicate per-event updates increase compute and process memory; neither measured nor claimed matched",
+    "checkpoint integrity is not source authentication; cross-platform determinism not qualified"
+  ],
+  "authority": "source-only contributor candidate under ACE03 scope; no runner dispatch; no prereg or claim of scientific gain"
+}
