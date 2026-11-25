@@ -6,6 +6,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 from study_worker import encode
 from study_supervisor import Journal, EXPERIMENT
 from study_archive_adapter import (STARTED, RAW, sha, file_sha, read_archive,

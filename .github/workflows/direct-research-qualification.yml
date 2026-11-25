@@ -40,10 +40,10 @@ jobs:
         id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='431f7dc47bbaa7b79c2a610e855b2809e45d1f5c'
-          $tree='ea7e1d38614f174861e2c56c998f061afa6d2e00'
+          $base='84d8e59a9de59f9b3d8ceb6babfa028146f78d6a'
+          $tree='35f00dd1aac2b19e4cd7a442b624896b6057031f'
           $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
-          $expected=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_archive_adapter.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_archive_adapter.py') | Sort-Object
+          $expected=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_archive_adapter.py') | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
@@ -136,101 +136,7 @@ jobs:
           ACE_ARCHIVE_DIGEST: ${{ steps.archive_started.outputs.artifact-digest }}
         run: |
           $ErrorActionPreference='Stop'
-          if($env:ACE_ARCHIVE_ID -notmatch '^[1-9][0-9]*        if: always() && steps.custody.outputs.phase == 'qualify'
-        run: |
-          $ErrorActionPreference='Stop'
-          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'FINAL_SHA_DRIFT'}
-          if(@(git status --porcelain --untracked-files=all).Count){throw 'FINAL_DIRTY'}
-          Write-Output 'NONSTUDY_ONLY_REGISTERED_WORLDS=0'
-  linux:
-    needs: windows
-    if: needs.windows.outputs.phase == 'qualify' && github.event.repository.private == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: "3.12"
-      - name: Exact frozen source, atlas, full regression and ACE03 build
-        env:
-          ACE_ANCHOR: ${{ needs.windows.outputs.anchor }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = "$ACE_ANCHOR"
-          python -B - <<'PY'
-          import json, subprocess
-          from pathlib import Path
-          m=json.loads(Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json').read_text())
-          if m['status']!='PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' or m['authority']['execution_admitted'] is not False:
-              raise RuntimeError('manifest admission drift')
-          for path, blob in m['source_blobs'].items():
-              if subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip()!=blob:
-                  raise RuntimeError('source blob drift: '+path)
-          PY
-          python -B scripts/build_code_atlas.py --source-commit "$ACE_ANCHOR" --check
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
-          for d in 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' 'research/contrib/chatgpt/ACE03-WSCM-CONTROL'; do
-            python -B -m unittest discover -s "$d" -p 'test_*.py' -v
-            python -B -O -m unittest discover -s "$d" -p 'test_*.py' -v
-          done
-          python -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
-          test -z "$(git status --porcelain --untracked-files=all)"
-          echo "NONSTUDY_ONLY_REGISTERED_WORLDS=0"
- -or $env:ACE_ARCHIVE_DIGEST -notmatch '^[0-9a-f]{64}        if: always() && steps.custody.outputs.phase == 'qualify'
-        run: |
-          $ErrorActionPreference='Stop'
-          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'FINAL_SHA_DRIFT'}
-          if(@(git status --porcelain --untracked-files=all).Count){throw 'FINAL_DIRTY'}
-          Write-Output 'NONSTUDY_ONLY_REGISTERED_WORLDS=0'
-  linux:
-    needs: windows
-    if: needs.windows.outputs.phase == 'qualify' && github.event.repository.private == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: "3.12"
-      - name: Exact frozen source, atlas, full regression and ACE03 build
-        env:
-          ACE_ANCHOR: ${{ needs.windows.outputs.anchor }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = "$ACE_ANCHOR"
-          python -B - <<'PY'
-          import json, subprocess
-          from pathlib import Path
-          m=json.loads(Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json').read_text())
-          if m['status']!='PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' or m['authority']['execution_admitted'] is not False:
-              raise RuntimeError('manifest admission drift')
-          for path, blob in m['source_blobs'].items():
-              if subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip()!=blob:
-                  raise RuntimeError('source blob drift: '+path)
-          PY
-          python -B scripts/build_code_atlas.py --source-commit "$ACE_ANCHOR" --check
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
-          for d in 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' 'research/contrib/chatgpt/ACE03-WSCM-CONTROL'; do
-            python -B -m unittest discover -s "$d" -p 'test_*.py' -v
-            python -B -O -m unittest discover -s "$d" -p 'test_*.py' -v
-          done
-          python -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
-          test -z "$(git status --porcelain --untracked-files=all)"
-          echo "NONSTUDY_ONLY_REGISTERED_WORLDS=0"
-){throw 'ARTIFACT_OUTPUT_MISSING'}
+          if($env:ACE_ARCHIVE_ID -notmatch '^[1-9][0-9]*$' -or $env:ACE_ARCHIVE_DIGEST -notmatch '^[0-9a-f]{64}$'){throw 'ARTIFACT_OUTPUT_MISSING'}
           $root=Join-Path $env:RUNNER_TEMP ('ace03-archive-fixture-'+$env:GITHUB_RUN_ID)
           $url='https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/'+$env:ACE_ARCHIVE_ID
           $headers=@{Authorization=('Bearer '+$env:GH_READ_TOKEN);Accept='application/vnd.github+json'}
@@ -246,7 +152,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ace03-archive-fixture-raw-${{ github.run_id }}
-          path: ${{ runner.temp }}\ace03-archive-fixture-${{ github.run_id }}\journal\ACE03-XFER01-DEV-A1\
+          path: ${{ runner.temp }}\ace03-archive-fixture-${{ github.run_id }}\journal\ACE03-XFER01-DEV-A1
           if-no-files-found: error
           retention-days: 7
       - name: Read back original raw archive and verify bytes
@@ -257,101 +163,7 @@ jobs:
           ACE_ARCHIVE_DIGEST: ${{ steps.archive_raw.outputs.artifact-digest }}
         run: |
           $ErrorActionPreference='Stop'
-          if($env:ACE_ARCHIVE_ID -notmatch '^[1-9][0-9]*        if: always() && steps.custody.outputs.phase == 'qualify'
-        run: |
-          $ErrorActionPreference='Stop'
-          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'FINAL_SHA_DRIFT'}
-          if(@(git status --porcelain --untracked-files=all).Count){throw 'FINAL_DIRTY'}
-          Write-Output 'NONSTUDY_ONLY_REGISTERED_WORLDS=0'
-  linux:
-    needs: windows
-    if: needs.windows.outputs.phase == 'qualify' && github.event.repository.private == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: "3.12"
-      - name: Exact frozen source, atlas, full regression and ACE03 build
-        env:
-          ACE_ANCHOR: ${{ needs.windows.outputs.anchor }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = "$ACE_ANCHOR"
-          python -B - <<'PY'
-          import json, subprocess
-          from pathlib import Path
-          m=json.loads(Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json').read_text())
-          if m['status']!='PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' or m['authority']['execution_admitted'] is not False:
-              raise RuntimeError('manifest admission drift')
-          for path, blob in m['source_blobs'].items():
-              if subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip()!=blob:
-                  raise RuntimeError('source blob drift: '+path)
-          PY
-          python -B scripts/build_code_atlas.py --source-commit "$ACE_ANCHOR" --check
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
-          for d in 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' 'research/contrib/chatgpt/ACE03-WSCM-CONTROL'; do
-            python -B -m unittest discover -s "$d" -p 'test_*.py' -v
-            python -B -O -m unittest discover -s "$d" -p 'test_*.py' -v
-          done
-          python -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
-          test -z "$(git status --porcelain --untracked-files=all)"
-          echo "NONSTUDY_ONLY_REGISTERED_WORLDS=0"
- -or $env:ACE_ARCHIVE_DIGEST -notmatch '^[0-9a-f]{64}        if: always() && steps.custody.outputs.phase == 'qualify'
-        run: |
-          $ErrorActionPreference='Stop'
-          if((git rev-parse HEAD).Trim() -cne $env:GITHUB_SHA){throw 'FINAL_SHA_DRIFT'}
-          if(@(git status --porcelain --untracked-files=all).Count){throw 'FINAL_DIRTY'}
-          Write-Output 'NONSTUDY_ONLY_REGISTERED_WORLDS=0'
-  linux:
-    needs: windows
-    if: needs.windows.outputs.phase == 'qualify' && github.event.repository.private == false
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: "3.12"
-      - name: Exact frozen source, atlas, full regression and ACE03 build
-        env:
-          ACE_ANCHOR: ${{ needs.windows.outputs.anchor }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$(git rev-parse HEAD^)" = "$ACE_ANCHOR"
-          python -B - <<'PY'
-          import json, subprocess
-          from pathlib import Path
-          m=json.loads(Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json').read_text())
-          if m['status']!='PROTOCOL_AND_SOURCE_FROZEN_EXECUTION_NOT_ADMITTED' or m['authority']['execution_admitted'] is not False:
-              raise RuntimeError('manifest admission drift')
-          for path, blob in m['source_blobs'].items():
-              if subprocess.check_output(['git','rev-parse','HEAD:'+path],text=True).strip()!=blob:
-                  raise RuntimeError('source blob drift: '+path)
-          PY
-          python -B scripts/build_code_atlas.py --source-commit "$ACE_ANCHOR" --check
-          python -B -m unittest discover -s tests -p 'test_*.py' -v
-          for d in 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' 'research/contrib/chatgpt/ACE03-WSCM-CONTROL'; do
-            python -B -m unittest discover -s "$d" -p 'test_*.py' -v
-            python -B -O -m unittest discover -s "$d" -p 'test_*.py' -v
-          done
-          python -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
-          test -z "$(git status --porcelain --untracked-files=all)"
-          echo "NONSTUDY_ONLY_REGISTERED_WORLDS=0"
-){throw 'ARTIFACT_OUTPUT_MISSING'}
+          if($env:ACE_ARCHIVE_ID -notmatch '^[1-9][0-9]*$' -or $env:ACE_ARCHIVE_DIGEST -notmatch '^[0-9a-f]{64}$'){throw 'ARTIFACT_OUTPUT_MISSING'}
           $root=Join-Path $env:RUNNER_TEMP ('ace03-archive-fixture-'+$env:GITHUB_RUN_ID)
           $url='https://api.github.com/repos/spoonman136668-ai/Yggdrasil/actions/artifacts/'+$env:ACE_ARCHIVE_ID
           $headers=@{Authorization=('Bearer '+$env:GH_READ_TOKEN);Accept='application/vnd.github+json'}
