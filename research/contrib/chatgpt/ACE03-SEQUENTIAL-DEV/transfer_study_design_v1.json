@@ -1,0 +1,135 @@
+{
+  "schema": "yggdrasil.ace03-xfer01.prospective-study-design.v1",
+  "experiment_id": "ACE03-XFER01-DEV-A1",
+  "status": "DESIGN_FIXED_EXECUTABLE_AND_RUNNER_QUALIFICATION_PENDING; NOT an execution admission or completed preregistration",
+  "exact_parent_sha": "3a9a6367494387548e0ab50e8c67ec9e6b83fd5f",
+  "exact_parent_tree": "e23c3397737ac475257cd24cf0c6b8cbe9a1bb84",
+  "source_identity": {
+    "candidate_blob": "6f190ddde155a0c4676e614b0f5d49f63aaf87a7",
+    "local_only_blob": "f59745cb24d6eb3f9302a7aa71c34caafe9fb998",
+    "count_control_commit": "b41ae5a9b6f2511c9314ad9db37888db28e086f0",
+    "count_control_blob": "d4a2600a8efd766fc41c34a165c6adeab44dacdf"
+  },
+  "question": "Can learned shared structure improve predictions in a new observable context without degrading prior-context predictions or benefiting from an inferior comparator?",
+  "hypothesis": "Relative to the strongest fully trained equally informed and budgeted conventional control, candidate achieves at least .005 Brier improvement on unfamiliar C patterns and positive paired gain on every fixed seed, with familiar A Brier drift at most .02 at each boundary and after cold restart.",
+  "seeds": [
+    97001,
+    97003,
+    97009,
+    97021,
+    97027,
+    97031,
+    97033,
+    97039
+  ],
+  "families": [
+    "related",
+    "conflicting_C",
+    "null",
+    "unobservable_AB_alias"
+  ],
+  "input": "9 public binary bits (512 patterns), four jointly observed binary labels; observable context key, no phase identifier passed to model; pure synthetic DEV generator, no prior registered cohort, external dataset or protected source",
+  "generator": {
+    "hash": "SHA256 of UTF-8 ASCII colon-joined experiment domain ACE03-XFER01-DEV-A1 and integer seed, family, purpose, event index, channel etc; lexicographic digest sort, integer threshold Bernoulli to avoid runtime RNG drift",
+    "split": "rank all 512 patterns by SHA256(domain:seed:split:pattern), tie by pattern; first 384 TRAIN, last 128 held; same split for all arms, diagnostic patterns never update learner",
+    "relationship": "For each output j, select first and second distinct pair from sorted 36 unordered bit pairs by SHA256(domain:seed:pair:j:pair_index), tie by pair index. Binary XOR on selected pair; p=0.9 if relation true else 0.1. A first pair; B second pair. Related C first pair; conflicting_C uses complement of A; null all p=.5; alias B uses complement of A with same public key as A. No generator truth to any learner.",
+    "observations": "Within each phase sample TRAIN pattern with replacement by first 64 digest bits modulo 384 using purpose pattern, phase index and row index; each output label y=1 iff first 64 digest bits for label, phase index, row index, output index are less than floor(p*2^64), using rational p in {1/10,1/2,9/10}. Family is not included in pattern/label hashes so counterfactual related/conflict share exogenous randomness; no cross-family training-state reuse."
+  },
+  "order": [
+    {
+      "phase": "A1",
+      "key": 0,
+      "updates": 1024
+    },
+    {
+      "phase": "B",
+      "key": 1,
+      "updates": 1024
+    },
+    {
+      "phase": "A2",
+      "key": 0,
+      "updates": 512
+    },
+    {
+      "phase": "C",
+      "key": 2,
+      "updates": 256
+    }
+  ],
+  "alias_rule": "B key=0 only in alias family; same learner API; no hidden context or phase given; alias diagnostic targets balanced mixture of opposite A/B conditional laws, p=.5; retention gate for observable positive worlds only.",
+  "data_budget": {
+    "worlds": 32,
+    "observations_per_world_arm": 2816,
+    "labels_per_observation": 4,
+    "held_patterns": 128,
+    "maximum_primary_repetitions": 2,
+    "reproduction_only": "second deterministic repeat only after complete first run, same frozen source; no adaptive selection or additional trials"
+  },
+  "metrics": {
+    "primary": "Expected mean Brier across 128 held C patterns and all 4 outputs immediately after 256 C updates, using true Bernoulli expected loss p*(1-q)^2+(1-p)*q^2. Related family only. Compare candidate to minimum loss among all eligible conventional controls for each seed, average eight paired gains; no evaluation outcomes generated.",
+    "secondary": [
+      "cold C expected Brier before any C update",
+      "early C mean pre-update observed Brier on 256 TRAIN stream events",
+      "A expected Brier after A1, B, A2, C, and after exact cold restore",
+      "all arm checkpoint and process working-memory bytes, measured update/predict timings and budget accounting",
+      "same C subsequence, altered A/B prior counterfactual; separate development negative; not included in primary score"
+    ],
+    "negatives": "null and alias balanced-mixture expected Brier <=.252 on held patterns at final boundary; conflicting_C excess held Brier <=.02 over original local-only learner; unknown key abstention mapped to q=.5 for scoring, count abstentions explicitly; duplicate, gap, malformed event and checkpoint rejection; no source leakage or silent evictions."
+  },
+  "controls": [
+    {
+      "name": "local-only ACE03",
+      "role": "ablation; original frozen AdaptiveContract"
+    },
+    {
+      "name": "shared-exposure exact table",
+      "role": "reuse pinned b41ae5a9 control; same keys and observations; convert exact Fractions only for scoring"
+    },
+    {
+      "name": "online contextual quadratic/logistic",
+      "role": "46 features incl intercept, 9 signed bits, all 36 pair products; four independent outputs per key; fixed SGD step .125/sqrt(1+key_age/256), clamp [-32,32], full stream"
+    },
+    {
+      "name": "conventional shared prior / partial pooling",
+      "role": "same full quadratic online features and fixed update as above; pooled global state trained on every event, local per-key; freeze prior at first key exposure; identical Brier loss-based gate, thereby testing whether ACE03 grammar adds value beyond ordinary shared logistic regression"
+    },
+    {
+      "name": "reservoir replay quadratic",
+      "role": "same local quadratic, 512-event uniform reservoir; one extra replay gradient step per current event when reservoir nonempty, deterministic SHA256 seeded index; preserve each event's observable key; charge full reservoir and counts"
+    },
+    {
+      "name": "fixed-prior mixture",
+      "role": "candidate architecture with mixture weight fixed .5, no admission gate; charge same state; ablation"
+    }
+  ],
+  "capacity": {
+    "persistent_checkpoint_max_bytes": 16384,
+    "process_peak_rss_max_bytes": 268435456,
+    "learner_traced_peak_max_bytes": 1048576,
+    "keys": 3,
+    "global_observations_max": 65535,
+    "per_world_arm_wall_seconds": 60,
+    "whole_primary_wall_seconds": 14400,
+    "compute_match": "Report actual per-arm update and prediction times in identical runtime, untraced timing separately from instrumented allocation. Same per-arm budget ceiling; require candidate time <=2x the best-scoring conventional comparator, report exact ratios; do not call ceiling alone equal actual compute. Charge replay, duplicate state updates, checkpoint and evaluation; exceeding budget is invalid, no pruning of strong controls."
+  },
+  "classification": {
+    "supported": "DEV_PASS only if related mean gain >=.005 and every seed gain >0, familiar A max drift <=.02 each seed at all boundaries, cold continuation identical and negatives pass, all arms meet common caps and compute rule; repeat deterministically before scientific qualification. No native/scientific PASS.",
+    "mixed": "some gates pass but any substantive improvement or retention/negative gate fails; terminal DEV_NO_GO",
+    "negative": "any primary gain or retention/negative criterion fails under valid protocol; preserve result and stop without retuning",
+    "invalid": "source hash, frozen generator/evaluator/control identity, custody, budget, full qualification, reproducibility or information parity missing; do not consume primary scores"
+  },
+  "remaining_before_primary": [
+    "implement exact generator/evaluator and comparator controls with cold-process restore, deterministic reservoir and counterfactual design; freeze their source hashes in a separate prereg commit conforming to experiment-template.json",
+    "run source-free engineering/interface/negative tests and full final Windows/Linux regression on exact candidate; regenerate atlas using repository generator; do not change thresholds or accepted refs",
+    "verify existing Yggdrasil research runner route and exact dispatch authority; score only after gate admission; no protected first-use"
+  ],
+  "authority": {
+    "research_only": true,
+    "accepted_ref_mutation": false,
+    "promotion_authority": false,
+    "production_authority": false,
+    "scheduler_or_queue_authority": false,
+    "paid_services": false
+  }
+}

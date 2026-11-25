@@ -1,0 +1,66 @@
+{
+  "schema": "yggdrasil.contributor-engineering-fixture.v1",
+  "scope": "ACE03-XFER01 exact source focused tests; not scientific evaluation",
+  "tested_commit": "3a9a6367494387548e0ab50e8c67ec9e6b83fd5f",
+  "tested_tree": "e23c3397737ac475257cd24cf0c6b8cbe9a1bb84",
+  "source_blobs": {
+    "adaptive_contract.py": "f59745cb24d6eb3f9302a7aa71c34caafe9fb998",
+    "transfer_prior.py": "6f190ddde155a0c4676e614b0f5d49f63aaf87a7",
+    "test_transfer_prior.py": "6e50a9d65ccbea970b3da7f8cc1cbbd0d41dae6b"
+  },
+  "source_sha256": {
+    "adaptive_contract.py": "f82b19bf23175901246d6e612898882462cf48af81e83e1e56d9b187c206e313",
+    "transfer_prior.py": "0f80f8737feac44296b9d881ee3034d7fea135f90f63da67ae402a8bfd594d7c",
+    "test_transfer_prior.py": "5819f736efc07566965885fc1b2c6a821940162b2b00ad15dd3377444dcbf931"
+  },
+  "runtime": "local Linux Python 3.13.5, source manually reconstructed and Git blob identity checked before run",
+  "commands": [
+    "python -B -m unittest -v test_transfer_prior",
+    "python -B -O -m unittest -v test_transfer_prior"
+  ],
+  "normal": {
+    "tests": 7,
+    "failures": 0,
+    "unittest_seconds": 1.503,
+    "wall_seconds": 2.81,
+    "process_peak_rss_kib": 97692
+  },
+  "optimized": {
+    "tests": 7,
+    "failures": 0,
+    "unittest_seconds": 1.48,
+    "wall_seconds": 3.99,
+    "process_peak_rss_kib": 103924
+  },
+  "tests": [
+    "test_capacity_and_corruption",
+    "test_conflicting_prior_loses_weight",
+    "test_fresh_process",
+    "test_old_context_snapshot_isolation",
+    "test_original_independence_and_successor_influence",
+    "test_read_only_and_invalid_event",
+    "test_shared_limit"
+  ],
+  "checkpoint_bytes": {
+    "candidate_3_keys": 10845,
+    "local_only_3_keys": 4634,
+    "exact_count_reference_3_keys": 15412
+  },
+  "cold_fresh_process_byte_identical": true,
+  "scientific_trial": "NOT_RUN",
+  "protected_data_consumed": 0,
+  "full_final_regression": "NOT_RUN",
+  "atlas_regeneration": "NOT_RUN",
+  "owner_runner": "NOT_RUN",
+  "ci": {
+    "run_id": 45531891435,
+    "conclusion": "failure",
+    "jobs_returned": 0,
+    "cause": "UNVERIFIED; unexpected prepare-ckb-research-write-proxy-fanout-r3 push run, not candidate qualification; no replay"
+  },
+  "limitations": [
+    "deterministic constant-label engineering fixture, not a demonstration of learned relationship transfer over a matched control",
+    "process peak RSS includes interpreter and subprocess context, not per-learner working memory",
+    "no Windows qualification or independent scientific result"
+  ]
+}
