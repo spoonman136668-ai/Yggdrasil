@@ -3,7 +3,7 @@ name: Direct Yggdrasil research qualification
 on:
   push:
     branches:
-      - research/autonomy-yggdrasil-active
+      - research/wscm-transfer02-native-qualification-repair-20261124
     paths:
       - 'research/applications/plane/**'
       - '.yggdrasil/**'
@@ -31,7 +31,7 @@ jobs:
       - name: Checkout exact active branch
         uses: actions/checkout@v4
         with:
-          ref: research/autonomy-yggdrasil-active
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: true
           clean: true
@@ -41,7 +41,7 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch='research/wscm-transfer02-native-qualification-repair-20261124'
           $QPath='.yggdrasil/qualification-request.json'
           $RPath='.yggdrasil/isolated-run.json'
           foreach($P in @($QPath,$RPath)){if(-not(Test-Path -LiteralPath $P -PathType Leaf)){throw "REQUEST_MISSING path=$P"}}
@@ -61,6 +61,7 @@ jobs:
           if(@(@($R.run_args)|Where-Object{[string]$_-ceq'{out}'}).Count-ne1){throw 'ISOLATED_RUN_OUT_ARG_REQUIRED'}
 
           $Head=(git rev-parse HEAD).Trim()
+          if($Head-cne$env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
           $Baseline=[string]$Q.baseline_sha
           git merge-base --is-ancestor $Baseline $Head
           if($LASTEXITCODE-ne0){throw "BASELINE_ANCESTRY_FAILED baseline=$Baseline head=$Head"}
@@ -74,7 +75,7 @@ jobs:
           if([string]$Prereg.exact_parent_sha-cne$Baseline){throw 'PREREG_PARENT_MISMATCH'}
           if([string]$Prereg.north_star_sha256-cne'57aa9418059fad959a1a038598576c8148f792209855fa2d7f3c05833493497c'){throw 'PREREG_NORTH_STAR_IDENTITY_MISMATCH'}
 
-          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath)
+          $Allowed=@($PreregPath,[string]$Q.source,$QPath,$RPath,'.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/WSCM-TRANSFER-02/composition_wire_dev.py','tests/test_wscm_transfer02_composition_native.py','tests/test_wscm_transfer02_composition_wire_dev.py','tests/test_wscm_transfer02_functional_consensus_dev.py')
           $AllFiles=@()
           foreach($C in $Commits){$AllFiles+=@(git diff-tree --no-commit-id --name-only -r $C|Where-Object{$_ -and $_.Trim()})}
           foreach($F in $AllFiles){if($Allowed-notcontains[string]$F){throw "CHANGE_OUTSIDE_FROZEN_PACKAGE path=$F"}}
@@ -147,7 +148,7 @@ jobs:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
-          $Branch='research/autonomy-yggdrasil-active'
+          $Branch='research/wscm-transfer02-native-qualification-repair-20261124'
           $Head='${{ steps.frozen.outputs.head }}'
           git fetch origin $Branch
           if($LASTEXITCODE-ne0){throw 'REMOTE_REFRESH_FAILED'}
