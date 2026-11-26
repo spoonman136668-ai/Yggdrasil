@@ -1,7 +1,7 @@
 name: Direct ACE03-XFER01 atlas and final nonstudy regression
 on:
   push:
-    branches: [research/ace03-sequential-contract-dev-20261124]
+    branches: [contrib/ace03-owner-preflight-20261125]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
       - '.ice/code-atlas.json'
@@ -19,7 +19,7 @@ env:
   MKL_NUM_THREADS: '1'
 jobs:
   windows:
-    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/research/ace03-sequential-contract-dev-20261124' && github.run_attempt == 1
+    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/contrib/ace03-owner-preflight-20261125' && github.run_attempt == 1
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
     timeout-minutes: 30
     defaults:
@@ -40,8 +40,8 @@ jobs:
         id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='25fe69fdbb86df305be517dad10ecae63954eb5d'
-          $tree='cd47be90681291306dd56b4d80e74c1cf919f44e'
+          $base='3ae98d86e1c52f546dee685b904c03f82ccaac90'
+          $tree='b0c2dd8394b1d96f71884b0ed6ac74d53d52c767'
           $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
           $expected=@('.github/workflows/direct-research-qualification.yml') | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
@@ -112,6 +112,51 @@ jobs:
           }
           & $env:ACE_PYTHON -B -c "import pathlib; paths=list(pathlib.Path('research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV').glob('*.py'))+list(pathlib.Path('research/contrib/chatgpt/ACE03-WSCM-CONTROL').glob('*.py')); [compile(p.read_bytes(),str(p),'exec') for p in paths]; print('ACE_SYNTAX_BUILD_FILES='+str(len(paths)))"
           if($LASTEXITCODE -ne 0){throw 'ACE_BUILD_FAILED'}
+      - name: Native read-only original qualification metadata preflight
+        if: steps.custody.outputs.phase == 'qualify'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $code=@'
+          import json, os, sys
+          from urllib.request import Request, build_opener, HTTPRedirectHandler
+          sys.path.insert(0, 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV')
+          import owner_evidence_preflight as p
+          class NoRedirect(HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, url):
+                  raise RuntimeError('redirect forbidden')
+          base=p.PREFIX+'/actions/runs/'+str(p.RUN)
+          allowed={p.PREFIX+'/git/commits/'+p.SOURCE,
+                   p.PREFIX+'/git/ref/heads/'+p.BRANCH,base,
+                   base+'/jobs?per_page=100',base+'/artifacts?per_page=100'}
+          token=os.environ.pop('GH_READ_TOKEN')
+          if not token or any(c in token for c in ('\r','\n')):
+              raise RuntimeError('missing or invalid read credential')
+          def get(route):
+              if route not in allowed:
+                  raise ValueError('GET route forbidden')
+              req=Request('https://api.github.com'+route,headers={
+                  'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json',
+                  'X-GitHub-Api-Version':'2022-11-28','User-Agent':'ace03-nonstudy-preflight'})
+              with build_opener(NoRedirect()).open(req,timeout=20) as response:
+                  if response.status!=200:
+                      raise RuntimeError('GET status')
+                  raw=response.read(1048577)
+              if len(raw)>1048576:
+                  raise ValueError('GET response too large')
+              return json.loads(raw)
+          result=p.verify_evidence(get)
+          if result['qualification_metadata_verified'] is not True or result['native_admission_verified'] is not False or result['registered_execution_permitted'] is not False:
+              raise ValueError('preflight widened authority')
+          print('ACE_OWNER_EVIDENCE_PREFLIGHT_PASS REGISTERED_WORLDS=0 NATIVE_ADMISSION=false')
+          '@
+          try {
+            & $env:ACE_PYTHON -B -c $code
+            if($LASTEXITCODE -ne 0){throw 'OWNER_EVIDENCE_PREFLIGHT_FAILED'}
+          } finally {
+            Remove-Item Env:GH_READ_TOKEN -ErrorAction SilentlyContinue
+          }
       - name: Prepare fabricated archive custody fixture
         if: steps.custody.outputs.phase == 'qualify'
         run: |
