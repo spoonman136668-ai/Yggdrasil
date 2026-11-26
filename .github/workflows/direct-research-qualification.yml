@@ -40,10 +40,10 @@ jobs:
         id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='25fe69fdbb86df305be517dad10ecae63954eb5d'
-          $tree='cd47be90681291306dd56b4d80e74c1cf919f44e'
+          $base='f8e814305fe53fc31fe535f4cb8786151543e637'
+          $tree='cb3d349e5def63e1dacdffdd7ae9ae7bd8df6bc5'
           $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
-          $expected=@('.github/workflows/direct-research-qualification.yml') | Sort-Object
+          $expected=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_native_adapter.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_native_adapter.py') | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
@@ -227,6 +227,18 @@ jobs:
           Remove-Item Env:GH_READ_TOKEN
           & $env:ACE_PYTHON -B 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_archive_adapter.py' --fixture-classify $root
           if($LASTEXITCODE -ne 0){throw 'INDEPENDENT_ARCHIVE_FIXTURE_FAILED'}
+      - name: Native admission policy availability (read-only)
+        if: steps.custody.outputs.phase == 'qualify'
+        run: |
+          $ErrorActionPreference='Stop'
+          $path='HKLM:\SOFTWARE\CKBR\Yggdrasil\ACE03'
+          if(Test-Path -LiteralPath $path){
+            $policy=Get-ItemProperty -LiteralPath $path
+            if($policy.OwnerCertificateSha256 -cmatch '^[0-9a-f]{64}$' -and $policy.OwnerJournalRoot -and (Test-Path -LiteralPath $policy.OwnerJournalRoot -PathType Container)){
+              Write-Output 'ACE_NATIVE_POLICY_PRESENT_UNVERIFIED'
+            }else{Write-Output 'ACE_NATIVE_POLICY_INCOMPLETE'}
+          }else{Write-Output 'ACE_NATIVE_POLICY_NOT_PROVISIONED'}
+          Write-Output 'NO_NATIVE_ADMISSION_ISSUED_REGISTERED_WORLDS=0'
       - name: Final exact worktree
         if: always() && steps.custody.outputs.phase == 'qualify'
         run: |
