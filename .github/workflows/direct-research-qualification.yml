@@ -1,7 +1,7 @@
-name: Direct U-JEPA UJ-06B D0 multi-step intervention DEV qualification
+name: Direct U-JEPA UJ-07A E0 multi-step intervention DEV qualification
 on:
   push:
-    branches: [dev/ujepa-uj06b-local-transfer]
+    branches: [dev/ujepa-uj07a-residual-correction]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
       - '.ice/code-atlas.json'
@@ -14,9 +14,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   qualify:
-    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj06b-local-transfer' && github.run_attempt == 1
+    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj07a-residual-correction' && github.run_attempt == 1
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
-    timeout-minutes: 215
+    timeout-minutes: 275
     defaults:
       run:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
@@ -34,14 +34,14 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $baseline='006286f336cc48fde226c41025147ab56755eb05'
-          $baseTree='4a05bf7cc3e4693448f934d6472c18335671a1c6'
+          $baseline='eafefe33628882304b10cf036c5c1a5d61374580'
+          $baseTree='99eed9a314d729e99163301336ae8ceccd64e63d'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
           if((git rev-parse "$baseline^{tree}").Trim() -cne $baseTree){throw 'BASELINE_TREE_MISMATCH'}
           $workflow='.github/workflows/direct-research-qualification.yml'
           $p='research/contrib/ujepa/uj-01'
-          $expected=@($workflow,"$p/UJ06B-transfer-protocol.md","$p/uj06b_transfer_pilot.py","$p/test_uj06b_transfer_pilot.py") | Sort-Object
+          $expected=@($workflow,"$p/UJ07A-residual-protocol.md","$p/uj07a_residual_pilot.py","$p/test_uj07a_residual_pilot.py") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
@@ -51,7 +51,7 @@ jobs:
           } elseif((git rev-parse "$parent^").Trim() -ceq $baseline -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $baseline $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
             $phase='qualify'
             $anchor=$parent
-          } else {throw 'UNEXPECTED_UJ06B_TRANSITION'}
+          } else {throw 'UNEXPECTED_UJ07A_TRANSITION'}
           "phase=$phase" >> $env:GITHUB_OUTPUT
           "UJ_ATLAS_ANCHOR=$anchor" >> $env:GITHUB_ENV
           Write-Output "UJ_PHASE=$phase"
@@ -78,7 +78,7 @@ jobs:
           $ErrorActionPreference='Stop'
           & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; root=pathlib.Path.cwd().resolve(); sys.path.insert(0,str(root)); import yggdrasil.public_causal_cells as m; assert pathlib.Path(m.__file__).resolve()==root/'yggdrasil'/'public_causal_cells.py'; print('NATIVE_PACKAGE_SOURCE=PASS'); runpy.run_module('unittest',run_name='__main__')" discover -s tests -p 'test_native_cells*.py' -v
           if($LASTEXITCODE -ne 0){throw 'NATIVE_FOCUSED_REGRESSION_FAILED'}
-      - name: UJ-06B D0 focused fabricated-data fixtures
+      - name: UJ-07A E0 focused fabricated-data fixtures
         if: steps.custody.outcome == 'success'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -86,8 +86,8 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_uj06b_transfer_pilot.py' -v
-          if($LASTEXITCODE -ne 0){throw 'UJ06B_FIXTURES_FAILED'}
+          & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_uj07a_residual_pilot.py' -v
+          if($LASTEXITCODE -ne 0){throw 'UJ07A_FIXTURES_FAILED'}
       - name: Verify exact source audit launcher before data access
         if: steps.custody.outcome == 'success'
         env:
@@ -96,9 +96,9 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj06b_transfer_pilot; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj06b_transfer_pilot)); runpy.run_path(str(p/'uj06b_transfer_pilot.py'),run_name='__main__')" --help
-          if($LASTEXITCODE -ne 0){throw 'UJ06B_LAUNCH_PREFLIGHT_FAILED'}
-          Write-Output 'UJ06B_LAUNCH_PREFLIGHT_PASS_NO_DATA'
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj07a_residual_pilot; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj07a_residual_pilot)); runpy.run_path(str(p/'uj07a_residual_pilot.py'),run_name='__main__')" --help
+          if($LASTEXITCODE -ne 0){throw 'UJ07A_LAUNCH_PREFLIGHT_FAILED'}
+          Write-Output 'UJ07A_LAUNCH_PREFLIGHT_PASS_NO_DATA'
       - name: Generate frozen atlas for exact committed source
         if: steps.custody.outputs.phase == 'prepare'
         run: |
@@ -152,7 +152,7 @@ jobs:
           if(@(git status --porcelain --untracked-files=all).Count){throw 'QUALIFICATION_MUTATED_SOURCE'}
           Write-Output 'UJ_SOURCE_UNCHANGED'
           Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
-      - name: Execute bounded D0 synthetic multi-step intervention pilot
+      - name: Execute bounded E0 synthetic multi-step intervention pilot
         if: success() && steps.custody.outputs.phase == 'qualify'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -160,12 +160,12 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP ("uj06b-pilot-"+$env:GITHUB_RUN_ID)
+          $root=Join-Path $env:RUNNER_TEMP ("uj07a-pilot-"+$env:GITHUB_RUN_ID)
           if(Test-Path -LiteralPath $root){throw 'TRIAL_PATH_ALREADY_EXISTS_NO_REPLAY'}
           New-Item -ItemType Directory -Path $root | Out-Null
-          Write-Output "UJ06B_DEV_PILOT_STARTED=$env:GITHUB_RUN_ID"
-          Write-Output 'PRIOR_UJ06A_RUN_45716022218_CONSUMED_NOT_REPLAYED'
-          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import uj06b_transfer_pilot; assert pathlib.Path(uj06b_transfer_pilot.__file__).resolve().parent==p; runpy.run_path(str(p/'uj06b_transfer_pilot.py'),run_name='__main__')" --source-sha $env:GITHUB_SHA --receipt (Join-Path $root 'd0-result.json')
-          if($LASTEXITCODE -ne 0){throw 'UJ06B_PILOT_FAILED_NO_REPLAY'}
+          Write-Output "UJ07A_DEV_PILOT_STARTED=$env:GITHUB_RUN_ID"
+          Write-Output 'PRIOR_UJ06B_RUN_45727459674_CONSUMED_NOT_REPLAYED'
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import uj07a_residual_pilot; assert pathlib.Path(uj07a_residual_pilot.__file__).resolve().parent==p; runpy.run_path(str(p/'uj07a_residual_pilot.py'),run_name='__main__')" --source-sha $env:GITHUB_SHA --receipt (Join-Path $root 'e0-result.json')
+          if($LASTEXITCODE -ne 0){throw 'UJ07A_PILOT_FAILED_NO_REPLAY'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'PILOT_MUTATED_SOURCE'}
-          Write-Output 'UJ06B_DEV_PILOT_COMPLETE_NO_PROMOTION'
+          Write-Output 'UJ07A_DEV_PILOT_COMPLETE_NO_PROMOTION'
