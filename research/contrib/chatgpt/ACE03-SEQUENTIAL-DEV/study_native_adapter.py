@@ -115,6 +115,109 @@ if([DateTime]::UtcNow -lt $s.Certificate.NotBefore.ToUniversalTime() -or [DateTi
     return raw
 
 
+# GET-only qualification evidence. No issuance of owner authority.
+WORKFLOW='.github/workflows/direct-research-qualification.yml'
+OWNER='spoonman136668-ai'
+PREFIX='/repos/'+REPO
+QUAL_STEPS={
+    'windows':('Checkout exact candidate','Verify source lock and phase custody',
+        'Full repository regression and frozen atlas check',
+        'All ACE03 fixtures and syntax build',
+        'Read back original started archive and verify bytes',
+        'Read back original raw archive and verify bytes',
+        'Native admission policy availability (read-only)','Final exact worktree'),
+    'linux':('Exact frozen source, atlas, full regression and ACE03 build',),
+}
+
+
+def verify_run_identity(doc, run_id, source, tree):
+    require(doc['id']==run_id and doc['head_sha']==source
+            and doc['head_commit']['tree_id']==tree
+            and doc['head_branch']==BRANCH.removeprefix('refs/heads/')
+            and doc['repository']['full_name']==REPO
+            and doc['head_repository']['full_name']==REPO
+            and doc['path']==WORKFLOW and doc['event']=='push'
+            and doc['run_attempt']==1 and doc['actor']['login']==OWNER
+            and doc['triggering_actor']['login']==OWNER,'authenticated workflow identity')
+
+
+def exact_run_index(doc, key, field, count):
+    rows=doc[key]
+    require(type(rows) is list and doc['total_count']==len(rows)==count,
+            'incomplete or extra '+key)
+    index={row[field]:row for row in rows}
+    require(len(index)==count,'duplicate '+key)
+    return index
+
+
+def verify_qualification(get, req, head, tree, current_run, runner):
+    """Read-only evidence; neither this result nor GitHub identity admits a study."""
+    qid=req['qualifier_run']
+    require(type(qid) is int and type(current_run) is int and 0<qid<current_run,
+            'qualification must precede request')
+    for value in (req['qualified_sha'],req['qualified_tree'],head,tree):
+        require(type(value) is str and re.fullmatch('[0-9a-f]{40}',value),'exact source identity')
+    current=PREFIX+'/actions/runs/'+str(current_run)
+    original=PREFIX+'/actions/runs/'+str(qid)
+    now=get(current)
+    verify_run_identity(now,current_run,head,tree)
+    require(now['status']=='in_progress' and now['conclusion'] is None,
+            'current run not active')
+    q=get(original)
+    verify_run_identity(q,qid,req['qualified_sha'],req['qualified_tree'])
+    require(q['status']=='completed' and q['conclusion']=='success','qualification not successful')
+    jobs=exact_run_index(get(original+'/jobs?per_page=100'),'jobs','name',2)
+    require(set(jobs)==set(QUAL_STEPS),'required qualification platforms')
+    for name,steps in QUAL_STEPS.items():
+        job=jobs[name]
+        require(job['run_id']==qid and job['head_sha']==req['qualified_sha']
+                and job['run_attempt']==1 and job['status']=='completed'
+                and job['conclusion']=='success','qualified job identity')
+        seen={step['name']:step for step in job['steps']}
+        require(len(seen)==len(job['steps']) and all(
+            s in seen and seen[s]['status']=='completed' and seen[s]['conclusion']=='success'
+            for s in steps),'qualified step missing or failed')
+    require(jobs['windows']['runner_name']==runner and
+            {'self-hosted','Windows','X64','yggdrasil','research-only'}<=set(jobs['windows']['labels']),
+            'qualified native runner mismatch')
+    require('ubuntu-latest' in jobs['linux']['labels'],'qualified Linux runner mismatch')
+    items=exact_run_index(get(original+'/artifacts?per_page=100'),'artifacts','name',2)
+    expected={'ace03-archive-fixture-'+tag+'-'+str(qid) for tag in ('started','raw')}
+    require(set(items)==expected and len({v['id'] for v in items.values()})==2,'qualification archive identity')
+    for item in items.values():
+        require(type(item['id']) is int and item['id']>0
+                and item['expired'] is False and re.fullmatch('sha256:[0-9a-f]{64}',item['digest'])
+                and type(item['size_in_bytes']) is int and item['size_in_bytes']>0
+                and item['workflow_run']['id']==qid
+                and item['workflow_run']['head_sha']==req['qualified_sha'],
+                'qualification archive missing or altered')
+    return qid
+
+
+def native_qualification_get(req, current_run):
+    """Bounded GET only; credential comes from the native workflow, never source."""
+    from urllib.request import Request, build_opener, HTTPRedirectHandler
+    class NoRedirect(HTTPRedirectHandler):
+        def redirect_request(self, *args, **kwargs):
+            raise ValueError('qualification redirect forbidden')
+    token=os.environ.pop('ACE_QUAL_READ_TOKEN','')
+    require(bool(token) and not any(c in token for c in ('\r','\n')),'native read credential missing')
+    base=PREFIX+'/actions/runs/'+str(req['qualifier_run'])
+    allowed={base,base+'/jobs?per_page=100',base+'/artifacts?per_page=100',
+             PREFIX+'/actions/runs/'+str(current_run)}
+    def get(route):
+        require(route in allowed,'qualification route forbidden')
+        request=Request('https://api.github.com'+route,headers={
+            'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json',
+            'X-GitHub-Api-Version':'2022-11-28','User-Agent':'ace03-native-qualification'})
+        with build_opener(NoRedirect()).open(request,timeout=20) as response:
+            require(response.status==200,'qualification GET status')
+            raw=response.read(1048577)
+        require(len(raw)<=1048576,'qualification response too large')
+        return json_object(raw)
+    return get
+
+
 def context():
     # Only the exact native research workflow can call the adapter. These
     # environment checks are not by themselves authentication.
@@ -133,8 +236,7 @@ def context():
     req=json_object(req_path.read_bytes())
     require(type(req) is dict and set(req)=={'qualified_sha','qualified_tree','qualifier_run','request_nonce'},
             'request fields')
-    require(type(req['qualifier_run']) is int and req['qualifier_run']>0 and
-            os.environ.get('ACE_VERIFIED_QUAL_RUN')==str(req['qualifier_run']),'verified qualification missing')
+    require(type(req['qualifier_run']) is int and req['qualifier_run']>0,'qualification run identity')
     parent=git('rev-parse','HEAD^')
     require(parent==req['qualified_sha'] and git('rev-parse',parent+'^{tree}')==req['qualified_tree'],
             'qualified parent drift')
@@ -157,7 +259,10 @@ def context():
         adapter_blob=git('rev-parse','HEAD:'+(HERE/'study_native_adapter.py').relative_to(top).as_posix()),
         runner=runner,runtime_sha256=runtime)
     check_admission(admission,expected,dt.datetime.now(dt.timezone.utc))
-    identity=dict(experiment=EXPERIMENT,source_sha=head,source_tree=git('rev-parse','HEAD^{tree}'),
+    current_run=int(os.environ['GITHUB_RUN_ID'])
+    head_tree=git('rev-parse','HEAD^{tree}')
+    verify_qualification(native_qualification_get(req,current_run),req,head,head_tree,current_run,runner)
+    identity=dict(experiment=EXPERIMENT,source_sha=head,source_tree=head_tree,
         supervisor_blob=expected['supervisor_blob'],prereg_blob=PREREG,runner=runner,
         runtime_sha256=runtime,admission_sha256=sha(raw),qualifier_run=req['qualifier_run'])
     identity_shape(identity)
