@@ -40,10 +40,10 @@ jobs:
         id: custody
         run: |
           $ErrorActionPreference='Stop'
-          $base='128a3767b4ea976c747d539db07407a5c4a076f2'
-          $tree='e7c12b2f1dbb92f47bbf5eae3879b12fc2cbec47'
+          $base='c93b3a7adf3ce14d019657c67ccd438ab391ae8c'
+          $tree='02b1803585e0333749f176c36e430c31084589f4'
           $pr='research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/prereg.json'
-          $expected=@('.github/workflows/direct-research-qualification.yml','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/study_native_adapter.py','research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_native_adapter.py') | Sort-Object
+          $expected=@('.github/workflows/direct-research-qualification.yml') | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json') | Sort-Object
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'HEAD_DRIFT'}
@@ -73,9 +73,9 @@ jobs:
         if: steps.custody.outputs.phase == 'prepare'
         run: |
           $ErrorActionPreference='Stop'
-          & $env:ACE_PYTHON -B 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_native_adapter.py'
+          & $env:ACE_PYTHON -B -m unittest discover -s 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' -p 'test_study_native_adapter.py' -v
           if($LASTEXITCODE -ne 0){throw 'NATIVE_FOCUSED_FAILED'}
-          & $env:ACE_PYTHON -B -O 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV/test_study_native_adapter.py'
+          & $env:ACE_PYTHON -B -O -m unittest discover -s 'research/contrib/chatgpt/ACE03-SEQUENTIAL-DEV' -p 'test_study_native_adapter.py' -v
           if($LASTEXITCODE -ne 0){throw 'NATIVE_FOCUSED_OPTIMIZED_FAILED'}
           Write-Output 'NATIVE_QUALIFICATION_INTERFACE_FIXTURES_ONLY_REGISTERED_WORLDS=0'
       - name: Generate exact source atlas only
