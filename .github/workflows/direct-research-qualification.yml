@@ -1,7 +1,7 @@
-name: Direct U-JEPA UJ-08B G0 multi-step intervention DEV qualification
+name: Direct U-JEPA UJ-08C H0 multi-step intervention DEV qualification
 on:
   push:
-    branches: [dev/ujepa-uj08b-compositional-dynamics]
+    branches: [dev/ujepa-uj08c-learned-composition]
     paths:
       - '.github/workflows/direct-research-qualification.yml'
       - '.ice/code-atlas.json'
@@ -14,9 +14,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   qualify:
-    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj08b-compositional-dynamics' && github.run_attempt == 1
+    if: github.repository == 'spoonman136668-ai/Yggdrasil' && github.actor == 'spoonman136668-ai' && github.ref == 'refs/heads/dev/ujepa-uj08c-learned-composition' && github.run_attempt == 1
     runs-on: [self-hosted, Windows, X64, yggdrasil, research-only]
-    timeout-minutes: 415
+    timeout-minutes: 315
     defaults:
       run:
         shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
@@ -34,14 +34,14 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $baseline='a26afe74425b3ed6b1e963644580629ff04134ee'
-          $baseTree='8995b7f2bc330d296a72bc6e9f333909a0484240'
+          $baseline='538a361e2ef30f4880d6d9e050ef334d08ff9540'
+          $baseTree='10b61d03ccd44daef7f8ea3dae6a9fdc5f6c3cab'
           $head=(git rev-parse HEAD).Trim()
           if($head -cne $env:GITHUB_SHA){throw 'CHECKOUT_SHA_MISMATCH'}
           if((git rev-parse "$baseline^{tree}").Trim() -cne $baseTree){throw 'BASELINE_TREE_MISMATCH'}
           $workflow='.github/workflows/direct-research-qualification.yml'
           $p='research/contrib/ujepa/uj-01'
-          $expected=@($workflow,"$p/UJ08B-composition-protocol.md","$p/uj08b_composition_pilot.py","$p/test_uj08b_composition_pilot.py") | Sort-Object
+          $expected=@($workflow,"$p/UJ08C-learned-protocol.md","$p/uj08c_learned_pilot.py","$p/test_uj08c_learned_pilot.py") | Sort-Object
           $atlas=@('.ice/code-atlas.html','.ice/code-atlas.ice','.ice/code-atlas.json')
           $parent=(git rev-parse 'HEAD^').Trim()
           $delta=@(git diff --name-only $parent HEAD | Sort-Object)
@@ -51,7 +51,7 @@ jobs:
           } elseif((git rev-parse "$parent^").Trim() -ceq $baseline -and ($delta -join '|') -ceq ($atlas -join '|') -and (@(git diff --name-only $baseline $parent | Sort-Object) -join '|') -ceq ($expected -join '|')){
             $phase='qualify'
             $anchor=$parent
-          } else {throw 'UNEXPECTED_UJ08B_TRANSITION'}
+          } else {throw 'UNEXPECTED_UJ08C_TRANSITION'}
           "phase=$phase" >> $env:GITHUB_OUTPUT
           "UJ_ATLAS_ANCHOR=$anchor" >> $env:GITHUB_ENV
           Write-Output "UJ_PHASE=$phase"
@@ -78,7 +78,7 @@ jobs:
           $ErrorActionPreference='Stop'
           & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; root=pathlib.Path.cwd().resolve(); sys.path.insert(0,str(root)); import yggdrasil.public_causal_cells as m; assert pathlib.Path(m.__file__).resolve()==root/'yggdrasil'/'public_causal_cells.py'; print('NATIVE_PACKAGE_SOURCE=PASS'); runpy.run_module('unittest',run_name='__main__')" discover -s tests -p 'test_native_cells*.py' -v
           if($LASTEXITCODE -ne 0){throw 'NATIVE_FOCUSED_REGRESSION_FAILED'}
-      - name: UJ-08B G0 focused fabricated-data fixtures
+      - name: UJ-08C H0 focused fabricated-data fixtures
         if: steps.custody.outcome == 'success'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -86,8 +86,8 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_uj08b_composition_pilot.py' -v
-          if($LASTEXITCODE -ne 0){throw 'UJ08B_FIXTURES_FAILED'}
+          & $env:UJ_PYTHON -B -m unittest discover -s research/contrib/ujepa/uj-01 -p 'test_uj08c_learned_pilot.py' -v
+          if($LASTEXITCODE -ne 0){throw 'UJ08C_FIXTURES_FAILED'}
       - name: Verify exact source audit launcher before data access
         if: steps.custody.outcome == 'success'
         env:
@@ -96,9 +96,9 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj08b_composition_pilot; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj08b_composition_pilot)); runpy.run_path(str(p/'uj08b_composition_pilot.py'),run_name='__main__')" --help
-          if($LASTEXITCODE -ne 0){throw 'UJ08B_LAUNCH_PREFLIGHT_FAILED'}
-          Write-Output 'UJ08B_LAUNCH_PREFLIGHT_PASS_NO_DATA'
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj08c_learned_pilot; assert all(pathlib.Path(m.__file__).resolve().parent==p for m in (learned_jepa,pair_controls,grounded_eval,checkpoint,symbolic_control,uj03a_pilot,uj03b_pilot,uj04p_source_audit,uj04q_source_audit,uj04r_source_audit,uj04s_operation_pilot,uj08c_learned_pilot)); runpy.run_path(str(p/'uj08c_learned_pilot.py'),run_name='__main__')" --help
+          if($LASTEXITCODE -ne 0){throw 'UJ08C_LAUNCH_PREFLIGHT_FAILED'}
+          Write-Output 'UJ08C_LAUNCH_PREFLIGHT_PASS_NO_DATA'
       - name: Generate frozen atlas for exact committed source
         if: steps.custody.outputs.phase == 'prepare'
         run: |
@@ -152,7 +152,7 @@ jobs:
           if(@(git status --porcelain --untracked-files=all).Count){throw 'QUALIFICATION_MUTATED_SOURCE'}
           Write-Output 'UJ_SOURCE_UNCHANGED'
           Write-Output 'SCIENTIFIC_FIRST_USE=FALSE'
-      - name: Execute bounded G0 synthetic multi-step intervention pilot
+      - name: Execute bounded H0 synthetic multi-step intervention pilot
         if: success() && steps.custody.outputs.phase == 'qualify'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
@@ -160,12 +160,12 @@ jobs:
           MKL_NUM_THREADS: '1'
         run: |
           $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP ("uj08b-pilot-"+$env:GITHUB_RUN_ID)
+          $root=Join-Path $env:RUNNER_TEMP ("uj08c-pilot-"+$env:GITHUB_RUN_ID)
           if(Test-Path -LiteralPath $root){throw 'TRIAL_PATH_ALREADY_EXISTS_NO_REPLAY'}
           New-Item -ItemType Directory -Path $root | Out-Null
-          Write-Output "UJ08B_DEV_PILOT_STARTED=$env:GITHUB_RUN_ID"
-          Write-Output 'PRIOR_UJ08A_RUN_45803369010_CONSUMED_NOT_REPLAYED'
-          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import uj08b_composition_pilot; assert pathlib.Path(uj08b_composition_pilot.__file__).resolve().parent==p; runpy.run_path(str(p/'uj08b_composition_pilot.py'),run_name='__main__')" --source-sha $env:GITHUB_SHA --receipt (Join-Path $root 'g0-result.json')
-          if($LASTEXITCODE -ne 0){throw 'UJ08B_PILOT_FAILED_NO_REPLAY'}
+          Write-Output "UJ08C_DEV_PILOT_STARTED=$env:GITHUB_RUN_ID"
+          Write-Output 'PRIOR_UJ08B_RUN_45991212197_CONSUMED_NOT_REPLAYED'
+          & $env:UJ_PYTHON -B -c "import sys,pathlib,runpy; p=pathlib.Path('research/contrib/ujepa/uj-01').resolve(); sys.path.insert(0,str(p)); import uj08c_learned_pilot; assert pathlib.Path(uj08c_learned_pilot.__file__).resolve().parent==p; runpy.run_path(str(p/'uj08c_learned_pilot.py'),run_name='__main__')" --source-sha $env:GITHUB_SHA --receipt (Join-Path $root 'h0-result.json')
+          if($LASTEXITCODE -ne 0){throw 'UJ08C_PILOT_FAILED_NO_REPLAY'}
           if(@(git status --porcelain --untracked-files=all).Count){throw 'PILOT_MUTATED_SOURCE'}
-          Write-Output 'UJ08B_DEV_PILOT_COMPLETE_NO_PROMOTION'
+          Write-Output 'UJ08C_DEV_PILOT_COMPLETE_NO_PROMOTION'
